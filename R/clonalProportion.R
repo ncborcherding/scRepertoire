@@ -2,19 +2,21 @@
 #split is the point of seperation for the clonotype groupings
 #call is the how to call the clonotype - based on genes, CDR3 nt, or CDR3 aa sequence
 #' @export
-clonalProportion <- function(df,  
-                             split = c(10, 100, 1000, 10000, 30000, 100000), 
-                             call = "gene") {
+clonalProportion <- function(df,
+                             split = c(10, 100, 1000, 10000, 30000, 100000),
+                             call = c("gene", "nt", "aa", "gene+nt")) {
     df <- if(class(df) != "list") list(df) else df
     Con.df <- NULL
     if (call == "gene") {
         call <- "CTgene"
     } else if(call == "nt") {
         call <- "CTnt"
-    } else {
+    } else if (call == "aa") {
         call <- "CTaa"
+    } else {
+        call <- "CTstrict"
     }
-    
+
     mat <- matrix(0, length(df), length(split), dimnames = list(names(df), paste0('[', c(1, split[-length(split)] + 1), ':', split, ']')))
     df <- lapply(df, '[[', call)
     df <- lapply(df, as.data.frame(table))
@@ -31,8 +33,8 @@ clonalProportion <- function(df,
     ggplot2::ggplot(mat_melt, aes(x=Var1, y=value, fill=Var2)) +
         geom_bar(stat = "identity", position="fill", color = "black", lwd= 0.25) +
         scale_fill_manual(name = "Clonal Indices", values = colorblind_vector(col)) +
-        xlab("Samples") + 
+        xlab("Samples") +
         ylab("Occupied Repertoire Space") +
         theme_classic()
-    
+
 }

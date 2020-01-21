@@ -88,6 +88,7 @@ combineContigs <- function(df,
             Con.df$CTgene <- paste(Con.df$TCR1, Con.df$TCR2, sep="_")
             Con.df$CTnt <- paste(Con.df$cdr3_nt1, Con.df$cdr3_nt2, sep="_")
             Con.df$CTaa <- paste(Con.df$cdr3_aa1, Con.df$cdr3_aa2, sep="_")
+            Con.df$CTstrict <- paste(Con.df$TCR1, Con.df$cdr3_nt1, Con.df$TCR2, Con.df$cdr3_nt2, sep="_")
             Con.df[Con.df == "NA_NA"] <- NA
             data3 <- merge(data2, Con.df[,-which(names(Con.df) %in% c("TCR1","TCR2"))], by = "barcode")
             final[[i]] <- data3
@@ -129,6 +130,7 @@ combineContigs <- function(df,
             Con.df$CTgene <- paste(Con.df$IGH, Con.df$IGLC, sep="_")
             Con.df$CTnt <- paste(Con.df$cdr3_nt_h, on.df$cdr3_nt_l, sep="_")
             Con.df$CTaa <- paste(on.df$cdr3_h, Con.df$cdr3_l, sep="_")
+            Con.df$CTstrict <- paste(Con.df$IGH, Con.df$cdr3_nt_h, Con.df$IGLC, Con.df$cdr3_nt_l, sep="_")
             Con.df[Con.df == "NA_NA"] <- NA
             data3 <- merge(data2, Con.df[,-which(names(Con.df) %in% c("IGH","IGLC"))], by = "barcode")
 

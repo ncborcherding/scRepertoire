@@ -3,14 +3,17 @@
 #colorBy is the column ID to group
 #' @export
 clonalDiversity <- function(df,
-                            call = c("gene", "nt", "aa"),
+                            call = c("gene", "nt", "aa", "gene+nt"),
                             colorBy = "samples") {
     if (call == "gene") {
         call <- "CTgene"
     } else if(call == "nt") {
         call <- "CTnt"
-    } else {
+    } else if (call == "aa") {
         call <- "CTaa"
+    } else {
+        call <- "CTstrict"
+
     }
 
     mat <- NULL

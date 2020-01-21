@@ -4,7 +4,7 @@
 #' @export
 clonalHomeostasis <- function(df,
                               cloneTypes = c(Rare = .0001, Small = .001, Medium = .01, Large = .1, Hyperexpanded = 1),
-                              call = c("gene", "nt", "aa")) {
+                              call = c("gene", "nt", "aa", "gene+nt")) {
     require(ggplot2)
     df <- if(class(df) != "list") list(df) else df
     cloneTypes <- c(None = 0, cloneTypes)
@@ -12,8 +12,10 @@ clonalHomeostasis <- function(df,
         call <- "CTgene"
     } else if(call == "nt") {
         call <- "CTnt"
-    } else{
+    } else if (call == "aa") {
         call <- "CTaa"
+    } else {
+        call <- "CTstrict"
     }
 
     mat <- matrix(0, length(df), length(cloneTypes) - 1, dimnames = list(names(df), names(cloneTypes)[-1]))

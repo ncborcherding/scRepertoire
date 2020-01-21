@@ -9,7 +9,7 @@ colorblind_vector <- colorRampPalette(c("#FF4B20", "#FFB433", "#C6FDEC", "#7AC5F
 
 #' @export
 quantContig <- function(df,
-                        call = c("gene", "nt", "aa"),
+                        call = c("gene", "nt", "aa", "gene+nt"),
                         scale=F,
                         column = NULL) {
     if (length(column) > 1) {
@@ -19,8 +19,10 @@ quantContig <- function(df,
         call <- "CTgene"
     } else if(call == "nt") {
         call <- "CTnt"
-    } else {
+    } else if (call == "aa") {
         call <- "CTaa"
+    } else {
+        call <- "CTstrict"
     }
     if (!is.null(column)) {
         Con.df <- data.frame(matrix(NA, length(df), 4))
@@ -89,7 +91,7 @@ quantContig <- function(df,
 
 #' @export
 abundanceContig <- function(df,
-                            call = c("gene", "nt", "aa"),
+                            call = c("gene", "nt", "aa", "gene+nt"),
                             scale=F,
                             column = NULL) {
     Con.df <- NULL
@@ -98,8 +100,10 @@ abundanceContig <- function(df,
         call <- "CTgene"
     } else if(call == "nt") {
         call <- "CTnt"
-    } else {
+    } else if (call == "aa") {
         call <- "CTaa"
+    } else {
+        call <- "CTstrict"
     }
     if (!is.null(column)) {
         for (i in seq_along(df)) {

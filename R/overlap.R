@@ -3,15 +3,17 @@
 #method is the type of analysis to perform overlap or morisita
 #' @export
 clonalOverlap <- function(df,
-                    call = c("gene", "nt", "aa"),
+                    call = c("gene", "nt", "aa", "gene+nt"),
                     method = c("overlap", "morisita")){
-  if (call == "gene") {
-    call <- "CTgene"
-  } else if(call == "nt") {
-    call <- "CTnt"
-  } else {
-    call <- "CTaa"
-  }
+    if (call == "gene") {
+        call <- "CTgene"
+    } else if(call == "nt") {
+        call <- "CTnt"
+    } else if (call == "aa") {
+        call <- "CTaa"
+    } else {
+        call <- "CTstrict"
+    }
     num_samples <- length(df[])
     names_samples <- names(df)
     coef_matrix <- data.frame(matrix(NA, num_samples, num_samples))
