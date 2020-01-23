@@ -11,9 +11,10 @@ clonalDiversity <- function(df,
         call <- "CTnt"
     } else if (call == "aa") {
         call <- "CTaa"
-    } else {
+    } else if (call == "gene+nt") {
         call <- "CTstrict"
-
+    } else {
+        stop("Are you sure you made the right call? ", .call = F)
     }
 
     mat <- NULL

@@ -21,8 +21,10 @@ quantContig <- function(df,
         call <- "CTnt"
     } else if (call == "aa") {
         call <- "CTaa"
-    } else {
+    } else if (call == "gene+nt") {
         call <- "CTstrict"
+    } else {
+        stop("Are you sure you made the right call? ", .call = F)
     }
     if (!is.null(column)) {
         Con.df <- data.frame(matrix(NA, length(df), 4))
@@ -102,8 +104,10 @@ abundanceContig <- function(df,
         call <- "CTnt"
     } else if (call == "aa") {
         call <- "CTaa"
-    } else {
+    } else if (call == "gene+nt") {
         call <- "CTstrict"
+    } else {
+        stop("Are you sure you made the right call? ", .call = F)
     }
     if (!is.null(column)) {
         for (i in seq_along(df)) {

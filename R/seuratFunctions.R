@@ -18,8 +18,12 @@ combineSeurat <- function(df,
         call <- "CTgene"
     } else if(call == "nt") {
         call <- "CTnt"
-    } else {
+    } else if (call == "aa") {
         call <- "CTaa"
+    } else if (call == "gene+nt") {
+        call <- "CTstrict"
+    } else {
+        stop("Are you sure you made the right call? ", .call = F)
     }
     Con.df <- NULL
     if (groupBy == "none") {
@@ -67,7 +71,7 @@ combineSeurat <- function(df,
         Con.df$cloneType <- ifelse(Con.df$Frequency > cloneTypes[i-1] & Con.df$Frequency <= cloneTypes[i], names(cloneTypes[i]), Con.df$cloneType)
     }
 
-    PreMeta <- Con.df[,c("barcode", "CTgene", "CTnt", "CTaa", "Frequency", "cloneType")]
+    PreMeta <- Con.df[,c("barcode", "CTgene", "CTnt", "CTaa", "CTstrict", "Frequency", "cloneType")]
     PreMeta <- unique(PreMeta)
     rownames(PreMeta) <- PreMeta$barcode
     seurat <- Seurat::AddMetaData(seurat, PreMeta)
@@ -78,7 +82,7 @@ combineSeurat <- function(df,
 #sequence is the specific sequence of the clonotype you would like to highlight
 #' @export
 highlightClonotypes <- function(seurat,
-                                call = c("gene", "nt", "aa"),
+                                call = c("gene", "nt", "aa", "gene+nt"),
                                 sequence = NULL){
     if (class(seurat) != "Seurat"){
         stop("Object indicated is not of class 'Seurat', make sure you are using the correct data.")
@@ -87,11 +91,12 @@ highlightClonotypes <- function(seurat,
         call <- "CTgene"
     } else if(call == "nt") {
         call <- "CTnt"
-    } else {
+    } else if (call == "aa") {
         call <- "CTaa"
-    }
-    if (is.null(length(sequence))) {
-        stop("Make sure to add  clonotype sequence(s) to me highlighted")
+    } else if (call == "gene+nt") {
+        call <- "CTstrict"
+    } else {
+        stop("Are you sure you made the right call? ", .call = F)
     }
     meta <- seurat@meta.data
     meta$highlight <- NA
@@ -112,7 +117,7 @@ highlightClonotypes <- function(seurat,
 #facet is the additional column variable that can be used to seperate the visualization
 #' @export
 alluvialGraph <- function(seurat,
-                          call = c("gene", "nt", "aa"),
+                          call = c("gene", "nt", "aa", "gene+nt"),
                           compare = c("cluster", ...),
                           facet = NULL) {
 
@@ -123,8 +128,12 @@ alluvialGraph <- function(seurat,
         call <- "CTgene"
     } else if(call == "nt") {
         call <- "CTnt"
-    } else {
+    } else if (call == "aa") {
         call <- "CTaa"
+    } else if (call == "gene+nt") {
+        call <- "CTstrict"
+    } else {
+        stop("Are you sure you made the right call? ", .call = F)
     }
     if (length(compare) > 1) {
         stop("Only one comparison can be made for the sake of sanity, if you'd like to seperate by another variable, use the facet call.")
