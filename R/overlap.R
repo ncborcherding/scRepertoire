@@ -34,8 +34,8 @@ clonalOverlap <- function(df,
               df.j <- combined[[j]]
               df.j <- df.j[,c("barcode",call)]
               df.j_unique <- df.j[!duplicated(df.j$barcode),]
-              overlap <- length(intersect(df.i_unique$CTgene, df.j_unique$CTgene))
-              coef_matrix[i,j] <- overlap/min(length(df.i_unique$CTgene), length(df.j_unique$CTgene))
+              overlap <- length(intersect(df.i_unique[,call], df.j_unique[,call]))
+              coef_matrix[i,j] <- overlap/min(length(df.i_unique[,call]), length(df.j_unique[,call]))
             }
           }
         }
