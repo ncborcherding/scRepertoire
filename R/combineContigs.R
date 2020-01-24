@@ -147,6 +147,10 @@ combineContigs <- function(df,
         c <- paste(samples[i], "_", ID[i], sep="")
         names <- c(names, c)}
     names(final) <- names
+  
+    for (i in seq_along(final)) {
+    final[[i]] <- final[[i]][!duplicated(final[[i]]$barcode),]
+  }
 
     return(final)
 }
