@@ -93,7 +93,6 @@ combineContigs <- function(df,
             Con.df[Con.df == "NA_NA_NA_NA"] <- NA #remove the na when nt+gene is called later
             data3 <- merge(data2[,-which(names(data2) %in% c("TCR1","TCR2"))], Con.df, by = "barcode")
             data3 <- data3[, c("barcode", "sample", "ID", "TCR1", "cdr3_aa1", "cdr3_nt1", "TCR2", "cdr3_aa2", "cdr3_nt2", "CTgene", "CTnt", "CTaa", "CTstrict")]
-            data3 <- data3[!duplicated(data3$barcode),]
             final[[i]] <- data3
         }
     }
@@ -138,7 +137,6 @@ combineContigs <- function(df,
             Con.df[Con.df == "NA_NA_NA_NA"] <- NA #remove the na when nt+gene is called later
             data3 <- merge(data2, Con.df[,-which(names(Con.df) %in% c("IGH","IGLC"))], by = "barcode")
             data3 <- data3[, c("barcode", "sample", "ID", "IGH", "cdr3_aa1", "cdr3_nt1", "IGLC", "cdr3_aa2", "cdr3_nt2", "CTgene", "CTnt", "CTaa", "CTstrict")]
-            data3 <- data3[!duplicated(data3$barcode),]
             final[[i]] <- data3
         }
     }
