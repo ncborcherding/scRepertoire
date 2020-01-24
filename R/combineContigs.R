@@ -76,7 +76,40 @@ combineContigs <- function(df,
                         Con.df[y,c("TCR1", "cdr3_aa1", "cdr3_nt1")] <- data2[location.i[1],c("TCR1", "cdr3", "cdr3_nt")]
                         Con.df[y,c("TCR2", "cdr3_aa2", "cdr3_nt2")] <- data2[location.i[2],c("TCR2", "cdr3", "cdr3_nt")]
                     }
-                } else if (length(location.i) == 1) {
+                } else if (length(location.i) == 3) { # if there are more than 2 chains for each cell
+          if (is.na(data2[location.i[1],c("TCR1")])) { # if the 1st location is occupied by TRB
+            Con.df[y,c("TCR2", "cdr3_aa2", "cdr3_nt2")] <- data2[location.i[1],c("TCR2", "cdr3", "cdr3_nt")] # add TRB info to the TCR2 related columns
+            if (is.na(data2[location.i[2],c("TCR1")])) { # if the 2nd location is occupied by TRB 
+              TRdf <- paste(Con.df[y,c("TCR2", "cdr3_aa2", "cdr3_nt2")],data2[location.i[2],c("TCR2", "cdr3", "cdr3_nt")],sep=";") # paste TRBs from 1st and 2nd locations
+              Con.df[y,c("TCR2", "cdr3_aa2", "cdr3_nt2")] <- TRdf # add the combination of 2 TRB chains to the TCR2 slot
+              Con.df[y,c("TCR1", "cdr3_aa1", "cdr3_nt1")] <- data2[location.i[3],c("TCR1", "cdr3", "cdr3_nt")] # add TRA from the 3rd location to the TCR1 related columns 
+            } else { # if the 2nd location is occupied by TRA
+              Con.df[y,c("TCR1", "cdr3_aa1", "cdr3_nt1")] <- data2[location.i[1],c("TCR1", "cdr3", "cdr3_nt")] # add TRA info to the TCR1 related columns 
+              if (is.na(data2[location.i[3],c("TCR1")])) { # if the 3rd location is occupied by TRB
+                TRdf <- paste(Con.df[y,c("TCR2", "cdr3_aa2", "cdr3_nt2")],data2[location.i[3],c("TCR2", "cdr3", "cdr3_nt")],sep=";") # paste TRB from 1st and 3rd locations
+                Con.df[y,c("TCR2", "cdr3_aa2", "cdr3_nt2")] <- TRdf # add combined TRB relatedn info to the TCR2 related columns
+              } else { # if the 3rd location is occupied by TRA
+                TRdf <- paste(Con.df[y,c("TCR1", "cdr3_aa1", "cdr3_nt1")],data2[location.i[3],c("TCR1", "cdr3", "cdr3_nt")],sep=";") # paste TRAs from 2nd and 3rd locations
+                Con.df[y,c("TCR1", "cdr3_aa1", "cdr3_nt1")] <- TRdf # Add combined TRA to TCR1 related columns 
+              }
+            }
+          } else { # if 1st location is occupied by TRA
+            Con.df[y,c("TCR1", "cdr3_aa1", "cdr3_nt1")] <- data2[location.i[1],c("TCR1", "cdr3", "cdr3_nt")] # add 1st TRA to TCR1 column
+            if (is.na(data2[location.i[2],c("TCR1")])) { # if the 2nd location is occupied by TRB
+              if (is.na(data2[location.i[3],c("TCR1")])) { # if the 3rd location is occupied by TRB
+                TRdf <- paste(data2[location.i[2],c("TCR2", "cdr3", "cdr3_nt")],data2[location.i[3],c("TCR2", "cdr3", "cdr3_nt")],sep=";") # paste TRB from 2nd and 3rd locations
+                Con.df[y,c("TCR2", "cdr3_aa2", "cdr3_nt2")] <- TRdf # add TRB combo to TCR2 related  columns
+              } else { # if TRA is on 3rd location
+                TRdf <- paste(Con.df[y,c("TCR1", "cdr3_aa1", "cdr3_nt1")],data2[location.i[3],c("TCR1", "cdr3", "cdr3_nt")],sep=";") # paste TRA from 1st and 3rd locations
+                Con.df[y,c("TCR1", "cdr3_aa1", "cdr3_nt1")] <- TRdf # add TRA combo to TCR1 related columns 
+              }
+            } else { # if TRA is on 2nd location
+              TRdf <- paste(Con.df[y,c("TCR1", "cdr3_aa1", "cdr3_nt1")],data2[location.i[2],c("TCR1", "cdr3", "cdr3_nt")],sep=";") # paste TRA from 1st and 2nd locations
+              Con.df[y,c("TCR1", "cdr3_aa1", "cdr3_nt1")] <- TRdf # add the combination of 2 TRA chains to the TCR1 slot
+              Con.df[y,c("TCR2", "cdr3_aa2", "cdr3_nt2")] <- data2[location.i[3],c("TCR2", "cdr3", "cdr3_nt")] # add TRB to the TCR2 related columns 
+            }
+          }
+        } else if (length(location.i) == 1) {
                     chain.i <- data2$chain[location.i]
                     if (chain.i == "TRA"){
                         Con.df[y,c("TCR1", "cdr3_aa1", "cdr3_nt1")] <- data2[location.i[1],c("TCR1", "cdr3", "cdr3_nt")]
