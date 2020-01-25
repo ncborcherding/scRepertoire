@@ -83,7 +83,7 @@ quantContig <- function(df,
         ylab(ylab) +
         labs(fill = labs) +
         scale_fill_manual(values = colorblind_vector(col))
-    return(plot)
+    suppressWarnings(print(plot))
 }
 
 #df indicates the list of data frames of the contigs
@@ -171,7 +171,7 @@ abundanceContig <- function(df,
         ylab(ylab) +
         xlab(xlab) +
         theme_classic()
-    return(plot)
+    suppressWarnings(print(plot))
 }
 
 #df indicates the list of data frames of the contigs
@@ -246,5 +246,69 @@ lengthContig <- function(df,
         xlab(xlab) +
         theme_classic()
 
-    return(plot)
+    suppressWarnings(print(plot))
+}
+
+
+#df indicates the list of data frames of the contigs
+#call is the how to call the clonotype - gene sequence, CDR3 aa or nt sequence, or gene + CDR3 nucleotide sequence
+#samples can be used to seperate only the samples of interest to compare, for example, samples = c("P1_T", "P1_P")
+#clonotypes can be used to seperate only the clonotypes of specific inter, for example, samples = c("P1_T", "P1_P")
+#numbers can be used to isolate the top n clonotypes by proportion
+#graph is the sytle of plot, either alluvial or area.
+#' @export
+compareClonotypes <- function(df,
+                              call = c("gene", "nt", "aa", "gene+nt"),
+                              samples = NULL,
+                              clonotypes = NULL,
+                              numbers = NULL,
+                              graph = c("alluvial", "area")){
+    if (call == "gene") {
+        call <- "CTgene"
+    } else if(call == "nt") {
+        call <- "CTnt"
+    } else if (call == "aa") {
+        call <- "CTaa"
+    } else if (call == "gene+nt") {
+        call <- "CTstrict"
+    } else {
+        stop("Are you sure you made the right call? ", .call = F)
+    }
+
+    Con.df <- NULL
+    for (i in seq_along(data)) {
+        tbl <- as.data.frame(table(data[[i]][,call]))
+        tbl[,2] <- tbl[,2]/sum(tbl[,2])
+        colnames(tbl) <- c("Clonotypes", "Proportion")
+        tbl$Sample <- names(data[i])
+        Con.df <- rbind.data.frame(Con.df, tbl)
+    }
+
+    if (!is.null(samples)) {
+        Con.df <- Con.df[Con.df$Sample %in% samples,]
+    }
+    if (!is.null(clonotypes)) {
+        Con.df <- Con.df[Con.df$Sample %in% clonotypes,]
+    }
+    if (!is.null(numbers)) {
+        top <- Con.df %>% top_n(n = numbers, wt = Proportion)
+        Con.df <- Con.df[Con.df$Clonotypes %in% top$Clonotypes,]
+    }
+    if (nrow(Con.df) < length(unique(Con.df$Sample))) {
+        stop("Reasses the filtering strategies here, there is not enough clonotypes to examine.")
+    }
+    plot = ggplot(Con.df, aes(x = Sample, fill = Clonotypes, stratum = Clonotypes,
+                              alluvium = Clonotypes, y = Proportion, label = Clonotypes)) +
+        theme_classic() +
+        theme(axis.title.x = element_blank())
+
+    if (graph == "alluvial") {
+        plot = plot +
+            geom_flow() +
+            geom_stratum()
+    } else if (graph == "area") {
+        plot = plot +
+            geom_area(aes(group = Clonotypes), color = "black")
+    }
+    suppressWarnings(print(plot))
 }

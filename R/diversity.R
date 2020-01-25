@@ -68,5 +68,5 @@ clonalDiversity <- function(df,
               axis.text.x = element_blank(),
               axis.ticks.x = element_blank())
 
-    return(plot)
+    suppressWarnings(print(plot))
 }
