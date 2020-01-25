@@ -29,7 +29,7 @@ combineContigs <- function(df,
             for (i in seq_along(df)) {
                 df[[i]] <- subset(df[[i]], chain != "Multi")
                 df[[i]] <- subset(df[[i]], chain == chain1 | chain == chain2)
-                df[[i]] <- subset(df[[i]], productive == T | productive == "TRUE")
+                df[[i]] <- subset(df[[i]], productive == T | productive == "TRUE" | productive == "True")
                 df[[i]]$sample <- samples[i]
                 df[[i]]$ID <- ID[i]
                 if (nrow(df[[i]]) == 0) {
@@ -40,7 +40,7 @@ combineContigs <- function(df,
             for (i in seq_along(df)) {
                 df[[i]] <- subset(df[[i]], chain != "Multi")
                 df[[i]] <- subset(df[[i]], chain == "IGH" | chain == "IGK" | chain == "IGL")
-                df[[i]] <- subset(df[[i]], productive == T | productive == "TRUE")
+                df[[i]] <- subset(df[[i]], productive == T | productive == "TRUE" | productive == "True")
             }
         }
 
