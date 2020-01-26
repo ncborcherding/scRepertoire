@@ -276,11 +276,11 @@ compareClonotypes <- function(df,
     }
 
     Con.df <- NULL
-    for (i in seq_along(data)) {
-        tbl <- as.data.frame(table(data[[i]][,call]))
+    for (i in seq_along(df)) {
+        tbl <- as.data.frame(table(df[[i]][,call]))
         tbl[,2] <- tbl[,2]/sum(tbl[,2])
         colnames(tbl) <- c("Clonotypes", "Proportion")
-        tbl$Sample <- names(data[i])
+        tbl$Sample <- names(df[i])
         Con.df <- rbind.data.frame(Con.df, tbl)
     }
 
