@@ -33,7 +33,7 @@ subsetContig <- function(df,
                         variables = NULL) {
     df2 <- list()
     for (i in seq_along(df)) {
-        if (df[[i]][1,name] %in% values) {
+        if (df[[i]][1,name] %in% variables) {
             df2 <- append(df2, list(df[[i]]))
         }
         else {
