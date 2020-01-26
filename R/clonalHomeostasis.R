@@ -1,6 +1,10 @@
-#df indicates the list of data frames of the contigs
-#cloneTypes is the relative proportion groupings
-#call is the how to call the clonotype - based on genes, CDR3 nt, or CDR3 aa sequence
+#' Examining the clonal homeostasis
+#'
+#' @param df The product of CombineContig()
+#' @param cloneTypes are the cutpoints of the proportions
+#' @param call is the how to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide
+#' @example clonalHomeostasis(combined, call= "aa")
+#'
 #' @export
 clonalHomeostasis <- function(df,
                               cloneTypes = c(Rare = .0001, Small = .001, Medium = .01, Large = .1, Hyperexpanded = 1),

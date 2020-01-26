@@ -1,6 +1,10 @@
-#df indicates the list of data frames of the contigs
-#call is the how to call the clonotype - based on genes, CDR3 nt, or CDR3 aa sequence
-#method is the type of analysis to perform overlap or morisita
+#' Examining the clonal overlap between samples
+#'
+#' @param df The product of CombineContig()
+#' @param call is the how to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide
+#' @param method use either the overlap coefficient or morisita index
+#' @example clonalOverlap(combined, call= "aa", method="morisita")
+#'
 #' @export
 clonalOverlap <- function(df,
                     call = c("gene", "nt", "aa", "gene+nt"),

@@ -2,11 +2,13 @@
 #' @export
 colorblind_vector <- colorRampPalette(c("#FF4B20", "#FFB433", "#C6FDEC", "#7AC5FF", "#0348A6"))
 
-#df indicates the list of data frames of the contigs
-#call is the how to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa sequence.
-#column is the column header for which you would like to analyze the data
-#scale converts the graphs into percentage of unique clonotypes
-
+#' Quantify the unique clonotypes in the filtered contigs output from 10x Genomics
+#'
+#' @param df The product of CombineContig()
+#' @param call is the how to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide
+#' @param column is the column header for which you would like to analyze the data
+#' @param scale converts the graphs into percentage of unique clonotypes
+#' @example quantContig(combined, call= "gene", scale=T)
 #' @export
 quantContig <- function(df,
                         call = c("gene", "nt", "aa", "gene+nt"),
@@ -86,11 +88,15 @@ quantContig <- function(df,
     suppressWarnings(print(plot))
 }
 
-#df indicates the list of data frames of the contigs
-#call is the how to call the clonotype - CDR3 genes, CDR3 nt, or CDR3 aa sequence.
-#column is the column header for which you would like to analyze the data
-#scale converts the graphs into denisty plots in order to show relative distributions.
 
+#' Demonstrate the relative abundance of filtered contigs output from 10x Genomics
+#'
+#' @param df The product of CombineContig()
+#' @param call is the how to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide
+#' @param column is the column header for which you would like to analyze the data
+#' @param scale converts the graphs into denisty plots in order to show relative distributions.
+#' @example abundanceContig(combined, call= "gene", scale=T)
+#'
 #' @export
 abundanceContig <- function(df,
                             call = c("gene", "nt", "aa", "gene+nt"),
@@ -174,11 +180,14 @@ abundanceContig <- function(df,
     suppressWarnings(print(plot))
 }
 
-#df indicates the list of data frames of the contigs
-#call is the how to call the clonotype - CDR3 nt or CDR3 aa sequence. As of now this only calls the combination of the two loci - producing a bimodal curve for which the smaller is the produced from a single sequence of one of the TCR/Ig loci.
-#column is the column header for which you would like to analyze the data
-#scale converts the graphs into denisty plots in order to show relative distributions.
-
+#' Demonstrate the distribution of lengths filtered contigs output from 10x Genomics
+#'
+#' @param df The product of CombineContig()
+#' @param call is the how to call the clonotype - CDR3 nt or CDR3 aa sequence.
+#' @param column is the column header for which you would like to analyze the data
+#' @param scale converts the graphs into denisty plots in order to show relative distributions.
+#' @example lengthContig(combined, call= "aa")
+#'
 #' @export
 lengthContig <- function(df,
                          call = c("nt", "aa"),
@@ -249,13 +258,14 @@ lengthContig <- function(df,
     suppressWarnings(print(plot))
 }
 
-
-#df indicates the list of data frames of the contigs
-#call is the how to call the clonotype - gene sequence, CDR3 aa or nt sequence, or gene + CDR3 nucleotide sequence
-#samples can be used to seperate only the samples of interest to compare, for example, samples = c("P1_T", "P1_P")
-#clonotypes can be used to seperate only the clonotypes of specific inter, for example, samples = c("P1_T", "P1_P")
-#numbers can be used to isolate the top n clonotypes by proportion
-#graph is the sytle of plot, either alluvial or area.
+#' Demonstrate the difference in clonal proportion between multiple clonotypes
+#' @param df The product of CombineContig()
+#' @param call is the how to call the clonotype - CDR3 nt or CDR3 aa sequence.
+#' @param clonotypes the specific sequences of interest
+#' @param numbers the top n clonotype sequences
+#' @param graph either "alluvial" or "area
+#' @example compareContig(combined, call= "aa", numbers=10, graph="alluvial")
+#'
 #' @export
 compareClonotypes <- function(df,
                               call = c("gene", "nt", "aa", "gene+nt"),
@@ -273,6 +283,9 @@ compareClonotypes <- function(df,
         call <- "CTstrict"
     } else {
         stop("Are you sure you made the right call? ", .call = F)
+    }
+    if (!is.null(numbers) & !is.null(clonotypes)) {
+        stop("Make sure your inputs are either numbers or clonotype sequences.")
     }
 
     Con.df <- NULL

@@ -1,6 +1,10 @@
-#df indicates the list of data frames of the contigs
-#split is the point of seperation for the clonotype groupings
-#call is the how to call the clonotype - based on genes, CDR3 nt, or CDR3 aa sequence
+#' Examining the clonal space occupied by specific clonotypes
+#'
+#' @param df The product of CombineContig()
+#' @param split is the cutpoints for the specific clonotypes
+#' @param call is the how to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide
+#' @example clonalProportion(combined, call= "aa")
+#'
 #' @export
 clonalProportion <- function(df,
                              split = c(10, 100, 1000, 10000, 30000, 100000),

@@ -1,11 +1,15 @@
-#df indicates the list of data frames of the contigs
-#samples either single or multiple samples
-#ID are sub designated for labeling of samples
-#cor can be used to produce a string of sample numbers to correspond to the df list, e.g. df <- list(Sample1_Peripheral, Sample2_Tumor, Sample1_Peripheral) -- cor = c(1,2,1)
+#' Combining the list of contigs
+#'
+#' @param df List of sontigs
+#' @param samples are the labels of samples
+#' @param ID is the additional sample lebeling option
+#' @param cells is the type of lymphocyte - Tcell-AB, T-Cell-GD, or B cell
+#'
 #' @export
 combineContigs <- function(df,
                            samples = NULL,
-                           ID = NULL, cells = c("T-AB", "T-GD", "B")) {
+                           ID = NULL,
+                           cells = c("T-AB", "T-GD", "B")) {
     df <- if(class(df) != "list") list(df) else df
     require(dplyr)
     out <- NULL
