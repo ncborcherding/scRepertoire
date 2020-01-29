@@ -4,16 +4,24 @@
 \alias{lengthContig}
 \title{Demonstrate the distribution of lengths filtered contigs output from 10x Genomics}
 \usage{
-lengthContig(df, call = c("nt", "aa"), column = NULL, scale = F)
+lengthContig(
+  df,
+  call = c("nt", "aa"),
+  column = NULL,
+  scale = F,
+  chains = c("combined", "single")
+)
 }
 \arguments{
 \item{df}{The product of CombineContig()}
 
-\item{call}{is the how to call the clonotype - CDR3 nt or CDR3 aa sequence.}
+\item{call}{How to call the clonotype - CDR3 nt or CDR3 aa sequence.}
 
-\item{column}{is the column header for which you would like to analyze the data}
+\item{column}{The column header for which you would like to analyze the data}
 
-\item{scale}{converts the graphs into denisty plots in order to show relative distributions.}
+\item{scale}{Converts the graphs into denisty plots in order to show relative distributions.}
+
+\item{chains}{Whether to keep clonotypes "combined" or visualize by chain}
 }
 \description{
 Demonstrate the distribution of lengths filtered contigs output from 10x Genomics

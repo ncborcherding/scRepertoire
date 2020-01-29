@@ -1,9 +1,8 @@
 #' Examining the clonal homeostasis
 #'
 #' @param df The product of CombineContig()
-#' @param cloneTypes are the cutpoints of the proportions
-#' @param call is the how to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide
-#' @example clonalHomeostasis(combined, call= "aa")
+#' @param cloneTypes The cutpoints of the proportions
+#' @param call How to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide
 #'
 #' @export
 clonalHomeostasis <- function(df,

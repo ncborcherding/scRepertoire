@@ -4,16 +4,24 @@
 \alias{combineContigs}
 \title{Combining the list of contigs}
 \usage{
-combineContigs(df, samples = NULL, ID = NULL, cells = c("T-AB", "T-GD", "B"))
+combineContigs(
+  df,
+  samples = NULL,
+  ID = NULL,
+  cells = c("T-AB", "T-GD", "B"),
+  filterNA = F
+)
 }
 \arguments{
-\item{df}{List of sontigs}
+\item{df}{List of filtered contig annotations from 10x Genomics}
 
-\item{samples}{are the labels of samples}
+\item{samples}{The labels of samples}
 
-\item{ID}{is the additional sample lebeling option}
+\item{ID}{The additional sample labeling option}
 
-\item{cells}{is the type of lymphocyte - Tcell-AB, T-Cell-GD, or B cell}
+\item{cells}{The type of lymphocyte - T cell-AB, T cell-GD, or B cell}
+
+\item{filterNA}{This will remove any chain without values}
 }
 \description{
 Combining the list of contigs

@@ -1,14 +1,14 @@
 #' Adding clonotype information to a seurat object
 #'
 #' @param df The product of CombineContig()
-#' @param seurat is the seurat object to attach
-#' @param call is the how to call the clonotype - based on genes, CDR3 nt, or CDR3 aa sequence
-#' @param groupBy is the column label in which clonotype frequency will be calculated
-#' @param cloneType are the bins for the grouping based on frequency
+#' @param seurat The seurat object to attach
+#' @param call How to call the clonotype - based on genes, CDR3 nt, or CDR3 aa sequence, or the combination of genes and nucleotide sequence
+#' @param groupBy The column label in which clonotype frequency will be calculated
+#' @param cloneType The bins for the grouping based on frequency
 #' @export
 combineSeurat <- function(df,
                           seurat,
-                          call = c("gene", "nt", "aa"),
+                          call = c("gene", "nt", "aa", "gene+nt"),
                           groupBy = c("none", "sample", "ID", ...),
                           cloneTypes = c(Single = 1, Small = 5, Medium = 20, Large = 100, Hyperexpanded = 500)) {
     df <- if(class(df) != "list") list(df) else df
@@ -78,11 +78,11 @@ combineSeurat <- function(df,
     rownames(PreMeta) <- PreMeta$barcode
     seurat <- Seurat::AddMetaData(seurat, PreMeta)
 }
-#' Highlighting clonotypes in Seurat
+#' Highlighting specific clonotypes in Seurat
 #'
-#' @param seurat is the seurat object to attach
-#' @param call is the how to call the clonotype - based on genes, CDR3 nt, or CDR3 aa sequence
-#' @param sequence the specifc sequence or sequence to highlight
+#' @param seurat The seurat object to attach
+#' @param call How to call the clonotype - based on genes, CDR3 nt, or CDR3 aa sequence or the combination of genes and nucleotide sequence
+#' @param sequence The specifc sequence or sequence to highlight
 #'
 #' @export
 highlightClonotypes <- function(seurat,
@@ -117,10 +117,10 @@ highlightClonotypes <- function(seurat,
 
 #' Exploring interaction of clonotypes by seurat dynamics
 #'
-#' @param seurat is the seurat object to attach
-#' @param call is the how to call the clonotype - based on genes, CDR3 nt, or CDR3 aa sequence
-#' @param compare is the column label to visualize
-#' @param facet is the column label to seperate
+#' @param seurat The seurat object to attach
+#' @param call How to call the clonotype - based on genes, CDR3 nt, or CDR3 aa sequence or the combination of genes and nucleotide sequence
+#' @param compare The column label to visualize
+#' @param facet The column label to seperate
 #'
 #' @export
 alluvialGraph <- function(seurat,

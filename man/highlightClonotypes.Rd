@@ -2,7 +2,7 @@
 % Please edit documentation in R/seuratFunctions.R
 \name{highlightClonotypes}
 \alias{highlightClonotypes}
-\title{Highlighting clonotypes in Seurat}
+\title{Highlighting specific clonotypes in Seurat}
 \usage{
 highlightClonotypes(
   seurat,
@@ -11,12 +11,12 @@ highlightClonotypes(
 )
 }
 \arguments{
-\item{seurat}{is the seurat object to attach}
+\item{seurat}{The seurat object to attach}
 
-\item{call}{is the how to call the clonotype - based on genes, CDR3 nt, or CDR3 aa sequence}
+\item{call}{How to call the clonotype - based on genes, CDR3 nt, or CDR3 aa sequence or the combination of genes and nucleotide sequence}
 
-\item{sequence}{the specifc sequence or sequence to highlight}
+\item{sequence}{The specifc sequence or sequence to highlight}
 }
 \description{
-Highlighting clonotypes in Seurat
+Highlighting specific clonotypes in Seurat
 }

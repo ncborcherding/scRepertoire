@@ -13,9 +13,9 @@ clonalProportion(
 \arguments{
 \item{df}{The product of CombineContig()}
 
-\item{split}{is the cutpoints for the specific clonotypes}
+\item{split}{The cutpoints for the specific clonotypes}
 
-\item{call}{is the how to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide}
+\item{call}{How to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide}
 }
 \description{
 Examining the clonal space occupied by specific clonotypes

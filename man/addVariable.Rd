@@ -2,17 +2,17 @@
 % Please edit documentation in R/processing.R
 \name{addVariable}
 \alias{addVariable}
-\title{Adding variables aftering the combination of contigs}
+\title{Adding variables after the combination of contigs.}
 \usage{
 addVariable(df, name = NULL, variables = NULL)
 }
 \arguments{
 \item{df}{The product of CombineContig()}
 
-\item{name}{is the column header you'd like to add}
+\item{name}{The column header you'd like to add}
 
-\item{variables}{is the exact values to add to each element of the list}
+\item{variables}{The exact values to add to each element of the list}
 }
 \description{
-Adding variables aftering the combination of contigs
+Adding variables after the combination of contigs.
 }

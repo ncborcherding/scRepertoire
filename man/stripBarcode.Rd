@@ -7,13 +7,13 @@
 stripBarcode(contigs, column = 1, connector = "_", num_connects = 3)
 }
 \arguments{
-\item{contigs}{raw loaded filtered_contig_annotation.csv}
+\item{contigs}{The raw loaded filtered_contig_annotation.csv}
 
-\item{column}{is column in which the barcodes are listed}
+\item{column}{The column in which the barcodes are listed}
 
-\item{connector}{is the type of character in which is attaching the defualt barcode with any other characters}
+\item{connector}{The type of character in which is attaching the defualt barcode with any other characters}
 
-\item{num_of_connects}{is the number of strings combined with the connectors}
+\item{num_of_connects}{The number of strings combined with the connectors}
 }
 \description{
 Removing any additional prefixes to the barcodes of the filtered contigs.

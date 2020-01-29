@@ -2,17 +2,17 @@
 % Please edit documentation in R/processing.R
 \name{subsetContig}
 \alias{subsetContig}
-\title{Adding variables aftering the combination of contigs}
+\title{Adding variables aftering the combination of contigs.}
 \usage{
 subsetContig(df, name, variables = NULL)
 }
 \arguments{
 \item{df}{The product of CombineContig()}
 
-\item{name}{is the column header you'd like to use to subset}
+\item{name}{The column header you'd like to use to subset}
 
-\item{variables}{is the values to subset by}
+\item{variables}{The values to subset by}
 }
 \description{
-Adding variables aftering the combination of contigs
+Adding variables aftering the combination of contigs.
 }

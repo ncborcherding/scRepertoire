@@ -14,9 +14,9 @@ clonalHomeostasis(
 \arguments{
 \item{df}{The product of CombineContig()}
 
-\item{cloneTypes}{are the cutpoints of the proportions}
+\item{cloneTypes}{The cutpoints of the proportions}
 
-\item{call}{is the how to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide}
+\item{call}{How to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide}
 }
 \description{
 Examining the clonal homeostasis

@@ -14,11 +14,11 @@ abundanceContig(
 \arguments{
 \item{df}{The product of CombineContig()}
 
-\item{call}{is the how to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide}
+\item{call}{How to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide}
 
-\item{scale}{converts the graphs into denisty plots in order to show relative distributions.}
+\item{scale}{Converts the graphs into denisty plots in order to show relative distributions.}
 
-\item{column}{is the column header for which you would like to analyze the data}
+\item{column}{The column header for which you would like to analyze the data}
 }
 \description{
 Demonstrate the relative abundance of filtered contigs output from 10x Genomics

@@ -13,9 +13,9 @@ clonalOverlap(
 \arguments{
 \item{df}{The product of CombineContig()}
 
-\item{call}{is the how to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide}
+\item{call}{How to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide}
 
-\item{method}{use either the overlap coefficient or morisita index}
+\item{method}{The method to calculate the overlap, either the overlap coefficient or morisita index}
 }
 \description{
 Examining the clonal overlap between samples

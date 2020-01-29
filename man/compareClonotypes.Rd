@@ -16,13 +16,13 @@ compareClonotypes(
 \arguments{
 \item{df}{The product of CombineContig()}
 
-\item{call}{is the how to call the clonotype - CDR3 nt or CDR3 aa sequence.}
+\item{call}{How to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide}
 
-\item{clonotypes}{the specific sequences of interest}
+\item{clonotypes}{The specific sequences of interest}
 
-\item{numbers}{the top n clonotype sequences}
+\item{numbers}{The top number clonotype sequences}
 
-\item{graph}{either "alluvial" or "area}
+\item{graph}{The type of graph produced, either "alluvial" or "area"}
 }
 \description{
 Demonstrate the difference in clonal proportion between multiple clonotypes

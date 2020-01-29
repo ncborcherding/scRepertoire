@@ -1,15 +1,16 @@
 #' Combining the list of contigs
 #'
-#' @param df List of sontigs
-#' @param samples are the labels of samples
-#' @param ID is the additional sample lebeling option
-#' @param cells is the type of lymphocyte - Tcell-AB, T-Cell-GD, or B cell
-#'
+#' @param df List of filtered contig annotations from 10x Genomics
+#' @param samples The labels of samples
+#' @param ID The additional sample labeling option
+#' @param cells The type of lymphocyte - T cell-AB, T cell-GD, or B cell
+#' @param filterNA This will remove any chain without values
 #' @export
 combineContigs <- function(df,
                            samples = NULL,
                            ID = NULL,
-                           cells = c("T-AB", "T-GD", "B")) {
+                           cells = c("T-AB", "T-GD", "B"),
+                           filterNA = F) {
     df <- if(class(df) != "list") list(df) else df
     require(dplyr)
     out <- NULL
@@ -25,10 +26,12 @@ combineContigs <- function(df,
             if (cells == "T-AB") {
                 chain1 <- "TRA"
                 chain2 <- "TRB"
+                cellType <- "T-AB"
             }
             else if (cells == "T-GD") {
                 chain1 <- "TRG"
                 chain2 <- "TRD"
+                cellType <- "T-GD"
             }
             for (i in seq_along(df)) {
                 df[[i]] <- subset(df[[i]], chain != "Multi")
@@ -128,16 +131,16 @@ combineContigs <- function(df,
             Con.df$CTnt <- paste(Con.df$cdr3_nt1, Con.df$cdr3_nt2, sep="_")
             Con.df$CTaa <- paste(Con.df$cdr3_aa1, Con.df$cdr3_aa2, sep="_")
             Con.df$CTstrict <- paste(Con.df$TCR1, Con.df$cdr3_nt1, Con.df$TCR2, Con.df$cdr3_nt2, sep="_")
+            Con.df$cellType <- cells #autodetect chains in new functions
             Con.df[Con.df == "NA_NA"] <- NA #remove the na when gene, aa, or nt is called later
             Con.df[Con.df == "NA_NA_NA_NA"] <- NA #remove the na when nt+gene is called later
             data3 <- merge(data2[,-which(names(data2) %in% c("TCR1","TCR2"))], Con.df, by = "barcode")
-            data3 <- data3[, c("barcode", "sample", "ID", "TCR1", "cdr3_aa1", "cdr3_nt1", "TCR2", "cdr3_aa2", "cdr3_nt2", "CTgene", "CTnt", "CTaa", "CTstrict")]
+            data3 <- data3[, c("barcode", "sample", "ID", "TCR1", "cdr3_aa1", "cdr3_nt1", "TCR2", "cdr3_aa2", "cdr3_nt2", "CTgene", "CTnt", "CTaa", "CTstrict", "cellType")]
             final[[i]] <- data3
         }
     }
     else if (cells == "B") {
         for (i in seq_along(out)) {
-
             data2 <- out[[i]]
             data2 <- data2 %>%
                 mutate(IGKct = ifelse(chain == "IGK", paste(with(data2, interaction(v_gene,  j_gene, c_gene))), NA)) %>%
@@ -185,10 +188,11 @@ combineContigs <- function(df,
             Con.df$CTnt <- paste(Con.df$cdr3_nt1, Con.df$cdr3_nt2, sep="_")
             Con.df$CTaa <- paste(Con.df$cdr3_aa1, Con.df$cdr3_aa2, sep="_")
             Con.df$CTstrict <- paste(Con.df$IGH, Con.df$cdr3_nt1, Con.df$IGLC, Con.df$cdr3_nt2, sep="_")
+            Con.df$cellType <- cells #autodetect chains in new functions
             Con.df[Con.df == "NA_NA"] <- NA #remove the na when gene, aa, or nt is called later
             Con.df[Con.df == "NA_NA_NA_NA"] <- NA #remove the na when nt+gene is called later
             data3 <- merge(data2, Con.df, by = "barcode")
-            data3 <- data3[, c("barcode", "sample", "ID", "IGH", "cdr3_aa1", "cdr3_nt1", "IGLC", "cdr3_aa2", "cdr3_nt2", "CTgene", "CTnt", "CTaa", "CTstrict")]
+            data3 <- data3[, c("barcode", "sample", "ID", "IGH", "cdr3_aa1", "cdr3_nt1", "IGLC", "cdr3_aa2", "cdr3_nt2", "CTgene", "CTnt", "CTaa", "CTstrict", "cellType")]
             final[[i]] <- data3
         }
     }
@@ -200,7 +204,12 @@ combineContigs <- function(df,
 
     for (i in seq_along(final)) {
     final[[i]] <- final[[i]][!duplicated(final[[i]]$barcode),]
-  }
+    }
+    if (filterNA == T) {
+        for(i in seq_along(final)) {
+            final[[i]] <- na.omit(final[[i]])
+        }
+    }
 
     return(final)
 }

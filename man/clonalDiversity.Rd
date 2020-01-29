@@ -13,9 +13,9 @@ clonalDiversity(
 \arguments{
 \item{df}{The product of CombineContig()}
 
-\item{call}{is the how to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide}
+\item{call}{How to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide}
 
-\item{colorBy}{is the column header for which you would like to analyze the data}
+\item{colorBy}{The column header for which you would like to analyze the data}
 }
 \description{
 Examine the clonal diversity of samples

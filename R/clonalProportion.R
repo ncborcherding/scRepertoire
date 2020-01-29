@@ -1,9 +1,8 @@
 #' Examining the clonal space occupied by specific clonotypes
 #'
 #' @param df The product of CombineContig()
-#' @param split is the cutpoints for the specific clonotypes
-#' @param call is the how to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide
-#' @example clonalProportion(combined, call= "aa")
+#' @param split The cutpoints for the specific clonotypes
+#' @param call How to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide
 #'
 #' @export
 clonalProportion <- function(df,

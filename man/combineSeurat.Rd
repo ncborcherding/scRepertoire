@@ -7,7 +7,7 @@
 combineSeurat(
   df,
   seurat,
-  call = c("gene", "nt", "aa"),
+  call = c("gene", "nt", "aa", "gene+nt"),
   groupBy = c("none", "sample", "ID", ...),
   cloneTypes = c(Single = 1, Small = 5, Medium = 20, Large = 100, Hyperexpanded = 500)
 )
@@ -15,13 +15,13 @@ combineSeurat(
 \arguments{
 \item{df}{The product of CombineContig()}
 
-\item{seurat}{is the seurat object to attach}
+\item{seurat}{The seurat object to attach}
 
-\item{call}{is the how to call the clonotype - based on genes, CDR3 nt, or CDR3 aa sequence}
+\item{call}{How to call the clonotype - based on genes, CDR3 nt, or CDR3 aa sequence, or the combination of genes and nucleotide sequence}
 
-\item{groupBy}{is the column label in which clonotype frequency will be calculated}
+\item{groupBy}{The column label in which clonotype frequency will be calculated}
 
-\item{cloneType}{are the bins for the grouping based on frequency}
+\item{cloneType}{The bins for the grouping based on frequency}
 }
 \description{
 Adding clonotype information to a seurat object

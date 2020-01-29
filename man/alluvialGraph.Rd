@@ -12,13 +12,13 @@ alluvialGraph(
 )
 }
 \arguments{
-\item{seurat}{is the seurat object to attach}
+\item{seurat}{The seurat object to attach}
 
-\item{call}{is the how to call the clonotype - based on genes, CDR3 nt, or CDR3 aa sequence}
+\item{call}{How to call the clonotype - based on genes, CDR3 nt, or CDR3 aa sequence or the combination of genes and nucleotide sequence}
 
-\item{compare}{is the column label to visualize}
+\item{compare}{The column label to visualize}
 
-\item{facet}{is the column label to seperate}
+\item{facet}{The column label to seperate}
 }
 \description{
 Exploring interaction of clonotypes by seurat dynamics

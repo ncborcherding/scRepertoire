@@ -1,10 +1,9 @@
 #' Examine the clonal diversity of samples
 #'
 #' @param df The product of CombineContig()
-#' @param call is the how to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide
-#' @param colorBy is the column header for which you would like to analyze the data
-#' @example clonalDiversity(combined, call= "aa", colorBy="samples")
-
+#' @param call How to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide
+#' @param colorBy The column header for which you would like to analyze the data
+#'
 #' @export
 clonalDiversity <- function(df,
                             call = c("gene", "nt", "aa", "gene+nt"),
