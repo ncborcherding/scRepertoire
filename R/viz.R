@@ -243,7 +243,8 @@ lengthContig <- function(df,
                 }
                 chain1 <- nchar(val1)
                 cols1 <- df[[x]][,column]
-                colnames(data1) <- c("length", "CT", "values", "chain")
+                data1 <- data.frame(chain1, val1, names[x], c1, cols1)
+                colnames(data1) <- c("length", "CT", "values", "chain", column)
                 val2 <- strings[,2]
                 for (i in 1:length(val2)) {
                     if (grepl(";", val2[i]) == T) {
@@ -254,8 +255,9 @@ lengthContig <- function(df,
                     }
                 }
                 chain2 <- nchar(val2)
-                data2 <- data.frame(chain2, val2, names[x], c2)
-                colnames(data2) <- c("length", "CT", "values", "chain")
+                cols2 <- df[[x]][,column]
+                data2 <- data.frame(chain2, val2, names[x], c2, cols2)
+                colnames(data2) <- c("length", "CT", "values", "chain", column)
 
                 data <- rbind(data1, data2)
                 data <- na.omit(data)
@@ -276,7 +278,7 @@ lengthContig <- function(df,
                 geom_bar(position = position_dodge2(preserve = "single"), color="black", lwd=0.25, width=0.9)  +
                 scale_x_discrete(breaks = round(seq(min(Con.df$length), max(Con.df$length), by = 5),10))
         }
-    } else {
+    } else if (is.null(column)){
         fill <- "Samples"
         names <- names(df)
         if (chains == "combined") {
@@ -325,7 +327,6 @@ lengthContig <- function(df,
                 Con.df<- rbind.data.frame(Con.df, data)
             }
         }
-    }
     col <- length(unique(Con.df$values))
     if (scale == T) {
         yplus <- "Percent of "
@@ -336,6 +337,7 @@ lengthContig <- function(df,
         plot <- ggplot2::ggplot(Con.df, aes(as.factor(length), fill=values)) +
             geom_bar(position = position_dodge2(preserve = "single"), color="black", lwd=0.25) +
             scale_x_discrete(breaks = round(seq(min(Con.df$length), max(Con.df$length), by = 5),10))
+    }
     }
     if (chains == "single") {
         plot <- plot + facet_grid(chain~.)
