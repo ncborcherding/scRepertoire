@@ -176,5 +176,5 @@ alluvialClonotypes <- function(seurat,
     else {
         stop("Only can facet on one item at a time, try multiple calls with different facets.")
     }
-    suppressMessages(print(plot))
+    suppressWarnings(print(plot))
 }
