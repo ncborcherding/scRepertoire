@@ -123,7 +123,7 @@ highlightClonotypes <- function(seurat,
 #' @param facet The column label to seperate
 #'
 #' @export
-alluvialGraph <- function(seurat,
+alluvialClonotypes <- function(seurat,
                           call = c("gene", "nt", "aa", "gene+nt"),
                           compare = c("cluster", ...),
                           facet = NULL) {
@@ -145,11 +145,16 @@ alluvialGraph <- function(seurat,
     if (length(compare) > 1) {
         stop("Only one comparison can be made for the sake of sanity, if you'd like to seperate by another variable, use the facet call.")
     }
-    if (compare == "cluster") {
-        compare <- "seurat.active.ident"
-    }
+
+
 
     meta <- data.frame(seurat@meta.data, seurat@active.ident)
+    n <- which(colnames(meta) == "seurat.active.ident")
+    colnames(meta)[n] <- "cluster"
+
+    if (is.na(meta[,compare])) {
+        stop("Make sure you are using the right variable name.")
+    }
 
     plot <- ggplot(meta,
                    aes(axis1 = meta[,compare], axis2 = reorder(meta[,call], Frequency))) +
@@ -157,7 +162,8 @@ alluvialGraph <- function(seurat,
         geom_stratum(fill = "grey", color = "black", lwd=0.1) +
         theme_classic() +
         labs(fill = compare) +
-        ylab("Individual Clonotypes") +
+        ylab(compare) +
+        ggfittext::geom_fit_text(aes(label = meta[,compare]), stat = "stratum", infer.label = TRUE, reverse = T, min.y=min(table(meta[,compare]))) +
         guides(fill=F) +
         theme(axis.text.x = element_blank(),
               axis.ticks.x = element_blank())
@@ -170,5 +176,5 @@ alluvialGraph <- function(seurat,
     else {
         stop("Only can facet on one item at a time, try multiple calls with different facets.")
     }
-    return(plot)
+    suppressMessages(print(plot))
 }

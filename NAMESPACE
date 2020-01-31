@@ -2,7 +2,7 @@
 
 export(abundanceContig)
 export(addVariable)
-export(alluvialGraph)
+export(alluvialClonotypes)
 export(clonalDiversity)
 export(clonalHomeostasis)
 export(clonalOverlap)

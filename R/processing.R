@@ -4,7 +4,6 @@
 #' @param column The column in which the barcodes are listed
 #' @param connector The type of character in which is attaching the defualt barcode with any other characters
 #' @param num_of_connects The number of strings combined with the connectors
-#' @example stripBarcode(csv1, column = 1, connector = "_", num_connects=3)
 
 #' @export
 stripBarcode <- function(contigs, column = 1, connector = "_", num_connects = 3) {
@@ -18,7 +17,6 @@ stripBarcode <- function(contigs, column = 1, connector = "_", num_connects = 3)
 #' @param df The product of CombineContig()
 #' @param name The column header you'd like to add
 #' @param variables The exact values to add to each element of the list
-#' @example addVariable(combined, name="batch", variable=c("b1","b1","b2","b2","b2","b2"))
 
 #' @export
 addVariable <- function(df,
@@ -38,7 +36,6 @@ addVariable <- function(df,
 #' @param df The product of CombineContig()
 #' @param name The column header you'd like to use to subset
 #' @param variables The values to subset by
-#' @example subsetContig(combined, name="sample", variable="P1")
 
 #' @export
 subsetContig <- function(df,
