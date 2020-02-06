@@ -1,6 +1,6 @@
 #' Examining the clonal overlap between samples
 #'
-#' @param df The product of CombineContig()
+#' @param df The product of CombineContig() or the seurat object after combineSeurat()
 #' @param call How to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide
 #' @param method The method to calculate the overlap, either the overlap coefficient or morisita index
 #'
@@ -17,6 +17,18 @@ clonalOverlap <- function(df,
     } else {
         call <- "CTstrict"
     }
+    if (class(df)[1] == "Seurat") {
+        meta <- data.frame(df@meta.data, df@active.ident)
+        colnames(meta)[length(meta)] <- "cluster"
+        meta$barcodes <- rownames(meta)
+        unique <- stringr::str_sort(as.character(unique(meta$cluster)), numeric = TRUE)
+        df <- NULL
+        for (i in seq_along(unique)) {
+            subset <- subset(meta, meta[,"cluster"] == unique[i])
+            df[[i]] <- subset
+        }
+        names(df) <- unique
+    }
     num_samples <- length(df[])
     names_samples <- names(df)
     coef_matrix <- data.frame(matrix(NA, num_samples, num_samples))
@@ -25,7 +37,7 @@ clonalOverlap <- function(df,
     if (method == "overlap") {
 
         for (i in 1:num_samples){
-          df.i <- combined[[i]]
+          df.i <- df[[i]]
           df.i <- df.i[,c("barcode",call)]
           df.i_unique <- df.i[!duplicated(df.i$barcode),]
 
@@ -34,7 +46,7 @@ clonalOverlap <- function(df,
               next
             }
             else {
-              df.j <- combined[[j]]
+              df.j <- df[[j]]
               df.j <- df.j[,c("barcode",call)]
               df.j_unique <- df.j[!duplicated(df.j$barcode),]
               overlap <- length(intersect(df.i_unique[,call], df.j_unique[,call]))
@@ -46,7 +58,7 @@ clonalOverlap <- function(df,
     else if (method == "morisita") {
 
         for (i in 1:num_samples){
-            df.i <- combined[[i]]
+            df.i <- df[[i]]
             df.i <- data.frame(table(df.i[,call]))
             colnames(df.i) <- c(call, 'Count')
             df.i[,2] <- as.numeric(df.i[,2])
@@ -56,7 +68,7 @@ clonalOverlap <- function(df,
                     next
                 }
                 else {
-                    df.j <- combined[[j]]
+                    df.j <- df[[j]]
                     df.j <- data.frame(table(df.j[,call]))
                     colnames(df.j) <- c(call, 'Count')
                     df.j[,2] <- as.numeric(df.j[,2])
@@ -78,6 +90,10 @@ clonalOverlap <- function(df,
     coef_matrix <- suppressMessages(reshape2::melt(coef_matrix))
     coef_matrix <- coef_matrix[,-1]
     col <- colorblind_vector(7)
+    values <- stringr::str_sort(as.character(unique(coef_matrix$names)), numeric = TRUE)
+    values2 <- quiet(dput(values))
+    coef_matrix$variable <- factor(coef_matrix$variable, levels = values2)
+    coef_matrix$names <- factor(coef_matrix$names, levels = values2)
     plot <- ggplot(coef_matrix, aes(x=names, y=variable, fill=value)) +
         geom_tile() +
         geom_text(aes(label = round(value, digits = 3))) +
@@ -85,5 +101,5 @@ clonalOverlap <- function(df,
         labs(fill = method) +
         theme_classic() +
         theme(axis.title = element_blank())
-    return(plot)
+    suppressWarnings(print(plot))
 }

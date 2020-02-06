@@ -11,7 +11,7 @@ clonalProportion(
 )
 }
 \arguments{
-\item{df}{The product of CombineContig()}
+\item{df}{The product of CombineContig() or the seurat object after combineSeurat()}
 
 \item{split}{The cutpoints for the specific clonotypes}
 

@@ -1,6 +1,6 @@
 #' Examining the clonal space occupied by specific clonotypes
 #'
-#' @param df The product of CombineContig()
+#' @param df The product of CombineContig() or the seurat object after combineSeurat()
 #' @param split The cutpoints for the specific clonotypes
 #' @param call How to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide
 #'
@@ -8,7 +8,6 @@
 clonalProportion <- function(df,
                              split = c(10, 100, 1000, 10000, 30000, 100000),
                              call = c("gene", "nt", "aa", "gene+nt")) {
-    df <- if(class(df) != "list") list(df) else df
     Con.df <- NULL
     if (call == "gene") {
         call <- "CTgene"
@@ -21,6 +20,18 @@ clonalProportion <- function(df,
     } else {
         stop("Are you sure you made the right call? ", .call = F)
     }
+    if (class(df)[1] == "Seurat") {
+        meta <- data.frame(seurat@meta.data, seurat@active.ident)
+        colnames(meta)[length(meta)] <- "cluster"
+        unique <- stringr::str_sort(as.character(unique(meta$cluster)), numeric = TRUE)
+        df <- NULL
+        for (i in seq_along(unique)) {
+            subset <- subset(meta, meta[,"cluster"] == unique[i])
+            df[[i]] <- subset
+        }
+        names(df) <- unique
+    }
+    df <- if(class(df) != "list") list(df) else df
 
     mat <- matrix(0, length(df), length(split), dimnames = list(names(df), paste0('[', c(1, split[-length(split)] + 1), ':', split, ']')))
     df <- lapply(df, '[[', call)

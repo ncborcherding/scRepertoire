@@ -56,3 +56,11 @@ subsetContig <- function(df,
     names(df2) <- names2
     return(df2)
 }
+
+#This suppressing outputs for using dput()
+#' @export
+quiet <- function(x) {
+    sink(tempfile())
+    on.exit(sink())
+    invisible(force(x))
+}

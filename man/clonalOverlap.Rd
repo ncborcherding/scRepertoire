@@ -11,7 +11,7 @@ clonalOverlap(
 )
 }
 \arguments{
-\item{df}{The product of CombineContig()}
+\item{df}{The product of CombineContig() or the seurat object after combineSeurat()}
 
 \item{call}{How to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide}
 

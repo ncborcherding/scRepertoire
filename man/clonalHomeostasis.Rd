@@ -12,7 +12,7 @@ clonalHomeostasis(
 )
 }
 \arguments{
-\item{df}{The product of CombineContig()}
+\item{df}{The product of CombineContig() or the seurat object after combineSeurat()}
 
 \item{cloneTypes}{The cutpoints of the proportions}
 
