@@ -22,7 +22,7 @@ clonalHomeostasis <- function(df,
         stop("Are you sure you made the right call? ", .call = F)
     }
     if (class(df)[1] == "Seurat") {
-        meta <- data.frame(seurat@meta.data, seurat@active.ident)
+        meta <- data.frame(df@meta.data, df@active.ident)
         colnames(meta)[length(meta)] <- "cluster"
         unique <- stringr::str_sort(as.character(unique(meta$cluster)), numeric = TRUE)
         df <- NULL
