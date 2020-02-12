@@ -17,9 +17,10 @@ clonalOverlap <- function(df,
     } else {
         call <- "CTstrict"
     }
-    unique <- stringr::str_sort(as.character(unique(meta$cluster)), numeric = TRUE)
+
     if (class(df)[1] == "Seurat") {
         meta <- data.frame(df@meta.data, df@active.ident)
+        unique <- stringr::str_sort(as.character(unique(meta$cluster)), numeric = TRUE)
         colnames(meta)[length(meta)] <- "cluster"
         meta$barcodes <- rownames(meta)
         df <- NULL
