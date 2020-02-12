@@ -20,9 +20,9 @@ clonalOverlap <- function(df,
 
     if (class(df)[1] == "Seurat") {
         meta <- data.frame(df@meta.data, df@active.ident)
-        unique <- stringr::str_sort(as.character(unique(meta$cluster)), numeric = TRUE)
         colnames(meta)[length(meta)] <- "cluster"
-        meta$barcodes <- rownames(meta)
+        unique <- stringr::str_sort(as.character(unique(meta$cluster)), numeric = TRUE)
+        meta$barcode <- rownames(meta)
         df <- NULL
         for (i in seq_along(unique)) {
             subset <- subset(meta, meta[,"cluster"] == unique[i])
@@ -30,7 +30,10 @@ clonalOverlap <- function(df,
         }
         names(df) <- unique
     }
-    df <- df[order(names(df))]
+    else if (class(df)[1] != "Seurat") {
+        df <- df[order(names(df))]
+    }
+
     num_samples <- length(df[])
     names_samples <- names(df)
     coef_matrix <- data.frame(matrix(NA, num_samples, num_samples))
