@@ -3,11 +3,13 @@
 #' @param df The product of CombineContig() or the seurat object after combineSeurat()
 #' @param call How to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide
 #' @param method The method to calculate the overlap, either the overlap coefficient or morisita index
+#' @param exportTable Exports a table of the data into the global environment in addition to the visualization
 #'
 #' @export
 clonalOverlap <- function(df,
                     call = c("gene", "nt", "aa", "gene+nt"),
-                    method = c("overlap", "morisita")){
+                    method = c("overlap", "morisita"),
+                    exportTable = F){
     if (call == "gene") {
         call <- "CTgene"
     } else if(call == "nt") {
@@ -92,6 +94,9 @@ clonalOverlap <- function(df,
 
     }
     coef_matrix$names <- rownames(coef_matrix)
+    if (exportTable == T) {
+        clonalOverlap_output <<- coef_matrix
+    }
     coef_matrix <- suppressMessages(reshape2::melt(coef_matrix))
     coef_matrix <- coef_matrix[,-1]
     col <- colorblind_vector(7)

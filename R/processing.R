@@ -64,3 +64,23 @@ quiet <- function(x) {
     on.exit(sink())
     invisible(force(x))
 }
+
+#' Allows users to take the meta data in seurat and place it into a list that will work with all the functions
+#' @param df seurat object after combineSeurat()
+#'
+#' @export
+seurat2List <- function(df) {
+    if (class(df)[1] != "Seurat") {
+        stop("Use a seurat object to convert into a list")
+    }
+    meta <- data.frame(df@meta.data, df@active.ident)
+    colnames(meta)[length(meta)] <- "cluster"
+    unique <- stringr::str_sort(as.character(unique(meta$cluster)), numeric = TRUE)
+    df <- NULL
+    for (i in seq_along(unique)) {
+        subset <- subset(meta, meta[,"cluster"] == unique[i])
+        df[[i]] <- subset
+    }
+    names(df) <- unique
+    return(df)
+}

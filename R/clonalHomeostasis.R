@@ -3,11 +3,13 @@
 #' @param df The product of CombineContig() or the seurat object after combineSeurat()
 #' @param cloneTypes The cutpoints of the proportions
 #' @param call How to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide
+#' @param exportTable Exports a table of the data into the global environment in addition to the visualization
 #'
 #' @export
 clonalHomeostasis <- function(df,
                               cloneTypes = c(Rare = .0001, Small = .001, Medium = .01, Large = .1, Hyperexpanded = 1),
-                              call = c("gene", "nt", "aa", "gene+nt")) {
+                              call = c("gene", "nt", "aa", "gene+nt"),
+                              exportTable = F) {
     require(ggplot2)
     cloneTypes <- c(None = 0, cloneTypes)
     if (call == "gene") {
@@ -50,7 +52,9 @@ clonalHomeostasis <- function(df,
         mat[,i-1] <- sapply(df, function (x) sum(x[x > cloneTypes[i-1] & x <= cloneTypes[i]]))
         colnames(mat)[i-1] <- paste0(names(cloneTypes[i]), ' (', cloneTypes[i-1], ' < X <= ', cloneTypes[i], ')')
     }
-
+    if (exportTable == T) {
+        clonalProportion_output <<- mat
+    }
     mat_melt <- reshape2::melt(mat)
     col <- length(unique(mat_melt$Var2))
     ggplot2::ggplot(mat_melt, aes(x=Var1, y=value, fill=Var2)) +
@@ -59,5 +63,7 @@ clonalHomeostasis <- function(df,
         xlab("Samples") +
         ylab("Relative Abundance") +
         theme_classic()
+
+
 
 }

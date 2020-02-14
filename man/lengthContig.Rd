@@ -9,7 +9,8 @@ lengthContig(
   call = c("nt", "aa"),
   column = NULL,
   scale = F,
-  chains = c("combined", "single")
+  chains = c("combined", "single"),
+  exportTable = F
 )
 }
 \arguments{
@@ -22,6 +23,8 @@ lengthContig(
 \item{scale}{Converts the graphs into denisty plots in order to show relative distributions.}
 
 \item{chains}{Whether to keep clonotypes "combined" or visualize by chain}
+
+\item{exportTable}{Exports a table of the data into the global environment in addition to the visualization}
 }
 \description{
 Demonstrate the distribution of lengths filtered contigs output from 10x Genomics

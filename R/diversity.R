@@ -3,11 +3,13 @@
 #' @param df The product of CombineContig() or the seurat object after combineSeurat()
 #' @param call How to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide
 #' @param colorBy The column header for which you would like to analyze the data
+#' @param exportTable Exports a table of the data into the global environment in addition to the visualization
 #'
 #' @export
 clonalDiversity <- function(df,
                             call = c("gene", "nt", "aa", "gene+nt"),
-                            colorBy = c("samples", ...)) {
+                            colorBy = c("samples", ...),
+                            exportTable = F) {
     if (call == "gene") {
         call <- "CTgene"
     } else if(call == "nt") {
@@ -72,6 +74,9 @@ clonalDiversity <- function(df,
             mat <- rbind(mat, out)
         }
         mat <- as.data.frame(mat)
+        if (exportTable == T) {
+            clonalOverlap_output <<- coef_matrix
+        }
         colnames(mat) <- c("Shannon", "Inv.Simpson", "Chao", "ACE", colorBy)
         rownames(mat) <- names(df)
         melt <- suppressWarnings(reshape2::melt(mat, id.vars = colorBy))
@@ -96,6 +101,9 @@ clonalDiversity <- function(df,
          plot <- plot +
              geom_boxplot(alpha=0.4, outlier.alpha = 0)
      }
+    if (exportTable == T) {
+        clonalDiversity_output <<- mat
+    }
 
     suppressWarnings(print(plot))
 }

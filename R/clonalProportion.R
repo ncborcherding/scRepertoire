@@ -3,11 +3,13 @@
 #' @param df The product of CombineContig() or the seurat object after combineSeurat()
 #' @param split The cutpoints for the specific clonotypes
 #' @param call How to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide
+#' @param exportTable Exports a table of the data into the global environment in addition to the visualization
 #'
 #' @export
 clonalProportion <- function(df,
                              split = c(10, 100, 1000, 10000, 30000, 100000),
-                             call = c("gene", "nt", "aa", "gene+nt")) {
+                             call = c("gene", "nt", "aa", "gene+nt"),
+                             exportTable = F) {
     Con.df <- NULL
     if (call == "gene") {
         call <- "CTgene"
@@ -44,6 +46,9 @@ clonalProportion <- function(df,
     for (i in 1:length(split)) {
         mat[,i] <- sapply(df, function (x) sum(na.omit(x[cut[i]:split[i]])))
     }
+    if (exportTable == T) {
+        clonalProportion_output <<- mat
+    }
     mat_melt <- reshape2::melt(mat)
     col <- length(unique(mat_melt$Var2))
     ggplot2::ggplot(mat_melt, aes(x=Var1, y=value, fill=Var2)) +
@@ -52,5 +57,7 @@ clonalProportion <- function(df,
         xlab("Samples") +
         ylab("Occupied Repertoire Space") +
         theme_classic()
+
+
 
 }

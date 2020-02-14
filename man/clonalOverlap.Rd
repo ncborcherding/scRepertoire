@@ -7,7 +7,8 @@
 clonalOverlap(
   df,
   call = c("gene", "nt", "aa", "gene+nt"),
-  method = c("overlap", "morisita")
+  method = c("overlap", "morisita"),
+  exportTable = F
 )
 }
 \arguments{
@@ -16,6 +17,8 @@ clonalOverlap(
 \item{call}{How to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide}
 
 \item{method}{The method to calculate the overlap, either the overlap coefficient or morisita index}
+
+\item{exportTable}{Exports a table of the data into the global environment in addition to the visualization}
 }
 \description{
 Examining the clonal overlap between samples

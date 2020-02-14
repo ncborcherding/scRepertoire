@@ -8,7 +8,8 @@ abundanceContig(
   df,
   call = c("gene", "nt", "aa", "gene+nt"),
   scale = F,
-  column = NULL
+  column = NULL,
+  exportTable = F
 )
 }
 \arguments{
@@ -19,6 +20,8 @@ abundanceContig(
 \item{scale}{Converts the graphs into denisty plots in order to show relative distributions.}
 
 \item{column}{The column header for which you would like to analyze the data}
+
+\item{exportTable}{Exports a table of the data into the global environment in addition to the visualization}
 }
 \description{
 Demonstrate the relative abundance of filtered contigs output from 10x Genomics

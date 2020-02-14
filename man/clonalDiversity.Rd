@@ -7,7 +7,8 @@
 clonalDiversity(
   df,
   call = c("gene", "nt", "aa", "gene+nt"),
-  colorBy = c("samples", ...)
+  colorBy = c("samples", ...),
+  exportTable = F
 )
 }
 \arguments{
@@ -16,6 +17,8 @@ clonalDiversity(
 \item{call}{How to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide}
 
 \item{colorBy}{The column header for which you would like to analyze the data}
+
+\item{exportTable}{Exports a table of the data into the global environment in addition to the visualization}
 }
 \description{
 Examine the clonal diversity of samples

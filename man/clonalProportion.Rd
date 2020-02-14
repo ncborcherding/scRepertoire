@@ -7,7 +7,8 @@
 clonalProportion(
   df,
   split = c(10, 100, 1000, 10000, 30000, 1e+05),
-  call = c("gene", "nt", "aa", "gene+nt")
+  call = c("gene", "nt", "aa", "gene+nt"),
+  exportTable = F
 )
 }
 \arguments{
@@ -16,6 +17,8 @@ clonalProportion(
 \item{split}{The cutpoints for the specific clonotypes}
 
 \item{call}{How to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide}
+
+\item{exportTable}{Exports a table of the data into the global environment in addition to the visualization}
 }
 \description{
 Examining the clonal space occupied by specific clonotypes

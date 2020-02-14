@@ -8,11 +8,13 @@ colorblind_vector <- colorRampPalette(c("#FF4B20", "#FFB433", "#C6FDEC", "#7AC5F
 #' @param call How to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide
 #' @param column The column header for which you would like to analyze the data
 #' @param scale Converts the graphs into percentage of unique clonotypes
+#' @param exportTable Exports a table of the data into the global environment in addition to the visualization
 #' @export
 quantContig <- function(df,
                         call = c("gene", "nt", "aa", "gene+nt"),
                         scale=F,
-                        column = NULL) {
+                        column = NULL,
+                        exportTable = F) {
     if (length(column) > 1) {
         stop("Only one item in the column variable can be listed.")
     }
@@ -27,6 +29,7 @@ quantContig <- function(df,
     } else {
         stop("Are you sure you made the right call? ", .call = F)
     }
+
     if (!is.null(column)) {
         Con.df <- data.frame(matrix(NA, length(df), 4))
         colnames(Con.df) <- c("contigs","values", "total", column)
@@ -76,6 +79,9 @@ quantContig <- function(df,
             labs <- "Samples"
         }
     }
+    if (exportTable == T) {
+        quantContig_output <<- Con.df
+    }
     plot <- ggplot2::ggplot(aes(x=Con.df[,x], y=Con.df[,y],fill=as.factor(Con.df[,x])), data = Con.df) +
         stat_summary(geom = "errorbar", fun.data = mean_se, position = "dodge", width=.5) +
         stat_summary(fun.y=mean, geom="bar", color="black", lwd=0.25)+
@@ -94,12 +100,14 @@ quantContig <- function(df,
 #' @param call How to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide
 #' @param column The column header for which you would like to analyze the data
 #' @param scale Converts the graphs into denisty plots in order to show relative distributions.
+#' @param exportTable Exports a table of the data into the global environment in addition to the visualization
 #'
 #' @export
 abundanceContig <- function(df,
                             call = c("gene", "nt", "aa", "gene+nt"),
                             scale=F,
-                            column = NULL) {
+                            column = NULL,
+                            exportTable = F) {
     Con.df <- NULL
     xlab <- "Abundance"
     if (call == "gene") {
@@ -170,6 +178,9 @@ abundanceContig <- function(df,
                 labs(color = fill)
         }
     }
+    if (exportTable == T) {
+        abundanceContig_output <<- Con.df
+    }
     plot <- plot +
         scale_x_log10() +
         ylab(ylab) +
@@ -185,13 +196,14 @@ abundanceContig <- function(df,
 #' @param column The column header for which you would like to analyze the data
 #' @param scale Converts the graphs into denisty plots in order to show relative distributions.
 #' @param chains Whether to keep clonotypes "combined" or visualize by chain
-#'
+#' @param exportTable Exports a table of the data into the global environment in addition to the visualization
 #' @export
 lengthContig <- function(df,
                          call = c("nt", "aa"),
                          column = NULL,
                          scale = F,
-                         chains = c("combined", "single")) {
+                         chains = c("combined", "single"),
+                         exportTable = F) {
     if(call == "nt") {
         call <- "CTnt"
         ylab <- "CDR3 (NT)"
@@ -347,8 +359,11 @@ lengthContig <- function(df,
         ylab(paste(yplus, ylab, sep="")) +
         xlab(xlab) +
         theme_classic()
-
+    if (exportTable == T) {
+        lengthContig_output <<- Con.df
+    }
     suppressWarnings(print(plot))
+
 }
 
 #' Demonstrate the difference in clonal proportion between multiple clonotypes

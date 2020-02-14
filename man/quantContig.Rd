@@ -8,7 +8,8 @@ quantContig(
   df,
   call = c("gene", "nt", "aa", "gene+nt"),
   scale = F,
-  column = NULL
+  column = NULL,
+  exportTable = F
 )
 }
 \arguments{
@@ -19,6 +20,8 @@ quantContig(
 \item{scale}{Converts the graphs into percentage of unique clonotypes}
 
 \item{column}{The column header for which you would like to analyze the data}
+
+\item{exportTable}{Exports a table of the data into the global environment in addition to the visualization}
 }
 \description{
 Quantify the unique clonotypes in the filtered contigs output from 10x Genomics
