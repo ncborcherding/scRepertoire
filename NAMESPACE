@@ -3,6 +3,7 @@
 export(abundanceContig)
 export(addVariable)
 export(alluvialClonotypes)
+export(changeNames)
 export(clonalDiversity)
 export(clonalHomeostasis)
 export(clonalOverlap)

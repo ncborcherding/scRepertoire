@@ -10,7 +10,7 @@ combineSeurat <- function(df,
                           seurat,
                           call = c("gene", "nt", "aa", "gene+nt"),
                           groupBy = c("none", "sample", "ID", ...),
-                          cloneTypes = c(Single = 1, Small = 5, Medium = 20, Large = 100, Hyperexpanded = 500)) {
+                          cloneTypes = c(zero = 0, Single = 1, Small = 5, Medium = 20, Large = 100, Hyperexpanded = 500)) {
     df <- if(class(df) != "list") list(df) else df
     cloneTypes <- c(None = 0, cloneTypes)
     if (length(df) == 0 | length(seurat) == 0) {
@@ -177,4 +177,32 @@ alluvialClonotypes <- function(seurat,
         stop("Only can facet on one item at a time, try multiple calls with different facets.")
     }
     suppressWarnings(print(plot))
+}
+
+#' Change names of the cells in the Seurat object in order to use combineSeurat()
+#'
+#' @param seurat The Seurat object
+#' @param seuratID The strings/prefixes of the current cell names to replace, i.e. c("PY_Tumor", "PX_Peripheral", "PZ_Tumor")
+#' @param newID The strings to replace the Seurat cell names, i.e., c("PY_T", "PX_P", "PZ_T")
+#' @export
+changeNames <- function(seurat,
+                        seuratID = NULL,
+                        newID = NULL) {
+    if (class(seurat)[1] != "Seurat") {
+        stop("This is to change the cell names of the seurat object.")
+    }
+    if (length(seuratID) != length(newID)) {
+        stop("Make sure the length of the old Seurat prefixes match the length of the prefixes you are changing them with.")
+    }
+    else {
+        x <- colnames(seurat@assays$RNA)
+        for (i in seq_along(seuratID)) {
+            x <- gsub(seuratID[i], newID[i], x)
+        }
+        seurat <- RenameCells(
+            object = seurat,
+            new.names = x)
+
+    }
+    return(seurat)
 }
