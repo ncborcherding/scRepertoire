@@ -6,20 +6,20 @@
 \usage{
 alluvialClonotypes(
   seurat,
-  call = c("gene", "nt", "aa", "gene+nt"),
-  compare = c("cluster", ...),
+  cloneCall = c("gene", "nt", "aa", "gene+nt"),
+  compare = "cluster",
   facet = NULL
 )
 }
 \arguments{
 \item{seurat}{The seurat object to attach}
 
-\item{call}{How to call the clonotype - based on genes, CDR3 nt, or CDR3 aa sequence or the combination of genes and nucleotide sequence}
+\item{cloneCall}{How to call the clonotype - based on genes, CDR3 nt, or CDR3 aa sequence or the combination of genes and nucleotide sequence}
 
 \item{compare}{The column label to visualize}
 
 \item{facet}{The column label to seperate}
 }
 \description{
-Exploring interaction of clonotypes by seurat dynamics
+View the proportioal contribution of clonotypes by seurat object meta data. The variable "compare" allows for the selection of the groups, while faceting can seperate the graph.
 }

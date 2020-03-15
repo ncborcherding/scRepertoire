@@ -6,16 +6,16 @@
 \usage{
 abundanceContig(
   df,
-  call = c("gene", "nt", "aa", "gene+nt"),
+  cloneCall = c("gene", "nt", "aa", "gene+nt"),
   scale = F,
   column = NULL,
   exportTable = F
 )
 }
 \arguments{
-\item{df}{The product of CombineContig()}
+\item{df}{The product of CombineContig().}
 
-\item{call}{How to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide}
+\item{cloneCall}{How to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide}
 
 \item{scale}{Converts the graphs into denisty plots in order to show relative distributions.}
 

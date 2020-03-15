@@ -1,32 +1,28 @@
 #' Examining the clonal homeostasis
 #'
+#' @description
+#' Examine the space occupied by specific clonotype proportions. To adjust the proportions, change the cloneTypes variable.
+#'
 #' @param df The product of CombineContig() or the seurat object after combineSeurat()
 #' @param cloneTypes The cutpoints of the proportions
-#' @param call How to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide
+#' @param cloneCall How to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide
 #' @param exportTable Exports a table of the data into the global environment in addition to the visualization
-#'
+#' @import ggplot2
+#' @importFrom stringr str_split
+#' @importFrom reshape2 melt
 #' @export
 clonalHomeostasis <- function(df,
                               cloneTypes = c(Rare = .0001, Small = .001, Medium = .01, Large = .1, Hyperexpanded = 1),
-                              call = c("gene", "nt", "aa", "gene+nt"),
+                              cloneCall = c("gene", "nt", "aa", "gene+nt"),
                               exportTable = F) {
-    require(ggplot2)
     cloneTypes <- c(None = 0, cloneTypes)
-    if (call == "gene") {
-        call <- "CTgene"
-    } else if(call == "nt") {
-        call <- "CTnt"
-    } else if (call == "aa") {
-        call <- "CTaa"
-    } else if (call == "gene+nt") {
-        call <- "CTstrict"
-    } else {
-        stop("Are you sure you made the right call? ", .call = F)
-    }
-    if (class(df)[1] == "Seurat") {
+
+    cloneCall <- theCall(cloneCall)
+
+    if (inherits(x=df, what ="Seurat")) {
         meta <- data.frame(df@meta.data, df@active.ident)
         colnames(meta)[length(meta)] <- "cluster"
-        unique <- stringr::str_sort(as.character(unique(meta$cluster)), numeric = TRUE)
+        unique <- str_sort(as.character(unique(meta$cluster)), numeric = TRUE)
         df <- NULL
         for (i in seq_along(unique)) {
             subset <- subset(meta, meta[,"cluster"] == unique[i])
@@ -37,7 +33,7 @@ clonalHomeostasis <- function(df,
     df <- if(class(df) != "list") list(df) else df
 
     mat <- matrix(0, length(df), length(cloneTypes) - 1, dimnames = list(names(df), names(cloneTypes)[-1]))
-    df <- lapply(df, '[[', call)
+    df <- lapply(df, '[[', cloneCall)
     for (i in seq_along(df)) {
         df[[i]] <- na.omit(df[[i]])
     }
@@ -55,15 +51,15 @@ clonalHomeostasis <- function(df,
     if (exportTable == T) {
         clonalProportion_output <<- mat
     }
-    mat_melt <- reshape2::melt(mat)
+    mat_melt <- melt(mat)
     col <- length(unique(mat_melt$Var2))
-    ggplot2::ggplot(mat_melt, aes(x=Var1, y=value, fill=Var2)) +
+    plot <- ggplot(mat_melt, aes(x=Var1, y=value, fill=Var2)) +
         geom_bar(stat = "identity", position="fill", color = "black", lwd= 0.25) +
         scale_fill_manual(name = "Clonotype Group", values = colorblind_vector(col)) +
         xlab("Samples") +
         ylab("Relative Abundance") +
         theme_classic()
 
-
+    return(plot)
 
 }

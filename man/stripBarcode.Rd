@@ -13,7 +13,7 @@ stripBarcode(contigs, column = 1, connector = "_", num_connects = 3)
 
 \item{connector}{The type of character in which is attaching the defualt barcode with any other characters}
 
-\item{num_of_connects}{The number of strings combined with the connectors}
+\item{num_connects}{The number of strings combined with the connectors}
 }
 \description{
 Removing any additional prefixes to the barcodes of the filtered contigs.

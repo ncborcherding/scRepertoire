@@ -14,5 +14,5 @@ changeNames(seurat, seuratID = NULL, newID = NULL)
 \item{newID}{The strings to replace the Seurat cell names, i.e., c("PY_T", "PX_P", "PZ_T")}
 }
 \description{
-Change names of the cells in the Seurat object in order to use combineSeurat()
+Change the prefix of the seurat object in order to use combineSeurat().
 }

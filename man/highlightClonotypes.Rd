@@ -6,17 +6,17 @@
 \usage{
 highlightClonotypes(
   seurat,
-  call = c("gene", "nt", "aa", "gene+nt"),
+  cloneCall = c("gene", "nt", "aa", "gene+nt"),
   sequence = NULL
 )
 }
 \arguments{
 \item{seurat}{The seurat object to attach}
 
-\item{call}{How to call the clonotype - based on genes, CDR3 nt, or CDR3 aa sequence or the combination of genes and nucleotide sequence}
+\item{cloneCall}{How to call the clonotype - based on genes, CDR3 nt, or CDR3 aa sequence or the combination of genes and nucleotide sequence}
 
 \item{sequence}{The specifc sequence or sequence to highlight}
 }
 \description{
-Highlighting specific clonotypes in Seurat
+Use a specific clonotype sequence to highlight on top of the dimensional reduction in seurat object.
 }

@@ -6,15 +6,15 @@
 \usage{
 clonalDiversity(
   df,
-  call = c("gene", "nt", "aa", "gene+nt"),
-  colorBy = c("samples", ...),
+  cloneCall = c("gene", "nt", "aa", "gene+nt"),
+  colorBy = c("samples"),
   exportTable = F
 )
 }
 \arguments{
 \item{df}{The product of CombineContig() or the seurat object after combineSeurat()}
 
-\item{call}{How to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide}
+\item{cloneCall}{How to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide}
 
 \item{colorBy}{The column header for which you would like to analyze the data}
 

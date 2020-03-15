@@ -4,10 +4,10 @@
 \alias{seurat2List}
 \title{Allows users to take the meta data in seurat and place it into a list that will work with all the functions}
 \usage{
-seurat2List(df)
+seurat2List(seurat)
 }
 \arguments{
-\item{df}{seurat object after combineSeurat()}
+\item{seurat}{object after combineSeurat()}
 }
 \description{
 Allows users to take the meta data in seurat and place it into a list that will work with all the functions

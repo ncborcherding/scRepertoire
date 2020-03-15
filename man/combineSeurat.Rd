@@ -7,9 +7,11 @@
 combineSeurat(
   df,
   seurat,
-  call = c("gene", "nt", "aa", "gene+nt"),
-  groupBy = c("none", "sample", "ID", ...),
-  cloneTypes = c(Single = 1, Small = 5, Medium = 20, Large = 100, Hyperexpanded = 500)
+  cloneCall = c("gene", "nt", "aa", "gene+nt"),
+  groupBy = c("none", "sample", "ID"),
+  cloneTypes = c(zero = 0, Single = 1, Small = 5, Medium = 20, Large = 100,
+    Hyperexpanded = 500),
+  filterNA = F
 )
 }
 \arguments{
@@ -17,12 +19,16 @@ combineSeurat(
 
 \item{seurat}{The seurat object to attach}
 
-\item{call}{How to call the clonotype - based on genes, CDR3 nt, or CDR3 aa sequence, or the combination of genes and nucleotide sequence}
+\item{cloneCall}{How to call the clonotype - based on genes, CDR3 nt, or CDR3 aa sequence, or the combination of genes and nucleotide sequence}
 
 \item{groupBy}{The column label in which clonotype frequency will be calculated}
 
-\item{cloneType}{The bins for the grouping based on frequency}
+\item{cloneTypes}{The bins for the grouping based on frequency}
+
+\item{filterNA}{Method to subset seurat object of barcodes without clonotype information}
 }
 \description{
-Adding clonotype information to a seurat object
+Add the immune receptor information to the suerat object. By defualt this function also calculates the frequencies of the clonotypes by sequencing run (groupBy = "none"). To change how the frequencies are calculated, select a column header for the groupBy variable.
+Importantly, before using combineSeurat() ensure the barcodes of the seurat object match the barcodes in the output of the combinedContig() call. Check changeNames() to change the prefix of the seurat object.
+If the dominant clonotypes have a greater frequency than 500, adjust the cloneTypes variable.
 }

@@ -6,7 +6,7 @@
 \usage{
 compareClonotypes(
   df,
-  call = c("gene", "nt", "aa", "gene+nt"),
+  cloneCall = c("gene", "nt", "aa", "gene+nt"),
   samples = NULL,
   clonotypes = NULL,
   numbers = NULL,
@@ -16,7 +16,9 @@ compareClonotypes(
 \arguments{
 \item{df}{The product of CombineContig()}
 
-\item{call}{How to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide}
+\item{cloneCall}{How to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide}
+
+\item{samples}{The specific samples to isolate for visualization}
 
 \item{clonotypes}{The specific sequences of interest}
 
@@ -25,5 +27,5 @@ compareClonotypes(
 \item{graph}{The type of graph produced, either "alluvial" or "area"}
 }
 \description{
-Demonstrate the difference in clonal proportion between multiple clonotypes
+Allows for the exaimination of the proportions of selected clonotypes between samples. Specific sequences (clonotypes) can be visualize or users can select the visualization of the top n clonotypes (numbers).
 }

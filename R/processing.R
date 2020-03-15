@@ -3,7 +3,7 @@
 #' @param contigs The raw loaded filtered_contig_annotation.csv
 #' @param column The column in which the barcodes are listed
 #' @param connector The type of character in which is attaching the defualt barcode with any other characters
-#' @param num_of_connects The number of strings combined with the connectors
+#' @param num_connects The number of strings combined with the connectors
 
 #' @export
 stripBarcode <- function(contigs, column = 1, connector = "_", num_connects = 3) {
@@ -57,25 +57,38 @@ subsetContig <- function(df,
     return(df2)
 }
 
-#This suppressing outputs for using dput()
-#' @export
+# This suppressing outputs for using dput()
 quiet <- function(x) {
     sink(tempfile())
     on.exit(sink())
     invisible(force(x))
 }
 
+#This is to help sort the type of clonotype data to use
+theCall <- function(x) {
+if (x == "gene") {
+    x <- "CTgene"
+} else if(x == "nt") {
+    x <- "CTnt"
+} else if (x == "aa") {
+    x <- "CTaa"
+} else if (x == "gene+nt") {
+    x <- "CTstrict"
+}
+    return(x)
+}
+
 #' Allows users to take the meta data in seurat and place it into a list that will work with all the functions
-#' @param df seurat object after combineSeurat()
-#'
+#' @param seurat object after combineSeurat()
+#' @importFrom stringr str_sort
 #' @export
-seurat2List <- function(df) {
-    if (class(df)[1] != "Seurat") {
+seurat2List <- function(seurat) {
+    if (class(seurat)[1] != "Seurat") {
         stop("Use a seurat object to convert into a list")
     }
-    meta <- data.frame(df@meta.data, df@active.ident)
+    meta <- data.frame(seurat[[]], Idents(seurat))
     colnames(meta)[length(meta)] <- "cluster"
-    unique <- stringr::str_sort(as.character(unique(meta$cluster)), numeric = TRUE)
+    unique <- str_sort(as.character(unique(meta$cluster)), numeric = TRUE)
     df <- NULL
     for (i in seq_along(unique)) {
         subset <- subset(meta, meta[,"cluster"] == unique[i])

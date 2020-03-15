@@ -8,7 +8,7 @@ clonalHomeostasis(
   df,
   cloneTypes = c(Rare = 1e-04, Small = 0.001, Medium = 0.01, Large = 0.1, Hyperexpanded
     = 1),
-  call = c("gene", "nt", "aa", "gene+nt"),
+  cloneCall = c("gene", "nt", "aa", "gene+nt"),
   exportTable = F
 )
 }
@@ -17,10 +17,10 @@ clonalHomeostasis(
 
 \item{cloneTypes}{The cutpoints of the proportions}
 
-\item{call}{How to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide}
+\item{cloneCall}{How to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide}
 
 \item{exportTable}{Exports a table of the data into the global environment in addition to the visualization}
 }
 \description{
-Examining the clonal homeostasis
+Examine the space occupied by specific clonotype proportions. To adjust the proportions, change the cloneTypes variable.
 }

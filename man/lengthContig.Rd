@@ -6,7 +6,7 @@
 \usage{
 lengthContig(
   df,
-  call = c("nt", "aa"),
+  cloneCall = c("nt", "aa"),
   column = NULL,
   scale = F,
   chains = c("combined", "single"),
@@ -16,7 +16,7 @@ lengthContig(
 \arguments{
 \item{df}{The product of CombineContig()}
 
-\item{call}{How to call the clonotype - CDR3 nt or CDR3 aa sequence.}
+\item{cloneCall}{How to call the clonotype - CDR3 nt or CDR3 aa sequence.}
 
 \item{column}{The column header for which you would like to analyze the data}
 
@@ -27,5 +27,5 @@ lengthContig(
 \item{exportTable}{Exports a table of the data into the global environment in addition to the visualization}
 }
 \description{
-Demonstrate the distribution of lengths filtered contigs output from 10x Genomics
+Examine eithe the nucleotide (nt) or amino acid (aa) sequence length across samples or by vairable (column). Sequences can be visualized as combined values (both chains), or as single chains. If more than 2 chains of the same locus are assigned to the individual barcode, this function will take the first chain.
 }

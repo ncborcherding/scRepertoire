@@ -6,7 +6,7 @@
 \usage{
 clonalOverlap(
   df,
-  call = c("gene", "nt", "aa", "gene+nt"),
+  cloneCall = c("gene", "nt", "aa", "gene+nt"),
   method = c("overlap", "morisita"),
   exportTable = F
 )
@@ -14,12 +14,12 @@ clonalOverlap(
 \arguments{
 \item{df}{The product of CombineContig() or the seurat object after combineSeurat()}
 
-\item{call}{How to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide}
+\item{cloneCall}{How to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide}
 
 \item{method}{The method to calculate the overlap, either the overlap coefficient or morisita index}
 
 \item{exportTable}{Exports a table of the data into the global environment in addition to the visualization}
 }
 \description{
-Examining the clonal overlap between samples
+Use overlap coefficient or morisita index to exam the overlapping clonotypes across samples. If a matrix output for the data is preferred, set exportTable = T.
 }
