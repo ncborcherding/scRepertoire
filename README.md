@@ -42,3 +42,6 @@ Feel free to use, edit, modify scRepertoire, but if you do, please cite the [man
 ### Contact
 Questions, comments, suggestions, please feel free to contact Nick Borcherding via this repository, [email](mailto:ncborch@gmail.com), or using [twitter](https://twitter.com/theHumanBorch). 
 
+### More Information On VDJ Biology
+Our publication is limited in scope and size and we were unable to review VDJ biology and issues relevant to high-throuhput immune receptor profiling. If you are interested in the biology of the process, please refer to the excellent reviews from [Jahong Ji](https://www.nature.com/articles/nri2941) and [Frederick Alt](https://www.cell.com/fulltext/S0092-8674(04)00039-X). Additionally, the complexities of sequencing and quantifications of VDJs are discussed [here.](https://www.nature.com/articles/nprot.2018.021?)
+
