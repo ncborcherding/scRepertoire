@@ -22,7 +22,7 @@ Single-cell sequencing is an emerging technology in the field of immunology and 
 +  [Startrac](https://github.com/Japrin/STARTRAC)
 +  vegan
 
-scRepertoire v1.0.0 added the functionality of the powerTCR approach to comparing clone size distribution, [please cite](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1006571) the manuscript if using the ```clonesizeDistribution()``` function. Similiarly, the application of novel indices for single-cell clonotype dynamics in the ```StartracDiversity()``` function is based on the work from [Lei Zhang et al.](https://www-nature-com.proxy.lib.uiowa.edu/articles/s41586-018-0694-x)
+scRepertoire v1.0.0 added the functionality of the powerTCR approach to comparing clone size distribution, [please cite](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1006571) the manuscript if using the ```clonesizeDistribution()``` function. Similiarly, the application of novel indices for single-cell clonotype dynamics in the ```StartracDiversity()``` function is based on the work from [Lei Zhang et al.](https://www.nature.com/articles/s41586-018-0694-x)
 
 ### Installation
 
@@ -41,4 +41,7 @@ Feel free to use, edit, modify scRepertoire, but if you do, please cite the [man
 
 ### Contact
 Questions, comments, suggestions, please feel free to contact Nick Borcherding via this repository, [email](mailto:ncborch@gmail.com), or using [twitter](https://twitter.com/theHumanBorch). 
+
+### More Information On VDJ Biology
+Our publication is limited in scope and size and we were unable to review VDJ biology and issues relevant to high-throuhput immune receptor profiling. If you are interested in the biology of the process, please refer to the excellent reviews from [Jahong Ji](https://www.nature.com/articles/nri2941) and [Frederick Alt](https://www.cell.com/fulltext/S0092-8674(04)00039-X). Additionally, the complexities of sequencing and quantifications of VDJs are discussed [here.](https://www.nature.com/articles/nprot.2018.021?)
 
