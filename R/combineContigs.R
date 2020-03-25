@@ -147,7 +147,7 @@ combineTCR <- function(df,
     }
     if (filterMulti == T) {
         for(i in seq_along(final)) {
-            final[[i]] <- filter(final[[i]], !grepl(";",sampleID))
+            final[[i]] <- filter(final[[i]], !grepl(";",CTnt))
         }
     }
     }
@@ -291,7 +291,7 @@ combineBCR <- function(df,
     }
     if (filterMulti == T) {
         for(i in seq_along(final)) {
-            final[[i]] <- filter(final[[i]], !grepl(";",sampleID))
+            final[[i]] <- filter(final[[i]], !grepl(";",CTnt))
         }
     }
     return(final)
