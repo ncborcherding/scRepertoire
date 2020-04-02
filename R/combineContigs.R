@@ -7,16 +7,18 @@
 #' @param samples The labels of samples
 #' @param ID The additional sample labeling option
 #' @param cells The type of lymphocyte - T cell-AB or T cell-GD
-#' @param filterNA This will remove any chain without values
-#' @param filterMulti This will remove barcodes with greater than 2 chains
+#' @param removeNA This will remove any chain without values
+#' @param removeMulti This will remove barcodes with greater than 2 chains
+#' @param filterNA This option will allow for the selection of the 2 corresponding chains with the highest expression for a single barcode
 #' @import dplyr
 #' @export
 combineTCR <- function(df,
                            samples = NULL,
                            ID = NULL,
                            cells = c("T-AB", "T-GD"),
-                           filterNA = F,
-                           filterMulti = F) {
+                           removeNA = F,
+                           removeMulti = F,
+                            filterNA = F) {
     df <- if(class(df) != "list") list(df) else df
     out <- NULL
     final <- NULL
@@ -43,6 +45,17 @@ combineTCR <- function(df,
                 df[[i]] <- subset(df[[i]], productive == T | productive == "TRUE" | productive == "True")
                 df[[i]]$sample <- samples[i]
                 df[[i]]$ID <- ID[i]
+                if (filterNA == T) {
+                    barcodes <- as.character(unique(table$Var1))
+                    multichain <- NULL
+                    for (j in seq_along(barcodes)) {
+                        chain <- df[[i]][df[[i]]$barcode == barcodes[j],] %>% group_by(barcode) %>% top_n(n = 2, wt = reads)
+                        multichain <- rbind(multichain, chain)
+                    }
+                    `%!in%` = Negate(`%in%`)
+                    df[[i]] <- subset(df[[i]], barcode %!in% barcodes)
+                    df[[i]] <- rbind(df[[i]], multichain)
+                }
                 if (nrow(df[[i]]) == 0) {
                     stop("Check some hypotenuses, Captain. There are 0 contigs after filtering for celltype.", call. = F)
                 }
@@ -140,12 +153,12 @@ combineTCR <- function(df,
     for (i in seq_along(final)) {
     final[[i]] <- final[[i]][!duplicated(final[[i]]$barcode),]
     }
-    if (filterNA == T) {
+    if (removeNA == T) {
         for(i in seq_along(final)) {
             final[[i]] <- na.omit(final[[i]])
         }
     }
-    if (filterMulti == T) {
+    if (removeMulti == T) {
         for(i in seq_along(final)) {
             final[[i]] <- filter(final[[i]], !grepl(";",CTnt))
         }
@@ -163,15 +176,15 @@ combineTCR <- function(df,
 #' @param df List of filtered contig annotations from 10x Genomics
 #' @param samples The labels of samples
 #' @param ID The additional sample labeling option
-#' @param filterNA This will remove any chain without values
-#' @param filterMulti This will remove barcodes with greater than 2 chains
+#' @param removeNA This will remove any chain without values
+#' @param removeMulti This will remove barcodes with greater than 2 chains
 #' @import dplyr
 #' @export
 combineBCR <- function(df,
                        samples = NULL,
                        ID = NULL,
-                       filterNA = F,
-                       filterMulti = F) {
+                       removeNA = F,
+                       removeMulti = F) {
     df <- if(class(df) != "list") list(df) else df
     out <- NULL
     final <- NULL
@@ -284,12 +297,12 @@ combineBCR <- function(df,
     for (i in seq_along(final)) {
         final[[i]] <- final[[i]][!duplicated(final[[i]]$barcode),]
     }
-    if (filterNA == T) {
+    if (removeNA == T) {
         for(i in seq_along(final)) {
             final[[i]] <- na.omit(final[[i]])
         }
     }
-    if (filterMulti == T) {
+    if (removeMulti == T) {
         for(i in seq_along(final)) {
             final[[i]] <- filter(final[[i]], !grepl(";",CTnt))
         }

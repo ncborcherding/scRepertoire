@@ -9,8 +9,9 @@ combineTCR(
   samples = NULL,
   ID = NULL,
   cells = c("T-AB", "T-GD"),
-  filterNA = F,
-  filterMulti = F
+  removeNA = F,
+  removeMulti = F,
+  filterNA = F
 )
 }
 \arguments{
@@ -22,9 +23,11 @@ combineTCR(
 
 \item{cells}{The type of lymphocyte - T cell-AB or T cell-GD}
 
-\item{filterNA}{This will remove any chain without values}
+\item{removeNA}{This will remove any chain without values}
 
-\item{filterMulti}{This will remove barcodes with greater than 2 chains}
+\item{removeMulti}{This will remove barcodes with greater than 2 chains}
+
+\item{filterNA}{This option will allow for the selection of the 2 corresponding chains with the highest expression for a single barcode}
 }
 \description{
 Combining the output of the 10x Genomics filtered TCR contig annotation files into a list of processed contigs. Selection of the samples and ID characters should match the prefix of the seurat object if attaching is planned. If more than 2 productive chains exist for a barcode, the sequences will be combined and incorporated into a clonotype.

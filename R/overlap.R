@@ -19,7 +19,7 @@ clonalOverlap <- function(df,
 
     if (class(df)[1] == "Seurat") {
         meta <- data.frame(df@meta.data, df@active.ident)
-        colnames(meta)[length(meta)] <- "cluster"
+        colnames(meta)[ncol(meta)] <- "cluster"
         unique <- str_sort(as.character(unique(meta$cluster)), numeric = TRUE)
         meta$barcode <- rownames(meta)
         df <- NULL

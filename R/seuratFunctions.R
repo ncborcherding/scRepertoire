@@ -149,8 +149,7 @@ alluvialClonotypes <- function(seurat,
 
 
     meta <- data.frame(seurat[[]], Idents(seurat))
-    n <- which(colnames(meta) == "Idents.seurat.")
-    colnames(meta)[n] <- "cluster"
+    colnames(meta)[ncol(meta)] <- "cluster"
 
     if (is.na(meta[,compare])) {
         stop("Make sure you are using the right variable name.")
@@ -197,7 +196,7 @@ changeNames <- function(seurat,
         stop("Make sure the length of the old Seurat prefixes match the length of the prefixes you are changing them with.")
     }
     else {
-        x <- colnames(seurat@assays$RNA)
+        x <- colnames(seurat[[]])
         for (i in seq_along(seuratID)) {
             x <- gsub(seuratID[i], newID[i], x)
         }
@@ -215,18 +214,25 @@ changeNames <- function(seurat,
 #'
 #' @param seurat The Seurat object
 #' @param type The column header in the meta data that gives the where the cells were derived from, not the patient sample IDs
-#' @param by Method to subset the indices by either overall (across all samples) or by specific patients
+#' @param sample The column header corresponding to individual samples or patients. This must be
+#' @param by Method to subset the indices by either overall (across all samples) or by specific group
 #' @importFrom Startrac Startrac.run
 #' @importFrom reshape2 melt
 #' @import ggplot2
 #' @export
 StartracDiversity <- function(seurat,
                               type = "Type",
+                              sample = NULL,
                               by = c("overall")) {
     meta <- data.frame(seurat[[]], Idents(seurat), stringsAsFactors = F)
+    colnames(meta)[ncol(meta)] <- "majorCluster"
     meta$clone.status <- ifelse(meta$Frequency > 1, "Yes", "No")
-    processed <- data.frame(rownames(meta), meta$CTstrict, meta$clone.status, meta$Patient, meta$Idents.seurat., meta[,type], stringsAsFactors = F)
-    colnames(processed) <- c("Cell_Name", "clone.id", "clone.status", "patient", "majorCluster", "loc")
+    if (is.null(sample)) {
+        stop("Must Add the sample information in order to make the StarTrac calculations")
+    } else {
+        processed <- data.frame(rownames(meta), meta$CTstrict, meta$clone.status, meta[,sample], meta[,"majorCluster"], meta[,type], stringsAsFactors = F)
+        colnames(processed) <- c("Cell_Name", "clone.id", "clone.status", "patient", "majorCluster", "loc")
+    }
     processed <- na.omit(processed)
     indices <- suppressWarnings(Startrac.run(processed, proj = "total", verbose = F))
     indices <- data.frame(indices@cluster.data)

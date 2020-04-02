@@ -22,7 +22,7 @@ clonalDiversity <- function(df,
     }
     if (class(df)[1] == "Seurat") {
         meta <- data.frame(df@meta.data, df@active.ident)
-        colnames(meta)[length(meta)] <- "cluster"
+        colnames(meta)[ncol(meta)] <- "cluster"
         unique <- str_sort(as.character(unique(meta[,colorBy])), numeric = TRUE)
         df <- NULL
         for (i in seq_along(unique)) {

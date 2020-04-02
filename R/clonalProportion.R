@@ -22,7 +22,7 @@ clonalProportion <- function(df,
 
     if (inherits(x=df, what ="Seurat")) {
         meta <- data.frame(df@meta.data, df@active.ident)
-        colnames(meta)[length(meta)] <- "cluster"
+        colnames(meta)[ncol(meta)] <- "cluster"
         unique <- str_sort(as.character(unique(meta$cluster)), numeric = TRUE)
         df <- NULL
         for (i in seq_along(unique)) {
@@ -49,7 +49,7 @@ clonalProportion <- function(df,
     }
     mat_melt <- melt(mat)
     col <- length(unique(mat_melt$Var2))
-    plot <- ggplot(mat_melt, aes(x=Var1, y=value, fill=Var2)) +
+    plot <- ggplot(mat_melt, aes(x=as.factor(Var1), y=value, fill=Var2)) +
         geom_bar(stat = "identity", position="fill", color = "black", lwd= 0.25) +
         scale_fill_manual(name = "Clonal Indices", values = colorblind_vector(col)) +
         xlab("Samples") +

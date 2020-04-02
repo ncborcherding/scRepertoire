@@ -4,7 +4,7 @@
 \alias{combineBCR}
 \title{Combining the list of B Cell Receptor contigs}
 \usage{
-combineBCR(df, samples = NULL, ID = NULL, filterNA = F, filterMulti = F)
+combineBCR(df, samples = NULL, ID = NULL, removeNA = F, removeMulti = F)
 }
 \arguments{
 \item{df}{List of filtered contig annotations from 10x Genomics}
@@ -13,9 +13,9 @@ combineBCR(df, samples = NULL, ID = NULL, filterNA = F, filterMulti = F)
 
 \item{ID}{The additional sample labeling option}
 
-\item{filterNA}{This will remove any chain without values}
+\item{removeNA}{This will remove any chain without values}
 
-\item{filterMulti}{This will remove barcodes with greater than 2 chains}
+\item{removeMulti}{This will remove barcodes with greater than 2 chains}
 }
 \description{
 Combining the output of the 10x Genomics filtered BCR contig annotation files into a list of processed contigs. Selection of the samples and ID characters should match the prefix of the seurat object if attaching is planned. The function incorporates the calculation of normalized Hamming's distance for the estimation of clonotype,

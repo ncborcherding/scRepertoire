@@ -358,7 +358,7 @@ The indices output includes:
 +  tran - State Transition
 
 ```{r}
-StartracDiversity(seurat, type = "Type", by = "overall")
+StartracDiversity(seurat, type = "Type", sample = "Patient", by = "overall")
 ```
 
 For users that would like greater ability to use the meta data in the Seurat objects to perform the analysis that scRepertoire provides, there is also the option of using the ```seurat2List()``` function that will take the meta data and output the data as a list by cluster.
