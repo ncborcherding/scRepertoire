@@ -63,9 +63,17 @@ As the output of CellRanger are quantifications of both the TCRA and TCRB chains
 +  T-AB - T cells, alpha-beta TCR
 +  T-GD - T cells, gamma-delta TCR
 
-###filterNA
+####removeNA
 +  TRUE - this is a stringent filter to remove any cell barcode with an NA value in at least one of the chains
-+  FALSE  the default setting to include and incorporate cells with 1 NA value
++  FALSE - the default setting to include and incorporate cells with 1 NA value
+
+####removeMulti
++  TRUE - this is a stringent filter to remove any cell barcode with more than 2 immune receptor chains
++  FALSE - the default setting to include and incorporate cells with > 2 chains
+
+####filterMulti
++  TRUE - Isolated the top 2 expressed chains in cell barcodes with multiple chains
++  FALSE - the default setting to include and incorporate cells with > 2 chains
 
 ```{r}
 combined <- combineTCR(contig_list, samples = c("PY", "PY", "PX", "PX", "PZ","PZ"), ID = c("P", "T", "P", "T", "P", "T"), cells ="T-AB")

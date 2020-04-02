@@ -9,7 +9,7 @@
 #' @param cells The type of lymphocyte - T cell-AB or T cell-GD
 #' @param removeNA This will remove any chain without values
 #' @param removeMulti This will remove barcodes with greater than 2 chains
-#' @param filterNA This option will allow for the selection of the 2 corresponding chains with the highest expression for a single barcode
+#' @param filterMulti This option will allow for the selection of the 2 corresponding chains with the highest expression for a single barcode
 #' @import dplyr
 #' @export
 combineTCR <- function(df,
@@ -18,7 +18,7 @@ combineTCR <- function(df,
                            cells = c("T-AB", "T-GD"),
                            removeNA = F,
                            removeMulti = F,
-                            filterNA = F) {
+                            filterMulti = F) {
     df <- if(class(df) != "list") list(df) else df
     out <- NULL
     final <- NULL
@@ -45,7 +45,7 @@ combineTCR <- function(df,
                 df[[i]] <- subset(df[[i]], productive == T | productive == "TRUE" | productive == "True")
                 df[[i]]$sample <- samples[i]
                 df[[i]]$ID <- ID[i]
-                if (filterNA == T) {
+                if (filterMulti == T) {
                     barcodes <- as.character(unique(table$Var1))
                     multichain <- NULL
                     for (j in seq_along(barcodes)) {

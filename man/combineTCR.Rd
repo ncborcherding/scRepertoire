@@ -11,7 +11,7 @@ combineTCR(
   cells = c("T-AB", "T-GD"),
   removeNA = F,
   removeMulti = F,
-  filterNA = F
+  filterMulti = F
 )
 }
 \arguments{
@@ -27,7 +27,7 @@ combineTCR(
 
 \item{removeMulti}{This will remove barcodes with greater than 2 chains}
 
-\item{filterNA}{This option will allow for the selection of the 2 corresponding chains with the highest expression for a single barcode}
+\item{filterMulti}{This option will allow for the selection of the 2 corresponding chains with the highest expression for a single barcode}
 }
 \description{
 Combining the output of the 10x Genomics filtered TCR contig annotation files into a list of processed contigs. Selection of the samples and ID characters should match the prefix of the seurat object if attaching is planned. If more than 2 productive chains exist for a barcode, the sequences will be combined and incorporated into a clonotype.
