@@ -196,7 +196,7 @@ changeNames <- function(seurat,
         stop("Make sure the length of the old Seurat prefixes match the length of the prefixes you are changing them with.")
     }
     else {
-        x <- colnames(seurat[[]])
+        x <- rownames(seurat[[]])
         for (i in seq_along(seuratID)) {
             x <- gsub(seuratID[i], newID[i], x)
         }
