@@ -67,9 +67,7 @@ clonalDiversity <- function(df,
             mat <- rbind(mat, out)
         }
         mat <- as.data.frame(mat)
-        if (exportTable == T) {
-            clonalOverlap_output <<- coef_matrix
-        }
+
         colnames(mat) <- c("Shannon", "Inv.Simpson", "Chao", "ACE", colorBy)
         rownames(mat) <- names(df)
         melt <- suppressWarnings(melt(mat, id.vars = colorBy))

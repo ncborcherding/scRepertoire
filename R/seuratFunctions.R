@@ -75,9 +75,17 @@ combineSeurat <- function(df,
     rownames(PreMeta) <- PreMeta$barcode
     seurat <- AddMetaData(seurat, PreMeta)
     if (filterNA == T) {
-        seurat[[]]$cloneType[is.na(seurat[[]]$cloneType)] <- 0
-        subset <- subset(seurat, cloneType != 0)
+        meta <- seurat[[]]
+        evalNA <- data.frame(meta[,"cloneType"])
+
+        colnames(evalNA) <- "indicator"
+        evalNA <- evalNA %>%
+            transmute(indicator = ifelse(is.na(indicator), 0, 1))
+        rownames(evalNA) <- rownames(meta)
+        seurat <- AddMetaData(seurat, evalNA)
+        seurat <- subset(seurat, cloneType != 0)
     }
+
     return(seurat)
 }
 #' Highlighting specific clonotypes in Seurat
