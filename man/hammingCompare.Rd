@@ -4,9 +4,11 @@
 \alias{hammingCompare}
 \title{Calculates the normalized Hamming Distance between the nucleotide sequence of the heavy or light chain. Relies on the length of the nucleotide sequence for comparison.}
 \usage{
-hammingCompare(gene, chain, length)
+hammingCompare(Con.df, gene, chain, length)
 }
 \arguments{
+\item{Con.df}{The data frame of the condensed values of the filtered contig}
+
 \item{gene}{The IGH or IG light chains (IGLC)}
 
 \item{chain}{The column header with the nucletoide sequence}

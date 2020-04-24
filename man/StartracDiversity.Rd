@@ -11,7 +11,7 @@ StartracDiversity(seurat, type = "Type", sample = NULL, by = c("overall"))
 
 \item{type}{The column header in the meta data that gives the where the cells were derived from, not the patient sample IDs}
 
-\item{sample}{The column header corresponding to individual samples or patients. This must be}
+\item{sample}{The column header corresponding to individual samples or patients.}
 
 \item{by}{Method to subset the indices by either overall (across all samples) or by specific group}
 }

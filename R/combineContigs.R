@@ -187,7 +187,7 @@ combineBCR <- function(df,
                        removeMulti = F) {
     df <- if(class(df) != "list") list(df) else df
     out <- NULL
-    final <- NULL
+    final <- list()
     count <- length(unlist(strsplit(df[[1]]$barcode[1], "[-]")))
     count2 <- length(unlist(strsplit(df[[1]]$barcode[1], "[_]")))
     if (count > 2 | count2 > 2) {
@@ -264,7 +264,7 @@ combineBCR <- function(df,
                 }
             }
         }
-    }
+
     Con.df$CTgene <- paste(Con.df$IGH, Con.df$IGLC, sep="_")
     Con.df$CTnt <- paste(Con.df$cdr3_nt1, Con.df$cdr3_nt2, sep="_")
     Con.df$CTaa <- paste(Con.df$cdr3_aa1, Con.df$cdr3_aa2, sep="_")
@@ -272,13 +272,8 @@ combineBCR <- function(df,
         mutate(length1 = nchar(cdr3_nt1)) %>%
         mutate(length2 = nchar(cdr3_nt2))
 
-    lengths_IGH <- Con.df[duplicated(Con.df[,"length1"]),]
-    lengths_IGH <- na.omit(unique(lengths_IGH[,"length1"]))
-    lengths_IGL <- Con.df[duplicated(Con.df[,"length2"]),]
-    lengths_IGL <- na.omit(unique(lengths_IGL[,"length2"]))
-
-    IGH <- hammingCompare("IGH", "cdr3_nt1", "length1")
-    IGLC <- hammingCompare("IGLC", "cdr3_nt2", "length2")
+    IGH <- hammingCompare(Con.df, "IGH", "cdr3_nt1", "length1")
+    IGLC <- hammingCompare(Con.df, "IGLC", "cdr3_nt2", "length2")
     Con.df <- merge(Con.df, IGH, by.x = "cdr3_nt1", by.y = "IG")
     Con.df <- merge(Con.df, IGLC, by.x = "cdr3_nt2", by.y = "IG")
     Con.df[,"CTstrict"] <- paste0(Con.df[,ncol(Con.df)-1], Con.df[,"vgene1"], "_", Con.df[,ncol(Con.df)], Con.df[,"vgene2"])
@@ -287,7 +282,7 @@ combineBCR <- function(df,
     Con.df$ID <- ID
     data3 <- Con.df[, c("barcode", "sample", "ID", "IGH", "cdr3_aa1", "cdr3_nt1", "IGLC", "cdr3_aa2", "cdr3_nt2", "CTgene", "CTnt", "CTaa", "CTstrict", "cellType")]
     final[[i]] <- data3
-
+    }
     names <- NULL
     for (i in seq_along(samples)) {
         c <- paste(samples[i], "_", ID[i], sep="")
@@ -311,14 +306,19 @@ combineBCR <- function(df,
 }
 
 #' Calculates the normalized Hamming Distance between the nucleotide sequence of the heavy or light chain. Relies on the length of the nucleotide sequence for comparison.
+#' @param Con.df The data frame of the condensed values of the filtered contig
 #' @param gene The IGH or IG light chains (IGLC)
 #' @param chain The column header with the nucletoide sequence
 #' @param length The column header with the specific length
 #' @importFrom Biostrings stringDist
-hammingCompare <- function(gene, chain, length) {
+hammingCompare <- function(Con.df, gene, chain, length) {
     `%!in%` = Negate(`%in%`)
     overlap <- NULL
     out <- NULL
+    lengths_IGH <- Con.df[duplicated(Con.df[,"length1"]),]
+    lengths_IGH <- na.omit(unique(lengths_IGH[,"length1"]))
+    lengths_IGL <- Con.df[duplicated(Con.df[,"length2"]),]
+    lengths_IGL <- na.omit(unique(lengths_IGL[,"length2"]))
     if (gene == "IGH") {
         specificLength <- lengths_IGH
     } else if (gene == "IGLC") {
