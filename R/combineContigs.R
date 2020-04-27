@@ -179,6 +179,7 @@ combineTCR <- function(df,
 #' @param removeNA This will remove any chain without values
 #' @param removeMulti This will remove barcodes with greater than 2 chains
 #' @import dplyr
+#' @importFrom Biostrings stringDist
 #' @export
 combineBCR <- function(df,
                        samples = NULL,
@@ -278,8 +279,8 @@ combineBCR <- function(df,
     Con.df <- merge(Con.df, IGLC, by.x = "cdr3_nt2", by.y = "IG")
     Con.df[,"CTstrict"] <- paste0(Con.df[,ncol(Con.df)-1], Con.df[,"vgene1"], "_", Con.df[,ncol(Con.df)], Con.df[,"vgene2"])
     Con.df$cellType <- "B"
-    Con.df$sample <- samples
-    Con.df$ID <- ID
+    Con.df$sample <- samples[i]
+    Con.df$ID <- ID[i]
     data3 <- Con.df[, c("barcode", "sample", "ID", "IGH", "cdr3_aa1", "cdr3_nt1", "IGLC", "cdr3_aa2", "cdr3_nt2", "CTgene", "CTnt", "CTaa", "CTstrict", "cellType")]
     final[[i]] <- data3
     }
