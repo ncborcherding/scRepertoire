@@ -19,5 +19,5 @@ combineBCR(df, samples = NULL, ID = NULL, removeNA = F, removeMulti = F)
 }
 \description{
 Combining the output of the 10x Genomics filtered BCR contig annotation files into a list of processed contigs. Selection of the samples and ID characters should match the prefix of the seurat object if attaching is planned. The function incorporates the calculation of normalized Hamming's distance for the estimation of clonotype,
-allowing for the identification of cells with >= 0.85 in nucleotide sequence. This function will assign clonotypes to the nucleotide sequences sequentiall, unless the Hamming's Distance Criteria is met, and will be modified with an HD. The strict clonotype definition will add the correponding vgene as well.
+allowing for the identification of cells with >= 0.85 in nucleotide sequence. This function will assign clonotypes to the nucleotide sequences sequentially, unless the Hamming's Distance Criteria is met, and will be modified with an HD. The calculation is performed across all barcodes, regardless of the sample. The strict clonotype definition will add the correponding vgene as well.
 }
