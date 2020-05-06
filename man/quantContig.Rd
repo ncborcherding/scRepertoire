@@ -21,7 +21,7 @@ quantContig(
 
 \item{column}{The column header for which you would like to analyze the data}
 
-\item{exportTable}{Exports a table of the data into the global environment in addition to the visualization}
+\item{exportTable}{Returns the data frame used for forming the graph}
 }
 \description{
 Quantify the unique clonotypes in the filtered contigs output from 10x Genomics

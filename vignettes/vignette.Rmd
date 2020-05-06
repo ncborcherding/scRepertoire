@@ -79,7 +79,7 @@ As the output of CellRanger are quantifications of both the TCRA and TCRB chains
 combined <- combineTCR(contig_list, samples = c("PY", "PY", "PX", "PX", "PZ","PZ"), ID = c("P", "T", "P", "T", "P", "T"), cells ="T-AB")
 ```
 
-The output of ```combineTCR()``` will be a list of contig data frames that will reduced to the reads associated with a single cell barcode. It will also combine the multiple reads into clonotype calls by either the nucleotide sequence (CTnt), amino acid sequence (CTaa), the gene sequence (CTgene) or the combination of the nucleotide and gene sequence (CTstrict). The analogous function for B cells, ```combineBCR()``` functions similarly with 2 major caveats: 1) Each barcode can only have a maximum of 2 sequences, if greater exists, the 2 with the highest reads are selected. 2) The strict definition of clonotype (CTstrict) is based on the v gene and >85% normalized hamming distance of the nucleotide sequence. 
+The output of ```combineTCR()``` will be a list of contig data frames that will reduced to the reads associated with a single cell barcode. It will also combine the multiple reads into clonotype calls by either the nucleotide sequence (CTnt), amino acid sequence (CTaa), the gene sequence (CTgene) or the combination of the nucleotide and gene sequence (CTstrict). The analogous function for B cells, ```combineBCR()``` functions similarly with 2 major caveats: 1) Each barcode can only have a maximum of 2 sequences, if greater exists, the 2 with the highest reads are selected. 2) The strict definition of clonotype (CTstrict) is based on the v gene and >85% normalized hamming distance of the nucleotide sequence. The hamming distance is calculated across all BCR sequences recovered, regardless of the run.
 
 ##Other Processing Functions
 
@@ -111,7 +111,7 @@ subset <- subsetContig(combined, name = "sample", variables = c("PX", "PY"))
 +  "aa" - use the amino acid sequence of the CDR3 region
 +  "gene+nt" - use the genes comprising the TCR/Ig + the nucleotide sequence of the CDR3 region. This is the [proper definition of clonotype](https://www.ncbi.nlm.nih.gov/pubmed/19568742).
 
-Import to note that the clonotype is called using essentially the combination of genes or nt/aa CDR3 sequences for both loci. As of this implementation of scRepertoire, clonotype calling is not incorporating small variations within the CDR3 sequences. As such the *gene* approach will be the most sensitive, while the use of *nt* or *aa* moderately so, and the most specific for clonotypes being *gene+nt*. Additionally, the clonotype call is trying to incorporate both loci, *i.e*, both *TCRA* and *TCRB* chains and if a single cell barcode has multiple sequences identified (*i.e.*, 2 TCRA chains expressed in one cell). Using the 10x approach, there is a subset of barcodes that only return one of the immune receptor chains, the unreturned chain is assigned an *NA* value.
+Important to note, that the clonotype is called using essentially the combination of genes or nt/aa CDR3 sequences for both loci. As of this implementation of scRepertoire, clonotype calling is not incorporating small variations within the CDR3 sequences. As such the *gene* approach will be the most sensitive, while the use of *nt* or *aa* moderately so, and the most specific for clonotypes being *gene+nt*. Additionally, the clonotype call is trying to incorporate both loci, *i.e*, both *TCRA* and *TCRB* chains and if a single cell barcode has multiple sequences identified (*i.e.*, 2 TCRA chains expressed in one cell). Using the 10x approach, there is a subset of barcodes that only return one of the immune receptor chains, the unreturned chain is assigned an *NA* value.
 
 The first function to explore the clonotypes is ```quantContig()``` to return the total or relative numbers of unique clonotypes. 
 ####scale
@@ -122,10 +122,10 @@ The first function to explore the clonotypes is ```quantContig()``` to return th
 quantContig(combined, cloneCall="gene+nt", scale = T)
 ```
 
-Within each of the general analysis functions, there is the ability to export the data frame used to create the visualization. To get the exported values, use **exportTable** == T. It will return the data into the global environment labeled as **functionName**_output. 
+Within each of the general analysis functions, there is the ability to export the data frame used to create the visualization. To get the exported values, use **exportTable** == T. It will return the data frame used to make the the graph, instead of the visual output.  
 
 ```{r}
-quantContig(combined, cloneCall="gene+nt", scale = T, exportTable = T)
+quantContig_output <- quantContig(combined, cloneCall="gene+nt", scale = T, exportTable = T)
 quantContig_output
 ```
 

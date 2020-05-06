@@ -31,7 +31,7 @@ clonalProportion <- function(df,
         }
         names(df) <- unique
     }
-    df <- if(class(df) != "list") list(df) else df
+    df <- if(is(df)[1] != "list") list(df) else df
 
     mat <- matrix(0, length(df), length(split), dimnames = list(names(df), paste0('[', c(1, split[-length(split)] + 1), ':', split, ']')))
     df <- lapply(df, '[[', cloneCall)
@@ -44,8 +44,8 @@ clonalProportion <- function(df,
     for (i in 1:length(split)) {
         mat[,i] <- sapply(df, function (x) sum(na.omit(x[cut[i]:split[i]])))
     }
-    if (exportTable == T) {
-        clonalProportion_output <<- mat
+    if (exportTable == TRUE) {
+        return(mat)
     }
     mat_melt <- melt(mat)
     col <- length(unique(mat_melt$Var2))

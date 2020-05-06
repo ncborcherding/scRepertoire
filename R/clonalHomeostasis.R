@@ -30,7 +30,7 @@ clonalHomeostasis <- function(df,
         }
         names(df) <- unique
     }
-    df <- if(class(df) != "list") list(df) else df
+    df <- if(is(df)[1] != "list") list(df) else df
 
     mat <- matrix(0, length(df), length(cloneTypes) - 1, dimnames = list(names(df), names(cloneTypes)[-1]))
     df <- lapply(df, '[[', cloneCall)
@@ -48,8 +48,8 @@ clonalHomeostasis <- function(df,
         mat[,i-1] <- sapply(df, function (x) sum(x[x > cloneTypes[i-1] & x <= cloneTypes[i]]))
         colnames(mat)[i-1] <- paste0(names(cloneTypes[i]), ' (', cloneTypes[i-1], ' < X <= ', cloneTypes[i], ')')
     }
-    if (exportTable == T) {
-        clonalProportion_output <<- mat
+    if (exportTable == TRUE) {
+        return(mat)
     }
     mat_melt <- melt(mat)
     col <- length(unique(mat_melt$Var2))

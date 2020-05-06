@@ -24,7 +24,7 @@ lengthContig(
 
 \item{chains}{Whether to keep clonotypes "combined" or visualize by chain}
 
-\item{exportTable}{Exports a table of the data into the global environment in addition to the visualization}
+\item{exportTable}{Returns the data frame used for forming the graph}
 }
 \description{
 Examine eithe the nucleotide (nt) or amino acid (aa) sequence length across samples or by vairable (column). Sequences can be visualized as combined values (both chains), or as single chains. If more than 2 chains of the same locus are assigned to the individual barcode, this function will take the first chain.

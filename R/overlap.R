@@ -17,7 +17,7 @@ clonalOverlap <- function(df,
 
     cloneCall <- theCall(cloneCall)
 
-    if (class(df)[1] == "Seurat") {
+    if (is(df)[1] == "Seurat") {
         meta <- data.frame(df@meta.data, df@active.ident)
         colnames(meta)[ncol(meta)] <- "cluster"
         unique <- str_sort(as.character(unique(meta$cluster)), numeric = TRUE)
@@ -29,7 +29,7 @@ clonalOverlap <- function(df,
         }
         names(df) <- unique
     }
-    else if (class(df)[1] != "Seurat") {
+    else if (is(df)[1] != "Seurat") {
         df <- df[order(names(df))]
     }
 
@@ -91,8 +91,8 @@ clonalOverlap <- function(df,
 
     }
     coef_matrix$names <- rownames(coef_matrix)
-    if (exportTable == T) {
-        clonalOverlap_output <<- coef_matrix
+    if (exportTable == TRUE) {
+        return(coef_matrix)
     }
     coef_matrix <- suppressMessages(melt(coef_matrix))
     coef_matrix <- coef_matrix[,-1]

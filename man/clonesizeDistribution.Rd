@@ -19,7 +19,7 @@ clonesizeDistribution(
 
 \item{method}{The clustering paramater for the dendrogram}
 
-\item{exportTable}{Exports a table of the data into the global environment in addition to the visualization}
+\item{exportTable}{Returns the data frame used for forming the graph}
 }
 \description{
 Allows for the hierarchical clustering based on Jensen-Shannon distance using the discrete gamma-GPD spliced threshold model in the powerTCR R package. If you are planning on using this function for your analysis, read and cite PMID: 30485278.

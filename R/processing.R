@@ -83,7 +83,7 @@ if (x == "gene") {
 #' @importFrom stringr str_sort
 #' @export
 seurat2List <- function(seurat) {
-    if (class(seurat)[1] != "Seurat") {
+    if (is(seurat)[1] != "Seurat") {
         stop("Use a seurat object to convert into a list")
     }
     meta <- data.frame(seurat[[]], Idents(seurat))

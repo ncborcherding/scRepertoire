@@ -19,7 +19,7 @@ combineTCR <- function(df,
                            removeNA = F,
                            removeMulti = F,
                             filterMulti = F) {
-    df <- if(class(df) != "list") list(df) else df
+    df <- if(is(df)[1] != "list") list(df) else df
     out <- NULL
     final <- NULL
     count <- length(unlist(strsplit(df[[1]]$barcode[1], "[-]")))
@@ -42,10 +42,10 @@ combineTCR <- function(df,
             for (i in seq_along(df)) {
                 df[[i]] <- subset(df[[i]], chain != "Multi")
                 df[[i]] <- subset(df[[i]], chain == chain1 | chain == chain2)
-                df[[i]] <- subset(df[[i]], productive == T | productive == "TRUE" | productive == "True")
+                df[[i]] <- subset(df[[i]], productive == TRUE | productive == "TRUE" | productive == "True")
                 df[[i]]$sample <- samples[i]
                 df[[i]]$ID <- ID[i]
-                if (filterMulti == T) {
+                if (filterMulti == TRUE) {
                     barcodes <- as.character(unique(table$Var1))
                     multichain <- NULL
                     for (j in seq_along(barcodes)) {
@@ -153,12 +153,12 @@ combineTCR <- function(df,
     for (i in seq_along(final)) {
     final[[i]] <- final[[i]][!duplicated(final[[i]]$barcode),]
     }
-    if (removeNA == T) {
+    if (removeNA == TRUE) {
         for(i in seq_along(final)) {
             final[[i]] <- na.omit(final[[i]])
         }
     }
-    if (removeMulti == T) {
+    if (removeMulti == TRUE) {
         for(i in seq_along(final)) {
             final[[i]] <- filter(final[[i]], !grepl(";",CTnt))
         }
@@ -171,7 +171,7 @@ combineTCR <- function(df,
 #'
 #' @description
 #' Combining the output of the 10x Genomics filtered BCR contig annotation files into a list of processed contigs. Selection of the samples and ID characters should match the prefix of the seurat object if attaching is planned. The function incorporates the calculation of normalized Hamming's distance for the estimation of clonotype,
-#' allowing for the identification of cells with >= 0.85 in nucleotide sequence. This function will assign clonotypes to the nucleotide sequences sequentiall, unless the Hamming's Distance Criteria is met, and will be modified with an HD. The strict clonotype definition will add the correponding vgene as well.
+#' allowing for the identification of cells with >= 0.85 in nucleotide sequence. This function will assign clonotypes to the nucleotide sequences sequentially, unless the Hamming's Distance Criteria is met, and will be modified with an HD. The calculation is performed across all barcodes, regardless of the sample. The strict clonotype definition will add the correponding vgene as well.
 #'
 #' @param df List of filtered contig annotations from 10x Genomics
 #' @param samples The labels of samples
@@ -186,7 +186,7 @@ combineBCR <- function(df,
                        ID = NULL,
                        removeNA = F,
                        removeMulti = F) {
-    df <- if(class(df) != "list") list(df) else df
+    df <- if(is(df)[1] != "list") list(df) else df
     out <- NULL
     final <- list()
     count <- length(unlist(strsplit(df[[1]]$barcode[1], "[-]")))
@@ -198,7 +198,7 @@ combineBCR <- function(df,
     }
     for (i in seq_along(df)) {
         df[[i]] <- subset(df[[i]], chain == "IGH" | chain == "IGK" | chain == "IGL")
-        df[[i]] <- subset(df[[i]], productive == T | productive == "TRUE" | productive == "True")
+        df[[i]] <- subset(df[[i]], productive == TRUE | productive == "TRUE" | productive == "True")
         df[[i]] <- df[[i]] %>%
             group_by(barcode, chain) %>%
             top_n(n = 1, wt = reads)
@@ -269,21 +269,26 @@ combineBCR <- function(df,
     Con.df$CTgene <- paste(Con.df$IGH, Con.df$IGLC, sep="_")
     Con.df$CTnt <- paste(Con.df$cdr3_nt1, Con.df$cdr3_nt2, sep="_")
     Con.df$CTaa <- paste(Con.df$cdr3_aa1, Con.df$cdr3_aa2, sep="_")
-    Con.df <- Con.df %>%
+    data3 <- Con.df %>%
         mutate(length1 = nchar(cdr3_nt1)) %>%
         mutate(length2 = nchar(cdr3_nt2))
-
-    IGH <- hammingCompare(Con.df, "IGH", "cdr3_nt1", "length1")
-    IGLC <- hammingCompare(Con.df, "IGLC", "cdr3_nt2", "length2")
-    Con.df <- merge(Con.df, IGH, by.x = "cdr3_nt1", by.y = "IG")
-    Con.df <- merge(Con.df, IGLC, by.x = "cdr3_nt2", by.y = "IG")
-    Con.df[,"CTstrict"] <- paste0(Con.df[,ncol(Con.df)-1], Con.df[,"vgene1"], "_", Con.df[,ncol(Con.df)], Con.df[,"vgene2"])
-    Con.df$cellType <- "B"
-    Con.df$sample <- samples[i]
-    Con.df$ID <- ID[i]
-    data3 <- Con.df[, c("barcode", "sample", "ID", "IGH", "cdr3_aa1", "cdr3_nt1", "IGLC", "cdr3_aa2", "cdr3_nt2", "CTgene", "CTnt", "CTaa", "CTstrict", "cellType")]
     final[[i]] <- data3
     }
+    #Need to compute normalized hamming distance for across all nucleotide sequences in both IGH and the light chain
+    dictionary <- bind_rows(final)
+    IGH <- hammingCompare(dictionary, "IGH", "cdr3_nt1", "length1")
+    IGLC <- hammingCompare(dictionary, "IGLC", "cdr3_nt2", "length2")
+
+    for(i in seq_along(final)) {
+        final[[i]] <- merge(final[[i]], IGH, by.x = "cdr3_nt1", by.y = "IG", all.x = T)
+        final[[i]] <- merge(final[[i]], IGH, by.x = "cdr3_nt2", by.y = "IG", all.x = T)
+        final[[i]][,"CTstrict"] <- paste0(final[[i]][,ncol(final[[i]])-1], final[[i]][,"vgene1"], "_", final[[i]][,ncol(final[[i]])], final[[i]][,"vgene2"])
+        final[[i]]$cellType <- "B"
+        final[[i]]$sample <- samples[i]
+        final[[i]]$ID <- ID[i]
+        final[[i]]<- final[[i]][, c("barcode", "sample", "ID", "IGH", "cdr3_aa1", "cdr3_nt1", "IGLC", "cdr3_aa2", "cdr3_nt2", "CTgene", "CTnt", "CTaa", "CTstrict", "cellType")]
+    }
+
     names <- NULL
     for (i in seq_along(samples)) {
         c <- paste(samples[i], "_", ID[i], sep="")
@@ -293,12 +298,12 @@ combineBCR <- function(df,
     for (i in seq_along(final)) {
         final[[i]] <- final[[i]][!duplicated(final[[i]]$barcode),]
     }
-    if (removeNA == T) {
+    if (removeNA == TRUE) {
         for(i in seq_along(final)) {
             final[[i]] <- na.omit(final[[i]])
         }
     }
-    if (removeMulti == T) {
+    if (removeMulti == TRUE) {
         for(i in seq_along(final)) {
             final[[i]] <- filter(final[[i]], !grepl(";",CTnt))
         }
@@ -338,6 +343,7 @@ hammingCompare <- function(Con.df, gene, chain, length) {
                 df <- df[order(df)]
                 out <- rbind.data.frame(out,df, stringsAsFactors = F)
                 out <- unique(out)
+                out <- as.data.frame(t(out), stringsAsFactors = F)
             }
         }
         overlap <- rbind.data.frame(overlap,out, stringsAsFactors = F)
@@ -346,8 +352,8 @@ hammingCompare <- function(Con.df, gene, chain, length) {
         colnames(overlap) <- c("Col1", "Col2")
         overlap <- unique(overlap)
 
-        IG <- Con.df[Con.df[,chain] %!in% overlap[1,],]
-        IG <- IG[IG[,chain] %!in% overlap[2,],]
+        IG <- Con.df[Con.df[,chain] %!in% overlap[,1],]
+        IG <- IG[IG[,chain] %!in% overlap[,2],]
         IG <- na.omit(unique(IG[,chain]))
         Hclonotype <- paste0(gene, 1:length(IG))
         IG <- data.frame(IG, Hclonotype)

@@ -1,6 +1,6 @@
 #' A data set T cell contigs as a list outputed from the filter_contig_annotation files.
 #' @name contig_list
-#' @docType list
+#' @docType data
 #'
 #' \itemize{
 #' \item barcode. the cell barcodes for sequenced cells

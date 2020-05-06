@@ -18,7 +18,7 @@ combineSeurat <- function(df,
                           groupBy = c("none", "sample", "ID"),
                           cloneTypes = c(Single = 1, Small = 5, Medium = 20, Large = 100, Hyperexpanded = 500),
                           filterNA = F) {
-    df <- if(class(df) != "list") list(df) else df
+    df <- if(is(df)[1] != "list") list(df) else df
     cloneTypes <- c(None = 0, cloneTypes)
     if (length(df) == 0 | length(seurat) == 0) {
         stop("Make sure you are adding the combined contigs and Seurat object to the combineSeurat() function")
@@ -75,7 +75,7 @@ combineSeurat <- function(df,
     PreMeta <- unique(PreMeta)
     rownames(PreMeta) <- PreMeta$barcode
     seurat <- AddMetaData(seurat, PreMeta)
-    if (filterNA == T) {
+    if (filterNA == TRUE) {
         meta <- seurat[[]]
         evalNA <- data.frame(meta[,"cloneType"])
 

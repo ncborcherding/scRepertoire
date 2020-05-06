@@ -9,7 +9,7 @@ colorblind_vector <- colorRampPalette(c("#FF4B20", "#FFB433", "#C6FDEC", "#7AC5F
 #' @param cloneCall How to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide
 #' @param column The column header for which you would like to analyze the data
 #' @param scale Converts the graphs into percentage of unique clonotypes
-#' @param exportTable Exports a table of the data into the global environment in addition to the visualization
+#' @param exportTable Returns the data frame used for forming the graph
 #' @import ggplot2
 #' @export
 quantContig <- function(df,
@@ -72,7 +72,7 @@ quantContig <- function(df,
         }
     }
     if (exportTable == T) {
-        quantContig_output <<- Con.df
+        return(Con.df)
     }
     plot <- ggplot(aes(x=Con.df[,x], y=Con.df[,y],fill=as.factor(Con.df[,x])), data = Con.df) +
         stat_summary(geom = "errorbar", fun.data = mean_se, position = "dodge", width=.5) +
@@ -161,7 +161,7 @@ abundanceContig <- function(df,
         }
     }
     if (exportTable == T) {
-        abundanceContig_output <<- Con.df
+        return(Con.df)
     }
     plot <- plot +
         scale_x_log10() +
@@ -181,7 +181,7 @@ abundanceContig <- function(df,
 #' @param column The column header for which you would like to analyze the data
 #' @param scale Converts the graphs into denisty plots in order to show relative distributions.
 #' @param chains Whether to keep clonotypes "combined" or visualize by chain
-#' @param exportTable Exports a table of the data into the global environment in addition to the visualization
+#' @param exportTable Returns the data frame used for forming the graph
 #' @importFrom stringr str_split
 #' @importFrom ggplot2 ggplot
 #' @export
@@ -347,7 +347,7 @@ lengthContig <- function(df,
         xlab(xlab) +
         theme_classic()
     if (exportTable == T) {
-        lengthContig_output <<- Con.df
+        return(Con.df)
     }
     return(plot)
 
@@ -424,7 +424,7 @@ compareClonotypes <- function(df,
 #' @param df The product of CombineContig()
 #' @param cloneCall How to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide
 #' @param method The clustering paramater for the dendrogram
-#' @param exportTable Exports a table of the data into the global environment in addition to the visualization
+#' @param exportTable Returns the data frame used for forming the graph
 #' @import dplyr
 #' @importFrom ggplot2 ggplot
 #' @importFrom powerTCR fdiscgammagpd get_distances
@@ -469,7 +469,7 @@ clonesizeDistribution <- function(df,
                                                  plot <- ggdendrogram(hclust)
 
                                                  if (exportTable == T) {
-                                                     clonesizeDistribution_output <<- distances
+                                                     return(distances)
                                                  }
                                                  return(plot)
 }

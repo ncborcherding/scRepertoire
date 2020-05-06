@@ -14,13 +14,13 @@ clonalDiversity <- function(df,
                             colorBy = c("samples"),
                             exportTable = F) {
     cloneCall <- theCall(cloneCall)
-    if (class(df)[1] == "Seurat") {
+    if (is(df)[1] == "Seurat") {
         Type <- "Seurat"
     }
-    else if (class(df)[1] != "Seurat") {
+    else if (is(df)[1] != "Seurat") {
         Type <- "list"
     }
-    if (class(df)[1] == "Seurat") {
+    if (is(df)[1] == "Seurat") {
         meta <- data.frame(df@meta.data, df@active.ident)
         colnames(meta)[ncol(meta)] <- "cluster"
         unique <- str_sort(as.character(unique(meta[,colorBy])), numeric = TRUE)
@@ -92,8 +92,8 @@ clonalDiversity <- function(df,
          plot <- plot +
              geom_boxplot(alpha=0.4, outlier.alpha = 0)
      }
-    if (exportTable == T) {
-        clonalDiversity_output <<- mat
+    if (exportTable == TRUE) {
+        return(mat)
     }
 
     return(plot)
