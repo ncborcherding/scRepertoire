@@ -282,7 +282,7 @@ combineBCR <- function(df,
     for(i in seq_along(final)) {
         final[[i]] <- merge(final[[i]], IGH, by.x = "cdr3_nt1", by.y = "IG", all.x = T)
         final[[i]] <- merge(final[[i]], IGLC, by.x = "cdr3_nt2", by.y = "IG", all.x = T)
-        final[[i]][,"CTstrict"] <- paste0(final[[i]][,ncol(final[[i]])-1], final[[i]][,"vgene1"], "_", final[[i]][,ncol(final[[i]])], final[[i]][,"vgene2"])
+        final[[i]][,"CTstrict"] <- paste0(final[[i]][,ncol(final[[i]])-1], "_", final[[i]][,"vgene1"], "_", final[[i]][,ncol(final[[i]])], "_", final[[i]][,"vgene2"])
         final[[i]]$cellType <- "B"
         final[[i]]$sample <- samples[i]
         final[[i]]$ID <- ID[i]
