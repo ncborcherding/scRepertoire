@@ -343,7 +343,7 @@ hammingCompare <- function(Con.df, gene, chain, length) {
                 df <- df[order(df)]
                 out <- rbind.data.frame(out,df, stringsAsFactors = F)
                 out <- unique(out)
-                out <- as.data.frame(t(out), stringsAsFactors = F)
+                out <- as.data.frame(out, stringsAsFactors = F)
             }
         }
         overlap <- rbind.data.frame(overlap,out, stringsAsFactors = F)
