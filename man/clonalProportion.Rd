@@ -12,14 +12,18 @@ clonalProportion(
 )
 }
 \arguments{
-\item{df}{The product of CombineContig() or the seurat object after combineSeurat()}
+\item{df}{The product of CombineContig() or expression2List()}
 
-\item{split}{The cutpoints for the specific clonotypes}
+\item{split}{The cutpoints for the specific clonotypes.}
 
-\item{cloneCall}{How to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide}
+\item{cloneCall}{How to call the clonotype - CDR3 gene (gene), CDR3 nucleotide (nt) or CDR3 amino acid (aa), or
+CDR3 gene+nucleotide (gene+nt).}
 
 \item{exportTable}{Exports a table of the data into the global environment in addition to the visualization}
 }
 \description{
-Calculate the relative clonal space occupied by the clonotypes. To adjust the clonotypes selected, change the numbers in the variable split.
+This function calculates the relative clonal space occupied by the clonotypes. The grouping of these clonotypes is
+based on the parameter split, at default, split will group the clonotypes into bins of 1:10, 11:100, 101:1001, etc.
+To adjust the clonotypes selected, change the numbers in the variable split. If a matrix output for the data is
+preferred, set exportTable = TRUE.
 }

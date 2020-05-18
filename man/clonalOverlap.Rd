@@ -2,7 +2,7 @@
 % Please edit documentation in R/overlap.R
 \name{clonalOverlap}
 \alias{clonalOverlap}
-\title{Examining the clonal overlap between samples}
+\title{Examining the clonal overlap between groups or samples}
 \usage{
 clonalOverlap(
   df,
@@ -12,14 +12,19 @@ clonalOverlap(
 )
 }
 \arguments{
-\item{df}{The product of CombineContig() or the seurat object after combineSeurat()}
+\item{df}{The product of CombineContig()}
 
-\item{cloneCall}{How to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide}
+\item{cloneCall}{How to call the clonotype - CDR3 gene (gene), CDR3 nucleotide (nt) or CDR3 amino acid (aa), or
+CDR3 gene+nucleotide (gene+nt).}
 
 \item{method}{The method to calculate the overlap, either the overlap coefficient or morisita index}
 
 \item{exportTable}{Exports a table of the data into the global environment in addition to the visualization}
 }
 \description{
-Use overlap coefficient or morisita index to exam the overlapping clonotypes across samples. If a matrix output for the data is preferred, set exportTable = T.
+This functions allows for the caclulation and visualizations of the overlap coefficient or morisita index
+for clonotypes using the product of combineContig() or expression2list(). The overlap coefficient is calculated
+using the intersection of clonotypes divided by the length of the smallest componenet. Morisita index is estimating
+the dispersion of a population, more information can be found [here](https://en.wikipedia.org/wiki/Morisita%27s_overlap_index).
+If a matrix output for the data is preferred, set exportTable = TRUE.
 }

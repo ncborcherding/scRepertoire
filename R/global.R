@@ -29,6 +29,9 @@
     utils::globalVariables ("Sample")
     utils::globalVariables ("productive")
     utils::globalVariables ("variable")
+    utils::globalVariables ("stratum")
+    utils::globalVariables ("alluvium")
+    utils::globalVariables ("x")
 
 
     invisible ()

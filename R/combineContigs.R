@@ -1,15 +1,19 @@
 #' Combining the list of T Cell Receptor contigs
 #'
-#' @description
-#' Combining the output of the 10x Genomics filtered TCR contig annotation files into a list of processed contigs. Selection of the samples and ID characters should match the prefix of the seurat object if attaching is planned. If more than 2 productive chains exist for a barcode, the sequences will be combined and incorporated into a clonotype.
+#' This function consolidates a list of TCR sequencing results to the level of the indiviudal cell barcodes. Using the samples
+#' and ID parameters, the function will add the strings as prefixes to prevent issues with repeated barcodes. The resulting
+#' new barcodes will need to match the seurat or SCE object in order to use, @seealso \code{\link{combineExpression}}.
+#' Several levels of filtering exist - remove or filterMulti are parameters that control how the function deals with barcodes
+#' with multiple chains recovered.
 #'
-#' @param df List of filtered contig annotations from 10x Genomics
-#' @param samples The labels of samples
-#' @param ID The additional sample labeling option
-#' @param cells The type of lymphocyte - T cell-AB or T cell-GD
-#' @param removeNA This will remove any chain without values
-#' @param removeMulti This will remove barcodes with greater than 2 chains
-#' @param filterMulti This option will allow for the selection of the 2 corresponding chains with the highest expression for a single barcode
+#' @param df List of filtered contig annotations from 10x Genomics.
+#' @param samples The labels of samples.
+#' @param ID The additional sample labeling option.
+#' @param cells The type of T cell - T cell-AB or T cell-GD
+#' @param removeNA This will remove any chain without values.
+#' @param removeMulti This will remove barcodes with greater than 2 chains.
+#' @param filterMulti This option will allow for the selection of the 2 corresponding chains with the
+#' highest expression for a single barcode.
 #' @import dplyr
 #' @export
 combineTCR <- function(df,
@@ -169,15 +173,20 @@ combineTCR <- function(df,
 
 #' Combining the list of B Cell Receptor contigs
 #'
-#' @description
-#' Combining the output of the 10x Genomics filtered BCR contig annotation files into a list of processed contigs. Selection of the samples and ID characters should match the prefix of the seurat object if attaching is planned. The function incorporates the calculation of normalized Hamming's distance for the estimation of clonotype,
-#' allowing for the identification of cells with >= 0.85 in nucleotide sequence. This function will assign clonotypes to the nucleotide sequences sequentially, unless the Hamming's Distance Criteria is met, and will be modified with an HD. The calculation is performed across all barcodes, regardless of the sample. The strict clonotype definition will add the correponding vgene as well.
+#' This function consolidates a list of BCR sequencing results to the level of the indiviudal cell barcodes. Using the samples
+#' and ID parameters, the function will add the strings as prefixes to prevent issues with repeated barcodes. The resulting
+#' new barcodes will need to match the seurat or SCE object in order to use, @seealso \code{\link{combineExpression}}.
+#' Unlike combineTCR(), combineBCR produces a column CTstrict of an index of nucleotide sequence and the corresponding v-gene.
+#' This index automatically caluclates the Hammings distance between sequences of the same length and will index sequences with
+#' > 0.85 normalized Hammings distance with the same ID. If nucleotide sequences meet the threshold, ":HD" will be added to
+#' the CTstrict column string.
 #'
-#' @param df List of filtered contig annotations from 10x Genomics
-#' @param samples The labels of samples
-#' @param ID The additional sample labeling option
-#' @param removeNA This will remove any chain without values
-#' @param removeMulti This will remove barcodes with greater than 2 chains
+#'
+#' @param df List of filtered contig annotations from 10x Genomics.
+#' @param samples The labels of samples.
+#' @param ID The additional sample labeling option.
+#' @param removeNA This will remove any chain without values.
+#' @param removeMulti This will remove barcodes with greater than 2 chains.
 #' @import dplyr
 #' @importFrom Biostrings stringDist
 #' @export

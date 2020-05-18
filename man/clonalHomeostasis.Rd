@@ -13,14 +13,18 @@ clonalHomeostasis(
 )
 }
 \arguments{
-\item{df}{The product of CombineContig() or the seurat object after combineSeurat()}
+\item{df}{The product of CombineContig() or expression2List()}
 
-\item{cloneTypes}{The cutpoints of the proportions}
+\item{cloneTypes}{The cutpoints of the proportions.}
 
-\item{cloneCall}{How to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide}
+\item{cloneCall}{How to call the clonotype - CDR3 gene (gene), CDR3 nucleotide (nt) or CDR3 amino acid (aa), or
+CDR3 gene+nucleotide (gene+nt).}
 
 \item{exportTable}{Exports a table of the data into the global environment in addition to the visualization}
 }
 \description{
-Examine the space occupied by specific clonotype proportions. To adjust the proportions, change the cloneTypes variable.
+This function calculates the space occupied by specific clonotype proportions. The grouping of these clonotypes is
+based on the parameter cloneTypes, at default, cloneTypes will group the clonotypes into bins of Rare = 0 to 0.0001,
+Small = 0.0001 to 0.001, etc. To adjust the proportions, change the number or labeling of the cloneTypes paramter. If a
+matrix output for the data is preferred, set exportTable = TRUE.
 }

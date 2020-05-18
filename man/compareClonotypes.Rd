@@ -14,18 +14,23 @@ compareClonotypes(
 )
 }
 \arguments{
-\item{df}{The product of CombineContig()}
+\item{df}{The product of CombineContig() or expression2List().}
 
-\item{cloneCall}{How to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide}
+\item{cloneCall}{How to call the clonotype - CDR3 gene (gene), CDR3 nucleotide (nt) or CDR3 amino acid (aa), or
+CDR3 gene+nucleotide (gene+nt).}
 
-\item{samples}{The specific samples to isolate for visualization}
+\item{samples}{The specific samples to isolate for visualization.}
 
-\item{clonotypes}{The specific sequences of interest}
+\item{clonotypes}{The specific sequences of interest.}
 
-\item{numbers}{The top number clonotype sequences}
+\item{numbers}{The top number clonotype sequences.}
 
-\item{graph}{The type of graph produced, either "alluvial" or "area"}
+\item{graph}{The type of graph produced, either "alluvial" or "area".}
 }
 \description{
-Allows for the exaimination of the proportions of selected clonotypes between samples. Specific sequences (clonotypes) can be visualize or users can select the visualization of the top n clonotypes (numbers).
+This function produces an alluvial or area graph of the proportion of the indicated clonotypes for all or selected samples.
+Clonotypes can be selected using the clonotypes parameter with the specific sequence of interest or using the number
+parameter with the top n clonotypes by proportion to be visualized. If multiple clonotypes have the same proportion and
+are within the selection by the number parameter, all the clonotypes will be visualized. In this instance, if less
+clonotypes are desired, reduce the number parameter.
 }

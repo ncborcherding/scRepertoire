@@ -1,10 +1,14 @@
-#' Examining the clonal overlap between samples
+#' Examining the clonal overlap between groups or samples
 #'
-#' @description
-#' Use overlap coefficient or morisita index to exam the overlapping clonotypes across samples. If a matrix output for the data is preferred, set exportTable = T.
+#' This functions allows for the caclulation and visualizations of the overlap coefficient or morisita index
+#' for clonotypes using the product of combineContig() or expression2list(). The overlap coefficient is calculated
+#' using the intersection of clonotypes divided by the length of the smallest componenet. Morisita index is estimating
+#' the dispersion of a population, more information can be found [here](https://en.wikipedia.org/wiki/Morisita%27s_overlap_index).
+#' If a matrix output for the data is preferred, set exportTable = TRUE.
 #'
-#' @param df The product of CombineContig() or the seurat object after combineSeurat()
-#' @param cloneCall How to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide
+#' @param df The product of CombineContig()
+#' @param cloneCall How to call the clonotype - CDR3 gene (gene), CDR3 nucleotide (nt) or CDR3 amino acid (aa), or
+#' CDR3 gene+nucleotide (gene+nt).
 #' @param method The method to calculate the overlap, either the overlap coefficient or morisita index
 #' @param exportTable Exports a table of the data into the global environment in addition to the visualization
 #' @importFrom stringr str_sort
@@ -17,21 +21,9 @@ clonalOverlap <- function(df,
 
     cloneCall <- theCall(cloneCall)
 
-    if (is(df)[1] == "Seurat") {
-        meta <- data.frame(df@meta.data, df@active.ident)
-        colnames(meta)[ncol(meta)] <- "cluster"
-        unique <- str_sort(as.character(unique(meta$cluster)), numeric = TRUE)
-        meta$barcode <- rownames(meta)
-        df <- NULL
-        for (i in seq_along(unique)) {
-            subset <- subset(meta, meta[,"cluster"] == unique[i])
-            df[[i]] <- subset
-        }
-        names(df) <- unique
-    }
-    else if (is(df)[1] != "Seurat") {
-        df <- df[order(names(df))]
-    }
+    df <- df[order(names(df))]
+    values <- str_sort(as.character(unique(names(df))), numeric = TRUE)
+    df <- df[quiet(dput(values))]
 
     num_samples <- length(df[])
     names_samples <- names(df)

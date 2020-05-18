@@ -1,11 +1,14 @@
 #' Examining the clonal space occupied by specific clonotypes
 #'
-#' @description
-#' Calculate the relative clonal space occupied by the clonotypes. To adjust the clonotypes selected, change the numbers in the variable split.
+#' This function calculates the relative clonal space occupied by the clonotypes. The grouping of these clonotypes is
+#' based on the parameter split, at default, split will group the clonotypes into bins of 1:10, 11:100, 101:1001, etc.
+#' To adjust the clonotypes selected, change the numbers in the variable split. If a matrix output for the data is
+#' preferred, set exportTable = TRUE.
 #'
-#' @param df The product of CombineContig() or the seurat object after combineSeurat()
-#' @param split The cutpoints for the specific clonotypes
-#' @param cloneCall How to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide
+#' @param df The product of CombineContig() or expression2List()
+#' @param split The cutpoints for the specific clonotypes.
+#' @param cloneCall How to call the clonotype - CDR3 gene (gene), CDR3 nucleotide (nt) or CDR3 amino acid (aa), or
+#' CDR3 gene+nucleotide (gene+nt).
 #' @param exportTable Exports a table of the data into the global environment in addition to the visualization
 #'
 #' @import ggplot2
@@ -19,18 +22,6 @@ clonalProportion <- function(df,
                              exportTable = F) {
     Con.df <- NULL
     cloneCall <- theCall(cloneCall)
-
-    if (inherits(x=df, what ="Seurat")) {
-        meta <- data.frame(df@meta.data, df@active.ident)
-        colnames(meta)[ncol(meta)] <- "cluster"
-        unique <- str_sort(as.character(unique(meta$cluster)), numeric = TRUE)
-        df <- NULL
-        for (i in seq_along(unique)) {
-            subset <- subset(meta, meta[,"cluster"] == unique[i])
-            df[[i]] <- subset
-        }
-        names(df) <- unique
-    }
     df <- if(is(df)[1] != "list") list(df) else df
 
     mat <- matrix(0, length(df), length(split), dimnames = list(names(df), paste0('[', c(1, split[-length(split)] + 1), ':', split, ']')))

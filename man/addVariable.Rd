@@ -7,12 +7,14 @@
 addVariable(df, name = NULL, variables = NULL)
 }
 \arguments{
-\item{df}{The product of CombineContig()}
+\item{df}{The product of CombineContig().}
 
-\item{name}{The column header you'd like to add}
+\item{name}{The column header to add.}
 
-\item{variables}{The exact values to add to each element of the list}
+\item{variables}{The exact values to add to each element of the list.}
 }
 \description{
-Adding variables after the combination of contigs.
+This function adds variables to the product of combineContig() to be used in later visualizations. For each element
+in the combinContig(), the function will add a column (labled by name) with the variable. The length of the
+variable paramater needs to match the length of the combineContig() object.
 }

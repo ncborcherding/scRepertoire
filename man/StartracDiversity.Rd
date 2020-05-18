@@ -4,17 +4,21 @@
 \alias{StartracDiversity}
 \title{Diversity indices for single-cell RNA-seq}
 \usage{
-StartracDiversity(seurat, type = "Type", sample = NULL, by = c("overall"))
+StartracDiversity(sc, type = "Type", sample = NULL, by = c("overall"))
 }
 \arguments{
-\item{seurat}{The Seurat object}
+\item{sc}{The Seurat or SCE object. For SCE objects, the cluster variable must be in the meta data under "cluster".}
 
-\item{type}{The column header in the meta data that gives the where the cells were derived from, not the patient sample IDs}
+\item{type}{The column header in the meta data that gives the where the cells were derived from, not the patient
+sample IDs.}
 
 \item{sample}{The column header corresponding to individual samples or patients.}
 
-\item{by}{Method to subset the indices by either overall (across all samples) or by specific group}
+\item{by}{Method to subset the indices by either overall (across all samples) or by specific group.}
 }
 \description{
-This function utilizes the Startrac R package derived from PMID: 30479382. Required to run the function, the "type" variable needs to include the difference in where the cells were derived. The output of this function will produce 3 indices: expa (clonal expansion), migra (cross-tissue migration), and trans (state transition). In order to understand the underlying analyses of the outputs please read the manuscript.
+This function utilizes the Startrac R package derived from PMID: 30479382. Required to run the function,
+the "type" variable needs to include the difference in where the cells were derived. The output of this function will
+produce 3 indices: expa (clonal expansion), migra (cross-tissue migration), and trans (state transition). In order to
+understand the underlying analyses of the outputs please read the manuscript.
 }

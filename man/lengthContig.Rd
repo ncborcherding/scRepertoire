@@ -2,30 +2,34 @@
 % Please edit documentation in R/viz.R
 \name{lengthContig}
 \alias{lengthContig}
-\title{Demonstrate the distribution of lengths filtered contigs output from 10x Genomics}
+\title{Demonstrate the distribution of lengths filtered contigs.}
 \usage{
 lengthContig(
   df,
   cloneCall = c("nt", "aa"),
-  column = NULL,
+  group = NULL,
   scale = F,
   chains = c("combined", "single"),
   exportTable = F
 )
 }
 \arguments{
-\item{df}{The product of CombineContig()}
+\item{df}{The product of CombineContig() or expression2List().}
 
-\item{cloneCall}{How to call the clonotype - CDR3 nt or CDR3 aa sequence.}
+\item{cloneCall}{How to call the clonotype - CDR3 nucleotide (nt) or CDR3 amino acid (aa).}
 
-\item{column}{The column header for which you would like to analyze the data}
+\item{group}{The group header for which you would like to analyze the data.}
 
 \item{scale}{Converts the graphs into denisty plots in order to show relative distributions.}
 
-\item{chains}{Whether to keep clonotypes "combined" or visualize by chain}
+\item{chains}{Whether to keep clonotypes "combined" or visualize by chain.}
 
-\item{exportTable}{Returns the data frame used for forming the graph}
+\item{exportTable}{Returns the data frame used for forming the graph.}
 }
 \description{
-Examine eithe the nucleotide (nt) or amino acid (aa) sequence length across samples or by vairable (column). Sequences can be visualized as combined values (both chains), or as single chains. If more than 2 chains of the same locus are assigned to the individual barcode, this function will take the first chain.
+This function takes the output of combineContig() or expression2List() and displays either the nucleotide (nt)
+or amino acid (aa) sequence length. The sequence length visualized can be selected using the chains parameter,
+either the combined clonotype (both chains) or across all single chains. Visualization can either be a histogram or
+if scale = TRUE, the output will be a density plot. Multiple sequencing runs can be group together using the
+group parameter. If a matrix output for the data is preferred, set exportTable = TRUE.
 }

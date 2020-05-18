@@ -3,47 +3,53 @@
 #' @import colorRamps
 colorblind_vector <- colorRampPalette(c("#FF4B20", "#FFB433", "#C6FDEC", "#7AC5FF", "#0348A6"))
 
-#' Quantify the unique clonotypes in the filtered contigs output from 10x Genomics
+#' Quantify the unique clonotypes in the filtered contigs.
 #'
-#' @param df The product of CombineContig()
-#' @param cloneCall How to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide
-#' @param column The column header for which you would like to analyze the data
-#' @param scale Converts the graphs into percentage of unique clonotypes
-#' @param exportTable Returns the data frame used for forming the graph
+#' This function takes the output from combineContig() or expression2List() and quantifies unique clonotypes.
+#' The unique clonotypes can be either reported as a raw output or scaled to the total number of clonotypes recovered
+#' using the scale parameter. Multiple sequencing runs can be group together using the group parameter. If a matrix
+#' output for the data is preferred, set exportTable = TRUE.
+#'
+#' @param df The product of combineContig().
+#' @param cloneCall How to call the clonotype - CDR3 gene (gene), CDR3 nucleotide (nt) or CDR3 amino acid (aa), or
+#' CDR3 gene+nucleotide (gene+nt).
+#' @param group The column header used for grouping.
+#' @param scale Converts the graphs into percentage of unique clonotypes.
+#' @param exportTable Returns the data frame used for forming the graph,
 #' @import ggplot2
 #' @export
 quantContig <- function(df,
                         cloneCall = c("gene", "nt", "aa", "gene+nt"),
                         scale=F,
-                        column = NULL,
+                        group = NULL,
                         exportTable = F) {
-    if (length(column) > 1) {
-        stop("Only one item in the column variable can be listed.")
+    if (length(group) > 1) {
+        stop("Only one item in the group variable can be listed.")
     }
     cloneCall <- theCall(cloneCall)
 
-    if (!is.null(column)) {
+    if (!is.null(group)) {
         Con.df <- data.frame(matrix(NA, length(df), 4))
-        colnames(Con.df) <- c("contigs","values", "total", column)
+        colnames(Con.df) <- c("contigs","values", "total", group)
         for (i in 1:length(df)) {
             Con.df[i,1] <- length(unique(df[[i]][,cloneCall]))
             Con.df[i,2] <- names(df)[i]
             Con.df[i,3] <- length(df[[i]][,cloneCall])
-            location <- which(colnames(df[[i]]) == column)
+            location <- which(colnames(df[[i]]) == group)
             Con.df[i,4] <- df[[i]][1,location]
         }
-        col <- length(unique(Con.df[,column]))
+        col <- length(unique(Con.df[,group]))
         if (scale == T) {
             Con.df$scaled <- Con.df$contigs/Con.df$total*100
             ylab <- "Percent of Unique Clonotype"
             y <- "scaled"
-            x <- column
-            labs <- column
+            x <- group
+            labs <- group
         } else {
             y <- "contigs"
-            x <- column
+            x <- group
             ylab <- "Unique Clonotypes"
-            labs <- column
+            labs <- group
 
         }
 
@@ -86,24 +92,30 @@ quantContig <- function(df,
 }
 
 
-#' Demonstrate the relative abundance of filtered contigs output from 10x Genomics
+#' Demonstrate the relative abundance of clonotypes by group or sample.
 #'
-#' @param df The product of CombineContig().
-#' @param cloneCall How to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide
-#' @param column The column header for which you would like to analyze the data
+#' This function takes the output of combineContig() or expression2List() and displays the number of clonotypes at
+#' specific frequencies by sample or group. Visualization can either be a line graph using calculated numbers or
+#' if scale = TRUE, the output will be a density plot. Multiple sequencing runs can be group together using the
+#' group parameter. If a matrix output for the data is preferred, set exportTable = TRUE.
+#'
+#' @param df The product of CombineContig() or expression2List().
+#' @param cloneCall How to call the clonotype - CDR3 gene (gene), CDR3 nucleotide (nt) or CDR3 amino acid (aa), or
+#' CDR3 gene+nucleotide (gene+nt).
+#' @param group The column header for which you would like to analyze the data.
 #' @param scale Converts the graphs into denisty plots in order to show relative distributions.
-#' @param exportTable Exports a table of the data into the global environment in addition to the visualization
+#' @param exportTable Exports a table of the data into the global environment in addition to the visualization.
 #' @importFrom ggplot2 ggplot
 #' @export
 abundanceContig <- function(df,
                             cloneCall = c("gene", "nt", "aa", "gene+nt"),
                             scale=F,
-                            column = NULL,
+                            group = NULL,
                             exportTable = F) {
     Con.df <- NULL
     xlab <- "Abundance"
     cloneCall <- theCall(cloneCall)
-    if (!is.null(column)) {
+    if (!is.null(group)) {
         for (i in seq_along(df)) {
             names <- names(df)
             data <- df[[i]]
@@ -112,22 +124,22 @@ abundanceContig <- function(df,
                 summarise(Abundance=n())
             colnames(data1)[1] <- cloneCall
             data1$values <- names[i]
-            label <- df[[i]][1,column]
-            data1[,paste(column)] <- label
+            label <- df[[i]][1,group]
+            data1[,paste(group)] <- label
             Con.df<- rbind.data.frame(Con.df, data1)
         }
         Con.df <- data.frame(Con.df)
-        col <- length(unique(Con.df[,column]))
-        fill <- column
+        col <- length(unique(Con.df[,group]))
+        fill <- group
         if (scale == T) {
             ylab <- "Density of Clonotypes"
-            plot <- ggplot(Con.df, aes(x=Abundance, fill=Con.df[,column])) +
+            plot <- ggplot(Con.df, aes(x=Abundance, fill=Con.df[,group])) +
                 geom_density(aes(y=..scaled..), alpha=0.5, lwd=0.25, color="black", bw=0.5)  +
                 scale_fill_manual(values = colorblind_vector(col)) +
                 labs(fill = fill)
         } else {
             ylab <- "Number of Clonotypes"
-            plot <- ggplot(Con.df, aes(x=Abundance, group = values, color = Con.df[,column])) +
+            plot <- ggplot(Con.df, aes(x=Abundance, group = values, color = Con.df[,group])) +
                 geom_line(stat="count") +
                 scale_color_manual(values = colorblind_vector(col)) +
                 labs(color = fill)
@@ -171,23 +183,26 @@ abundanceContig <- function(df,
     return(plot)
 }
 
-#' Demonstrate the distribution of lengths filtered contigs output from 10x Genomics
+#' Demonstrate the distribution of lengths filtered contigs.
 #'
-#' @description
-#' Examine eithe the nucleotide (nt) or amino acid (aa) sequence length across samples or by vairable (column). Sequences can be visualized as combined values (both chains), or as single chains. If more than 2 chains of the same locus are assigned to the individual barcode, this function will take the first chain.
+#' This function takes the output of combineContig() or expression2List() and displays either the nucleotide (nt)
+#' or amino acid (aa) sequence length. The sequence length visualized can be selected using the chains parameter,
+#' either the combined clonotype (both chains) or across all single chains. Visualization can either be a histogram or
+#' if scale = TRUE, the output will be a density plot. Multiple sequencing runs can be group together using the
+#' group parameter. If a matrix output for the data is preferred, set exportTable = TRUE.
 #'
-#' @param df The product of CombineContig()
-#' @param cloneCall How to call the clonotype - CDR3 nt or CDR3 aa sequence.
-#' @param column The column header for which you would like to analyze the data
+#' @param df The product of CombineContig() or expression2List().
+#' @param cloneCall How to call the clonotype - CDR3 nucleotide (nt) or CDR3 amino acid (aa).
+#' @param group The group header for which you would like to analyze the data.
 #' @param scale Converts the graphs into denisty plots in order to show relative distributions.
-#' @param chains Whether to keep clonotypes "combined" or visualize by chain
-#' @param exportTable Returns the data frame used for forming the graph
+#' @param chains Whether to keep clonotypes "combined" or visualize by chain.
+#' @param exportTable Returns the data frame used for forming the graph.
 #' @importFrom stringr str_split
 #' @importFrom ggplot2 ggplot
 #' @export
 lengthContig <- function(df,
                          cloneCall = c("nt", "aa"),
-                         column = NULL,
+                         group = NULL,
                          scale = F,
                          chains = c("combined", "single"),
                          exportTable = F) {
@@ -214,17 +229,17 @@ lengthContig <- function(df,
     }
     xlab <- "Length"
     Con.df <- NULL
-    if (!is.null(column)) {
-        fill = column
+    if (!is.null(group)) {
+        fill = group
         names <- names(df)
         if (chains == "combined") {
             for (i in seq_along(df)) {
                 length <- nchar(df[[i]][,cloneCall])
                 val <- df[[i]][,cloneCall]
-                cols <- df[[i]][,column]
+                cols <- df[[i]][,group]
                 data <- data.frame(length, val, cols, names[i])
                 data <- na.omit(data)
-                colnames(data) <- c("length", "CT", column, "values")
+                colnames(data) <- c("length", "CT", group, "values")
                 Con.df<- rbind.data.frame(Con.df, data)
             }
         } else if (chains == "single") {
@@ -241,9 +256,9 @@ lengthContig <- function(df,
                     }
                 }
                 chain1 <- nchar(val1)
-                cols1 <- df[[x]][,column]
+                cols1 <- df[[x]][,group]
                 data1 <- data.frame(chain1, val1, names[x], c1, cols1)
-                colnames(data1) <- c("length", "CT", "values", "chain", column)
+                colnames(data1) <- c("length", "CT", "values", "chain", group)
                 val2 <- strings[,2]
                 for (i in 1:length(val2)) {
                     if (grepl(";", val2[i]) == T) {
@@ -254,9 +269,9 @@ lengthContig <- function(df,
                     }
                 }
                 chain2 <- nchar(val2)
-                cols2 <- df[[x]][,column]
+                cols2 <- df[[x]][,group]
                 data2 <- data.frame(chain2, val2, names[x], c2, cols2)
-                colnames(data2) <- c("length", "CT", "values", "chain", column)
+                colnames(data2) <- c("length", "CT", "values", "chain", group)
 
                 data <- rbind(data1, data2)
                 data <- na.omit(data)
@@ -266,18 +281,18 @@ lengthContig <- function(df,
 
             }
         }
-        col <- length(unique(Con.df[,column]))
+        col <- length(unique(Con.df[,group]))
         if (scale == T) {
             yplus <- "Percent of "
-            plot <- ggplot(Con.df, aes(length, (..count..) / sum(..count..) * 100, fill=Con.df[,column])) +
+            plot <- ggplot(Con.df, aes(length, (..count..) / sum(..count..) * 100, fill=Con.df[,group])) +
                 geom_density(aes(y=..scaled..), alpha=0.5, lwd=0.25, color="black")
         } else {
             yplus <- "Number of "
-            plot <- ggplot(Con.df, aes(as.factor(length), fill=Con.df[,column])) +
+            plot <- ggplot(Con.df, aes(as.factor(length), fill=Con.df[,group])) +
                 geom_bar(position = position_dodge2(preserve = "single"), color="black", lwd=0.25, width=0.9)  +
                 scale_x_discrete(breaks = round(seq(min(Con.df$length), max(Con.df$length), by = 5),10))
         }
-    } else if (is.null(column)){
+    } else if (is.null(group)){
         fill <- "Samples"
         names <- names(df)
         if (chains == "combined") {
@@ -355,15 +370,19 @@ lengthContig <- function(df,
 
 #' Demonstrate the difference in clonal proportion between multiple clonotypes
 #'
-#' @description
-#' Allows for the exaimination of the proportions of selected clonotypes between samples. Specific sequences (clonotypes) can be visualize or users can select the visualization of the top n clonotypes (numbers).
+#' This function produces an alluvial or area graph of the proportion of the indicated clonotypes for all or selected samples.
+#' Clonotypes can be selected using the clonotypes parameter with the specific sequence of interest or using the number
+#' parameter with the top n clonotypes by proportion to be visualized. If multiple clonotypes have the same proportion and
+#' are within the selection by the number parameter, all the clonotypes will be visualized. In this instance, if less
+#' clonotypes are desired, reduce the number parameter.
 #'
-#' @param df The product of CombineContig()
-#' @param cloneCall How to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide
-#' @param samples The specific samples to isolate for visualization
-#' @param clonotypes The specific sequences of interest
-#' @param numbers The top number clonotype sequences
-#' @param graph The type of graph produced, either "alluvial" or "area"
+#' @param df The product of CombineContig() or expression2List().
+#' @param cloneCall How to call the clonotype - CDR3 gene (gene), CDR3 nucleotide (nt) or CDR3 amino acid (aa), or
+#' CDR3 gene+nucleotide (gene+nt).
+#' @param samples The specific samples to isolate for visualization.
+#' @param clonotypes The specific sequences of interest.
+#' @param numbers The top number clonotype sequences.
+#' @param graph The type of graph produced, either "alluvial" or "area".
 #' @import ggplot2
 #'
 #' @export
@@ -416,15 +435,18 @@ compareClonotypes <- function(df,
     return(plot)
 }
 
-#' Hierarchical clustering based on JS distance
+#' Hierarchical clustering of clonotypes on clonotype size and Jensen-Shannon divergence
 #'
-#' @description
-#' Allows for the hierarchical clustering based on Jensen-Shannon distance using the discrete gamma-GPD spliced threshold model in the powerTCR R package. If you are planning on using this function for your analysis, read and cite PMID: 30485278.
+#'This functionn produces a heirachial clustering of clonotypes by sample using the Jensen-Shannon distance and discrete
+#'gamma-GPD spliced threshold model in the [powerTCR R package](https://bioconductor.org/packages/devel/bioc/html/powerTCR.html).
+#'Please read and cite PMID: 30485278 if using the function for analyses. If a matrix output for the data is preferred,
+#'set exportTable = TRUE.
 #'
-#' @param df The product of CombineContig()
-#' @param cloneCall How to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide
-#' @param method The clustering paramater for the dendrogram
-#' @param exportTable Returns the data frame used for forming the graph
+#' @param df The product of CombineContig() or expression2List().
+#' @param cloneCall How to call the clonotype - CDR3 gene (gene), CDR3 nucleotide (nt) or CDR3 amino acid (aa), or
+#' CDR3 gene+nucleotide (gene+nt).
+#' @param method The clustering paramater for the dendrogram.
+#' @param exportTable Returns the data frame used for forming the graph.
 #' @import dplyr
 #' @importFrom ggplot2 ggplot
 #' @importFrom powerTCR fdiscgammagpd get_distances

@@ -15,20 +15,25 @@ combineTCR(
 )
 }
 \arguments{
-\item{df}{List of filtered contig annotations from 10x Genomics}
+\item{df}{List of filtered contig annotations from 10x Genomics.}
 
-\item{samples}{The labels of samples}
+\item{samples}{The labels of samples.}
 
-\item{ID}{The additional sample labeling option}
+\item{ID}{The additional sample labeling option.}
 
-\item{cells}{The type of lymphocyte - T cell-AB or T cell-GD}
+\item{cells}{The type of T cell - T cell-AB or T cell-GD}
 
-\item{removeNA}{This will remove any chain without values}
+\item{removeNA}{This will remove any chain without values.}
 
-\item{removeMulti}{This will remove barcodes with greater than 2 chains}
+\item{removeMulti}{This will remove barcodes with greater than 2 chains.}
 
-\item{filterMulti}{This option will allow for the selection of the 2 corresponding chains with the highest expression for a single barcode}
+\item{filterMulti}{This option will allow for the selection of the 2 corresponding chains with the
+highest expression for a single barcode.}
 }
 \description{
-Combining the output of the 10x Genomics filtered TCR contig annotation files into a list of processed contigs. Selection of the samples and ID characters should match the prefix of the seurat object if attaching is planned. If more than 2 productive chains exist for a barcode, the sequences will be combined and incorporated into a clonotype.
+This function consolidates a list of TCR sequencing results to the level of the indiviudal cell barcodes. Using the samples
+and ID parameters, the function will add the strings as prefixes to prevent issues with repeated barcodes. The resulting
+new barcodes will need to match the seurat or SCE object in order to use, @seealso \code{\link{combineExpression}}.
+Several levels of filtering exist - remove or filterMulti are parameters that control how the function deals with barcodes
+with multiple chains recovered.
 }

@@ -7,19 +7,22 @@
 clonalDiversity(
   df,
   cloneCall = c("gene", "nt", "aa", "gene+nt"),
-  colorBy = c("samples"),
+  group = c("samples"),
   exportTable = F
 )
 }
 \arguments{
-\item{df}{The product of CombineContig() or the seurat object after combineSeurat()}
+\item{df}{The product of CombineContig() or expression2List().}
 
-\item{cloneCall}{How to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide}
+\item{cloneCall}{How to call the clonotype - CDR3 gene (gene), CDR3 nucleotide (nt) or CDR3 amino acid (aa), or
+CDR3 gene+nucleotide (gene+nt).}
 
-\item{colorBy}{The column header for which you would like to analyze the data}
+\item{group}{The column header for which you would like to analyze the data.}
 
 \item{exportTable}{Exports a table of the data into the global environment in addition to the visualization}
 }
 \description{
-Examine the clonal diversity of samples
+This function calculates traditional measures of diversity - Shannon, inverse Simpson, Chao1 index, and abundance-based
+coverage estimators (ACE) by sample or group. The group paramter can be used to condense the individual samples. If a
+matrix output for the data is preferred, set exportTable = TRUE.
 }

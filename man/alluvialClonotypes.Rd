@@ -2,24 +2,35 @@
 % Please edit documentation in R/seuratFunctions.R
 \name{alluvialClonotypes}
 \alias{alluvialClonotypes}
-\title{Exploring interaction of clonotypes by seurat dynamics}
+\title{Exploring interaction of clonotypes by seurat or SCE dynamics}
 \usage{
 alluvialClonotypes(
-  seurat,
+  sc,
   cloneCall = c("gene", "nt", "aa", "gene+nt"),
-  compare = "cluster",
+  y.axes = NULL,
+  color = NULL,
+  alpha = NULL,
   facet = NULL
 )
 }
 \arguments{
-\item{seurat}{The seurat object to attach}
+\item{sc}{The seurat or SCE object to visualize after combineExpression(). For SCE objects, the cluster variable
+must be in the meta data under "cluster".}
 
-\item{cloneCall}{How to call the clonotype - based on genes, CDR3 nt, or CDR3 aa sequence or the combination of genes and nucleotide sequence}
+\item{cloneCall}{How to call the clonotype - CDR3 gene (gene), CDR3 nucleotide (nt) or CDR3 amino acid (aa), or
+CDR3 gene+nucleotide (gene+nt).}
 
-\item{compare}{The column label to visualize}
+\item{y.axes}{The columns that will seperate the proportional visualizations.}
 
-\item{facet}{The column label to seperate}
+\item{color}{The column header or clonotype(s) to be highlighted.}
+
+\item{alpha}{The column header to have gradieted opacity.}
+
+\item{facet}{The column label to seperate.}
 }
 \description{
-View the proportioal contribution of clonotypes by seurat object meta data. The variable "compare" allows for the selection of the groups, while faceting can seperate the graph.
+View the proportional contribution of clonotypes by seurat or SCE object meta data after combineExpression().
+The visualization is based on the ggalluvial package, which requires the aesthetics to be part of the axes that are
+visualized. Therefore, alpha, facet, and color should be part of the the axes you wish to view or will add an additional
+stratum/column to the end of the graph.
 }

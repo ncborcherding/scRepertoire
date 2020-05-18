@@ -1,11 +1,14 @@
 #' Examining the clonal homeostasis
 #'
-#' @description
-#' Examine the space occupied by specific clonotype proportions. To adjust the proportions, change the cloneTypes variable.
+#' This function calculates the space occupied by specific clonotype proportions. The grouping of these clonotypes is
+#' based on the parameter cloneTypes, at default, cloneTypes will group the clonotypes into bins of Rare = 0 to 0.0001,
+#' Small = 0.0001 to 0.001, etc. To adjust the proportions, change the number or labeling of the cloneTypes paramter. If a
+#' matrix output for the data is preferred, set exportTable = TRUE.
 #'
-#' @param df The product of CombineContig() or the seurat object after combineSeurat()
-#' @param cloneTypes The cutpoints of the proportions
-#' @param cloneCall How to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide
+#' @param df The product of CombineContig() or expression2List()
+#' @param cloneTypes The cutpoints of the proportions.
+#' @param cloneCall How to call the clonotype - CDR3 gene (gene), CDR3 nucleotide (nt) or CDR3 amino acid (aa), or
+#' CDR3 gene+nucleotide (gene+nt).
 #' @param exportTable Exports a table of the data into the global environment in addition to the visualization
 #' @import ggplot2
 #' @importFrom stringr str_split
@@ -18,18 +21,6 @@ clonalHomeostasis <- function(df,
     cloneTypes <- c(None = 0, cloneTypes)
 
     cloneCall <- theCall(cloneCall)
-
-    if (inherits(x=df, what ="Seurat")) {
-        meta <- data.frame(df@meta.data, df@active.ident)
-        colnames(meta)[ncol(meta)] <- "cluster"
-        unique <- str_sort(as.character(unique(meta$cluster)), numeric = TRUE)
-        df <- NULL
-        for (i in seq_along(unique)) {
-            subset <- subset(meta, meta[,"cluster"] == unique[i])
-            df[[i]] <- subset
-        }
-        names(df) <- unique
-    }
     df <- if(is(df)[1] != "list") list(df) else df
 
     mat <- matrix(0, length(df), length(cloneTypes) - 1, dimnames = list(names(df), names(cloneTypes)[-1]))
