@@ -6,7 +6,7 @@
 #' the dispersion of a population, more information can be found [here](https://en.wikipedia.org/wiki/Morisita%27s_overlap_index).
 #' If a matrix output for the data is preferred, set exportTable = TRUE.
 #'
-#' @param df The product of CombineContig()
+#' @param df The product of CombineContig() or expression2List()
 #' @param cloneCall How to call the clonotype - CDR3 gene (gene), CDR3 nucleotide (nt) or CDR3 amino acid (aa), or
 #' CDR3 gene+nucleotide (gene+nt).
 #' @param method The method to calculate the overlap, either the overlap coefficient or morisita index
