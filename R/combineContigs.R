@@ -320,8 +320,13 @@ combineBCR <- function(df,
     return(final)
 }
 
-#' Calculates the normalized Hamming Distance between the nucleotide sequence of the heavy or light chain. Relies on the length of the nucleotide sequence for comparison.
-#' @param Con.df The data frame of the condensed values of the filtered contig
+#' Calculates the normalized Hamming Distance between the contig nucleotide sequence.
+#'
+#' This feature caluclates the normalized Hammings Distance, or the Hammings Distance divided by length of
+#' sequence in order to index similar and divergent sequences involved in combineBCR(). It is not designed
+#' as an indepenent function. The threshold for similar sequences is set to > 0.85 normalized Hammings
+#' Distance, which if met will index the similar sequence into a single sequence and add ":HD" to the index.
+#' @keywords internal
 #' @param gene The IGH or IG light chains (IGLC)
 #' @param chain The column header with the nucletoide sequence
 #' @param length The column header with the specific length

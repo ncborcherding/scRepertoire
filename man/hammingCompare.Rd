@@ -2,13 +2,11 @@
 % Please edit documentation in R/combineContigs.R
 \name{hammingCompare}
 \alias{hammingCompare}
-\title{Calculates the normalized Hamming Distance between the nucleotide sequence of the heavy or light chain. Relies on the length of the nucleotide sequence for comparison.}
+\title{Calculates the normalized Hamming Distance between the contig nucleotide sequence.}
 \usage{
 hammingCompare(Con.df, gene, chain, length)
 }
 \arguments{
-\item{Con.df}{The data frame of the condensed values of the filtered contig}
-
 \item{gene}{The IGH or IG light chains (IGLC)}
 
 \item{chain}{The column header with the nucletoide sequence}
@@ -16,5 +14,9 @@ hammingCompare(Con.df, gene, chain, length)
 \item{length}{The column header with the specific length}
 }
 \description{
-Calculates the normalized Hamming Distance between the nucleotide sequence of the heavy or light chain. Relies on the length of the nucleotide sequence for comparison.
+This feature caluclates the normalized Hammings Distance, or the Hammings Distance divided by length of
+sequence in order to index similar and divergent sequences involved in combineBCR(). The threshold for
+similar sequences is set to > 0.85 normalized Hammings Distance, which if met will index the similar sequence
+into a single sequence and add ":HD" to the index.
 }
+\keyword{internal}

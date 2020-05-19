@@ -1,4 +1,4 @@
-#' A data set T cell contigs as a list outputed from the filter_contig_annotation files.
+#' A data set of T cell contigs as a list outputed from the filter_contig_annotation files.
 #' @name contig_list
 #' @docType data
 #'
