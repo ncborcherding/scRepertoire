@@ -1,0 +1,14 @@
+CHANGES IN VERSION 1.2.0
+------------------------
+
+The first version of scRepertoire submitted to Bioconductor.
+
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o Added support for SingleCellExperiement format.
+
+
+DEPRECATED AND DEFUNCT
+
+    o Deprecate combineSeurat in favor or combineExpression().
+    o Deprecate seurat2List in favor of expression2List().

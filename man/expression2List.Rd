@@ -11,8 +11,15 @@ expression2List(sc, group)
 
 \item{group}{The column header to group the new list by}
 }
+\value{
+list derived from the meta data of single-cell object with elements divided by the group parameter
+}
 \description{
 Allows users to perform more funadmental measures of clonotype analysis using the meta data from the seurat or SCE
 object. For Seurat objects the active identity is automatically added as "cluster". Reamining grouping parameters
 for SCE or Seurat objects must appear in the meta data.
+}
+\examples{
+newList <- expression2List(seurat, group = "cluster")
+
 }

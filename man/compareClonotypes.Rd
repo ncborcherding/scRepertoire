@@ -27,10 +27,17 @@ CDR3 gene+nucleotide (gene+nt).}
 
 \item{graph}{The type of graph produced, either "alluvial" or "area".}
 }
+\value{
+ggplot of the proportion of total sequencing read of selecting clonotypes
+}
 \description{
 This function produces an alluvial or area graph of the proportion of the indicated clonotypes for all or selected samples.
 Clonotypes can be selected using the clonotypes parameter with the specific sequence of interest or using the number
 parameter with the top n clonotypes by proportion to be visualized. If multiple clonotypes have the same proportion and
 are within the selection by the number parameter, all the clonotypes will be visualized. In this instance, if less
 clonotypes are desired, reduce the number parameter.
+}
+\examples{
+compareClonotypes(combined, numbers = 10, samples = c("PX_P", "PX_T"), cloneCall="aa")
+
 }

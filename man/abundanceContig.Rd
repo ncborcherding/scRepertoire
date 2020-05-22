@@ -7,9 +7,9 @@
 abundanceContig(
   df,
   cloneCall = c("gene", "nt", "aa", "gene+nt"),
-  scale = F,
+  scale = FALSE,
   group = NULL,
-  exportTable = F
+  exportTable = FALSE
 )
 }
 \arguments{
@@ -24,9 +24,16 @@ CDR3 gene+nucleotide (gene+nt).}
 
 \item{exportTable}{Exports a table of the data into the global environment in addition to the visualization.}
 }
+\value{
+ggplot of the total or relative adundance of clonotypes across quanta
+}
 \description{
 This function takes the output of combineContig() or expression2List() and displays the number of clonotypes at
 specific frequencies by sample or group. Visualization can either be a line graph using calculated numbers or
 if scale = TRUE, the output will be a density plot. Multiple sequencing runs can be group together using the
 group parameter. If a matrix output for the data is preferred, set exportTable = TRUE.
+}
+\examples{
+abundanceContig(combined, cloneCall = "gene", scale = FALSE)
+
 }

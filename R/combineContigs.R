@@ -5,6 +5,8 @@
 #' new barcodes will need to match the seurat or SCE object in order to use, @seealso \code{\link{combineExpression}}.
 #' Several levels of filtering exist - remove or filterMulti are parameters that control how the function deals with barcodes
 #' with multiple chains recovered.
+#' @examples
+#'combineTCR(contig_list, samples = c("X", "Y", "Z"), ID = c(rep("T", 3)), cells ="T-AB")
 #'
 #' @param df List of filtered contig annotations from 10x Genomics.
 #' @param samples The labels of samples.
@@ -16,22 +18,23 @@
 #' highest expression for a single barcode.
 #' @import dplyr
 #' @export
+#' @return List of clonotypes for individual cell barcodes
 combineTCR <- function(df,
                            samples = NULL,
                            ID = NULL,
                            cells = c("T-AB", "T-GD"),
-                           removeNA = F,
-                           removeMulti = F,
-                            filterMulti = F) {
+                           removeNA = FALSE,
+                           removeMulti = FALSE,
+                            filterMulti = FALSE) {
     df <- if(is(df)[1] != "list") list(df) else df
     out <- NULL
     final <- NULL
     count <- length(unlist(strsplit(df[[1]]$barcode[1], "[-]")))
     count2 <- length(unlist(strsplit(df[[1]]$barcode[1], "[_]")))
     if (count > 2 | count2 > 2) {
-        stop("Seems to be an error in the naming of the contigs, ensure the barcodes are labeled like, AAACGGGAGATGGCGT-1 or AAACGGGAGATGGCGT, use stripBarcode to get the basic format", call.=F)
+        stop("Seems to be an error in the naming of the contigs, ensure the barcodes are labeled like, AAACGGGAGATGGCGT-1 or AAACGGGAGATGGCGT, use stripBarcode to get the basic format", call. = FALSE)
     } else if (length(df) != length(samples) | length(df) != length(ID)) {
-        stop("Make sure the sample and ID labels match the length of the list of data frames (df).", call. = F)
+        stop("Make sure the sample and ID labels match the length of the list of data frames (df).", call. = FALSE)
     } else {
             if (cells == "T-AB") {
                 chain1 <- "TRA"
@@ -61,7 +64,7 @@ combineTCR <- function(df,
                     df[[i]] <- rbind(df[[i]], multichain)
                 }
                 if (nrow(df[[i]]) == 0) {
-                    stop("Check some hypotenuses, Captain. There are 0 contigs after filtering for celltype.", call. = F)
+                    stop("Check some hypotenuses, Captain. There are 0 contigs after filtering for celltype.", call. = FALSE)
                 }
             }
 
@@ -83,7 +86,7 @@ combineTCR <- function(df,
             colnames(Con.df) <- c("barcode","TCR1", "cdr3_aa1", "cdr3_nt1", "TCR2", "cdr3_aa2", "cdr3_nt2")
             Con.df$barcode <- unique_df
             y <- NULL
-            for (y in 1:length(unique_df)){
+            for (y in seq_along(unique_df)){
                 barcode.i <- Con.df$barcode[y]
                 location.i <- which(barcode.i == data2$barcode)
                 if (length(location.i) == 2){
@@ -181,6 +184,9 @@ combineTCR <- function(df,
 #' > 0.85 normalized Hammings distance with the same ID. If nucleotide sequences meet the threshold, ":HD" will be added to
 #' the CTstrict column string.
 #'
+#' @examples
+#' combineBCR(contig_list, samples = c("X", "Y", "Z"), ID = c(rep("B", 3)))
+#'
 #'
 #' @param df List of filtered contig annotations from 10x Genomics.
 #' @param samples The labels of samples.
@@ -190,20 +196,21 @@ combineTCR <- function(df,
 #' @import dplyr
 #' @importFrom Biostrings stringDist
 #' @export
+#' @return List of clonotypes for individual cell barcodes
 combineBCR <- function(df,
                        samples = NULL,
                        ID = NULL,
-                       removeNA = F,
-                       removeMulti = F) {
+                       removeNA = FALSE,
+                       removeMulti = FALSE) {
     df <- if(is(df)[1] != "list") list(df) else df
     out <- NULL
     final <- list()
     count <- length(unlist(strsplit(df[[1]]$barcode[1], "[-]")))
     count2 <- length(unlist(strsplit(df[[1]]$barcode[1], "[_]")))
     if (count > 2 | count2 > 2) {
-        stop("Seems to be an error in the naming of the contigs, ensure the barcodes are labeled like, AAACGGGAGATGGCGT-1 or AAACGGGAGATGGCGT, use stripBarcode to get the basic format", call.=F)
+        stop("Seems to be an error in the naming of the contigs, ensure the barcodes are labeled like, AAACGGGAGATGGCGT-1 or AAACGGGAGATGGCGT, use stripBarcode to get the basic format", call. = FALSE)
     } else if (length(df) != length(samples) | length(df) != length(ID)) {
-        stop("Make sure the sample and ID labels match the length of the list of data frames (df).", call. = F)
+        stop("Make sure the sample and ID labels match the length of the list of data frames (df).", call. = FALSE)
     }
     for (i in seq_along(df)) {
         df[[i]] <- subset(df[[i]], chain == "IGH" | chain == "IGK" | chain == "IGL")
@@ -231,7 +238,7 @@ combineBCR <- function(df,
     }
 
     for (i in seq_along(out)) {
-        data2 <- data.frame(out[[i]], stringsAsFactors = F)
+        data2 <- data.frame(out[[i]], stringsAsFactors = FALSE)
         data2 <- data2 %>%
             mutate(IGKct = ifelse(chain == "IGK", paste(with(data2, interaction(v_gene,  j_gene, c_gene))), NA)) %>%
             mutate(IGLct = ifelse(chain == "IGL", paste(with(data2, interaction(v_gene,  j_gene, c_gene))), NA)) %>%
@@ -241,7 +248,7 @@ combineBCR <- function(df,
         colnames(Con.df) <- c("barcode","IGH", "cdr3_aa1", "cdr3_nt1", "vgene1", "IGLC", "cdr3_aa2", "cdr3_nt2", "vgene2")
         Con.df$barcode <- unique_df
         y <- NULL
-        for (y in 1:length(unique_df)){
+        for (y in seq_along(unique_df)){
             barcode.i <- Con.df$barcode[y]
             location.i <- which(barcode.i == data2$barcode)
             if (length(location.i) == 2){
@@ -289,8 +296,8 @@ combineBCR <- function(df,
     IGLC <- hammingCompare(dictionary, "IGLC", "cdr3_nt2", "length2")
 
     for(i in seq_along(final)) {
-        final[[i]] <- merge(final[[i]], IGH, by.x = "cdr3_nt1", by.y = "IG", all.x = T)
-        final[[i]] <- merge(final[[i]], IGLC, by.x = "cdr3_nt2", by.y = "IG", all.x = T)
+        final[[i]] <- merge(final[[i]], IGH, by.x = "cdr3_nt1", by.y = "IG", all.x = TRUE)
+        final[[i]] <- merge(final[[i]], IGLC, by.x = "cdr3_nt2", by.y = "IG", all.x = TRUE)
         final[[i]][,"CTstrict"] <- paste0(final[[i]][,ncol(final[[i]])-1], "_", final[[i]][,"vgene1"], "_", final[[i]][,ncol(final[[i]])], "_", final[[i]][,"vgene2"])
         final[[i]]$cellType <- "B"
         final[[i]]$sample <- samples[i]
@@ -331,6 +338,7 @@ combineBCR <- function(df,
 #' @param chain The column header with the nucletoide sequence
 #' @param length The column header with the specific length
 #' @importFrom Biostrings stringDist
+#' @return #Normalized Hammings Distance comparisons to be used in combineBCR()
 hammingCompare <- function(Con.df, gene, chain, length) {
     `%!in%` = Negate(`%in%`)
     overlap <- NULL
@@ -347,20 +355,20 @@ hammingCompare <- function(Con.df, gene, chain, length) {
     for (i in seq_along(lengths_IGH)) {
         tmp <- na.omit(Con.df[Con.df[,length] == specificLength[i],])
         tmp2 <- as.matrix(stringDist(tmp[,chain], method = "hamming")/specificLength[i])
-        filtered <- which(tmp2 >= 0.85, arr.ind = T)
-
-        if (nrow(filtered) == 0) {
+        filtered <- which(tmp2 >= 0.85, arr.ind = TRUE)
+        vec <- nrow(filtered)
+        if (vec == 0) {
             next()
-        } else if (nrow(filtered) != 0) {
-            for (x in 1:nrow(filtered)) {
+        } else if (vec != 0) {
+            for (x in seq_along(vec)) {
                 df <- c(tmp[,chain][filtered[x,1]], tmp[,chain][filtered[x,2]])
                 df <- df[order(df)]
-                out <- rbind.data.frame(out,df, stringsAsFactors = F)
+                out <- rbind.data.frame(out,df, stringsAsFactors = FALSE)
                 out <- unique(out)
-                out <- as.data.frame(out, stringsAsFactors = F)
+                out <- as.data.frame(out, stringsAsFactors = FALSE)
             }
         }
-        overlap <- rbind.data.frame(overlap,out, stringsAsFactors = F)
+        overlap <- rbind.data.frame(overlap,out, stringsAsFactors = FALSE)
     }
     if (!is.null(overlap)) {
         colnames(overlap) <- c("Col1", "Col2")
@@ -369,16 +377,17 @@ hammingCompare <- function(Con.df, gene, chain, length) {
         IG <- Con.df[Con.df[,chain] %!in% overlap[,1],]
         IG <- IG[IG[,chain] %!in% overlap[,2],]
         IG <- na.omit(unique(IG[,chain]))
-        Hclonotype <- paste0(gene, 1:length(IG))
+        Hclonotype <- paste0(gene, seq_len(IG))
         IG <- data.frame(IG, Hclonotype)
-        unique_over <- data.frame(unique(overlap$Col1), stringsAsFactors = F)
-        unique_over$Hclonotype <- paste0(gene, ":HD", ".", 1:nrow(unique_over))
+        unique_over <- data.frame(unique(overlap$Col1), stringsAsFactors = FALSE)
+        unique_over$Hclonotype <- paste0(gene, ":HD", ".", seq_len(unique_over))
         colnames(unique_over)[1] <- "barcodes"
         overlap <- merge(overlap, unique_over, by.x="Col1", by.y="barcodes")
         barcodeOverlap <- unique(c(overlap[,1], overlap[,2]))
-        barcodeOverlap <- data.frame(barcodeOverlap, stringsAsFactors = F)
+        barcodeOverlap <- data.frame(barcodeOverlap, stringsAsFactors = FALSE)
         barcodeOverlap$Hclonotype <- NULL
-        for (y in 1:nrow(barcodeOverlap)) {
+        vec <- nrow(barcodeOverlap)
+        for (y in seq_along(vec)) {
             if (barcodeOverlap[y,1] %in% overlap[,"Col1"]) {
                 x <- which(overlap[,"Col1"] == barcodeOverlap[y,1])
             }else if (barcodeOverlap[y,1] %in% overlap[,"Col2"]) {
@@ -388,12 +397,12 @@ hammingCompare <- function(Con.df, gene, chain, length) {
             barcodeOverlap[y,2] <- overlap[x,"Hclonotype"]
         }
         colnames(barcodeOverlap) <- colnames(IG)
-        IG <- rbind.data.frame(IG, barcodeOverlap, stringsAsFactors = F)
+        IG <- rbind.data.frame(IG, barcodeOverlap, stringsAsFactors = FALSE)
     }
     else {
         IG <- Con.df[,chain]
         IG <- na.omit(unique(IG))
-        Hclonotype <- paste0(gene, ".", 1:length(IG))
+        Hclonotype <- paste0(gene, ".", seq_len(IG))
         IG <- data.frame(IG, Hclonotype)
     }
 }

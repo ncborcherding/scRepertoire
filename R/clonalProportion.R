@@ -5,6 +5,9 @@
 #' To adjust the clonotypes selected, change the numbers in the variable split. If a matrix output for the data is
 #' preferred, set exportTable = TRUE.
 #'
+#' @examples
+#' clonalProportion(combined, cloneCall = "gene")
+#'
 #' @param df The product of CombineContig() or expression2List()
 #' @param split The cutpoints for the specific clonotypes.
 #' @param cloneCall How to call the clonotype - CDR3 gene (gene), CDR3 nucleotide (nt) or CDR3 amino acid (aa), or
@@ -16,10 +19,11 @@
 #' @importFrom reshape2 melt
 #'
 #' @export
+#' @return ggplot of the space occupied by the specific rank of clonotypes
 clonalProportion <- function(df,
                              split = c(10, 100, 1000, 10000, 30000, 100000),
                              cloneCall = c("gene", "nt", "aa", "gene+nt"),
-                             exportTable = F) {
+                             exportTable = FALSE) {
     Con.df <- NULL
     cloneCall <- theCall(cloneCall)
     df <- if(is(df)[1] != "list") list(df) else df
@@ -32,8 +36,8 @@ clonalProportion <- function(df,
         df[[i]] <- rev(sort(as.numeric(df[[i]][,2])))
     }
     cut <- c(1, split[-length(split)] + 1)
-    for (i in 1:length(split)) {
-        mat[,i] <- sapply(df, function (x) sum(na.omit(x[cut[i]:split[i]])))
+    for (i in seq_along(split)) {
+        mat[,i] <- vapply(df, function (x) sum(na.omit(x[cut[i]:split[i]])), FUN.VALUE = numeric(1))
     }
     if (exportTable == TRUE) {
         return(mat)

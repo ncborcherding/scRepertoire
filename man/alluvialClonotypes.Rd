@@ -28,9 +28,16 @@ CDR3 gene+nucleotide (gene+nt).}
 
 \item{facet}{The column label to seperate.}
 }
+\value{
+Alluvial ggplot comparing clonotype distribution across selected parameters.
+}
 \description{
 View the proportional contribution of clonotypes by seurat or SCE object meta data after combineExpression().
 The visualization is based on the ggalluvial package, which requires the aesthetics to be part of the axes that are
 visualized. Therefore, alpha, facet, and color should be part of the the axes you wish to view or will add an additional
 stratum/column to the end of the graph.
+}
+\examples{
+alluvialClonotypes(seurat, cloneCall = "gene", y.axes = c("Patient", "cluster"), color = "cluster")
+
 }

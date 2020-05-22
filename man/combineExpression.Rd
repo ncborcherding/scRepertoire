@@ -10,7 +10,7 @@ combineExpression(
   cloneCall = c("gene", "nt", "aa", "gene+nt"),
   groupBy = c("none", "sample", "ID"),
   cloneTypes = c(Single = 1, Small = 5, Medium = 20, Large = 100, Hyperexpanded = 500),
-  filterNA = F
+  filterNA = FALSE
 )
 }
 \arguments{
@@ -27,6 +27,9 @@ CDR3 gene+nucleotide (gene+nt).}
 
 \item{filterNA}{Method to subset seurat object of barcodes without clonotype information}
 }
+\value{
+seurat or SingleCellExperiment object with attached clonotype information
+}
 \description{
 This function adds the immune receptor information to the seurat or SCE object to the meta data.
 By defualt this function also calculates the frequencies of the clonotypes by sequencing run (groupBy = "none").
@@ -34,4 +37,8 @@ To change how the frequencies are calculated, select a column header for the gro
 Importantly, before using combineExpression() ensure the barcodes of the seurat or SCE object match
 the barcodes in the output of the combinedContig() call. Check changeNames() to change the prefix of the seurat object.
 If the dominant clonotypes have a greater frequency than 500, adjust the cloneTypes variable.
+}
+\examples{
+seurat <- combineExpression(seurat, combined, cloneCall = "gene")
+
 }

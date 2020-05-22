@@ -7,9 +7,9 @@
 quantContig(
   df,
   cloneCall = c("gene", "nt", "aa", "gene+nt"),
-  scale = F,
+  scale = FALSE,
   group = NULL,
-  exportTable = F
+  exportTable = FALSE
 )
 }
 \arguments{
@@ -24,9 +24,16 @@ CDR3 gene+nucleotide (gene+nt).}
 
 \item{exportTable}{Returns the data frame used for forming the graph,}
 }
+\value{
+ggplot of the total or relative unique clonotypes
+}
 \description{
 This function takes the output from combineContig() or expression2List() and quantifies unique clonotypes.
 The unique clonotypes can be either reported as a raw output or scaled to the total number of clonotypes recovered
 using the scale parameter. Multiple sequencing runs can be group together using the group parameter. If a matrix
 output for the data is preferred, set exportTable = TRUE.
+}
+\examples{
+quantContig(combined, cloneCall="gene+nt", scale = TRUE)
+
 }

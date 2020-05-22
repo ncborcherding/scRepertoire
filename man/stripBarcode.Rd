@@ -15,6 +15,9 @@ stripBarcode(contigs, column = 1, connector = "_", num_connects = 3)
 
 \item{num_connects}{The number of strings combined with the connectors}
 }
+\value{
+list with the suffixes of the barcodes removed.
+}
 \description{
 Removing any additional prefixes to the barcodes of the filtered contigs.
 }

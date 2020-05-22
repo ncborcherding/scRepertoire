@@ -20,7 +20,7 @@ scRepertoire comes with a data set derived from T cells derived from three patie
 
 If you are loading the filtered_contig_annotation.csv file into the R environment to create the list, you will also need to call **stringsAsFactors** as FALSE, this will prevent the conversion of categorical variables into factors and is necessary for the evaluations built into some of the functions of scRepertoire. The code should look something like this:
 
-```csv1 <- read.csv("location/of/file.csv", stringsAsFactors = F)```
+```csv1 <- read.csv("location/of/file.csv", stringsAsFactors = FALSE)```
 
 The object "contig_list" is created from 6 filtered_contig_annotation.csv files from 10x Genomics Cell Ranger. The object was created with ```contig_list <- list(csv1, csv2, ...)```. 
 
@@ -119,33 +119,33 @@ The first function to explore the clonotypes is ```quantContig()``` to return th
 +  FALSE - Report the total number of unique clonotypes
 
 ```{r Figure2A_1}
-quantContig(combined, cloneCall="gene+nt", scale = T)
+quantContig(combined, cloneCall="gene+nt", scale = TRUE)
 ```
 
-Within each of the general analysis functions, there is the ability to export the data frame used to create the visualization. To get the exported values, use **exportTable** == T. It will return the data frame used to make the graph, instead of the visual output.  
+Within each of the general analysis functions, there is the ability to export the data frame used to create the visualization. To get the exported values, use **exportTable** = TRUE. It will return the data frame used to make the graph, instead of the visual output.  
 
 ```{r}
-quantContig_output <- quantContig(combined, cloneCall="gene+nt", scale = T, exportTable = T)
+quantContig_output <- quantContig(combined, cloneCall="gene+nt", scale = TRUE, exportTable = TRUE)
 quantContig_output
 ```
 
 The other option here is to be able to define the visualization by data classes. Here we used the ```combineContig()``` to define the **ID** variable as part of the naming structure. We can the **group** to specifically use a column in the data set to organize the visualization.
 
 ```{r Figure2A_2}
-quantContig(combined, cloneCall="gene", group = "ID", scale = T)
+quantContig(combined, cloneCall="gene", group = "ID", scale = TRUE)
 ```
 
 We can also examine the relative distribution of clonotypes by abundance. Here ```abundanceContig()``` will produce a line graph with a total number of clonotypes by the number of instances within the sample or run. Like above, we can also group this by vectors within the contig object using the **group** variable in the function
 
 ```{r Figure2B}
-abundanceContig(combined, cloneCall = "gene", scale = F)
-abundanceContig(combined, cloneCall = "gene", group = "ID", scale = F)
+abundanceContig(combined, cloneCall = "gene", scale = FALSE)
+abundanceContig(combined, cloneCall = "gene", group = "ID", scale = FALSE)
 ```
 
 As you can see the peripheral blood sample derived from patient 1 is a relative extreme outlier. Another method to examine the relative abundance is to look at the density by using the **scale** call in the function.
 
 ```{r Figure2C}
-abundanceContig(combined, group = "ID", scale = T)
+abundanceContig(combined, group = "ID", scale = TRUE)
 ```
 
 Lastly on the basic visualization side, we can look at the length distribution of the CDR3 sequences by calling the ```lengtheContig()``` function. Importantly, unlike the other basic visualizations, the **cloneCall** can only be "nt" or "aa". Due to the method of calling clonotypes as outlined above, the length should reveal a multimodal curve, this is a product of using the **NA** for the unreturned chain sequence and multiple chains within a single barcode. 
@@ -254,7 +254,7 @@ As mentioned previously, this data set is derived from work performed in the lab
 
 ```{r Figure4A}
 seurat <- get(load("/Users/nick/seurat2.rda"))
-DimPlot(seurat, label = T) + NoLegend()
+DimPlot(seurat, label = TRUE) + NoLegend()
 ```
 
 Here you can see we have 12 total clusters (C1-12), which we have labeled as such for simplicity. We can also get a little more granular information on the number of cells by using the *table()* function. 
@@ -297,7 +297,7 @@ ggplot(table, aes(x=Var2, y=Freq, fill=Var1)) +
 scale_fill_manual(values = c("#FF4B20","#0348A6")) + 
   theme_classic() + 
     theme(axis.title = element_blank()) + 
-    guides(fill=F)
+    guides(fill=FALSE)
 ```
 
 Now we can look at the distribution of the clonotype bins by first ordering the **clonoType** as a factor, this prevents the coloring from being in alphabetical order. Next we use the ```DimPlot()``` function call in Seurat with our scale_color_manual additional layer. 
@@ -314,7 +314,7 @@ We can also use the ```combineExpression()``` function to take a look at the clo
 meta <- data.frame(seurat@meta.data, seurat@active.ident) 
 ggplot(meta, aes(x=seurat.active.ident, y=Frequency)) + 
     geom_boxplot(outlier.alpha = 0, aes(fill=seurat.active.ident)) + 
-    guides(fill=F) + 
+    guides(fill=FALSE) + 
     theme_classic() + 
     theme(axis.title.x = element_blank())
 ```

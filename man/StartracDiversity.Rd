@@ -16,9 +16,9 @@ sample IDs.}
 
 \item{by}{Method to subset the indices by either overall (across all samples) or by specific group.}
 }
+\value{
+ggplot of clonal metrics calculatrd by the Startrac R package.
+}
 \description{
-This function utilizes the Startrac R package derived from PMID: 30479382. Required to run the function,
-the "type" variable needs to include the difference in where the cells were derived. The output of this function will
-produce 3 indices: expa (clonal expansion), migra (cross-tissue migration), and trans (state transition). In order to
-understand the underlying analyses of the outputs please read the manuscript.
+
 }

@@ -4,6 +4,9 @@
 #'coverage estimators (ACE) by sample or group. The group paramter can be used to condense the individual samples. If a
 #' matrix output for the data is preferred, set exportTable = TRUE.
 #'
+#' @examples
+#' clonalDiversity(combined, cloneCall = "gene")
+#'
 #' @param df The product of CombineContig() or expression2List().
 #' @param cloneCall How to call the clonotype - CDR3 gene (gene), CDR3 nucleotide (nt) or CDR3 amino acid (aa), or
 #' CDR3 gene+nucleotide (gene+nt).
@@ -14,10 +17,11 @@
 #' @importFrom reshape2 melt
 #' @import ggplot2
 #' @export
+#' @return ggplot of the diversity of clonotype sequences across list
 clonalDiversity <- function(df,
                             cloneCall = c("gene", "nt", "aa", "gene+nt"),
                             group = c("samples"),
-                            exportTable = F) {
+                            exportTable = FALSE) {
     cloneCall <- theCall(cloneCall)
     mat <- NULL
     if (group == "samples") {

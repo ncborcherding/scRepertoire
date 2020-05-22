@@ -9,9 +9,9 @@ combineTCR(
   samples = NULL,
   ID = NULL,
   cells = c("T-AB", "T-GD"),
-  removeNA = F,
-  removeMulti = F,
-  filterMulti = F
+  removeNA = FALSE,
+  removeMulti = FALSE,
+  filterMulti = FALSE
 )
 }
 \arguments{
@@ -30,10 +30,17 @@ combineTCR(
 \item{filterMulti}{This option will allow for the selection of the 2 corresponding chains with the
 highest expression for a single barcode.}
 }
+\value{
+List of clonotypes for individual cell barcodes
+}
 \description{
 This function consolidates a list of TCR sequencing results to the level of the indiviudal cell barcodes. Using the samples
 and ID parameters, the function will add the strings as prefixes to prevent issues with repeated barcodes. The resulting
 new barcodes will need to match the seurat or SCE object in order to use, @seealso \code{\link{combineExpression}}.
 Several levels of filtering exist - remove or filterMulti are parameters that control how the function deals with barcodes
 with multiple chains recovered.
+}
+\examples{
+combineTCR(contig_list, samples = c("X", "Y", "Z"), ID = c(rep("T", 3)), cells ="T-AB")
+
 }

@@ -8,7 +8,7 @@ clonalDiversity(
   df,
   cloneCall = c("gene", "nt", "aa", "gene+nt"),
   group = c("samples"),
-  exportTable = F
+  exportTable = FALSE
 )
 }
 \arguments{
@@ -21,8 +21,15 @@ CDR3 gene+nucleotide (gene+nt).}
 
 \item{exportTable}{Exports a table of the data into the global environment in addition to the visualization}
 }
+\value{
+ggplot of the diversity of clonotype sequences across list
+}
 \description{
 This function calculates traditional measures of diversity - Shannon, inverse Simpson, Chao1 index, and abundance-based
 coverage estimators (ACE) by sample or group. The group paramter can be used to condense the individual samples. If a
 matrix output for the data is preferred, set exportTable = TRUE.
+}
+\examples{
+clonalDiversity(combined, cloneCall = "gene")
+
 }

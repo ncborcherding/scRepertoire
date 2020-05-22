@@ -8,7 +8,7 @@ clonalOverlap(
   df,
   cloneCall = c("gene", "nt", "aa", "gene+nt"),
   method = c("overlap", "morisita"),
-  exportTable = F
+  exportTable = FALSE
 )
 }
 \arguments{
@@ -21,10 +21,17 @@ CDR3 gene+nucleotide (gene+nt).}
 
 \item{exportTable}{Exports a table of the data into the global environment in addition to the visualization}
 }
+\value{
+ggplot of the clonotypic overlap between elements of a list
+}
 \description{
 This functions allows for the caclulation and visualizations of the overlap coefficient or morisita index
 for clonotypes using the product of combineContig() or expression2list(). The overlap coefficient is calculated
 using the intersection of clonotypes divided by the length of the smallest componenet. Morisita index is estimating
 the dispersion of a population, more information can be found [here](https://en.wikipedia.org/wiki/Morisita%27s_overlap_index).
 If a matrix output for the data is preferred, set exportTable = TRUE.
+}
+\examples{
+clonalOverlap(combined, cloneCall = "gene", method = "overlap")
+
 }

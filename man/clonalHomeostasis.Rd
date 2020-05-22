@@ -9,7 +9,7 @@ clonalHomeostasis(
   cloneTypes = c(Rare = 1e-04, Small = 0.001, Medium = 0.01, Large = 0.1, Hyperexpanded
     = 1),
   cloneCall = c("gene", "nt", "aa", "gene+nt"),
-  exportTable = F
+  exportTable = FALSE
 )
 }
 \arguments{
@@ -22,9 +22,16 @@ CDR3 gene+nucleotide (gene+nt).}
 
 \item{exportTable}{Exports a table of the data into the global environment in addition to the visualization}
 }
+\value{
+ggplot of the space occupied by the specific propotion of clonotypes
+}
 \description{
 This function calculates the space occupied by specific clonotype proportions. The grouping of these clonotypes is
 based on the parameter cloneTypes, at default, cloneTypes will group the clonotypes into bins of Rare = 0 to 0.0001,
 Small = 0.0001 to 0.001, etc. To adjust the proportions, change the number or labeling of the cloneTypes paramter. If a
 matrix output for the data is preferred, set exportTable = TRUE.
+}
+\examples{
+clonalHomeostasis(combined, cloneCall = "gene")
+
 }

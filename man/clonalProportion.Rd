@@ -8,7 +8,7 @@ clonalProportion(
   df,
   split = c(10, 100, 1000, 10000, 30000, 1e+05),
   cloneCall = c("gene", "nt", "aa", "gene+nt"),
-  exportTable = F
+  exportTable = FALSE
 )
 }
 \arguments{
@@ -21,9 +21,16 @@ CDR3 gene+nucleotide (gene+nt).}
 
 \item{exportTable}{Exports a table of the data into the global environment in addition to the visualization}
 }
+\value{
+ggplot of the space occupied by the specific rank of clonotypes
+}
 \description{
 This function calculates the relative clonal space occupied by the clonotypes. The grouping of these clonotypes is
 based on the parameter split, at default, split will group the clonotypes into bins of 1:10, 11:100, 101:1001, etc.
 To adjust the clonotypes selected, change the numbers in the variable split. If a matrix output for the data is
 preferred, set exportTable = TRUE.
+}
+\examples{
+clonalProportion(combined, cloneCall = "gene")
+
 }

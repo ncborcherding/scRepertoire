@@ -6,6 +6,9 @@
 #' the dispersion of a population, more information can be found [here](https://en.wikipedia.org/wiki/Morisita%27s_overlap_index).
 #' If a matrix output for the data is preferred, set exportTable = TRUE.
 #'
+#' @examples
+#' clonalOverlap(combined, cloneCall = "gene", method = "overlap")
+#'
 #' @param df The product of CombineContig() or expression2List()
 #' @param cloneCall How to call the clonotype - CDR3 gene (gene), CDR3 nucleotide (nt) or CDR3 amino acid (aa), or
 #' CDR3 gene+nucleotide (gene+nt).
@@ -14,10 +17,11 @@
 #' @importFrom stringr str_sort
 #' @importFrom reshape2 melt
 #' @export
+#' @return ggplot of the clonotypic overlap between elements of a list
 clonalOverlap <- function(df,
                     cloneCall = c("gene", "nt", "aa", "gene+nt"),
                     method = c("overlap", "morisita"),
-                    exportTable = F){
+                    exportTable = FALSE){
 
     cloneCall <- theCall(cloneCall)
 
@@ -27,17 +31,18 @@ clonalOverlap <- function(df,
 
     num_samples <- length(df[])
     names_samples <- names(df)
+    length <- 1:num_samples
     coef_matrix <- data.frame(matrix(NA, num_samples, num_samples))
     colnames(coef_matrix) <- names_samples
     rownames(coef_matrix) <- names_samples
     if (method == "overlap") {
 
-        for (i in 1:num_samples){
+        for (i in seq_along(length)){
           df.i <- df[[i]]
           df.i <- df.i[,c("barcode",cloneCall)]
           df.i_unique <- df.i[!duplicated(df.i$barcode),]
 
-          for (j in 1:num_samples){
+          for (j in seq_along(length)){
             if (i >= j){
               next
             }
@@ -53,13 +58,13 @@ clonalOverlap <- function(df,
     }
     else if (method == "morisita") {
 
-        for (i in 1:num_samples){
+        for (i in seq_along(length)){
             df.i <- df[[i]]
             df.i <- data.frame(table(df.i[,cloneCall]))
             colnames(df.i) <- c(cloneCall, 'Count')
             df.i[,2] <- as.numeric(df.i[,2])
 
-            for (j in 1:num_samples){
+            for (j in seq_along(length)){
                 if (i >= j){
                     next
                 }
@@ -69,7 +74,7 @@ clonalOverlap <- function(df,
                     colnames(df.j) <- c(cloneCall, 'Count')
                     df.j[,2] <- as.numeric(df.j[,2])
 
-                    merged <- merge(df.i, df.j, by = cloneCall, all = T)
+                    merged <- merge(df.i, df.j, by = cloneCall, all = TRUE)
                     merged[is.na(merged)] <- 0
                     sum.df.i <- sum(df.i[,2])
                     sum.df.j <- sum(df.j[,2])

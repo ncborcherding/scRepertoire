@@ -4,7 +4,13 @@
 \alias{combineBCR}
 \title{Combining the list of B Cell Receptor contigs}
 \usage{
-combineBCR(df, samples = NULL, ID = NULL, removeNA = F, removeMulti = F)
+combineBCR(
+  df,
+  samples = NULL,
+  ID = NULL,
+  removeNA = FALSE,
+  removeMulti = FALSE
+)
 }
 \arguments{
 \item{df}{List of filtered contig annotations from 10x Genomics.}
@@ -17,6 +23,9 @@ combineBCR(df, samples = NULL, ID = NULL, removeNA = F, removeMulti = F)
 
 \item{removeMulti}{This will remove barcodes with greater than 2 chains.}
 }
+\value{
+List of clonotypes for individual cell barcodes
+}
 \description{
 This function consolidates a list of BCR sequencing results to the level of the indiviudal cell barcodes. Using the samples
 and ID parameters, the function will add the strings as prefixes to prevent issues with repeated barcodes. The resulting
@@ -25,4 +34,9 @@ Unlike combineTCR(), combineBCR produces a column CTstrict of an index of nucleo
 This index automatically caluclates the Hammings distance between sequences of the same length and will index sequences with
 > 0.85 normalized Hammings distance with the same ID. If nucleotide sequences meet the threshold, ":HD" will be added to
 the CTstrict column string.
+}
+\examples{
+combineBCR(contig_list, samples = c("X", "Y", "Z"), ID = c(rep("B", 3)))
+
+
 }

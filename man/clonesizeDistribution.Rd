@@ -9,7 +9,7 @@ clonesizeDistribution(
   cloneCall = c("gene", "nt", "aa", "gene+nt"),
   method = c("complete", "ward.D", "ward.D2", "single", "average", "mcquitty",
     "median", "centroid"),
-  exportTable = F
+  exportTable = FALSE
 )
 }
 \arguments{
@@ -22,9 +22,16 @@ CDR3 gene+nucleotide (gene+nt).}
 
 \item{exportTable}{Returns the data frame used for forming the graph.}
 }
+\value{
+ggplot dendrogram of the clone size distribution
+}
 \description{
 This functionn produces a heirachial clustering of clonotypes by sample using the Jensen-Shannon distance and discrete
 gamma-GPD spliced threshold model in the [powerTCR R package](https://bioconductor.org/packages/devel/bioc/html/powerTCR.html).
 Please read and cite PMID: 30485278 if using the function for analyses. If a matrix output for the data is preferred,
 set exportTable = TRUE.
+}
+\examples{
+clonesizeDistribution(combined, cloneCall = "gene+nt", method="ward.D2")
+
 }

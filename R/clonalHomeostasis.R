@@ -5,6 +5,9 @@
 #' Small = 0.0001 to 0.001, etc. To adjust the proportions, change the number or labeling of the cloneTypes paramter. If a
 #' matrix output for the data is preferred, set exportTable = TRUE.
 #'
+#' @examples
+#' clonalHomeostasis(combined, cloneCall = "gene")
+#'
 #' @param df The product of CombineContig() or expression2List()
 #' @param cloneTypes The cutpoints of the proportions.
 #' @param cloneCall How to call the clonotype - CDR3 gene (gene), CDR3 nucleotide (nt) or CDR3 amino acid (aa), or
@@ -14,10 +17,11 @@
 #' @importFrom stringr str_split
 #' @importFrom reshape2 melt
 #' @export
+#' @return ggplot of the space occupied by the specific propotion of clonotypes
 clonalHomeostasis <- function(df,
                               cloneTypes = c(Rare = .0001, Small = .001, Medium = .01, Large = .1, Hyperexpanded = 1),
                               cloneCall = c("gene", "nt", "aa", "gene+nt"),
-                              exportTable = F) {
+                              exportTable = FALSE) {
     cloneTypes <- c(None = 0, cloneTypes)
 
     cloneCall <- theCall(cloneCall)
@@ -36,7 +40,7 @@ clonalHomeostasis <- function(df,
     df <- lapply(df, fun)
 
     for (i in 2:length(cloneTypes)) {
-        mat[,i-1] <- sapply(df, function (x) sum(x[x > cloneTypes[i-1] & x <= cloneTypes[i]]))
+        mat[,i-1] <- vapply(df, function (x) sum(x[x > cloneTypes[i-1] & x <= cloneTypes[i]]), FUN.VALUE = numeric(1))
         colnames(mat)[i-1] <- paste0(names(cloneTypes[i]), ' (', cloneTypes[i-1], ' < X <= ', cloneTypes[i], ')')
     }
     if (exportTable == TRUE) {

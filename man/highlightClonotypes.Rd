@@ -18,6 +18,13 @@ CDR3 gene+nucleotide (gene+nt).}
 
 \item{sequence}{The specifc sequence or sequence to highlight}
 }
+\value{
+DimPlot with highlighted clonotypes
+}
 \description{
 Use a specific clonotype sequence to highlight on top of the dimensional reduction in seurat object.
+}
+\examples{
+highlightClonotype(seurat, cloneCall = "gene", sequence = "CAVNGGSQGNLIF_CSAEREDTDTQYF")
+
 }

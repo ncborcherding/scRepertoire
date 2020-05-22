@@ -13,8 +13,15 @@ subsetContig(df, name, variables = NULL)
 
 \item{variables}{The values to subset by, must be in the names(df).}
 }
+\value{
+list of contigs that have been filtered for the name parameter
+}
 \description{
 This function allows for the subsetting of the product of combineContig() by the name of the individual list element.
 In gneral the names of are samples + _ + ID, allowing for users to subset the product of combineContig() across a
 string or indivudal name.
+}
+\examples{
+subset <- subsetContig(combined, name = "sample", variables = c("X", "Y")
+
 }
