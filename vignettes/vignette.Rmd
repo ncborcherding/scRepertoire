@@ -30,13 +30,13 @@ data("contig_list") #the data built into scRepertoire
 head(contig_list[[1]])
 ```
 
-Some workflows will have the additional labeling of the standard barcode. Before we proceed, we will use the function ```stripBarcode()``` in order to avoid any labeling issues down the line. Importantly, ```stripBarcode()``` is for *removing prefixes* on barcodes that have resulted from other pipelines. 
+Some workflows will have the additional labeling of the standard barcode. Before we proceed, we will use the function ```stripBarcode()``` in order to avoid any labeling issues down the line. Importantly, *stripBarcode()* is for *removing prefixes* on barcodes that have resulted from other pipelines. 
 
 **No need for stripBarcode function**, if the barcodes look like:
 + AAACGGGAGATGGCGT-1
 + AAACGGGAGATGGCGT
 
-In terms of using ```stripBarcode()```, please think about the following parameters. 
+In terms of using *stripBarcode()*, please think about the following parameters. 
 
 ####column
 + The column in which the barcodes are present
@@ -57,7 +57,7 @@ You can see now the barcode in column 1, we have removed the P#_#_ prefixes.
 
 ##Combining the Contigs
 
-As the output of CellRanger are quantifications of both the TCRA and TCRB chains, the next step is to create a single list object with the TCR gene and CDR3 sequences by cell barcode. This is performed using the ``` combineTCR()```, where the input is the stripped contig_list. There is also the relabeling of the barcodes by sample and ID information to prevent duplicates.
+As the output of CellRanger are quantifications of both the TCRA and TCRB chains, the next step is to create a single list object with the TCR gene and CDR3 sequences by cell barcode. This is performed using the ```combineTCR()```, where the input is the stripped contig_list. There is also the relabeling of the barcodes by sample and ID information to prevent duplicates.
 
 ####cells
 +  T-AB - T cells, alpha-beta TCR
@@ -79,7 +79,7 @@ As the output of CellRanger are quantifications of both the TCRA and TCRB chains
 combined <- combineTCR(contig_list, samples = c("PY", "PY", "PX", "PX", "PZ","PZ"), ID = c("P", "T", "P", "T", "P", "T"), cells ="T-AB")
 ```
 
-The output of ```combineTCR()``` will be a list of contig data frames that will be reduced to the reads associated with a single cell barcode. It will also combine the multiple reads into clonotype calls by either the nucleotide sequence (CTnt), amino acid sequence (CTaa), the gene sequence (CTgene) or the combination of the nucleotide and gene sequence (CTstrict). The analogous function for B cells, ```combineBCR()``` functions similarly with 2 major caveats: 1) Each barcode can only have a maximum of 2 sequences, if greater exists, the 2 with the highest reads are selected. 2) The strict definition of clonotype (CTstrict) is based on the v gene and >85% normalized hamming distance of the nucleotide sequence. The hamming distance is calculated across all BCR sequences recovered, regardless of the run.
+The output of *combineTCR()* will be a list of contig data frames that will be reduced to the reads associated with a single cell barcode. It will also combine the multiple reads into clonotype calls by either the nucleotide sequence (CTnt), amino acid sequence (CTaa), the gene sequence (CTgene) or the combination of the nucleotide and gene sequence (CTstrict). The analogous function for B cells, ```combineBCR()``` functions similarly with 2 major caveats: 1) Each barcode can only have a maximum of 2 sequences, if greater exists, the 2 with the highest reads are selected. 2) The strict definition of clonotype (CTstrict) is based on the v gene and >85% normalized hamming distance of the nucleotide sequence. The hamming distance is calculated across all BCR sequences recovered, regardless of the run.
 
 ##Other Processing Functions
 
@@ -95,7 +95,7 @@ example[[1]][1:5,ncol(example[[1]])] # This is showing the first 5 values of the
 
 ###Subsetting Contigs
 
-Likewise we can remove specific list elements after ```combineContig()``` using the ```subsetContig()``` function. In order to subset, we need to identify the vector we would like to use for subsetting (**name**) and also the variable values to subset (**variables**). Below you can see us isolate just the 4 sequencing results from PX and PY. 
+Likewise we can remove specific list elements after *combineContig()* using the ```subsetContig()``` function. In order to subset, we need to identify the vector we would like to use for subsetting (**name**) and also the variable values to subset (**variables**). Below you can see us isolate just the 4 sequencing results from PX and PY. 
 
 ```{r}
 subset <- subsetContig(combined, name = "sample", variables = c("PX", "PY"))
@@ -224,7 +224,7 @@ clonalProportion(combined, cloneCall = "nt")
 
 ###Overlap Analysis
 
-If you are interested in measures of similarity between the samples loaded into scRepertoire, using ```clonalOverlap()``` can assist in the visualization. Two methods currently can be performed in ```clonalOverlap()``` 1) overlap coefficient and 2) Morisita index. The former is looking at the overlap of clonotypes scaled to the length of unique clonotypes in the smaller sample. The Morisita index is more complex, it is an ecological measure of the dispersion of individuals within a population, incorporating the size of the population.
+If you are interested in measures of similarity between the samples loaded into scRepertoire, using ```clonalOverlap()``` can assist in the visualization. Two methods currently can be performed in *clonalOverlap()* 1) overlap coefficient and 2) Morisita index. The former is looking at the overlap of clonotypes scaled to the length of unique clonotypes in the smaller sample. The Morisita index is more complex, it is an ecological measure of the dispersion of individuals within a population, incorporating the size of the population.
 
 ```{r Figure3C}
 clonalOverlap(combined, cloneCall = "gene+nt", method = "morisita")
@@ -260,11 +260,11 @@ DimPlot(seurat, label = TRUE) + NoLegend()
 Here you can see we have 12 total clusters (C1-12), which we have labeled as such for simplicity. We can also get a little more granular information on the number of cells by using the *table()* function. 
 
 ```{r}
-table(seurat@active.ident)
+table(Idents(seurat))
 ```
 
 
-Next we can take the clonotypic information and attach it to our Seurat object using the ```combineExpression()``` function. **Importantly**, the major requirement for the attachment is matching contig cell barcodes and barcodes in the row names of the Seurat@meta.data. If these do not match, the attachment will fail. Based on ease, we suggest you make the changes to the Seurat object row names. scRepertoire also has a function ```changeNames``` that can be used to replace specific strings with ones that match the barcodes in combined sequences. The function uses the ***gsub**, so it will replace every occurrence of one string with the new string in place.
+Next we can take the clonotypic information and attach it to our Seurat object using the ```combineExpression()``` function. **Importantly**, the major requirement for the attachment is matching contig cell barcodes and barcodes in the row names of the meta data of the seurat or SCE object. If these do not match, the attachment will fail. Based on ease, we suggest you make the changes to the Seurat object row names. scRepertoire also has a function *changeNames* that can be used to replace specific strings with ones that match the barcodes in combined sequences. The function uses the ***gsub**, so it will replace every occurrence of one string with the new string in place.
 
 We can call (cloneCall) the 4 variations of clonotypes: 1) genes, 2) CDR3 amino acid sequence, 3) CDR3 nucleotide sequence, or 4) genes and CDR3 nucleotide sequence. The attaching function will also calculate the frequency of the clonotype based on the **groupBy** variable. If blank, **groupBy** will calculate frequencies of clonotypes by individual run, but because we have 6 samples of paired peripheral and tumor T cells, we are actually going to use the groupBy variable to call "sample" in order to calculate frequencies across both the peripheral blood and tumor T cells of the same patient.
 
@@ -285,7 +285,7 @@ DimPlot(seurat, group.by = "Type") + NoLegend() +
 We can also look at the composition of each cluster by comparing the proportion of the cluster comprising peripheral blood versus tumor T cells. We can do this by first forming a table of the cluster and type of cells, then scaling the rows of the table by the total number of cells sequenced. 
 
 ```{r Figure4B_2}
-table <- table(seurat$Type, seurat@active.ident)
+table <- table(seurat$Type, Idents(seurat))
 table[1,] <- table[1,]/sum(table[1,]) #Scaling by the total number of peripheral T cells
 table[2,] <- table[2,]/sum(table[2,]) #Scaling by the total number of tumor T cells
 table <- as.data.frame(table)
@@ -300,26 +300,26 @@ scale_fill_manual(values = c("#FF4B20","#0348A6")) +
     guides(fill=FALSE)
 ```
 
-Now we can look at the distribution of the clonotype bins by first ordering the **clonoType** as a factor, this prevents the coloring from being in alphabetical order. Next we use the ```DimPlot()``` function call in Seurat with our scale_color_manual additional layer. 
+Now we can look at the distribution of the clonotype bins by first ordering the **clonoType** as a factor, this prevents the coloring from being in alphabetical order. Next we use the *DimPlot()* function call in Seurat with our scale_color_manual additional layer. 
 
 ```{r Figure4C}
-seurat@meta.data$cloneType <- factor(seurat@meta.data$cloneType, levels = c("Hyperexpanded (100 < X <= 500)", "Large (20 < X <= 100)", "Medium (5 < X <= 20)", "Small (1 < X <= 5)", "Single (0 < X <= 1)", NA))
+slot(seurat, "meta.data")$cloneType <- factor(slot(seurat, "meta.data")$cloneType, levels = c("Hyperexpanded (100 < X <= 500)", "Large (20 < X <= 100)", "Medium (5 < X <= 20)", "Small (1 < X <= 5)", "Single (0 < X <= 1)", NA))
 DimPlot(seurat, group.by = "cloneType") +
     scale_color_manual(values = c(rev(colorblind_vector(5))), na.value="grey")
 ```
 
-We can also use the ```combineExpression()``` function to take a look at the clonotypic frequency by cluster.
+We can also use the *combineExpression()* function to take a look at the clonotypic frequency by cluster.
 
 ```{r Figure4D}
-meta <- data.frame(seurat@meta.data, seurat@active.ident) 
-ggplot(meta, aes(x=seurat.active.ident, y=Frequency)) + 
-    geom_boxplot(outlier.alpha = 0, aes(fill=seurat.active.ident)) + 
+meta <- data.frame(seurat[[]], Idents(seurat)) 
+ggplot(meta, aes(x=Idents.seurat., y=Frequency)) + 
+    geom_boxplot(outlier.alpha = 0, aes(fill=Idents.seurat.)) + 
     guides(fill=FALSE) + 
     theme_classic() + 
     theme(axis.title.x = element_blank())
 ```
 
-We can also look at the clonotypes by calling specific sequences in the ```highlightClonotypest()``` below. In order to highlight the clonotypes, we first need to use the **cloneCall** the type of sequence we will be using and then the specific sequences themselves using **sequence**. Below you can see the steps to highlight the two most prominent sequences *"CAVNGGSQGNLIF_CSAEREDTDTQYF"* with a frequency = 482 (clonotype 1) and *"NA_CATSATLRVVAEKLFF"* with a frequency = 287 (Clonotype2). 
+We can also look at the clonotypes by calling specific sequences in the ```highlightClonotypes()``` below. In order to highlight the clonotypes, we first need to use the **cloneCall** the type of sequence we will be using and then the specific sequences themselves using **sequence**. Below you can see the steps to highlight the two most prominent sequences *"CAVNGGSQGNLIF_CSAEREDTDTQYF"* with a frequency = 482 (clonotype 1) and *"NA_CATSATLRVVAEKLFF"* with a frequency = 287 (Clonotype2). 
 
 ```{r Figure4E}
 seurat <- highlightClonotypes(seurat, cloneCall= "aa", sequence = c("CAVNGGSQGNLIF_CSAEREDTDTQYF", "NA_CATSATLRVVAEKLFF"))
@@ -371,7 +371,7 @@ clonalOverlap(combined2, cloneCall="aa", method="overlap")
 
 From the excellent work by Lei Zhang, et al in [Lineage tracking reveals dynamic relationships of T cells in colorectal cancer](https://www-nature-com.proxy.lib.uiowa.edu/articles/s41586-018-0694-x), the authors introduce new methods for looking at clonotypes by cellular origins and cluster identification. Their [startrac](https://github.com/Japrin/STARTRAC) software has been incorporated into scRepertoire. If you are using the output of this specific function, please cite their work. 
 
-In order to use the ```StartracDiversity()``` function, you will need to include the product of the ```combinedSeurat()``` function. The second requirement is the column header in the meta data of the Seurat object that has tissue of origin. In the example data,**type** corresponds to the column "Type", which includes the "P" and "T" classifier. The indices can be subsetted for a specific patient or examined overall using the **by** variable. Importantly, the function uses only the strict definition of clonotype of the genes and the CDR3 nucleotide sequence. 
+In order to use the ```StartracDiversity()``` function, you will need to include the product of the *combineExpression()* function. The second requirement is the column header in the meta data of the Seurat object that has tissue of origin. In the example data,**type** corresponds to the column "Type", which includes the "P" and "T" classifier. The indices can be subsetted for a specific patient or examined overall using the **by** variable. Importantly, the function uses only the strict definition of clonotype of the genes and the CDR3 nucleotide sequence. 
 
 The indices output includes:
 +  expa - Clonal Expansion
@@ -383,16 +383,7 @@ StartracDiversity(seurat, type = "Type", sample = "Patient", by = "overall")
 ```
 
 
-***
-##Conclusion
 
-This has been a general overview of the capabilities for scRepertoire from the initial processing and visualization to attach to the mRNA expression values in a Seurat object. If you have any questions, comments or suggestions, feel free to visit the github repository or [email me](mailto:ncborch@gmail.com).
-
-###Session Info
-
-```{r}
-sessionInfo()
-```
 
 
 

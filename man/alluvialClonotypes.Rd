@@ -14,11 +14,11 @@ alluvialClonotypes(
 )
 }
 \arguments{
-\item{sc}{The seurat or SCE object to visualize after combineExpression(). For SCE objects, the cluster variable
-must be in the meta data under "cluster".}
+\item{sc}{The seurat or SCE object to visualize after combineExpression(). 
+For SCE objects, the cluster variable must be in the meta data under "cluster".}
 
-\item{cloneCall}{How to call the clonotype - CDR3 gene (gene), CDR3 nucleotide (nt) or CDR3 amino acid (aa), or
-CDR3 gene+nucleotide (gene+nt).}
+\item{cloneCall}{How to call the clonotype - CDR3 gene (gene), CDR3 nucleotide (nt) 
+or CDR3 amino acid (aa), or CDR3 gene+nucleotide (gene+nt).}
 
 \item{y.axes}{The columns that will seperate the proportional visualizations.}
 
@@ -32,10 +32,11 @@ CDR3 gene+nucleotide (gene+nt).}
 Alluvial ggplot comparing clonotype distribution across selected parameters.
 }
 \description{
-View the proportional contribution of clonotypes by seurat or SCE object meta data after combineExpression().
-The visualization is based on the ggalluvial package, which requires the aesthetics to be part of the axes that are
-visualized. Therefore, alpha, facet, and color should be part of the the axes you wish to view or will add an additional
-stratum/column to the end of the graph.
+View the proportional contribution of clonotypes by seurat or SCE object 
+meta data after combineExpression(). The visualization is based on the 
+ggalluvial package, which requires the aesthetics to be part of the axes that are
+visualized. Therefore, alpha, facet, and color should be part of the the axes you 
+wish to view or will add an additional stratum/column to the end of the graph.
 }
 \examples{
 \donttest{

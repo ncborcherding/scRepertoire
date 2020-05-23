@@ -30,11 +30,13 @@ lengthContig(
 ggplot of the discrete or relative length distributions of clonotype sequences
 }
 \description{
-This function takes the output of combineContig() or expression2List() and displays either the nucleotide (nt)
-or amino acid (aa) sequence length. The sequence length visualized can be selected using the chains parameter,
-either the combined clonotype (both chains) or across all single chains. Visualization can either be a histogram or
-if scale = TRUE, the output will be a density plot. Multiple sequencing runs can be group together using the
-group parameter. If a matrix output for the data is preferred, set exportTable = TRUE.
+This function takes the output of combineContig() or expression2List() and displays 
+either the nucleotide (nt) or amino acid (aa) sequence length. The sequence length 
+visualized can be selected using the chains parameter, either the combined clonotype 
+(both chains) or across all single chains. Visualization can either be a histogram or
+if scale = TRUE, the output will be a density plot. Multiple sequencing runs can 
+be group together using the group parameter. If a matrix output for the data is 
+preferred, set exportTable = TRUE.
 }
 \examples{
 #Making combined contig data

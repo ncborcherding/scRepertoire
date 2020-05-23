@@ -2,9 +2,11 @@
 #'
 #' @param contigs The raw loaded filtered_contig_annotation.csv
 #' @param column The column in which the barcodes are listed
-#' @param connector The type of character in which is attaching the defualt barcode with any other characters
+#' @param connector The type of character in which is attaching the defualt 
+#' barcode with any other characters
 #' @param num_connects The number of strings combined with the connectors
-
+#' @examples 
+#' stripBarcode(contig_list[[1]], column = 1, connector = "_", num_connects = 3)
 #' @export
 #' @return list with the suffixes of the barcodes removed.
 stripBarcode <- function(contigs, column = 1, connector = "_", num_connects = 3) {
@@ -15,8 +17,9 @@ stripBarcode <- function(contigs, column = 1, connector = "_", num_connects = 3)
 
 #' Adding variables after the combination of contigs.
 #'
-#' This function adds variables to the product of combineContig() to be used in later visualizations. For each element
-#' in the combinContig(), the function will add a column (labled by name) with the variable. The length of the
+#' This function adds variables to the product of combineContig() to be used in 
+#' later visualizations. For each element in the combinContig(), the function 
+#' will add a column (labled by name) with the variable. The length of the
 #' variable paramater needs to match the length of the combineContig() object.
 #'
 #' @examples
@@ -27,12 +30,9 @@ stripBarcode <- function(contigs, column = 1, connector = "_", num_connects = 3)
 #' @param df The product of CombineContig().
 #' @param name The column header to add.
 #' @param variables The exact values to add to each element of the list.
-
 #' @export
 #' @return list of contigs with a new column (name).
-addVariable <- function(df,
-                        name = NULL,
-                        variables =  NULL) {
+addVariable <- function(df, name = NULL, variables =  NULL) {
     if (length(df) != length(variables)) {
         stop("Make sure the variables match the length of the contig list")
     }
@@ -44,9 +44,10 @@ addVariable <- function(df,
 
 #' Subset the combineContig() product.
 #'
-#' This function allows for the subsetting of the product of combineContig() by the name of the individual list element.
-#' In gneral the names of are samples + _ + ID, allowing for users to subset the product of combineContig() across a
-#' string or indivudal name.
+#' This function allows for the subsetting of the product of combineContig() by the 
+#' name of the individual list element. In general the names of are samples + _ + ID, 
+#' allowing for users to subset the product of combineContig() across a string or 
+#' indivudal name.
 #'
 #' @examples
 #' x <- contig_list
@@ -59,9 +60,7 @@ addVariable <- function(df,
 
 #' @export
 #' @return list of contigs that have been filtered for the name parameter
-subsetContig <- function(df,
-                        name,
-                        variables = NULL) {
+subsetContig <- function(df, name, variables = NULL) {
     names2 <- NULL
     df2 <- list()
     for (i in seq_along(df)) {
@@ -99,11 +98,13 @@ if (x == "gene") {
     return(x)
 }
 
-#' Allows users to take the meta data in seurat/SCE and place it into a list that will work with all the functions
+#' Allows users to take the meta data in seurat/SCE and place it into a list that will 
+#' work with all the functions
 #'
-#' Allows users to perform more funadmental measures of clonotype analysis using the meta data from the seurat or SCE
-#' object. For Seurat objects the active identity is automatically added as "cluster". Reamining grouping parameters
-#' for SCE or Seurat objects must appear in the meta data.
+#' Allows users to perform more funadmental measures of clonotype analysis using the 
+#' meta data from the seurat or SCE object. For Seurat objects the active identity 
+#' is automatically added as "cluster". Reamining grouping parameters or SCE or Seurat 
+#' objects must appear in the meta data.
 #'
 #' @examples
 #' \donttest{
@@ -113,7 +114,8 @@ if (x == "gene") {
 #' @param group The column header to group the new list by
 #' @importFrom stringr str_sort
 #' @export
-#' @return list derived from the meta data of single-cell object with elements divided by the group parameter
+#' @return list derived from the meta data of single-cell object with elements divided by 
+#' the group parameter
 expression2List <- function(sc, group) {
     if (!inherits(x=sc, what ="Seurat") & !inherits(x=sc, what ="SummarizedExperiment")) {
         stop("Use a seurat or SCE object to convert into a list")

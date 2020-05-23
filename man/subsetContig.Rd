@@ -17,9 +17,10 @@ subsetContig(df, name, variables = NULL)
 list of contigs that have been filtered for the name parameter
 }
 \description{
-This function allows for the subsetting of the product of combineContig() by the name of the individual list element.
-In gneral the names of are samples + _ + ID, allowing for users to subset the product of combineContig() across a
-string or indivudal name.
+This function allows for the subsetting of the product of combineContig() by the 
+name of the individual list element. In general the names of are samples + _ + ID, 
+allowing for users to subset the product of combineContig() across a string or 
+indivudal name.
 }
 \examples{
 x <- contig_list

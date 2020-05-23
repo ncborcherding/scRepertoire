@@ -1,10 +1,12 @@
 #' Combining the list of T Cell Receptor contigs
 #'
-#' This function consolidates a list of TCR sequencing results to the level of the indiviudal cell barcodes. Using the samples
-#' and ID parameters, the function will add the strings as prefixes to prevent issues with repeated barcodes. The resulting
-#' new barcodes will need to match the seurat or SCE object in order to use, @seealso \code{\link{combineExpression}}.
-#' Several levels of filtering exist - remove or filterMulti are parameters that control how the function deals with barcodes
-#' with multiple chains recovered.
+#' This function consolidates a list of TCR sequencing results to the level of 
+#' the indiviudal cell barcodes. Using the samples and ID parameters, the function 
+#' will add the strings as prefixes to prevent issues with repeated barcodes. The 
+#' resulting new barcodes will need to match the seurat or SCE object in order 
+#' to use, @seealso \code{\link{combineExpression}}. Several levels of filtering 
+#' exist - remove or filterMulti are parameters that control how  the function 
+#' deals with barcodes with multiple chains recovered.
 #' @examples
 #' combineTCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), rep(c("P", "T"), 3), cells ="T-AB")
 #' 
@@ -14,25 +16,21 @@
 #' @param cells The type of T cell - T cell-AB or T cell-GD
 #' @param removeNA This will remove any chain without values.
 #' @param removeMulti This will remove barcodes with greater than 2 chains.
-#' @param filterMulti This option will allow for the selection of the 2 corresponding chains with the
-#' highest expression for a single barcode.
+#' @param filterMulti This option will allow for the selection of the 2 
+#' corresponding chains with the highest expression for a single barcode.
 #' @import dplyr
 #' @export
 #' @return List of clonotypes for individual cell barcodes
-combineTCR <- function(df,
-                           samples = NULL,
-                           ID = NULL,
-                           cells = c("T-AB", "T-GD"),
-                           removeNA = FALSE,
-                           removeMulti = FALSE,
-                            filterMulti = FALSE) {
+combineTCR <- function(df, samples = NULL, ID = NULL, cells = c("T-AB", "T-GD"), 
+                                removeNA = FALSE, removeMulti = FALSE, filterMulti = FALSE) {
     df <- if(is(df)[1] != "list") list(df) else df
     out <- NULL
     final <- NULL
     count <- length(unlist(strsplit(df[[1]]$barcode[1], "[-]")))
     count2 <- length(unlist(strsplit(df[[1]]$barcode[1], "[_]")))
     if (count > 2 | count2 > 2) {
-        stop("Seems to be an error in the naming of the contigs, ensure the barcodes are labeled like, AAACGGGAGATGGCGT-1 or AAACGGGAGATGGCGT, use stripBarcode to get the basic format", call. = FALSE)
+        stop("Seems to be an error in the naming of the contigs, ensure the barcodes are labeled 
+                like, AAACGGGAGATGGCGT-1 or AAACGGGAGATGGCGT, use stripBarcode to get the basic format", call. = FALSE)
     } else if (length(df) != length(samples) | length(df) != length(ID)) {
         stop("Make sure the sample and ID labels match the length of the list of data frames (df).", call. = FALSE)
     } else {
@@ -98,58 +96,58 @@ combineTCR <- function(df,
                         Con.df[y,c("TCR2", "cdr3_aa2", "cdr3_nt2")] <- data2[location.i[2],c("TCR2", "cdr3", "cdr3_nt")]
                     }
                 } else if (length(location.i) == 3) { # if there are more than 2 chains for each cell
-          if (is.na(data2[location.i[1],c("TCR1")])) { # if the 1st location is occupied by TRB
-            Con.df[y,c("TCR2", "cdr3_aa2", "cdr3_nt2")] <- data2[location.i[1],c("TCR2", "cdr3", "cdr3_nt")] # add TRB info to the TCR2 related columns
-            if (is.na(data2[location.i[2],c("TCR1")])) { # if the 2nd location is occupied by TRB
-              TRdf <- paste(Con.df[y,c("TCR2", "cdr3_aa2", "cdr3_nt2")],data2[location.i[2],c("TCR2", "cdr3", "cdr3_nt")],sep=";") # paste TRBs from 1st and 2nd locations
-              Con.df[y,c("TCR2", "cdr3_aa2", "cdr3_nt2")] <- TRdf # add the combination of 2 TRB chains to the TCR2 slot
-              Con.df[y,c("TCR1", "cdr3_aa1", "cdr3_nt1")] <- data2[location.i[3],c("TCR1", "cdr3", "cdr3_nt")] # add TRA from the 3rd location to the TCR1 related columns
-            } else { # if the 2nd location is occupied by TRA
-              Con.df[y,c("TCR1", "cdr3_aa1", "cdr3_nt1")] <- data2[location.i[1],c("TCR1", "cdr3", "cdr3_nt")] # add TRA info to the TCR1 related columns
-              if (is.na(data2[location.i[3],c("TCR1")])) { # if the 3rd location is occupied by TRB
-                TRdf <- paste(Con.df[y,c("TCR2", "cdr3_aa2", "cdr3_nt2")],data2[location.i[3],c("TCR2", "cdr3", "cdr3_nt")],sep=";") # paste TRB from 1st and 3rd locations
-                Con.df[y,c("TCR2", "cdr3_aa2", "cdr3_nt2")] <- TRdf # add combined TRB relatedn info to the TCR2 related columns
-              } else { # if the 3rd location is occupied by TRA
-                TRdf <- paste(Con.df[y,c("TCR1", "cdr3_aa1", "cdr3_nt1")],data2[location.i[3],c("TCR1", "cdr3", "cdr3_nt")],sep=";") # paste TRAs from 2nd and 3rd locations
-                Con.df[y,c("TCR1", "cdr3_aa1", "cdr3_nt1")] <- TRdf # Add combined TRA to TCR1 related columns
-              }
-            }
-          } else { # if 1st location is occupied by TRA
-            Con.df[y,c("TCR1", "cdr3_aa1", "cdr3_nt1")] <- data2[location.i[1],c("TCR1", "cdr3", "cdr3_nt")] # add 1st TRA to TCR1 column
-            if (is.na(data2[location.i[2],c("TCR1")])) { # if the 2nd location is occupied by TRB
-              if (is.na(data2[location.i[3],c("TCR1")])) { # if the 3rd location is occupied by TRB
-                TRdf <- paste(data2[location.i[2],c("TCR2", "cdr3", "cdr3_nt")],data2[location.i[3],c("TCR2", "cdr3", "cdr3_nt")],sep=";") # paste TRB from 2nd and 3rd locations
-                Con.df[y,c("TCR2", "cdr3_aa2", "cdr3_nt2")] <- TRdf # add TRB combo to TCR2 related  columns
-              } else { # if TRA is on 3rd location
-                TRdf <- paste(Con.df[y,c("TCR1", "cdr3_aa1", "cdr3_nt1")],data2[location.i[3],c("TCR1", "cdr3", "cdr3_nt")],sep=";") # paste TRA from 1st and 3rd locations
-                Con.df[y,c("TCR1", "cdr3_aa1", "cdr3_nt1")] <- TRdf # add TRA combo to TCR1 related columns
-              }
-            } else { # if TRA is on 2nd location
-              TRdf <- paste(Con.df[y,c("TCR1", "cdr3_aa1", "cdr3_nt1")],data2[location.i[2],c("TCR1", "cdr3", "cdr3_nt")],sep=";") # paste TRA from 1st and 2nd locations
-              Con.df[y,c("TCR1", "cdr3_aa1", "cdr3_nt1")] <- TRdf # add the combination of 2 TRA chains to the TCR1 slot
-              Con.df[y,c("TCR2", "cdr3_aa2", "cdr3_nt2")] <- data2[location.i[3],c("TCR2", "cdr3", "cdr3_nt")] # add TRB to the TCR2 related columns
-            }
-          }
-        } else if (length(location.i) == 1) {
-                    chain.i <- data2$chain[location.i]
-                    if (chain.i == "TRA"){
-                        Con.df[y,c("TCR1", "cdr3_aa1", "cdr3_nt1")] <- data2[location.i[1],c("TCR1", "cdr3", "cdr3_nt")]
-                    } else {
-                        Con.df[y,c("TCR2", "cdr3_aa2", "cdr3_nt2")] <- data2[location.i[1],c("TCR2", "cdr3", "cdr3_nt")]
+                    if (is.na(data2[location.i[1],c("TCR1")])) { # if the 1st location is occupied by TRB
+                        Con.df[y,c("TCR2", "cdr3_aa2", "cdr3_nt2")] <- data2[location.i[1],c("TCR2", "cdr3", "cdr3_nt")] # add TRB info to the TCR2 related columns
+                        if (is.na(data2[location.i[2],c("TCR1")])) { # if the 2nd location is occupied by TRB
+                            TRdf <- paste(Con.df[y,c("TCR2", "cdr3_aa2", "cdr3_nt2")],data2[location.i[2],c("TCR2", "cdr3", "cdr3_nt")],sep=";") # paste TRBs from 1st and 2nd locations
+                            Con.df[y,c("TCR2", "cdr3_aa2", "cdr3_nt2")] <- TRdf # add the combination of 2 TRB chains to the TCR2 slot
+                            Con.df[y,c("TCR1", "cdr3_aa1", "cdr3_nt1")] <- data2[location.i[3],c("TCR1", "cdr3", "cdr3_nt")] # add TRA from the 3rd location to the TCR1 related columns
+                        } else { # if the 2nd location is occupied by TRA
+                            Con.df[y,c("TCR1", "cdr3_aa1", "cdr3_nt1")] <- data2[location.i[1],c("TCR1", "cdr3", "cdr3_nt")] # add TRA info to the TCR1 related columns
+                        if (is.na(data2[location.i[3],c("TCR1")])) { # if the 3rd location is occupied by TRB
+                            TRdf <- paste(Con.df[y,c("TCR2", "cdr3_aa2", "cdr3_nt2")],data2[location.i[3],c("TCR2", "cdr3", "cdr3_nt")],sep=";") # paste TRB from 1st and 3rd locations
+                            Con.df[y,c("TCR2", "cdr3_aa2", "cdr3_nt2")] <- TRdf # add combined TRB relatedn info to the TCR2 related columns
+                        } else { # if the 3rd location is occupied by TRA
+                            TRdf <- paste(Con.df[y,c("TCR1", "cdr3_aa1", "cdr3_nt1")],data2[location.i[3],c("TCR1", "cdr3", "cdr3_nt")],sep=";") # paste TRAs from 2nd and 3rd locations
+                            Con.df[y,c("TCR1", "cdr3_aa1", "cdr3_nt1")] <- TRdf # Add combined TRA to TCR1 related columns
+                        }
+                    }
+                } else { # if 1st location is occupied by TRA
+                    Con.df[y,c("TCR1", "cdr3_aa1", "cdr3_nt1")] <- data2[location.i[1],c("TCR1", "cdr3", "cdr3_nt")] # add 1st TRA to TCR1 column
+                    if (is.na(data2[location.i[2],c("TCR1")])) { # if the 2nd location is occupied by TRB
+                        if (is.na(data2[location.i[3],c("TCR1")])) { # if the 3rd location is occupied by TRB
+                            TRdf <- paste(data2[location.i[2],c("TCR2", "cdr3", "cdr3_nt")],data2[location.i[3],c("TCR2", "cdr3", "cdr3_nt")],sep=";") # paste TRB from 2nd and 3rd locations
+                            Con.df[y,c("TCR2", "cdr3_aa2", "cdr3_nt2")] <- TRdf # add TRB combo to TCR2 related  columns
+                    } else { # if TRA is on 3rd location
+                            TRdf <- paste(Con.df[y,c("TCR1", "cdr3_aa1", "cdr3_nt1")],data2[location.i[3],c("TCR1", "cdr3", "cdr3_nt")],sep=";") # paste TRA from 1st and 3rd locations
+                            Con.df[y,c("TCR1", "cdr3_aa1", "cdr3_nt1")] <- TRdf # add TRA combo to TCR1 related columns
+                    }
+                    } else { # if TRA is on 2nd location
+                        TRdf <- paste(Con.df[y,c("TCR1", "cdr3_aa1", "cdr3_nt1")],data2[location.i[2],c("TCR1", "cdr3", "cdr3_nt")],sep=";") # paste TRA from 1st and 2nd locations
+                        Con.df[y,c("TCR1", "cdr3_aa1", "cdr3_nt1")] <- TRdf # add the combination of 2 TRA chains to the TCR1 slot
+                        Con.df[y,c("TCR2", "cdr3_aa2", "cdr3_nt2")] <- data2[location.i[3],c("TCR2", "cdr3", "cdr3_nt")] # add TRB to the TCR2 related columns
                     }
                 }
+        } else if (length(location.i) == 1) {
+                chain.i <- data2$chain[location.i]
+                if (chain.i == "TRA"){
+                    Con.df[y,c("TCR1", "cdr3_aa1", "cdr3_nt1")] <- data2[location.i[1],c("TCR1", "cdr3", "cdr3_nt")]
+                } else {
+                    Con.df[y,c("TCR2", "cdr3_aa2", "cdr3_nt2")] <- data2[location.i[1],c("TCR2", "cdr3", "cdr3_nt")]
+                }
             }
-            Con.df$CTgene <- paste(Con.df$TCR1, Con.df$TCR2, sep="_")
-            Con.df$CTnt <- paste(Con.df$cdr3_nt1, Con.df$cdr3_nt2, sep="_")
-            Con.df$CTaa <- paste(Con.df$cdr3_aa1, Con.df$cdr3_aa2, sep="_")
-            Con.df$CTstrict <- paste(Con.df$TCR1, Con.df$cdr3_nt1, Con.df$TCR2, Con.df$cdr3_nt2, sep="_")
-            Con.df$cellType <- cells #autodetect chains in new functions
-            Con.df[Con.df == "NA_NA"] <- NA #remove the na when gene, aa, or nt is called later
-            Con.df[Con.df == "NA_NA_NA_NA"] <- NA #remove the na when nt+gene is called later
-            data3 <- merge(data2[,-which(names(data2) %in% c("TCR1","TCR2"))], Con.df, by = "barcode")
-            data3 <- data3[, c("barcode", "sample", "ID", "TCR1", "cdr3_aa1", "cdr3_nt1", "TCR2", "cdr3_aa2", "cdr3_nt2", "CTgene", "CTnt", "CTaa", "CTstrict", "cellType")]
-            final[[i]] <- data3
         }
+                Con.df$CTgene <- paste(Con.df$TCR1, Con.df$TCR2, sep="_")
+                Con.df$CTnt <- paste(Con.df$cdr3_nt1, Con.df$cdr3_nt2, sep="_")
+                Con.df$CTaa <- paste(Con.df$cdr3_aa1, Con.df$cdr3_aa2, sep="_")
+                Con.df$CTstrict <- paste(Con.df$TCR1, Con.df$cdr3_nt1, Con.df$TCR2, Con.df$cdr3_nt2, sep="_")
+                Con.df$cellType <- cells #autodetect chains in new functions
+                Con.df[Con.df == "NA_NA"] <- NA #remove the na when gene, aa, or nt is called later
+                Con.df[Con.df == "NA_NA_NA_NA"] <- NA #remove the na when nt+gene is called later
+                data3 <- merge(data2[,-which(names(data2) %in% c("TCR1","TCR2"))], Con.df, by = "barcode")
+                data3 <- data3[, c("barcode", "sample", "ID", "TCR1", "cdr3_aa1", "cdr3_nt1", "TCR2", "cdr3_aa2", "cdr3_nt2", "CTgene", "CTnt", "CTaa", "CTstrict", "cellType")]
+                final[[i]] <- data3
+    }
 
     names <- NULL
     for (i in seq_along(samples)) {
@@ -176,13 +174,16 @@ combineTCR <- function(df,
 
 #' Combining the list of B Cell Receptor contigs
 #'
-#' This function consolidates a list of BCR sequencing results to the level of the indiviudal cell barcodes. Using the samples
-#' and ID parameters, the function will add the strings as prefixes to prevent issues with repeated barcodes. The resulting
-#' new barcodes will need to match the seurat or SCE object in order to use, @seealso \code{\link{combineExpression}}.
-#' Unlike combineTCR(), combineBCR produces a column CTstrict of an index of nucleotide sequence and the corresponding v-gene.
-#' This index automatically caluclates the Hammings distance between sequences of the same length and will index sequences with
-#' > 0.85 normalized Hammings distance with the same ID. If nucleotide sequences meet the threshold, ":HD" will be added to
-#' the CTstrict column string.
+#' This function consolidates a list of BCR sequencing results to the level of the 
+#' individual cell barcodes. Using the samples and ID parameters, the function 
+#' will add the strings as prefixes to prevent issues with repeated barcodes. The 
+#' resulting new barcodes will need to match the seurat or SCE object in order 
+#' to use, @seealso \code{\link{combineExpression}}. Unlike combineTCR(), 
+#' combineBCR produces a column CTstrict of an index of nucleotide sequence 
+#' and the corresponding v-gene. This index automatically caluclates the Hammings 
+#' distance between sequences of the same length and will index sequences with 
+#' > 0.85 normalized Hammings distance with the same ID. If nucleotide sequences 
+#' meet the threshold, ":HD" will be added to the CTstrict column string.
 #'
 #' @examples
 #' \donttest{
@@ -197,18 +198,15 @@ combineTCR <- function(df,
 #' @importFrom Biostrings stringDist
 #' @export
 #' @return List of clonotypes for individual cell barcodes
-combineBCR <- function(df,
-                       samples = NULL,
-                       ID = NULL,
-                       removeNA = FALSE,
-                       removeMulti = FALSE) {
+combineBCR <- function(df, samples = NULL, ID = NULL, removeNA = FALSE, removeMulti = FALSE) {
     df <- if(is(df)[1] != "list") list(df) else df
     out <- NULL
     final <- list()
     count <- length(unlist(strsplit(df[[1]]$barcode[1], "[-]")))
     count2 <- length(unlist(strsplit(df[[1]]$barcode[1], "[_]")))
     if (count > 2 | count2 > 2) {
-        stop("Seems to be an error in the naming of the contigs, ensure the barcodes are labeled like, AAACGGGAGATGGCGT-1 or AAACGGGAGATGGCGT, use stripBarcode to get the basic format", call. = FALSE)
+        stop("Seems to be an error in the naming of the contigs, ensure the barcodes are labeled 
+                like, AAACGGGAGATGGCGT-1 or AAACGGGAGATGGCGT, use stripBarcode to get the basic format", call. = FALSE)
     } else if (length(df) != length(samples) | length(df) != length(ID)) {
         stop("Make sure the sample and ID labels match the length of the list of data frames (df).", call. = FALSE)
     }
@@ -329,10 +327,12 @@ combineBCR <- function(df,
 
 #' Calculates the normalized Hamming Distance between the contig nucleotide sequence.
 #'
-#' This feature caluclates the normalized Hammings Distance, or the Hammings Distance divided by length of
-#' sequence in order to index similar and divergent sequences involved in combineBCR(). It is not designed
-#' as an indepenent function. The threshold for similar sequences is set to > 0.85 normalized Hammings
-#' Distance, which if met will index the similar sequence into a single sequence and add ":HD" to the index.
+#' This feature caluclates the normalized Hammings Distance, or the Hammings Distance 
+#' divided by length of sequence in order to index similar and divergent sequences 
+#' involved in combineBCR(). It is not designed as an indepenent function. The 
+#' threshold for similar sequences is set to > 0.85 normalized Hammings Distance, 
+#' which if met will index the similar sequence into a single sequence and add 
+#' ":HD" to the index.
 #' @keywords internal
 #' @param gene The IGH or IG light chains (IGLC)
 #' @param chain The column header with the nucletoide sequence

@@ -17,9 +17,11 @@ hammingCompare(Con.df, gene, chain, length)
 #Normalized Hammings Distance comparisons to be used in combineBCR()
 }
 \description{
-This feature caluclates the normalized Hammings Distance, or the Hammings Distance divided by length of
-sequence in order to index similar and divergent sequences involved in combineBCR(). It is not designed
-as an indepenent function. The threshold for similar sequences is set to > 0.85 normalized Hammings
-Distance, which if met will index the similar sequence into a single sequence and add ":HD" to the index.
+This feature caluclates the normalized Hammings Distance, or the Hammings Distance 
+divided by length of sequence in order to index similar and divergent sequences 
+involved in combineBCR(). It is not designed as an indepenent function. The 
+threshold for similar sequences is set to > 0.85 normalized Hammings Distance, 
+which if met will index the similar sequence into a single sequence and add 
+":HD" to the index.
 }
 \keyword{internal}

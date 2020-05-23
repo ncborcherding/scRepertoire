@@ -1,9 +1,10 @@
 #' Examining the clonal space occupied by specific clonotypes
 #'
-#' This function calculates the relative clonal space occupied by the clonotypes. The grouping of these clonotypes is
-#' based on the parameter split, at default, split will group the clonotypes into bins of 1:10, 11:100, 101:1001, etc.
-#' To adjust the clonotypes selected, change the numbers in the variable split. If a matrix output for the data is
-#' preferred, set exportTable = TRUE.
+#' This function calculates the relative clonal space occupied by the clonotypes. 
+#' The grouping of these clonotypes is based on the parameter split, at default, 
+#' split will group the clonotypes into bins of 1:10, 11:100, 101:1001, etc. 
+#' To adjust the clonotypes selected, change the numbers in the variable split. 
+#' If a matrix output for the data is preferred, set exportTable = TRUE.
 #'
 #' @examples
 #' #Making combined contig data
@@ -13,9 +14,10 @@
 #'
 #' @param df The product of CombineContig() or expression2List()
 #' @param split The cutpoints for the specific clonotypes.
-#' @param cloneCall How to call the clonotype - CDR3 gene (gene), CDR3 nucleotide (nt) or CDR3 amino acid (aa), or
-#' CDR3 gene+nucleotide (gene+nt).
-#' @param exportTable Exports a table of the data into the global environment in addition to the visualization
+#' @param cloneCall How to call the clonotype - CDR3 gene (gene), CDR3 nucleotide (nt) 
+#' or CDR3 amino acid (aa), or CDR3 gene+nucleotide (gene+nt).
+#' @param exportTable Exports a table of the data into the global environment in 
+#' addition to the visualization
 #'
 #' @import ggplot2
 #' @importFrom stringr str_sort
@@ -24,14 +26,15 @@
 #' @export
 #' @return ggplot of the space occupied by the specific rank of clonotypes
 clonalProportion <- function(df,
-                             split = c(10, 100, 1000, 10000, 30000, 100000),
-                             cloneCall = c("gene", "nt", "aa", "gene+nt"),
-                             exportTable = FALSE) {
+                                split = c(10, 100, 1000, 10000, 30000, 100000),
+                                cloneCall = c("gene", "nt", "aa", "gene+nt"),
+                                exportTable = FALSE) {
     Con.df <- NULL
     cloneCall <- theCall(cloneCall)
     df <- if(is(df)[1] != "list") list(df) else df
 
-    mat <- matrix(0, length(df), length(split), dimnames = list(names(df), paste0('[', c(1, split[-length(split)] + 1), ':', split, ']')))
+    mat <- matrix(0, length(df), length(split), dimnames = list(names(df), 
+                                                                paste0('[', c(1, split[-length(split)] + 1), ':', split, ']')))
     df <- lapply(df, '[[', cloneCall)
     df <- lapply(df, as.data.frame(table))
     for (i in seq_along(df)) {

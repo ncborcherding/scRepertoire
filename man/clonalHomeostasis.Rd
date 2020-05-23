@@ -17,19 +17,22 @@ clonalHomeostasis(
 
 \item{cloneTypes}{The cutpoints of the proportions.}
 
-\item{cloneCall}{How to call the clonotype - CDR3 gene (gene), CDR3 nucleotide (nt) or CDR3 amino acid (aa), or
-CDR3 gene+nucleotide (gene+nt).}
+\item{cloneCall}{How to call the clonotype - CDR3 gene (gene), CDR3 nucleotide (nt) 
+or CDR3 amino acid (aa), or CDR3 gene+nucleotide (gene+nt).}
 
-\item{exportTable}{Exports a table of the data into the global environment in addition to the visualization}
+\item{exportTable}{Exports a table of the data into the global environment in 
+addition to the visualization}
 }
 \value{
 ggplot of the space occupied by the specific propotion of clonotypes
 }
 \description{
-This function calculates the space occupied by specific clonotype proportions. The grouping of these clonotypes is
-based on the parameter cloneTypes, at default, cloneTypes will group the clonotypes into bins of Rare = 0 to 0.0001,
-Small = 0.0001 to 0.001, etc. To adjust the proportions, change the number or labeling of the cloneTypes paramter. If a
-matrix output for the data is preferred, set exportTable = TRUE.
+This function calculates the space occupied by specific clonotype proportions. 
+The grouping of these clonotypes is based on the parameter cloneTypes, at 
+default, cloneTypes will group the clonotypes into bins of Rare = 0 to 0.0001, 
+Small = 0.0001 to 0.001, etc. To adjust the proportions, change the number 
+or labeling of the cloneTypes paramter. If a matrix output for the data is 
+preferred, set exportTable = TRUE.
 }
 \examples{
 #Making combined contig data

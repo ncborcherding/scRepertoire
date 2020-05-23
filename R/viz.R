@@ -5,10 +5,11 @@ colorblind_vector <- colorRampPalette(c("#FF4B20", "#FFB433", "#C6FDEC", "#7AC5F
 
 #' Quantify the unique clonotypes in the filtered contigs.
 #'
-#' This function takes the output from combineContig() or expression2List() and quantifies unique clonotypes.
-#' The unique clonotypes can be either reported as a raw output or scaled to the total number of clonotypes recovered
-#' using the scale parameter. Multiple sequencing runs can be group together using the group parameter. If a matrix
-#' output for the data is preferred, set exportTable = TRUE.
+#' This function takes the output from combineContig() or expression2List() and 
+#' quantifies unique clonotypes. The unique clonotypes can be either reported as 
+#' a raw output or scaled to the total number of clonotypes recovered using the 
+#' scale parameter. Multiple sequencing runs can be group together using the group 
+#' parameter. If a matrix output for the data is preferred, set exportTable = TRUE.
 #'
 #' @examples
 #' #Making combined contig data
@@ -17,19 +18,16 @@ colorblind_vector <- colorRampPalette(c("#FF4B20", "#FFB433", "#C6FDEC", "#7AC5F
 #' quantContig(combined, cloneCall="gene+nt", scale = TRUE)
 #'
 #' @param df The product of combineContig().
-#' @param cloneCall How to call the clonotype - CDR3 gene (gene), CDR3 nucleotide (nt) or CDR3 amino acid (aa), or
-#' CDR3 gene+nucleotide (gene+nt).
+#' @param cloneCall How to call the clonotype - CDR3 gene (gene), CDR3 nucleotide (nt) 
+#' or CDR3 amino acid (aa), or CDR3 gene+nucleotide (gene+nt).
 #' @param group The column header used for grouping.
 #' @param scale Converts the graphs into percentage of unique clonotypes.
 #' @param exportTable Returns the data frame used for forming the graph,
 #' @import ggplot2
 #' @export
 #' @return ggplot of the total or relative unique clonotypes
-quantContig <- function(df,
-                        cloneCall = c("gene", "nt", "aa", "gene+nt"),
-                        scale=FALSE,
-                        group = NULL,
-                        exportTable = FALSE) {
+quantContig <- function(df, cloneCall = c("gene", "nt", "aa", "gene+nt"),
+                                scale=FALSE, group = NULL, exportTable = FALSE) {
     if (length(group) > 1) {
         stop("Only one item in the group variable can be listed.")
     }
@@ -101,10 +99,12 @@ quantContig <- function(df,
 
 #' Demonstrate the relative abundance of clonotypes by group or sample.
 #'
-#' This function takes the output of combineContig() or expression2List() and displays the number of clonotypes at
-#' specific frequencies by sample or group. Visualization can either be a line graph using calculated numbers or
-#' if scale = TRUE, the output will be a density plot. Multiple sequencing runs can be group together using the
-#' group parameter. If a matrix output for the data is preferred, set exportTable = TRUE.
+#' This function takes the output of combineContig() or expression2List() and 
+#' displays the number of clonotypes at specific frequencies by sample or group. 
+#' Visualization can either be a line graph using calculated numbers or if 
+#' scale = TRUE, the output will be a density plot. Multiple sequencing runs can 
+#' be group together using the group parameter. If a matrix output for the data 
+#' is preferred, set exportTable = TRUE.
 #'
 #' @examples
 #' #Making combined contig data
@@ -113,19 +113,17 @@ quantContig <- function(df,
 #' abundanceContig(combined, cloneCall = "gene", scale = FALSE)
 #'
 #' @param df The product of CombineContig() or expression2List().
-#' @param cloneCall How to call the clonotype - CDR3 gene (gene), CDR3 nucleotide (nt) or CDR3 amino acid (aa), or
-#' CDR3 gene+nucleotide (gene+nt).
+#' @param cloneCall How to call the clonotype - CDR3 gene (gene), CDR3 nucleotide (nt) 
+#' or CDR3 amino acid (aa), or CDR3 gene+nucleotide (gene+nt).
 #' @param group The column header for which you would like to analyze the data.
 #' @param scale Converts the graphs into denisty plots in order to show relative distributions.
-#' @param exportTable Exports a table of the data into the global environment in addition to the visualization.
+#' @param exportTable Exports a table of the data into the global environment in addition 
+#' to the visualization.
 #' @importFrom ggplot2 ggplot
 #' @export
 #' @return ggplot of the total or relative adundance of clonotypes across quanta
-abundanceContig <- function(df,
-                            cloneCall = c("gene", "nt", "aa", "gene+nt"),
-                            scale=FALSE,
-                            group = NULL,
-                            exportTable = FALSE) {
+abundanceContig <- function(df, cloneCall = c("gene", "nt", "aa", "gene+nt"),
+                                scale=FALSE, group = NULL, exportTable = FALSE) {
     Con.df <- NULL
     xlab <- "Abundance"
     cloneCall <- theCall(cloneCall)
@@ -199,11 +197,13 @@ abundanceContig <- function(df,
 
 #' Demonstrate the distribution of lengths filtered contigs.
 #'
-#' This function takes the output of combineContig() or expression2List() and displays either the nucleotide (nt)
-#' or amino acid (aa) sequence length. The sequence length visualized can be selected using the chains parameter,
-#' either the combined clonotype (both chains) or across all single chains. Visualization can either be a histogram or
-#' if scale = TRUE, the output will be a density plot. Multiple sequencing runs can be group together using the
-#' group parameter. If a matrix output for the data is preferred, set exportTable = TRUE.
+#' This function takes the output of combineContig() or expression2List() and displays 
+#' either the nucleotide (nt) or amino acid (aa) sequence length. The sequence length 
+#' visualized can be selected using the chains parameter, either the combined clonotype 
+#' (both chains) or across all single chains. Visualization can either be a histogram or
+#' if scale = TRUE, the output will be a density plot. Multiple sequencing runs can 
+#' be group together using the group parameter. If a matrix output for the data is 
+#' preferred, set exportTable = TRUE.
 #'
 #' @examples
 #' #Making combined contig data
@@ -221,12 +221,8 @@ abundanceContig <- function(df,
 #' @importFrom ggplot2 ggplot
 #' @export
 #' @return ggplot of the discrete or relative length distributions of clonotype sequences
-lengthContig <- function(df,
-                         cloneCall = c("nt", "aa"),
-                         group = NULL,
-                         scale = FALSE,
-                         chains = c("combined", "single"),
-                         exportTable = FALSE) {
+lengthContig <- function(df, cloneCall = c("nt", "aa"),
+                                group = NULL, scale = FALSE, chains = c("combined", "single"), exportTable = FALSE) {
     if(cloneCall == "nt") {
         cloneCall <- "CTnt"
         ylab <- "CDR3 (NT)"
@@ -391,11 +387,14 @@ lengthContig <- function(df,
 
 #' Demonstrate the difference in clonal proportion between multiple clonotypes
 #'
-#' This function produces an alluvial or area graph of the proportion of the indicated clonotypes for all or selected samples.
-#' Clonotypes can be selected using the clonotypes parameter with the specific sequence of interest or using the number
-#' parameter with the top n clonotypes by proportion to be visualized. If multiple clonotypes have the same proportion and
-#' are within the selection by the number parameter, all the clonotypes will be visualized. In this instance, if less
-#' clonotypes are desired, reduce the number parameter.
+#' This function produces an alluvial or area graph of the proportion of 
+#' the indicated clonotypes for all or selected samples. Clonotypes can be 
+#' selected using the clonotypes parameter with the specific sequence of 
+#' interest or using the number parameter with the top n clonotypes by 
+#' proportion to be visualized. If multiple clonotypes have the same proportion 
+#' and are within the selection by the number parameter, all the clonotypes 
+#' will be visualized. In this instance, if less clonotypes are desired, 
+#' reduce the number parameter.
 #'
 #' @examples
 #' #Making combined contig data
@@ -404,8 +403,8 @@ lengthContig <- function(df,
 #' compareClonotypes(combined, numbers = 10, samples = c("PX_P", "PX_T"), cloneCall="aa")
 #'
 #' @param df The product of CombineContig() or expression2List().
-#' @param cloneCall How to call the clonotype - CDR3 gene (gene), CDR3 nucleotide (nt) or CDR3 amino acid (aa), or
-#' CDR3 gene+nucleotide (gene+nt).
+#' @param cloneCall How to call the clonotype - CDR3 gene (gene), CDR3 nucleotide (nt) 
+#' or CDR3 amino acid (aa), or CDR3 gene+nucleotide (gene+nt).
 #' @param samples The specific samples to isolate for visualization.
 #' @param clonotypes The specific sequences of interest.
 #' @param numbers The top number clonotype sequences.
@@ -414,12 +413,8 @@ lengthContig <- function(df,
 #'
 #' @export
 #' @return ggplot of the proportion of total sequencing read of selecting clonotypes
-compareClonotypes <- function(df,
-                              cloneCall = c("gene", "nt", "aa", "gene+nt"),
-                              samples = NULL,
-                              clonotypes = NULL,
-                              numbers = NULL,
-                              graph = c("alluvial", "area")){
+compareClonotypes <- function(df, cloneCall = c("gene", "nt", "aa", "gene+nt"),
+                                samples = NULL, clonotypes = NULL, numbers = NULL, graph = c("alluvial", "area")){
     cloneCall <- theCall(cloneCall)
     if (!is.null(numbers) & !is.null(clonotypes)) {
         stop("Make sure your inputs are either numbers or clonotype sequences.")
@@ -448,9 +443,9 @@ compareClonotypes <- function(df,
         stop("Reasses the filtering strategies here, there is not enough clonotypes to examine.")
     }
     plot = ggplot(Con.df, aes(x = Sample, fill = Clonotypes, stratum = Clonotypes,
-                              alluvium = Clonotypes, y = Proportion, label = Clonotypes)) +
-        theme_classic() +
-        theme(axis.title.x = element_blank())
+                alluvium = Clonotypes, y = Proportion, label = Clonotypes)) +
+                theme_classic() +
+                theme(axis.title.x = element_blank())
 
     if (graph == "alluvial") {
         plot = plot +
@@ -465,10 +460,11 @@ compareClonotypes <- function(df,
 
 #' Hierarchical clustering of clonotypes on clonotype size and Jensen-Shannon divergence
 #'
-#'This functionn produces a heirachial clustering of clonotypes by sample using the Jensen-Shannon distance and discrete
-#'gamma-GPD spliced threshold model in the [powerTCR R package](https://bioconductor.org/packages/devel/bioc/html/powerTCR.html).
-#'Please read and cite PMID: 30485278 if using the function for analyses. If a matrix output for the data is preferred,
-#'set exportTable = TRUE.
+#' This functionn produces a heirachial clustering of clonotypes by sample using the 
+#' Jensen-Shannon distance and discrete gamma-GPD spliced threshold model in the 
+#' [powerTCR R package](https://bioconductor.org/packages/devel/bioc/html/powerTCR.html).
+#' Please read and cite PMID: 30485278 if using the function for analyses. If a matrix 
+#' output for the data is preferred set exportTable = TRUE.
 #'
 #' @examples
 #' #Making combined contig data
@@ -477,8 +473,8 @@ compareClonotypes <- function(df,
 #' clonesizeDistribution(combined, cloneCall = "gene+nt", method="ward.D2")
 #'
 #' @param df The product of CombineContig() or expression2List().
-#' @param cloneCall How to call the clonotype - CDR3 gene (gene), CDR3 nucleotide (nt) or CDR3 amino acid (aa), or
-#' CDR3 gene+nucleotide (gene+nt).
+#' @param cloneCall How to call the clonotype - CDR3 gene (gene), CDR3 nucleotide (nt) 
+#' or CDR3 amino acid (aa), or CDR3 gene+nucleotide (gene+nt).
 #' @param method The clustering paramater for the dendrogram.
 #' @param exportTable Returns the data frame used for forming the graph.
 #' @import dplyr
@@ -488,45 +484,42 @@ compareClonotypes <- function(df,
 #' @export
 #' @return ggplot dendrogram of the clone size distribution
 
-clonesizeDistribution <- function(df,
-                                  cloneCall = c("gene", "nt", "aa", "gene+nt"),
-                                  method = c("complete", "ward.D", "ward.D2",
-                                             "single", "average", "mcquitty",
-                                             "median", "centroid"),
-                                  exportTable = FALSE) {
-                                                 cloneCall <- theCall(cloneCall)
-                                                 data <- bind_rows(df)
-                                                 unique_df <- unique(data[,cloneCall])
-                                                 Con.df <- data.frame(matrix(NA, length(unique_df), length(df)))
-                                                 Con.df <- data.frame(unique_df, Con.df, stringsAsFactors = FALSE)
-                                                 colnames(Con.df)[1] <- "clonotype"
+clonesizeDistribution <- function(df, cloneCall = c("gene", "nt", "aa", "gene+nt"), 
+                                method = c("complete", "ward.D", "ward.D2", "single", "average", "mcquitty", "median", "centroid"),
+                                exportTable = FALSE) {
+                cloneCall <- theCall(cloneCall)
+                data <- bind_rows(df)
+                unique_df <- unique(data[,cloneCall])
+                Con.df <- data.frame(matrix(NA, length(unique_df), length(df)))
+                Con.df <- data.frame(unique_df, Con.df, stringsAsFactors = FALSE)
+                colnames(Con.df)[1] <- "clonotype"
 
-                                                 for (i in seq_along(df)) {
-                                                     data <- df[[i]]
-                                                     data <- data.frame(table(data[,cloneCall]), stringsAsFactors = FALSE)
-                                                     colnames(data) <- c(cloneCall, "Freq")
-                                                     for (y in seq_along(unique_df)){
-                                                         clonotype.y <- Con.df$clonotype[y]
-                                                         location.y <- which(clonotype.y == data[,cloneCall])
-                                                         Con.df[y,i+1] <- data[location.y[1],"Freq"]
-                                                     }
-                                                 }
-                                                 colnames(Con.df)[2:(length(df)+1)] <- names(df)
-                                                 Con.df[is.na(Con.df)] <- 0
-                                                 list <- list()
-                                                 for (i in seq_along(df)) {
-                                                     list[[i]] <- Con.df[,i+1]
-                                                     list[[i]] <- suppressWarnings(fdiscgammagpd(list[[i]], useq = 1))
-                                                 }
-                                                 names(list) <- names(df)
+                for (i in seq_along(df)) {
+                        data <- df[[i]]
+                        data <- data.frame(table(data[,cloneCall]), stringsAsFactors = FALSE)
+                        colnames(data) <- c(cloneCall, "Freq")
+                                for (y in seq_along(unique_df)){
+                                        clonotype.y <- Con.df$clonotype[y]
+                                        location.y <- which(clonotype.y == data[,cloneCall])
+                                        Con.df[y,i+1] <- data[location.y[1],"Freq"]
+                                }
+                }
+                colnames(Con.df)[2:(length(df)+1)] <- names(df)
+                Con.df[is.na(Con.df)] <- 0
+                list <- list()
+                for (i in seq_along(df)) {
+                        list[[i]] <- Con.df[,i+1]
+                        list[[i]] <- suppressWarnings(fdiscgammagpd(list[[i]], useq = 1))
+                }
+                names(list) <- names(df)
 
-                                                 grid <- 0:10000
-                                                 distances <- get_distances(list, grid, modelType="Spliced")
-                                                 hclust <- hclust(as.dist(distances), method = method)
-                                                 plot <- ggdendrogram(hclust)
+                grid <- 0:10000
+                distances <- get_distances(list, grid, modelType="Spliced")
+                hclust <- hclust(as.dist(distances), method = method)
+                plot <- ggdendrogram(hclust)
 
-                                                 if (exportTable == TRUE) {
-                                                     return(distances)
-                                                 }
-                                                 return(plot)
+                if (exportTable == TRUE) {
+                        return(distances)
+                }
+                return(plot)
 }

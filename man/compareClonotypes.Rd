@@ -16,8 +16,8 @@ compareClonotypes(
 \arguments{
 \item{df}{The product of CombineContig() or expression2List().}
 
-\item{cloneCall}{How to call the clonotype - CDR3 gene (gene), CDR3 nucleotide (nt) or CDR3 amino acid (aa), or
-CDR3 gene+nucleotide (gene+nt).}
+\item{cloneCall}{How to call the clonotype - CDR3 gene (gene), CDR3 nucleotide (nt) 
+or CDR3 amino acid (aa), or CDR3 gene+nucleotide (gene+nt).}
 
 \item{samples}{The specific samples to isolate for visualization.}
 
@@ -31,11 +31,14 @@ CDR3 gene+nucleotide (gene+nt).}
 ggplot of the proportion of total sequencing read of selecting clonotypes
 }
 \description{
-This function produces an alluvial or area graph of the proportion of the indicated clonotypes for all or selected samples.
-Clonotypes can be selected using the clonotypes parameter with the specific sequence of interest or using the number
-parameter with the top n clonotypes by proportion to be visualized. If multiple clonotypes have the same proportion and
-are within the selection by the number parameter, all the clonotypes will be visualized. In this instance, if less
-clonotypes are desired, reduce the number parameter.
+This function produces an alluvial or area graph of the proportion of 
+the indicated clonotypes for all or selected samples. Clonotypes can be 
+selected using the clonotypes parameter with the specific sequence of 
+interest or using the number parameter with the top n clonotypes by 
+proportion to be visualized. If multiple clonotypes have the same proportion 
+and are within the selection by the number parameter, all the clonotypes 
+will be visualized. In this instance, if less clonotypes are desired, 
+reduce the number parameter.
 }
 \examples{
 #Making combined contig data
