@@ -6,8 +6,8 @@
 #' Several levels of filtering exist - remove or filterMulti are parameters that control how the function deals with barcodes
 #' with multiple chains recovered.
 #' @examples
-#'combineTCR(contig_list, samples = c("X", "Y", "Z"), ID = c(rep("T", 3)), cells ="T-AB")
-#'
+#' combineTCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), rep(c("P", "T"), 3), cells ="T-AB")
+#' 
 #' @param df List of filtered contig annotations from 10x Genomics.
 #' @param samples The labels of samples.
 #' @param ID The additional sample labeling option.
@@ -185,9 +185,9 @@ combineTCR <- function(df,
 #' the CTstrict column string.
 #'
 #' @examples
-#' combineBCR(contig_list, samples = c("X", "Y", "Z"), ID = c(rep("B", 3)))
-#'
-#'
+#' \donttest{
+#' combineBCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), rep(c("P", "T"), 3))
+#' }
 #' @param df List of filtered contig annotations from 10x Genomics.
 #' @param samples The labels of samples.
 #' @param ID The additional sample labeling option.

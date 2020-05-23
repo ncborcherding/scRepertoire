@@ -8,8 +8,9 @@
 #' If the dominant clonotypes have a greater frequency than 500, adjust the cloneTypes variable.
 #'
 #' @examples
-#' seurat <- combineExpression(seurat, combined, cloneCall = "gene")
-#'
+#' \donttest{
+#' combineExpression(seurat, combined, cloneCall = "gene")
+#' }
 #' @param df The product of CombineTCR() or CombineBCR().
 #' @param sc The seurat or SingleCellExperiment (SCE) object to attach
 #' @param cloneCall How to call the clonotype - CDR3 gene (gene), CDR3 nucleotide (nt) or CDR3 amino acid (aa), or
@@ -120,8 +121,9 @@ combineExpression <- function(df,
 #' Use a specific clonotype sequence to highlight on top of the dimensional reduction in seurat object.
 #'
 #' @examples
+#' \donttest{
 #' highlightClonotype(seurat, cloneCall = "gene", sequence = "CAVNGGSQGNLIF_CSAEREDTDTQYF")
-#'
+#' }
 #' @param sc The seurat object to attach
 #' @param cloneCall How to call the clonotype - CDR3 gene (gene), CDR3 nucleotide (nt) or CDR3 amino acid (aa), or
 #' CDR3 gene+nucleotide (gene+nt).
@@ -158,8 +160,9 @@ highlightClonotypes <- function(sc,
 #' stratum/column to the end of the graph.
 #'
 #' @examples
+#' \donttest{
 #' alluvialClonotypes(seurat, cloneCall = "gene", y.axes = c("Patient", "cluster"), color = "cluster")
-#'
+#' }
 #' @param sc The seurat or SCE object to visualize after combineExpression(). For SCE objects, the cluster variable
 #' must be in the meta data under "cluster".
 #' @param cloneCall How to call the clonotype - CDR3 gene (gene), CDR3 nucleotide (nt) or CDR3 amino acid (aa), or
@@ -275,8 +278,9 @@ alluvialClonotypes <- function(sc,
 #' the "type" variable needs to include the difference in where the cells were derived. The output of this function will
 #' produce 3 indices: expa (clonal expansion), migra (cross-tissue migration), and trans (state transition). In order to
 #' understand the underlying analyses of the outputs please read the manuscript.
-#' \donttest{
+#' 
 #' @examples
+#' \donttest{
 #' StartracDiversity(seurat, type = "Type", sample = "Patient", by = "overall")
 #' }
 #' @param sc The Seurat or SCE object. For SCE objects, the cluster variable must be in the meta data under "cluster".

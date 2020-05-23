@@ -34,6 +34,9 @@ using the scale parameter. Multiple sequencing runs can be group together using 
 output for the data is preferred, set exportTable = TRUE.
 }
 \examples{
+#Making combined contig data
+x <- contig_list
+combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), rep(c("P", "T"), 3), cells ="T-AB")
 quantContig(combined, cloneCall="gene+nt", scale = TRUE)
 
 }

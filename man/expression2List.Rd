@@ -20,6 +20,7 @@ object. For Seurat objects the active identity is automatically added as "cluste
 for SCE or Seurat objects must appear in the meta data.
 }
 \examples{
+\donttest{
 newList <- expression2List(seurat, group = "cluster")
-
+}
 }

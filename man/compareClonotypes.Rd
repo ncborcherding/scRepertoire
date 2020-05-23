@@ -38,6 +38,9 @@ are within the selection by the number parameter, all the clonotypes will be vis
 clonotypes are desired, reduce the number parameter.
 }
 \examples{
+#Making combined contig data
+x <- contig_list
+combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), rep(c("P", "T"), 3), cells ="T-AB")
 compareClonotypes(combined, numbers = 10, samples = c("PX_P", "PX_T"), cloneCall="aa")
 
 }

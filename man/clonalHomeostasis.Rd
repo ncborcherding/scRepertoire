@@ -32,6 +32,9 @@ Small = 0.0001 to 0.001, etc. To adjust the proportions, change the number or la
 matrix output for the data is preferred, set exportTable = TRUE.
 }
 \examples{
+#Making combined contig data
+x <- contig_list
+combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), rep(c("P", "T"), 3), cells ="T-AB")
 clonalHomeostasis(combined, cloneCall = "gene")
 
 }

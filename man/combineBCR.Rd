@@ -36,7 +36,7 @@ This index automatically caluclates the Hammings distance between sequences of t
 the CTstrict column string.
 }
 \examples{
-combineBCR(contig_list, samples = c("X", "Y", "Z"), ID = c(rep("B", 3)))
-
-
+\donttest{
+combineBCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), rep(c("P", "T"), 3))
+}
 }

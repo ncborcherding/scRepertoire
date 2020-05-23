@@ -20,7 +20,9 @@ stripBarcode <- function(contigs, column = 1, connector = "_", num_connects = 3)
 #' variable paramater needs to match the length of the combineContig() object.
 #'
 #' @examples
-#' combined <- addVariable(combined, name = "batch", variables = c(1,1,2,3,3))
+#' x <- contig_list
+#' combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), rep(c("P", "T"), 3), cells ="T-AB")
+#' combined <- addVariable(combined, name = "batch", variables = c(1,1,1,1,2,2))
 #'
 #' @param df The product of CombineContig().
 #' @param name The column header to add.
@@ -47,7 +49,9 @@ addVariable <- function(df,
 #' string or indivudal name.
 #'
 #' @examples
-#' subset <- subsetContig(combined, name = "sample", variables = c("X", "Y")
+#' x <- contig_list
+#' combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), rep(c("P", "T"), 3), cells ="T-AB")
+#' subset <- subsetContig(combined, name = "sample", variables = c("PX"))
 #'
 #' @param df The product of CombineContig().
 #' @param name The column header you'd like to use to subset.
@@ -102,8 +106,9 @@ if (x == "gene") {
 #' for SCE or Seurat objects must appear in the meta data.
 #'
 #' @examples
+#' \donttest{
 #' newList <- expression2List(seurat, group = "cluster")
-#'
+#' }
 #' @param sc object after combineExpression().
 #' @param group The column header to group the new list by
 #' @importFrom stringr str_sort

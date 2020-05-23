@@ -32,6 +32,9 @@ Please read and cite PMID: 30485278 if using the function for analyses. If a mat
 set exportTable = TRUE.
 }
 \examples{
+#Making combined contig data
+x <- contig_list
+combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), rep(c("P", "T"), 3), cells ="T-AB")
 clonesizeDistribution(combined, cloneCall = "gene+nt", method="ward.D2")
 
 }

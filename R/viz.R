@@ -11,6 +11,9 @@ colorblind_vector <- colorRampPalette(c("#FF4B20", "#FFB433", "#C6FDEC", "#7AC5F
 #' output for the data is preferred, set exportTable = TRUE.
 #'
 #' @examples
+#' #Making combined contig data
+#' x <- contig_list
+#' combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), rep(c("P", "T"), 3), cells ="T-AB")
 #' quantContig(combined, cloneCall="gene+nt", scale = TRUE)
 #'
 #' @param df The product of combineContig().
@@ -104,6 +107,9 @@ quantContig <- function(df,
 #' group parameter. If a matrix output for the data is preferred, set exportTable = TRUE.
 #'
 #' @examples
+#' #Making combined contig data
+#' x <- contig_list
+#' combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), rep(c("P", "T"), 3), cells ="T-AB")
 #' abundanceContig(combined, cloneCall = "gene", scale = FALSE)
 #'
 #' @param df The product of CombineContig() or expression2List().
@@ -200,6 +206,9 @@ abundanceContig <- function(df,
 #' group parameter. If a matrix output for the data is preferred, set exportTable = TRUE.
 #'
 #' @examples
+#' #Making combined contig data
+#' x <- contig_list
+#' combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), rep(c("P", "T"), 3), cells ="T-AB")
 #' lengthContig(combined, cloneCall="aa", chains = "combined")
 #'
 #' @param df The product of CombineContig() or expression2List().
@@ -389,6 +398,9 @@ lengthContig <- function(df,
 #' clonotypes are desired, reduce the number parameter.
 #'
 #' @examples
+#' #Making combined contig data
+#' x <- contig_list
+#' combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), rep(c("P", "T"), 3), cells ="T-AB")
 #' compareClonotypes(combined, numbers = 10, samples = c("PX_P", "PX_T"), cloneCall="aa")
 #'
 #' @param df The product of CombineContig() or expression2List().
@@ -459,6 +471,9 @@ compareClonotypes <- function(df,
 #'set exportTable = TRUE.
 #'
 #' @examples
+#' #Making combined contig data
+#' x <- contig_list
+#' combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), rep(c("P", "T"), 3), cells ="T-AB")
 #' clonesizeDistribution(combined, cloneCall = "gene+nt", method="ward.D2")
 #'
 #' @param df The product of CombineContig() or expression2List().

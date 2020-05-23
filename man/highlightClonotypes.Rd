@@ -25,6 +25,7 @@ DimPlot with highlighted clonotypes
 Use a specific clonotype sequence to highlight on top of the dimensional reduction in seurat object.
 }
 \examples{
+\donttest{
 highlightClonotype(seurat, cloneCall = "gene", sequence = "CAVNGGSQGNLIF_CSAEREDTDTQYF")
-
+}
 }

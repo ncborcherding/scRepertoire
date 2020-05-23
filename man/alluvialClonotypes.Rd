@@ -38,6 +38,7 @@ visualized. Therefore, alpha, facet, and color should be part of the the axes yo
 stratum/column to the end of the graph.
 }
 \examples{
+\donttest{
 alluvialClonotypes(seurat, cloneCall = "gene", y.axes = c("Patient", "cluster"), color = "cluster")
-
+}
 }

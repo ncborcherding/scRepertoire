@@ -39,6 +39,7 @@ the barcodes in the output of the combinedContig() call. Check changeNames() to 
 If the dominant clonotypes have a greater frequency than 500, adjust the cloneTypes variable.
 }
 \examples{
-seurat <- combineExpression(seurat, combined, cloneCall = "gene")
-
+\donttest{
+combineExpression(seurat, combined, cloneCall = "gene")
+}
 }

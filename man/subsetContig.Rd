@@ -22,6 +22,8 @@ In gneral the names of are samples + _ + ID, allowing for users to subset the pr
 string or indivudal name.
 }
 \examples{
-subset <- subsetContig(combined, name = "sample", variables = c("X", "Y")
+x <- contig_list
+combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), rep(c("P", "T"), 3), cells ="T-AB")
+subset <- subsetContig(combined, name = "sample", variables = c("PX"))
 
 }

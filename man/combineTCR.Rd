@@ -41,6 +41,6 @@ Several levels of filtering exist - remove or filterMulti are parameters that co
 with multiple chains recovered.
 }
 \examples{
-combineTCR(contig_list, samples = c("X", "Y", "Z"), ID = c(rep("T", 3)), cells ="T-AB")
+combineTCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), rep(c("P", "T"), 3), cells ="T-AB")
 
 }
