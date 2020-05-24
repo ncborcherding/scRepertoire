@@ -35,14 +35,16 @@ List of clonotypes for individual cell barcodes
 }
 \description{
 This function consolidates a list of TCR sequencing results to the level of 
-the indiviudal cell barcodes. Using the samples and ID parameters, the function 
-will add the strings as prefixes to prevent issues with repeated barcodes. The 
-resulting new barcodes will need to match the seurat or SCE object in order 
-to use, @seealso \code{\link{combineExpression}}. Several levels of filtering 
-exist - remove or filterMulti are parameters that control how  the function 
-deals with barcodes with multiple chains recovered.
+the individual cell barcodes. Using the samples and ID parameters, the 
+function will add the strings as prefixes to prevent issues with repeated 
+barcodes. The resulting new barcodes will need to match the seurat or SCE 
+object in order to use, @seealso \code{\link{combineExpression}}. Several 
+levels of filtering exist - remove or filterMulti are parameters that 
+control how  the function  deals with barcodes with multiple chains 
+recovered.
 }
 \examples{
-combineTCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), rep(c("P", "T"), 3), cells ="T-AB")
+combineTCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), 
+rep(c("P", "T"), 3), cells ="T-AB")
 
 }

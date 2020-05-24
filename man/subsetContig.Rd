@@ -17,14 +17,15 @@ subsetContig(df, name, variables = NULL)
 list of contigs that have been filtered for the name parameter
 }
 \description{
-This function allows for the subsetting of the product of combineContig() by the 
-name of the individual list element. In general the names of are samples + _ + ID, 
-allowing for users to subset the product of combineContig() across a string or 
-indivudal name.
+This function allows for the subsetting of the product of combineContig() by 
+the name of the individual list element. In general the names of are samples 
++ _ + ID, allowing for users to subset the product of combineContig() across 
+a string or individual name.
 }
 \examples{
 x <- contig_list
-combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), rep(c("P", "T"), 3), cells ="T-AB")
+combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), 
+rep(c("P", "T"), 3), cells ="T-AB")
 subset <- subsetContig(combined, name = "sample", variables = c("PX"))
 
 }

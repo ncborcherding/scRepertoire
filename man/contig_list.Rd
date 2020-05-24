@@ -2,10 +2,9 @@
 % Please edit documentation in R/contig_list.R
 \name{contig_list}
 \alias{contig_list}
-\title{A data set of T cell contigs as a list outputed from the filter_contig_annotation files.}
-\source{
-https://github.com/ncborcherding/scRepertoire/blob/master/data/contig_list.rda
-}
+\title{A data set of T cell contigs as a list outputed from the 
+filter_contig_annotation files.}
 \description{
-A data set of T cell contigs as a list outputed from the filter_contig_annotation files.
+A data set of T cell contigs as a list outputed from the 
+filter_contig_annotation files.
 }

@@ -1,4 +1,4 @@
-#' Removing any additional prefixes to the barcodes of the filtered contigs.
+#' Removing any additional prefixes to the barcodes of filtered contigs.
 #'
 #' @param contigs The raw loaded filtered_contig_annotation.csv
 #' @param column The column in which the barcodes are listed
@@ -9,8 +9,12 @@
 #' stripBarcode(contig_list[[1]], column = 1, connector = "_", num_connects = 3)
 #' @export
 #' @return list with the suffixes of the barcodes removed.
-stripBarcode <- function(contigs, column = 1, connector = "_", num_connects = 3) {
-    count <- as.data.frame(t(data.frame(strsplit(contigs[,column], paste("['", connector, "']", sep="")), stringsAsFactors = FALSE)), stringsAsFactors = FALSE)[num_connects]
+stripBarcode <- function(contigs, column = 1, connector = "_", 
+                            num_connects = 3) {
+    count <- as.data.frame(t(data.frame(strsplit(contigs[,column], 
+                            paste("['", connector, "']", sep="")), 
+                            stringsAsFactors = FALSE)), 
+                            stringsAsFactors = FALSE)[num_connects]
     contigs[,column] <- count
     return(contigs)
 }
@@ -24,7 +28,8 @@ stripBarcode <- function(contigs, column = 1, connector = "_", num_connects = 3)
 #'
 #' @examples
 #' x <- contig_list
-#' combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), rep(c("P", "T"), 3), cells ="T-AB")
+#' combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), 
+#' rep(c("P", "T"), 3), cells ="T-AB")
 #' combined <- addVariable(combined, name = "batch", variables = c(1,1,1,1,2,2))
 #'
 #' @param df The product of CombineContig().
@@ -44,14 +49,15 @@ addVariable <- function(df, name = NULL, variables =  NULL) {
 
 #' Subset the combineContig() product.
 #'
-#' This function allows for the subsetting of the product of combineContig() by the 
-#' name of the individual list element. In general the names of are samples + _ + ID, 
-#' allowing for users to subset the product of combineContig() across a string or 
-#' indivudal name.
+#' This function allows for the subsetting of the product of combineContig() by 
+#' the name of the individual list element. In general the names of are samples 
+#' + _ + ID, allowing for users to subset the product of combineContig() across 
+#' a string or individual name.
 #'
 #' @examples
 #' x <- contig_list
-#' combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), rep(c("P", "T"), 3), cells ="T-AB")
+#' combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), 
+#' rep(c("P", "T"), 3), cells ="T-AB")
 #' subset <- subsetContig(combined, name = "sample", variables = c("PX"))
 #'
 #' @param df The product of CombineContig().
@@ -66,7 +72,7 @@ subsetContig <- function(df, name, variables = NULL) {
     for (i in seq_along(df)) {
         if (df[[i]][1,name] %in% variables) {
             df2 <- append(df2, list(df[[i]]))
-            n2 <- names(df)[i] #need to store the name of the list element and replace
+            n2 <- names(df)[i] 
             names2 <- c(names2, n2)
         }
         else {
@@ -98,13 +104,13 @@ if (x == "gene") {
     return(x)
 }
 
-#' Allows users to take the meta data in seurat/SCE and place it into a list that will 
-#' work with all the functions
+#' Allows users to take the meta data in seurat/SCE and place it into a list 
+#' that will work with all the functions
 #'
-#' Allows users to perform more funadmental measures of clonotype analysis using the 
-#' meta data from the seurat or SCE object. For Seurat objects the active identity 
-#' is automatically added as "cluster". Reamining grouping parameters or SCE or Seurat 
-#' objects must appear in the meta data.
+#' Allows users to perform more fundamental measures of clonotype analysis 
+#' using the meta data from the seurat or SCE object. For Seurat objects the 
+#' active identity is automatically added as "cluster". Reamining grouping 
+#' parameters or SCE or Seurat objects must appear in the meta data.
 #'
 #' @examples
 #' \donttest{
@@ -114,20 +120,14 @@ if (x == "gene") {
 #' @param group The column header to group the new list by
 #' @importFrom stringr str_sort
 #' @export
-#' @return list derived from the meta data of single-cell object with elements divided by 
-#' the group parameter
+#' @return list derived from the meta data of single-cell object with 
+#' elements divided by the group parameter
 expression2List <- function(sc, group) {
-    if (!inherits(x=sc, what ="Seurat") & !inherits(x=sc, what ="SummarizedExperiment")) {
-        stop("Use a seurat or SCE object to convert into a list")
+    if (!inherits(x=sc, what ="Seurat") & 
+        !inherits(x=sc, what ="SummarizedExperiment")) {
+            stop("Use a seurat or SCE object to convert into a list")
     }
-
-    if (inherits(x=sc, what ="Seurat")) {
-        meta <- data.frame(sc[[]], Idents(sc))
-        colnames(meta)[length(meta)] <- "cluster"
-    }
-    else if (inherits(x=sc, what ="SummarizedExperiment")){
-        meta <- sc@metadata[[1]]
-    }
+    meta <- grabMeta(sc)
     unique <- str_sort(as.character(unique(meta[,group])), numeric = TRUE)
     df <- NULL
     for (i in seq_along(unique)) {
@@ -136,4 +136,83 @@ expression2List <- function(sc, group) {
     }
     names(df) <- unique
     return(df)
+}
+
+#This is to check the single-cell expresison object
+checkSingleObject <- function(sc) {
+    if (!inherits(x=sc, what ="Seurat") | 
+        inherits(x=sc, what ="SummarizedExperiment")){
+    stop("Object indicated is not of class 'Seurat' or 
+        'SummarizedExperiment', make sure you are using the correct data.") }
+}
+
+#This is to grab the meta data from a seurat or SCE object
+grabMeta <- function(sc) {
+    if (inherits(x=sc, what ="Seurat")) {
+        meta <- data.frame(sc[[]], Idents(sc))
+        colnames(meta)[length(meta)] <- "cluster"
+    }
+    else if (inherits(x=sc, what ="SummarizedExperiment")){
+        meta <- sc@metadata[[1]]
+    }
+    return(meta)
+}
+
+#This is to add the sample and ID prefixes for combineBCR()/TCR()
+modifyBarcodes <- function(df, samples, ID) {
+    out <- NULL
+    for (x in seq_along(df)) {
+        data <- df[[x]]
+        data$barcode <- paste0(samples[x], "_", ID[x], "_", data$barcode)
+        out[[x]] <- data }
+    return(out)
+}
+
+#Removing barcodes with NA recovered
+removingNA <- function(final) {
+    for(i in seq_along(final)) {
+        final[[i]] <- na.omit(final[[i]])}
+    return(final)
+}
+
+#Removing barcodes with > 2 clones recovered
+removingMulti <- function(final){
+    for(i in seq_along(final)) {
+        final[[i]] <- filter(final[[i]], !grepl(";",CTnt))}
+    return(final)
+}
+
+#Check the format of the cell barcode inputs and parameter lengthsd
+checkContigBarcodes <- function(df, samples, ID) {
+    count <- length(unlist(strsplit(df[[1]]$barcode[1], "[-]")))
+    count2 <- length(unlist(strsplit(df[[1]]$barcode[1], "[_]")))
+    if (count > 2 | count2 > 2) {
+        stop("Seems to be an error in the naming of the contigs, ensure 
+            the barcodes are labeled like, AAACGGGAGATGGCGT-1 or 
+            AAACGGGAGATGGCGT, use stripBarcode to get the basic 
+            format", call. = FALSE)
+    } else if (length(df) != length(samples) | length(df) != length(ID)) {
+        stop("Make sure the sample and ID labels match the length of the 
+            list of data frames (df).", call. = FALSE) }
+}
+
+#Caclulating diversity using Vegan R package
+#' @importFrom vegan diversity estimateR
+diversityCall <- function(data) {
+    w <- diversity(data[,"Freq"], index = "shannon")
+    x <- diversity(data[,"Freq"], index = "invsimpson")
+    y <- estimateR(data[,"Freq"])[2] #Chao
+    z <- estimateR(data[,"Freq"])[4] #ACE
+    out <- c(w,x,y,z)
+    return(out)
+}
+
+#Organizing list of contigs for vizualization
+parseContigs <- function(df, i, names, cloneCall) {
+    data <- df[[i]]
+    data1 <- data %>% group_by(data[,cloneCall]) %>%
+        summarise(Abundance=n())
+    colnames(data1)[1] <- cloneCall
+    data1$values <- names[i]
+    return(data1)
 }

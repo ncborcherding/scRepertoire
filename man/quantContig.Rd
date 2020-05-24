@@ -15,8 +15,9 @@ quantContig(
 \arguments{
 \item{df}{The product of combineContig().}
 
-\item{cloneCall}{How to call the clonotype - CDR3 gene (gene), CDR3 nucleotide (nt) 
-or CDR3 amino acid (aa), or CDR3 gene+nucleotide (gene+nt).}
+\item{cloneCall}{How to call the clonotype - CDR3 gene (gene), 
+CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
+CDR3 gene+nucleotide (gene+nt).}
 
 \item{scale}{Converts the graphs into percentage of unique clonotypes.}
 
@@ -29,15 +30,17 @@ ggplot of the total or relative unique clonotypes
 }
 \description{
 This function takes the output from combineContig() or expression2List() and 
-quantifies unique clonotypes. The unique clonotypes can be either reported as 
-a raw output or scaled to the total number of clonotypes recovered using the 
-scale parameter. Multiple sequencing runs can be group together using the group 
-parameter. If a matrix output for the data is preferred, set exportTable = TRUE.
+quantifies unique clonotypes. The unique clonotypes can be either reported 
+as a raw output or scaled to the total number of clonotypes recovered using 
+the scale parameter. Multiple sequencing runs can be group together using 
+the group parameter. If a matrix output for the data is preferred, set 
+exportTable = TRUE.
 }
 \examples{
 #Making combined contig data
 x <- contig_list
-combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), rep(c("P", "T"), 3), cells ="T-AB")
+combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), 
+rep(c("P", "T"), 3), cells ="T-AB")
 quantContig(combined, cloneCall="gene+nt", scale = TRUE)
 
 }

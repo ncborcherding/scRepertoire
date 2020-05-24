@@ -18,29 +18,32 @@ combineExpression(
 
 \item{sc}{The seurat or SingleCellExperiment (SCE) object to attach}
 
-\item{cloneCall}{How to call the clonotype - CDR3 gene (gene), CDR3 nucleotide (nt) 
-or CDR3 amino acid (aa), or
+\item{cloneCall}{How to call the clonotype - CDR3 gene (gene), 
+CDR3 nucleotide (nt) CDR3 amino acid (aa), or 
 CDR3 gene+nucleotide (gene+nt).}
 
-\item{groupBy}{The column label in the combined contig object in which clonotype 
-frequency will be calculated.}
+\item{groupBy}{The column label in the combined contig object in which 
+clonotype frequency will be calculated.}
 
 \item{cloneTypes}{The bins for the grouping based on frequency}
 
-\item{filterNA}{Method to subset seurat object of barcodes without clonotype information}
+\item{filterNA}{Method to subset seurat object of barcodes without 
+clonotype information}
 }
 \value{
-seurat or SingleCellExperiment object with attached clonotype information
+seurat or SingleCellExperiment object with attached clonotype 
+information
 }
 \description{
-This function adds the immune receptor information to the seurat or SCE object 
-to the meta data. By defualt this function also calculates the frequencies of 
-the clonotypes by sequencing run (groupBy = "none"). To change how the 
-frequencies are calculated, select a column header for the groupBy variable. 
-Importantly, before using combineExpression() ensure the barcodes of the 
-seurat or SCE object match the barcodes in the output of the combinedContig() 
-call. Check changeNames() to change the prefix of the seurat object. If the 
-dominant clonotypes have a greater frequency than 500, adjust the cloneTypes variable.
+This function adds the immune receptor information to the seurat or 
+SCE object to the meta data. By defualt this function also calculates 
+the frequencies of the clonotypes by sequencing run (groupBy = "none"). 
+To change how the frequencies are calculated, select a column header for 
+the groupBy variable. Importantly, before using combineExpression() 
+ensure the barcodes of the seurat or SCE object match the barcodes in the 
+output of the combinedContig() call. Check changeNames() to change the 
+prefix of the seurat object. If the dominant clonotypes have a greater 
+frequency than 500, adjust the cloneTypes variable.
 }
 \examples{
 \donttest{

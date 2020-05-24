@@ -27,19 +27,24 @@ combineBCR(
 List of clonotypes for individual cell barcodes
 }
 \description{
-This function consolidates a list of BCR sequencing results to the level of the 
-individual cell barcodes. Using the samples and ID parameters, the function 
-will add the strings as prefixes to prevent issues with repeated barcodes. The 
-resulting new barcodes will need to match the seurat or SCE object in order 
-to use, @seealso \code{\link{combineExpression}}. Unlike combineTCR(), 
-combineBCR produces a column CTstrict of an index of nucleotide sequence 
-and the corresponding v-gene. This index automatically caluclates the Hammings 
-distance between sequences of the same length and will index sequences with 
-> 0.85 normalized Hammings distance with the same ID. If nucleotide sequences 
-meet the threshold, ":HD" will be added to the CTstrict column string.
+This function consolidates a list of BCR sequencing results to the level 
+of the individual cell barcodes. Using the samples and ID parameters, 
+the function will add the strings as prefixes to prevent issues with 
+repeated barcodes. The resulting new barcodes will need to match the 
+seurat or SCE object in order to use,
 }
 \examples{
 \donttest{
-combineBCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), rep(c("P", "T"), 3))
+combineBCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), 
+rep(c("P", "T"), 3))
 }
+}
+\seealso{
+\code{\link{combineExpression}}. Unlike combineTCR(), 
+combineBCR produces a column CTstrict of an index of nucleotide sequence 
+and the corresponding v-gene. This index automatically caluclates 
+the Hammings distance between sequences of the same length and will 
+index sequences with > 0.85 normalized Hammings distance with the same 
+ID. If nucleotide sequences meet the threshold, ":HD" will be added to 
+the CTstrict column string.
 }

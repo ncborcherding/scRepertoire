@@ -13,8 +13,8 @@ highlightClonotypes(
 \arguments{
 \item{sc}{The seurat object to attach}
 
-\item{cloneCall}{How to call the clonotype - CDR3 gene (gene), CDR3 nucleotide (nt) 
-or CDR3 amino acid (aa), or
+\item{cloneCall}{How to call the clonotype - CDR3 gene (gene), 
+CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
 CDR3 gene+nucleotide (gene+nt).}
 
 \item{sequence}{The specifc sequence or sequence to highlight}
@@ -28,6 +28,7 @@ reduction in seurat object.
 }
 \examples{
 \donttest{
-highlightClonotype(seurat, cloneCall = "gene", sequence = "CAVNGGSQGNLIF_CSAEREDTDTQYF")
+highlightClonotype(seurat, cloneCall = "gene", 
+sequence = "CAVNGGSQGNLIF_CSAEREDTDTQYF")
 }
 }

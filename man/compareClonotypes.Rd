@@ -2,7 +2,7 @@
 % Please edit documentation in R/viz.R
 \name{compareClonotypes}
 \alias{compareClonotypes}
-\title{Demonstrate the difference in clonal proportion between multiple clonotypes}
+\title{Demonstrate the difference in clonal proportion between clonotypes}
 \usage{
 compareClonotypes(
   df,
@@ -16,8 +16,9 @@ compareClonotypes(
 \arguments{
 \item{df}{The product of CombineContig() or expression2List().}
 
-\item{cloneCall}{How to call the clonotype - CDR3 gene (gene), CDR3 nucleotide (nt) 
-or CDR3 amino acid (aa), or CDR3 gene+nucleotide (gene+nt).}
+\item{cloneCall}{How to call the clonotype - CDR3 gene (gene), 
+CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
+CDR3 gene+nucleotide (gene+nt).}
 
 \item{samples}{The specific samples to isolate for visualization.}
 
@@ -28,7 +29,8 @@ or CDR3 amino acid (aa), or CDR3 gene+nucleotide (gene+nt).}
 \item{graph}{The type of graph produced, either "alluvial" or "area".}
 }
 \value{
-ggplot of the proportion of total sequencing read of selecting clonotypes
+ggplot of the proportion of total sequencing read of 
+selecting clonotypes
 }
 \description{
 This function produces an alluvial or area graph of the proportion of 
@@ -43,7 +45,9 @@ reduce the number parameter.
 \examples{
 #Making combined contig data
 x <- contig_list
-combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), rep(c("P", "T"), 3), cells ="T-AB")
-compareClonotypes(combined, numbers = 10, samples = c("PX_P", "PX_T"), cloneCall="aa")
+combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), 
+rep(c("P", "T"), 3), cells ="T-AB")
+compareClonotypes(combined, numbers = 10, 
+samples = c("PX_P", "PX_T"), cloneCall="aa")
 
 }
