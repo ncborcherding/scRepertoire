@@ -24,8 +24,8 @@
 #' @import ggplot2
 #' @export
 #' @return ggplot of the total or relative unique clonotypes
-quantContig <- function(df, cloneCall = c("gene", "nt", "aa", "gene+nt"),
-                            scale=FALSE, group = NULL, exportTable = FALSE) {
+quantContig <- function(df, cloneCall = "gene+nt", scale=FALSE, group = NULL, 
+                    exportTable = FALSE) {
     if (length(group) > 1) { stop("Only one item in the group variable can 
                                     be listed.") }
     cloneCall <- theCall(cloneCall)
@@ -104,8 +104,8 @@ quantContig <- function(df, cloneCall = c("gene", "nt", "aa", "gene+nt"),
 #' @export
 #' @return ggplot of the total or relative adundance of clonotypes 
 #' across quanta
-abundanceContig <- function(df, cloneCall = c("gene", "nt", "aa", "gene+nt"),
-                            scale=FALSE, group = NULL, exportTable = FALSE) {
+abundanceContig <- function(df, cloneCall = "gene+nt", scale=FALSE, group = NULL, 
+                        exportTable = FALSE) {
     Con.df <- NULL
     xlab <- "Abundance"
     cloneCall <- theCall(cloneCall)
@@ -187,10 +187,8 @@ return(plot) }
 #' @export
 #' @return ggplot of the discrete or relative length distributions of 
 #' clonotype sequences
-lengthContig <- function(df, cloneCall = c("nt", "aa"),
-                            group = NULL, scale = FALSE, 
-                            chains = c("combined", "single"), 
-                            exportTable = FALSE) {
+lengthContig <- function(df, cloneCall = "aa", group = NULL, scale = FALSE, 
+                    chains = "combined", exportTable = FALSE) {
     if(cloneCall == "nt") { cloneCall <- "CTnt"
         ylab <- "CDR3 (NT)"
     } else if (cloneCall == "aa") { cloneCall <- "CTaa" 
@@ -343,9 +341,8 @@ lengthContig <- function(df, cloneCall = c("nt", "aa"),
 #' @export
 #' @return ggplot of the proportion of total sequencing read of 
 #' selecting clonotypes
-compareClonotypes <- function(df, cloneCall = c("gene", "nt", "aa", "gene+nt"),
-                                samples = NULL, clonotypes = NULL, 
-                                numbers = NULL, graph = c("alluvial", "area")){
+compareClonotypes <- function(df, cloneCall = "gene+nt", samples = NULL, 
+                        clonotypes = NULL, numbers = NULL, graph = "alluvial"){
     cloneCall <- theCall(cloneCall)
     if (!is.null(numbers) & !is.null(clonotypes)) {
         stop("Make sure your inputs are either numbers or clonotype sequences.")
@@ -411,12 +408,8 @@ compareClonotypes <- function(df, cloneCall = c("gene", "nt", "aa", "gene+nt"),
 #' @export
 #' @return ggplot dendrogram of the clone size distribution
 
-clonesizeDistribution <- function(df, 
-                            cloneCall = c("gene", "nt", "aa", "gene+nt"), 
-                            method = c("complete", "ward.D", "ward.D2", 
-                                "single", "average", "mcquitty", "median", 
-                                "centroid"),
-                            exportTable = FALSE) {
+clonesizeDistribution <- function(df,  cloneCall ="gene+nt", 
+                            method = "ward.D2", exportTable = FALSE) {
         cloneCall <- theCall(cloneCall)
         data <- bind_rows(df)
         unique_df <- unique(data[,cloneCall])

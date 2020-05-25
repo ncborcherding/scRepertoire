@@ -25,8 +25,8 @@
 #' @import ggplot2
 #' @export
 #' @return ggplot of the diversity of clonotype sequences across list
-clonalDiversity <- function(df, cloneCall = c("gene", "nt", "aa", "gene+nt"), 
-                            group = c("samples"), exportTable = FALSE) {
+clonalDiversity <- function(df, cloneCall = "gene+nt", group = "samples", 
+                        exportTable = FALSE) {
     cloneCall <- theCall(cloneCall)
     mat <- NULL
     if (group == "samples") {

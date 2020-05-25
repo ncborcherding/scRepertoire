@@ -7,9 +7,8 @@ Jensen-Shannon divergence}
 \usage{
 clonesizeDistribution(
   df,
-  cloneCall = c("gene", "nt", "aa", "gene+nt"),
-  method = c("complete", "ward.D", "ward.D2", "single", "average", "mcquitty",
-    "median", "centroid"),
+  cloneCall = "gene+nt",
+  method = "ward.D2",
   exportTable = FALSE
 )
 }

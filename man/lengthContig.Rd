@@ -6,10 +6,10 @@
 \usage{
 lengthContig(
   df,
-  cloneCall = c("nt", "aa"),
+  cloneCall = "aa",
   group = NULL,
   scale = FALSE,
-  chains = c("combined", "single"),
+  chains = "combined",
   exportTable = FALSE
 )
 }

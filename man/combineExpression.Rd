@@ -7,8 +7,8 @@
 combineExpression(
   df,
   sc,
-  cloneCall = c("gene", "nt", "aa", "gene+nt"),
-  groupBy = c("none", "sample", "ID"),
+  cloneCall = "gene+nt",
+  groupBy = "none",
   cloneTypes = c(Single = 1, Small = 5, Medium = 20, Large = 100, Hyperexpanded = 500),
   filterNA = FALSE
 )

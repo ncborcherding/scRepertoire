@@ -7,7 +7,7 @@
 clonalProportion(
   df,
   split = c(10, 100, 1000, 10000, 30000, 1e+05),
-  cloneCall = c("gene", "nt", "aa", "gene+nt"),
+  cloneCall = "gene+nt",
   exportTable = FALSE
 )
 }

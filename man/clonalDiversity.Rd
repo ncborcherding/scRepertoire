@@ -6,8 +6,8 @@
 \usage{
 clonalDiversity(
   df,
-  cloneCall = c("gene", "nt", "aa", "gene+nt"),
-  group = c("samples"),
+  cloneCall = "gene+nt",
+  group = "samples",
   exportTable = FALSE
 )
 }

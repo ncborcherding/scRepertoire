@@ -26,14 +26,12 @@
 #' @importFrom reshape2 melt
 #' @export
 #' @return ggplot of the space occupied by the specific propotion of clonotypes
-clonalHomeostasis <- function(df,
-                            cloneTypes = c(Rare = .0001, Small = .001, 
-                            Medium = .01, Large = .1, Hyperexpanded = 1),
-                            cloneCall = c("gene", "nt", "aa", "gene+nt"),
-                            exportTable = FALSE) {
+clonalHomeostasis <- function(df, cloneTypes = c(Rare = .0001, Small = .001, 
+                        Medium = .01, Large = .1, Hyperexpanded = 1),
+                        cloneCall = "gene+nt", exportTable = FALSE) {
     cloneTypes <- c(None = 0, cloneTypes)
     cloneCall <- theCall(cloneCall)
-    df <- if(is(df)[1] != "list") list(df) else df
+    df <- checkList(df)
     mat <- matrix(0, length(df), length(cloneTypes) - 1, 
                 dimnames = list(names(df), 
                 names(cloneTypes)[-1]))

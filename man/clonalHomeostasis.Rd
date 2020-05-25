@@ -8,7 +8,7 @@ clonalHomeostasis(
   df,
   cloneTypes = c(Rare = 1e-04, Small = 0.001, Medium = 0.01, Large = 0.1, Hyperexpanded
     = 1),
-  cloneCall = c("gene", "nt", "aa", "gene+nt"),
+  cloneCall = "gene+nt",
   exportTable = FALSE
 )
 }

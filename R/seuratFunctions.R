@@ -28,14 +28,10 @@
 #' @export
 #' @return seurat or SingleCellExperiment object with attached clonotype 
 #' information
-combineExpression <- function(df, sc,
-                        cloneCall = c("gene", "nt", "aa", "gene+nt"),
-                        groupBy = c("none", "sample", "ID"),
-                        cloneTypes = c(Single = 1, Small = 5, Medium = 20, 
-                            Large = 100, Hyperexpanded = 500),
-                        filterNA = FALSE) {
-    df <- if(is(df)[1] != "list") list(df) else df
-    cloneTypes <- c(None = 0, cloneTypes)
+combineExpression <- function(df, sc, cloneCall="gene+nt", groupBy="none", 
+                        cloneTypes=c(None=0, Single=1, Small=5, Medium=20, 
+                        Large=100, Hyperexpanded=500), filterNA = FALSE) {
+    df <- checkList(df)
     cloneCall <- theCall(cloneCall)
     Con.df <- NULL
     meta <- grabMeta(sc)
@@ -44,36 +40,32 @@ combineExpression <- function(df, sc,
         for (i in seq_along(df)) {
             data <- data.frame(df[[i]], stringsAsFactors = FALSE)
             data2 <- unique(data[,c("barcode", cloneCall)])
-            data2 <- data2[data2[,"barcode"] %in% cell.names,]
+            data2 <- na.omit(data2[data2[,"barcode"] %in% cell.names,])
             data2 <- data2 %>% group_by(data2[,cloneCall]) %>%
                 summarise(Frequency = n())
             colnames(data2)[1] <- cloneCall
-            data2 <- na.omit(data2)
             data <- merge(data, data2, by = cloneCall, all = TRUE)
             Con.df <- rbind.data.frame(Con.df, data) }
     } else if (groupBy != "none") {
         data <- data.frame(bind_rows(df), stringsAsFactors = FALSE)
-        data2 <- unique(data[,c("barcode", cloneCall, groupBy)])
+        data2 <- na.omit(unique(data[,c("barcode", cloneCall, groupBy)]))
         data2 <- data2[data2[,"barcode"] %in% cell.names, ]
-        data2 <- data2 %>% group_by(data2[,cloneCall], 
-                    data2[,groupBy]) %>% summarise(Frequency = n())
-        data2 <- na.omit(data.frame(data2, stringsAsFactors = FALSE))
-        colnames(data2)[1] <- cloneCall
-        colnames(data2)[2] <- groupBy
+        data2 <- as.data.frame(data2 %>% group_by(data2[,cloneCall], 
+                    data2[,groupBy]) %>% summarise(Frequency = n()))
+        colnames(data2)[c(1,2)] <- c(cloneCall, groupBy)
         x <- unique(data[,groupBy])
         for (i in seq_along(x)) {
             sub1 <- subset(data, data[,groupBy] == x[i])
             sub2 <- subset(data2, data2[,groupBy] == x[i])
             merge <- merge(sub1, sub2, by=cloneCall)
-            Con.df <- rbind.data.frame(Con.df, merge) }}
+            Con.df <- rbind.data.frame(Con.df, merge) } }
     Con.df$cloneType <- NA
-    for (x in seq_along(cloneTypes)) {
-        names(cloneTypes)[x] <- paste0(names(cloneTypes[x]), ' (', 
-            cloneTypes[x-1], ' < X <= ', cloneTypes[x], ')') }
-    for (i in 2:length(cloneTypes)) {
-        Con.df$cloneType <- ifelse(Con.df$Frequency > cloneTypes[i-1] & 
-            Con.df$Frequency <= cloneTypes[i], names(cloneTypes[i]), 
-            Con.df$cloneType) }
+    for (x in seq_along(cloneTypes)) { names(cloneTypes)[x] <- 
+        paste0(names(cloneTypes[x]), ' (', cloneTypes[x-1], 
+        ' < X <= ', cloneTypes[x], ')') }
+    for (i in 2:length(cloneTypes)) { Con.df$cloneType <- 
+        ifelse(Con.df$Frequency > cloneTypes[i-1] & Con.df$Frequency 
+        <= cloneTypes[i], names(cloneTypes[i]), Con.df$cloneType) }
     PreMeta <- unique(Con.df[,c("barcode", "CTgene", "CTnt", 
                 "CTaa", "CTstrict", "Frequency", "cloneType")])
     rownames(PreMeta) <- PreMeta$barcode
@@ -84,15 +76,7 @@ combineExpression <- function(df, sc,
             merge(sc@metadata[[1]], PreMeta)[, union(names(sc@metadata[[1]]), 
             names(PreMeta))]
         rownames(sc@metadata[[1]]) <- rownames }
-    if (filterNA == TRUE) {
-        meta <- grabMeta(sc)
-        evalNA <- data.frame(meta[,"cloneType"])
-        colnames(evalNA) <- "indicator"
-        evalNA <- evalNA %>%
-            transmute(indicator = ifelse(is.na(indicator), 0, 1))
-        rownames(evalNA) <- rownames(meta)
-        sc <- AddMetaData(sc, evalNA)
-        sc <- subset(sc, cloneType != 0)}
+    if (filterNA == TRUE) { sc <- filteringNA(sc) }
     return(sc) }
 
 #' Highlighting specific clonotypes in Seurat

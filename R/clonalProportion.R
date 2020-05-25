@@ -28,14 +28,11 @@
 #'
 #' @export
 #' @return ggplot of the space occupied by the specific rank of clonotypes
-clonalProportion <- function(df,
-                                split = c(10, 100, 1000, 10000, 30000, 100000),
-                                cloneCall = c("gene", "nt", "aa", "gene+nt"),
-                                exportTable = FALSE) {
+clonalProportion <- function(df,split = c(10, 100, 1000, 10000, 30000, 
+                        100000), cloneCall = "gene+nt", exportTable = FALSE) {
     Con.df <- NULL
     cloneCall <- theCall(cloneCall)
-    df <- if(is(df)[1] != "list") list(df) else df
-
+    df <- checkList(df)
     mat <- matrix(0, length(df), length(split), dimnames = list(names(df), 
             paste0('[', c(1, split[-length(split)] + 1), ':', split, ']')))
     df <- lapply(df, '[[', cloneCall)

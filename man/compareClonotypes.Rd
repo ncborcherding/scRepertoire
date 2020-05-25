@@ -6,11 +6,11 @@
 \usage{
 compareClonotypes(
   df,
-  cloneCall = c("gene", "nt", "aa", "gene+nt"),
+  cloneCall = "gene+nt",
   samples = NULL,
   clonotypes = NULL,
   numbers = NULL,
-  graph = c("alluvial", "area")
+  graph = "alluvial"
 )
 }
 \arguments{

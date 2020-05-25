@@ -6,7 +6,7 @@
 \usage{
 quantContig(
   df,
-  cloneCall = c("gene", "nt", "aa", "gene+nt"),
+  cloneCall = "gene+nt",
   scale = FALSE,
   group = NULL,
   exportTable = FALSE

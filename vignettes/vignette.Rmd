@@ -278,8 +278,7 @@ We can call (cloneCall) the 4 variations of clonotypes: 1) genes, 2) CDR3 amino 
 Lastly, in order to categorize the frequency, we have the variable **cloneTypes** which acts as a bin to place labels. As a default, **cloneTypes** is set to equal c(Single = 1, Small = 5, Medium = 20, Large = 100, Hyperexpanded = 500). This is because the highest repeated clonotype is in Patient 3 with just under 500 clones. If your data has a clone with greater expansion, you should readjust the cutpoints. 
 
 ```{r}
-seurat <- combineExpression(combined, seurat, 
-                                cloneCall="gene", groupBy = "sample")
+seurat <- combineExpression(combined, seurat, cloneCall="gene", groupBy = "sample")
 ```
 
 We first want to look at the distribution of peripheral versus tumor T cells. We can use the same color scheme as the rest of the scRepertoire package by calling the object **colorblind_vector** using the following hex codes. 
