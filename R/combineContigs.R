@@ -1,4 +1,22 @@
-#' 
+# Adding Global Variables
+# data('v_gene','j_gene', 'c_gene', 'd_gene')
+utils::globalVariables(c("v_gene", "j_gene", "c_gene", "d_gene", "chain"))
+
+heavy_lines <- c("IGH", "cdr3_aa1", "cdr3_nt1", "vgene1")
+light_lines <- c("IGLC", "cdr3_aa2", "cdr3_nt2", "vgene2")
+l_lines <- c("IGLct", "cdr3", "cdr3_nt", "v_gene")
+k_lines <- c("IGKct", "cdr3", "cdr3_nt", "v_gene")
+h_lines <- c("IGHct", "cdr3", "cdr3_nt", "v_gene")
+tcr1_lines <- c("TCR1", "cdr3_aa1", "cdr3_nt1")
+tcr2_lines <- c("TCR2", "cdr3_aa2", "cdr3_nt2")
+data1_lines <- c("TCR1", "cdr3", "cdr3_nt")
+data2_lines <- c("TCR2", "cdr3", "cdr3_nt")
+CT_lines <- c("CTgene", "CTnt", "CTaa", "CTstrict", "cellType")
+
+utils::globalVariables(c("heavy_lines", "light_lines", "l_lines", "k_lines", 
+            "h_lines", "tcr1_lines", "tcr2_lines", "data1_lines", 
+            "data2_lines", "CT_lines"))
+
 #' Combining the list of T Cell Receptor contigs
 #'
 #' This function consolidates a list of TCR sequencing results to the level of 
@@ -25,129 +43,50 @@
 #' @export
 #' @return List of clonotypes for individual cell barcodes
 combineTCR <- function(df, samples = NULL, ID = NULL, 
-                        cells = c("T-AB", "T-GD"), 
-                        removeNA = FALSE, removeMulti = FALSE, 
-                        filterMulti = FALSE) {
+                cells = c("T-AB", "T-GD"), removeNA = FALSE, 
+                removeMulti = FALSE, filterMulti = FALSE) {
     df <- checkList(df)
-    tcr1_lines <- c("TCR1", "cdr3_aa1", "cdr3_nt1")
-    tcr2_lines <- c("TCR2", "cdr3_aa2", "cdr3_nt2")
-    data1_lines <- c("TCR1", "cdr3", "cdr3_nt")
-    data2_lines <- c("TCR2", "cdr3", "cdr3_nt")
     out <- NULL
     final <- NULL
     checkContigBarcodes(df, samples, ID)
-        if (cells == "T-AB") { chain1 <- "TRA" 
-            chain2 <- "TRB"
-            cellType <- "T-AB"
-        } else if (cells == "T-GD") { chain1 <- "TRG" 
-            chain2 <- "TRD"
-            cellType <- "T-GD" }
-        for (i in seq_along(df)) {
-            df[[i]] <- subset(df[[i]], chain != "Multi")
-            df[[i]] <- subset(df[[i]], chain == chain1 | chain == chain2)
-            df[[i]] <- subset(df[[i]], productive == TRUE | 
-                                productive == "TRUE" | productive == "True")
-            df[[i]]$sample <- samples[i]
-            df[[i]]$ID <- ID[i]
-            if (filterMulti == TRUE) {
-                barcodes <- as.character(unique(table$Var1))
-                multichain <- NULL
-                for (j in seq_along(barcodes)) {
-                    chain <- df[[i]][df[[i]]$barcode == barcodes[j],] %>% 
-                            group_by(barcode) %>% top_n(n = 2, wt = reads)
-                    multichain <- rbind(multichain, chain) }
-                `%!in%` = Negate(`%in%`)
-                df[[i]] <- subset(df[[i]], barcode %!in% barcodes)
-                df[[i]] <- rbind(df[[i]], multichain) }
-            if (nrow(df[[i]]) == 0) {
-                stop("Check some hypotenuses, Captain. There are 0 contigs 
-                    after filtering for celltype.", call. = FALSE) }}
-        out <- modifyBarcodes(df, samples, ID)
-        for (i in seq_along(out)) { data2 <- out[[i]]
-            data2 <- data2 %>% mutate(TCR1 = ifelse(chain == chain1, 
-                    paste(with(data2, 
-                    interaction(v_gene,  j_gene, c_gene))), NA)) %>%
-                mutate(TCR2 = ifelse(chain == chain2, paste(with(data2, 
-                    interaction(v_gene,  j_gene, d_gene, c_gene))), NA))
-            unique_df <- unique(data2$barcode)
-            Con.df <- data.frame(matrix(NA, length(unique_df), 7))
-            colnames(Con.df) <- c("barcode",tcr1_lines, tcr2_lines)
-            Con.df$barcode <- unique_df
-            for (y in seq_along(unique_df)){
-                barcode.i <- Con.df$barcode[y]
-                location.i <- which(barcode.i == data2$barcode)
-                if (length(location.i) == 2){
-                    if (is.na(data2[location.i[1],c("TCR1")])) {
-                        Con.df[y,tcr2_lines]<-data2[location.i[1],data2_lines]
-                        Con.df[y,tcr1_lines]<-data2[location.i[2],data1_lines]
-                    } else {
-                        Con.df[y,tcr1_lines]<-data2[location.i[1],data1_lines]
-                        Con.df[y,tcr2_lines]<-data2[location.i[2],data2_lines] }
-                } else if (length(location.i) == 3) { 
-                    if (is.na(data2[location.i[1],c("TCR1")])) { 
-                        Con.df[y,tcr2_lines]<-data2[location.i[1],data2_lines] 
-                        if (is.na(data2[location.i[2],c("TCR1")])) { 
-                            TRdf <- paste(Con.df[y, tcr2_lines],
-                                    data2[location.i[2], data2_lines],sep=";") 
-                            Con.df[y,tcr2_lines] <- TRdf 
-                            Con.df[y,tcr1_lines] <- 
-                                data2[location.i[3],data1_lines] 
-                        } else { # if the 2nd location is occupied by TRA
-                            Con.df[y,tcr1_lines] <- 
-                                data2[location.i[1],data1_lines] 
-                        if (is.na(data2[location.i[3],c("TCR1")])) { 
-                            TRdf <- paste(Con.df[y, tcr2_lines],
-                                    data2[location.i[3], data2_lines],sep=";") 
-                            Con.df[y,tcr2_lines] <- TRdf 
-                        } else { # if the 3rd location is occupied by TRA
-                            TRdf <- paste(Con.df[y, tcr1_lines],
-                                    data2[location.i[3], data1_lines],sep=";") 
-                            Con.df[y,tcr1_lines] <- TRdf }}
-                } else { # if 1st location is occupied by TRA
-                    Con.df[y,tcr1_lines] <- data2[location.i[1],data1_lines] 
-                    if (is.na(data2[location.i[2],c("TCR1")])) { 
-                        if (is.na(data2[location.i[3],c("TCR1")])) { 
-                            TRdf <- paste(data2[location.i[2], data2_lines],
-                                    data2[location.i[3], data2_lines],sep=";") 
-                            Con.df[y,tcr2_lines] <- TRdf 
-                        } else { # if TRA is on 3rd location
-                            TRdf <- paste(Con.df[y, tcr1_lines],
-                                    data2[location.i[3],data1_lines],sep=";") 
-                            Con.df[y,tcr1_lines] <- TRdf }
-                    } else { # if TRA is on 2nd location
-                        TRdf <- paste(Con.df[y, tcr1_lines],
-                                data2[location.i[2], data1_lines],sep=";") 
-                        Con.df[y,tcr1_lines] <- TRdf 
-                        Con.df[y,tcr2_lines] <- 
-                            data2[location.i[3],data2_lines] } }
-        } else if (length(location.i) == 1) {
-            chain.i <- data2$chain[location.i]
-            if (chain.i == "TRA"){
-                Con.df[y,tcr1_lines] <- data2[location.i[1],data1_lines]
-            } else {Con.df[y,tcr2_lines] <- data2[location.i[1],data2_lines]}}}
-        Con.df$CTgene <- paste(Con.df$TCR1, Con.df$TCR2, sep="_")
-        Con.df$CTnt <- paste(Con.df$cdr3_nt1, Con.df$cdr3_nt2, sep="_")
-        Con.df$CTaa <- paste(Con.df$cdr3_aa1, Con.df$cdr3_aa2, sep="_")
-        Con.df$CTstrict <- paste(Con.df$TCR1, Con.df$cdr3_nt1, 
-                            Con.df$TCR2, Con.df$cdr3_nt2, sep="_")
+    chain1 <- cellT(cells)[[1]]
+    chain2 <- cellT(cells)[[2]]
+    cellType <- cellT(cells)[[3]]
+    for (i in seq_along(df)) {
+        df[[i]] <- subset(df[[i]], chain != "Multi")
+        df[[i]] <- subset(df[[i]], chain %in% c(chain1, chain2))
+        df[[i]] <- subset(df[[i]], productive %in% c(TRUE, "TRUE", "True"))
+        df[[i]]$sample <- samples[i]
+        df[[i]]$ID <- ID[i]
+        if (filterMulti == TRUE) { df[[i]] <- filteringMulti(df[[i]]) }
+        if (nrow(df[[i]]) == 0) { stop("There are 0 contigs 
+                after filtering for celltype.", call. = FALSE) }}
+    out <- modifyBarcodes(df, samples, ID)
+    for (i in seq_along(out)) { 
+        data2 <- out[[i]]
+        data2 <- makeGenes(cellType, data2, chain1, chain2)
+        unique_df <- unique(data2$barcode)
+        Con.df <- data.frame(matrix(NA, length(unique_df), 7))
+        colnames(Con.df) <- c("barcode",tcr1_lines, tcr2_lines)
+        Con.df$barcode <- unique_df
+        Con.df <- parseTCR(Con.df, unique_df, data2)
+        Con.df <- assignCT(cellType, Con.df)
         Con.df$cellType <- cells 
         Con.df[Con.df == "NA_NA" | Con.df == "NA_NA_NA_NA"] <- NA 
-        data3 <- merge(data2[,-which(names(data2) %in% 
-                                c("TCR1","TCR2"))], Con.df, by = "barcode")
-        data3 <- data3[, c("barcode", "sample", "ID", "TCR1", 
-                            tcr1_lines, tcr2_lines, "CTgene", "CTnt", "CTaa", 
-                            "CTstrict", "cellType")]
+        data3 <- merge(data2[,-which(names(data2) %in% c("TCR1","TCR2"))], 
+            Con.df, by = "barcode")
+        data3<-data3[,c("barcode","sample","ID",tcr1_lines,tcr2_lines,
+            CT_lines)]
         final[[i]] <- data3 }
     names <- NULL
     for (i in seq_along(samples)) { c <- paste(samples[i], "_", ID[i], sep="")
         names <- c(names, c)}
     names(final) <- names
-    for (i in seq_along(final)) {
-    final[[i]] <- final[[i]][!duplicated(final[[i]]$barcode),] }
+    for (i in seq_along(final)){
+        final[[i]]<-final[[i]][!duplicated(final[[i]]$barcode),]}
     if (removeNA == TRUE) { final <- removingNA(final)}
     if (removeMulti == TRUE) { final <- removingMulti(final) }
-    return(final)
-}
+    return(final) }
 
 #' Combining the list of B Cell Receptor contigs
 #'
@@ -181,115 +120,52 @@ combineTCR <- function(df, samples = NULL, ID = NULL,
 combineBCR <- function(df, samples = NULL, ID = NULL, removeNA = FALSE, 
                         removeMulti = FALSE) {
     df <- checkList(df)
-    heavy_lines <- c("IGH", "cdr3_aa1", "cdr3_nt1", "vgene1")
-    light_lines <- c("IGLC", "cdr3_aa2", "cdr3_nt2", "vgene2")
     out <- NULL
     final <- list()
     checkContigBarcodes(df, samples, ID)
     for (i in seq_along(df)) {
-        df[[i]] <- subset(df[[i]], chain == "IGH" | chain == "IGK" 
-                    | chain == "IGL")
-        df[[i]] <- subset(df[[i]], productive == TRUE 
-                    | productive == "TRUE" | productive == "True")
-        df[[i]] <- df[[i]] %>% group_by(barcode, chain) %>%
-            top_n(n = 1, wt = reads)
+        df[[i]] <- subset(df[[i]], chain %in% c("IGH", "IGK", "IGL"))
+        df[[i]] <- subset(df[[i]], productive %in% c(TRUE, "TRUE", "True"))
+        df[[i]] <- df[[i]] %>% group_by(barcode,chain) %>% top_n(n=1,wt=reads)
         df[[i]]$sample <- samples[i]
         df[[i]]$ID <- ID[i]
-        table <- subset(as.data.frame(table(df[[i]]$barcode)), Freq > 2)
-        barcodes <- as.character(unique(table$Var1))
-        multichain <- NULL
-        for (j in seq_along(barcodes)) {
-            chain <- df[[i]][df[[i]]$barcode == barcodes[j],] %>% 
-                        group_by(barcode) %>% 
-                        top_n(n = 2, wt = reads)
-            multichain <- rbind(multichain, chain) }
-        `%!in%` = Negate(`%in%`)
-        df[[i]] <- subset(df[[i]], barcode %!in% barcodes)
-        df[[i]] <- rbind(df[[i]], multichain) }
+        df[[i]] <- filteringMulti(df[[i]]) }
     out <- modifyBarcodes(df, samples, ID)
-    for (i in seq_along(out)) {
-        data2 <- data.frame(out[[i]], stringsAsFactors = FALSE)
-        data2 <- data2 %>%
-            mutate(IGKct = ifelse(chain == "IGK", paste(with(data2, 
-                interaction(v_gene,  j_gene, c_gene))), NA)) %>%
-            mutate(IGLct = ifelse(chain == "IGL", paste(with(data2, 
-                interaction(v_gene,  j_gene, c_gene))), NA)) %>%
-            mutate(IGHct = ifelse(chain == "IGH", paste(with(data2, 
-                interaction(v_gene, j_gene, d_gene, c_gene))), NA))
+    for (i in seq_along(out)) { 
+        data2 <- data.frame(out[[i]])
+        data2 <- makeGenes(cellType = "B", data2)
         unique_df <- unique(data2$barcode)
-        Con.df <- data.frame(matrix(NA, length(unique_df), 9 ))
+        Con.df <- data.frame(matrix(NA, length(unique_df), 9))
         colnames(Con.df) <- c("barcode", heavy_lines, light_lines)
         Con.df$barcode <- unique_df
-        y <- NULL
-        for (y in seq_along(unique_df)){
-            barcode.i <- Con.df$barcode[y]
-            location.i <- which(barcode.i == data2$barcode)
-            if (length(location.i) == 2){
-                if (is.na(data2[location.i[1],c("IGHct")])) {
-                    Con.df[y,heavy_lines] <- data2[location.i[2],
-                        c("IGHct", "cdr3", "cdr3_nt", "v_gene")]
-                    if (is.na(data2[location.i[1],c("IGKct")])) {
-                        Con.df[y,light_lines]<- data2[location.i[1],
-                        c("IGLct", "cdr3", "cdr3_nt", "v_gene")]
-                    } else {
-                        Con.df[y,light_lines]<- data2[location.i[1],
-                        c("IGKct", "cdr3", "cdr3_nt", "v_gene")]}
-                } else { Con.df[y,heavy_lines] <- 
-                        data2[location.i[1],
-                        c("IGHct", "cdr3", "cdr3_nt", "v_gene")]
-                    if (is.na(data2[location.i[1],c("IGKct")])) {
-                        Con.df[y,light_lines]<- data2[location.i[2],
-                        c("IGLct", "cdr3", "cdr3_nt", "v_gene")]
-                    } else {
-                        Con.df[y,light_lines]<- data2[location.i[1],
-                        c("IGKct", "cdr3", "cdr3_nt", "v_gene")]}}
-            } else if (length(location.i) == 1) {
-                chain.i <- data2$chain[location.i]
-                if (chain.i == "IGH"){
-                    Con.df[y,heavy_lines]<-data2[location.i[1],
-                    c("IGHct", "cdr3", "cdr3_nt", "v_gene")]
-                } else if (chain.i == "IGL") {
-                    Con.df[y,light_lines]<- data2[location.i[2],
-                    c("IGLct", "cdr3", "cdr3_nt", "v_gene")]}
-                else {
-                    Con.df[y,light_lines]<- data2[location.i[1],
-                    c("IGKct", "cdr3", "cdr3_nt", "v_gene")] }}}
-        Con.df$CTgene <- paste(Con.df$IGH, Con.df$IGLC, sep="_")
-        Con.df$CTnt <- paste(Con.df$cdr3_nt1, Con.df$cdr3_nt2, sep="_")
-        Con.df$CTaa <- paste(Con.df$cdr3_aa1, Con.df$cdr3_aa2, sep="_")
-        data3 <- Con.df %>% mutate(length1 = nchar(cdr3_nt1)) %>%
+        Con.df <- parseBCR(Con.df, unique_df, data2)
+        Con.df <- assignCT(cellType = "B", Con.df)
+        data3<-Con.df %>% mutate(length1 = nchar(cdr3_nt1)) %>%
             mutate(length2 = nchar(cdr3_nt2))
         final[[i]] <- data3 }
     dictionary <- bind_rows(final)
     IGH <- hammingCompare(dictionary, "IGH", "cdr3_nt1", "length1")
     IGLC <- hammingCompare(dictionary, "IGLC", "cdr3_nt2", "length2")
     for(i in seq_along(final)) {
-        final[[i]] <- merge(final[[i]], IGH, 
-                            by.x = "cdr3_nt1", by.y = "IG", all.x = TRUE)
-        final[[i]] <- merge(final[[i]], IGLC, 
-                            by.x = "cdr3_nt2", by.y = "IG", all.x = TRUE)
-        final[[i]][,"CTstrict"] <- paste0(final[[i]][,ncol(final[[i]])-1], 
-                                        "_", final[[i]][,"vgene1"], "_", 
-                                        final[[i]][,ncol(final[[i]])], "_", 
-                                        final[[i]][,"vgene2"])
+        final[[i]]<-merge(final[[i]],IGH,by.x="cdr3_nt1",by.y="IG",all.x=TRUE)
+        final[[i]]<-merge(final[[i]],IGLC,by.x="cdr3_nt2",by.y="IG",all.x=TRUE)
+        num <- ncol(final[[i]])
+        final[[i]][,"CTstrict"] <- paste0(final[[i]][,num-1],"_",
+        final[[i]][,"vgene1"],"_",final[[i]][,num],"_",final[[i]][,"vgene2"])
         final[[i]]$cellType <- "B"
         final[[i]]$sample <- samples[i]
         final[[i]]$ID <- ID[i]
-        final[[i]]<- final[[i]][, 
-            c("barcode", "sample", "ID", "IGH", "cdr3_aa1", "cdr3_nt1", 
-            "IGLC", "cdr3_aa2", "cdr3_nt2", "CTgene", "CTnt", "CTaa", 
-            "CTstrict", "cellType")]}
+        final[[i]]<- final[[i]][, c("barcode", "sample", "ID", 
+            heavy_lines[c(1,2,3)], light_lines[c(1,2,3)], CT_lines)]}
     names <- NULL
-    for (i in seq_along(samples)) {
-        c <- paste(samples[i], "_", ID[i], sep="")
+    for (i in seq_along(samples)){c <- paste(samples[i], "_", ID[i], sep="")
         names <- c(names, c)}
     names(final) <- names
     for (i in seq_along(final)) {
         final[[i]] <- final[[i]][!duplicated(final[[i]]$barcode),]}
     if (removeNA == TRUE) { final <- removingNA(final) }
     if (removeMulti == TRUE) { final <- removingMulti(final) }
-    return(final)
-}
+    return(final) }
 
 # Calculates the normalized Hamming Distance between the contig 
 # nucleotide sequence.
@@ -344,6 +220,3 @@ hammingCompare <- function(Con.df, gene, chain, length) {
         IG <- na.omit(unique(IG))
         Hclonotype <- paste0(gene, ".", seq_len(IG))
         IG <- data.frame(IG, Hclonotype) } }
-
-# data('v_gene','j_gene', 'c_gene', 'd_gene')
-utils::globalVariables(c("v_gene", "j_gene", "c_gene", "d_gene"))
