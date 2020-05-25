@@ -31,7 +31,21 @@ migration), and trans (state transition). In order to understand the
 underlying analyses of the outputs please read the manuscript.
 }
 \examples{
-\donttest{
-StartracDiversity(seurat, type = "Type", sample = "Patient", by = "overall")
-}
+#Getting the combined contigs
+combined <- combineTCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), 
+rep(c("P", "T"), 3), cells ="T-AB")
+
+#Getting a sample of a Seurat object
+URL <- "https://ncborcherding.github.io/vignettes/seurat_example.rda"
+dataDest = file.path("seurat_example.rda")
+download.file(URL, destfile = dataDest, method = "auto")
+seurat <- load("seurat_example.rda")
+
+#Using combineExpresion()
+seurat <- combineExpression(combined, seurat)
+
+#Using StartracDiversity
+StartracDiversity(seurat, type = "Type", sample = "Patient", 
+by = "overall")
+
 }

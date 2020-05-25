@@ -47,7 +47,17 @@ prefix of the seurat object. If the dominant clonotypes have a greater
 frequency than 500, adjust the cloneTypes variable.
 }
 \examples{
-\donttest{
-combineExpression(seurat, combined, cloneCall = "gene")
-}
+#Getting the combined contigs
+combined <- combineTCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), 
+rep(c("P", "T"), 3), cells ="T-AB")
+
+#Getting a sample of a Seurat object
+URL <- "https://ncborcherding.github.io/vignettes/seurat_example.rda"
+dataDest = file.path("seurat_example.rda")
+download.file(URL, destfile = dataDest, method = "auto")
+seurat <- load("seurat_example.rda")
+
+#Using combineExpresion()
+seurat <- combineExpression(combined, seurat)
+
 }

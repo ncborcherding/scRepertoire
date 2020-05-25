@@ -44,9 +44,21 @@ the the axes you wish to view or will add an additional stratum/column to
 the end of the graph.
 }
 \examples{
-\donttest{
+#Getting the combined contigs
+combined <- combineTCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), 
+rep(c("P", "T"), 3), cells ="T-AB")
+
+#Getting a sample of a Seurat object
+URL <- "https://ncborcherding.github.io/vignettes/seurat_example.rda"
+dataDest = file.path("seurat_example.rda")
+download.file(URL, destfile = dataDest, method = "auto")
+seurat <- load("seurat_example.rda")
+
+#Using combineExpresion()
+seurat <- combineExpression(combined, seurat)
+
+#Using alluvialClonotypes()
 alluvialClonotypes(seurat, cloneCall = "gene", 
-y.axes = c("Patient", "cluster"), 
-color = "cluster")
-}
+y.axes = c("Patient", "cluster"), color = "cluster")
+
 }

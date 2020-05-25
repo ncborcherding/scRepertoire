@@ -92,9 +92,26 @@ subsetContig <- function(df, name, variables = NULL) {
 #' parameters or SCE or Seurat objects must appear in the meta data.
 #'
 #' @examples
-#' \donttest{
+#' #Getting the combined contigs
+#' combined <- combineTCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), 
+#' rep(c("P", "T"), 3), cells ="T-AB")
+#' 
+#' #Getting a sample of a Seurat object
+#' URL <- "https://ncborcherding.github.io/vignettes/seurat_example.rda"
+#' dataDest = file.path("seurat_example.rda")
+#' download.file(URL, destfile = dataDest, method = "auto")
+#' seurat <- load("seurat_example.rda")
+#' 
+#' #Using combineExpresion()
+#' seurat <- combineExpression(combined, seurat)
+#' 
+#' #Using StartracDiversity
+#' StartracDiversity(seurat, type = "Type", sample = "Patient", 
+#' by = "overall")
+#' 
+#' #Using expression2List
 #' newList <- expression2List(seurat, group = "cluster")
-#' }
+#' 
 #' @param sc object after combineExpression().
 #' @param group The column header to group the new list by
 #' @importFrom stringr str_sort

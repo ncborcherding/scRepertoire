@@ -27,8 +27,21 @@ Use a specific clonotype sequence to highlight on top of the dimensional
 reduction in seurat object.
 }
 \examples{
-\donttest{
-highlightClonotype(seurat, cloneCall = "gene", 
-sequence = "CAVNGGSQGNLIF_CSAEREDTDTQYF")
-}
+#' #Getting the combined contigs
+combined <- combineTCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), 
+rep(c("P", "T"), 3), cells ="T-AB")
+
+#Getting a sample of a Seurat object
+URL <- "https://ncborcherding.github.io/vignettes/seurat_example.rda"
+dataDest = file.path("seurat_example.rda")
+download.file(URL, destfile = dataDest, method = "auto")
+seurat <- load("seurat_example.rda")
+
+#Using combineExpresion()
+seurat <- combineExpression(combined, seurat)
+
+#Using highlightClonotype()
+seurat <- highlightClonotypes(seurat, cloneCall= "aa", 
+sequence = c("CAVNGGSQGNLIF_CSAEREDTDTQYF")
+
 }

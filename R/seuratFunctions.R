@@ -11,9 +11,19 @@
 #' frequency than 500, adjust the cloneTypes variable.
 #'
 #' @examples
-#' \donttest{
-#' combineExpression(seurat, combined, cloneCall = "gene")
-#' }
+#' #Getting the combined contigs
+#' combined <- combineTCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), 
+#' rep(c("P", "T"), 3), cells ="T-AB")
+#' 
+#' #Getting a sample of a Seurat object
+#' URL <- "https://ncborcherding.github.io/vignettes/seurat_example.rda"
+#' dataDest = file.path("seurat_example.rda")
+#' download.file(URL, destfile = dataDest, method = "auto")
+#' seurat <- load("seurat_example.rda")
+#' 
+#' #Using combineExpresion()
+#' seurat <- combineExpression(combined, seurat)
+#' 
 #' @param df The product of CombineTCR() or CombineBCR().
 #' @param sc The seurat or SingleCellExperiment (SCE) object to attach
 #' @param cloneCall How to call the clonotype - CDR3 gene (gene), 
@@ -85,10 +95,23 @@ combineExpression <- function(df, sc, cloneCall="gene+nt", groupBy="none",
 #' reduction in seurat object.
 #'
 #' @examples
-#' \donttest{
-#' highlightClonotype(seurat, cloneCall = "gene", 
-#' sequence = "CAVNGGSQGNLIF_CSAEREDTDTQYF")
-#' }
+#' #' #Getting the combined contigs
+#' combined <- combineTCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), 
+#' rep(c("P", "T"), 3), cells ="T-AB")
+#' 
+#' #Getting a sample of a Seurat object
+#' URL <- "https://ncborcherding.github.io/vignettes/seurat_example.rda"
+#' dataDest = file.path("seurat_example.rda")
+#' download.file(URL, destfile = dataDest, method = "auto")
+#' seurat <- load("seurat_example.rda")
+#' 
+#' #Using combineExpresion()
+#' seurat <- combineExpression(combined, seurat)
+#' 
+#' #Using highlightClonotype()
+#' seurat <- highlightClonotypes(seurat, cloneCall= "aa", 
+#' sequence = c("CAVNGGSQGNLIF_CSAEREDTDTQYF")
+#' 
 #' @param sc The seurat object to attach
 #' @param cloneCall How to call the clonotype - CDR3 gene (gene), 
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
@@ -126,11 +149,23 @@ highlightClonotypes <- function(sc,
 #' the end of the graph.
 #'
 #' @examples
-#' \donttest{
+#' #Getting the combined contigs
+#' combined <- combineTCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), 
+#' rep(c("P", "T"), 3), cells ="T-AB")
+#' 
+#' #Getting a sample of a Seurat object
+#' URL <- "https://ncborcherding.github.io/vignettes/seurat_example.rda"
+#' dataDest = file.path("seurat_example.rda")
+#' download.file(URL, destfile = dataDest, method = "auto")
+#' seurat <- load("seurat_example.rda")
+#' 
+#' #Using combineExpresion()
+#' seurat <- combineExpression(combined, seurat)
+#' 
+#' #Using alluvialClonotypes()
 #' alluvialClonotypes(seurat, cloneCall = "gene", 
-#' y.axes = c("Patient", "cluster"), 
-#' color = "cluster")
-#' }
+#' y.axes = c("Patient", "cluster"), color = "cluster")
+#' 
 #' @param sc The seurat or SCE object to visualize after combineExpression(). 
 #' For SCE objects, the cluster variable must be in the meta data under 
 #' "cluster".
@@ -201,9 +236,23 @@ alluvialClonotypes <- function(sc,
 #' underlying analyses of the outputs please read the manuscript.
 #' 
 #' @examples
-#' \donttest{
-#' StartracDiversity(seurat, type = "Type", sample = "Patient", by = "overall")
-#' }
+#' #Getting the combined contigs
+#' combined <- combineTCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), 
+#' rep(c("P", "T"), 3), cells ="T-AB")
+#' 
+#' #Getting a sample of a Seurat object
+#' URL <- "https://ncborcherding.github.io/vignettes/seurat_example.rda"
+#' dataDest = file.path("seurat_example.rda")
+#' download.file(URL, destfile = dataDest, method = "auto")
+#' seurat <- load("seurat_example.rda")
+#' 
+#' #Using combineExpresion()
+#' seurat <- combineExpression(combined, seurat)
+#' 
+#' #Using StartracDiversity
+#' StartracDiversity(seurat, type = "Type", sample = "Patient", 
+#' by = "overall")
+#'
 #' @param sc The Seurat or SCE object. For SCE objects, the cluster variable 
 #' must be in the meta data under "cluster".
 #' @param type The column header in the meta data that gives the where the 
