@@ -104,10 +104,11 @@ combineTCR <- function(df, samples = NULL, ID = NULL,
 #' the CTstrict column string.
 #'
 #' @examples
-#' \donttest{
-#' combineBCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), 
-#' rep(c("P", "T"), 3))
-#' }
+#' options(stringsAsFactors = FALSE)
+#' #Data derived from the 10x Genomics intratumoral NSCLC B cells
+#' BCR <- read.csv("https://ncborcherding.github.io/vignettes/b_contigs.csv")
+#' combined <- combineBCR(BCR, samples = "Patient1", ID = "Time1")
+#' 
 #' @param df List of filtered contig annotations from 10x Genomics.
 #' @param samples The labels of samples.
 #' @param ID The additional sample labeling option.
@@ -174,20 +175,20 @@ hammingCompare <- function(Con.df, gene, chain, length) {
     `%!in%` = Negate(`%in%`)
     overlap <- NULL
     out <- NULL
-    lengths_IGH <- na.omit(unique(Con.df[duplicated(Con.df[,"length1"]),]))
-    lengths_IGL <- na.omit(unique(Con.df[duplicated(Con.df[,"length2"]),]))
-    if (gene == "IGH") { specificLength <- lengths_IGH
-    } else if (gene == "IGLC") { specificLength <- lengths_IGL }
+    lengths_IGH<-Con.df[duplicated(Con.df[,"length1"]),][,"length1"]
+    lengths_IGH <- na.omit(unique(lengths_IGH))
+    lengths_IGL<-Con.df[duplicated(Con.df[,"length2"]),][,"length2"]
+    lengths_IGL <- na.omit(unique(lengths_IGL))
+    specificLength  <- if(gene=="IGH") lengths_IGH else lengths_IGL
     for (i in seq_along(lengths_IGH)) {
-        tmp <- na.omit(Con.df[Con.df[,length] == specificLength[i],])
+        tmp <- Con.df[Con.df[,length] == specificLength[i],]
         tmp2 <- as.matrix(stringDist(tmp[,chain], 
                     method = "hamming")/specificLength[i])
         filtered <- which(tmp2 >= 0.85, arr.ind = TRUE)
         if (nrow(filtered) == 0) { next()
         } else if (nrow(filtered) != 0) {
             for (x in seq_along(nrow(filtered))) {
-                df <- c(tmp[,chain][filtered[x,1]], 
-                        tmp[,chain][filtered[x,2]])
+                df <- c(tmp[,chain][filtered[x,1]],tmp[,chain][filtered[x,2]])
                 df <- df[order(df)]
                 out <- rbind.data.frame(out,df, stringsAsFactors = FALSE)
                 out <- unique(out)

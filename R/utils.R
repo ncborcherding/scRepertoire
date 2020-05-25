@@ -312,10 +312,10 @@ lengthDF <- function(df, cloneCall, chains, group, c1, c2){
                 if (!is.null(group)) {
                     cols1 <- df[[x]][,group]
                     data1 <- data.frame(chain1, val1, names[x], c1, cols1)
-                    colnames(data1) <- c("length", "CT", "values", "chain", group)
+                    colnames(data1)<-c("length","CT","values","chain",group)
                     cols2 <- df[[x]][,group]
                     data2 <- data.frame(chain2, val2, names[x], c2, cols2)
-                    colnames(data2) <- c("length", "CT", "values", "chain", group)
+                    colnames(data2)<-c("length","CT","values","chain",group)
                 }else if (is.null(group)){
                     data1 <- data.frame(chain1, val1, names[x], c1)
                     colnames(data1) <- c("length", "CT", "values", "chain")

@@ -34,10 +34,11 @@ repeated barcodes. The resulting new barcodes will need to match the
 seurat or SCE object in order to use,
 }
 \examples{
-\donttest{
-combineBCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), 
-rep(c("P", "T"), 3))
-}
+options(stringsAsFactors = F)
+#Data derived from the 10x Genomics intratumoral NSCLC B cells
+BCR <- read.csv("https://ncborcherding.github.io/vignettes/b_contigs.csv")
+combined <- combineBCR(BCR, samples = "Patient1", ID = "Time1")
+
 }
 \seealso{
 \code{\link{combineExpression}}. Unlike combineTCR(), 
