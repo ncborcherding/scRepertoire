@@ -6,20 +6,38 @@
 \usage{
 clonalDiversity(
   df,
-  cloneCall = c("gene", "nt", "aa", "gene+nt"),
-  colorBy = c("samples"),
-  exportTable = F
+  cloneCall = "gene+nt",
+  group = "samples",
+  exportTable = FALSE
 )
 }
 \arguments{
-\item{df}{The product of CombineContig() or the seurat object after combineSeurat()}
+\item{df}{The product of CombineContig() or expression2List().}
 
-\item{cloneCall}{How to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide}
+\item{cloneCall}{How to call the clonotype - CDR3 gene (gene), 
+CDR3 nucleotide (nt) or CDR3 amino acid (aa), or 
+CDR3 gene+nucleotide (gene+nt).}
 
-\item{colorBy}{The column header for which you would like to analyze the data}
+\item{group}{The column header for which you would like to analyze the data.}
 
-\item{exportTable}{Exports a table of the data into the global environment in addition to the visualization}
+\item{exportTable}{Exports a table of the data into the global environment 
+in addition to the visualization}
+}
+\value{
+ggplot of the diversity of clonotype sequences across list
 }
 \description{
-Examine the clonal diversity of samples
+This function calculates traditional measures of diversity - Shannon, 
+inverse Simpson, Chao1 index, and abundance-based coverage estimators 
+(ACE) by sample or group. The group paramter can be used to condense 
+the individual samples. If a matrix output for the data is preferred, 
+set exportTable = TRUE.
+}
+\examples{
+#Making combined contig data
+x <- contig_list
+combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), 
+rep(c("P", "T"), 3), cells ="T-AB")
+clonalDiversity(combined, cloneCall = "gene")
+
 }

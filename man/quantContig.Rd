@@ -2,27 +2,45 @@
 % Please edit documentation in R/viz.R
 \name{quantContig}
 \alias{quantContig}
-\title{Quantify the unique clonotypes in the filtered contigs output from 10x Genomics}
+\title{Quantify the unique clonotypes in the filtered contigs.}
 \usage{
 quantContig(
   df,
-  cloneCall = c("gene", "nt", "aa", "gene+nt"),
-  scale = F,
-  column = NULL,
-  exportTable = F
+  cloneCall = "gene+nt",
+  scale = FALSE,
+  group = NULL,
+  exportTable = FALSE
 )
 }
 \arguments{
-\item{df}{The product of CombineContig()}
+\item{df}{The product of combineContig().}
 
-\item{cloneCall}{How to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide}
+\item{cloneCall}{How to call the clonotype - CDR3 gene (gene), 
+CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
+CDR3 gene+nucleotide (gene+nt).}
 
-\item{scale}{Converts the graphs into percentage of unique clonotypes}
+\item{scale}{Converts the graphs into percentage of unique clonotypes.}
 
-\item{column}{The column header for which you would like to analyze the data}
+\item{group}{The column header used for grouping.}
 
-\item{exportTable}{Returns the data frame used for forming the graph}
+\item{exportTable}{Returns the data frame used for forming the graph,}
+}
+\value{
+ggplot of the total or relative unique clonotypes
 }
 \description{
-Quantify the unique clonotypes in the filtered contigs output from 10x Genomics
+This function takes the output from combineContig() or expression2List() and 
+quantifies unique clonotypes. The unique clonotypes can be either reported 
+as a raw output or scaled to the total number of clonotypes recovered using 
+the scale parameter. Multiple sequencing runs can be group together using 
+the group parameter. If a matrix output for the data is preferred, set 
+exportTable = TRUE.
+}
+\examples{
+#Making combined contig data
+x <- contig_list
+combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), 
+rep(c("P", "T"), 3), cells ="T-AB")
+quantContig(combined, cloneCall="gene+nt", scale = TRUE)
+
 }

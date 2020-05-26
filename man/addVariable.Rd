@@ -7,12 +7,25 @@
 addVariable(df, name = NULL, variables = NULL)
 }
 \arguments{
-\item{df}{The product of CombineContig()}
+\item{df}{The product of CombineContig().}
 
-\item{name}{The column header you'd like to add}
+\item{name}{The column header to add.}
 
-\item{variables}{The exact values to add to each element of the list}
+\item{variables}{The exact values to add to each element of the list.}
+}
+\value{
+list of contigs with a new column (name).
 }
 \description{
-Adding variables after the combination of contigs.
+This function adds variables to the product of combineContig() to be used in 
+later visualizations. For each element in the combinContig(), the function 
+will add a column (labled by name) with the variable. The length of the
+variable paramater needs to match the length of the combineContig() object.
+}
+\examples{
+x <- contig_list
+combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), 
+rep(c("P", "T"), 3), cells ="T-AB")
+combined <- addVariable(combined, name = "batch", variables = c(1,1,1,1,2,2))
+
 }

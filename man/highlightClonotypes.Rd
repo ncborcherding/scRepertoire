@@ -5,18 +5,41 @@
 \title{Highlighting specific clonotypes in Seurat}
 \usage{
 highlightClonotypes(
-  seurat,
+  sc,
   cloneCall = c("gene", "nt", "aa", "gene+nt"),
   sequence = NULL
 )
 }
 \arguments{
-\item{seurat}{The seurat object to attach}
+\item{sc}{The seurat object to attach}
 
-\item{cloneCall}{How to call the clonotype - based on genes, CDR3 nt, or CDR3 aa sequence or the combination of genes and nucleotide sequence}
+\item{cloneCall}{How to call the clonotype - CDR3 gene (gene), 
+CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
+CDR3 gene+nucleotide (gene+nt).}
 
 \item{sequence}{The specifc sequence or sequence to highlight}
 }
+\value{
+DimPlot with highlighted clonotypes
+}
 \description{
-Use a specific clonotype sequence to highlight on top of the dimensional reduction in seurat object.
+Use a specific clonotype sequence to highlight on top of the dimensional 
+reduction in seurat object.
+}
+\examples{
+#' #Getting the combined contigs
+combined <- combineTCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), 
+rep(c("P", "T"), 3), cells ="T-AB")
+
+#Getting a sample of a Seurat object
+seurat_example <- readRDS(url(
+"https://ncborcherding.github.io/vignettes/seurat_example.rds"))
+
+#Using combineExpresion()
+seurat_example <- combineExpression(combined, seurat_example)
+
+#Using highlightClonotype()
+seurat_example <- highlightClonotypes(seurat_example, cloneCall= "aa", 
+sequence = c("CAVNGGSQGNLIF_CSAEREDTDTQYF"))
+
 }

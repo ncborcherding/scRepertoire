@@ -4,20 +4,48 @@
 \alias{combineBCR}
 \title{Combining the list of B Cell Receptor contigs}
 \usage{
-combineBCR(df, samples = NULL, ID = NULL, removeNA = F, removeMulti = F)
+combineBCR(
+  df,
+  samples = NULL,
+  ID = NULL,
+  removeNA = FALSE,
+  removeMulti = FALSE
+)
 }
 \arguments{
-\item{df}{List of filtered contig annotations from 10x Genomics}
+\item{df}{List of filtered contig annotations from 10x Genomics.}
 
-\item{samples}{The labels of samples}
+\item{samples}{The labels of samples.}
 
-\item{ID}{The additional sample labeling option}
+\item{ID}{The additional sample labeling option.}
 
-\item{removeNA}{This will remove any chain without values}
+\item{removeNA}{This will remove any chain without values.}
 
-\item{removeMulti}{This will remove barcodes with greater than 2 chains}
+\item{removeMulti}{This will remove barcodes with greater than 2 chains.}
+}
+\value{
+List of clonotypes for individual cell barcodes
 }
 \description{
-Combining the output of the 10x Genomics filtered BCR contig annotation files into a list of processed contigs. Selection of the samples and ID characters should match the prefix of the seurat object if attaching is planned. The function incorporates the calculation of normalized Hamming's distance for the estimation of clonotype,
-allowing for the identification of cells with >= 0.85 in nucleotide sequence. This function will assign clonotypes to the nucleotide sequences sequentially, unless the Hamming's Distance Criteria is met, and will be modified with an HD. The calculation is performed across all barcodes, regardless of the sample. The strict clonotype definition will add the correponding vgene as well.
+This function consolidates a list of BCR sequencing results to the level 
+of the individual cell barcodes. Using the samples and ID parameters, 
+the function will add the strings as prefixes to prevent issues with 
+repeated barcodes. The resulting new barcodes will need to match the 
+seurat or SCE object in order to use,
+}
+\examples{
+#Data derived from the 10x Genomics intratumoral NSCLC B cells
+BCR <- read.csv("https://ncborcherding.github.io/vignettes/b_contigs.csv", 
+stringsAsFactors = FALSE)
+combined <- combineBCR(BCR, samples = "Patient1", ID = "Time1")
+
+}
+\seealso{
+\code{\link{combineExpression}}. Unlike combineTCR(), 
+combineBCR produces a column CTstrict of an index of nucleotide sequence 
+and the corresponding v-gene. This index automatically caluclates 
+the Hammings distance between sequences of the same length and will 
+index sequences with > 0.85 normalized Hammings distance with the same 
+ID. If nucleotide sequences meet the threshold, ":HD" will be added to 
+the CTstrict column string.
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/processing.R
 \name{stripBarcode}
 \alias{stripBarcode}
-\title{Removing any additional prefixes to the barcodes of the filtered contigs.}
+\title{Removing any additional prefixes to the barcodes of filtered contigs.}
 \usage{
 stripBarcode(contigs, column = 1, connector = "_", num_connects = 3)
 }
@@ -11,10 +11,17 @@ stripBarcode(contigs, column = 1, connector = "_", num_connects = 3)
 
 \item{column}{The column in which the barcodes are listed}
 
-\item{connector}{The type of character in which is attaching the defualt barcode with any other characters}
+\item{connector}{The type of character in which is attaching the defualt 
+barcode with any other characters}
 
 \item{num_connects}{The number of strings combined with the connectors}
 }
+\value{
+list with the suffixes of the barcodes removed.
+}
 \description{
-Removing any additional prefixes to the barcodes of the filtered contigs.
+Removing any additional prefixes to the barcodes of filtered contigs.
+}
+\examples{
+stripBarcode(contig_list[[1]], column = 1, connector = "_", num_connects = 1)
 }

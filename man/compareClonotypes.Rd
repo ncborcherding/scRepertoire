@@ -2,30 +2,52 @@
 % Please edit documentation in R/viz.R
 \name{compareClonotypes}
 \alias{compareClonotypes}
-\title{Demonstrate the difference in clonal proportion between multiple clonotypes}
+\title{Demonstrate the difference in clonal proportion between clonotypes}
 \usage{
 compareClonotypes(
   df,
-  cloneCall = c("gene", "nt", "aa", "gene+nt"),
+  cloneCall = "gene+nt",
   samples = NULL,
   clonotypes = NULL,
   numbers = NULL,
-  graph = c("alluvial", "area")
+  graph = "alluvial"
 )
 }
 \arguments{
-\item{df}{The product of CombineContig()}
+\item{df}{The product of CombineContig() or expression2List().}
 
-\item{cloneCall}{How to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide}
+\item{cloneCall}{How to call the clonotype - CDR3 gene (gene), 
+CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
+CDR3 gene+nucleotide (gene+nt).}
 
-\item{samples}{The specific samples to isolate for visualization}
+\item{samples}{The specific samples to isolate for visualization.}
 
-\item{clonotypes}{The specific sequences of interest}
+\item{clonotypes}{The specific sequences of interest.}
 
-\item{numbers}{The top number clonotype sequences}
+\item{numbers}{The top number clonotype sequences.}
 
-\item{graph}{The type of graph produced, either "alluvial" or "area"}
+\item{graph}{The type of graph produced, either "alluvial" or "area".}
+}
+\value{
+ggplot of the proportion of total sequencing read of 
+selecting clonotypes
 }
 \description{
-Allows for the exaimination of the proportions of selected clonotypes between samples. Specific sequences (clonotypes) can be visualize or users can select the visualization of the top n clonotypes (numbers).
+This function produces an alluvial or area graph of the proportion of 
+the indicated clonotypes for all or selected samples. Clonotypes can be 
+selected using the clonotypes parameter with the specific sequence of 
+interest or using the number parameter with the top n clonotypes by 
+proportion to be visualized. If multiple clonotypes have the same proportion 
+and are within the selection by the number parameter, all the clonotypes 
+will be visualized. In this instance, if less clonotypes are desired, 
+reduce the number parameter.
+}
+\examples{
+#Making combined contig data
+x <- contig_list
+combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), 
+rep(c("P", "T"), 3), cells ="T-AB")
+compareClonotypes(combined, numbers = 10, 
+samples = c("PX_P", "PX_T"), cloneCall="aa")
+
 }

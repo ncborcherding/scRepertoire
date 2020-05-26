@@ -1,4 +1,5 @@
-#' A data set T cell contigs as a list outputed from the filter_contig_annotation files.
+#' A data set of T cell contigs as a list outputed from the 
+#' filter_contig_annotation files.
 #' @name contig_list
 #' @docType data
 #'
@@ -6,7 +7,8 @@
 #' \item barcode. the cell barcodes for sequenced cells
 #' \item is_cell. A binary classifier
 #' \item contig_id. Cellranger contig assignment
-#' \item high_confidence. Binary classifier of if the chain sequence is assigned with high confidence
+#' \item high_confidence. Binary classifier of if the chain sequence 
+#' is assigned with high confidence
 #' \item length.
 #' \item v_gene. corresponding V gene of the immune receptor
 #' \item d_gene. corresponding D gene of the immune receptor
@@ -22,5 +24,4 @@
 #' \item raw_consensus_id. Cellranger consensus clonotype assignment
 #' }
 #'
-#' @source https://github.com/ncborcherding/scRepertoire/blob/master/data/contig_list.rda
 NULL

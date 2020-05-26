@@ -2,27 +2,49 @@
 % Please edit documentation in R/viz.R
 \name{abundanceContig}
 \alias{abundanceContig}
-\title{Demonstrate the relative abundance of filtered contigs output from 10x Genomics}
+\title{Demonstrate the relative abundance of clonotypes by group or sample.}
 \usage{
 abundanceContig(
   df,
-  cloneCall = c("gene", "nt", "aa", "gene+nt"),
-  scale = F,
-  column = NULL,
-  exportTable = F
+  cloneCall = "gene+nt",
+  scale = FALSE,
+  group = NULL,
+  exportTable = FALSE
 )
 }
 \arguments{
-\item{df}{The product of CombineContig().}
+\item{df}{The product of CombineContig() or expression2List().}
 
-\item{cloneCall}{How to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide}
+\item{cloneCall}{How to call the clonotype - CDR3 gene (gene), 
+CDR3 nucleotide (nt), CDR3 amino acid (aa), or C
+DR3 gene+nucleotide (gene+nt).}
 
-\item{scale}{Converts the graphs into denisty plots in order to show relative distributions.}
+\item{scale}{Converts the graphs into denisty plots in order to show 
+relative distributions.}
 
-\item{column}{The column header for which you would like to analyze the data}
+\item{group}{The column header for which you would like to analyze the data.}
 
-\item{exportTable}{Exports a table of the data into the global environment in addition to the visualization}
+\item{exportTable}{Exports a table of the data into the global 
+environment in addition 
+to the visualization.}
+}
+\value{
+ggplot of the total or relative adundance of clonotypes 
+across quanta
 }
 \description{
-Demonstrate the relative abundance of filtered contigs output from 10x Genomics
+This function takes the output of combineContig() or expression2List() and 
+displays the number of clonotypes at specific frequencies by sample or 
+group. Visualization can either be a line graph using calculated numbers 
+or if scale = TRUE, the output will be a density plot. Multiple sequencing 
+runs can be group together using the group parameter. If a matrix output 
+for the data is preferred, set exportTable = TRUE.
+}
+\examples{
+#Making combined contig data
+x <- contig_list
+combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), 
+rep(c("P", "T"), 3), cells ="T-AB")
+abundanceContig(combined, cloneCall = "gene", scale = FALSE)
+
 }

@@ -2,17 +2,30 @@
 % Please edit documentation in R/processing.R
 \name{subsetContig}
 \alias{subsetContig}
-\title{Adding variables aftering the combination of contigs.}
+\title{Subset the combineContig() product.}
 \usage{
 subsetContig(df, name, variables = NULL)
 }
 \arguments{
-\item{df}{The product of CombineContig()}
+\item{df}{The product of CombineContig().}
 
-\item{name}{The column header you'd like to use to subset}
+\item{name}{The column header you'd like to use to subset.}
 
-\item{variables}{The values to subset by}
+\item{variables}{The values to subset by, must be in the names(df).}
+}
+\value{
+list of contigs that have been filtered for the name parameter
 }
 \description{
-Adding variables aftering the combination of contigs.
+This function allows for the subsetting of the product of combineContig() by 
+the name of the individual list element. In general the names of are samples 
++ _ + ID, allowing for users to subset the product of combineContig() across 
+a string or individual name.
+}
+\examples{
+x <- contig_list
+combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), 
+rep(c("P", "T"), 3), cells ="T-AB")
+subset <- subsetContig(combined, name = "sample", variables = c("PX"))
+
 }

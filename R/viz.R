@@ -1,383 +1,278 @@
-#This is the basic color palette for the package
-#' @import RColorBrewer
-#' @import colorRamps
-colorblind_vector <- colorRampPalette(c("#FF4B20", "#FFB433", "#C6FDEC", "#7AC5FF", "#0348A6"))
-
-#' Quantify the unique clonotypes in the filtered contigs output from 10x Genomics
+#' Quantify the unique clonotypes in the filtered contigs.
 #'
-#' @param df The product of CombineContig()
-#' @param cloneCall How to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide
-#' @param column The column header for which you would like to analyze the data
-#' @param scale Converts the graphs into percentage of unique clonotypes
-#' @param exportTable Returns the data frame used for forming the graph
+#' This function takes the output from combineContig() or expression2List() and 
+#' quantifies unique clonotypes. The unique clonotypes can be either reported 
+#' as a raw output or scaled to the total number of clonotypes recovered using 
+#' the scale parameter. Multiple sequencing runs can be group together using 
+#' the group parameter. If a matrix output for the data is preferred, set 
+#' exportTable = TRUE.
+#'
+#' @examples
+#' #Making combined contig data
+#' x <- contig_list
+#' combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), 
+#' rep(c("P", "T"), 3), cells ="T-AB")
+#' quantContig(combined, cloneCall="gene+nt", scale = TRUE)
+#'
+#' @param df The product of combineContig().
+#' @param cloneCall How to call the clonotype - CDR3 gene (gene), 
+#' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
+#' CDR3 gene+nucleotide (gene+nt).
+#' @param group The column header used for grouping.
+#' @param scale Converts the graphs into percentage of unique clonotypes.
+#' @param exportTable Returns the data frame used for forming the graph,
 #' @import ggplot2
 #' @export
-quantContig <- function(df,
-                        cloneCall = c("gene", "nt", "aa", "gene+nt"),
-                        scale=F,
-                        column = NULL,
-                        exportTable = F) {
-    if (length(column) > 1) {
-        stop("Only one item in the column variable can be listed.")
-    }
+#' @return ggplot of the total or relative unique clonotypes
+quantContig <- function(df, cloneCall = "gene+nt", scale=FALSE, group = NULL, 
+                    exportTable = FALSE) {
+    if (length(group) > 1) { stop("Only one item in the group variable can 
+                                    be listed.") }
     cloneCall <- theCall(cloneCall)
-
-    if (!is.null(column)) {
+    if (!is.null(group)) {
+        x <- group
+        labs <- group
         Con.df <- data.frame(matrix(NA, length(df), 4))
-        colnames(Con.df) <- c("contigs","values", "total", column)
-        for (i in 1:length(df)) {
+        colnames(Con.df) <- c("contigs","values", "total", group)
+        for (i in seq_along(df)) {
             Con.df[i,1] <- length(unique(df[[i]][,cloneCall]))
             Con.df[i,2] <- names(df)[i]
             Con.df[i,3] <- length(df[[i]][,cloneCall])
-            location <- which(colnames(df[[i]]) == column)
-            Con.df[i,4] <- df[[i]][1,location]
-        }
-        col <- length(unique(Con.df[,column]))
-        if (scale == T) {
+            location <- which(colnames(df[[i]]) == group)
+            Con.df[i,4] <- df[[i]][1,location] }
+        col <- length(unique(Con.df[,group]))
+        if (scale == TRUE) { y <- "scaled"
             Con.df$scaled <- Con.df$contigs/Con.df$total*100
             ylab <- "Percent of Unique Clonotype"
-            y <- "scaled"
-            x <- column
-            labs <- column
-        } else {
-            y <- "contigs"
-            x <- column
-            ylab <- "Unique Clonotypes"
-            labs <- column
 
-        }
-
+        } else { y <- "contigs"
+            x <- group
+            ylab <- "Unique Clonotypes"}
     } else {
+        x <- "values"
+        labs <- "Samples"
         Con.df <- data.frame(matrix(NA, length(df), 3))
         colnames(Con.df) <- c("contigs","values", "total")
-        for (i in 1:length(df)) {
+        for (i in seq_along(df)) {
             Con.df[i,1] <- length(unique(df[[i]][,cloneCall]))
             Con.df[i,2] <- names(df)[i]
-            Con.df[i,3] <- length(df[[i]][,cloneCall])
-        }
+            Con.df[i,3] <- length(df[[i]][,cloneCall]) }
         col <- length(unique(Con.df$values))
-        if (scale == T) {
+        if (scale == TRUE) { y <- "scaled"
             Con.df$scaled <- Con.df$contigs/Con.df$total*100
             ylab <- "Percent of Unique Clonotype"
-            y <- "scaled"
-            x <- "values"
-            labs <- "Samples"
-
-
-        } else {
-            y <- "contigs"
-            x <- "values"
-            ylab <- "Unique Clonotypes"
-            labs <- "Samples"
-        }
-    }
-    if (exportTable == T) {
-        return(Con.df)
-    }
-    plot <- ggplot(aes(x=Con.df[,x], y=Con.df[,y],fill=as.factor(Con.df[,x])), data = Con.df) +
-        stat_summary(geom = "errorbar", fun.data = mean_se, position = "dodge", width=.5) +
+        } else { y <- "contigs"
+            ylab <- "Unique Clonotypes" } }
+    if (exportTable == TRUE) { return(Con.df) }
+    plot <- ggplot(aes(x=Con.df[,x], y=Con.df[,y],
+            fill=as.factor(Con.df[,x])), data = Con.df) +
+        stat_summary(geom = "errorbar", fun.data = mean_se, 
+            position = "dodge", width=.5) + labs(fill = labs) +
         stat_summary(fun.y=mean, geom="bar", color="black", lwd=0.25)+
-        theme_classic() +
-        xlab("Samples") +
-        ylab(ylab) +
-        labs(fill = labs) +
+        theme_classic() + xlab("Samples") + ylab(ylab) +
         scale_fill_manual(values = colorblind_vector(col))
-    return(plot)
-}
+    return(plot) }
 
 
-#' Demonstrate the relative abundance of filtered contigs output from 10x Genomics
+#' Demonstrate the relative abundance of clonotypes by group or sample.
 #'
-#' @param df The product of CombineContig().
-#' @param cloneCall How to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide
-#' @param column The column header for which you would like to analyze the data
-#' @param scale Converts the graphs into denisty plots in order to show relative distributions.
-#' @param exportTable Exports a table of the data into the global environment in addition to the visualization
+#' This function takes the output of combineContig() or expression2List() and 
+#' displays the number of clonotypes at specific frequencies by sample or 
+#' group. Visualization can either be a line graph using calculated numbers 
+#' or if scale = TRUE, the output will be a density plot. Multiple sequencing 
+#' runs can be group together using the group parameter. If a matrix output 
+#' for the data is preferred, set exportTable = TRUE.
+#'
+#' @examples
+#' #Making combined contig data
+#' x <- contig_list
+#' combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), 
+#' rep(c("P", "T"), 3), cells ="T-AB")
+#' abundanceContig(combined, cloneCall = "gene", scale = FALSE)
+#'
+#' @param df The product of CombineContig() or expression2List().
+#' @param cloneCall How to call the clonotype - CDR3 gene (gene), 
+#' CDR3 nucleotide (nt), CDR3 amino acid (aa), or C
+#' DR3 gene+nucleotide (gene+nt).
+#' @param group The column header for which you would like to analyze the data.
+#' @param scale Converts the graphs into denisty plots in order to show 
+#' relative distributions.
+#' @param exportTable Exports a table of the data into the global 
+#' environment in addition 
+#' to the visualization.
 #' @importFrom ggplot2 ggplot
 #' @export
-abundanceContig <- function(df,
-                            cloneCall = c("gene", "nt", "aa", "gene+nt"),
-                            scale=F,
-                            column = NULL,
-                            exportTable = F) {
+#' @return ggplot of the total or relative adundance of clonotypes 
+#' across quanta
+abundanceContig <- function(df, cloneCall = "gene+nt", scale=FALSE, 
+                        group = NULL, exportTable = FALSE) {
     Con.df <- NULL
     xlab <- "Abundance"
     cloneCall <- theCall(cloneCall)
-    if (!is.null(column)) {
+    names <- names(df)
+    if (!is.null(group)) {
         for (i in seq_along(df)) {
-            names <- names(df)
-            data <- df[[i]]
-            data1 <- data %>%
-                group_by(data[,cloneCall]) %>%
-                summarise(Abundance=n())
-            colnames(data1)[1] <- cloneCall
-            data1$values <- names[i]
-            label <- df[[i]][1,column]
-            data1[,paste(column)] <- label
-            Con.df<- rbind.data.frame(Con.df, data1)
-        }
+            data1 <- parseContigs(df, i, names, cloneCall)
+            label <- df[[i]][1,group]
+            data1[,paste(group)] <- label
+            Con.df<- rbind.data.frame(Con.df, data1) }
         Con.df <- data.frame(Con.df)
-        col <- length(unique(Con.df[,column]))
-        fill <- column
-        if (scale == T) {
-            ylab <- "Density of Clonotypes"
-            plot <- ggplot(Con.df, aes(x=Abundance, fill=Con.df[,column])) +
-                geom_density(aes(y=..scaled..), alpha=0.5, lwd=0.25, color="black", bw=0.5)  +
+        col <- length(unique(Con.df[,group]))
+        fill <- group
+        if (scale == TRUE) { ylab <- "Density of Clonotypes"
+            plot <- ggplot(Con.df, aes(x=Abundance, fill=Con.df[,group])) +
+                geom_density(aes(y=..scaled..), alpha=0.5, 
+                    lwd=0.25, color="black", bw=0.5)  +
                 scale_fill_manual(values = colorblind_vector(col)) +
                 labs(fill = fill)
-        } else {
-            ylab <- "Number of Clonotypes"
-            plot <- ggplot(Con.df, aes(x=Abundance, group = values, color = Con.df[,column])) +
+        } else { ylab <- "Number of Clonotypes"
+            plot <- ggplot(Con.df, aes(x=Abundance, group = values, 
+                    color = Con.df[,group])) +
                 geom_line(stat="count") +
                 scale_color_manual(values = colorblind_vector(col)) +
-                labs(color = fill)
-        }
+                labs(color = fill)}
     } else{
         for (i in seq_along(df)) {
-            names <- names(df)
-            data <- df[[i]]
-            data1 <- data %>%
-                group_by(data[,cloneCall]) %>%
-                summarise(Abundance=n())
-            colnames(data1)[1] <- cloneCall
-            data1$values <- names[i]
-            Con.df<- rbind.data.frame(Con.df, data1)
-        }
+            data1 <- parseContigs(df, i, names, cloneCall)
+            Con.df<- rbind.data.frame(Con.df, data1) }
         col <- length(unique(Con.df$values))
         fill <- "Samples"
-        if (scale == T) {
-            ylab <- "Density of Clonotypes"
+        if (scale == TRUE) { ylab <- "Density of Clonotypes"
             plot <- ggplot(Con.df, aes(Abundance, fill=values)) +
-                geom_density(aes(y=..scaled..), alpha=0.5, lwd=0.25, color="black", bw=0.5) +
+                geom_density(aes(y=..scaled..), alpha=0.5, lwd=0.25, 
+                    color="black", bw=0.5) +
                 scale_fill_manual(values = colorblind_vector(col)) +
                 labs(fill = fill)
-
-        } else {
-            ylab <- "Number of Clonotypes"
-            plot <- ggplot(Con.df, aes(x=Abundance, group = values, color = values)) +
+        } else { ylab <- "Number of Clonotypes"
+            plot <- ggplot(Con.df, aes(x=Abundance, group = values, 
+                    color = values)) +
                 geom_line(stat="count") +
                 scale_color_manual(values = colorblind_vector(col)) +
-                labs(color = fill)
-        }
-    }
-    if (exportTable == T) {
-        return(Con.df)
-    }
-    plot <- plot +
-        scale_x_log10() +
-        ylab(ylab) +
-        xlab(xlab) +
+                labs(color = fill)} }
+    if (exportTable == TRUE) { return(Con.df)}
+    plot <- plot + scale_x_log10() + ylab(ylab) + xlab(xlab) +
         theme_classic()
-    return(plot)
-}
+return(plot) }
 
-#' Demonstrate the distribution of lengths filtered contigs output from 10x Genomics
+#' Demonstrate the distribution of lengths filtered contigs.
 #'
-#' @description
-#' Examine eithe the nucleotide (nt) or amino acid (aa) sequence length across samples or by vairable (column). Sequences can be visualized as combined values (both chains), or as single chains. If more than 2 chains of the same locus are assigned to the individual barcode, this function will take the first chain.
+#' This function takes the output of combineContig() or expression2List() and 
+#' displays either the nucleotide (nt) or amino acid (aa) sequence length. The 
+#' sequence length visualized can be selected using the chains parameter, 
+#' either the combined clonotype (both chains) or across all single chains. 
+#' Visualization can either be a histogram or if scale = TRUE, the output will 
+#' be a density plot. Multiple sequencing runs can be group together using the 
+#' group parameter. If a matrix output for the data is preferred, set 
+#' exportTable = TRUE.
 #'
-#' @param df The product of CombineContig()
-#' @param cloneCall How to call the clonotype - CDR3 nt or CDR3 aa sequence.
-#' @param column The column header for which you would like to analyze the data
-#' @param scale Converts the graphs into denisty plots in order to show relative distributions.
-#' @param chains Whether to keep clonotypes "combined" or visualize by chain
-#' @param exportTable Returns the data frame used for forming the graph
+#' @examples
+#' #Making combined contig data
+#' x <- contig_list
+#' combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), 
+#' rep(c("P", "T"), 3), cells ="T-AB")
+#' lengthContig(combined, cloneCall="aa", chains = "combined")
+#'
+#' @param df The product of CombineContig() or expression2List().
+#' @param cloneCall How to call the clonotype - CDR3 nucleotide (nt), 
+#' CDR3 amino acid (aa).
+#' @param group The group header for which you would like to analyze 
+#' the data.
+#' @param scale Converts the graphs into denisty plots in order to show 
+#' relative distributions.
+#' @param chains Whether to keep clonotypes "combined" or visualize
+#'  by chain.
+#' @param exportTable Returns the data frame used for forming the graph.
 #' @importFrom stringr str_split
 #' @importFrom ggplot2 ggplot
 #' @export
-lengthContig <- function(df,
-                         cloneCall = c("nt", "aa"),
-                         column = NULL,
-                         scale = F,
-                         chains = c("combined", "single"),
-                         exportTable = F) {
-    if(cloneCall == "nt") {
-        cloneCall <- "CTnt"
+#' @return ggplot of the discrete or relative length distributions of 
+#' clonotype sequences
+lengthContig <- function(df, cloneCall = "aa", group = NULL, scale = FALSE, 
+                    chains = "combined", exportTable = FALSE) {
+    if(cloneCall == "nt") { cloneCall <- "CTnt"
         ylab <- "CDR3 (NT)"
-    } else if (cloneCall == "aa") {
-        cloneCall <- "CTaa"
+    } else if (cloneCall == "aa") { cloneCall <- "CTaa" 
         ylab <- "CDR3 (AA)"
-    }
-    else {
-        stop("Please make a selection of the type of CDR3 sequence to analyze by using `cloneCall`")
-    }
+    } else { stop("Please make a selection of the type of
+                CDR3 sequence to analyze by using `cloneCall`") }
     cells <- df[[1]][1,"cellType"]
-    if (cells == "T-AB") {
-        c1 <- "TCRA"
-        c2 <- "TCRB"
-    } else if (cells == "T-GD") {
-        c1 <- "TCRG"
-        c2 <- "TCRD"
-    } else if (cells == "B") {
-        c1 <- "IGH"
-        c2 <- "IGL"
-    }
+    c1 <- cellT(cells)[[1]]
+    c2 <- cellT(cells)[[2]]
     xlab <- "Length"
     Con.df <- NULL
-    if (!is.null(column)) {
-        fill = column
-        names <- names(df)
-        if (chains == "combined") {
-            for (i in seq_along(df)) {
-                length <- nchar(df[[i]][,cloneCall])
-                val <- df[[i]][,cloneCall]
-                cols <- df[[i]][,column]
-                data <- data.frame(length, val, cols, names[i])
-                data <- na.omit(data)
-                colnames(data) <- c("length", "CT", column, "values")
-                Con.df<- rbind.data.frame(Con.df, data)
-            }
-        } else if (chains == "single") {
-            for (x in seq_along(df)) {
-                strings <- df[[x]][,cloneCall]
-                strings <- as.data.frame(str_split(strings, "_", simplify = TRUE), stringsAsFactors = F)
-                val1 <- strings[,1]
-                for (i in 1:length(val1)) {
-                    if (grepl(";", val1[i]) == T) {
-                        val1[i] <- str_split(val1, ";", simplify = TRUE)[1]
-                    }
-                    else {
-                        next()
-                    }
-                }
-                chain1 <- nchar(val1)
-                cols1 <- df[[x]][,column]
-                data1 <- data.frame(chain1, val1, names[x], c1, cols1)
-                colnames(data1) <- c("length", "CT", "values", "chain", column)
-                val2 <- strings[,2]
-                for (i in 1:length(val2)) {
-                    if (grepl(";", val2[i]) == T) {
-                        val2[i] <- str_split(val2, ";", simplify = TRUE)[1]
-                    }
-                    else {
-                        next()
-                    }
-                }
-                chain2 <- nchar(val2)
-                cols2 <- df[[x]][,column]
-                data2 <- data.frame(chain2, val2, names[x], c2, cols2)
-                colnames(data2) <- c("length", "CT", "values", "chain", column)
-
-                data <- rbind(data1, data2)
-                data <- na.omit(data)
-                data <- subset(data, CT != "NA")
-                data <- subset(data, CT != "")
-                Con.df<- rbind.data.frame(Con.df, data)
-
-            }
-        }
-        col <- length(unique(Con.df[,column]))
-        if (scale == T) {
-            yplus <- "Percent of "
-            plot <- ggplot(Con.df, aes(length, (..count..) / sum(..count..) * 100, fill=Con.df[,column])) +
-                geom_density(aes(y=..scaled..), alpha=0.5, lwd=0.25, color="black")
-        } else {
-            yplus <- "Number of "
-            plot <- ggplot(Con.df, aes(as.factor(length), fill=Con.df[,column])) +
-                geom_bar(position = position_dodge2(preserve = "single"), color="black", lwd=0.25, width=0.9)  +
-                scale_x_discrete(breaks = round(seq(min(Con.df$length), max(Con.df$length), by = 5),10))
-        }
-    } else if (is.null(column)){
+    Con.df <- lengthDF(df, cloneCall, chains, group, c1, c2)
+    names <- names(df)
+    if (!is.null(group)) { 
+        fill = group
+        col <- length(unique(Con.df[,group]))
+        if (scale == TRUE) { yplus <- "Percent of "
+            plot <- ggplot(Con.df, aes(fill=Con.df[,group],
+                length,(..count..)/sum(..count..)*100)) + 
+                geom_density(aes(y=..scaled..),alpha=.5,lwd=.25,color="black")
+        } else { yplus <- "Number of "
+            plot<-ggplot(Con.df,aes(as.factor(length),fill=Con.df[,group]))+
+                geom_bar(position = position_dodge2(preserve = "single"), 
+                color="black", lwd=0.25, width=0.9)  +
+                scale_x_discrete(breaks = round(seq(min(Con.df$length), 
+                max(Con.df$length), by = 5),10)) }
+    } else if (is.null(group)){ 
         fill <- "Samples"
-        names <- names(df)
-        if (chains == "combined") {
-            for (i in seq_along(df)) {
-                length <- nchar(df[[i]][,cloneCall])
-                val <- df[[i]][,cloneCall]
-                data <- data.frame(length, val, names[i])
-                data <- na.omit(data)
-                colnames(data) <- c("length", "CT", "values")
-                Con.df<- rbind.data.frame(Con.df, data)
-            }
-        }
-        else if(chains == "single") {
-            for (x in seq_along(df)) {
-                strings <- df[[x]][,cloneCall]
-                strings <- as.data.frame(str_split(strings, "_", simplify = TRUE), stringsAsFactors = F)
-                val1 <- strings[,1]
-                for (i in 1:length(val1)) {
-                    if (grepl(";", val1[i]) == T) {
-                        val1[i] <- str_split(val1, ";", simplify = TRUE)[1]
-                    }
-                    else {
-                        next()
-                    }
-                }
-                chain1 <- nchar(val1)
-                data1 <- data.frame(chain1, val1, names[x], c1)
-                colnames(data1) <- c("length", "CT", "values", "chain")
-                val2 <- strings[,2]
-                for (i in 1:length(val2)) {
-                    if (grepl(";", val2[i]) == T) {
-                        val2[i] <- str_split(val2, ";", simplify = TRUE)[1]
-                    }
-                    else {
-                        next()
-                    }
-                }
-                chain2 <- nchar(val2)
-                data2 <- data.frame(chain2, val2, names[x], c2)
-                colnames(data2) <- c("length", "CT", "values", "chain")
-
-                data <- rbind(data1, data2)
-                data <- na.omit(data)
-                data <- subset(data, CT != "NA")
-                data <- subset(data, CT != "")
-                Con.df<- rbind.data.frame(Con.df, data)
-            }
-        }
-    col <- length(unique(Con.df$values))
-    if (scale == T) {
-        yplus <- "Percent of "
-        plot <- ggplot(Con.df, aes(length, (..count..) / sum(..count..) * 100, fill=values)) +
-            geom_density(aes(y=..scaled..), alpha=0.5, lwd=0.25, color="black")
-    }  else {
-        yplus <- "Number of "
+        col <- length(unique(Con.df$values))
+        if (scale == TRUE) { yplus <- "Percent of "
+            plot <- ggplot(Con.df, aes(length, (..count..)/sum(..count..)*100, 
+                fill=values)) + geom_density(aes(y=..scaled..), alpha=0.5, 
+                lwd=0.25, color="black")
+    }  else { yplus <- "Number of "
         plot <- ggplot(Con.df, aes(as.factor(length), fill=values)) +
-            geom_bar(position = position_dodge2(preserve = "single"), color="black", lwd=0.25) +
-            scale_x_discrete(breaks = round(seq(min(Con.df$length), max(Con.df$length), by = 5),10))
-    }
-    }
-    if (chains == "single") {
-        plot <- plot + facet_grid(chain~.)
-    }
+            geom_bar(position = position_dodge2(preserve = "single"), 
+            color="black", lwd=0.25) +
+            scale_x_discrete(breaks = round(seq(min(Con.df$length), 
+            max(Con.df$length), by = 5),10))} }
+    if (chains == "single") { plot <- plot + facet_grid(chain~.) }
     plot <- plot + scale_fill_manual(values = colorblind_vector(col)) +
-        labs(fill = fill) +
-        ylab(paste(yplus, ylab, sep="")) +
-        xlab(xlab) +
-        theme_classic()
-    if (exportTable == T) {
-        return(Con.df)
-    }
-    return(plot)
+        labs(fill = fill) + ylab(paste(yplus, ylab, sep="")) +
+        xlab(xlab) + theme_classic()
+    if (exportTable == TRUE) { return(Con.df) }
+    return(plot)}
 
-}
-
-#' Demonstrate the difference in clonal proportion between multiple clonotypes
+#' Demonstrate the difference in clonal proportion between clonotypes
 #'
-#' @description
-#' Allows for the exaimination of the proportions of selected clonotypes between samples. Specific sequences (clonotypes) can be visualize or users can select the visualization of the top n clonotypes (numbers).
+#' This function produces an alluvial or area graph of the proportion of 
+#' the indicated clonotypes for all or selected samples. Clonotypes can be 
+#' selected using the clonotypes parameter with the specific sequence of 
+#' interest or using the number parameter with the top n clonotypes by 
+#' proportion to be visualized. If multiple clonotypes have the same proportion 
+#' and are within the selection by the number parameter, all the clonotypes 
+#' will be visualized. In this instance, if less clonotypes are desired, 
+#' reduce the number parameter.
 #'
-#' @param df The product of CombineContig()
-#' @param cloneCall How to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide
-#' @param samples The specific samples to isolate for visualization
-#' @param clonotypes The specific sequences of interest
-#' @param numbers The top number clonotype sequences
-#' @param graph The type of graph produced, either "alluvial" or "area"
+#' @examples
+#' #Making combined contig data
+#' x <- contig_list
+#' combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), 
+#' rep(c("P", "T"), 3), cells ="T-AB")
+#' compareClonotypes(combined, numbers = 10, 
+#' samples = c("PX_P", "PX_T"), cloneCall="aa")
+#'
+#' @param df The product of CombineContig() or expression2List().
+#' @param cloneCall How to call the clonotype - CDR3 gene (gene), 
+#' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
+#' CDR3 gene+nucleotide (gene+nt).
+#' @param samples The specific samples to isolate for visualization.
+#' @param clonotypes The specific sequences of interest.
+#' @param numbers The top number clonotype sequences.
+#' @param graph The type of graph produced, either "alluvial" or "area".
 #' @import ggplot2
 #'
 #' @export
-compareClonotypes <- function(df,
-                              cloneCall = c("gene", "nt", "aa", "gene+nt"),
-                              samples = NULL,
-                              clonotypes = NULL,
-                              numbers = NULL,
-                              graph = c("alluvial", "area")){
+#' @return ggplot of the proportion of total sequencing read of 
+#' selecting clonotypes
+compareClonotypes <- function(df, cloneCall = "gene+nt", samples = NULL, 
+                        clonotypes = NULL, numbers = NULL, graph = "alluvial"){
     cloneCall <- theCall(cloneCall)
     if (!is.null(numbers) & !is.null(clonotypes)) {
         stop("Make sure your inputs are either numbers or clonotype sequences.")
     }
-
     Con.df <- NULL
     for (i in seq_along(df)) {
         tbl <- as.data.frame(table(df[[i]][,cloneCall]))
@@ -386,90 +281,122 @@ compareClonotypes <- function(df,
         tbl$Sample <- names(df[i])
         Con.df <- rbind.data.frame(Con.df, tbl)
     }
-
     if (!is.null(samples)) {
-        Con.df <- Con.df[Con.df$Sample %in% samples,]
-    }
+        Con.df <- Con.df[Con.df$Sample %in% samples,] }
     if (!is.null(clonotypes)) {
-        Con.df <- Con.df[Con.df$Sample %in% clonotypes,]
-    }
+        Con.df <- Con.df[Con.df$Sample %in% clonotypes,] }
     if (!is.null(numbers)) {
         top <- Con.df %>% top_n(n = numbers, wt = Proportion)
-        Con.df <- Con.df[Con.df$Clonotypes %in% top$Clonotypes,]
-    }
+        Con.df <- Con.df[Con.df$Clonotypes %in% top$Clonotypes,] }
     if (nrow(Con.df) < length(unique(Con.df$Sample))) {
-        stop("Reasses the filtering strategies here, there is not enough clonotypes to examine.")
-    }
-    plot = ggplot(Con.df, aes(x = Sample, fill = Clonotypes, stratum = Clonotypes,
-                              alluvium = Clonotypes, y = Proportion, label = Clonotypes)) +
-        theme_classic() +
-        theme(axis.title.x = element_blank())
-
+        stop("Reasses the filtering strategies here, there is not 
+            enough clonotypes to examine.") }
+    plot = ggplot(Con.df, aes(x = Sample, fill = Clonotypes, 
+                    stratum = Clonotypes, alluvium = Clonotypes, 
+                    y = Proportion, label = Clonotypes)) +
+                theme_classic() +
+                theme(axis.title.x = element_blank())
     if (graph == "alluvial") {
-        plot = plot +
-            geom_flow() +
-            geom_stratum()
+        plot = plot + geom_flow() + geom_stratum()
     } else if (graph == "area") {
         plot = plot +
-            geom_area(aes(group = Clonotypes), color = "black")
-    }
+            geom_area(aes(group = Clonotypes), color = "black") }
     return(plot)
 }
 
-#' Hierarchical clustering based on JS distance
+#' Hierarchical clustering of clonotypes on clonotype size and 
+#' Jensen-Shannon divergence
 #'
-#' @description
-#' Allows for the hierarchical clustering based on Jensen-Shannon distance using the discrete gamma-GPD spliced threshold model in the powerTCR R package. If you are planning on using this function for your analysis, read and cite PMID: 30485278.
+#' This functionn produces a heirachial clustering of clonotypes by sample 
+#' using the Jensen-Shannon distance and discrete gamma-GPD spliced threshold 
+#' model in the [powerTCR R package]
+#' (https://bioconductor.org/packages/devel/bioc/html/powerTCR.html).
+#' Please read and cite PMID: 30485278 if using the function for analyses. 
+#' If a matrix output for the data is preferred set exportTable = TRUE.
 #'
-#' @param df The product of CombineContig()
-#' @param cloneCall How to call the clonotype - CDR3 gene, CDR3 nt or CDR3 aa, or CDR3+nucleotide
-#' @param method The clustering paramater for the dendrogram
-#' @param exportTable Returns the data frame used for forming the graph
+#' @examples
+#' #Making combined contig data
+#' x <- contig_list
+#' combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), 
+#' rep(c("P", "T"), 3), cells ="T-AB")
+#' clonesizeDistribution(combined, cloneCall = "gene+nt", method="ward.D2")
+#'
+#' @param df The product of CombineContig() or expression2List().
+#' @param cloneCall How to call the clonotype - CDR3 gene (gene),
+#' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
+#' CDR3 gene+nucleotide (gene+nt).
+#' @param method The clustering paramater for the dendrogram.
+#' @param exportTable Returns the data frame used for forming the graph.
 #' @import dplyr
 #' @importFrom ggplot2 ggplot
 #' @importFrom powerTCR fdiscgammagpd get_distances
 #' @importFrom ggdendro ggdendrogram
 #' @export
+#' @return ggplot dendrogram of the clone size distribution
 
-clonesizeDistribution <- function(df,
-                                  cloneCall = c("gene", "nt", "aa", "gene+nt"),
-                                  method = c("complete", "ward.D", "ward.D2",
-                                             "single", "average", "mcquitty",
-                                             "median", "centroid"),
-                                  exportTable = F) {
-                                                 cloneCall <- theCall(cloneCall)
-                                                 data <- bind_rows(df)
-                                                 unique_df <- unique(data[,cloneCall])
-                                                 Con.df <- data.frame(matrix(NA, length(unique_df), length(df)))
-                                                 Con.df <- data.frame(unique_df, Con.df, stringsAsFactors = F)
-                                                 colnames(Con.df)[1] <- "clonotype"
-
-                                                 for (i in seq_along(df)) {
-                                                     data <- df[[i]]
-                                                     data <- data.frame(table(data[,cloneCall]), stringsAsFactors = F)
-                                                     colnames(data) <- c(cloneCall, "Freq")
-                                                     for (y in 1:length(unique_df)){
-                                                         clonotype.y <- Con.df$clonotype[y]
-                                                         location.y <- which(clonotype.y == data[,cloneCall])
-                                                         Con.df[y,i+1] <- data[location.y[1],"Freq"]
-                                                     }
-                                                 }
-                                                 colnames(Con.df)[2:(length(df)+1)] <- names(df)
-                                                 Con.df[is.na(Con.df)] <- 0
-                                                 list <- list()
-                                                 for (i in seq_along(df)) {
-                                                     list[[i]] <- Con.df[,i+1]
-                                                     list[[i]] <- suppressWarnings(fdiscgammagpd(list[[i]], useq = 1))
-                                                 }
-                                                 names(list) <- names(df)
-
-                                                 grid <- 0:10000
-                                                 distances <- get_distances(list, grid, modelType="Spliced")
-                                                 hclust <- hclust(as.dist(distances), method = method)
-                                                 plot <- ggdendrogram(hclust)
-
-                                                 if (exportTable == T) {
-                                                     return(distances)
-                                                 }
-                                                 return(plot)
+clonesizeDistribution <- function(df,  cloneCall ="gene+nt", 
+                            method = "ward.D2", exportTable = FALSE) {
+        cloneCall <- theCall(cloneCall)
+        data <- bind_rows(df)
+        unique_df <- unique(data[,cloneCall])
+        Con.df <- data.frame(matrix(NA, length(unique_df), length(df)))
+        Con.df <- data.frame(unique_df, Con.df, stringsAsFactors = FALSE)
+        colnames(Con.df)[1] <- "clonotype"
+        for (i in seq_along(df)) {
+            data <- df[[i]]
+            data <- data.frame(table(data[,cloneCall]), 
+                        stringsAsFactors = FALSE)
+            colnames(data) <- c(cloneCall, "Freq")
+            for (y in seq_along(unique_df)){
+                    clonotype.y <- Con.df$clonotype[y]
+                    location.y <- which(clonotype.y == data[,cloneCall])
+                    Con.df[y,i+1] <- data[location.y[1],"Freq"] }
+        }
+        colnames(Con.df)[2:(length(df)+1)] <- names(df)
+        Con.df[is.na(Con.df)] <- 0
+        list <- list()
+        for (i in seq_along(df)) {
+            list[[i]] <- Con.df[,i+1]
+            list[[i]] <- suppressWarnings(fdiscgammagpd(list[[i]], useq = 1))}
+        names(list) <- names(df)
+        grid <- 0:10000
+        distances <- get_distances(list, grid, modelType="Spliced")
+        hclust <- hclust(as.dist(distances), method = method)
+        plot <- ggdendrogram(hclust)
+        if (exportTable == TRUE) { return(distances) }
+        return(plot)
 }
+
+#This is the basic color palette for the package
+#' @import RColorBrewer
+#' @import colorRamps
+colorblind_vector <- colorRampPalette(c("#FF4B20", "#FFB433", 
+                                        "#C6FDEC", "#7AC5FF", "#0348A6"))
+
+#Making lodes to function in alluvial plots
+#' @import ggalluvial
+makingLodes <- function(meta2, color, alpha, facet, set.axes) {
+    if (!is.null(color) & !is.null(alpha) & !is.null(facet)) {
+        lodes <- to_lodes_form(meta2,key="x",value="stratum",id="alluvium",
+        axes=set.axes,diffuse=c(as.name(color),as.name(alpha),as.name(facet)))
+    } else  if (!is.null(color) & !is.null(alpha) & is.null(facet)) {
+        lodes <- to_lodes_form(meta2,key="x",value="stratum",id="alluvium",
+        axes = set.axes, diffuse = c(as.name(color), as.name(alpha)))
+    } else if (!is.null(color) & is.null(alpha) & !is.null(facet)) {
+        lodes <- to_lodes_form(meta2,key="x",value="stratum",id ="alluvium",
+        axes =set.axes, diffuse = c(as.name(color), as.name(facet)))
+    } else if (is.null(color) & is.null(alpha) & !is.null(facet)) {
+        lodes <- to_lodes_form(meta2, key = "x", value = "stratum", 
+        id="alluvium",axes=set.axes,diffuse=c(as.name(alpha),as.name(facet)))
+    } else if (is.null(color) & is.null(alpha) & !is.null(facet)) {
+        lodes <- to_lodes_form(meta2, key = "x", value = "stratum", 
+        id = "alluvium", axes = set.axes, diffuse = c(as.name(facet)))
+    } else if (!is.null(color) & is.null(alpha) & is.null(facet)) {
+        lodes <- to_lodes_form(meta2, key = "x", value = "stratum", 
+        id = "alluvium", axes = set.axes, diffuse = c(as.name(color)))
+    } else if (is.null(color) & !is.null(alpha) & is.null(facet)) {
+        lodes <- to_lodes_form(meta2, key = "x", value = "stratum", 
+        id = "alluvium", axes = set.axes, diffuse = c(as.name(alpha)))
+    } else { lodes <- to_lodes_form(meta2, key = "x", value = "stratum", 
+            id = "alluvium", axes = set.axes)}
+    return(lodes) }
