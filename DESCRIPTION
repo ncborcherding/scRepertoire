@@ -10,6 +10,6 @@ LazyData: true
 RoxygenNote: 7.1.0
 biocViews: Software, ImmunoOncology, SingleCell, Classification, Annotation, Sequencing
 Depends: dplyr, ggalluvial, ggplot2, reshape2, Seurat, R (>= 3.6)
-Imports: Biostrings, RColorBrewer, Startrac, colorRamps, ggdendro, ggfittext, powerTCR, stringr, vegan
-Suggests: knitr, rmarkdown
+Imports: Biostrings, RColorBrewer, colorRamps, ggdendro, ggfittext, stringr, vegan
+Suggests: knitr, rmarkdown, Startrac, powerTCR
 VignetteBuilder: knitr
