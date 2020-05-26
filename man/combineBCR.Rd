@@ -34,9 +34,9 @@ repeated barcodes. The resulting new barcodes will need to match the
 seurat or SCE object in order to use,
 }
 \examples{
-options(stringsAsFactors = FALSE)
 #Data derived from the 10x Genomics intratumoral NSCLC B cells
-BCR <- read.csv("https://ncborcherding.github.io/vignettes/b_contigs.csv")
+BCR <- read.csv("https://ncborcherding.github.io/vignettes/b_contigs.csv", 
+stringsAsFactors = FALSE)
 combined <- combineBCR(BCR, samples = "Patient1", ID = "Time1")
 
 }

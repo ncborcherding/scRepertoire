@@ -6,7 +6,7 @@
 #' barcode with any other characters
 #' @param num_connects The number of strings combined with the connectors
 #' @examples 
-#' stripBarcode(contig_list[[1]], column = 1, connector = "_", num_connects = 3)
+#' stripBarcode(contig_list[[1]], column = 1, connector = "_", num_connects = 1)
 #' @export
 #' @return list with the suffixes of the barcodes removed.
 stripBarcode <- function(contigs, column = 1, connector = "_", 
@@ -97,20 +97,14 @@ subsetContig <- function(df, name, variables = NULL) {
 #' rep(c("P", "T"), 3), cells ="T-AB")
 #' 
 #' #Getting a sample of a Seurat object
-#' URL <- "https://ncborcherding.github.io/vignettes/seurat_example.rda"
-#' dataDest = file.path("seurat_example.rda")
-#' download.file(URL, destfile = dataDest, method = "auto")
-#' seurat <- load("seurat_example.rda")
+#' seurat_example <- readRDS(url(
+#' "https://ncborcherding.github.io/vignettes/seurat_example.rds"))
 #' 
 #' #Using combineExpresion()
-#' seurat <- combineExpression(combined, seurat)
-#' 
-#' #Using StartracDiversity
-#' StartracDiversity(seurat, type = "Type", sample = "Patient", 
-#' by = "overall")
+#' seurat <- combineExpression(combined, seurat_example)
 #' 
 #' #Using expression2List
-#' newList <- expression2List(seurat, group = "cluster")
+#' newList <- expression2List(seurat_example, group = "cluster")
 #' 
 #' @param sc object after combineExpression().
 #' @param group The column header to group the new list by

@@ -16,13 +16,11 @@
 #' rep(c("P", "T"), 3), cells ="T-AB")
 #' 
 #' #Getting a sample of a Seurat object
-#' URL <- "https://ncborcherding.github.io/vignettes/seurat_example.rda"
-#' dataDest = file.path("seurat_example.rda")
-#' download.file(URL, destfile = dataDest, method = "auto")
-#' seurat <- load("seurat_example.rda")
+#' seurat_example <- readRDS(url(
+#' "https://ncborcherding.github.io/vignettes/seurat_example.rds"))
 #' 
 #' #Using combineExpresion()
-#' seurat <- combineExpression(combined, seurat)
+#' seurat_example <- combineExpression(combined, seurat_example)
 #' 
 #' @param df The product of CombineTCR() or CombineBCR().
 #' @param sc The seurat or SingleCellExperiment (SCE) object to attach
@@ -100,17 +98,15 @@ combineExpression <- function(df, sc, cloneCall="gene+nt", groupBy="none",
 #' rep(c("P", "T"), 3), cells ="T-AB")
 #' 
 #' #Getting a sample of a Seurat object
-#' URL <- "https://ncborcherding.github.io/vignettes/seurat_example.rda"
-#' dataDest = file.path("seurat_example.rda")
-#' download.file(URL, destfile = dataDest, method = "auto")
-#' seurat <- load("seurat_example.rda")
+#' seurat_example <- readRDS(url(
+#' "https://ncborcherding.github.io/vignettes/seurat_example.rds"))
 #' 
 #' #Using combineExpresion()
-#' seurat <- combineExpression(combined, seurat)
+#' seurat_example <- combineExpression(combined, seurat_example)
 #' 
 #' #Using highlightClonotype()
-#' seurat <- highlightClonotypes(seurat, cloneCall= "aa", 
-#' sequence = c("CAVNGGSQGNLIF_CSAEREDTDTQYF")
+#' seurat_example <- highlightClonotypes(seurat_example, cloneCall= "aa", 
+#' sequence = c("CAVNGGSQGNLIF_CSAEREDTDTQYF"))
 #' 
 #' @param sc The seurat object to attach
 #' @param cloneCall How to call the clonotype - CDR3 gene (gene), 
@@ -154,16 +150,14 @@ highlightClonotypes <- function(sc,
 #' rep(c("P", "T"), 3), cells ="T-AB")
 #' 
 #' #Getting a sample of a Seurat object
-#' URL <- "https://ncborcherding.github.io/vignettes/seurat_example.rda"
-#' dataDest = file.path("seurat_example.rda")
-#' download.file(URL, destfile = dataDest, method = "auto")
-#' seurat <- load("seurat_example.rda")
+#' seurat_example <- readRDS(url(
+#' "https://ncborcherding.github.io/vignettes/seurat_example.rds"))
 #' 
 #' #Using combineExpresion()
-#' seurat <- combineExpression(combined, seurat)
+#' seurat_example <- combineExpression(combined, seurat_example)
 #' 
 #' #Using alluvialClonotypes()
-#' alluvialClonotypes(seurat, cloneCall = "gene", 
+#' alluvialClonotypes(seurat_example, cloneCall = "gene", 
 #' y.axes = c("Patient", "cluster"), color = "cluster")
 #' 
 #' @param sc The seurat or SCE object to visualize after combineExpression(). 
@@ -241,16 +235,14 @@ alluvialClonotypes <- function(sc,
 #' rep(c("P", "T"), 3), cells ="T-AB")
 #' 
 #' #Getting a sample of a Seurat object
-#' URL <- "https://ncborcherding.github.io/vignettes/seurat_example.rda"
-#' dataDest = file.path("seurat_example.rda")
-#' download.file(URL, destfile = dataDest, method = "auto")
-#' seurat <- load("seurat_example.rda")
+#' seurat_example <- readRDS(url(
+#' "https://ncborcherding.github.io/vignettes/seurat_example.rds"))
 #' 
 #' #Using combineExpresion()
-#' seurat <- combineExpression(combined, seurat)
+#' seurat_example <- combineExpression(combined, seurat_example)
 #' 
 #' #Using StartracDiversity
-#' StartracDiversity(seurat, type = "Type", sample = "Patient", 
+#' StartracDiversity(seurat_example, type = "Type", sample = "Patient", 
 #' by = "overall")
 #'
 #' @param sc The Seurat or SCE object. For SCE objects, the cluster variable 

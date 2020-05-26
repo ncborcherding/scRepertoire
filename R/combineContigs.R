@@ -104,9 +104,9 @@ combineTCR <- function(df, samples = NULL, ID = NULL,
 #' the CTstrict column string.
 #'
 #' @examples
-#' options(stringsAsFactors = FALSE)
 #' #Data derived from the 10x Genomics intratumoral NSCLC B cells
-#' BCR <- read.csv("https://ncborcherding.github.io/vignettes/b_contigs.csv")
+#' BCR <- read.csv("https://ncborcherding.github.io/vignettes/b_contigs.csv", 
+#' stringsAsFactors = FALSE)
 #' combined <- combineBCR(BCR, samples = "Patient1", ID = "Time1")
 #' 
 #' @param df List of filtered contig annotations from 10x Genomics.
@@ -181,7 +181,7 @@ hammingCompare <- function(Con.df, gene, chain, length) {
     lengths_IGL <- na.omit(unique(lengths_IGL))
     specificLength  <- if(gene=="IGH") lengths_IGH else lengths_IGL
     for (i in seq_along(lengths_IGH)) {
-        tmp <- Con.df[Con.df[,length] == specificLength[i],]
+        tmp<-na.omit(Con.df[Con.df[,length] == specificLength[i],])
         tmp2 <- as.matrix(stringDist(tmp[,chain], 
                     method = "hamming")/specificLength[i])
         filtered <- which(tmp2 >= 0.85, arr.ind = TRUE)
@@ -198,12 +198,12 @@ hammingCompare <- function(Con.df, gene, chain, length) {
         overlap <- unique(overlap)
         IG <- Con.df[Con.df[,chain] %!in% overlap[,1],]
         IG <- na.omit(unique(IG[IG[,chain] %!in% overlap[,2],][,chain]))
-        Hclonotype <- paste0(gene, seq_len(IG))
+        Hclonotype <- paste0(gene, seq_len(length(IG)))
         IG <- data.frame(IG, Hclonotype)
         unique_over <- data.frame(unique(overlap$Col1), 
                             stringsAsFactors = FALSE)
         unique_over$Hclonotype <- paste0(gene, ":HD", ".", 
-                                    seq_len(unique_over))
+                                    seq_len(length(unique_over)))
         colnames(unique_over)[1] <- "barcodes"
         overlap <- merge(overlap, unique_over, by.x="Col1", by.y="barcodes")
         barcodeOverlap <- data.frame(unique(c(overlap[,1], overlap[,2])))
@@ -219,5 +219,5 @@ hammingCompare <- function(Con.df, gene, chain, length) {
         IG <- rbind.data.frame(IG, barcodeOverlap, stringsAsFactors = FALSE)
     } else { IG <- Con.df[,chain]
         IG <- na.omit(unique(IG))
-        Hclonotype <- paste0(gene, ".", seq_len(IG))
+        Hclonotype <- paste0(gene, ".", seq_len(length(IG)))
         IG <- data.frame(IG, Hclonotype) } }

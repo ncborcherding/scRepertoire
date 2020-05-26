@@ -23,5 +23,5 @@ list with the suffixes of the barcodes removed.
 Removing any additional prefixes to the barcodes of filtered contigs.
 }
 \examples{
-stripBarcode(contig_list[[1]], column = 1, connector = "_", num_connects = 3)
+stripBarcode(contig_list[[1]], column = 1, connector = "_", num_connects = 1)
 }
