@@ -1,3 +1,15 @@
+
+CHANGES IN VERSION 0.99.0
+------------------------
+
+-Changed DESCRIPTION version to 0.99.0
+-Removed file seurat_example.rda, accidentally committed
+-Deleted git attributes
+-reduced Seurat object size for alluvialClonotype in vignette
+-Changed the alluvialClonotype assessment to account for only 1 condition
+
+
+
 CHANGES IN VERSION 1.2.3
 ------------------------
 

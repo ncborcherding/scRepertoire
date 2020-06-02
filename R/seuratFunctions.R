@@ -189,7 +189,7 @@ alluvialClonotypes <- function(sc,
     meta <- grabMeta(sc)
     meta$barcodes <- rownames(meta)
     check <- colnames(meta) == color
-    if (length(unique(check)) == 1 & unique(check) == FALSE & !is.null(color)) {
+    if (length(unique(check)) == 1 & unique(check)[1] == FALSE & !is.null(color)) {
         meta <- meta %>% mutate(H.clonotypes = ifelse(meta[,cloneCall] %in% 
             color, "Selected", "Other"))
         color <- "H.clonotypes" }
