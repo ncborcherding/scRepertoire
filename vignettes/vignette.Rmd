@@ -257,10 +257,10 @@ clonalDiversity(combined, cloneCall = "gene", group = "ID")
 
 ##Interacting with Seurat
 
-As mentioned previously, this data set is derived from work performed in the laboratory of [Weizhou Zhang]("https://pathology.ufl.edu/faculty/experimental-pathology/weizhou-zhang-ph-d/"). We have elected to pair the workflow of scRepertoire with the excellent [Seurat package](https://satijalab.org/seurat/), for greater usability. The first step is to load the Seurat object and visualize the data. 
+As mentioned previously, this data set is derived from work performed in the laboratory of [Weizhou Zhang]("https://pathology.ufl.edu/faculty/experimental-pathology/weizhou-zhang-ph-d/"). We have elected to pair the workflow of scRepertoire with the excellent [Seurat package](https://satijalab.org/seurat/), for greater usability. The first step is to load the Seurat object and visualize the data. The seurat object below was randomly reduced to 3500 cells to allow for access via the github.io. This will lead to reduced numbers of cells, but generally recapitulates the trend of the larger data set.
 
 ```{r Figure4A}
-seurat <- get(load("/Users/nick/seurat2.rda"))
+seurat <- readRDS(url("https://ncborcherding.github.io/vignettes/scRepertoire_example.rds"))
 DimPlot(seurat, label = TRUE) + NoLegend()
 ```
 
