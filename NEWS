@@ -1,6 +1,17 @@
 CHANGES IN VERSION 1.2.0
 ------------------------
 
+Removed Startrac-based functions in order to pass build on Bioconductor.
+
+DEPRECATED AND DEFUNCT
+
+    o Deprecate StartracDiversity()
+
+
+
+CHANGES IN VERSION 1.2.0
+------------------------
+
 The first version of scRepertoire submitted to Bioconductor.
 
 SIGNIFICANT USER-VISIBLE CHANGES

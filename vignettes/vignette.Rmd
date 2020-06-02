@@ -380,20 +380,7 @@ clonalProportion(combined2, cloneCall = "nt")
 clonalOverlap(combined2, cloneCall="aa", method="overlap")
 ```
 
-###Diversity of single-cells using Startrac
 
-From the excellent work by Lei Zhang, et al in [Lineage tracking reveals dynamic relationships of T cells in colorectal cancer](https://www-nature-com.proxy.lib.uiowa.edu/articles/s41586-018-0694-x), the authors introduce new methods for looking at clonotypes by cellular origins and cluster identification. Their [startrac](https://github.com/Japrin/STARTRAC) software has been incorporated into scRepertoire. If you are using the output of this specific function, please cite their work. 
-
-In order to use the *StartracDiversity()* function, you will need to include the product of the *combineExpression()* function. The second requirement is the column header in the meta data of the Seurat object that has tissue of origin. In the example data,**type** corresponds to the column "Type", which includes the "P" and "T" classifier. The indices can be subsetted for a specific patient or examined overall using the **by** variable. Importantly, the function uses only the strict definition of clonotype of the genes and the CDR3 nucleotide sequence. 
-
-The indices output includes:
-+  expa - Clonal Expansion
-+  migr - Cross-tissue Migration
-+  tran - State Transition
-
-```{r}
-StartracDiversity(seurat, type = "Type", sample = "Patient", by = "overall")
-```
 
 
 
