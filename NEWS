@@ -1,3 +1,8 @@
+CHANGES IN VERSION 0.99.1
+------------------------
+
+-Changed R (>= 3.6) to R (>= 4.0)
+
 
 CHANGES IN VERSION 0.99.0
 ------------------------
