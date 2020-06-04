@@ -20,7 +20,11 @@ grabMeta <- function(sc) {
         colnames(meta)[length(meta)] <- "cluster"
     }
     else if (inherits(x=sc, what ="SummarizedExperiment")){
-        meta <- sc@metadata[[1]]
+        if (inherits(x=sc, what ="cell_data_set")){
+          meta <- colData(sc)
+        }else{
+          meta <- sc@metadata[[1]]
+        }
     }
     return(meta)
 }
@@ -63,6 +67,8 @@ filteringMulti <- function(x) {
     x <- rbind(x, multichain) 
     return(x)
 }
+
+
 
 #Filtering NA contigs out of single-cell expression object
 filteringNA <- function(sc) {

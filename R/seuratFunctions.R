@@ -36,11 +36,13 @@
 #' @export
 #' @return seurat or SingleCellExperiment object with attached clonotype 
 #' information
+#' 
+
 combineExpression <- function(df, sc, cloneCall="gene+nt", groupBy="none", 
                         cloneTypes=c(None=0, Single=1, Small=5, Medium=20, 
                         Large=100, Hyperexpanded=500), filterNA = FALSE) {
-    df <- checkList(df)
-    cloneCall <- theCall(cloneCall)
+    df <- scRepertoire:::checkList(df)
+    cloneCall <- scRepertoire:::theCall(cloneCall)
     Con.df <- NULL
     meta <- grabMeta(sc)
     cell.names <- rownames(meta)
@@ -78,13 +80,20 @@ combineExpression <- function(df, sc, cloneCall="gene+nt", groupBy="none",
                 "CTaa", "CTstrict", "Frequency", "cloneType")])
     rownames(PreMeta) <- PreMeta$barcode
     if (inherits(x=sc, what ="Seurat")) { sc <- AddMetaData(sc, PreMeta) 
-    } else if (inherits(x=sc, what ="SummarizedExperiment")){
-        rownames <- rownames(sc@metadata[[1]])
-        sc@metadata[[1]] <- 
-            merge(sc@metadata[[1]], PreMeta)[, union(names(sc@metadata[[1]]), 
-            names(PreMeta))]
-        rownames(sc@metadata[[1]]) <- rownames }
-    if (filterNA == TRUE) { sc <- filteringNA(sc) }
+    } else if (inherits(x=sc, what ="cell_data_set")){
+      rownames <- rownames(colData(sc))
+      colData(sc) <- 
+        merge(colData(sc), PreMeta)[, union(names(colData(sc)), 
+                                                 names(PreMeta))]
+      rownames(colData(sc)) <- rownames 
+    }else{
+      rownames <- rownames(sc@metadata[[1]])
+      sc@metadata[[1]] <- 
+        merge(sc@metadata[[1]], PreMeta)[, union(names(sc@metadata[[1]]), 
+                                                 names(PreMeta))]
+      rownames(sc@metadata[[1]]) <- rownames 
+        }
+    if (filterNA == TRUE) { sc <- scRepertoire:::filteringNA(sc) }
     return(sc) }
 
 #' Highlighting specific clonotypes in Seurat
