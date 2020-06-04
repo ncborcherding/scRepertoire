@@ -83,7 +83,7 @@ combineExpression <- function(df, sc, cloneCall="gene+nt", groupBy="none",
       sc <- AddMetaData(sc, PreMeta) 
     } else if (inherits(x=sc, what ="cell_data_set")){
       rownames <- rownames(colData(sc))
-      colData(sc) <- cbind(colData(sc), PreMeta[rownames,])#[, union(colnames(colData(sc)),  colnames(PreMeta))]
+      colData(sc) <- cbind(colData(sc), PreMeta[rownames,])[, union(colnames(colData(sc)),  colnames(PreMeta))]
       rownames(colData(sc)) <- rownames 
     }else{
       rownames <- rownames(sc@metadata[[1]])
