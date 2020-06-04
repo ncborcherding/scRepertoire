@@ -1,6 +1,6 @@
 Package: scRepertoire
 Title: A toolkit for single-cell immune receptor profiling
-Version: 0.99.1
+Version: 1.2.1
 Author: Nick Borcherding
 Maintainer: Nick Borcherding <ncborch@gmail.com>
 Description: scRepertoire was built to process data derived from the 10x Genomics Chromium Immune Profiling for both T-cell receptor (TCR) and immunoglobulin (Ig) enrichment workflows and subsequently interacts with the popular Seurat R package and SingleCellExpression data.
@@ -9,7 +9,10 @@ Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.0
 biocViews: Software, ImmunoOncology, SingleCell, Classification, Annotation, Sequencing
-Depends: dplyr, ggalluvial, ggplot2, reshape2, Seurat, R (>= 4.0)
+Depends: dplyr, ggalluvial, ggplot2, reshape2, Seurat, R (>= 4.0), monocle3
 Imports: Biostrings, RColorBrewer, colorRamps, ggdendro, ggfittext, stringr, vegan, powerTCR
 Suggests: knitr, rmarkdown
+Depends: dplyr, ggalluvial, ggplot2, reshape2, Seurat, R (>= 3.6)
+Imports: Biostrings, RColorBrewer, colorRamps, ggdendro, ggfittext, stringr, vegan
+Suggests: knitr, rmarkdown, Startrac, powerTCR
 VignetteBuilder: knitr
