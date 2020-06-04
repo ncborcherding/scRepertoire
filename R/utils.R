@@ -78,9 +78,14 @@ filteringNA <- function(sc) {
     evalNA <- evalNA %>%
         transmute(indicator = ifelse(is.na(indicator), 0, 1))
     rownames(evalNA) <- rownames(meta)
-    sc <- AddMetaData(sc, evalNA)
-    sc <- subset(sc, cloneType != 0)
-    return(sc)
+    if (inherits(x=sc, what ="cell_data_set")){
+      colData(sc)[["evalNA"]]<-evalNA
+      return(sc[, !is.na(sc$cloneType)])
+    }else{
+      sc <- AddMetaData(sc, evalNA)
+      sc <- subset(sc, cloneType != 0)
+      return(sc)
+    }
 }
 
 #Check the format of the cell barcode inputs and parameter lengthsd

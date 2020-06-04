@@ -79,12 +79,11 @@ combineExpression <- function(df, sc, cloneCall="gene+nt", groupBy="none",
     PreMeta <- unique(Con.df[,c("barcode", "CTgene", "CTnt", 
                 "CTaa", "CTstrict", "Frequency", "cloneType")])
     rownames(PreMeta) <- PreMeta$barcode
-    if (inherits(x=sc, what ="Seurat")) { sc <- AddMetaData(sc, PreMeta) 
+    if (inherits(x=sc, what ="Seurat")) {
+      sc <- AddMetaData(sc, PreMeta) 
     } else if (inherits(x=sc, what ="cell_data_set")){
       rownames <- rownames(colData(sc))
-      colData(sc) <- 
-        merge(colData(sc), PreMeta)[, union(names(colData(sc)), 
-                                                 names(PreMeta))]
+      colData(sc) <- cbind(colData(sc), PreMeta[rownames,])#[, union(colnames(colData(sc)),  colnames(PreMeta))]
       rownames(colData(sc)) <- rownames 
     }else{
       rownames <- rownames(sc@metadata[[1]])
@@ -93,7 +92,7 @@ combineExpression <- function(df, sc, cloneCall="gene+nt", groupBy="none",
                                                  names(PreMeta))]
       rownames(sc@metadata[[1]]) <- rownames 
         }
-    if (filterNA == TRUE) { sc <- scRepertoire:::filteringNA(sc) }
+    if (filterNA == TRUE) { sc <- filteringNA(sc) }
     return(sc) }
 
 #' Highlighting specific clonotypes in Seurat
