@@ -257,10 +257,10 @@ clonalDiversity(combined, cloneCall = "gene", group = "ID")
 
 ##Interacting with Seurat
 
-As mentioned previously, this data set is derived from work performed in the laboratory of [Weizhou Zhang]("https://pathology.ufl.edu/faculty/experimental-pathology/weizhou-zhang-ph-d/"). We have elected to pair the workflow of scRepertoire with the excellent [Seurat package](https://satijalab.org/seurat/), for greater usability. The first step is to load the Seurat object and visualize the data. 
+As mentioned previously, this data set is derived from work performed in the laboratory of [Weizhou Zhang]("https://pathology.ufl.edu/faculty/experimental-pathology/weizhou-zhang-ph-d/"). We have elected to pair the workflow of scRepertoire with the excellent [Seurat package](https://satijalab.org/seurat/), for greater usability. The first step is to load the Seurat object and visualize the data. The seurat object below was randomly reduced to 3500 cells to allow for access via the github.io. This will lead to reduced numbers of cells, but generally recapitulates the trend of the larger data set.
 
 ```{r Figure4A}
-seurat <- get(load("/Users/nick/seurat2.rda"))
+seurat <- readRDS(url("https://ncborcherding.github.io/vignettes/scRepertoire_example.rds"))
 DimPlot(seurat, label = TRUE) + NoLegend()
 ```
 
@@ -339,15 +339,19 @@ seurat <- highlightClonotypes(seurat, cloneCall= "aa",
 DimPlot(seurat, group.by = "highlight")
 ```
 
-Lastly after all the metadata has been modified, we can look at clonotypes across multiple categories using the *alluvialClonotypes()* function. To understand the basic concepts of this graphing method, I'd highly recommend reading [this post](https://cran.r-project.org/web/packages/ggalluvial/vignettes/ggalluvial.html), essentially we are able to use the plots to examine the interchange of categorical variables. Because this function will produce a graph with each clonotype arranged by called stratifications, this will take some time depending on the size of your total cells. 
+Lastly after all the metadata has been modified, we can look at clonotypes across multiple categories using the *alluvialClonotypes()* function. To understand the basic concepts of this graphing method, I'd highly recommend reading [this post](https://cran.r-project.org/web/packages/ggalluvial/vignettes/ggalluvial.html), essentially we are able to use the plots to examine the interchange of categorical variables. Because this function will produce a graph with each clonotype arranged by called stratifications, this will take some time depending on the size of your total cells. To expedite, we will actually subset the seurat object before using *alluvialClonotypes()*.
 
 ```{r Figure4F}
-alluvialClonotypes(seurat, cloneCall = "gene", 
+cells <- rownames(seurat[[]])
+cells <- sample(cells, 1000)
+subset_seurat <- subset(seurat, cells = cells)
+
+alluvialClonotypes(subset_seurat, cloneCall = "gene", 
                    y.axes = c("Patient", "cluster", "Type"), 
                    color = "TRAV12-2.TRAJ42.TRAC_TRBV20-1.TRBJ2-3.TRBD2.TRBC2") + 
     scale_fill_manual(values = c("grey", colorblind_vector(1)))
 
-alluvialClonotypes(seurat, cloneCall = "gene", 
+alluvialClonotypes(subset_seurat, cloneCall = "gene", 
                    y.axes = c("Patient", "cluster", "Type"), 
                    color = "cluster") 
 ```
@@ -380,20 +384,7 @@ clonalProportion(combined2, cloneCall = "nt")
 clonalOverlap(combined2, cloneCall="aa", method="overlap")
 ```
 
-###Diversity of single-cells using Startrac
 
-From the excellent work by Lei Zhang, et al in [Lineage tracking reveals dynamic relationships of T cells in colorectal cancer](https://www-nature-com.proxy.lib.uiowa.edu/articles/s41586-018-0694-x), the authors introduce new methods for looking at clonotypes by cellular origins and cluster identification. Their [startrac](https://github.com/Japrin/STARTRAC) software has been incorporated into scRepertoire. If you are using the output of this specific function, please cite their work. 
-
-In order to use the *StartracDiversity()* function, you will need to include the product of the *combineExpression()* function. The second requirement is the column header in the meta data of the Seurat object that has tissue of origin. In the example data,**type** corresponds to the column "Type", which includes the "P" and "T" classifier. The indices can be subsetted for a specific patient or examined overall using the **by** variable. Importantly, the function uses only the strict definition of clonotype of the genes and the CDR3 nucleotide sequence. 
-
-The indices output includes:
-+  expa - Clonal Expansion
-+  migr - Cross-tissue Migration
-+  tran - State Transition
-
-```{r}
-StartracDiversity(seurat, type = "Type", sample = "Patient", by = "overall")
-```
 
 
 

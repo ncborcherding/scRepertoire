@@ -20,7 +20,11 @@ grabMeta <- function(sc) {
         colnames(meta)[length(meta)] <- "cluster"
     }
     else if (inherits(x=sc, what ="SummarizedExperiment")){
-        meta <- sc@metadata[[1]]
+        if (inherits(x=sc, what ="cell_data_set")){
+          meta <- colData(sc)
+        }else{
+          meta <- sc@metadata[[1]]
+        }
     }
     return(meta)
 }
@@ -64,6 +68,8 @@ filteringMulti <- function(x) {
     return(x)
 }
 
+
+
 #Filtering NA contigs out of single-cell expression object
 filteringNA <- function(sc) {
     meta <- grabMeta(sc)
@@ -72,9 +78,14 @@ filteringNA <- function(sc) {
     evalNA <- evalNA %>%
         transmute(indicator = ifelse(is.na(indicator), 0, 1))
     rownames(evalNA) <- rownames(meta)
-    sc <- AddMetaData(sc, evalNA)
-    sc <- subset(sc, cloneType != 0)
-    return(sc)
+    if (inherits(x=sc, what ="cell_data_set")){
+      colData(sc)[["evalNA"]]<-evalNA
+      return(sc[, !is.na(sc$cloneType)])
+    }else{
+      sc <- AddMetaData(sc, evalNA)
+      sc <- subset(sc, cloneType != 0)
+      return(sc)
+    }
 }
 
 #Check the format of the cell barcode inputs and parameter lengthsd

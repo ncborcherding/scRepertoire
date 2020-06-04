@@ -36,11 +36,13 @@
 #' @export
 #' @return seurat or SingleCellExperiment object with attached clonotype 
 #' information
+#' 
+
 combineExpression <- function(df, sc, cloneCall="gene+nt", groupBy="none", 
                         cloneTypes=c(None=0, Single=1, Small=5, Medium=20, 
                         Large=100, Hyperexpanded=500), filterNA = FALSE) {
-    df <- checkList(df)
-    cloneCall <- theCall(cloneCall)
+    df <- scRepertoire:::checkList(df)
+    cloneCall <- scRepertoire:::theCall(cloneCall)
     Con.df <- NULL
     meta <- grabMeta(sc)
     cell.names <- rownames(meta)
@@ -77,13 +79,19 @@ combineExpression <- function(df, sc, cloneCall="gene+nt", groupBy="none",
     PreMeta <- unique(Con.df[,c("barcode", "CTgene", "CTnt", 
                 "CTaa", "CTstrict", "Frequency", "cloneType")])
     rownames(PreMeta) <- PreMeta$barcode
-    if (inherits(x=sc, what ="Seurat")) { sc <- AddMetaData(sc, PreMeta) 
-    } else if (inherits(x=sc, what ="SummarizedExperiment")){
-        rownames <- rownames(sc@metadata[[1]])
-        sc@metadata[[1]] <- 
-            merge(sc@metadata[[1]], PreMeta)[, union(names(sc@metadata[[1]]), 
-            names(PreMeta))]
-        rownames(sc@metadata[[1]]) <- rownames }
+    if (inherits(x=sc, what ="Seurat")) {
+      sc <- AddMetaData(sc, PreMeta) 
+    } else if (inherits(x=sc, what ="cell_data_set")){
+      rownames <- rownames(colData(sc))
+      colData(sc) <- cbind(colData(sc), PreMeta[rownames,])[, union(colnames(colData(sc)),  colnames(PreMeta))]
+      rownames(colData(sc)) <- rownames 
+    }else{
+      rownames <- rownames(sc@metadata[[1]])
+      sc@metadata[[1]] <- 
+        merge(sc@metadata[[1]], PreMeta)[, union(names(sc@metadata[[1]]), 
+                                                 names(PreMeta))]
+      rownames(sc@metadata[[1]]) <- rownames 
+        }
     if (filterNA == TRUE) { sc <- filteringNA(sc) }
     return(sc) }
 
@@ -189,7 +197,7 @@ alluvialClonotypes <- function(sc,
     meta <- grabMeta(sc)
     meta$barcodes <- rownames(meta)
     check <- colnames(meta) == color
-    if (length(unique(check)) == 1 & unique(check) == FALSE & !is.null(color)) {
+    if (length(unique(check)) == 1 & unique(check)[1] == FALSE & !is.null(color)) {
         meta <- meta %>% mutate(H.clonotypes = ifelse(meta[,cloneCall] %in% 
             color, "Selected", "Other"))
         color <- "H.clonotypes" }
@@ -220,84 +228,3 @@ alluvialClonotypes <- function(sc,
     } else if (length(facet) == 0) { plot <- plot }
     return(plot)}
 
-#' Diversity indices for single-cell RNA-seq
-#'
-#' This function utilizes the Startrac R package derived from PMID: 30479382. 
-#' Required to run the function, the "type" variable needs to include the 
-#' difference in where the cells were derived. The output of this function 
-#' will produce 3 indices: expa (clonal expansion), migra (cross-tissue 
-#' migration), and trans (state transition). In order to understand the 
-#' underlying analyses of the outputs please read the manuscript.
-#' 
-#' @examples
-#' #Getting the combined contigs
-#' combined <- combineTCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), 
-#' rep(c("P", "T"), 3), cells ="T-AB")
-#' 
-#' #Getting a sample of a Seurat object
-#' seurat_example <- readRDS(url(
-#' "https://ncborcherding.github.io/vignettes/seurat_example.rds"))
-#' 
-#' #Using combineExpresion()
-#' seurat_example <- combineExpression(combined, seurat_example)
-#' 
-#' #Using StartracDiversity
-#' StartracDiversity(seurat_example, type = "Type", sample = "Patient", 
-#' by = "overall")
-#'
-#' @param sc The Seurat or SCE object. For SCE objects, the cluster variable 
-#' must be in the meta data under "cluster".
-#' @param type The column header in the meta data that gives the where the 
-#' cells were derived from, not the patient sample IDs.
-#' @param sample The column header corresponding to individual samples or 
-#' patients.
-#' @param by Method to subset the indices by either overall (across all 
-#' samples) or by specific group.
-#' @importFrom Startrac Startrac.run
-#' @importFrom reshape2 melt
-#' @import ggplot2
-#' @export
-#' @return ggplot of clonal metrics calculatrd by the Startrac R package.
-StartracDiversity <- function(sc, type = "Type", sample = NULL, 
-                                by = c("overall")) {
-    meta <- grabMeta(sc)
-    colnames(meta)[which(colnames(meta) == "cluster")] <- "majorCluster" 
-    meta$clone.status <- ifelse(meta$Frequency > 1, "Yes", "No")
-    if (is.null(sample)) {
-        stop("Must add the sample information in order to make 
-            the StarTrac calculations")
-    } else {
-        processed <- data.frame(rownames(meta), meta$CTstrict, 
-                                meta$clone.status, meta[,sample], 
-                                meta[,"majorCluster"], meta[,type], 
-                                stringsAsFactors = FALSE)
-        colnames(processed) <- c("Cell_Name", "clone.id", "clone.status", 
-                                    "patient", "majorCluster", "loc") }
-    processed <- na.omit(processed)
-    indices <- suppressWarnings(Startrac.run(processed, proj = "total", 
-                                verbose = FALSE))
-    indices <- data.frame(indices@cluster.data)
-    if (by == "overall") {
-        indices <- subset(indices, aid != "total")
-        melted <- melt(indices)
-        values <- as.character(unique(melted$majorCluster))
-        values2 <- quiet(dput(values))
-        melted$majorCluster <- factor(melted$majorCluster, levels = values2)
-        plot <- ggplot(melted, aes(x=majorCluster, y=value)) +
-            geom_boxplot(aes(fill = majorCluster), outlier.alpha = 0) +
-            facet_grid(variable ~.) +
-            theme_classic() +
-            ylab("Index Score") +
-            guides(fill=FALSE) +
-            theme(axis.title.x = element_blank())
-    } else {
-        indices <- subset(indices, aid == by)
-        plot <- ggplot(melted, aes(x=majorCluster, y=value)) +
-            geom_point(aes(fill = by)) +
-            facet_grid(variable ~.) +
-            theme_classic() +
-            ylab("Index Score") +
-            guides(fill=FALSE) +
-            theme(axis.title.x = element_blank()) }
-return(plot)
-}

@@ -1,3 +1,37 @@
+CHANGES IN VERSION 0.99.1
+------------------------
+
+-Changed R (>= 3.6) to R (>= 4.0)
+
+
+CHANGES IN VERSION 0.99.0
+------------------------
+
+-Changed DESCRIPTION version to 0.99.0
+-Removed file seurat_example.rda, accidentally committed
+-Deleted git attributes
+-reduced Seurat object size for alluvialClonotype in vignette
+-Changed the alluvialClonotype assessment to account for only 1 condition
+
+
+
+CHANGES IN VERSION 1.2.3
+------------------------
+
+Changed the access of the sample data to github.io repo:
+readRDS(url("https://ncborcherding.github.io/vignettes/scRepertoire_example.rds"))
+
+
+CHANGES IN VERSION 1.2.2
+------------------------
+
+Removed Startrac-based functions in order to pass build on Bioconductor.
+
+DEPRECATED AND DEFUNCT
+
+    o Deprecate StartracDiversity()
+
+
 CHANGES IN VERSION 1.2.0
 ------------------------
 
