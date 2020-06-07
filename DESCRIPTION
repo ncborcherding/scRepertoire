@@ -11,5 +11,5 @@ RoxygenNote: 7.1.0
 biocViews: Software, ImmunoOncology, SingleCell, Classification, Annotation, Sequencing
 Depends: dplyr, ggalluvial, ggplot2, reshape2, Seurat, R (>= 3.6)
 Imports: Biostrings, RColorBrewer, colorRamps, ggdendro, ggfittext, stringr, vegan, powerTCR
-Suggests: knitr, rmarkdown, monocle3
+Suggests: knitr, rmarkdown
 VignetteBuilder: knitr
