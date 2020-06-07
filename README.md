@@ -6,7 +6,7 @@
 ### Introduction
 Single-cell sequencing is an emerging technology in the field of immunology and oncology that allows researchers to couple RNA quantification and other modalities, like immune cell receptor profiling at the level of an individual cell. A number of workflows and software packages have been created to process and analyze single-cell transcriptomic data. These packages allow users to take the vast dimensionality of the data generated in single-cell-based experiments and distill the data into novel insights. Unlike the transcriptomic field, there is a lack of options for software that allow for single-cell immune receptor profiling. Enabling users to easily combine RNA and immune profiling, scRepertoire was built to process data derived from the 10x Genomics Chromium Immune Profiling for both T-cell receptor (TCR) and immunoglobulin (Ig) enrichment workflows and subsequently interacts with the popular Seurat R package. 
 
-### R Packages Required
+### R Packages Imported
 +  Biostrings
 +  colorRamps
 +  dplyr
@@ -14,6 +14,7 @@ Single-cell sequencing is an emerging technology in the field of immunology and 
 +  ggdendro
 +  ggfittext
 +  ggplots2
++  moncole3
 +  [powerTCR](https://bioconductor.org/packages/devel/bioc/html/powerTCR.html)
 +  RColorBrewer
 +  reshape2
@@ -24,9 +25,9 @@ Single-cell sequencing is an emerging technology in the field of immunology and 
 
 scRepertoire v1.0.0 added the functionality of the powerTCR approach to comparing clone size distribution, [please cite](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1006571) the manuscript if using the ```clonesizeDistribution()``` function. Similiarly, the application of novel indices for single-cell clonotype dynamics in the ```StartracDiversity()``` function is based on the work from [Lei Zhang et al.](https://www.nature.com/articles/s41586-018-0694-x)
 
-### Installation
+### Installation of Development Branch
 
-```devtools::install_github("ncborcherding/scRepertoire")```
+```devtools::install_github("ncborcherding/scRepertoire@dev")```
 
 ### Getting Data
 
