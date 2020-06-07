@@ -28,11 +28,9 @@ scRepertoire v1.0.0 added the functionality of the powerTCR approach to comparin
 
 ```devtools::install_github("ncborcherding/scRepertoire")```
 
-#### Dev version
+**Note** Users with R versions < 4.0 should use the dev version. 
 
 ```devtools::install_github("ncborcherding/scRepertoire@dev")```
-
-**Note** Users with R versions < 4.0 should use the dev version.
 
 ### Getting Data
 
