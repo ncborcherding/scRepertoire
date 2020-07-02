@@ -121,7 +121,7 @@ expression2List <- function(sc, group) {
     unique <- str_sort(as.character(unique(meta[,group])), numeric = TRUE)
     df <- NULL
     for (i in seq_along(unique)) {
-        subset <- subset(meta, meta[,"cluster"] == unique[i])
+        subset <- subset(meta, meta[,group] == unique[i])
         df[[i]] <- subset
     }
     names(df) <- unique

@@ -1,3 +1,8 @@
+CHANGES IN VERSION 0.99.4
+------------------------
+
+Modified expression2List() to allow for variables across meta data
+
 CHANGES IN VERSION 0.99.1
 ------------------------
 
