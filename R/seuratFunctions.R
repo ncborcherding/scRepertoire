@@ -34,7 +34,8 @@
 #' @param filterNA Method to subset seurat object of barcodes without 
 #' clonotype information
 #' @import Seurat
-#' @importFrom SummarizedExperiment colData<-
+#' @importFrom SummarizedExperiment colData<- 
+#' @importFrom SingleCellExperiment colData
 #' @export
 #' @return seurat or SingleCellExperiment object with attached clonotype 
 #' information
