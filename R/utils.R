@@ -6,8 +6,8 @@ checkList <- function(df) {
 
 #This is to check the single-cell expresison object
 checkSingleObject <- function(sc) {
-    if (!inherits(x=sc, what ="Seurat") | 
-        inherits(x=sc, what ="SummarizedExperiment")){
+    if (!inherits(x=sc, what ="Seurat") & 
+        !inherits(x=sc, what ="SummarizedExperiment")){
         stop("Object indicated is not of class 'Seurat' or 
             'SummarizedExperiment', make sure you are using
             the correct data.") }
@@ -20,7 +20,8 @@ grabMeta <- function(sc) {
         colnames(meta)[length(meta)] <- "cluster"
     }
     else if (inherits(x=sc, what ="SummarizedExperiment")){
-        meta <- sc@metadata[[1]]
+        meta <- data.frame(colData(sc))
+        rownames(meta) <- sc@colData@rownames
     }
     return(meta)
 }

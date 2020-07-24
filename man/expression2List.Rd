@@ -28,13 +28,11 @@ combined <- combineTCR(contig_list, rep(c("PX", "PY", "PZ"), each=2),
 rep(c("P", "T"), 3), cells ="T-AB")
 
 #Getting a sample of a Seurat object
-seurat_example <- readRDS(url(
-"https://ncborcherding.github.io/vignettes/seurat_example.rds"))
-
-#Using combineExpresion()
-seurat <- combineExpression(combined, seurat_example)
+screp_example <- get(data("screp_example"))
+sce <- suppressMessages(UpdateSeuratObject(screp_example))
+sce <- as.SingleCellExperiment(sce)
 
 #Using expression2List
-newList <- expression2List(seurat_example, group = "cluster")
+newList <- expression2List(sce, group = "seurat_clusters")
 
 }

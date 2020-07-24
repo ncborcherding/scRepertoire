@@ -1,3 +1,18 @@
+
+CHANGES IN VERSION 0.99.5
+------------------------
+
+Added screp_example data to package
+Added visVgene function for visualizing the distribution of V genes in TCR
+Added support for monocle to combineExpression function
+Updated documentation for combineTCR() and combineBCR()
+Updated documentation to utilize SingleCellExperiment formats
+Updated Vignette to utilize SingleCellExperiment formats
+Added Author information to vignette
+Add intro and conclusion to vignette
+Removed html knitted vignette
+Removed descriptive code snippets
+
 CHANGES IN VERSION 0.99.4
 ------------------------
 

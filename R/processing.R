@@ -21,10 +21,11 @@ stripBarcode <- function(contigs, column = 1, connector = "_",
 
 #' Adding variables after the combination of contigs.
 #'
-#' This function adds variables to the product of combineContig() to be used in 
-#' later visualizations. For each element in the combinContig(), the function 
-#' will add a column (labled by name) with the variable. The length of the
-#' variable paramater needs to match the length of the combineContig() object.
+#' This function adds variables to the product of combineTCR() combineBCR() or 
+#' expression2List() to be used in later visualizations. For each element, 
+#' the function will add a column (labled by name) with the variable. 
+#' The length of the variable paramater needs to match the length of 
+#' the combined object.
 #'
 #' @examples
 #' x <- contig_list
@@ -32,7 +33,7 @@ stripBarcode <- function(contigs, column = 1, connector = "_",
 #' rep(c("P", "T"), 3), cells ="T-AB")
 #' combined <- addVariable(combined, name = "batch", variables = c(1,1,1,1,2,2))
 #'
-#' @param df The product of CombineContig().
+#' @param df The product of combineTCR() combineBCR() or expression2List().
 #' @param name The column header to add.
 #' @param variables The exact values to add to each element of the list.
 #' @export
@@ -47,12 +48,13 @@ addVariable <- function(df, name = NULL, variables =  NULL) {
     return(df)
 }
 
-#' Subset the combineContig() product.
+#' Subset the product of combineTCR() combineBCR() or expression2List()
 #'
-#' This function allows for the subsetting of the product of combineContig() by 
-#' the name of the individual list element. In general the names of are samples 
-#' + _ + ID, allowing for users to subset the product of combineContig() across 
-#' a string or individual name.
+#' This function allows for the subsetting of the product of combineTCR() 
+#' combineBCR() or expression2List() by the name of the individual list 
+#' element. In general the names of are samples + _ + ID, allowing 
+#' for users to subset the product of combineTCR(), combineBCR(), 
+#' or expression2List() across a string or individual name.
 #'
 #' @examples
 #' x <- contig_list
@@ -60,7 +62,7 @@ addVariable <- function(df, name = NULL, variables =  NULL) {
 #' rep(c("P", "T"), 3), cells ="T-AB")
 #' subset <- subsetContig(combined, name = "sample", variables = c("PX"))
 #'
-#' @param df The product of CombineContig().
+#' @param df The product of combineTCR(), combineBCR(), or expression2List().
 #' @param name The column header you'd like to use to subset.
 #' @param variables The values to subset by, must be in the names(df).
 
@@ -97,14 +99,12 @@ subsetContig <- function(df, name, variables = NULL) {
 #' rep(c("P", "T"), 3), cells ="T-AB")
 #' 
 #' #Getting a sample of a Seurat object
-#' seurat_example <- readRDS(url(
-#' "https://ncborcherding.github.io/vignettes/seurat_example.rds"))
-#' 
-#' #Using combineExpresion()
-#' seurat <- combineExpression(combined, seurat_example)
+#' screp_example <- get(data("screp_example"))
+#' sce <- suppressMessages(UpdateSeuratObject(screp_example))
+#' sce <- as.SingleCellExperiment(sce)
 #' 
 #' #Using expression2List
-#' newList <- expression2List(seurat_example, group = "cluster")
+#' newList <- expression2List(sce, group = "seurat_clusters")
 #' 
 #' @param sc object after combineExpression().
 #' @param group The column header to group the new list by

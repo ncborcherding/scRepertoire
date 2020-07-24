@@ -14,7 +14,7 @@
 #' rep(c("P", "T"), 3), cells ="T-AB")
 #' clonalProportion(combined, cloneCall = "gene")
 #'
-#' @param df The product of CombineContig() or expression2List()
+#' @param df The product of combineTCR(), combineBCR(),  or expression2List().
 #' @param split The cutpoints for the specific clonotypes.
 #' @param cloneCall How to call the clonotype - CDR3 gene (gene), 
 #' CDR3 nucleotide (nt) or CDR3 amino acid (aa), or CDR3 

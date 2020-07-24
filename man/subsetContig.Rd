@@ -2,12 +2,12 @@
 % Please edit documentation in R/processing.R
 \name{subsetContig}
 \alias{subsetContig}
-\title{Subset the combineContig() product.}
+\title{Subset the product of combineTCR() combineBCR() or expression2List()}
 \usage{
 subsetContig(df, name, variables = NULL)
 }
 \arguments{
-\item{df}{The product of CombineContig().}
+\item{df}{The product of combineTCR(), combineBCR(), or expression2List().}
 
 \item{name}{The column header you'd like to use to subset.}
 
@@ -17,10 +17,11 @@ subsetContig(df, name, variables = NULL)
 list of contigs that have been filtered for the name parameter
 }
 \description{
-This function allows for the subsetting of the product of combineContig() by 
-the name of the individual list element. In general the names of are samples 
-+ _ + ID, allowing for users to subset the product of combineContig() across 
-a string or individual name.
+This function allows for the subsetting of the product of combineTCR() 
+combineBCR() or expression2List() by the name of the individual list 
+element. In general the names of are samples + _ + ID, allowing 
+for users to subset the product of combineTCR(), combineBCR(), 
+or expression2List() across a string or individual name.
 }
 \examples{
 x <- contig_list

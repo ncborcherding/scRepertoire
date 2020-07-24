@@ -16,11 +16,12 @@
 #' rep(c("P", "T"), 3), cells ="T-AB")
 #' 
 #' #Getting a sample of a Seurat object
-#' seurat_example <- readRDS(url(
-#' "https://ncborcherding.github.io/vignettes/seurat_example.rds"))
+#' screp_example <- get(data("screp_example"))
+#' sce <- suppressMessages(UpdateSeuratObject(screp_example))
+#' sce <- as.SingleCellExperiment(sce)
 #' 
 #' #Using combineExpresion()
-#' seurat_example <- combineExpression(combined, seurat_example)
+#' sce <- combineExpression(combined, sce)
 #' 
 #' @param df The product of CombineTCR() or CombineBCR().
 #' @param sc The seurat or SingleCellExperiment (SCE) object to attach
@@ -33,6 +34,7 @@
 #' @param filterNA Method to subset seurat object of barcodes without 
 #' clonotype information
 #' @import Seurat
+#' @importFrom SummarizedExperiment colData
 #' @export
 #' @return seurat or SingleCellExperiment object with attached clonotype 
 #' information
@@ -53,7 +55,8 @@ combineExpression <- function(df, sc, cloneCall="gene+nt", groupBy="none",
                 summarise(Frequency = n())
             colnames(data2)[1] <- cloneCall
             data <- merge(data, data2, by = cloneCall, all = TRUE)
-            Con.df <- rbind.data.frame(Con.df, data) }
+            Con.df <- rbind.data.frame(Con.df, data)
+        }
     } else if (groupBy != "none") {
         data <- data.frame(bind_rows(df), stringsAsFactors = FALSE)
         data2 <- na.omit(unique(data[,c("barcode", cloneCall, groupBy)]))
@@ -78,12 +81,11 @@ combineExpression <- function(df, sc, cloneCall="gene+nt", groupBy="none",
                 "CTaa", "CTstrict", "Frequency", "cloneType")])
     rownames(PreMeta) <- PreMeta$barcode
     if (inherits(x=sc, what ="Seurat")) { sc <- AddMetaData(sc, PreMeta) 
-    } else if (inherits(x=sc, what ="SummarizedExperiment")){
-        rownames <- rownames(sc@metadata[[1]])
-        sc@metadata[[1]] <- 
-            merge(sc@metadata[[1]], PreMeta)[, union(names(sc@metadata[[1]]), 
-            names(PreMeta))]
-        rownames(sc@metadata[[1]]) <- rownames }
+    } else {
+        rownames <- rownames(colData(sc))
+        colData(sc) <- cbind(colData(sc), PreMeta[rownames,])[, union(colnames(colData(sc)),  colnames(PreMeta))]
+        rownames(colData(sc)) <- rownames 
+    } 
     if (filterNA == TRUE) { sc <- filteringNA(sc) }
     return(sc) }
 
@@ -98,14 +100,13 @@ combineExpression <- function(df, sc, cloneCall="gene+nt", groupBy="none",
 #' rep(c("P", "T"), 3), cells ="T-AB")
 #' 
 #' #Getting a sample of a Seurat object
-#' seurat_example <- readRDS(url(
-#' "https://ncborcherding.github.io/vignettes/seurat_example.rds"))
+#' screp_example <- get(data("screp_example"))
 #' 
 #' #Using combineExpresion()
-#' seurat_example <- combineExpression(combined, seurat_example)
+#' screp_example <- combineExpression(combined, screp_example )
 #' 
 #' #Using highlightClonotype()
-#' seurat_example <- highlightClonotypes(seurat_example, cloneCall= "aa", 
+#' screp_example  <- highlightClonotypes(screp_example, cloneCall= "aa", 
 #' sequence = c("CAVNGGSQGNLIF_CSAEREDTDTQYF"))
 #' 
 #' @param sc The seurat object to attach
@@ -150,15 +151,16 @@ highlightClonotypes <- function(sc,
 #' rep(c("P", "T"), 3), cells ="T-AB")
 #' 
 #' #Getting a sample of a Seurat object
-#' seurat_example <- readRDS(url(
-#' "https://ncborcherding.github.io/vignettes/seurat_example.rds"))
+#' screp_example <- get(data("screp_example"))
+#' sce <- suppressMessages(UpdateSeuratObject(screp_example))
+#' sce <- as.SingleCellExperiment(sce)
 #' 
 #' #Using combineExpresion()
-#' seurat_example <- combineExpression(combined, seurat_example)
+#' sce <- combineExpression(combined, sce)
 #' 
 #' #Using alluvialClonotypes()
-#' alluvialClonotypes(seurat_example, cloneCall = "gene", 
-#' y.axes = c("Patient", "cluster"), color = "cluster")
+#' alluvialClonotypes(sce, cloneCall = "gene", 
+#' y.axes = c("Patient", "ident"), color = "ident")
 #' 
 #' @param sc The seurat or SCE object to visualize after combineExpression(). 
 #' For SCE objects, the cluster variable must be in the meta data under 
@@ -189,7 +191,8 @@ alluvialClonotypes <- function(sc,
     meta <- grabMeta(sc)
     meta$barcodes <- rownames(meta)
     check <- colnames(meta) == color
-    if (length(unique(check)) == 1 & unique(check)[1] == FALSE & !is.null(color)) {
+    if (length(unique(check)) == 1 & unique(check)[1] == FALSE & 
+        !is.null(color)) {
         meta <- meta %>% mutate(H.clonotypes = ifelse(meta[,cloneCall] %in% 
             color, "Selected", "Other"))
         color <- "H.clonotypes" }
