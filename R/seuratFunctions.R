@@ -247,8 +247,8 @@ alluvialClonotypes <- function(sc,
 #' #Using combineExpresion()
 #' sce <- combineExpression(combined, sce)
 #' 
-#' #Using alluvialClonotypes()
-#' occupiedscRepertoire(sce, x.axis = "cluster)
+#' #Using occupiedscRepertoire()
+#' occupiedscRepertoire(sce, x.axis = "cluster")
 #' table <- occupiedscRepertoire(sce, x.axis = "cluster", exportTable = TRUE)
 #' 
 #' @param sc The seurat or SCE object to visualize after combineExpression(). 
@@ -258,7 +258,7 @@ alluvialClonotypes <- function(sc,
 #' @param exportTable Exports a table of the data into the global 
 #' environment in addition to the visualization
 #' 
-#' @importfrom reshape2 melt
+#' @importFrom reshape2 melt
 #' @import ggplot2
 #' @export
 #' @return Stacked bar plot of counts of cells by clonotype frequency group

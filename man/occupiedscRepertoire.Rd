@@ -27,3 +27,21 @@ each designation using a secondary variable, like cluster. Credit to
 the idea goes to Dr. Carmonia and his work with
 [ProjectTIL](https://github.com/carmonalab/ProjecTILs).
 }
+\examples{
+#Getting the combined contigs
+combined <- combineTCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), 
+rep(c("P", "T"), 3), cells ="T-AB")
+
+#Getting a sample of a Seurat object
+screp_example <- get(data("screp_example"))
+sce <- suppressMessages(UpdateSeuratObject(screp_example))
+sce <- as.SingleCellExperiment(sce)
+
+#Using combineExpresion()
+sce <- combineExpression(combined, sce)
+
+#Using occupiedscRepertoire()
+occupiedscRepertoire(sce, x.axis = "cluster")
+table <- occupiedscRepertoire(sce, x.axis = "cluster", exportTable = TRUE)
+
+}
