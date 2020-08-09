@@ -308,7 +308,7 @@ table(screp_example$seurat_clusters)
 ```
 
 
-Next we can take the clonotypic information and attach it to our Seurat object using the *combineExpression()* function. **Importantly**, the major requirement for the attachment is matching contig cell barcodes and barcodes in the row names of the meta data of the seurat or SCE object. If these do not match, the attachment will fail. Based on ease, we suggest you make the changes to the Seurat object row names. scRepertoire also has a function *changeNames* that can be used to replace specific strings with ones that match the barcodes in combined sequences. The function uses the ***gsub**, so it will replace every occurrence of one string with the new string in place.
+Next we can take the clonotypic information and attach it to our Seurat object using the *combineExpression()* function. **Importantly**, the major requirement for the attachment is matching contig cell barcodes and barcodes in the row names of the meta data of the seurat or SCE object. If these do not match, the attachment will fail. Based on ease, we suggest you make the changes to the Seurat object row names.
 
 We can call (cloneCall) the 4 variations of clonotypes: 1) genes, 2) CDR3 amino acid sequence, 3) CDR3 nucleotide sequence, or 4) genes and CDR3 nucleotide sequence. The attaching function will also calculate the frequency of the clonotype based on the **groupBy** variable. If blank, **groupBy** will calculate frequencies of clonotypes by individual run, but because we have 6 samples of paired peripheral and tumor T cells, we are actually going to use the groupBy variable to call "sample" in order to calculate frequencies across both the peripheral blood and tumor T cells of the same patient.
 
@@ -374,6 +374,13 @@ DimPlot(seurat, group.by = "highlight")
 
 ```
 
+We can also look at count of cells by cluster assigned into specific frequency ranges, by using the *occupiedscRepertoire()* function and selecting the **x.axis** to display cluster or other variables in the meta data of the single cell object. 
+
+```{r}
+occupiedscRepertoire(sce, x.axis = "cluster")
+```
+
+
 Lastly after all the metadata has been modified, we can look at clonotypes across multiple categories using the *alluvialClonotypes()* function. To understand the basic concepts of this graphing method, I'd highly recommend reading [this post](https://cran.r-project.org/web/packages/ggalluvial/vignettes/ggalluvial.html), essentially we are able to use the plots to examine the interchange of categorical variables. Because this function will produce a graph with each clonotype arranged by called stratifications, this will take some time depending on the size of your total cells. To expedite, we will actually subset the seurat object before using *alluvialClonotypes()*.
 
 ```{r Figure4F}
@@ -402,7 +409,7 @@ For users that would like greater ability to use the meta data in the Seurat obj
 
 ```{r}
 combined2 <- expression2List(screp_example, group = "cluster")
-combined3 <- expression2List(sce, group = "ident")
+combined3 <- expression2List(sce, group = "cluster")
 ```
 
 ## 1. Clonal Diversity

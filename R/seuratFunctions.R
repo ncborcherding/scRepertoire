@@ -161,7 +161,7 @@ highlightClonotypes <- function(sc,
 #' 
 #' #Using alluvialClonotypes()
 #' alluvialClonotypes(sce, cloneCall = "gene", 
-#' y.axes = c("Patient", "ident"), color = "ident")
+#' y.axes = c("Patient", "cluster"), color = "cluster")
 #' 
 #' @param sc The seurat or SCE object to visualize after combineExpression(). 
 #' For SCE objects, the cluster variable must be in the meta data under 
@@ -224,3 +224,60 @@ alluvialClonotypes <- function(sc,
     } else if (length(facet) == 0) { plot <- plot }
     return(plot)}
 
+
+#' Visualize the number of single cells with clonotype frequencies by cluster
+#'
+#' View the count of clonotypes frequency group in seurat or SCE object 
+#' meta data after combineExpression(). The visualization will take the 
+#' new meta data variable "cloneType" and plot the number of cells with
+#' each designation using a secondary variable, like cluster. Credit to 
+#' the idea goes to Dr. Carmonia and his work with
+#' [ProjectTIL](https://github.com/carmonalab/ProjecTILs).
+#'
+#' @examples
+#' #Getting the combined contigs
+#' combined <- combineTCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), 
+#' rep(c("P", "T"), 3), cells ="T-AB")
+#' 
+#' #Getting a sample of a Seurat object
+#' screp_example <- get(data("screp_example"))
+#' sce <- suppressMessages(UpdateSeuratObject(screp_example))
+#' sce <- as.SingleCellExperiment(sce)
+#' 
+#' #Using combineExpresion()
+#' sce <- combineExpression(combined, sce)
+#' 
+#' #Using alluvialClonotypes()
+#' occupiedscRepertoire(sce, x.axis = "cluster)
+#' table <- occupiedscRepertoire(sce, x.axis = "cluster", exportTable = TRUE)
+#' 
+#' @param sc The seurat or SCE object to visualize after combineExpression(). 
+#' For SCE objects, the cluster variable must be in the meta data under 
+#' "cluster".
+#' @param x.axis The variable in the meta data to graph along the x.axis
+#' @param exportTable Exports a table of the data into the global 
+#' environment in addition to the visualization
+#' 
+#' @importfrom reshape2 melt
+#' @import ggplot2
+#' @export
+#' @return Stacked bar plot of counts of cells by clonotype frequency group
+
+occupiedscRepertoire <- function(sc, x.axis = "cluster", exportTable = FALSE) {
+    checkSingleObject(sc)
+    meta <- grabMeta(sc)
+    meta <- melt(table(meta[!is.na(meta$Frequency), 
+                c(x.axis, "cloneType")]), varnames = c(x.axis, "cloneType"))
+    if (exportTable == TRUE) {
+        return(meta)
+    }
+    col <- length(unique(meta$cloneType))
+    ggplot(meta, aes(x = meta[,x.axis], y = value, fill = cloneType)) + 
+        geom_bar(stat = "identity") + 
+        theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
+        scale_fill_manual(values = c(colorblind_vector(col))) + 
+            ylab("Single Cells") + 
+            theme_classic() + 
+            theme(axis.title.x = element_blank())
+    
+}

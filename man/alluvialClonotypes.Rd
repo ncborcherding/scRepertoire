@@ -58,6 +58,6 @@ sce <- combineExpression(combined, sce)
 
 #Using alluvialClonotypes()
 alluvialClonotypes(sce, cloneCall = "gene", 
-y.axes = c("Patient", "ident"), color = "ident")
+y.axes = c("Patient", "cluster"), color = "cluster")
 
 }

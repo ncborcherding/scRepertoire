@@ -24,6 +24,8 @@ grabMeta <- function(sc) {
     else if (inherits(x=sc, what ="SummarizedExperiment")){
         meta <- data.frame(colData(sc))
         rownames(meta) <- sc@colData@rownames
+        clu <- which(colnames(meta) == "ident")
+        colnames(meta)[clu] <- "cluster"
     }
     return(meta)
 }
