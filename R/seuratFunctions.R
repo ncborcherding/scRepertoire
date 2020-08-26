@@ -17,8 +17,8 @@
 #' 
 #' #Getting a sample of a Seurat object
 #' screp_example <- get(data("screp_example"))
-#' sce <- suppressMessages(UpdateSeuratObject(screp_example))
-#' sce <- as.SingleCellExperiment(sce)
+#' sce <- suppressMessages(Seurat::UpdateSeuratObject(screp_example))
+#' sce <- Seurat::as.SingleCellExperiment(sce)
 #' 
 #' #Using combineExpresion()
 #' sce <- combineExpression(combined, sce)
@@ -153,8 +153,8 @@ highlightClonotypes <- function(sc,
 #' 
 #' #Getting a sample of a Seurat object
 #' screp_example <- get(data("screp_example"))
-#' sce <- suppressMessages(UpdateSeuratObject(screp_example))
-#' sce <- as.SingleCellExperiment(sce)
+#' sce <- suppressMessages(Seurat::UpdateSeuratObject(screp_example))
+#' sce <- Seurat::as.SingleCellExperiment(sce)
 #' 
 #' #Using combineExpresion()
 #' sce <- combineExpression(combined, sce)
@@ -241,8 +241,8 @@ alluvialClonotypes <- function(sc,
 #' 
 #' #Getting a sample of a Seurat object
 #' screp_example <- get(data("screp_example"))
-#' sce <- suppressMessages(UpdateSeuratObject(screp_example))
-#' sce <- as.SingleCellExperiment(sce)
+#' sce <- suppressMessages(Seurat::UpdateSeuratObject(screp_example))
+#' sce <- Seurat::as.SingleCellExperiment(sce)
 #' 
 #' #Using combineExpresion()
 #' sce <- combineExpression(combined, sce)

@@ -1,4 +1,14 @@
 
+CHANGES IN VERSION 0.99.8
+------------------------
+
+Bioconductor had no love - changed the Seurat package to imports instead of required, see if that will address the compiling issue that results in a killed: 9 error. 
+
+CHANGES IN VERSION 0.99.8
+------------------------
+
+Passed checks on system, let's see how much bioconductor hates it
+
 CHANGES IN VERSION 0.99.7
 ------------------------
 

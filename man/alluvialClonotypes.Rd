@@ -50,8 +50,8 @@ rep(c("P", "T"), 3), cells ="T-AB")
 
 #Getting a sample of a Seurat object
 screp_example <- get(data("screp_example"))
-sce <- suppressMessages(UpdateSeuratObject(screp_example))
-sce <- as.SingleCellExperiment(sce)
+sce <- suppressMessages(Seurat::UpdateSeuratObject(screp_example))
+sce <- Seurat::as.SingleCellExperiment(sce)
 
 #Using combineExpresion()
 sce <- combineExpression(combined, sce)
