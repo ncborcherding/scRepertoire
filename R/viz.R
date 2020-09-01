@@ -286,7 +286,7 @@ compareClonotypes <- function(df, cloneCall = "gene+nt", samples = NULL,
     if (!is.null(samples)) {
         Con.df <- Con.df[Con.df$Sample %in% samples,] }
     if (!is.null(clonotypes)) {
-        Con.df <- Con.df[Con.df$Sample %in% clonotypes,] }
+        Con.df <- Con.df[Con.df$Clonotypes %in% clonotypes,] }
     if (!is.null(numbers)) {
         top <- Con.df %>% top_n(n = numbers, wt = Proportion)
         Con.df <- Con.df[Con.df$Clonotypes %in% top$Clonotypes,] }
