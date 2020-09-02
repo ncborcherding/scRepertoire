@@ -4,7 +4,7 @@ author:
 - name: Nick Borcherding
   email: ncborch@gmail.com
   affiliation: Washington University in St. Louis, School of Medicine, St. Louis, MO, USA
-date: "June 1st, 2020"
+date: "September 1st, 2020"
 output:
   BiocStyle::html_document:
     toc_float: true
@@ -284,7 +284,7 @@ clonalDiversity(combined, cloneCall = "gene", group = "ID")
 
 # Interacting with mRNA Expression
 
-As mentioned previously, this data set is derived from work performed in the laboratory of [Weizhou Zhang]("https://pathology.ufl.edu/faculty/experimental-pathology/weizhou-zhang-ph-d/"). For the purposes of the vignette, we have randomly sampled 1000 cells from the the fully integrated seurat object to minimize the size of the package. We will use both Seurat and SingleCellExperiment (SCE) with scater to perform the further visualizations in tandem. 
+As mentioned previously, this data set is derived from work performed in the laboratory of [Weizhou Zhang]("https://pathology.ufl.edu/faculty/experimental-pathology/weizhou-zhang-ph-d/"). For the purposes of the vignette, we have randomly sampled 100 cells from the the fully integrated seurat object to minimize the size of the package. A full version of the seurat object is available via [GitHub](https://github.com/ncborcherding/scRepertoire) under the *Getting Data* header. We will use both Seurat and SingleCellExperiment (SCE) with scater to perform the further visualizations in tandem. 
 
 ```{r Figure4A}
 library(SingleCellExperiment)

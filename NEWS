@@ -1,4 +1,9 @@
 
+CHANGES IN VERSION 0.99.12
+------------------------
+
+Reducing the size of the screp_example to fulfill < 5 mB requirement. Randomly samples 100 cells and removed RNA counts from Seurat object
+
 CHANGES IN VERSION 0.99.11
 ------------------------
 
