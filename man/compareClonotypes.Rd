@@ -10,7 +10,8 @@ compareClonotypes(
   samples = NULL,
   clonotypes = NULL,
   numbers = NULL,
-  graph = "alluvial"
+  graph = "alluvial",
+  exportTable = FALSE
 )
 }
 \arguments{
@@ -27,6 +28,8 @@ CDR3 gene+nucleotide (gene+nt).}
 \item{numbers}{The top number clonotype sequences.}
 
 \item{graph}{The type of graph produced, either "alluvial" or "area".}
+
+\item{exportTable}{Returns the data frame used for forming the graph.}
 }
 \value{
 ggplot of the proportion of total sequencing read of 

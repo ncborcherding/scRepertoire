@@ -1,8 +1,14 @@
 
+CHANGES IN VERSION 0.99.15
+------------------------
+
+Modified numerator for index function
+
+
 CHANGES IN VERSION 0.99.14
 ------------------------
 
-Removed bracket
+Removed bracket from indexing function
 
 CHANGES IN VERSION 0.99.13
 ------------------------

@@ -118,6 +118,7 @@ parseContigs <- function(df, i, names, cloneCall) {
 }
 
 #Calculate the Morisita Index for Overlap Analysis
+#' @author Nick Borcherding, Massimo Andreatta
 morisitaIndex <- function(df, length, cloneCall, coef_matrix) {
     for (i in seq_along(length)){
         df.i <- df[[i]]
@@ -132,13 +133,15 @@ morisitaIndex <- function(df, length, cloneCall, coef_matrix) {
             df.j[,2] <- as.numeric(df.j[,2])
             merged <- merge(df.i, df.j, by = cloneCall, all = TRUE)
             merged[is.na(merged)] <- 0
-            X <- sum(sum(merged[,2]))
-            Y <- sum(sum(merged[,3]))
+            X <- sum(merged[,2])
+            Y <- sum(merged[,3])
             sum.df.i <- sum(df.i[,2]^2)
             sum.df.j <- sum(df.j[,2]^2)
             
-            coef.i.j <- 2 * sum(X * Y) / 
-                ((sum.df.i / (X^2) + sum.df.j / (Y^2)) * X * Y)
+            num <- 2 * sum(merged[, 2] * merged[, 3])
+            den <- ((sum.df.i / (X^2) + sum.df.j / (Y^2)) * X * Y)
+                
+            coef.i.j <- num/den
             coef_matrix[i,j] <- coef.i.j
             }
         }
