@@ -132,13 +132,14 @@ morisitaIndex <- function(df, length, cloneCall, coef_matrix) {
             df.j[,2] <- as.numeric(df.j[,2])
             merged <- merge(df.i, df.j, by = cloneCall, all = TRUE)
             merged[is.na(merged)] <- 0
-            X <- sum(sum(merged[,2]])
-            Y <- sum(sum(merged[,3])
+            X <- sum(sum(merged[,2]))
+            Y <- sum(sum(merged[,3]))
             sum.df.i <- sum(df.i[,2]^2)
             sum.df.j <- sum(df.j[,2]^2)
             
             coef.i.j <- 2 * sum(X * Y) / 
                 ((sum.df.i / (X^2) + sum.df.j / (Y^2)) * X * Y)
+            coef_matrix[i,j] <- coef.i.j
             }
         }
     }
