@@ -264,13 +264,15 @@ lengthContig <- function(df, cloneCall = "aa", group = NULL, scale = FALSE,
 #' @param clonotypes The specific sequences of interest.
 #' @param numbers The top number clonotype sequences.
 #' @param graph The type of graph produced, either "alluvial" or "area".
+#' @param exportTable Returns the data frame used for forming the graph.
 #' @import ggplot2
 #'
 #' @export
 #' @return ggplot of the proportion of total sequencing read of 
 #' selecting clonotypes
 compareClonotypes <- function(df, cloneCall = "gene+nt", samples = NULL, 
-                        clonotypes = NULL, numbers = NULL, graph = "alluvial"){
+                        clonotypes = NULL, numbers = NULL, graph = "alluvial",
+                        exportTable = FALSE){
     cloneCall <- theCall(cloneCall)
     if (!is.null(numbers) & !is.null(clonotypes)) {
         stop("Make sure your inputs are either numbers or clonotype sequences.")
@@ -293,6 +295,7 @@ compareClonotypes <- function(df, cloneCall = "gene+nt", samples = NULL,
     if (nrow(Con.df) < length(unique(Con.df$Sample))) {
         stop("Reasses the filtering strategies here, there is not 
             enough clonotypes to examine.") }
+    if (exportTable == TRUE) { return(Con.df)}
     plot = ggplot(Con.df, aes(x = Sample, fill = Clonotypes, 
                     stratum = Clonotypes, alluvium = Clonotypes, 
                     y = Proportion, label = Clonotypes)) +

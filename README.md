@@ -21,7 +21,7 @@ Single-cell sequencing is an emerging technology in the field of immunology and 
 +  Seurat
 +  vegan
 
-scRepertoire v0.99.0 added the functionality of the powerTCR approach to comparing clone size distribution, [please cite](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1006571) the manuscript if using the ```clonesizeDistribution()``` function.
+scRepertoire v0.99.9 added the functionality of the powerTCR approach to comparing clone size distribution, [please cite](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1006571) the manuscript if using the ```clonesizeDistribution()``` function.
 
 ### Installation
 

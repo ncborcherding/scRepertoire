@@ -1,4 +1,12 @@
 
+CHANGES IN VERSION 0.99.13
+------------------------
+
+Added exportTable to remaining viz functions
+Modified morisita index to correct error
+
+
+
 CHANGES IN VERSION 0.99.12
 ------------------------
 
