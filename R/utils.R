@@ -118,7 +118,7 @@ parseContigs <- function(df, i, names, cloneCall) {
 }
 
 #Calculate the Morisita Index for Overlap Analysis
-#' @author Nick Borcherding, Massimo Andreatta
+#' @author Massimo Andreatta, Nick Borcherding
 morisitaIndex <- function(df, length, cloneCall, coef_matrix) {
     for (i in seq_along(length)){
         df.i <- df[[i]]
@@ -150,6 +150,7 @@ morisitaIndex <- function(df, length, cloneCall, coef_matrix) {
 }
 
 #Calculate the Overlap Coefficient for Overlap Analysis
+#' @author Nick Bormann, Nick Borcherding
 overlapIndex <- function(df, length, cloneCall, coef_matrix) {
     for (i in seq_along(length)){
         df.i <- df[[i]]
@@ -190,6 +191,7 @@ theCall <- function(x) {
 }
 
 # Assiging positions for TCR contig data
+#' @author Gloria Karus, Nick Bormann, Nick Borcherding
 parseTCR <- function(Con.df, unique_df, data2) {
     for (y in seq_along(unique_df)){
         barcode.i <- Con.df$barcode[y]
@@ -242,6 +244,7 @@ parseTCR <- function(Con.df, unique_df, data2) {
 return(Con.df)}
 
 #Assiging positions for BCR contig data
+#' @author Gloria Karus, Nick Bormann, Nick Borcherding
 parseBCR <- function(Con.df, unique_df, data2) {
     for (y in seq_along(unique_df)){
         barcode.i <- Con.df$barcode[y]

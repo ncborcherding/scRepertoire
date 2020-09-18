@@ -128,3 +128,85 @@ expression2List <- function(sc, group) {
     return(df)
 }
 
+#' Generate data frame to be used with circlize R package to visualize
+#' clonotypes as a chord diagram. 
+#' 
+#' This function will take the meta data from the product of 
+#' combineExpression()and generate a relational data frame to 
+#' be used for a chord diagram. The output is a measure of 
+#' relative clonotype overlap between groups and does not reflect
+#' exact clonotype matches between groups. 
+#' 
+#' @examples
+#' #Getting the combined contigs
+#' combined <- combineTCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), 
+#' rep(c("P", "T"), 3), cells ="T-AB")
+#' 
+#' #Getting a sample of a Seurat object
+#' screp_example <- get(data("screp_example"))
+#' screp_example <- combineExpression(combined, screp_example)
+#' 
+#' #Getting data frame output for Circilize
+#' circles <- getCirclize(screp_example, groupBy = "seurat_clusters")
+#' 
+#' 
+#' @param sc object after combineExpression().
+#' @param cloneCall How to call the clonotype - CDR3 nucleotide (nt), 
+#' CDR3 amino acid (aa).
+#' @param groupBy The group header for which you would like to analyze 
+#' the data.
+#' @param proportion Binary will calculate relationship as unique clonotypes 
+#' (proportion = TRUE) or proportion of unique clonotypes (proportion = FALSE)
+#' 
+#' @importFrom reshape2 dcast
+#' @export
+#' @return data frame of shared clonotypes between groups
+#' @author Dillon Corvino, Nick Borcherding
+getCirclize <- function(sc, cloneCall = "gene+nt", 
+                        groupBy = NULL, proportion = FALSE) {
+    meta <- grabMeta(sc)
+    cloneCall <- theCall(cloneCall)
+    test <- meta[, c(cloneCall, groupBy)]
+    dTest <- dcast(test, test[,cloneCall] ~ test[,groupBy])
+    dTest <- dTest[apply(dTest[,-1], 1, function(x) !all(x==0)),]
+    dTest <- dTest[-1]
+    total <- nrow(dTest)
+    matrix_out <- matrix(ncol = ncol(dTest), nrow = ncol(dTest))
+    for (x in seq_len(ncol(dTest))) {
+        for (y in seq_len(ncol(dTest)) ){
+            matrix_out[y,x] <- length(which(dTest[,x] >= 1 & dTest[,y] >= 1))
+        }
+    }
+    colnames(matrix_out) <- colnames(dTest)
+    rownames(matrix_out) <- colnames(dTest)
+    
+    #Need to subtract extra cells - will take the difference of the sum of the 
+    #column minus and the respective cell and subtract that from the respective cell
+    for (y in seq_len(ncol(matrix_out))) {
+        matrix_out[y,y] <- matrix_out[y,y] - (sum(matrix_out[,y])-matrix_out[y,y])
+        if (matrix_out[y,y] < 0) {
+            matrix_out[y,y] <- 0
+        }
+    }
+    output <- data.frame(from = rep(rownames(matrix_out), 
+                        times = ncol(matrix_out)),
+                        to = rep(colnames(matrix_out), each = nrow(matrix_out)),
+                        value = as.vector(matrix_out),
+                        stringsAsFactors = FALSE)
+    # Reorder columns to eliminate redundant comparisons
+    for (k in seq_len(nrow(output))) {
+        max <- order(output[k,1:2])[1] #which is first alphabetically
+        max <- output[k,max]
+        min <- order(output[k,1:2])[2] #which is second alphabetically
+        min <- output[k,min]
+        output[k,1] <- max
+        output[k,2] <- min
+    }
+    unique <- rownames(unique(output[,1:2])) #removing redundant comparisons
+    output <- output[rownames(output) %in% unique, ]
+    if (proportion == TRUE) {
+        output$value <- output$value/total
+    } 
+    return(output)
+}
+
