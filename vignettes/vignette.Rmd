@@ -221,7 +221,7 @@ After we have completed the basic processing and summary functions in scRepertoi
 
 ## Clonal Space Homeostasis
 
-By examining the clonal space, we are effectively looking at the relative space occupied by clones at specific proportions. Another way to think about this would be thinking of the total immune receptor sequencing run as a measuring cup. In this cup, we will fill liquids of different viscosity - or different number of clonal proportions. Clonal space homeostasis is asking what percentage of the cup is filled by clones in distinct proportions (or liquids of different viscosity, to extend the analogy). The proportional cutpoints are set under the **cloneType** variable in the function and can be adjusted, at baseline the bins are as follows:
+By examining the clonal space, we are effectively looking at the relative space occupied by clones at specific proportions. Another way to think about this would be thinking of the total immune receptor sequencing run as a measuring cup. In this cup, we will fill liquids of different viscosity - or different number of clonal proportions. Clonal space homeostasis is asking what percentage of the cup is filled by clones in distinct proportions (or liquids of different viscosity, to extend the analogy). The proportional cut points are set under the **cloneType** variable in the function and can be adjusted, at baseline the bins are as follows:
 
 *cloneTypes*
 +  Rare = .0001
@@ -284,7 +284,7 @@ clonalDiversity(combined, cloneCall = "gene", group = "ID")
 
 # Interacting with mRNA Expression
 
-As mentioned previously, this data set is derived from work performed in the laboratory of [Weizhou Zhang]("https://pathology.ufl.edu/faculty/experimental-pathology/weizhou-zhang-ph-d/"). For the purposes of the vignette, we have randomly sampled 100 cells from the the fully integrated seurat object to minimize the size of the package. A full version of the seurat object is available via [GitHub](https://github.com/ncborcherding/scRepertoire) under the *Getting Data* header. We will use both Seurat and SingleCellExperiment (SCE) with scater to perform the further visualizations in tandem. 
+As mentioned previously, this data set is derived from work performed in the laboratory of [Weizhou Zhang]("https://pathology.ufl.edu/faculty/experimental-pathology/weizhou-zhang-ph-d/"). For the purposes of the vignette, we have randomly sampled 100 cells from the the fully integrated Seurat object to minimize the size of the package. A full version of the Seurat object is available via [GitHub](https://github.com/ncborcherding/scRepertoire) under the *Getting Data* header. We will use both Seurat and SingleCellExperiment (SCE) with scater to perform the further visualizations in tandem. 
 
 ```{r Figure4A}
 library(SingleCellExperiment)
@@ -308,11 +308,11 @@ table(screp_example$seurat_clusters)
 ```
 
 
-Next we can take the clonotypic information and attach it to our Seurat object using the *combineExpression()* function. **Importantly**, the major requirement for the attachment is matching contig cell barcodes and barcodes in the row names of the meta data of the seurat or SCE object. If these do not match, the attachment will fail. Based on ease, we suggest you make the changes to the Seurat object row names.
+Next we can take the clonotypic information and attach it to our Seurat object using the *combineExpression()* function. **Importantly**, the major requirement for the attachment is matching contig cell barcodes and barcodes in the row names of the meta data of the Seurat or SCE object. If these do not match, the attachment will fail. Based on ease, we suggest you make the changes to the Seurat object row names.
 
 We can call (cloneCall) the 4 variations of clonotypes: 1) genes, 2) CDR3 amino acid sequence, 3) CDR3 nucleotide sequence, or 4) genes and CDR3 nucleotide sequence. The attaching function will also calculate the frequency of the clonotype based on the **groupBy** variable. If blank, **groupBy** will calculate frequencies of clonotypes by individual run, but because we have 6 samples of paired peripheral and tumor T cells, we are actually going to use the groupBy variable to call "sample" in order to calculate frequencies across both the peripheral blood and tumor T cells of the same patient.
 
-Lastly, in order to categorize the frequency, we have the variable **cloneTypes** which acts as a bin to place labels. As a default, **cloneTypes** is set to equal c(Single = 1, Small = 5, Medium = 20, Large = 100, Hyperexpanded = 500). This is because the highest repeated clonotype is in Patient 3 with just under 500 clones. If your data has a clone with greater expansion, you should readjust the cutpoints. 
+Lastly, in order to categorize the frequency, we have the variable **cloneTypes** which acts as a bin to place labels. As a default, **cloneTypes** is set to equal c(Single = 1, Small = 5, Medium = 20, Large = 100, Hyperexpanded = 500). This is because the highest repeated clonotype is in Patient 3 with just under 500 clones. If your data has a clone with greater expansion, you should readjust the cut points. 
 
 ```{r}
 screp_example <- combineExpression(combined, screp_example, cloneCall="gene", groupBy = "sample")
@@ -381,7 +381,7 @@ occupiedscRepertoire(sce, x.axis = "cluster")
 ```
 
 
-Lastly after all the metadata has been modified, we can look at clonotypes across multiple categories using the *alluvialClonotypes()* function. To understand the basic concepts of this graphing method, I'd highly recommend reading [this post](https://cran.r-project.org/web/packages/ggalluvial/vignettes/ggalluvial.html), essentially we are able to use the plots to examine the interchange of categorical variables. Because this function will produce a graph with each clonotype arranged by called stratifications, this will take some time depending on the size of your total cells. To expedite, we will actually subset the seurat object before using *alluvialClonotypes()*.
+After all the metadata has been modified, we can look at clonotypes across multiple categories using the *alluvialClonotypes()* function. To understand the basic concepts of this graphing method, I'd highly recommend reading [this post](https://cran.r-project.org/web/packages/ggalluvial/vignettes/ggalluvial.html), essentially we are able to use the plots to examine the interchange of categorical variables. Because this function will produce a graph with each clonotype arranged by called stratifications, this will take some time depending on the size of your total cells. To expedite, we will actually subset the Seurat object before using *alluvialClonotypes()*.
 
 ```{r Figure4F}
 
@@ -403,6 +403,23 @@ alluvialClonotypes(sce, cloneCall = "gene",
                    y.axes = c("Patient", "seurat_clusters", "Type"), 
                    color = "seurat_clusters") 
 ```
+
+Like alluvial graphs, we can also visualize the interconnection of clusters using the chord diagrams from the circlize R package. The first step is getting the data frame output to feed into the *chordDiagram()* function in circlize, which can be done using *getCirclize()*. This will calculate the relative number of clonotypes shared based on the **groupBy** variable using the product of *combineExpression()*. 
+
+```{r}
+library(circlize)
+library(scales)
+
+circles <- getCirclize(screp_example, groupBy = "cluster")
+
+#Just assigning the normal colors to each cluster
+grid.cols <- hue_pal()(length(unique(seurat@active.ident)))
+names(grid.cols) <- levels(seurat@active.ident)
+
+#Graphing the chord diagram
+chordDiagram(circles, self.link = 1, grid.col = grid.cols)
+```
+
 
 
 For users that would like greater ability to use the meta data in the Seurat objects to perform the analysis that scRepertoire provides, there is also the option of using the *expression2List()* function that will take the meta data and output the data as a list by cluster.
