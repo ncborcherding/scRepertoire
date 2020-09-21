@@ -32,6 +32,8 @@
     utils::globalVariables ("stratum")
     utils::globalVariables ("alluvium")
     utils::globalVariables ("x")
+    utils::globalVariables ("colData")
+    utils::globalVariables ("colData<-")
 
 
     invisible ()

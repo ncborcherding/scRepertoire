@@ -13,7 +13,7 @@
 #' rep(c("P", "T"), 3), cells ="T-AB")
 #' clonalDiversity(combined, cloneCall = "gene")
 #'
-#' @param df The product of CombineContig() or expression2List().
+#' @param df The product of combineTCR(), combineBCR(),  or expression2List().
 #' @param cloneCall How to call the clonotype - CDR3 gene (gene), 
 #' CDR3 nucleotide (nt) or CDR3 amino acid (aa), or 
 #' CDR3 gene+nucleotide (gene+nt).

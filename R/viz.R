@@ -1,11 +1,11 @@
 #' Quantify the unique clonotypes in the filtered contigs.
 #'
-#' This function takes the output from combineContig() or expression2List() and 
-#' quantifies unique clonotypes. The unique clonotypes can be either reported 
-#' as a raw output or scaled to the total number of clonotypes recovered using 
-#' the scale parameter. Multiple sequencing runs can be group together using 
-#' the group parameter. If a matrix output for the data is preferred, set 
-#' exportTable = TRUE.
+#' This function takes the output from combineTCR(), combineBCR(), or e
+#' xpression2List() and quantifies unique clonotypes. The unique clonotypes 
+#' can be either reported as a raw output or scaled to the total number of 
+#' clonotypes recovered using the scale parameter. Multiple sequencing 
+#' runs can be group together using the group parameter. If a matrix output 
+#' for the data is preferred, set exportTable = TRUE.
 #'
 #' @examples
 #' #Making combined contig data
@@ -14,7 +14,7 @@
 #' rep(c("P", "T"), 3), cells ="T-AB")
 #' quantContig(combined, cloneCall="gene+nt", scale = TRUE)
 #'
-#' @param df The product of combineContig().
+#' @param df The product of combineTCR() combineBCR() or expression2List().
 #' @param cloneCall How to call the clonotype - CDR3 gene (gene), 
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
 #' CDR3 gene+nucleotide (gene+nt).
@@ -76,12 +76,13 @@ quantContig <- function(df, cloneCall = "gene+nt", scale=FALSE, group = NULL,
 
 #' Demonstrate the relative abundance of clonotypes by group or sample.
 #'
-#' This function takes the output of combineContig() or expression2List() and 
-#' displays the number of clonotypes at specific frequencies by sample or 
-#' group. Visualization can either be a line graph using calculated numbers 
-#' or if scale = TRUE, the output will be a density plot. Multiple sequencing 
-#' runs can be group together using the group parameter. If a matrix output 
-#' for the data is preferred, set exportTable = TRUE.
+#' This function takes the output of combineTCR(), combineBCR(), or 
+#' expression2List() and displays the number of clonotypes at specific 
+#' frequencies by sample or group. Visualization can either be a line 
+#' graph using calculated numbers or if scale = TRUE, the output will 
+#' be a density plot. Multiple sequencing runs can be group together 
+#' using the group parameter. If a matrix output for the data is 
+#' preferred, set exportTable = TRUE.
 #'
 #' @examples
 #' #Making combined contig data
@@ -90,7 +91,7 @@ quantContig <- function(df, cloneCall = "gene+nt", scale=FALSE, group = NULL,
 #' rep(c("P", "T"), 3), cells ="T-AB")
 #' abundanceContig(combined, cloneCall = "gene", scale = FALSE)
 #'
-#' @param df The product of CombineContig() or expression2List().
+#' @param df The product of combineTCR(), combineBCR(), or expression2List().
 #' @param cloneCall How to call the clonotype - CDR3 gene (gene), 
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa), or C
 #' DR3 gene+nucleotide (gene+nt).
@@ -156,12 +157,13 @@ return(plot) }
 
 #' Demonstrate the distribution of lengths filtered contigs.
 #'
-#' This function takes the output of combineContig() or expression2List() and 
-#' displays either the nucleotide (nt) or amino acid (aa) sequence length. The 
-#' sequence length visualized can be selected using the chains parameter, 
-#' either the combined clonotype (both chains) or across all single chains. 
-#' Visualization can either be a histogram or if scale = TRUE, the output will 
-#' be a density plot. Multiple sequencing runs can be group together using the 
+#' This function takes the output of combineTCR(), combineBCR(), or
+#' expression2List() and displays either the nucleotide (nt) or amino 
+#' acid (aa) sequence length. The sequence length visualized can be 
+#' selected using the chains parameter, either the combined clonotype 
+#' (both chains) or across all single chains. Visualization can either 
+#' be a histogram or if scale = TRUE, the output will be a density plot. 
+#' Multiple sequencing runs can be group together using the 
 #' group parameter. If a matrix output for the data is preferred, set 
 #' exportTable = TRUE.
 #'
@@ -172,7 +174,7 @@ return(plot) }
 #' rep(c("P", "T"), 3), cells ="T-AB")
 #' lengthContig(combined, cloneCall="aa", chains = "combined")
 #'
-#' @param df The product of CombineContig() or expression2List().
+#' @param df The product of combineTCR(), combineBCR(), or expression2List()
 #' @param cloneCall How to call the clonotype - CDR3 nucleotide (nt), 
 #' CDR3 amino acid (aa).
 #' @param group The group header for which you would like to analyze 
@@ -254,7 +256,7 @@ lengthContig <- function(df, cloneCall = "aa", group = NULL, scale = FALSE,
 #' compareClonotypes(combined, numbers = 10, 
 #' samples = c("PX_P", "PX_T"), cloneCall="aa")
 #'
-#' @param df The product of CombineContig() or expression2List().
+#' @param df The product of combineTCR(), combineBCR(), or expression2List()
 #' @param cloneCall How to call the clonotype - CDR3 gene (gene), 
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
 #' CDR3 gene+nucleotide (gene+nt).
@@ -262,13 +264,15 @@ lengthContig <- function(df, cloneCall = "aa", group = NULL, scale = FALSE,
 #' @param clonotypes The specific sequences of interest.
 #' @param numbers The top number clonotype sequences.
 #' @param graph The type of graph produced, either "alluvial" or "area".
+#' @param exportTable Returns the data frame used for forming the graph.
 #' @import ggplot2
 #'
 #' @export
 #' @return ggplot of the proportion of total sequencing read of 
 #' selecting clonotypes
 compareClonotypes <- function(df, cloneCall = "gene+nt", samples = NULL, 
-                        clonotypes = NULL, numbers = NULL, graph = "alluvial"){
+                        clonotypes = NULL, numbers = NULL, graph = "alluvial",
+                        exportTable = FALSE){
     cloneCall <- theCall(cloneCall)
     if (!is.null(numbers) & !is.null(clonotypes)) {
         stop("Make sure your inputs are either numbers or clonotype sequences.")
@@ -284,13 +288,14 @@ compareClonotypes <- function(df, cloneCall = "gene+nt", samples = NULL,
     if (!is.null(samples)) {
         Con.df <- Con.df[Con.df$Sample %in% samples,] }
     if (!is.null(clonotypes)) {
-        Con.df <- Con.df[Con.df$Sample %in% clonotypes,] }
+        Con.df <- Con.df[Con.df$Clonotypes %in% clonotypes,] }
     if (!is.null(numbers)) {
         top <- Con.df %>% top_n(n = numbers, wt = Proportion)
         Con.df <- Con.df[Con.df$Clonotypes %in% top$Clonotypes,] }
     if (nrow(Con.df) < length(unique(Con.df$Sample))) {
         stop("Reasses the filtering strategies here, there is not 
             enough clonotypes to examine.") }
+    if (exportTable == TRUE) { return(Con.df)}
     plot = ggplot(Con.df, aes(x = Sample, fill = Clonotypes, 
                     stratum = Clonotypes, alluvium = Clonotypes, 
                     y = Proportion, label = Clonotypes)) +
@@ -321,7 +326,7 @@ compareClonotypes <- function(df, cloneCall = "gene+nt", samples = NULL,
 #' rep(c("P", "T"), 3), cells ="T-AB")
 #' clonesizeDistribution(combined, cloneCall = "gene+nt", method="ward.D2")
 #'
-#' @param df The product of CombineContig() or expression2List().
+#' @param df The product of combineTCR(), combineBCR(), or expression2List().
 #' @param cloneCall How to call the clonotype - CDR3 gene (gene),
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
 #' CDR3 gene+nucleotide (gene+nt).
@@ -400,3 +405,70 @@ makingLodes <- function(meta2, color, alpha, facet, set.axes) {
     } else { lodes <- to_lodes_form(meta2, key = "x", value = "stratum", 
             id = "alluvium", axes = set.axes)}
     return(lodes) }
+
+
+#' Visualizing the distribution of TCR V gene usage
+#' 
+#' This function will allow for the visualizing the distribution 
+#' ofthe V-genes of the TCR by categroical variables.
+#'
+#' @examples
+#' #Making combined contig data
+#' x <- contig_list
+#' combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), 
+#' rep(c("P", "T"), 3), cells ="T-AB")
+#' 
+#' vizVgenes(combined, TCR = "TCR1", facet.x = "sample")
+#'
+#' @param df The product of combineTCR(), combineBCR(), or expression2List().
+#' @param TCR Which TCR chain to use, TCR1 = TCRA or TCR2 = TCRB
+#' @param facet.x Categorical variable which to seperate by along x-axis
+#' @param facet.y Categorical variable which to seperate by along y-axis
+#' @param fill Categorical variable which to add color to bar chart
+#' @param exportTable Returns the data frame used for forming the graph.
+#' @import ggplot2
+#' @importFrom stringr str_split
+#' @export
+#' @return ggplot bar diagram of vgene counts
+
+vizVgenes <- function(df, TCR = "TCR1", 
+                        facet.x = "sample", 
+                        facet.y = NULL, 
+                        fill = NULL, 
+                        exportTable = FALSE){
+    df <- bind_rows(df)
+    TCR1 <- str_split(df[,"CTgene"], "_", simplify = TRUE)[,1] 
+    TCR1 <- str_split(TCR1, "[.]", simplify = TRUE)[,1] 
+    TCR2 <- str_split(df[,"CTgene"], "_", simplify = TRUE)[,2] 
+    TCR2 <- str_split(TCR2, "[.]", simplify = TRUE)[,1] 
+    df$TCR1_vgene <- TCR1
+    df$TCR2_vgene <- TCR2
+    if (TCR == "TCR1") {
+        x <- "TCR1_vgene"}
+    else if (TCR == "TCR2") {
+        x <- "TCR2_vgene"}
+    df <- subset(df, !is.na(df[,x])) #remove NA values
+    df <- subset(df, df[,x] != "NA") #remove values that are character "NA"
+    plot <- ggplot(df, aes(x=df[,x])) + 
+        geom_bar() + 
+        theme_classic() + 
+        theme(axis.title.x = element_blank(), #remove titles
+                axis.ticks.x = element_blank(), #removes ticks
+                axis.text.x = element_text(angle = 90, 
+                                    vjust = 0.5, hjust=1, size=rel(0.5)))
+    
+    if (!is.null(fill)) {
+        plot <- plot + aes(fill = df[,fill]) + #Allow for coloring of bar
+            labs(fill = fill)
+    }
+    #This allows for adaptive facetting so you can select which facet you'd like
+    if (!is.null(facet.y) & !is.null(facet.x)) {
+        plot <- plot + facet_grid(df[,facet.y] ~ df[,facet.x])
+    } else if (is.null(facet.y) & !is.null(facet.x)) {
+        plot <- plot + facet_grid(. ~ df[,facet.x])
+    } else if (!is.null(facet.y) & is.null(facet.x)) {
+        plot <- plot + facet_grid(df[,facet.y] ~ .)
+    }
+    if (exportTable == TRUE) { return(df) }
+    return(plot)
+}

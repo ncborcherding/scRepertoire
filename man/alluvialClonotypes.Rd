@@ -49,14 +49,15 @@ combined <- combineTCR(contig_list, rep(c("PX", "PY", "PZ"), each=2),
 rep(c("P", "T"), 3), cells ="T-AB")
 
 #Getting a sample of a Seurat object
-seurat_example <- readRDS(url(
-"https://ncborcherding.github.io/vignettes/seurat_example.rds"))
+screp_example <- get(data("screp_example"))
+sce <- suppressMessages(Seurat::UpdateSeuratObject(screp_example))
+sce <- Seurat::as.SingleCellExperiment(sce)
 
 #Using combineExpresion()
-seurat_example <- combineExpression(combined, seurat_example)
+sce <- combineExpression(combined, sce)
 
 #Using alluvialClonotypes()
-alluvialClonotypes(seurat_example, cloneCall = "gene", 
+alluvialClonotypes(sce, cloneCall = "gene", 
 y.axes = c("Patient", "cluster"), color = "cluster")
 
 }

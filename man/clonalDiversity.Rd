@@ -12,7 +12,7 @@ clonalDiversity(
 )
 }
 \arguments{
-\item{df}{The product of CombineContig() or expression2List().}
+\item{df}{The product of combineTCR(), combineBCR(),  or expression2List().}
 
 \item{cloneCall}{How to call the clonotype - CDR3 gene (gene), 
 CDR3 nucleotide (nt) or CDR3 amino acid (aa), or 
