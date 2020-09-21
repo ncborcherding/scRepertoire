@@ -32,14 +32,13 @@ combined <- combineTCR(contig_list, rep(c("PX", "PY", "PZ"), each=2),
 rep(c("P", "T"), 3), cells ="T-AB")
 
 #Getting a sample of a Seurat object
-seurat_example <- readRDS(url(
-"https://ncborcherding.github.io/vignettes/seurat_example.rds"))
+screp_example <- get(data("screp_example"))
 
 #Using combineExpresion()
-seurat_example <- combineExpression(combined, seurat_example)
+screp_example <- combineExpression(combined, screp_example )
 
 #Using highlightClonotype()
-seurat_example <- highlightClonotypes(seurat_example, cloneCall= "aa", 
+screp_example  <- highlightClonotypes(screp_example, cloneCall= "aa", 
 sequence = c("CAVNGGSQGNLIF_CSAEREDTDTQYF"))
 
 }

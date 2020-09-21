@@ -7,7 +7,7 @@
 addVariable(df, name = NULL, variables = NULL)
 }
 \arguments{
-\item{df}{The product of CombineContig().}
+\item{df}{The product of combineTCR() combineBCR() or expression2List().}
 
 \item{name}{The column header to add.}
 
@@ -17,10 +17,11 @@ addVariable(df, name = NULL, variables = NULL)
 list of contigs with a new column (name).
 }
 \description{
-This function adds variables to the product of combineContig() to be used in 
-later visualizations. For each element in the combinContig(), the function 
-will add a column (labled by name) with the variable. The length of the
-variable paramater needs to match the length of the combineContig() object.
+This function adds variables to the product of combineTCR() combineBCR() or 
+expression2List() to be used in later visualizations. For each element, 
+the function will add a column (labled by name) with the variable. 
+The length of the variable paramater needs to match the length of 
+the combined object.
 }
 \examples{
 x <- contig_list

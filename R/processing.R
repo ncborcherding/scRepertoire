@@ -21,10 +21,11 @@ stripBarcode <- function(contigs, column = 1, connector = "_",
 
 #' Adding variables after the combination of contigs.
 #'
-#' This function adds variables to the product of combineContig() to be used in 
-#' later visualizations. For each element in the combinContig(), the function 
-#' will add a column (labled by name) with the variable. The length of the
-#' variable paramater needs to match the length of the combineContig() object.
+#' This function adds variables to the product of combineTCR() combineBCR() or 
+#' expression2List() to be used in later visualizations. For each element, 
+#' the function will add a column (labled by name) with the variable. 
+#' The length of the variable paramater needs to match the length of 
+#' the combined object.
 #'
 #' @examples
 #' x <- contig_list
@@ -32,7 +33,7 @@ stripBarcode <- function(contigs, column = 1, connector = "_",
 #' rep(c("P", "T"), 3), cells ="T-AB")
 #' combined <- addVariable(combined, name = "batch", variables = c(1,1,1,1,2,2))
 #'
-#' @param df The product of CombineContig().
+#' @param df The product of combineTCR() combineBCR() or expression2List().
 #' @param name The column header to add.
 #' @param variables The exact values to add to each element of the list.
 #' @export
@@ -47,12 +48,13 @@ addVariable <- function(df, name = NULL, variables =  NULL) {
     return(df)
 }
 
-#' Subset the combineContig() product.
+#' Subset the product of combineTCR() combineBCR() or expression2List()
 #'
-#' This function allows for the subsetting of the product of combineContig() by 
-#' the name of the individual list element. In general the names of are samples 
-#' + _ + ID, allowing for users to subset the product of combineContig() across 
-#' a string or individual name.
+#' This function allows for the subsetting of the product of combineTCR() 
+#' combineBCR() or expression2List() by the name of the individual list 
+#' element. In general the names of are samples + _ + ID, allowing 
+#' for users to subset the product of combineTCR(), combineBCR(), 
+#' or expression2List() across a string or individual name.
 #'
 #' @examples
 #' x <- contig_list
@@ -60,7 +62,7 @@ addVariable <- function(df, name = NULL, variables =  NULL) {
 #' rep(c("P", "T"), 3), cells ="T-AB")
 #' subset <- subsetContig(combined, name = "sample", variables = c("PX"))
 #'
-#' @param df The product of CombineContig().
+#' @param df The product of combineTCR(), combineBCR(), or expression2List().
 #' @param name The column header you'd like to use to subset.
 #' @param variables The values to subset by, must be in the names(df).
 
@@ -97,14 +99,12 @@ subsetContig <- function(df, name, variables = NULL) {
 #' rep(c("P", "T"), 3), cells ="T-AB")
 #' 
 #' #Getting a sample of a Seurat object
-#' seurat_example <- readRDS(url(
-#' "https://ncborcherding.github.io/vignettes/seurat_example.rds"))
-#' 
-#' #Using combineExpresion()
-#' seurat <- combineExpression(combined, seurat_example)
+#' screp_example <- get(data("screp_example"))
+#' sce <- suppressMessages(Seurat::UpdateSeuratObject(screp_example))
+#' sce <- Seurat::as.SingleCellExperiment(sce)
 #' 
 #' #Using expression2List
-#' newList <- expression2List(seurat_example, group = "cluster")
+#' newList <- expression2List(sce, group = "seurat_clusters")
 #' 
 #' @param sc object after combineExpression().
 #' @param group The column header to group the new list by
@@ -121,10 +121,92 @@ expression2List <- function(sc, group) {
     unique <- str_sort(as.character(unique(meta[,group])), numeric = TRUE)
     df <- NULL
     for (i in seq_along(unique)) {
-        subset <- subset(meta, meta[,"cluster"] == unique[i])
+        subset <- subset(meta, meta[,group] == unique[i])
         df[[i]] <- subset
     }
     names(df) <- unique
     return(df)
+}
+
+#' Generate data frame to be used with circlize R package to visualize
+#' clonotypes as a chord diagram. 
+#' 
+#' This function will take the meta data from the product of 
+#' combineExpression()and generate a relational data frame to 
+#' be used for a chord diagram. The output is a measure of 
+#' relative clonotype overlap between groups and does not reflect
+#' exact clonotype matches between groups. 
+#' 
+#' @examples
+#' #Getting the combined contigs
+#' combined <- combineTCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), 
+#' rep(c("P", "T"), 3), cells ="T-AB")
+#' 
+#' #Getting a sample of a Seurat object
+#' screp_example <- get(data("screp_example"))
+#' screp_example <- combineExpression(combined, screp_example)
+#' 
+#' #Getting data frame output for Circilize
+#' circles <- getCirclize(screp_example, groupBy = "seurat_clusters")
+#' 
+#' 
+#' @param sc object after combineExpression().
+#' @param cloneCall How to call the clonotype - CDR3 nucleotide (nt), 
+#' CDR3 amino acid (aa).
+#' @param groupBy The group header for which you would like to analyze 
+#' the data.
+#' @param proportion Binary will calculate relationship as unique clonotypes 
+#' (proportion = TRUE) or proportion of unique clonotypes (proportion = FALSE)
+#' 
+#' @importFrom reshape2 dcast
+#' @export
+#' @return data frame of shared clonotypes between groups
+#' @author Dillon Corvino, Nick Borcherding
+getCirclize <- function(sc, cloneCall = "gene+nt", 
+                        groupBy = NULL, proportion = FALSE) {
+    meta <- grabMeta(sc)
+    cloneCall <- theCall(cloneCall)
+    test <- meta[, c(cloneCall, groupBy)]
+    dTest <- dcast(test, test[,cloneCall] ~ test[,groupBy])
+    dTest <- dTest[apply(dTest[,-1], 1, function(x) !all(x==0)),]
+    dTest <- dTest[-1]
+    total <- nrow(dTest)
+    matrix_out <- matrix(ncol = ncol(dTest), nrow = ncol(dTest))
+    for (x in seq_len(ncol(dTest))) {
+        for (y in seq_len(ncol(dTest)) ){
+            matrix_out[y,x] <- length(which(dTest[,x] >= 1 & dTest[,y] >= 1))
+        }
+    }
+    colnames(matrix_out) <- colnames(dTest)
+    rownames(matrix_out) <- colnames(dTest)
+    
+    #Need to subtract extra cells - will take the difference of the sum of the 
+    #column minus and the respective cell and subtract that from the respective cell
+    for (y in seq_len(ncol(matrix_out))) {
+        matrix_out[y,y] <- matrix_out[y,y] - (sum(matrix_out[,y])-matrix_out[y,y])
+        if (matrix_out[y,y] < 0) {
+            matrix_out[y,y] <- 0
+        }
+    }
+    output <- data.frame(from = rep(rownames(matrix_out), 
+                        times = ncol(matrix_out)),
+                        to = rep(colnames(matrix_out), each = nrow(matrix_out)),
+                        value = as.vector(matrix_out),
+                        stringsAsFactors = FALSE)
+    # Reorder columns to eliminate redundant comparisons
+    for (k in seq_len(nrow(output))) {
+        max <- order(output[k,1:2])[1] #which is first alphabetically
+        max <- output[k,max]
+        min <- order(output[k,1:2])[2] #which is second alphabetically
+        min <- output[k,min]
+        output[k,1] <- max
+        output[k,2] <- min
+    }
+    unique <- rownames(unique(output[,1:2])) #removing redundant comparisons
+    output <- output[rownames(output) %in% unique, ]
+    if (proportion == TRUE) {
+        output$value <- output$value/total
+    } 
+    return(output)
 }
 

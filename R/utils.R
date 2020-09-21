@@ -6,25 +6,26 @@ checkList <- function(df) {
 
 #This is to check the single-cell expresison object
 checkSingleObject <- function(sc) {
-    if (!inherits(x=sc, what ="Seurat") | 
-        inherits(x=sc, what ="SummarizedExperiment")){
+    if (!inherits(x=sc, what ="Seurat") & 
+        !inherits(x=sc, what ="SummarizedExperiment")){
         stop("Object indicated is not of class 'Seurat' or 
             'SummarizedExperiment', make sure you are using
             the correct data.") }
     }
 
 #This is to grab the meta data from a seurat or SCE object
+#' @importFrom SummarizedExperiment colData<- 
+#' @importFrom SingleCellExperiment colData
 grabMeta <- function(sc) {
     if (inherits(x=sc, what ="Seurat")) {
         meta <- data.frame(sc[[]], Idents(sc))
         colnames(meta)[length(meta)] <- "cluster"
     }
     else if (inherits(x=sc, what ="SummarizedExperiment")){
-        if (inherits(x=sc, what ="cell_data_set")){
-          meta <- colData(sc)
-        }else{
-          meta <- sc@metadata[[1]]
-        }
+        meta <- data.frame(colData(sc))
+        rownames(meta) <- sc@colData@rownames
+        clu <- which(colnames(meta) == "ident")
+        colnames(meta)[clu] <- "cluster"
     }
     return(meta)
 }
@@ -124,6 +125,7 @@ parseContigs <- function(df, i, names, cloneCall) {
 }
 
 #Calculate the Morisita Index for Overlap Analysis
+#' @author Massimo Andreatta, Nick Borcherding
 morisitaIndex <- function(df, length, cloneCall, coef_matrix) {
     for (i in seq_along(length)){
         df.i <- df[[i]]
@@ -138,16 +140,24 @@ morisitaIndex <- function(df, length, cloneCall, coef_matrix) {
             df.j[,2] <- as.numeric(df.j[,2])
             merged <- merge(df.i, df.j, by = cloneCall, all = TRUE)
             merged[is.na(merged)] <- 0
-            sum.df.i <- sum(df.i[,2])
-            sum.df.j <- sum(df.j[,2])
-            coef.i.j <- 2 * sum(merged[,2] * merged[,3] / sum.df.j) / 
-                sum.df.j/((sum((df.i[,2] / sum.df.i)^2) + 
-                sum((df.j[,2] / sum.df.j)^2)))
-            coef_matrix[i,j] <- coef.i.j } } }
+            X <- sum(merged[,2])
+            Y <- sum(merged[,3])
+            sum.df.i <- sum(df.i[,2]^2)
+            sum.df.j <- sum(df.j[,2]^2)
+            
+            num <- 2 * sum(merged[, 2] * merged[, 3])
+            den <- ((sum.df.i / (X^2) + sum.df.j / (Y^2)) * X * Y)
+                
+            coef.i.j <- num/den
+            coef_matrix[i,j] <- coef.i.j
+            }
+        }
+    }
     return(coef_matrix)
 }
 
 #Calculate the Overlap Coefficient for Overlap Analysis
+#' @author Nick Bormann, Nick Borcherding
 overlapIndex <- function(df, length, cloneCall, coef_matrix) {
     for (i in seq_along(length)){
         df.i <- df[[i]]
@@ -188,6 +198,7 @@ theCall <- function(x) {
 }
 
 # Assiging positions for TCR contig data
+#' @author Gloria Karus, Nick Bormann, Nick Borcherding
 parseTCR <- function(Con.df, unique_df, data2) {
     for (y in seq_along(unique_df)){
         barcode.i <- Con.df$barcode[y]
@@ -240,6 +251,7 @@ parseTCR <- function(Con.df, unique_df, data2) {
 return(Con.df)}
 
 #Assiging positions for BCR contig data
+#' @author Gloria Karus, Nick Bormann, Nick Borcherding
 parseBCR <- function(Con.df, unique_df, data2) {
     for (y in seq_along(unique_df)){
         barcode.i <- Con.df$barcode[y]

@@ -1,3 +1,81 @@
+CHANGES IN VERSION 0.99.16
+------------------------
+
+Added getCirclize 
+
+
+CHANGES IN VERSION 0.99.15
+------------------------
+
+Modified numerator for index function
+
+
+CHANGES IN VERSION 0.99.14
+------------------------
+
+Removed bracket from indexing function
+
+CHANGES IN VERSION 0.99.13
+------------------------
+
+Added exportTable to remaining viz functions
+Modified morisita index to correct error
+
+CHANGES IN VERSION 0.99.12
+------------------------
+
+Reducing the size of the screp_example to fulfill < 5 mB requirement. Randomly samples 100 cells and removed RNA counts from Seurat object
+
+CHANGES IN VERSION 0.99.11
+------------------------
+
+Updated compareClonotype to allow for clonotype comparisons
+
+
+CHANGES IN VERSION 0.99.10
+------------------------
+
+Bioconductor did not detect the version update.
+
+CHANGES IN VERSION 0.99.9
+------------------------
+
+Bioconductor had no love - changed the Seurat package to imports instead of required, see if that will address the compiling issue that results in a killed: 9 error. 
+
+CHANGES IN VERSION 0.99.8
+------------------------
+
+Passed checks on system, let's see how much bioconductor hates it
+
+CHANGES IN VERSION 0.99.7
+------------------------
+
+But really this time, changed the colData import
+
+CHANGES IN VERSION 0.99.6
+------------------------
+
+Changed colData import
+
+CHANGES IN VERSION 0.99.5
+------------------------
+
+Added screp_example data to package
+Added visVgene function for visualizing the distribution of V genes in TCR
+Added support for monocle to combineExpression function
+Updated documentation for combineTCR() and combineBCR()
+Updated documentation to utilize SingleCellExperiment formats
+Updated Vignette to utilize SingleCellExperiment formats
+Added Author information to vignette
+Add intro and conclusion to vignette
+Removed html knitted vignette
+Removed descriptive code snippets
+
+CHANGES IN VERSION 0.99.4
+------------------------
+
+Modified expression2List() to allow for variables across meta data
+
 CHANGES IN VERSION 0.99.1
 ------------------------
 

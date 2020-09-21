@@ -10,11 +10,12 @@ compareClonotypes(
   samples = NULL,
   clonotypes = NULL,
   numbers = NULL,
-  graph = "alluvial"
+  graph = "alluvial",
+  exportTable = FALSE
 )
 }
 \arguments{
-\item{df}{The product of CombineContig() or expression2List().}
+\item{df}{The product of combineTCR(), combineBCR(), or expression2List()}
 
 \item{cloneCall}{How to call the clonotype - CDR3 gene (gene), 
 CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
@@ -27,6 +28,8 @@ CDR3 gene+nucleotide (gene+nt).}
 \item{numbers}{The top number clonotype sequences.}
 
 \item{graph}{The type of graph produced, either "alluvial" or "area".}
+
+\item{exportTable}{Returns the data frame used for forming the graph.}
 }
 \value{
 ggplot of the proportion of total sequencing read of 

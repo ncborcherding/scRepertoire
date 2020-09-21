@@ -20,12 +20,15 @@ Single-cell sequencing is an emerging technology in the field of immunology and 
 +  reshape2
 +  stringr
 +  Seurat
-+  [Startrac](https://github.com/Japrin/STARTRAC)
 +  vegan
 
-scRepertoire v1.0.0 added the functionality of the powerTCR approach to comparing clone size distribution, [please cite](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1006571) the manuscript if using the ```clonesizeDistribution()``` function. Similiarly, the application of novel indices for single-cell clonotype dynamics in the ```StartracDiversity()``` function is based on the work from [Lei Zhang et al.](https://www.nature.com/articles/s41586-018-0694-x)
+scRepertoire v0.99.9 added the functionality of the powerTCR approach to comparing clone size distribution, [please cite](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1006571) the manuscript if using the ```clonesizeDistribution()``` function.
 
 ### Installation of Development Branch
+
+```devtools::install_github("ncborcherding/scRepertoire@dev")```
+
+**Note** Users with R versions < 4.0 or should use the dev version. 
 
 ```devtools::install_github("ncborcherding/scRepertoire@dev")```
 

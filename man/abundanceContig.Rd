@@ -13,7 +13,7 @@ abundanceContig(
 )
 }
 \arguments{
-\item{df}{The product of CombineContig() or expression2List().}
+\item{df}{The product of combineTCR(), combineBCR(), or expression2List().}
 
 \item{cloneCall}{How to call the clonotype - CDR3 gene (gene), 
 CDR3 nucleotide (nt), CDR3 amino acid (aa), or C
@@ -33,12 +33,13 @@ ggplot of the total or relative adundance of clonotypes
 across quanta
 }
 \description{
-This function takes the output of combineContig() or expression2List() and 
-displays the number of clonotypes at specific frequencies by sample or 
-group. Visualization can either be a line graph using calculated numbers 
-or if scale = TRUE, the output will be a density plot. Multiple sequencing 
-runs can be group together using the group parameter. If a matrix output 
-for the data is preferred, set exportTable = TRUE.
+This function takes the output of combineTCR(), combineBCR(), or 
+expression2List() and displays the number of clonotypes at specific 
+frequencies by sample or group. Visualization can either be a line 
+graph using calculated numbers or if scale = TRUE, the output will 
+be a density plot. Multiple sequencing runs can be group together 
+using the group parameter. If a matrix output for the data is 
+preferred, set exportTable = TRUE.
 }
 \examples{
 #Making combined contig data

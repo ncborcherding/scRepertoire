@@ -16,11 +16,12 @@
 #' rep(c("P", "T"), 3), cells ="T-AB")
 #' 
 #' #Getting a sample of a Seurat object
-#' seurat_example <- readRDS(url(
-#' "https://ncborcherding.github.io/vignettes/seurat_example.rds"))
+#' screp_example <- get(data("screp_example"))
+#' sce <- suppressMessages(Seurat::UpdateSeuratObject(screp_example))
+#' sce <- Seurat::as.SingleCellExperiment(sce)
 #' 
 #' #Using combineExpresion()
-#' seurat_example <- combineExpression(combined, seurat_example)
+#' sce <- combineExpression(combined, sce)
 #' 
 #' @param df The product of CombineTCR() or CombineBCR().
 #' @param sc The seurat or SingleCellExperiment (SCE) object to attach
@@ -33,6 +34,8 @@
 #' @param filterNA Method to subset seurat object of barcodes without 
 #' clonotype information
 #' @import Seurat
+#' @importFrom SummarizedExperiment colData<- 
+#' @importFrom SingleCellExperiment colData
 #' @export
 #' @return seurat or SingleCellExperiment object with attached clonotype 
 #' information
@@ -55,7 +58,8 @@ combineExpression <- function(df, sc, cloneCall="gene+nt", groupBy="none",
                 summarise(Frequency = n())
             colnames(data2)[1] <- cloneCall
             data <- merge(data, data2, by = cloneCall, all = TRUE)
-            Con.df <- rbind.data.frame(Con.df, data) }
+            Con.df <- rbind.data.frame(Con.df, data)
+        }
     } else if (groupBy != "none") {
         data <- data.frame(bind_rows(df), stringsAsFactors = FALSE)
         data2 <- na.omit(unique(data[,c("barcode", cloneCall, groupBy)]))
@@ -79,19 +83,12 @@ combineExpression <- function(df, sc, cloneCall="gene+nt", groupBy="none",
     PreMeta <- unique(Con.df[,c("barcode", "CTgene", "CTnt", 
                 "CTaa", "CTstrict", "Frequency", "cloneType")])
     rownames(PreMeta) <- PreMeta$barcode
-    if (inherits(x=sc, what ="Seurat")) {
-      sc <- AddMetaData(sc, PreMeta) 
-    } else if (inherits(x=sc, what ="cell_data_set")){
-      rownames <- rownames(colData(sc))
-      colData(sc) <- cbind(colData(sc), PreMeta[rownames,])[, union(colnames(colData(sc)),  colnames(PreMeta))]
-      rownames(colData(sc)) <- rownames 
-    }else{
-      rownames <- rownames(sc@metadata[[1]])
-      sc@metadata[[1]] <- 
-        merge(sc@metadata[[1]], PreMeta)[, union(names(sc@metadata[[1]]), 
-                                                 names(PreMeta))]
-      rownames(sc@metadata[[1]]) <- rownames 
-        }
+    if (inherits(x=sc, what ="Seurat")) { sc <- AddMetaData(sc, PreMeta) 
+    } else {
+        rownames <- rownames(colData(sc))
+        colData(sc) <- cbind(colData(sc), PreMeta[rownames,])[, union(colnames(colData(sc)),  colnames(PreMeta))]
+        rownames(colData(sc)) <- rownames 
+    } 
     if (filterNA == TRUE) { sc <- filteringNA(sc) }
     return(sc) }
 
@@ -106,14 +103,13 @@ combineExpression <- function(df, sc, cloneCall="gene+nt", groupBy="none",
 #' rep(c("P", "T"), 3), cells ="T-AB")
 #' 
 #' #Getting a sample of a Seurat object
-#' seurat_example <- readRDS(url(
-#' "https://ncborcherding.github.io/vignettes/seurat_example.rds"))
+#' screp_example <- get(data("screp_example"))
 #' 
 #' #Using combineExpresion()
-#' seurat_example <- combineExpression(combined, seurat_example)
+#' screp_example <- combineExpression(combined, screp_example )
 #' 
 #' #Using highlightClonotype()
-#' seurat_example <- highlightClonotypes(seurat_example, cloneCall= "aa", 
+#' screp_example  <- highlightClonotypes(screp_example, cloneCall= "aa", 
 #' sequence = c("CAVNGGSQGNLIF_CSAEREDTDTQYF"))
 #' 
 #' @param sc The seurat object to attach
@@ -158,14 +154,15 @@ highlightClonotypes <- function(sc,
 #' rep(c("P", "T"), 3), cells ="T-AB")
 #' 
 #' #Getting a sample of a Seurat object
-#' seurat_example <- readRDS(url(
-#' "https://ncborcherding.github.io/vignettes/seurat_example.rds"))
+#' screp_example <- get(data("screp_example"))
+#' sce <- suppressMessages(Seurat::UpdateSeuratObject(screp_example))
+#' sce <- Seurat::as.SingleCellExperiment(sce)
 #' 
 #' #Using combineExpresion()
-#' seurat_example <- combineExpression(combined, seurat_example)
+#' sce <- combineExpression(combined, sce)
 #' 
 #' #Using alluvialClonotypes()
-#' alluvialClonotypes(seurat_example, cloneCall = "gene", 
+#' alluvialClonotypes(sce, cloneCall = "gene", 
 #' y.axes = c("Patient", "cluster"), color = "cluster")
 #' 
 #' @param sc The seurat or SCE object to visualize after combineExpression(). 
@@ -197,7 +194,8 @@ alluvialClonotypes <- function(sc,
     meta <- grabMeta(sc)
     meta$barcodes <- rownames(meta)
     check <- colnames(meta) == color
-    if (length(unique(check)) == 1 & unique(check)[1] == FALSE & !is.null(color)) {
+    if (length(unique(check)) == 1 & unique(check)[1] == FALSE & 
+        !is.null(color)) {
         meta <- meta %>% mutate(H.clonotypes = ifelse(meta[,cloneCall] %in% 
             color, "Selected", "Other"))
         color <- "H.clonotypes" }
@@ -228,3 +226,60 @@ alluvialClonotypes <- function(sc,
     } else if (length(facet) == 0) { plot <- plot }
     return(plot)}
 
+
+#' Visualize the number of single cells with clonotype frequencies by cluster
+#'
+#' View the count of clonotypes frequency group in seurat or SCE object 
+#' meta data after combineExpression(). The visualization will take the 
+#' new meta data variable "cloneType" and plot the number of cells with
+#' each designation using a secondary variable, like cluster. Credit to 
+#' the idea goes to Dr. Carmonia and his work with
+#' [ProjectTIL](https://github.com/carmonalab/ProjecTILs).
+#'
+#' @examples
+#' #Getting the combined contigs
+#' combined <- combineTCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), 
+#' rep(c("P", "T"), 3), cells ="T-AB")
+#' 
+#' #Getting a sample of a Seurat object
+#' screp_example <- get(data("screp_example"))
+#' sce <- suppressMessages(Seurat::UpdateSeuratObject(screp_example))
+#' sce <- Seurat::as.SingleCellExperiment(sce)
+#' 
+#' #Using combineExpresion()
+#' sce <- combineExpression(combined, sce)
+#' 
+#' #Using occupiedscRepertoire()
+#' occupiedscRepertoire(sce, x.axis = "cluster")
+#' table <- occupiedscRepertoire(sce, x.axis = "cluster", exportTable = TRUE)
+#' 
+#' @param sc The seurat or SCE object to visualize after combineExpression(). 
+#' For SCE objects, the cluster variable must be in the meta data under 
+#' "cluster".
+#' @param x.axis The variable in the meta data to graph along the x.axis
+#' @param exportTable Exports a table of the data into the global 
+#' environment in addition to the visualization
+#' 
+#' @importFrom reshape2 melt
+#' @import ggplot2
+#' @export
+#' @return Stacked bar plot of counts of cells by clonotype frequency group
+
+occupiedscRepertoire <- function(sc, x.axis = "cluster", exportTable = FALSE) {
+    checkSingleObject(sc)
+    meta <- grabMeta(sc)
+    meta <- melt(table(meta[!is.na(meta$Frequency), 
+                c(x.axis, "cloneType")]), varnames = c(x.axis, "cloneType"))
+    if (exportTable == TRUE) {
+        return(meta)
+    }
+    col <- length(unique(meta$cloneType))
+    ggplot(meta, aes(x = meta[,x.axis], y = value, fill = cloneType)) + 
+        geom_bar(stat = "identity") + 
+        theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
+        scale_fill_manual(values = c(colorblind_vector(col))) + 
+            ylab("Single Cells") + 
+            theme_classic() + 
+            theme(axis.title.x = element_blank())
+    
+}

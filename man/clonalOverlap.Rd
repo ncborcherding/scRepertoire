@@ -12,7 +12,7 @@ clonalOverlap(
 )
 }
 \arguments{
-\item{df}{The product of CombineContig() or expression2List()}
+\item{df}{The product of combineTCR(), combineBCR(),  or expression2List().}
 
 \item{cloneCall}{How to call the clonotype - CDR3 gene (gene), 
 CDR3 nucleotide (nt) or CDR3 amino acid (aa), or 
@@ -30,10 +30,10 @@ ggplot of the clonotypic overlap between elements of a list
 \description{
 This functions allows for the caclulation and visualizations of the 
 overlap coefficient or morisita index for clonotypes using the product 
-of combineContig() or expression2list(). The overlap coefficient is 
-calculated using the intersection of clonotypes divided by the length 
-of the smallest componenet. Morisita index is estimating the dispersion 
-of a population, more information can be found 
+of combineTCR(), combineBCR() or expression2list(). The overlap 
+coefficient is calculated using the intersection of clonotypes 
+divided by the length of the smallest componenet. Morisita index is 
+estimating the dispersion of a population, more information can be found 
 [here](https://en.wikipedia.org/wiki/Morisita%27s_overlap_index).
 If a matrix output for the data is preferred, set exportTable = TRUE.
 }
