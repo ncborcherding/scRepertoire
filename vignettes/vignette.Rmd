@@ -1,17 +1,17 @@
 ---
 title: Starting work with scRepertoire.
 author: 
-- name: Nick Borcherding
+  name: Nick Borcherding
   email: ncborch@gmail.com
   affiliation: Washington University in St. Louis, School of Medicine, St. Louis, MO, USA
-date: "September 1st, 2020"
+date: "October 16, 2020"
 output:
   BiocStyle::html_document:
     toc_float: true
-package: escape
+package: scRepertoire
 vignette: >
   %\VignetteEngine{knitr::knitr}
-  %\VignetteIndexEntry{Escape-ingToWork}
+  %\VignetteIndexEntry{scRepertoire}
   %\usepackage[UTF-8]{inputenc}
 ---
 
