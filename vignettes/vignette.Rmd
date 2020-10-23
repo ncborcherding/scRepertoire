@@ -10,9 +10,9 @@ output:
     toc_float: true
 package: scRepertoire
 vignette: >
-  %\VignetteEngine{knitr::knitr}
-  %\VignetteIndexEntry{scRepertoire}
-  %\usepackage[UTF-8]{inputenc}
+  %\VignetteIndexEntry{Using scRepertoire}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8} 
 ---
 
 ```{r, echo=FALSE, results="hide", message=FALSE}
