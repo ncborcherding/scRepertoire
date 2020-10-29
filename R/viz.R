@@ -296,13 +296,14 @@ compareClonotypes <- function(df, cloneCall = "gene+nt", samples = NULL,
         stop("Reasses the filtering strategies here, there is not 
             enough clonotypes to examine.") }
     if (exportTable == TRUE) { return(Con.df)}
-    plot = ggplot(Con.df, aes(x = Sample, fill = Clonotypes, 
+    
+    plot <- ggplot(Con.df, aes(x = Sample, fill = Clonotypes, group = Clonotypes,
                     stratum = Clonotypes, alluvium = Clonotypes, 
                     y = Proportion, label = Clonotypes)) +
                 theme_classic() +
                 theme(axis.title.x = element_blank())
     if (graph == "alluvial") {
-        plot = plot + geom_flow() + geom_stratum()
+        plot = plot +  geom_stratum() + geom_flow(stat = "alluvium")
     } else if (graph == "area") {
         plot = plot +
             geom_area(aes(group = Clonotypes), color = "black") }
