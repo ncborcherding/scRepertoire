@@ -25,11 +25,26 @@ scRepertoire v0.99.9 added the functionality of the powerTCR approach to compari
 
 ### Installation
 
-```devtools::install_github("ncborcherding/scRepertoire")```
+```
+devtools::install_github("ncborcherding/scRepertoire")
+```
 
-**Note** Users with R versions < 4.0 or should use the dev version. 
+**Note** Users with R versions < 4.0 or should use the dev version. Make sure you update tidyverse packages, like dplyr > 1.0. 
 
-```devtools::install_github("ncborcherding/scRepertoire@dev")```
+```
+devtools::install_github("ncborcherding/scRepertoire@dev")
+```
+
+**Bioconductor**
+
+[scRepertoire](https://www.bioconductor.org/packages/release/bioc/html/scRepertoire.html) is now on Bioconductor. Use the link to find out more information. scRepertoire (for R v4 or greater) can be installed from Bioconductor with:
+
+```
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("scRepertoire")
+```
 
 ### Getting Data
 
