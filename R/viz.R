@@ -336,7 +336,6 @@ compareClonotypes <- function(df, cloneCall = "gene+nt", samples = NULL,
 #' @import dplyr
 #' @importFrom ggplot2 ggplot
 #' @importFrom powerTCR fdiscgammagpd get_distances
-#' @importFrom ggdendro ggdendrogram
 #' @export
 #' @return ggplot dendrogram of the clone size distribution
 
@@ -363,19 +362,19 @@ clonesizeDistribution <- function(df,  cloneCall ="gene+nt",
         list <- list()
         for (i in seq_along(df)) {
             list[[i]] <- Con.df[,i+1]
-            list[[i]] <- suppressWarnings(fdiscgammagpd(list[[i]], useq = 1))}
+            list[[i]] <- suppressWarnings(fdiscgammagpd(list[[i]], useq = 1))
+            }
         names(list) <- names(df)
         grid <- 0:10000
         distances <- get_distances(list, grid, modelType="Spliced")
         hclust <- hclust(as.dist(distances), method = method)
-        plot <- ggdendrogram(hclust)
+        hcd <- as.dendrogram(hclust)
+        plot <- plot(hcd)
         if (exportTable == TRUE) { return(distances) }
         return(plot)
 }
 
 #This is the basic color palette for the package
-#' @import RColorBrewer
-#' @import colorRamps
 colorblind_vector <- colorRampPalette(c("#FF4B20", "#FFB433", 
                                         "#C6FDEC", "#7AC5FF", "#0348A6"))
 

@@ -134,7 +134,7 @@ The first function to explore the clonotypes is *quantContig()* to return the to
 +  TRUE - relative percent of unique clonotypes scaled by total size of the size of the clonotype repertoire
 +  FALSE - Report the total number of unique clonotypes
 
-```{r Figure2A_1}
+```{r}
 quantContig(combined, cloneCall="gene+nt", scale = TRUE)
 ```
 
@@ -148,26 +148,26 @@ quantContig_output
 
 The other option here is to be able to define the visualization by data classes. Here we used the *combineTCR()* to define the **ID** variable as part of the naming structure. We can the **group** to specifically use a column in the data set to organize the visualization.
 
-```{r Figure2A_2}
+```{r}
 quantContig(combined, cloneCall="gene", group = "ID", scale = TRUE)
 ```
 
 We can also examine the relative distribution of clonotypes by abundance. Here *abundanceContig()* will produce a line graph with a total number of clonotypes by the number of instances within the sample or run. Like above, we can also group this by vectors within the contig object using the **group** variable in the function
 
-```{r Figure2B}
+```{r}
 abundanceContig(combined, cloneCall = "gene", scale = FALSE)
 abundanceContig(combined, cloneCall = "gene", group = "ID", scale = FALSE)
 ```
 
 As you can see the peripheral blood sample derived from patient 1 is a relative extreme outlier. Another method to examine the relative abundance is to look at the density by using the **scale** call in the function.
 
-```{r Figure2C}
+```{r}
 abundanceContig(combined, group = "ID", scale = TRUE)
 ```
 
 Lastly on the basic visualization side, we can look at the length distribution of the CDR3 sequences by calling the *lengtheContig()* function. Importantly, unlike the other basic visualizations, the **cloneCall** can only be "nt" or "aa". Due to the method of calling clonotypes as outlined above, the length should reveal a multimodal curve, this is a product of using the **NA** for the unreturned chain sequence and multiple chains within a single barcode. 
 
-```{r Figure2D}
+```{r}
 lengthContig(combined, cloneCall="aa", chains = "combined") 
 ```
 
@@ -230,7 +230,7 @@ By examining the clonal space, we are effectively looking at the relative space 
 +  Large = .1
 +  Hyperexpanded = 1
 
-```{r Figure3A}
+```{r}
 clonalHomeostasis(combined, cloneCall = "gene")
 clonalHomeostasis(combined, cloneCall = "aa")
 ```
@@ -250,7 +250,7 @@ The **split** represents ranking of clonotypes by copy or frequency of occurrenc
 +  30000
 +  100000
 
-```{r Figure3B}
+```{r}
 clonalProportion(combined, cloneCall = "gene") 
 clonalProportion(combined, cloneCall = "nt") 
 ```
@@ -260,7 +260,7 @@ clonalProportion(combined, cloneCall = "nt")
 
 If you are interested in measures of similarity between the samples loaded into scRepertoire, using *clonalOverlap()* can assist in the visualization. Two methods currently can be performed in *clonalOverlap()* 1) overlap coefficient and 2) Morisita index. The former is looking at the overlap of clonotypes scaled to the length of unique clonotypes in the smaller sample. The Morisita index is more complex, it is an ecological measure of the dispersion of individuals within a population, incorporating the size of the population.
 
-```{r Figure3C}
+```{r}
 clonalOverlap(combined, cloneCall = "gene+nt", method = "morisita")
 ```
 
@@ -275,7 +275,7 @@ clonesizeDistribution(combined, cloneCall = "gene+nt",
 
 Diversity can also be measured for samples or by other variables. Diversity is calculated using four metrics: 1) Shannon, 2) inverse Simpson, 3) Chao1, and 4) Abundance-based Coverage Estimator (ACE). With the former two generally used to estimate baseline diversity and Chao/ACE indices used to estimate the richness of the samples.
 
-```{r Figure3D}
+```{r}
 clonalDiversity(combined, cloneCall = "gene", group = "samples")
 clonalDiversity(combined, cloneCall = "gene", group = "ID")
 ```
@@ -286,8 +286,7 @@ clonalDiversity(combined, cloneCall = "gene", group = "ID")
 
 As mentioned previously, this data set is derived from work performed in the laboratory of [Weizhou Zhang]("https://pathology.ufl.edu/faculty/experimental-pathology/weizhou-zhang-ph-d/"). For the purposes of the vignette, we have randomly sampled 100 cells from the the fully integrated Seurat object to minimize the size of the package. A full version of the Seurat object is available via [GitHub](https://github.com/ncborcherding/scRepertoire) under the *Getting Data* header. We will use both Seurat and SingleCellExperiment (SCE) with scater to perform the further visualizations in tandem. 
 
-```{r Figure4A}
-library(SingleCellExperiment)
+```{r}
 library(Seurat)
 library(scater)
 screp_example <- get(data("screp_example"))
@@ -322,7 +321,7 @@ sce <- combineExpression(combined, sce, cloneCall = "gene", groupBy = "sample")
 
 We first want to look at the distribution of peripheral versus tumor T cells. We can use the same color scheme as the rest of the scRepertoire package by calling the object **colorblind_vector** using the following hex codes. 
 
-```{r Figure4B_1}
+```{r}
 colorblind_vector <- colorRampPalette(c("#FF4B20", "#FFB433", "#C6FDEC", "#7AC5FF", "#0348A6"))
 
 DimPlot(screp_example, group.by = "Type") + NoLegend() +
@@ -331,7 +330,7 @@ DimPlot(screp_example, group.by = "Type") + NoLegend() +
 
 We can also look at the composition of each cluster by comparing the proportion of the cluster comprising peripheral blood versus tumor T cells. We can do this by first forming a table of the cluster and type of cells, then scaling the rows of the table by the total number of cells sequenced. 
 
-```{r Figure4B_2}
+```{r}
 table <- table(screp_example$Type, Idents(screp_example))
 table[1,] <- table[1,]/sum(table[1,]) #Scaling by the total number of peripheral T cells
 table[2,] <- table[2,]/sum(table[2,]) #Scaling by the total number of tumor T cells
@@ -351,7 +350,7 @@ scale_fill_manual(values = c("#FF4B20","#0348A6")) +
 
 Now we can look at the distribution of the clonotype bins by first ordering the **clonoType** as a factor, this prevents the coloring from being in alphabetical order. Next we use the *DimPlot()* function call in Seurat with our scale_color_manual additional layer. 
 
-```{r Figure4C}
+```{r}
 slot(screp_example, "meta.data")$cloneType <- factor(slot(screp_example, "meta.data")$cloneType, 
                 levels = c("Hyperexpanded (100 < X <= 500)", "Large (20 < X <= 100)", 
                             "Medium (5 < X <= 20)", "Small (1 < X <= 5)", 
@@ -366,7 +365,7 @@ plotUMAP(sce, colour_by = "cloneType")
 
 We can also look at the clonotypes by calling specific sequences in the *highlightClonotypes()* below. In order to highlight the clonotypes, we first need to use the **cloneCall** the type of sequence we will be using and then the specific sequences themselves using **sequence**. Below you can see the steps to highlight the two most prominent sequences *"CAVNGGSQGNLIF_CSAEREDTDTQYF"* with a frequency = 482 (clonotype 1) and *"NA_CATSATLRVVAEKLFF"* with a frequency = 287 (Clonotype2). 
 
-```{r Figure4E}
+```{r}
 seurat <- highlightClonotypes(screp_example, cloneCall= "aa", 
                 sequence = c("CAVNGGSQGNLIF_CSAEREDTDTQYF", "NA_CATSATLRVVAEKLFF"))
 DimPlot(seurat, group.by = "highlight")
@@ -383,7 +382,7 @@ occupiedscRepertoire(sce, x.axis = "cluster")
 
 After all the metadata has been modified, we can look at clonotypes across multiple categories using the *alluvialClonotypes()* function. To understand the basic concepts of this graphing method, I'd highly recommend reading [this post](https://cran.r-project.org/web/packages/ggalluvial/vignettes/ggalluvial.html), essentially we are able to use the plots to examine the interchange of categorical variables. Because this function will produce a graph with each clonotype arranged by called stratifications, this will take some time depending on the size of your total cells. To expedite, we will actually subset the Seurat object before using *alluvialClonotypes()*.
 
-```{r Figure4F}
+```{r}
 
 alluvialClonotypes(screp_example, cloneCall = "gene", 
                    y.axes = c("Patient", "cluster", "Type"), 
@@ -413,8 +412,8 @@ library(scales)
 circles <- getCirclize(screp_example, groupBy = "cluster")
 
 #Just assigning the normal colors to each cluster
-grid.cols <- hue_pal()(length(unique(seurat@active.ident)))
-names(grid.cols) <- levels(seurat@active.ident)
+grid.cols <- hue_pal()(length(unique(Idents(seurat))))
+names(grid.cols) <- levels(Idents(seurat))
 
 #Graphing the chord diagram
 chordDiagram(circles, self.link = 1, grid.col = grid.cols)

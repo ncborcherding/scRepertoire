@@ -33,7 +33,7 @@
     utils::globalVariables ("alluvium")
     utils::globalVariables ("x")
     utils::globalVariables ("colData")
-    utils::globalVariables ("colData<-")
+    utils::globalVariables ("as.dendrogram")
 
 
     invisible ()

@@ -33,9 +33,9 @@
 #' @param cloneTypes The bins for the grouping based on frequency
 #' @param filterNA Method to subset seurat object of barcodes without 
 #' clonotype information
+#' 
 #' @import Seurat
-#' @importFrom SummarizedExperiment colData<- 
-#' @importFrom SingleCellExperiment colData
+#' @importFrom SummarizedExperiment colData
 #' @export
 #' @return seurat or SingleCellExperiment object with attached clonotype 
 #' information
@@ -70,7 +70,9 @@ combineExpression <- function(df, sc, cloneCall="gene+nt", groupBy="none",
             sub1 <- subset(data, data[,groupBy] == x[i])
             sub2 <- subset(data2, data2[,groupBy] == x[i])
             merge <- merge(sub1, sub2, by=cloneCall)
-            Con.df <- rbind.data.frame(Con.df, merge) } }
+            Con.df <- rbind.data.frame(Con.df, merge) 
+            } 
+        }
     Con.df$cloneType <- NA
     for (x in seq_along(cloneTypes)) { names(cloneTypes)[x] <- 
         paste0(names(cloneTypes[x]), ' (', cloneTypes[x-1], 
@@ -175,8 +177,7 @@ highlightClonotypes <- function(sc,
 #' @param facet The column label to seperate.
 #' @param alpha The column header to have gradieted opacity.
 #'
-#' @import ggfittext
-#' @import ggalluvial
+#' @importFrom ggalluvial geom_stratum geom_alluvium geom_flow stat_stratum
 #' @import dplyr
 #' @export
 #' @return Alluvial ggplot comparing clonotype distribution across 
@@ -205,7 +206,6 @@ alluvialClonotypes <- function(sc,
     plot <- ggplot(data = lodes, aes(x = x, stratum = stratum, 
                 alluvium = alluvium, label = stratum)) +
         geom_stratum() + theme_classic() +
-        geom_fit_text(stat = "stratum", infer.label = FALSE, reverse = TRUE) +
         theme(axis.title.x = element_blank(), axis.ticks.x = element_blank())
     if (is.null(color) & is.null(alpha)) {
         plot <- plot + geom_alluvium()
