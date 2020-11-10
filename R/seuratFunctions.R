@@ -33,9 +33,9 @@
 #' @param cloneTypes The bins for the grouping based on frequency
 #' @param filterNA Method to subset seurat object of barcodes without 
 #' clonotype information
-#' 
-#' @import Seurat
-#' @importFrom SummarizedExperiment colData
+#' @importFrom dplyr bind_rows
+#' @importFrom  rlang %||%
+#' @importFrom SummarizedExperiment colData colData<-
 #' @export
 #' @return seurat or SingleCellExperiment object with attached clonotype 
 #' information
@@ -83,7 +83,12 @@ combineExpression <- function(df, sc, cloneCall="gene+nt", groupBy="none",
     PreMeta <- unique(Con.df[,c("barcode", "CTgene", "CTnt", 
                 "CTaa", "CTstrict", "Frequency", "cloneType")])
     rownames(PreMeta) <- PreMeta$barcode
-    if (inherits(x=sc, what ="Seurat")) { sc <- AddMetaData(sc, PreMeta) 
+    if (inherits(x=sc, what ="Seurat")) { 
+        #######need to test out
+        rownames(slot(sc, "meta.data"))
+        col.name <- col.name %||% names(PreMeta) %||% colnames(Premeta)
+        sce[[col.name]] <- Premeta
+        if (is.null(x = col.name)) {
     } else {
         rownames <- rownames(colData(sc))
         colData(sc) <- cbind(colData(sc), PreMeta[rownames,])[, union(colnames(colData(sc)),  colnames(PreMeta))]

@@ -20,7 +20,7 @@
 #' CDR3 gene+nucleotide (gene+nt).
 #' @param group The column header used for grouping.
 #' @param scale Converts the graphs into percentage of unique clonotypes.
-#' @param exportTable Returns the data frame used for forming the graph,
+#' @param exportTable Returns the data frame used for forming the graph
 #' @import ggplot2
 #' @export
 #' @return ggplot of the total or relative unique clonotypes
@@ -98,8 +98,7 @@ quantContig <- function(df, cloneCall = "gene+nt", scale=FALSE, group = NULL,
 #' @param group The column header for which you would like to analyze the data.
 #' @param scale Converts the graphs into denisty plots in order to show 
 #' relative distributions.
-#' @param exportTable Exports a table of the data into the global 
-#' environment in addition 
+#' @param exportTable Returns the data frame used for forming the graph
 #' to the visualization.
 #' @importFrom ggplot2 ggplot
 #' @export
@@ -333,7 +332,7 @@ compareClonotypes <- function(df, cloneCall = "gene+nt", samples = NULL,
 #' CDR3 gene+nucleotide (gene+nt).
 #' @param method The clustering paramater for the dendrogram.
 #' @param exportTable Returns the data frame used for forming the graph.
-#' @import dplyr
+#' @importFrom  dplyr bind_rows
 #' @importFrom ggplot2 ggplot
 #' @importFrom powerTCR fdiscgammagpd get_distances
 #' @export

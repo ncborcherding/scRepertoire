@@ -10,18 +10,23 @@ LazyData: true
 RoxygenNote: 7.1.1
 biocViews: Software, ImmunoOncology, SingleCell, Classification, Annotation, Sequencing
 Depends: 
-	dplyr, 
 	ggplot2, 
-	reshape2, 
 	R (>= 4.0)
 Imports: 
-	Biostrings,  
+	Biostrings,
+	dplyr,
+	reshape2,  
 	ggalluvial,
 	stringr, 
 	vegan, 
 	powerTCR, 
 	SummarizedExperiment,
-	Seurat
+	Seurat, 
+	plyr,
+	parallel,
+	doParallel,
+	methods,
+	utils
 Suggests: 
 	knitr, 
 	rmarkdown, 

@@ -1,8 +1,31 @@
-StartracDiversity <- function(seurat,
+
+#' Diversity indices for single-cell RNA-seq
+#'
+#' @description This function utilizes the Startrac R package derived from 
+#' [PMID: 30479382](https://pubmed.ncbi.nlm.nih.gov/30479382/) 
+#' Required to run the function, the "type" variable needs to include the difference in 
+#' where the cells were derived. The output of this function will produce 3 indices: 
+#' expa (clonal expansion), migra (cross-tissue migration), and trans (state transition). 
+#' In order to understand the underlying analyses of the outputs please read and cite the linked
+#' manuscript. 
+#'
+#' @param sc The seurat or SCE object to visualize after combineExpression(). 
+#' For SCE objects, the cluster variable must be in the meta data under 
+#' "cluster".
+#' @param type The column header in the meta data that gives the where the cells were derived from, not the patient sample IDs
+#' @param sample The column header corresponding to individual samples or patients. This must be
+#' @param by Method to subset the indices by either overall (across all samples) or by specific group
+#' @param exportTable Returns the data frame used for forming the graph
+#' @importFrom reshape2 melt
+#' @import ggplot2
+#' @export
+
+StartracDiversity <- function(sc,
                               type = "Type",
                               sample = NULL,
-                              by = c("overall")) {
-    meta <- data.frame(seurat[[]], Idents(seurat), stringsAsFactors = F)
+                              by = "overall", 
+                              exportTable = FALSE) {
+    meta <- grabMeta(sc)
     colnames(meta)[ncol(meta)] <- "majorCluster"
     meta$clone.status <- ifelse(meta$Frequency > 1, "Yes", "No")
     if (is.null(sample)) {
@@ -40,9 +63,10 @@ StartracDiversity <- function(seurat,
             guides(fill=F) +
             theme(axis.title.x = element_blank())
     }
-    
+    if (exportTable == TRUE) { 
+        return(indices) 
+        } 
     return(plot)
-    
 }
 
 
@@ -70,7 +94,6 @@ StartracDiversity <- function(seurat,
 #' @name Startrac
 #' @rdname Startrac
 #' @aliases Startrac-class
-#' @exportClass Startrac
 Startrac <- setClass("Startrac",
                      slots = c(aid = "character",
                                cell.data = "data.frame",
@@ -128,7 +151,7 @@ setMethod("show",
 #' @param cell.data data.frame contains the input data
 #' @param aid character analysis id
 #' @param n.perm integer number of permutation will be performed. If NULL, no permutation. (default: NULL)
-#' @param cores number of core to be used. Passed to doParallel::registerDoParallel. default: NULL.
+#' @param cores number of core to be used. Passed to doParallel registerDoParallel. default: NULL.
 #' @name initialize
 #' @aliases initialize,Startrac-method
 #' @docType methods
@@ -176,7 +199,7 @@ setMethod("initialize",
 #' @importFrom doParallel registerDoParallel
 #' @param object A Startrac object
 #' @param n.perm integer number of permutation will be performed. If NULL, no permutation. (default: NULL)
-#' @param cores number of core to be used. Passed to doParallel::registerDoParallel. default: NULL.
+#' @param cores number of core to be used. Passed to doParallel registerDoParallel. default: NULL.
 #' @param normEntropy logical; whether normalize migration and transition index. default: FALSE.
 #' @return an object of class \code{Startrac}
 Startrac.calIndex <- function(object,cores,n.perm,normEntropy)
@@ -230,13 +253,13 @@ setMethod("calIndex", signature = "Startrac", definition = Startrac.calIndex)
 #' @name pIndex
 #' @aliases pIndex pIndex,Startrac-method
 #'
-#' @importFrom data.table dcast
+#' @importFrom reshape2 dcast
 #' @importFrom plyr ldply adply
-#' @importFrom utils combn
 #' @importFrom parallel makeCluster stopCluster detectCores
 #' @importFrom doParallel registerDoParallel
+#' @importFrom utils combn
 #' @param object A Startrac object
-#' @param cores number of core to be used. Passed to doParallel::registerDoParallel. default: NULL.
+#' @param cores number of core to be used. Passed to doParallel registerDoParallel. default: NULL.
 #' @param n.perm integer number of permutation will be performed. If NULL, no permutation. (default: NULL)
 #' @return an object of class \code{Startrac}
 Startrac.pIndex <- function(object,cores,n.perm)
@@ -342,7 +365,7 @@ setMethod("pIndex", signature = "Startrac", definition = Startrac.pIndex)
 #' 
 #' @importFrom plyr laply
 #' @importFrom doParallel registerDoParallel
-#' @importFrom data.table melt
+#' @importFrom reshape2 melt
 #' @param obj A Startrac object
 #' @param obj.perm A list of Startrac objects from permutation data 
 #' @return an object of class \code{Startrac}
@@ -450,96 +473,10 @@ setMethod("show",
           }
 )
 
-#' plot the indexes
-#
-#' @name plot
-#' @aliases plot plot,StartracOut-method
-#' 
-#' @importFrom plyr laply
-#' @importFrom doParallel registerDoParallel
-#' @importFrom data.table melt as.data.table melt
-#' @importFrom ggpubr ggbarplot ggboxplot
-#' @importFrom ggplot2 facet_wrap theme element_text aes geom_text
-#' @importFrom ComplexHeatmap Heatmap
-#' @importFrom RColorBrewer brewer.pal
-#' @importFrom circlize colorRamp2
-#' @importFrom grDevices colorRampPalette
-#' @param obj A object of StartracOut
-#' @param index.type one of "cluster.all", "pairwise.migr", "pairwise.tran". (default:"cluster.all")
-#' @param byPatient logical. plot indexes of each patient (default: FALSE)
-#' @return a ggplot2 object or Heatmap-class object
-StartracOut.plot <- function(obj,index.type,byPatient)
-{
-    if(index.type=="cluster.all"){
-        if(byPatient){
-            p <- ggboxplot(as.data.table(obj@cluster.sig.data)[aid!=obj@proj,][order(majorCluster),],
-                           x="majorCluster",y="value",palette = "npg",
-                           color = "index", add = "point", outlier.colour=NULL) +
-                facet_wrap(~index,ncol=1,scales = "free_y") +
-                theme(axis.text.x=element_text(angle = 60,hjust = 1))
-        }else{
-            dat.plot <- as.data.table(obj@cluster.sig.data)[aid==obj@proj,]
-            dat.plot$p.value.label <- ""
-            dat.plot$p.value.label[dat.plot$p.value < 0.05] <- "*"
-            dat.plot$p.value.label[dat.plot$p.value < 0.01] <- "**"
-            dat.plot$p.value.label[dat.plot$p.value < 0.001] <- "***"
-            p <- ggbarplot(dat.plot[order(majorCluster),],
-                           x="majorCluster",y="value",palette = "npg",fill = "index") +
-                facet_wrap(~index,ncol=1,scales = "free_y") +
-                coord_cartesian(clip="off") +
-                theme(axis.text.x=element_text(angle = 60,hjust = 1),strip.background = element_blank())
-            if(!all(is.na(dat.plot$p.value))){
-                p <- p + geom_text(aes(label=p.value.label,y=value),size=5)
-            }
-        }
-        
-    }else if(index.type=="pairwise.migr"){
-        if(byPatient){
-            p <- ggboxplot(as.data.table(obj@pIndex.sig.migr)[aid!=obj@proj,][order(majorCluster),],
-                           x="majorCluster",y="value",palette = "npg",
-                           color = "index", add = "point", outlier.colour=NULL) +
-                facet_wrap(~index,ncol=1,scales = "free_y") +
-                theme(axis.text.x=element_text(angle = 60,hjust = 1))      
-        }else{
-            dat.plot <- as.data.table(obj@pIndex.sig.migr)[aid==obj@proj,]
-            dat.plot$p.value.label <- ""
-            dat.plot$p.value.label[dat.plot$p.value < 0.05] <- "*"
-            dat.plot$p.value.label[dat.plot$p.value < 0.01] <- "**"
-            dat.plot$p.value.label[dat.plot$p.value < 0.001] <- "***"
-            p <- ggbarplot(dat.plot[order(majorCluster),],
-                           x="majorCluster",y="value",palette = "npg",fill = "index") +
-                facet_wrap(~index,ncol=1,scales = "free_y") +
-                coord_cartesian(clip="off") +
-                theme(axis.text.x=element_text(angle = 60,hjust = 1),strip.background = element_blank())
-            if(!all(is.na(dat.plot$p.value))){
-                p <- p + geom_text(aes(label=p.value.label,y=value),size=5)
-            }
-        }
-    }else if(index.type=="pairwise.tran"){
-        dat.plot <- as.matrix(subset(obj@pIndex.tran,aid==obj@proj)[,c(-1,-2)])
-        rownames(dat.plot) <- subset(obj@pIndex.tran,aid==obj@proj)[,2]
-        dat.plot[is.na(dat.plot)] <- 0
-        yrange <- pretty(dat.plot)
-        col.heat <- colorRamp2(seq(0,max(yrange),length=15),
-                               colorRampPalette(rev(brewer.pal(n=7,name="RdBu")))(15),
-                               space = "LAB")
-        p <- Heatmap(dat.plot,name="pIndex.tran",col = col.heat)
-    }
-    return(p)
-}
-
-#' @export
-setGeneric("plot", function(obj,index.type="cluster.all",byPatient=F) standardGeneric("plot"))
-
-#' @rdname plot
-#' @aliases plot
-setMethod("plot", signature = "StartracOut", definition = StartracOut.plot)
-
 
 
 #' dispaly message with time stamp
 #' @param msg characters; message to display
-#' @export
 loginfo <- function(msg) {
     timestamp <- sprintf("%s", Sys.time())
     msg <- paste0("[",timestamp, "] ", msg,"\n")
@@ -565,12 +502,11 @@ mcol.entropy <- function(x)
 }
 
 #' warpper function for Startrac analysis
-#' @importFrom data.table dcast
+#' @importFrom reshape2 dcast
 #' @importFrom plyr ldply adply llply
 #' @importFrom parallel makeCluster stopCluster
 #' @importFrom doParallel registerDoParallel
-#' @importFrom methods new slot
-#' @importFrom methods slot<-
+#' @importFrom methods new slot slot<- new validObject
 #' @param cell.data data.frame. Each line for a cell, and these columns as required: `Cell_Name`, `clone.id`, `patient`, `majorCluster`, `loc`
 #' @param proj character. String used to annotate the project.
 #' @param cores integer. number of core to be used. default: NULL.
@@ -578,13 +514,7 @@ mcol.entropy <- function(x)
 #' @param verbose logical. wheter return intermediate result (some Startrac objects) 
 #' @details run the Startrac pipeline
 #' @return an list contains data.frame elements "cluster.data","pIndex.migr" and "pIndex.tran"
-#' @export
-#' @examples 
-#' library("Startrac")
-#' dat.file <- system.file("extdata/example.cloneDat.Zhang2018.txt",package = "Startrac")
-#' in.dat <- read.table(dat.file,stringsAsFactors = FALSE,head=TRUE)
-#' out <- Startrac.run(in.dat, proj="CRC", cores=2,verbose=FALSE)
-#' 
+
 Startrac.run <- function(cell.data, proj="CRC", cores=NULL,n.perm=NULL,verbose=F)
 {
     ##tic("obj.proj")
@@ -611,7 +541,6 @@ Startrac.run <- function(cell.data, proj="CRC", cores=NULL,n.perm=NULL,verbose=F
         #registerDoParallel(cl)
         withCallingHandlers({
             obj.list <- llply(patient.vec,function(pid,cell.data){
-                require("Startrac")
                 obj <- new("Startrac",subset(cell.data,patient==pid),aid=pid)
                 obj <- calIndex(obj)
                 obj <- pIndex(obj,cores=1)
@@ -648,34 +577,4 @@ Startrac.run <- function(cell.data, proj="CRC", cores=NULL,n.perm=NULL,verbose=F
     }
     loginfo("return")
     return(ret)
-}
-
-#' calculate Startrac.dist (tissue distribution preference)
-#' @import data.table
-#' @importFrom plyr aaply
-#' @importFrom stats chisq.test
-#' @param dat.tb data.frame. Each line for a cell, and these columns as required: `majorCluster`, `loc`
-#' @param byPatient logical. whether calculate the index for each patient. (default: FALSE)
-#' @param colname.cluster character. which column specify the cluster (default: "majorCluster")
-#' @param colname.patient character. which column specify the patient  (default: "patient")
-#' @param colname.tissue character. which column specify the tissue  (default: "loc")
-#' @details calculate Startrac.dist (tissue distribution preference) which is based on Chisquare test.
-#' @return an array full of R_{o/e}
-#' @export
-calTissueDist <- function(dat.tb,byPatient=F,colname.cluster="majorCluster",
-                          colname.patient="patient",colname.tissue="loc")
-{
-    if(byPatient==F){
-        N.o <- table(dat.tb[[colname.cluster]],dat.tb[[colname.tissue]])
-        res.chisq <- chisq.test(N.o)
-        R.oe <- (res.chisq$observed)/(res.chisq$expected)
-    }else{
-        N.o.byPatient <- table(dat.tb[[colname.patient]],
-                               dat.tb[[cluster.colname]], dat.tb[[colname.tissue]])
-        R.oe <- aaply(N.o.byPatient,1,function(x){
-            res.chisq <- chisq.test(x)
-            return((res.chisq$observed)/(res.chisq$expected))
-        })
-    }
-    return(R.oe)
 }

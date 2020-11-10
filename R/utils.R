@@ -14,11 +14,10 @@ checkSingleObject <- function(sc) {
     }
 
 #This is to grab the meta data from a seurat or SCE object
-#' @importFrom SummarizedExperiment colData<- 
-#' @importFrom SingleCellExperiment colData
+#' @importFrom SummarizedExperiment colData 
 grabMeta <- function(sc) {
     if (inherits(x=sc, what ="Seurat")) {
-        meta <- data.frame(sc[[]], Idents(sc))
+        meta <- data.frame(sc[[]], slot(sc, "active.ident"))
         colnames(meta)[length(meta)] <- "cluster"
     }
     else if (inherits(x=sc, what ="SummarizedExperiment")){
