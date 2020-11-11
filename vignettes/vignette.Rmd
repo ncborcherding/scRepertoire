@@ -366,11 +366,9 @@ plotUMAP(sce, colour_by = "cloneType")
 We can also look at the clonotypes by calling specific sequences in the *highlightClonotypes()* below. In order to highlight the clonotypes, we first need to use the **cloneCall** the type of sequence we will be using and then the specific sequences themselves using **sequence**. Below you can see the steps to highlight the two most prominent sequences *"CAVNGGSQGNLIF_CSAEREDTDTQYF"* with a frequency = 482 (clonotype 1) and *"NA_CATSATLRVVAEKLFF"* with a frequency = 287 (Clonotype2). 
 
 ```{r}
-seurat <- highlightClonotypes(screp_example, cloneCall= "aa", 
+screp_example <- highlightClonotypes(screp_example, cloneCall= "aa", 
                 sequence = c("CAVNGGSQGNLIF_CSAEREDTDTQYF", "NA_CATSATLRVVAEKLFF"))
-DimPlot(seurat, group.by = "highlight")
-
-
+Seurat::DimPlot(screp_example, group.by = "highlight")
 ```
 
 We can also look at count of cells by cluster assigned into specific frequency ranges, by using the *occupiedscRepertoire()* function and selecting the **x.axis** to display cluster or other variables in the meta data of the single cell object. 
@@ -383,20 +381,11 @@ occupiedscRepertoire(sce, x.axis = "cluster")
 After all the metadata has been modified, we can look at clonotypes across multiple categories using the *alluvialClonotypes()* function. To understand the basic concepts of this graphing method, I'd highly recommend reading [this post](https://cran.r-project.org/web/packages/ggalluvial/vignettes/ggalluvial.html), essentially we are able to use the plots to examine the interchange of categorical variables. Because this function will produce a graph with each clonotype arranged by called stratifications, this will take some time depending on the size of your total cells. To expedite, we will actually subset the Seurat object before using *alluvialClonotypes()*.
 
 ```{r}
-
 alluvialClonotypes(screp_example, cloneCall = "gene", 
                    y.axes = c("Patient", "cluster", "Type"), 
                    color = "TRAV12-2.TRAJ42.TRAC_TRBV20-1.TRBJ2-3.TRBD2.TRBC2") + 
     scale_fill_manual(values = c("grey", colorblind_vector(1)))
 
-alluvialClonotypes(screp_example, cloneCall = "gene", 
-                   y.axes = c("Patient", "cluster", "Type"), 
-                   color = "cluster") 
-
-alluvialClonotypes(sce, cloneCall = "gene", 
-                   y.axes = c("Patient", "seurat_clusters", "Type"), 
-                   color = "TRAV12-2.TRAJ42.TRAC_TRBV20-1.TRBJ2-3.TRBD2.TRBC2") + 
-    scale_fill_manual(values = c("grey", colorblind_vector(1)))
 
 alluvialClonotypes(sce, cloneCall = "gene", 
                    y.axes = c("Patient", "seurat_clusters", "Type"), 
@@ -412,13 +401,26 @@ library(scales)
 circles <- getCirclize(screp_example, groupBy = "cluster")
 
 #Just assigning the normal colors to each cluster
-grid.cols <- hue_pal()(length(unique(Idents(seurat))))
-names(grid.cols) <- levels(Idents(seurat))
+grid.cols <- hue_pal()(length(unique(Idents(screp_example))))
+names(grid.cols) <- levels(slot(screp_example, "active.ident"))
 
 #Graphing the chord diagram
 chordDiagram(circles, self.link = 1, grid.col = grid.cols)
 ```
 
+## Diversity of single-cells using Startrac
+
+From the excellent work by Lei Zhang, et al in [Lineage tracking reveals dynamic relationships of T cells in colorectal cancer](https://www.nature.com/articles/s41586-018-0694-x), the authors introduce new methods for looking at clonotypes by cellular origins and cluster identification. Their [startrac](https://github.com/Japrin/STARTRAC) software has been incorporated into scRepertoire. If you are using the output of this specific function, please cite their excellent work. 
+
+In order to use the ```StartracDiversity()``` function, you will need to include the product of the ```combinedSeurat()``` function. The second requirement is the a column header in the meta data of the Seurat object that has tissue of origin. In the example data,**type** corresponds to the column "Type", which includes the "P" and "T" classifier. The indices can be subseted for a specific patient or examined overall using the **by** variable. Importantly, the function uses only the strict definition of clonotype of the genes and the CDR3 nucleotide sequence. 
+*The indices output includes:*
++  expa - Clonal Expansion
++  migr - Cross-tissue Migration
++  tran - State Transition
+
+```{r}
+StartracDiversity(screp_example, type = "Type", sample = "Patient", by = "overall")
+```
 
 
 For users that would like greater ability to use the meta data in the Seurat objects to perform the analysis that scRepertoire provides, there is also the option of using the *expression2List()* function that will take the meta data and output the data as a list by cluster.

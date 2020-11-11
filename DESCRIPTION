@@ -21,17 +21,18 @@ Imports:
 	vegan, 
 	powerTCR, 
 	SummarizedExperiment,
-	Seurat, 
 	plyr,
 	parallel,
 	doParallel,
 	methods,
-	utils
+	utils, 
+	rlang
 Suggests: 
 	knitr, 
 	rmarkdown, 
 	BiocStyle, 
 	scater, 
 	circlize, 
-	scales
+	scales,
+	Seurat
 VignetteBuilder: knitr

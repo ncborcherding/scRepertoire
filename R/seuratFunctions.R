@@ -33,7 +33,7 @@
 #' @param cloneTypes The bins for the grouping based on frequency
 #' @param filterNA Method to subset seurat object of barcodes without 
 #' clonotype information
-#' @importFrom dplyr bind_rows
+#' @importFrom dplyr bind_rows %>%
 #' @importFrom  rlang %||%
 #' @importFrom SummarizedExperiment colData colData<-
 #' @export
@@ -85,10 +85,8 @@ combineExpression <- function(df, sc, cloneCall="gene+nt", groupBy="none",
     rownames(PreMeta) <- PreMeta$barcode
     if (inherits(x=sc, what ="Seurat")) { 
         #######need to test out
-        rownames(slot(sc, "meta.data"))
-        col.name <- col.name %||% names(PreMeta) %||% colnames(Premeta)
-        sce[[col.name]] <- Premeta
-        if (is.null(x = col.name)) {
+        col.name <- names(PreMeta) %||% colnames(PreMeta)
+        sc[[col.name]] <- PreMeta
     } else {
         rownames <- rownames(colData(sc))
         colData(sc) <- cbind(colData(sc), PreMeta[rownames,])[, union(colnames(colData(sc)),  colnames(PreMeta))]
@@ -132,16 +130,15 @@ highlightClonotypes <- function(sc,
         stop("Object indicated is not of class 'Seurat', make sure you 
             are using the correct data.") }
     cloneCall <- theCall(cloneCall)
-    meta <- sc[[]]
+    meta <- grabMeta(sc)
     meta$highlight <- NA
     for(i in seq_along(sequence)) {
         meta$highlight <- ifelse(meta[,cloneCall] == sequence[i], 
                             paste("Clonotype", i, sep=""),  meta$highlight) }
-    names <- rownames(meta)
-    meta <- data.frame(meta[,c("highlight")])
-    rownames(meta) <- names
-    colnames(meta)[1] <- "highlight"
-    sc <- AddMetaData(sc, meta)
+    meta <- meta[,-(which(colnames(meta) == "cluster"))]
+    col.name <- names(meta) %||% colnames(meta)
+    sc[[col.name]] <- meta
+    return(sc)
 }
 
 #' Exploring interaction of clonotypes by seurat or SCE dynamics

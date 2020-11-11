@@ -76,7 +76,8 @@ filteringNA <- function(sc) {
     evalNA <- evalNA %>%
         transmute(indicator = ifelse(is.na(indicator), 0, 1))
     rownames(evalNA) <- rownames(meta)
-    sc <- AddMetaData(sc, evalNA)
+    col.name <- names(evalNA) %||% colnames(evalNA)
+    sc[[col.name]] <- evalNA
     sc <- subset(sc, cloneType != 0)
     return(sc)
 }
