@@ -9,6 +9,9 @@ loginfo(msg)
 \arguments{
 \item{msg}{characters; message to display}
 }
+\value{
+Estimate of sys.time
+}
 \description{
 dispaly message with time stamp
 }

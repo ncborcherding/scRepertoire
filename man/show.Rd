@@ -11,6 +11,9 @@
 \arguments{
 \item{object}{A Startrac object}
 }
+\value{
+method for show
+}
 \description{
 show method for Startrac
 }

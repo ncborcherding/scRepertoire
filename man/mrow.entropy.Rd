@@ -9,6 +9,9 @@ mrow.entropy(x)
 \arguments{
 \item{x}{matrix;}
 }
+\value{
+row entropy
+}
 \description{
 entropy of each row of the input matrix
 }

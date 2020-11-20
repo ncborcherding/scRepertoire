@@ -6,34 +6,47 @@
 \alias{Startrac-class}
 \title{The Startrac Class}
 \description{
-The Startrac object store the data for tcr-based T cell dynamics analyis. The slots contained in Startrac object are listed below:
+The Startrac object store the data for tcr-based T cell dynamics analyis. The slots contained 
+in Startrac object are listed below:
 }
 \section{Slots}{
 
 \describe{
-\item{\code{aid}}{character. aid of the object, used for identification of the object. For example, patient id. default: "AID"}
+\item{\code{aid}}{character. aid of the object, used for identification of the object. 
+For example, patient id. default: "AID"}
 
-\item{\code{cell.data}}{data.frame. Each line for a cell, and these columns as required: `Cell_Name`, `clone.id`, `patient`, `majorCluster`, `loc`}
+\item{\code{cell.data}}{data.frame. Each line for a cell, and these columns as 
+required: `Cell_Name`, `clone.id`, `patient`, `majorCluster`, `loc`}
 
-\item{\code{cell.perm.data}}{object. list of `Startrac`` objects constructed from permutated cell data}
+\item{\code{cell.perm.data}}{object. list of `Startrac`` objects constructed from 
+permutated cell data}
 
-\item{\code{clonotype.data}}{data.frame. Each line for a clonotype; contain the clonotype level indexes information}
+\item{\code{clonotype.data}}{data.frame. Each line for a clonotype; contain the 
+clonotype level indexes information}
 
-\item{\code{cluster.data}}{data.frame. Each line for a cluster; contain the cluster level indexes information}
+\item{\code{cluster.data}}{data.frame. Each line for a cluster; contain the cluster 
+level indexes information}
 
-\item{\code{pIndex.migr}}{data.frame. Each line for a cluster; pairwise migration index between the two locations indicated in the column name.}
+\item{\code{pIndex.migr}}{data.frame. Each line for a cluster; pairwise migration 
+index between the two locations indicated in the column name.}
 
-\item{\code{pIndex.tran}}{data.frame. Each line for a cluster; pairwise transition index betwwen the two major clusters indicated by the row name and column name.}
+\item{\code{pIndex.tran}}{data.frame. Each line for a cluster; pairwise transition 
+index betwwen the two major clusters indicated by the row name and column name.}
 
-\item{\code{cluster.sig.data}}{data.frame. Each line for a cluster; contains the p values of cluster indices.}
+\item{\code{cluster.sig.data}}{data.frame. Each line for a cluster; contains the 
+p values of cluster indices.}
 
-\item{\code{pIndex.sig.migr}}{data.frame. Each line for a cluster; contains the p values of pairwise migration indices.}
+\item{\code{pIndex.sig.migr}}{data.frame. Each line for a cluster; contains the 
+p values of pairwise migration indices.}
 
-\item{\code{pIndex.sig.tran}}{data.frame. Each line for a cluster; contains the p values of pairwise transition indices.}
+\item{\code{pIndex.sig.tran}}{data.frame. Each line for a cluster; contains the 
+p values of pairwise transition indices.}
 
-\item{\code{clonotype.dist.loc}}{matrix. Each line for a clonotype and describe the cells distribution among the locations.}
+\item{\code{clonotype.dist.loc}}{matrix. Each line for a clonotype and describe 
+the cells distribution among the locations.}
 
-\item{\code{clonotype.dist.cluster}}{matrix. Each line for a clonotype and describe the cells distribution among the clusters.}
+\item{\code{clonotype.dist.cluster}}{matrix. Each line for a clonotype and 
+describe the cells distribution among the clusters.}
 
 \item{\code{clust.size}}{array. Number of cells of each major cluster.}
 

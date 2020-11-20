@@ -9,6 +9,9 @@ mcol.entropy(x)
 \arguments{
 \item{x}{matrix;}
 }
+\value{
+column entropy
+}
 \description{
 entropy of each column of the input matrix
 }

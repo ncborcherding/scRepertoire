@@ -3,12 +3,14 @@
 #'
 #' @description This function utilizes the Startrac R package derived from 
 #' [PMID: 30479382](https://pubmed.ncbi.nlm.nih.gov/30479382/) 
-#' Required to run the function, the "type" variable needs to include the difference in 
-#' where the cells were derived. The output of this function will produce 3 indices: 
-#' expa (clonal expansion), migra (cross-tissue migration), and trans (state transition). 
-#' In order to understand the underlying analyses of the outputs please read and cite the linked
-#' manuscript. 
+#' Required to run the function, the "type" variable needs to include the 
+#' difference in where the cells were derived. The output of this function 
+#' will produce 3 indices: expa (clonal expansion), migra 
+#' (cross-tissue migration), and trans (state transition). In order 
+#' to understand the underlying analyses of the outputs please 
+#' read and cite the linked manuscript. 
 #' 
+#' @example 
 #' #' #Getting a sample of a Seurat object
 #' screp_example <- get(data("screp_example"))
 #' 
@@ -21,29 +23,37 @@
 #' @param sc The seurat or SCE object to visualize after combineExpression(). 
 #' For SCE objects, the cluster variable must be in the meta data under 
 #' "cluster".
-#' @param type The column header in the meta data that gives the where the cells were derived from, not the patient sample IDs
-#' @param sample The column header corresponding to individual samples or patients. This must be
-#' @param by Method to subset the indices by either overall (across all samples) or by specific group
+#' @param type The column header in the meta data that gives the where the 
+#' cells were derived from, not the patient sample IDs
+#' @param sample The column header corresponding to individual samples 
+#' or patients. 
+#' @param by Method to subset the indices by either overall 
+#' (across all samples) or by specific group
 #' @param exportTable Returns the data frame used for forming the graph
 #' @importFrom reshape2 melt
 #' @import ggplot2
 #' @export
+#' @return ggplot object of Startrac diversity metrics
 StartracDiversity <- function(sc,
-                              type = "Type",
-                              sample = NULL,
-                              by = "overall", 
-                              exportTable = FALSE) {
+                            type = "Type",
+                            sample = NULL,
+                            by = "overall", 
+                            exportTable = FALSE) {
     meta <- grabMeta(sc)
     colnames(meta)[ncol(meta)] <- "majorCluster"
     meta$clone.status <- ifelse(meta$Frequency > 1, "Yes", "No")
     if (is.null(sample)) {
-        stop("Must Add the sample information in order to make the StarTrac calculations")
+        stop("Must Add the sample information in order to make 
+             the StarTrac calculations")
     } else {
-        processed <- data.frame(rownames(meta), meta$CTstrict, meta$clone.status, meta[,sample], meta[,"majorCluster"], meta[,type], stringsAsFactors = F)
-        colnames(processed) <- c("Cell_Name", "clone.id", "clone.status", "patient", "majorCluster", "loc")
+        processed <- data.frame(rownames(meta), meta$CTstrict, meta$clone.status, 
+                                meta[,sample], meta[,"majorCluster"], 
+                                meta[,type], stringsAsFactors = FALSE)
+        colnames(processed) <- c("Cell_Name", "clone.id", "clone.status", "patient", 
+                                 "majorCluster", "loc")
     }
     processed <- na.omit(processed)
-    indices <- suppressWarnings(Startrac.run(processed, proj = "total", verbose = F))
+    indices <- suppressWarnings(Startrac.run(processed, proj = "total", verbose = FALSE))
     indices <- data.frame(indices@cluster.data)
     if (by == "overall") {
         indices <- subset(indices, aid != "total")
@@ -58,7 +68,7 @@ StartracDiversity <- function(sc,
             facet_grid(variable ~.) +
             theme_classic() +
             ylab("Index Score") +
-            guides(fill=F) +
+            guides(fill=FALSE) +
             theme(axis.title.x = element_blank())
         
     } else {
@@ -68,7 +78,7 @@ StartracDiversity <- function(sc,
             facet_grid(variable ~.) +
             theme_classic() +
             ylab("Index Score") +
-            guides(fill=F) +
+            guides(fill=FALSE) +
             theme(axis.title.x = element_blank())
     }
     if (exportTable == TRUE) { 
@@ -82,19 +92,32 @@ StartracDiversity <- function(sc,
 
 #' The Startrac Class
 #'
-#' The Startrac object store the data for tcr-based T cell dynamics analyis. The slots contained in Startrac object are listed below:
-#' @slot aid character. aid of the object, used for identification of the object. For example, patient id. default: "AID"
-#' @slot cell.data data.frame. Each line for a cell, and these columns as required: `Cell_Name`, `clone.id`, `patient`, `majorCluster`, `loc`
-#' @slot cell.perm.data object. list of `Startrac`` objects constructed from permutated cell data
-#' @slot clonotype.data data.frame. Each line for a clonotype; contain the clonotype level indexes information
-#' @slot cluster.data data.frame. Each line for a cluster; contain the cluster level indexes information
-#' @slot pIndex.migr data.frame. Each line for a cluster; pairwise migration index between the two locations indicated in the column name.
-#' @slot pIndex.tran data.frame. Each line for a cluster; pairwise transition index betwwen the two major clusters indicated by the row name and column name.
-#' @slot cluster.sig.data data.frame. Each line for a cluster; contains the p values of cluster indices.
-#' @slot pIndex.sig.migr data.frame. Each line for a cluster; contains the p values of pairwise migration indices.
-#' @slot pIndex.sig.tran data.frame. Each line for a cluster; contains the p values of pairwise transition indices.
-#' @slot clonotype.dist.loc matrix. Each line for a clonotype and describe the cells distribution among the locations.
-#' @slot clonotype.dist.cluster matrix. Each line for a clonotype and describe the cells distribution among the clusters.
+#' The Startrac object store the data for tcr-based T cell dynamics analyis. The slots contained 
+#' in Startrac object are listed below:
+#' @slot aid character. aid of the object, used for identification of the object. 
+#' For example, patient id. default: "AID"
+#' @slot cell.data data.frame. Each line for a cell, and these columns as 
+#' required: `Cell_Name`, `clone.id`, `patient`, `majorCluster`, `loc`
+#' @slot cell.perm.data object. list of `Startrac`` objects constructed from 
+#' permutated cell data
+#' @slot clonotype.data data.frame. Each line for a clonotype; contain the 
+#' clonotype level indexes information
+#' @slot cluster.data data.frame. Each line for a cluster; contain the cluster 
+#' level indexes information
+#' @slot pIndex.migr data.frame. Each line for a cluster; pairwise migration 
+#' index between the two locations indicated in the column name.
+#' @slot pIndex.tran data.frame. Each line for a cluster; pairwise transition 
+#' index betwwen the two major clusters indicated by the row name and column name.
+#' @slot cluster.sig.data data.frame. Each line for a cluster; contains the 
+#' p values of cluster indices.
+#' @slot pIndex.sig.migr data.frame. Each line for a cluster; contains the 
+#' p values of pairwise migration indices.
+#' @slot pIndex.sig.tran data.frame. Each line for a cluster; contains the 
+#' p values of pairwise transition indices.
+#' @slot clonotype.dist.loc matrix. Each line for a clonotype and describe 
+#' the cells distribution among the locations.
+#' @slot clonotype.dist.cluster matrix. Each line for a clonotype and 
+#' describe the cells distribution among the clusters.
 #' @slot clust.size array. Number of cells of each major cluster.
 #' @slot patient.size array. Number of cells of each patient. 
 #' @slot clone.size array. Number of cells of each clone.
@@ -103,30 +126,31 @@ StartracDiversity <- function(sc,
 #' @rdname Startrac
 #' @aliases Startrac-class
 Startrac <- setClass("Startrac",
-                     slots = c(aid = "character",
-                               cell.data = "data.frame",
-                               cell.perm.data = "list",
-                               clonotype.data = "data.frame",
-                               cluster.data = "data.frame",
-                               cluster.sig.data = "data.frame",
-                               pIndex.migr = "data.frame",
-                               pIndex.tran = "data.frame",
-                               pIndex.sig.migr = "data.frame",
-                               pIndex.sig.tran = "data.frame",
-                               clonotype.dist.loc = "matrix",
-                               clonotype.dist.cluster = "matrix",
-                               clust.size = "array",
-                               patient.size = "array",
-                               clone.size = "array",
-                               clone2patient = "array"))
+                    slots = c(aid = "character",
+                        cell.data = "data.frame",
+                        cell.perm.data = "list",
+                        clonotype.data = "data.frame",
+                        cluster.data = "data.frame",
+                        cluster.sig.data = "data.frame",
+                        pIndex.migr = "data.frame",
+                        pIndex.tran = "data.frame",
+                        pIndex.sig.migr = "data.frame",
+                        pIndex.sig.tran = "data.frame",
+                        clonotype.dist.loc = "matrix",
+                        clonotype.dist.cluster = "matrix",
+                        clust.size = "array",
+                        patient.size = "array",
+                        clone.size = "array",
+                        clone2patient = "array"))
 
 
 setValidity("Startrac",
             function(object) {
                 msg <- NULL
                 if(!is.data.frame(object@cell.data) || 
-                   !all(c("Cell_Name","clone.id","patient","majorCluster","loc") %in% colnames(object@cell.data))){
-                    msg <- sprintf("cell.data must be data.frame and contain these columns: Cell_Name, clone.id, patient, majorCluster, loc")
+                    !all(c("Cell_Name","clone.id","patient","majorCluster","loc") %in% colnames(object@cell.data))){
+                    msg <- sprintf("cell.data must be data.frame and contain these columns: Cell_Name, clone.id, 
+                                patient, majorCluster, loc")
                 }
                 if (is.null(msg)) TRUE
                 else msg
@@ -141,16 +165,17 @@ setValidity("Startrac",
 #' @aliases show,Startrac-method 
 #' @docType methods
 #' @keywords internal
+#' @returns method for show
 setMethod("show",
-          signature = "Startrac",
-          definition = function(object) {
-              cat(sprintf("An object of class %s, aid %s, %d cells from %d clonotypes\n",
-                          class(object),
-                          object@aid,
-                          nrow(object@cell.data),
-                          nrow(object@clonotype.data)))
-              invisible(x = NULL)
-          }
+            signature = "Startrac",
+            definition = function(object) {
+                cat(sprintf("An object of class %s, aid %s, %d cells from %d clonotypes\n",
+                    class(object),
+                    object@aid,
+                    nrow(object@cell.data),
+                    nrow(object@clonotype.data)))
+            invisible(x = NULL)
+        }
 )
 
 #' initialize method for Startrac
@@ -168,35 +193,34 @@ setMethod("show",
 #' @return an object of class \code{Startrac}
 #' @keywords internal
 setMethod("initialize",
-          signature = "Startrac",
-          definition = function(.Object, cell.data, aid="AID",n.perm=NULL,cores=NULL){
-              .Object@aid <- aid
-              .Object@cell.data <- as.data.frame(cell.data)
-              validObject(.Object)
-              .Object@clonotype.dist.loc <- unclass(table(.Object@cell.data[,c("clone.id","loc")]))
-              .Object@clonotype.dist.cluster <- unclass(table(.Object@cell.data[,c("clone.id","majorCluster")]))
-              
-              .Object@clust.size <- unclass(table(.Object@cell.data$majorCluster))
-              .Object@patient.size <- unclass(table(.Object@cell.data$patient))
-              .Object@clone.size <- unclass(sort(table(.Object@cell.data$clone.id),decreasing = T))
-              .clone2patient <- unique(.Object@cell.data[,c("patient","clone.id")])
-              .Object@clone2patient <- as.array(structure(.clone2patient$patient, 
-                                                          names=.clone2patient$clone.id))
-              .Object@cell.perm.data <- list()
-              if(!is.null(n.perm)){
-                  registerDoParallel(if(is.null(cores)) (detectCores()-2) else cores)
-                  .Object@cell.perm.data <- llply(seq_len(n.perm),function(i){
-                      perm.cell.data <- ldply(unique(.Object@cell.data$patient),function(pp){
-                          .dat <- subset(.Object@cell.data,patient==pp)
-                          .dat$clone.id <- .dat$clone.id[sample(nrow(.dat))]
-                          return(.dat)
-                      })
-                      ###perm.cell.data$clone.id <- perm.cell.data$clone.id[sample(nrow(perm.cell.data))]
-                      new("Startrac",perm.cell.data,aid=sprintf("perm%06d",i))
-                  },.progress = "none",.parallel=T)
-              }
-              return(.Object)
-          }
+        signature = "Startrac",
+        definition = function(.Object, cell.data, aid="AID",n.perm=NULL,cores=NULL){
+            .Object@aid <- aid
+            .Object@cell.data <- as.data.frame(cell.data)
+            validObject(.Object)
+            .Object@clonotype.dist.loc <- unclass(table(.Object@cell.data[,c("clone.id","loc")]))
+            .Object@clonotype.dist.cluster <- unclass(table(.Object@cell.data[,c("clone.id","majorCluster")]))
+            .Object@clust.size <- unclass(table(.Object@cell.data$majorCluster))
+            .Object@patient.size <- unclass(table(.Object@cell.data$patient))
+            .Object@clone.size <- unclass(sort(table(.Object@cell.data$clone.id),decreasing = TRUE))
+            .clone2patient <- unique(.Object@cell.data[,c("patient","clone.id")])
+            .Object@clone2patient <- as.array(structure(.clone2patient$patient, 
+                                                names=.clone2patient$clone.id))
+            .Object@cell.perm.data <- list()
+            if(!is.null(n.perm)){
+                registerDoParallel(if(is.null(cores)) (detectCores()-2) else cores)
+                .Object@cell.perm.data <- llply(seq_len(n.perm),function(i){
+                    perm.cell.data <- ldply(unique(.Object@cell.data$patient),function(pp){
+                    .dat <- subset(.Object@cell.data,patient==pp)
+                    .dat$clone.id <- .dat$clone.id[sample(nrow(.dat))]
+                    return(.dat)
+            })
+            ###perm.cell.data$clone.id <- perm.cell.data$clone.id[sample(nrow(perm.cell.data))]
+            new("Startrac",perm.cell.data,aid=sprintf("perm%06d",i))
+            },.progress = "none",.parallel=TRUE)
+        }
+            return(.Object)
+    }
 )
 
 #' Calculate cluster level indices
@@ -220,9 +244,9 @@ Startrac.calIndex <- function(object,cores,n.perm,normEntropy)
     .entropy <- mcol.entropy(object@clonotype.dist.cluster)
     .entropy.max <- log2(colSums(object@clonotype.dist.cluster > 0))
     object@cluster.data <- data.frame("aid"=object@aid,
-                                      "majorCluster"=colnames(object@clonotype.dist.cluster),
-                                      "expa"=1-.entropy/.entropy.max,
-                                      stringsAsFactors = F)
+                            "majorCluster"=colnames(object@clonotype.dist.cluster),
+                            "expa"=1-.entropy/.entropy.max,
+                            stringsAsFactors = FALSE)
     ### clone level migration and transition index
     if(normEntropy){
         .entropy.migr.max <- log2(ncol(object@clonotype.dist.loc))
@@ -244,7 +268,7 @@ Startrac.calIndex <- function(object,cores,n.perm,normEntropy)
         registerDoParallel(if(is.null(cores)) (detectCores()-2) else cores)
         object@cell.perm.data <- llply(object@cell.perm.data,function(x){
             calIndex(x,cores=1,normEntropy=normEntropy)
-        },.progress = "none",.parallel=T)
+        },.progress = "none",.parallel=TRUE)
         #stopCluster(cl)
         
     }
@@ -284,12 +308,13 @@ Startrac.pIndex <- function(object,cores,n.perm)
     #tic("migr")
     #clone.dist.loc.majorCluster.debug <<- clone.dist.loc.majorCluster
     withCallingHandlers({
-        cls.migr.index.df <- ldply(seq_len(dim(clone.dist.loc.majorCluster)[1]),function(i,clone.dist.loc.majorCluster){
+        cls.migr.index.df <- ldply(seq_len(dim(clone.dist.loc.majorCluster)[1]),
+                                function(i,clone.dist.loc.majorCluster){
             dat.cls <- clone.dist.loc.majorCluster[i,,]
             i.name <- dimnames(clone.dist.loc.majorCluster)[["majorCluster"]][i]
             dat.cls.index <- NULL
             if(!is.null(ncol(dat.cls)) && ncol(dat.cls)>=2){
-                comb.loc <- as.data.frame(t(combn(colnames(dat.cls),2)),stringsAsFactors=F)
+                comb.loc <- as.data.frame(t(combn(colnames(dat.cls),2)),stringsAsFactors=FALSE)
                 dat.cls.pIndex.migr <- apply(comb.loc,1,function(x){
                     dat.block <- dat.cls[,x]
                     dat.block.clone.index <- mrow.entropy(dat.block)
@@ -297,12 +322,12 @@ Startrac.pIndex <- function(object,cores,n.perm)
                     t(rowSums(dat.block)/sum(dat.block)) %*% dat.block.clone.index
                 })
                 dat.cls.index <- cbind(data.frame(majorCluster=rep(i.name,nrow(comb.loc)),
-                                                  pIndex.migr=dat.cls.pIndex.migr,
-                                                  stringsAsFactors = F),
-                                       comb.loc)
+                                    pIndex.migr=dat.cls.pIndex.migr,
+                                    stringsAsFactors = FALSE),
+                                    comb.loc)
             }
             return(dat.cls.index)
-        },clone.dist.loc.majorCluster=clone.dist.loc.majorCluster,.progress = "none",.parallel=F)
+        },clone.dist.loc.majorCluster=clone.dist.loc.majorCluster,.progress = "none",.parallel=FALSE)
     },warning=function(w) {
         if(grepl("... may be used in an incorrect context:",conditionMessage(w)))
             ### strange bug, see https://github.com/hadley/plyr/issues/203
@@ -312,7 +337,7 @@ Startrac.pIndex <- function(object,cores,n.perm)
     if(!is.null(cls.migr.index.df) && nrow(cls.migr.index.df)>0){
         cls.migr.index.df$crossLoc <- sprintf("%s-%s",cls.migr.index.df$V1,cls.migr.index.df$V2)
         object@pIndex.migr <- dcast(cls.migr.index.df,majorCluster ~ crossLoc,value.var = "pIndex.migr")
-        object@pIndex.migr <- cbind(data.frame(aid=object@aid,stringsAsFactors = F),object@pIndex.migr)
+        object@pIndex.migr <- cbind(data.frame(aid=object@aid,stringsAsFactors = FALSE),object@pIndex.migr)
     }else{
         object@pIndex.migr <- data.frame()
     }
@@ -321,7 +346,7 @@ Startrac.pIndex <- function(object,cores,n.perm)
     if(!is.null(ncol(object@clonotype.dist.cluster)) && ncol(object@clonotype.dist.cluster)>=2){
         ##comb.cls <- as.data.frame(t(combn(colnames(object@clonotype.dist.cluster),2)),stringsAsFactors=F)
         comb.cls <- expand.grid(colnames(object@clonotype.dist.cluster),
-                                colnames(object@clonotype.dist.cluster),stringsAsFactors = F)
+                                colnames(object@clonotype.dist.cluster),stringsAsFactors = FALSE)
         comb.cls <- comb.cls[comb.cls[,1]!=comb.cls[,2],]
         
         #tic("tran")
@@ -331,7 +356,7 @@ Startrac.pIndex <- function(object,cores,n.perm)
                 dat.block.clone.index <- mrow.entropy(dat.block)
                 dat.block.clone.index[is.na(dat.block.clone.index)] <- 0
                 data.frame(pIndex.tran= t(rowSums(dat.block)/sum(dat.block)) %*% dat.block.clone.index)
-            },object=object,.progress = "none",.parallel=F)
+            },object=object,.progress = "none",.parallel=FALSE)
         },warning=function(w) {
             if(grepl("... may be used in an incorrect context:",conditionMessage(w)))
                 ### strange bug, see https://github.com/hadley/plyr/issues/203
@@ -341,7 +366,7 @@ Startrac.pIndex <- function(object,cores,n.perm)
         
         object@pIndex.tran <- dcast(cls.tran.index.df,Var2~Var1,value.var = "pIndex.tran")
         colnames(object@pIndex.tran)[1] <- "majorCluster"
-        object@pIndex.tran <- cbind(data.frame(aid=object@aid,stringsAsFactors = F),object@pIndex.tran)
+        object@pIndex.tran <- cbind(data.frame(aid=object@aid,stringsAsFactors = FALSE),object@pIndex.tran)
         
         if(!is.null(n.perm)){
             #cl <- makeCluster(if(is.null(cores)) (detectCores()-2)  else cores)
@@ -349,7 +374,7 @@ Startrac.pIndex <- function(object,cores,n.perm)
             registerDoParallel(if(is.null(cores)) (detectCores()-2)  else cores)
             object@cell.perm.data <- llply(object@cell.perm.data,function(x){
                 pIndex(x,n.perm=NULL)
-            },.progress = "none",.parallel=T)
+            },.progress = "none",.parallel=TRUE)
             #stopCluster(cl)
         }
     }else{
@@ -394,14 +419,14 @@ Startrac.getSig <- function(obj,obj.perm)
         if(!is.null(obj.perm)){
             perm.mtx <- t(laply(obj.perm,function(x){
                 vv <- melt(slot(x,slot.name),id.vars=c("aid","majorCluster"),variable.name="index")
-                vv.mtx <- as.matrix(vv[,"value",drop=F])
+                vv.mtx <- as.matrix(vv[,"value",drop=FALSE])
                 rownames(vv.mtx) <- sprintf("%s.%s",vv[["majorCluster"]],vv[["index"]])
                 colnames(vv.mtx) <- x@aid
                 return(vv.mtx)
             }))
             stopifnot(all(sprintf("%s.%s",a.index$majorCluster,a.index$index)==rownames(perm.mtx)))
             a.index$p.value <- sapply(seq_along(a.index$value),function(i){
-                v.rnd <- perm.mtx[i,,drop=F]
+                v.rnd <- perm.mtx[i,,drop=FALSE]
                 sum(v.rnd >= a.index$value[i])/length(v.rnd)
             })
         }else{
@@ -443,13 +468,13 @@ setMethod("getSig", signature = "Startrac", definition = Startrac.getSig)
 #' @keywords internal
 StartracOut <- setClass("StartracOut",
                         slots = c(proj = "character",
-                                  cluster.data = "data.frame",
-                                  cluster.sig.data = "data.frame",
-                                  pIndex.migr = "data.frame",
-                                  pIndex.tran = "data.frame",
-                                  pIndex.sig.migr = "data.frame",
-                                  pIndex.sig.tran = "data.frame",
-                                  objects = "list"))
+                        cluster.data = "data.frame",
+                        cluster.sig.data = "data.frame",
+                        pIndex.migr = "data.frame",
+                        pIndex.tran = "data.frame",
+                        pIndex.sig.migr = "data.frame",
+                        pIndex.sig.tran = "data.frame",
+                        objects = "list"))
 
 #' initialize method for StartracOut
 #
@@ -460,11 +485,11 @@ StartracOut <- setClass("StartracOut",
 #' @keywords internal
 #' @return an object of class \code{StartracOut}
 setMethod("initialize",
-          signature = "StartracOut",
-          definition = function(.Object, proj="AID"){
-              .Object@proj <- proj
-              return(.Object)
-          }
+            signature = "StartracOut",
+            definition = function(.Object, proj="AID"){
+                .Object@proj <- proj
+            return(.Object)
+            }
 )
 
 
@@ -476,19 +501,19 @@ setMethod("initialize",
 #' @docType methods
 #' @keywords internal
 setMethod("show",
-          signature = "StartracOut",
-          definition = function(object) {
-              cat(sprintf("An object of class %s, proj %s:\n",
-                          class(object),
-                          object@proj))
-              cat("head of the clusters' index:\n")
-              print(head(object@cluster.data))
-              cat("head of the pairwise migration index:\n")
-              print(head(object@pIndex.migr))
-              cat("head of the pairwise transition index:\n")
-              print(head(object@pIndex.tran[,1:min(5,ncol(object@pIndex.tran))]))
-              invisible(x = NULL)
-          }
+            signature = "StartracOut",
+            definition = function(object) {
+            cat(sprintf("An object of class %s, proj %s:\n",
+                    class(object),
+                    object@proj))
+            cat("head of the clusters' index:\n")
+            print(head(object@cluster.data))
+            cat("head of the pairwise migration index:\n")
+            print(head(object@pIndex.migr))
+            cat("head of the pairwise transition index:\n")
+            print(head(object@pIndex.tran[,seq_len(min(5,ncol(object@pIndex.tran)))]))
+            invisible(x = NULL)
+        }
 )
 
 
@@ -496,6 +521,7 @@ setMethod("show",
 #' dispaly message with time stamp
 #' @param msg characters; message to display
 #' @keywords internal
+#' @return Estimate of sys.time
 loginfo <- function(msg) {
     timestamp <- sprintf("%s", Sys.time())
     msg <- paste0("[",timestamp, "] ", msg,"\n")
@@ -505,6 +531,7 @@ loginfo <- function(msg) {
 #' entropy of each row of the input matrix
 #' @param x matrix;
 #' @keywords internal
+#' @return row entropy
 mrow.entropy <- function(x)
 {
     freqs <- sweep(x,1,rowSums(x),"/")
@@ -515,6 +542,7 @@ mrow.entropy <- function(x)
 #' entropy of each column of the input matrix
 #' @param x matrix;
 #' @keywords internal
+#' @return  column entropy
 mcol.entropy <- function(x)
 {
     freqs <- sweep(x,2,colSums(x),"/")
@@ -537,7 +565,7 @@ mcol.entropy <- function(x)
 #' @keywords internal
 #' @return an list contains data.frame elements "cluster.data","pIndex.migr" and "pIndex.tran"
 
-Startrac.run <- function(cell.data, proj="CRC", cores=NULL,n.perm=NULL,verbose=F)
+Startrac.run <- function(cell.data, proj="CRC", cores=NULL,n.perm=NULL,verbose=FALSE)
 {
     ##tic("obj.proj")
     loginfo("initialize Startrac ...")
@@ -568,7 +596,7 @@ Startrac.run <- function(cell.data, proj="CRC", cores=NULL,n.perm=NULL,verbose=F
                 obj <- pIndex(obj,cores=1)
                 obj <- getSig(obj,NULL)
                 obj
-            },cell.data=cell.data,.progress = "none",.parallel=F)
+            },cell.data=cell.data,.progress = "none",.parallel=FALSE)
         },warning=function(w) {
             if(grepl("... may be used in an incorrect context:",conditionMessage(w)))
                 ### strange bug, see https://github.com/hadley/plyr/issues/203

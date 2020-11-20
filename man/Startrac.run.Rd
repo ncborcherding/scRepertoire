@@ -4,7 +4,13 @@
 \alias{Startrac.run}
 \title{warpper function for Startrac analysis}
 \usage{
-Startrac.run(cell.data, proj = "CRC", cores = NULL, n.perm = NULL, verbose = F)
+Startrac.run(
+  cell.data,
+  proj = "CRC",
+  cores = NULL,
+  n.perm = NULL,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{cell.data}{data.frame. Each line for a cell, and these columns as required: `Cell_Name`, `clone.id`, `patient`, `majorCluster`, `loc`}

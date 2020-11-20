@@ -17,29 +17,27 @@ StartracDiversity(
 For SCE objects, the cluster variable must be in the meta data under 
 "cluster".}
 
-\item{type}{The column header in the meta data that gives the where the cells were derived from, not the patient sample IDs}
+\item{type}{The column header in the meta data that gives the where the 
+cells were derived from, not the patient sample IDs}
 
-\item{sample}{The column header corresponding to individual samples or patients. This must be}
+\item{sample}{The column header corresponding to individual samples 
+or patients.}
 
-\item{by}{Method to subset the indices by either overall (across all samples) or by specific group}
+\item{by}{Method to subset the indices by either overall 
+(across all samples) or by specific group}
 
 \item{exportTable}{Returns the data frame used for forming the graph}
+}
+\value{
+ggplot object of Startrac diversity metrics
 }
 \description{
 This function utilizes the Startrac R package derived from 
 [PMID: 30479382](https://pubmed.ncbi.nlm.nih.gov/30479382/) 
-Required to run the function, the "type" variable needs to include the difference in 
-where the cells were derived. The output of this function will produce 3 indices: 
-expa (clonal expansion), migra (cross-tissue migration), and trans (state transition). 
-In order to understand the underlying analyses of the outputs please read and cite the linked
-manuscript. 
-
-#' #Getting a sample of a Seurat object
-screp_example <- get(data("screp_example"))
-
-#Using combineExpresion()
-screp_example <- combineExpression(combined, screp_example)
-
-#Using occupiedscRepertoire()
-StartracDiversity(screp_example, type = "Type", sample = "Patient", by = "overall")
+Required to run the function, the "type" variable needs to include the 
+difference in where the cells were derived. The output of this function 
+will produce 3 indices: expa (clonal expansion), migra 
+(cross-tissue migration), and trans (state transition). In order 
+to understand the underlying analyses of the outputs please 
+read and cite the linked manuscript.
 }
