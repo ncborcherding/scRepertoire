@@ -387,7 +387,7 @@ alluvialClonotypes(screp_example, cloneCall = "gene",
     scale_fill_manual(values = c("grey", colorblind_vector(1)))
 
 
-alluvialClonotypes(sce, cloneCall = "gene", 
+alluvialClonotypes(screp_example, cloneCall = "gene", 
                    y.axes = c("Patient", "seurat_clusters", "Type"), 
                    color = "seurat_clusters") 
 ```
