@@ -1,10 +1,10 @@
 ---
-title: Starting work with scRepertoire.
+title: Starting work with scRepertoire v1.0.2.
 author: 
   name: Nick Borcherding
   email: ncborch@gmail.com
   affiliation: Washington University in St. Louis, School of Medicine, St. Louis, MO, USA
-date: "October 16, 2020"
+date: "November 20th, 2020"
 output:
   BiocStyle::html_document:
     toc_float: true
