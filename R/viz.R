@@ -29,6 +29,7 @@ quantContig <- function(df, cloneCall = "gene+nt", scale=FALSE, group = NULL,
     if (length(group) > 1) { stop("Only one item in the group variable can 
                                     be listed.") }
     cloneCall <- theCall(cloneCall)
+    df <- checkBlanks(df, cloneCall)
     if (!is.null(group)) {
         x <- group
         labs <- group
@@ -109,6 +110,7 @@ abundanceContig <- function(df, cloneCall = "gene+nt", scale=FALSE,
     Con.df <- NULL
     xlab <- "Abundance"
     cloneCall <- theCall(cloneCall)
+    df <- checkBlanks(df, cloneCall)
     names <- names(df)
     if (!is.null(group)) {
         for (i in seq_along(df)) {
@@ -273,6 +275,7 @@ compareClonotypes <- function(df, cloneCall = "gene+nt", samples = NULL,
                         clonotypes = NULL, numbers = NULL, graph = "alluvial",
                         exportTable = FALSE){
     cloneCall <- theCall(cloneCall)
+    df <- checkBlanks(df, cloneCall)
     if (!is.null(numbers) & !is.null(clonotypes)) {
         stop("Make sure your inputs are either numbers or clonotype sequences.")
     }

@@ -12,3 +12,4 @@ loginfo(msg)
 \description{
 dispaly message with time stamp
 }
+\keyword{internal}

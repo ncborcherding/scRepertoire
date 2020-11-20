@@ -32,5 +32,14 @@ Required to run the function, the "type" variable needs to include the differenc
 where the cells were derived. The output of this function will produce 3 indices: 
 expa (clonal expansion), migra (cross-tissue migration), and trans (state transition). 
 In order to understand the underlying analyses of the outputs please read and cite the linked
-manuscript.
+manuscript. 
+
+#' #Getting a sample of a Seurat object
+screp_example <- get(data("screp_example"))
+
+#Using combineExpresion()
+screp_example <- combineExpression(combined, screp_example)
+
+#Using occupiedscRepertoire()
+StartracDiversity(screp_example, type = "Type", sample = "Patient", by = "overall")
 }

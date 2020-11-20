@@ -26,3 +26,4 @@ warpper function for Startrac analysis
 \details{
 run the Startrac pipeline
 }
+\keyword{internal}

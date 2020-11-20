@@ -1,4 +1,12 @@
 
+CHANGES IN VERSION 1.1.0
+------------------------
+
+* Clonal Overlap Coefficient issue fixed, was comparing unique barcodes and not clonotypes
+* Added function checkBlanks to remove list elements without clonotypes, this prevents errors for visualizations
+* Re-added Startrac metrics by stripping down the package and adding it piecemeal
+* Heavily modified dependencies to reduce total number 
+
 CHANGES IN VERSION 1.0.0
 ------------------------
 

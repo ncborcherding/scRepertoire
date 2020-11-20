@@ -25,3 +25,4 @@ an object of class \code{Startrac}
 \description{
 initialize method for Startrac
 }
+\keyword{internal}

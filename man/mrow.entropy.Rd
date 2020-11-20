@@ -12,3 +12,4 @@ mrow.entropy(x)
 \description{
 entropy of each row of the input matrix
 }
+\keyword{internal}

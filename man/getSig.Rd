@@ -21,3 +21,4 @@ an object of class \code{Startrac}
 \description{
 Get the p value given one Startrac object and a list of Startrac objects from permutation data
 }
+\keyword{internal}

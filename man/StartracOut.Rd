@@ -28,3 +28,4 @@ Object store the result of Startrac.run:
 \item{\code{objects}}{list. other objects}
 }}
 
+\keyword{internal}

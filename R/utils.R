@@ -1,3 +1,17 @@
+
+#Remove list elements that contain all NA values
+checkBlanks <- function(df, cloneCall) {
+    for (i in seq_along(df)) {
+        if (length(df[[i]][,cloneCall]) == length(which(is.na(df[[i]][,cloneCall])))) {
+            df[[i]] <- NULL
+        } else {
+            next()
+        }
+    }
+    return(df)
+}
+
+
 #Ensure df is in list format
 checkList <- function(df) {
     df <- if(is(df)[1] != "list") list(df) else df
@@ -155,12 +169,12 @@ overlapIndex <- function(df, length, cloneCall, coef_matrix) {
     for (i in seq_along(length)){
         df.i <- df[[i]]
         df.i <- df.i[,c("barcode",cloneCall)]
-        df.i_unique <- df.i[!duplicated(df.i$barcode),]
+        df.i_unique <- df.i[!duplicated(df.i[,cloneCall]),]
         for (j in seq_along(length)){
             if (i >= j){ next }
             else { df.j <- df[[j]]
             df.j <- df.j[,c("barcode",cloneCall)]
-            df.j_unique <- df.j[!duplicated(df.j$barcode),]
+            df.j_unique <- df.j[!duplicated(df.j[,cloneCall]),]
             overlap <- length(intersect(df.i_unique[,cloneCall], 
                                         df.j_unique[,cloneCall]))
             coef_matrix[i,j] <- 
@@ -191,7 +205,7 @@ theCall <- function(x) {
 }
 
 # Assiging positions for TCR contig data
-#' @author Gloria Karus, Nick Bormann, Nick Borcherding
+#' @author Gloria Kraus, Nick Bormann, Nick Borcherding
 parseTCR <- function(Con.df, unique_df, data2) {
     for (y in seq_along(unique_df)){
         barcode.i <- Con.df$barcode[y]
@@ -244,7 +258,7 @@ parseTCR <- function(Con.df, unique_df, data2) {
 return(Con.df)}
 
 #Assiging positions for BCR contig data
-#' @author Gloria Karus, Nick Bormann, Nick Borcherding
+#' @author Gloria Kraus, Nick Bormann, Nick Borcherding
 parseBCR <- function(Con.df, unique_df, data2) {
     for (y in seq_along(unique_df)){
         barcode.i <- Con.df$barcode[y]

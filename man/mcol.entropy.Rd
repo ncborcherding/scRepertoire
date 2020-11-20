@@ -12,3 +12,4 @@ mcol.entropy(x)
 \description{
 entropy of each column of the input matrix
 }
+\keyword{internal}

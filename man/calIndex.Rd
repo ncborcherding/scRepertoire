@@ -25,3 +25,4 @@ an object of class \code{Startrac}
 \description{
 Calculate cluster level indices
 }
+\keyword{internal}

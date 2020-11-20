@@ -32,6 +32,7 @@ clonalHomeostasis <- function(df, cloneTypes = c(Rare = .0001, Small = .001,
     cloneTypes <- c(None = 0, cloneTypes)
     cloneCall <- theCall(cloneCall)
     df <- checkList(df)
+    df <- checkBlanks(df, cloneCall)
     mat <- matrix(0, length(df), length(cloneTypes) - 1, 
                 dimnames = list(names(df), 
                 names(cloneTypes)[-1]))
@@ -53,7 +54,7 @@ clonalHomeostasis <- function(df, cloneTypes = c(Rare = .0001, Small = .001,
         geom_bar(stat = "identity", position="fill", 
                     color = "black", lwd= 0.25) +
         scale_fill_manual(name = "Clonotype Group", 
-                    values = colorblind_vector(col)) +
+                    values = rev(colorblind_vector(col))) +
         xlab("Samples") +
         ylab("Relative Abundance") +
         theme_classic()

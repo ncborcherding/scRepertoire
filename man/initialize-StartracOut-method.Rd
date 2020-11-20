@@ -18,3 +18,4 @@ an object of class \code{StartracOut}
 \description{
 initialize method for StartracOut
 }
+\keyword{internal}

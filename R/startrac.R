@@ -28,7 +28,6 @@
 #' @importFrom reshape2 melt
 #' @import ggplot2
 #' @export
-
 StartracDiversity <- function(sc,
                               type = "Type",
                               sample = NULL,
@@ -141,6 +140,7 @@ setValidity("Startrac",
 #' @name show
 #' @aliases show,Startrac-method 
 #' @docType methods
+#' @keywords internal
 setMethod("show",
           signature = "Startrac",
           definition = function(object) {
@@ -166,6 +166,7 @@ setMethod("show",
 #' @docType methods
 #' @rdname initialize-methods
 #' @return an object of class \code{Startrac}
+#' @keywords internal
 setMethod("initialize",
           signature = "Startrac",
           definition = function(.Object, cell.data, aid="AID",n.perm=NULL,cores=NULL){
@@ -211,6 +212,7 @@ setMethod("initialize",
 #' @param cores number of core to be used. Passed to doParallel registerDoParallel. default: NULL.
 #' @param normEntropy logical; whether normalize migration and transition index. default: FALSE.
 #' @return an object of class \code{Startrac}
+#' @keywords internal
 Startrac.calIndex <- function(object,cores,n.perm,normEntropy)
 {
     ### cluster level expansion index (STARTRAC-expa)
@@ -249,11 +251,12 @@ Startrac.calIndex <- function(object,cores,n.perm,normEntropy)
     return(object)
 }
 
-#' @export
+
 setGeneric("calIndex", function(object,cores=NULL,n.perm=NULL,normEntropy=FALSE) standardGeneric("calIndex"))
 
 #' @rdname calIndex
 #' @aliases calIndex
+#' @keywords internal
 setMethod("calIndex", signature = "Startrac", definition = Startrac.calIndex)
 
 
@@ -271,6 +274,7 @@ setMethod("calIndex", signature = "Startrac", definition = Startrac.calIndex)
 #' @param cores number of core to be used. Passed to doParallel registerDoParallel. default: NULL.
 #' @param n.perm integer number of permutation will be performed. If NULL, no permutation. (default: NULL)
 #' @return an object of class \code{Startrac}
+#' @keywords internal
 Startrac.pIndex <- function(object,cores,n.perm)
 {
     ####### index given two cluster or loc
@@ -357,11 +361,12 @@ Startrac.pIndex <- function(object,cores,n.perm)
     return(object)  
 }
 
-#' @export
+
 setGeneric("pIndex", function(object,cores=NULL,n.perm=NULL) standardGeneric("pIndex"))
 
 #' @rdname pIndex
 #' @aliases pIndex
+#' @keywords internal
 setMethod("pIndex", signature = "Startrac", definition = Startrac.pIndex)
 
 
@@ -370,13 +375,13 @@ setMethod("pIndex", signature = "Startrac", definition = Startrac.pIndex)
 #' Get the p value given one Startrac object and a list of Startrac objects from permutation data
 #
 #' @name getSig
-#' @aliases getSig getSig,Startrac-method
 #' 
 #' @importFrom plyr laply
 #' @importFrom doParallel registerDoParallel
 #' @importFrom reshape2 melt
 #' @param obj A Startrac object
 #' @param obj.perm A list of Startrac objects from permutation data 
+#' @keywords internal
 #' @return an object of class \code{Startrac}
 Startrac.getSig <- function(obj,obj.perm)
 {
@@ -410,11 +415,12 @@ Startrac.getSig <- function(obj,obj.perm)
     return(obj)
 }
 
-#' @export
+
 setGeneric("getSig", function(obj,obj.perm=NULL) standardGeneric("getSig"))
 
 #' @rdname getSig
 #' @aliases getSig
+#' @keywords internal
 setMethod("getSig", signature = "Startrac", definition = Startrac.getSig)
 
 
@@ -434,6 +440,7 @@ setMethod("getSig", signature = "Startrac", definition = Startrac.getSig)
 #' @rdname StartracOut
 #' @aliases StartracOut-class
 #' @exportClass StartracOut
+#' @keywords internal
 StartracOut <- setClass("StartracOut",
                         slots = c(proj = "character",
                                   cluster.data = "data.frame",
@@ -450,6 +457,7 @@ StartracOut <- setClass("StartracOut",
 #' @param proj character analysis id
 #' @aliases initialize,StartracOut-method
 #' @docType methods
+#' @keywords internal
 #' @return an object of class \code{StartracOut}
 setMethod("initialize",
           signature = "StartracOut",
@@ -466,6 +474,7 @@ setMethod("initialize",
 #' @param object A StartracOut object
 #' @aliases show,StartracOut-method
 #' @docType methods
+#' @keywords internal
 setMethod("show",
           signature = "StartracOut",
           definition = function(object) {
@@ -486,6 +495,7 @@ setMethod("show",
 
 #' dispaly message with time stamp
 #' @param msg characters; message to display
+#' @keywords internal
 loginfo <- function(msg) {
     timestamp <- sprintf("%s", Sys.time())
     msg <- paste0("[",timestamp, "] ", msg,"\n")
@@ -494,6 +504,7 @@ loginfo <- function(msg) {
 
 #' entropy of each row of the input matrix
 #' @param x matrix;
+#' @keywords internal
 mrow.entropy <- function(x)
 {
     freqs <- sweep(x,1,rowSums(x),"/")
@@ -503,6 +514,7 @@ mrow.entropy <- function(x)
 
 #' entropy of each column of the input matrix
 #' @param x matrix;
+#' @keywords internal
 mcol.entropy <- function(x)
 {
     freqs <- sweep(x,2,colSums(x),"/")
@@ -522,6 +534,7 @@ mcol.entropy <- function(x)
 #' @param n.perm integer. number of permutation will be performed. If NULL, no permutation. (default: NULL)
 #' @param verbose logical. wheter return intermediate result (some Startrac objects) 
 #' @details run the Startrac pipeline
+#' @keywords internal
 #' @return an list contains data.frame elements "cluster.data","pIndex.migr" and "pIndex.tran"
 
 Startrac.run <- function(cell.data, proj="CRC", cores=NULL,n.perm=NULL,verbose=F)

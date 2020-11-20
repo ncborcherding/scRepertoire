@@ -23,3 +23,4 @@ an object of class \code{Startrac}
 \description{
 Calculate pairwise indices
 }
+\keyword{internal}
