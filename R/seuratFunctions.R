@@ -33,9 +33,9 @@
 #' @param cloneTypes The bins for the grouping based on frequency
 #' @param filterNA Method to subset seurat object of barcodes without 
 #' clonotype information
-#' @import Seurat
-#' @importFrom SummarizedExperiment colData<- 
-#' @importFrom SingleCellExperiment colData
+#' @importFrom dplyr bind_rows %>%
+#' @importFrom  rlang %||%
+#' @importFrom SummarizedExperiment colData colData<-
 #' @export
 #' @return seurat or SingleCellExperiment object with attached clonotype 
 #' information
@@ -70,7 +70,9 @@ combineExpression <- function(df, sc, cloneCall="gene+nt", groupBy="none",
             sub1 <- subset(data, data[,groupBy] == x[i])
             sub2 <- subset(data2, data2[,groupBy] == x[i])
             merge <- merge(sub1, sub2, by=cloneCall)
-            Con.df <- rbind.data.frame(Con.df, merge) } }
+            Con.df <- rbind.data.frame(Con.df, merge) 
+            } 
+        }
     Con.df$cloneType <- NA
     for (x in seq_along(cloneTypes)) { names(cloneTypes)[x] <- 
         paste0(names(cloneTypes[x]), ' (', cloneTypes[x-1], 
@@ -81,7 +83,10 @@ combineExpression <- function(df, sc, cloneCall="gene+nt", groupBy="none",
     PreMeta <- unique(Con.df[,c("barcode", "CTgene", "CTnt", 
                 "CTaa", "CTstrict", "Frequency", "cloneType")])
     rownames(PreMeta) <- PreMeta$barcode
-    if (inherits(x=sc, what ="Seurat")) { sc <- AddMetaData(sc, PreMeta) 
+    if (inherits(x=sc, what ="Seurat")) { 
+        #######need to test out
+        col.name <- names(PreMeta) %||% colnames(PreMeta)
+        sc[[col.name]] <- PreMeta
     } else {
         rownames <- rownames(colData(sc))
         colData(sc) <- cbind(colData(sc), PreMeta[rownames,])[, union(colnames(colData(sc)),  colnames(PreMeta))]
@@ -125,16 +130,15 @@ highlightClonotypes <- function(sc,
         stop("Object indicated is not of class 'Seurat', make sure you 
             are using the correct data.") }
     cloneCall <- theCall(cloneCall)
-    meta <- sc[[]]
+    meta <- grabMeta(sc)
     meta$highlight <- NA
     for(i in seq_along(sequence)) {
         meta$highlight <- ifelse(meta[,cloneCall] == sequence[i], 
                             paste("Clonotype", i, sep=""),  meta$highlight) }
-    names <- rownames(meta)
-    meta <- data.frame(meta[,c("highlight")])
-    rownames(meta) <- names
-    colnames(meta)[1] <- "highlight"
-    sc <- AddMetaData(sc, meta)
+    meta <- meta[,-(which(colnames(meta) == "cluster"))]
+    col.name <- names(meta) %||% colnames(meta)
+    sc[[col.name]] <- meta
+    return(sc)
 }
 
 #' Exploring interaction of clonotypes by seurat or SCE dynamics
@@ -175,8 +179,7 @@ highlightClonotypes <- function(sc,
 #' @param facet The column label to seperate.
 #' @param alpha The column header to have gradieted opacity.
 #'
-#' @import ggfittext
-#' @import ggalluvial
+#' @importFrom ggalluvial geom_stratum geom_alluvium geom_flow stat_stratum
 #' @import dplyr
 #' @export
 #' @return Alluvial ggplot comparing clonotype distribution across 
@@ -205,7 +208,6 @@ alluvialClonotypes <- function(sc,
     plot <- ggplot(data = lodes, aes(x = x, stratum = stratum, 
                 alluvium = alluvium, label = stratum)) +
         geom_stratum() + theme_classic() +
-        geom_fit_text(stat = "stratum", infer.label = FALSE, reverse = TRUE) +
         theme(axis.title.x = element_blank(), axis.ticks.x = element_blank())
     if (is.null(color) & is.null(alpha)) {
         plot <- plot + geom_alluvium()

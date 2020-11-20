@@ -33,6 +33,7 @@ clonalProportion <- function(df,split = c(10, 100, 1000, 10000, 30000,
     Con.df <- NULL
     cloneCall <- theCall(cloneCall)
     df <- checkList(df)
+    df <- checkBlanks(df, cloneCall)
     mat <- matrix(0, length(df), length(split), dimnames = list(names(df), 
             paste0('[', c(1, split[-length(split)] + 1), ':', split, ']')))
     df <- lapply(df, '[[', cloneCall)
