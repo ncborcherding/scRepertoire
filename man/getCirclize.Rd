@@ -23,9 +23,10 @@ the data.}
 data frame of shared clonotypes between groups
 }
 \description{
-This function will take the meta data from the product of combineExpression()
-and generate a relational data frame to be used for a chord diagram. The output
-is a measure of relative clonotype overlap between groups and does not reflect
+This function will take the meta data from the product of 
+combineExpression()and generate a relational data frame to 
+be used for a chord diagram. The output is a measure of 
+relative clonotype overlap between groups and does not reflect
 exact clonotype matches between groups.
 }
 \examples{

@@ -23,7 +23,7 @@ CDR3 gene+nucleotide (gene+nt).}
 
 \item{group}{The column header used for grouping.}
 
-\item{exportTable}{Returns the data frame used for forming the graph,}
+\item{exportTable}{Returns the data frame used for forming the graph}
 }
 \value{
 ggplot of the total or relative unique clonotypes
