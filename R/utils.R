@@ -9,8 +9,11 @@ checkBlanks <- function(df, cloneCall) {
             next()
         }
     }
-    df <- df[-nulled]
-    return(df)
+    if (!is.null(nulled)) {
+        df2 <- df[-(unique(nulled))]
+        return(df2)
+    } 
+   return(df)
 }
 
 
