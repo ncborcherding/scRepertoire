@@ -20,7 +20,7 @@
 #' CDR3 gene+nucleotide (gene+nt).
 #' @param group The column header used for grouping.
 #' @param scale Converts the graphs into percentage of unique clonotypes.
-#' @param exportTable Returns the data frame used for forming the graph,
+#' @param exportTable Returns the data frame used for forming the graph
 #' @import ggplot2
 #' @export
 #' @return ggplot of the total or relative unique clonotypes
@@ -29,6 +29,7 @@ quantContig <- function(df, cloneCall = "gene+nt", scale=FALSE, group = NULL,
     if (length(group) > 1) { stop("Only one item in the group variable can 
                                     be listed.") }
     cloneCall <- theCall(cloneCall)
+    df <- checkBlanks(df, cloneCall)
     if (!is.null(group)) {
         x <- group
         labs <- group
@@ -98,8 +99,7 @@ quantContig <- function(df, cloneCall = "gene+nt", scale=FALSE, group = NULL,
 #' @param group The column header for which you would like to analyze the data.
 #' @param scale Converts the graphs into denisty plots in order to show 
 #' relative distributions.
-#' @param exportTable Exports a table of the data into the global 
-#' environment in addition 
+#' @param exportTable Returns the data frame used for forming the graph
 #' to the visualization.
 #' @importFrom ggplot2 ggplot
 #' @export
@@ -110,6 +110,7 @@ abundanceContig <- function(df, cloneCall = "gene+nt", scale=FALSE,
     Con.df <- NULL
     xlab <- "Abundance"
     cloneCall <- theCall(cloneCall)
+    df <- checkBlanks(df, cloneCall)
     names <- names(df)
     if (!is.null(group)) {
         for (i in seq_along(df)) {
@@ -274,6 +275,7 @@ compareClonotypes <- function(df, cloneCall = "gene+nt", samples = NULL,
                         clonotypes = NULL, numbers = NULL, graph = "alluvial",
                         exportTable = FALSE){
     cloneCall <- theCall(cloneCall)
+    df <- checkBlanks(df, cloneCall)
     if (!is.null(numbers) & !is.null(clonotypes)) {
         stop("Make sure your inputs are either numbers or clonotype sequences.")
     }
@@ -296,13 +298,14 @@ compareClonotypes <- function(df, cloneCall = "gene+nt", samples = NULL,
         stop("Reasses the filtering strategies here, there is not 
             enough clonotypes to examine.") }
     if (exportTable == TRUE) { return(Con.df)}
-    plot = ggplot(Con.df, aes(x = Sample, fill = Clonotypes, 
+    
+    plot <- ggplot(Con.df, aes(x = Sample, fill = Clonotypes, group = Clonotypes,
                     stratum = Clonotypes, alluvium = Clonotypes, 
                     y = Proportion, label = Clonotypes)) +
                 theme_classic() +
                 theme(axis.title.x = element_blank())
     if (graph == "alluvial") {
-        plot = plot + geom_flow() + geom_stratum()
+        plot = plot +  geom_stratum() + geom_flow(stat = "alluvium")
     } else if (graph == "area") {
         plot = plot +
             geom_area(aes(group = Clonotypes), color = "black") }
@@ -332,10 +335,9 @@ compareClonotypes <- function(df, cloneCall = "gene+nt", samples = NULL,
 #' CDR3 gene+nucleotide (gene+nt).
 #' @param method The clustering paramater for the dendrogram.
 #' @param exportTable Returns the data frame used for forming the graph.
-#' @import dplyr
+#' @importFrom  dplyr bind_rows
 #' @importFrom ggplot2 ggplot
 #' @importFrom powerTCR fdiscgammagpd get_distances
-#' @importFrom ggdendro ggdendrogram
 #' @export
 #' @return ggplot dendrogram of the clone size distribution
 
@@ -362,19 +364,19 @@ clonesizeDistribution <- function(df,  cloneCall ="gene+nt",
         list <- list()
         for (i in seq_along(df)) {
             list[[i]] <- Con.df[,i+1]
-            list[[i]] <- suppressWarnings(fdiscgammagpd(list[[i]], useq = 1))}
+            list[[i]] <- suppressWarnings(fdiscgammagpd(list[[i]], useq = 1))
+            }
         names(list) <- names(df)
         grid <- 0:10000
         distances <- get_distances(list, grid, modelType="Spliced")
         hclust <- hclust(as.dist(distances), method = method)
-        plot <- ggdendrogram(hclust)
+        hcd <- as.dendrogram(hclust)
+        plot <- plot(hcd)
         if (exportTable == TRUE) { return(distances) }
         return(plot)
 }
 
 #This is the basic color palette for the package
-#' @import RColorBrewer
-#' @import colorRamps
 colorblind_vector <- colorRampPalette(c("#FF4B20", "#FFB433", 
                                         "#C6FDEC", "#7AC5FF", "#0348A6"))
 
