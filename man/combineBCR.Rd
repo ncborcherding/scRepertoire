@@ -45,7 +45,8 @@ combined <- combineBCR(BCR, samples = "Patient1", ID = "Time1")
 combineBCR produces a column CTstrict of an index of nucleotide sequence 
 and the corresponding v-gene. This index automatically caluclates 
 the Hammings distance between sequences of the same length and will 
-index sequences with > 0.85 normalized Hammings distance with the same 
-ID. If nucleotide sequences meet the threshold, ":HD" will be added to 
-the CTstrict column string.
+index sequences with <= 0.15 normalized Levenshtein distance with the same 
+ID for sequences with < 15 nucleotide difference in length. After which, 
+clonotype clusters are called using the igraph component() function. Clonotype
+clusters will then be labeled with "LD" with the CTstrict header.
 }
