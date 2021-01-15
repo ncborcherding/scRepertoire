@@ -311,10 +311,10 @@ Next we can take the clonotypic information and attach it to our Seurat object u
 
 We can call (cloneCall) the 4 variations of clonotypes: 1) genes, 2) CDR3 amino acid sequence, 3) CDR3 nucleotide sequence, or 4) genes and CDR3 nucleotide sequence. The attaching function will also calculate the frequency of the clonotype based on the **groupBy** variable. If blank, **groupBy** will calculate frequencies of clonotypes by individual run, but because we have 6 samples of paired peripheral and tumor T cells, we are actually going to use the groupBy variable to call "sample" in order to calculate frequencies across both the peripheral blood and tumor T cells of the same patient.
 
-Lastly, in order to categorize the frequency, we have the variable **cloneTypes** which acts as a bin to place labels. As a default, **cloneTypes** is set to equal c(Single = 1, Small = 5, Medium = 20, Large = 100, Hyperexpanded = 500). This is because the highest repeated clonotype is in Patient 3 with just under 500 clones. If your data has a clone with greater expansion, you should readjust the cut points. 
+In order to categorize the frequency, we have the variable **proportion** which if TRUE allows for the relative proportion or when FALSE will use absolute frequency to define clonotype groups **cloneTypes**  acts as a bin to place labels. As a default, **cloneTypes** is set to equal cloneTypes=c(Rare = 1e-4, Small = 0.001, Medium = 0.01, Large = 0.1, Hyperexpanded = 1). However, below you can see an example of using total frequency as expansion assignements. 
 
 ```{r}
-screp_example <- combineExpression(combined, screp_example, cloneCall="gene", groupBy = "sample")
+screp_example <- combineExpression(combined, screp_example, cloneCall="gene", groupBy = "sample", proportion = FALSE, cloneTypes=c(None=0, Single=1, Small=5, Medium=20, Large=100, Hyperexpanded=500))
 
 sce <- combineExpression(combined, sce, cloneCall = "gene", groupBy = "sample")
 ```
@@ -356,7 +356,7 @@ slot(screp_example, "meta.data")$cloneType <- factor(slot(screp_example, "meta.d
                             "Medium (5 < X <= 20)", "Small (1 < X <= 5)", 
                             "Single (0 < X <= 1)", NA))
 
-DimPlot(screp_example, group.by = "cloneType") +
+DimPlot(screp_example, group.by = "cloneType") 
     scale_color_manual(values = c(rev(colorblind_vector(5))), na.value="grey")
 
 plotUMAP(sce, colour_by = "cloneType")

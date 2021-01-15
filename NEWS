@@ -3,6 +3,7 @@ CHANGES IN VERSION 1.1.3
 ------------------------
 
 * replaced hammingCompare with lvCompare to enable superior clonotype calling in combineBCR function.
+* added proportion to combineExpression() function so users no longer need to know absolute frequencies when combining the contiguous information. 
 
 
 CHANGES IN VERSION 1.1.0
