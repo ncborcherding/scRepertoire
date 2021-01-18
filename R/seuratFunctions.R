@@ -45,6 +45,7 @@ combineExpression <- function(df, sc, cloneCall="gene+nt", groupBy="none",
                               proportion = TRUE,
                             cloneTypes=c(Rare = 1e-4, Small = 0.001, 
                             Medium = 0.01, Large = 0.1, Hyperexpanded = 1), filterNA = FALSE) {
+    cloneTypes <- c(None = 0, cloneTypes)
     df <- checkList(df)
     cloneCall <- theCall(cloneCall)
     Con.df <- NULL
