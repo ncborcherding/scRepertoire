@@ -314,7 +314,7 @@ We can call (cloneCall) the 4 variations of clonotypes: 1) genes, 2) CDR3 amino 
 In order to categorize the frequency, we have the variable **proportion** which if TRUE allows for the relative proportion or when FALSE will use absolute frequency to define clonotype groups **cloneTypes**  acts as a bin to place labels. As a default, **cloneTypes** is set to equal cloneTypes=c(Rare = 1e-4, Small = 0.001, Medium = 0.01, Large = 0.1, Hyperexpanded = 1). However, below you can see an example of using total frequency as expansion assignements. 
 
 ```{r}
-screp_example <- combineExpression(combined, screp_example, cloneCall="gene", groupBy = "sample", proportion = FALSE, cloneTypes=c(None=0, Single=1, Small=5, Medium=20, Large=100, Hyperexpanded=500))
+screp_example <- combineExpression(combined, screp_example, cloneCall="gene", groupBy = "sample", proportion = FALSE, cloneTypes=c(Single=1, Small=5, Medium=20, Large=100, Hyperexpanded=500))
 
 sce <- combineExpression(combined, sce, cloneCall = "gene", groupBy = "sample")
 ```
