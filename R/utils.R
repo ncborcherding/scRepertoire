@@ -293,8 +293,8 @@ cellT <- function(cells) {
         chain2 <- "TRB" 
         cellType <- "T-AB" 
     } else if (cells == "T-GD") {
-        chain1 <- "TRG"
-        chain2 <- "TRD"
+        chain1 <- "TRD"
+        chain2 <- "TRG"
         cellType <- "T-GD" 
     } else if (cells == "B") {
         chain1 <- "IGH"
