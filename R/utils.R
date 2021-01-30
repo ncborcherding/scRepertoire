@@ -280,7 +280,7 @@ parseBCR <- function(Con.df, unique_df, data2) {
             if (chain.i == "IGH"){
                 Con.df[y,heavy_lines]<-data2[location.i[1],h_lines]
             } else if (chain.i == "IGL") {
-                Con.df[y,light_lines]<- data2[location.i[2],l_lines]}
+                Con.df[y,light_lines]<- data2[location.i[1],l_lines]}
             else {
                 Con.df[y,light_lines]<-data2[location.i[1], k_lines]}}}
     return(Con.df)
