@@ -195,13 +195,7 @@ lvCompare <- function(dictionary, gene, chain) {
         }
     }
     filtered <- which(out_matrix <= 0.15, arr.ind = TRUE)
-    if (nrow(filtered) != 0) { 
-        uni_IG <- as.data.frame(unique(tmp))
-        colnames(uni_IG) <- "filtered"
-        uni_IG$cluster <- paste0(gene, ".", seq_len(nrow(uni_IG)))
-        colnames(uni_IG) <- c("Hclonotype", "IG")
-        return(uni_IG)
-    } else {
+    if (nrow(filtered) > 0) { 
         for (i in 1:nrow(filtered)) {
             max <- max(filtered[i,])
             min <- min(filtered[i,])
