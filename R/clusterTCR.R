@@ -9,7 +9,11 @@
 #' take some time to calculate the distances and cluster. 
 #' 
 #' @examples
-#' clusterTCR(contig_list, chain = "TCRA", sequence = "aa")
+# Getting the combined contigs
+#' combined <- combineTCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), 
+#' rep(c("P", "T"), 3), cells ="T-AB")
+#' 
+#' sub_combined <- combineTCR(combined[[1]], chain = "TCRA", sequence = "aa")
 #' 
 #' @param df The product of CombineTCR() or CombineBCR().
 #' @param chain The TCR to cluster
@@ -24,6 +28,7 @@
 
 clusterTCR <- function(df, chain = NULL, sequence = NULL, threshold = 0.85) {
     `%!in%` = Negate(`%in%`)
+    df <- checkList(df)
     if(chain %in% c("TCRA", "TCRG")) {
         ref <- 1
     } else if(chain %in% c("TCRB", "TCRD")) {
