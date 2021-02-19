@@ -13,7 +13,7 @@
 #' combined <- combineTCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), 
 #' rep(c("P", "T"), 3), cells ="T-AB")
 #' 
-#' sub_combined <- combineTCR(combined[[1]], chain = "TCRA", sequence = "aa")
+#' sub_combined <- clusterTCR(combined[[1]], chain = "TCRA", sequence = "aa")
 #' 
 #' @param df The product of CombineTCR() or CombineBCR().
 #' @param chain The TCR to cluster
