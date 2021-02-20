@@ -280,6 +280,18 @@ clonalDiversity(combined, cloneCall = "gene", group = "samples")
 clonalDiversity(combined, cloneCall = "gene", group = "ID")
 ```
 
+## Clustering Clonotypes
+
+The nucleotide or amino acid sequences of the chains can be used to cluster clonotypes, by examining the edit distance of the sequences. This approach is underlying the `combineBCR()` function, but now can be applied to the T cell receptors. It will add to the end of each list element a cluster by generating a network connected by the similarity in sequence. This network is directed by the threshold variable, where 0.85 is the normalized mean edit distance.
+
+```{r}
+sub_combined <- clusterTCR(combined[[1]], chain = "TCRA", sequence = "aa", threshold = 0.85)
+
+sub_combined[1:10, ncol(sub_combined)]
+```
+
+
+
 ***
 
 # Interacting with mRNA Expression
