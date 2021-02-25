@@ -68,7 +68,7 @@ removingMulti <- function(final){
 }
 
 #Removing extra clonotypes in barcodes with > 2
-#' import dplyr
+#' @import dplyr
 filteringMulti <- function(x) {
     table <- subset(as.data.frame(table(x$barcode)), Freq > 2)
     barcodes <- as.character(unique(table$Var1))
@@ -86,7 +86,7 @@ filteringMulti <- function(x) {
 
 
 #Filtering NA contigs out of single-cell expression object
-#' import dplyr
+#' @import dplyr
 filteringNA <- function(sc) {
     meta <- grabMeta(sc)
     evalNA <- data.frame(meta[,"cloneType"])
