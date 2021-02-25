@@ -33,8 +33,11 @@
     utils::globalVariables ("alluvium")
     utils::globalVariables ("x")
     utils::globalVariables ("colData")
-    utils::globalVariables ("colData<-")
-
+    utils::globalVariables ("as.dendrogram")
+    utils::globalVariables (".get.empirical.p")
+    utils::globalVariables ("patient")
+    utils::globalVariables ("combn")
+    
 
     invisible ()
 }

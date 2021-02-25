@@ -55,7 +55,7 @@ combineTCR <- function(df, samples = NULL, ID = NULL,
     for (i in seq_along(df)) {
         df[[i]] <- subset(df[[i]], chain != "Multi")
         df[[i]] <- subset(df[[i]], chain %in% c(chain1, chain2))
-        df[[i]] <- subset(df[[i]], productive %in% c(TRUE, "TRUE", "True"))
+        df[[i]] <- subset(df[[i]], productive %in% c(TRUE, "TRUE", "True", "true"))
         df[[i]]$sample <- samples[i]
         df[[i]]$ID <- ID[i]
         if (filterMulti == TRUE) { df[[i]] <- filteringMulti(df[[i]]) }
@@ -99,9 +99,10 @@ combineTCR <- function(df, samples = NULL, ID = NULL,
 #' combineBCR produces a column CTstrict of an index of nucleotide sequence 
 #' and the corresponding v-gene. This index automatically caluclates 
 #' the Hammings distance between sequences of the same length and will 
-#' index sequences with > 0.85 normalized Hammings distance with the same 
-#' ID. If nucleotide sequences meet the threshold, ":HD" will be added to 
-#' the CTstrict column string.
+#' index sequences with <= 0.15 normalized Levenshtein distance with the same 
+#' ID for sequences with < 15 nucleotide difference in length. After which, 
+#' clonotype clusters are called using the igraph component() function. Clonotype
+#' clusters will then be labeled with "LD" with the CTstrict header.
 #'
 #' @examples
 #' #Data derived from the 10x Genomics intratumoral NSCLC B cells
@@ -115,7 +116,6 @@ combineTCR <- function(df, samples = NULL, ID = NULL,
 #' @param removeNA This will remove any chain without values.
 #' @param removeMulti This will remove barcodes with greater than 2 chains.
 #' @import dplyr
-#' @importFrom Biostrings stringDist
 #' @export
 #' @return List of clonotypes for individual cell barcodes
 combineBCR <- function(df, samples = NULL, ID = NULL, removeNA = FALSE, 
@@ -126,7 +126,7 @@ combineBCR <- function(df, samples = NULL, ID = NULL, removeNA = FALSE,
     checkContigBarcodes(df, samples, ID)
     for (i in seq_along(df)) {
         df[[i]] <- subset(df[[i]], chain %in% c("IGH", "IGK", "IGL"))
-        df[[i]] <- subset(df[[i]], productive %in% c(TRUE, "TRUE", "True"))
+        df[[i]] <- subset(df[[i]], productive %in% c(TRUE, "TRUE", "True", "true"))
         df[[i]] <- df[[i]] %>% group_by(barcode,chain) %>% top_n(n=1,wt=reads)
         df[[i]]$sample <- samples[i]
         df[[i]]$ID <- ID[i]
@@ -145,8 +145,8 @@ combineBCR <- function(df, samples = NULL, ID = NULL, removeNA = FALSE,
             mutate(length2 = nchar(cdr3_nt2))
         final[[i]] <- data3 }
     dictionary <- bind_rows(final)
-    IGH <- hammingCompare(dictionary, "IGH", "cdr3_nt1", "length1")
-    IGLC <- hammingCompare(dictionary, "IGLC", "cdr3_nt2", "length2")
+    IGH <- lvCompare(dictionary, "IGH", "cdr3_nt1")
+    IGLC <- lvCompare(dictionary, "IGLC", "cdr3_nt2")
     for(i in seq_along(final)) {
         final[[i]]<-merge(final[[i]],IGH,by.x="cdr3_nt1",by.y="IG",all.x=TRUE)
         final[[i]]<-merge(final[[i]],IGLC,by.x="cdr3_nt2",by.y="IG",all.x=TRUE)
@@ -168,56 +168,56 @@ combineBCR <- function(df, samples = NULL, ID = NULL, removeNA = FALSE,
     if (removeMulti == TRUE) { final <- removingMulti(final) }
     return(final) }
 
-# Calculates the normalized Hamming Distance between the contig 
+# Calculates the normalized Levenshtein Distance between the contig 
 # nucleotide sequence.
-#' @importFrom Biostrings stringDist
-hammingCompare <- function(Con.df, gene, chain, length) {
+#' @importFrom stringdist stringdistmatrix
+#' @importFrom igraph graph_from_data_frame components
+lvCompare <- function(dictionary, gene, chain) {
     `%!in%` = Negate(`%in%`)
     overlap <- NULL
     out <- NULL
-    lengths_IGH<-Con.df[duplicated(Con.df[,"length1"]),][,"length1"]
-    lengths_IGH <- na.omit(unique(lengths_IGH))
-    lengths_IGL<-Con.df[duplicated(Con.df[,"length2"]),][,"length2"]
-    lengths_IGL <- na.omit(unique(lengths_IGL))
-    specificLength  <- if(gene=="IGH") lengths_IGH else lengths_IGL
-    for (i in seq_along(lengths_IGH)) {
-        tmp<-na.omit(Con.df[Con.df[,length] == specificLength[i],])
-        tmp2 <- as.matrix(stringDist(tmp[,chain], 
-                    method = "hamming")/specificLength[i])
-        filtered <- which(tmp2 >= 0.85, arr.ind = TRUE)
-        if (nrow(filtered) == 0) { next()
-        } else if (nrow(filtered) != 0) {
-            for (x in seq_along(nrow(filtered))) {
-                df <- c(tmp[,chain][filtered[x,1]],tmp[,chain][filtered[x,2]])
-                df <- df[order(df)]
-                out <- rbind.data.frame(out,df, stringsAsFactors = FALSE)
-                out <- unique(out)
-                out <- as.data.frame(out, stringsAsFactors = FALSE) }}
-        overlap <- rbind.data.frame(overlap,out, stringsAsFactors = FALSE) }
-    if (!is.null(overlap)) { colnames(overlap) <- c("Col1", "Col2")
-        overlap <- unique(overlap)
-        IG <- Con.df[Con.df[,chain] %!in% overlap[,1],]
-        IG <- na.omit(unique(IG[IG[,chain] %!in% overlap[,2],][,chain]))
-        Hclonotype <- paste0(gene, seq_len(length(IG)))
-        IG <- data.frame(IG, Hclonotype)
-        unique_over <- data.frame(unique(overlap$Col1), 
-                            stringsAsFactors = FALSE)
-        unique_over$Hclonotype <- paste0(gene, ":HD", ".", 
-                                    seq_len(length(unique_over)))
-        colnames(unique_over)[1] <- "barcodes"
-        overlap <- merge(overlap, unique_over, by.x="Col1", by.y="barcodes")
-        barcodeOverlap <- data.frame(unique(c(overlap[,1], overlap[,2])))
-        barcodeOverlap$Hclonotype <- NULL
-        for (y in seq_along(nrow(barcodeOverlap))) {
-            if (barcodeOverlap[y,1] %in% overlap[,"Col1"]) {
-                x <- which(overlap[,"Col1"] == barcodeOverlap[y,1])
-            }else if (barcodeOverlap[y,1] %in% overlap[,"Col2"]) {
-                x <- which(overlap[,"Col2"] == barcodeOverlap[y,1]) }
-            x <- x[1]
-            barcodeOverlap[y,2] <- overlap[x,"Hclonotype"] }
-        colnames(barcodeOverlap) <- colnames(IG)
-        IG <- rbind.data.frame(IG, barcodeOverlap, stringsAsFactors = FALSE)
-    } else { IG <- Con.df[,chain]
-        IG <- na.omit(unique(IG))
-        Hclonotype <- paste0(gene, ".", seq_len(length(IG)))
-        IG <- data.frame(IG, Hclonotype) } }
+    tmp <- na.omit(unique(dictionary[,chain]))
+    length <- nchar(tmp)
+    matrix <- as.matrix(stringdistmatrix(tmp, method = "lv"))
+    out_matrix <- matrix(ncol = ncol(matrix), nrow=ncol(matrix))
+    for (j in seq_len(ncol(matrix))) {
+        for (k in seq_len(nrow(matrix))) {
+            if (j == k) {
+                out_matrix[j,k] <- NA
+            } else{
+                if (length[j] - length[k] >= 15) {
+                    out_matrix[j,k] <- matrix[j,k]/(max(length[j], length[k]))
+                    out_matrix[k,j] <- matrix[k,j]/(max(length[j], length[k]))
+                }
+                out_matrix[j,k] <- matrix[j,k]/((length[j]+ length[k])/2)
+                out_matrix[k,j] <- matrix[k,j]/((length[j]+ length[k])/2)
+            }
+        }
+    }
+    filtered <- which(out_matrix <= 0.15, arr.ind = TRUE)
+    if (nrow(filtered) > 0) { 
+        for (i in 1:nrow(filtered)) {
+            max <- max(filtered[i,])
+            min <- min(filtered[i,])
+            filtered[i,1] <- max
+            filtered[i,2] <- min
+        }
+        filtered <- unique(filtered) #removing redundant comparisons
+        out <- NULL
+        colnames(filtered) <- c("To", "From")
+        
+        g <- graph_from_data_frame(filtered)
+        components <- components(g, mode = c("weak"))
+        out <- data.frame("cluster" = components$membership, 
+                "filtered" = names(components$membership))
+        out$cluster <- paste0(gene, ":LD", ".", out$cluster)
+        out$filtered <- tmp[as.numeric(out$filtered)]
+        
+        uni_IG <- as.data.frame(unique(tmp[tmp %!in% out$filtered]))
+        colnames(uni_IG) <- "filtered"
+        uni_IG$cluster <- paste0(gene, ".", seq_len(nrow(uni_IG)))
+    }
+    output <- rbind.data.frame(out, uni_IG)
+    colnames(output) <- c("Hclonotype", "IG")
+    return(output)
+}

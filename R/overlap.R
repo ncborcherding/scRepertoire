@@ -33,6 +33,7 @@ clonalOverlap <- function(df, cloneCall = c("gene", "nt", "aa", "gene+nt"),
                                 method = c("overlap", "morisita"), 
                                 exportTable = FALSE){
     cloneCall <- theCall(cloneCall)
+    df <- checkBlanks(df, cloneCall)
     df <- df[order(names(df))]
     values <- str_sort(as.character(unique(names(df))), numeric = TRUE)
     df <- df[quiet(dput(values))]
