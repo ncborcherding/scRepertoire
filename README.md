@@ -18,19 +18,11 @@ devtools::install_github("ncborcherding/scRepertoire")
 ```
 #### Most up-to-date version
 
-```devtools::install_github("ncborcherding/scRepertoire@dev")```
-
-We are working on constantly improving the scRepertoire package - these improvements can be found under the "refine" branch. These changes will be incorporated into the main branch as they are tested more throughly.
-
-```
-devtools::install_github("ncborcherding/scRepertoire@refine")
-```
-
-**Note** Users with R versions < 4.0 or should use the dev version. Make sure you update tidyverse packages, like dplyr > 1.0. There have been a number of errors with this, we will stop supporting <4.0 on 3/1/2021.
-
 ```
 devtools::install_github("ncborcherding/scRepertoire@dev")
 ```
+
+We are working on constantly improving the scRepertoire package - these improvements can be found under the "refine" branch. These changes will be incorporated into the main branch as they are tested more throughly.
 
 #### Bioconductor
 
