@@ -24,8 +24,7 @@ relative distributions.}
 
 \item{group}{The column header for which you would like to analyze the data.}
 
-\item{exportTable}{Exports a table of the data into the global 
-environment in addition 
+\item{exportTable}{Returns the data frame used for forming the graph
 to the visualization.}
 }
 \value{

@@ -28,6 +28,7 @@
 clonalDiversity <- function(df, cloneCall = "gene+nt", group = "samples", 
                         exportTable = FALSE) {
     cloneCall <- theCall(cloneCall)
+    df <- checkBlanks(df, cloneCall)
     mat <- NULL
     if (group == "samples") {
         for (i in seq_along(df)) {

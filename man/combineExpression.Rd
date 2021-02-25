@@ -9,8 +9,9 @@ combineExpression(
   sc,
   cloneCall = "gene+nt",
   groupBy = "none",
-  cloneTypes = c(None = 0, Single = 1, Small = 5, Medium = 20, Large = 100,
-    Hyperexpanded = 500),
+  proportion = TRUE,
+  cloneTypes = c(Rare = 1e-04, Small = 0.001, Medium = 0.01, Large = 0.1, Hyperexpanded
+    = 1),
   filterNA = FALSE
 )
 }
@@ -25,6 +26,9 @@ CDR3 gene+nucleotide (gene+nt).}
 
 \item{groupBy}{The column label in the combined contig object in which 
 clonotype frequency will be calculated.}
+
+\item{proportion}{Whether to use the total frequency (FALSE) or the 
+proportion (TRUE) of the clonotype based on the groupBy variable.}
 
 \item{cloneTypes}{The bins for the grouping based on frequency}
 
