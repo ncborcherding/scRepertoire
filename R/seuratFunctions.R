@@ -41,6 +41,8 @@
 #' @export
 #' @return seurat or SingleCellExperiment object with attached clonotype 
 #' information
+#' 
+
 combineExpression <- function(df, sc, cloneCall="gene+nt", groupBy="none", 
                               proportion = TRUE,
                             cloneTypes=c(Rare = 1e-4, Small = 0.001, 

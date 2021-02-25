@@ -68,6 +68,7 @@ removingMulti <- function(final){
 }
 
 #Removing extra clonotypes in barcodes with > 2
+#' import dplyr
 filteringMulti <- function(x) {
     table <- subset(as.data.frame(table(x$barcode)), Freq > 2)
     barcodes <- as.character(unique(table$Var1))
@@ -82,7 +83,10 @@ filteringMulti <- function(x) {
     return(x)
 }
 
+
+
 #Filtering NA contigs out of single-cell expression object
+#' import dplyr
 filteringNA <- function(sc) {
     meta <- grabMeta(sc)
     evalNA <- data.frame(meta[,"cloneType"])
@@ -90,10 +94,15 @@ filteringNA <- function(sc) {
     evalNA <- evalNA %>%
         transmute(indicator = ifelse(is.na(indicator), 0, 1))
     rownames(evalNA) <- rownames(meta)
-    col.name <- names(evalNA) %||% colnames(evalNA)
-    sc[[col.name]] <- evalNA
-    sc <- subset(sc, cloneType != 0)
-    return(sc)
+    if (inherits(x=sc, what ="cell_data_set")){
+      colData(sc)[["evalNA"]]<-evalNA
+      return(sc[, !is.na(sc$cloneType)])
+    }else{
+      col.name <- names(evalNA) %||% colnames(evalNA)
+      sc[[col.name]] <- evalNA
+      sc <- subset(sc, cloneType != 0)
+      return(sc)
+    }
 }
 
 #Check the format of the cell barcode inputs and parameter lengthsd
