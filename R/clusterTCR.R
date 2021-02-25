@@ -89,6 +89,7 @@ clusterTCR <- function(df, chain = NULL, sequence = NULL, threshold = 0.85) {
         tmp[,colname][which(tmp[,colname] == "NA.NA")] <- NA ###here
          df[[i]] <- tmp
     }
+    return(df)
 }  
     
     
