@@ -381,6 +381,12 @@ DimPlot(screp_example, group.by = "cloneType")
 plotUMAP(sce, colour_by = "cloneType")
 ```
 
+Using the dimensional reduction graphs as a reference, we can also generate an overlay of the position of clonally expanded cells using `clonalOverlay()`. Select the **reduction** for the visualization, default is "PCA" and the **freq.cutpoint** or lowest clonal frequency or proportion to generate the conour plot. We can modify the contours by selecting the number of **bins** or number of countours drawn. `clonalOverlay()` can be used to look across all cells or faceted by a meta data variable using **facet**. As we facet, the overall dimensional reduction will be maintained, while the contour plots will adjust based on the **facet** variable. Coloring of the dot plot is based on the active identity of the single-cell object. This visualization was authored by Dr. Francesco Mazziotta from Johns Hopkins and inspired by Dr. Carmonia and his work with [ProjectTIL](https://github.com/carmonalab/ProjecTILs).
+
+```{r}
+clonalOverlay(screp_example, reduction = "umap", freq.cutpoint = 30, bins = 10, facet = "Patient") 
+```
+
 
 We can also look at the clonotypes by calling specific sequences in the *highlightClonotypes()* below. In order to highlight the clonotypes, we first need to use the **cloneCall** the type of sequence we will be using and then the specific sequences themselves using **sequence**. Below you can see the steps to highlight the two most prominent sequences *"CAVNGGSQGNLIF_CSAEREDTDTQYF"* with a frequency = 482 (clonotype 1) and *"NA_CATSATLRVVAEKLFF"* with a frequency = 287 (Clonotype2). 
 

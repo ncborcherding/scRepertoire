@@ -27,7 +27,8 @@ Imports:
 	methods,
 	utils, 
 	rlang,
-	igraph
+	igraph,
+	SeuratObject
 Suggests: 
 	knitr, 
 	rmarkdown, 

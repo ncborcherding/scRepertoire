@@ -37,6 +37,7 @@
     utils::globalVariables (".get.empirical.p")
     utils::globalVariables ("patient")
     utils::globalVariables ("combn")
+    utils::globalVariables ("include")
     
 
     invisible ()
