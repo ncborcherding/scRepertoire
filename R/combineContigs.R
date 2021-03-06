@@ -156,6 +156,7 @@ combineBCR <- function(df, samples = NULL, ID = NULL, removeNA = FALSE,
         final[[i]]$cellType <- "B"
         final[[i]]$sample <- samples[i]
         final[[i]]$ID <- ID[i]
+        final[[i]][final[[i]] == "NA_NA" | final[[i]] == "NA_NA_NA_NA"] <- NA 
         final[[i]]<- final[[i]][, c("barcode", "sample", "ID", 
             heavy_lines[c(1,2,3)], light_lines[c(1,2,3)], CT_lines)]}
     names <- NULL

@@ -30,7 +30,7 @@ ggplot object
 \description{
 This function allows the user to visualize the clonal expansion by overlaying the 
 cells with specific clonal frequency onto the dimensional reduction plots in Seurat.
-Credit to the idea goes to Dr. Carmonia and his work with
+Credit to the idea goes to Dr. Carmona and his work with
 [ProjectTIL](https://github.com/carmonalab/ProjecTILs).
 }
 \examples{
@@ -41,13 +41,12 @@ rep(c("P", "T"), 3), cells ="T-AB")
 #Getting a sample of a Seurat object
 screp_example <- get(data("screp_example"))
 sce <- suppressMessages(Seurat::UpdateSeuratObject(screp_example))
-sce <- Seurat::as.SingleCellExperiment(sce)
 
 #Using combineExpresion()
 sce <- combineExpression(combined, sce)
 
 #Using clonalOverlay()
-clonalOverlay(sce, reduction = "umap", freq.cutpoint = 2, bins = 25, facet = "Patient") 
+clonalOverlay(sce, freq.cutpoint = 0.3, bins = 5) 
 
 }
 \author{
