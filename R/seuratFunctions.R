@@ -249,7 +249,7 @@ alluvialClonotypes <- function(sc,
 #' meta data after combineExpression(). The visualization will take the 
 #' new meta data variable "cloneType" and plot the number of cells with
 #' each designation using a secondary variable, like cluster. Credit to 
-#' the idea goes to Dr. Carmonia and his work with
+#' the idea goes to Dr. Carmona and his work with
 #' [ProjectTIL](https://github.com/carmonalab/ProjecTILs).
 #'
 #' @examples
@@ -304,7 +304,7 @@ occupiedscRepertoire <- function(sc, x.axis = "cluster", exportTable = FALSE) {
 #'
 #' This function allows the user to visualize the clonal expansion by overlaying the 
 #' cells with specific clonal frequency onto the dimensional reduction plots in Seurat.
-#' Credit to the idea goes to Dr. Carmonia and his work with
+#' Credit to the idea goes to Dr. Carmona and his work with
 #' [ProjectTIL](https://github.com/carmonalab/ProjecTILs).
 #'
 #' @examples
