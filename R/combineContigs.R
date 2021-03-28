@@ -55,7 +55,7 @@ combineTCR <- function(df, samples = NULL, ID = NULL,
     for (i in seq_along(df)) {
         df[[i]] <- subset(df[[i]], chain != "Multi")
         df[[i]] <- subset(df[[i]], chain %in% c(chain1, chain2))
-        df[[i]] <- subset(df[[i]], productive %in% c(TRUE, "TRUE", "True"))
+        df[[i]] <- subset(df[[i]], productive %in% c(TRUE, "TRUE", "True", "true"))
         df[[i]]$sample <- samples[i]
         df[[i]]$ID <- ID[i]
         if (filterMulti == TRUE) { df[[i]] <- filteringMulti(df[[i]]) }
@@ -126,7 +126,7 @@ combineBCR <- function(df, samples = NULL, ID = NULL, removeNA = FALSE,
     checkContigBarcodes(df, samples, ID)
     for (i in seq_along(df)) {
         df[[i]] <- subset(df[[i]], chain %in% c("IGH", "IGK", "IGL"))
-        df[[i]] <- subset(df[[i]], productive %in% c(TRUE, "TRUE", "True"))
+        df[[i]] <- subset(df[[i]], productive %in% c(TRUE, "TRUE", "True", "true"))
         df[[i]] <- df[[i]] %>% group_by(barcode,chain) %>% top_n(n=1,wt=reads)
         df[[i]]$sample <- samples[i]
         df[[i]]$ID <- ID[i]
@@ -150,6 +150,7 @@ combineBCR <- function(df, samples = NULL, ID = NULL, removeNA = FALSE,
     for(i in seq_along(final)) {
         final[[i]]<-merge(final[[i]],IGH,by.x="cdr3_nt1",by.y="IG",all.x=TRUE)
         final[[i]]<-merge(final[[i]],IGLC,by.x="cdr3_nt2",by.y="IG",all.x=TRUE)
+        final[[i]][final[[i]] == "NA_NA" | final[[i]] == "NA_NA_NA_NA"] <- NA 
         num <- ncol(final[[i]])
         final[[i]][,"CTstrict"] <- paste0(final[[i]][,num-1],"_",
         final[[i]][,"vgene1"],"_",final[[i]][,num],"_",final[[i]][,"vgene2"])

@@ -69,7 +69,7 @@ quantContig <- function(df, cloneCall = "gene+nt", scale=FALSE, group = NULL,
             fill=as.factor(Con.df[,x])), data = Con.df) +
         stat_summary(geom = "errorbar", fun.data = mean_se, 
             position = "dodge", width=.5) + labs(fill = labs) +
-        stat_summary(fun.y=mean, geom="bar", color="black", lwd=0.25)+
+        stat_summary(fun=mean, geom="bar", color="black", lwd=0.25)+
         theme_classic() + xlab("Samples") + ylab(ylab) +
         scale_fill_manual(values = colorblind_vector(col))
     return(plot) }
