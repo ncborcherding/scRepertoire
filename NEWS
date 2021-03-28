@@ -5,6 +5,7 @@ CHANGES IN VERSION 1.1.4
 * replaced hammingCompare with lvCompare to enable superior clonotype calling in combineBCR function.
 * added proportion to combineExpression() function so users no longer need to know absolute frequencies when combining the contiguous information. 
 * added clusterTCR() and clonalOverlay() functions.
+* added downsampling to the diversity calculations
 
 CHANGES IN VERSION 1.1.0
 ------------------------
