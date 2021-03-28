@@ -1,6 +1,6 @@
 Package: scRepertoire
 Title: A toolkit for single-cell immune receptor profiling
-Version: 1.1.5
+Version: 1.0.1
 
 Authors@R: c(
     person(given = "Nick", family = "Borcherding", role = c("aut", "cre"), email = "ncborch@gmail.com"))
