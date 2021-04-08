@@ -21,6 +21,7 @@
 #' @param group The column header for which you would like to analyze the data.
 #' @param exportTable Exports a table of the data into the global environment 
 #' in addition to the visualization
+#' @param n.boots number of bootstraps to downsample in order to get mean diversity
 #' @importFrom stringr str_sort
 #' @importFrom reshape2 melt
 #' @importFrom dplyr sample_n
@@ -29,7 +30,7 @@
 #' @return ggplot of the diversity of clonotype sequences across list
 #' @author Andrew Malone, Nick Borcherding
 clonalDiversity <- function(df, cloneCall = "gene+nt", group = "samples", 
-                                exportTable = FALSE) {
+                                exportTable = FALSE, n.boots = 100) {
   cloneCall <- theCall(cloneCall)
   df <- checkBlanks(df, cloneCall)
   mat <- NULL
@@ -48,7 +49,7 @@ clonalDiversity <- function(df, cloneCall = "gene+nt", group = "samples",
       mat_a <- NULL
       sample <- c()
       
-      for (j in seq(1:100)) {
+      for (j in seq(1:n.boots)) {
         x<-sample_n(data, min)
         sample <- diversityCall(x)
         mat_a <- rbind.data.frame(mat_a, sample)
@@ -75,7 +76,7 @@ clonalDiversity <- function(df, cloneCall = "gene+nt", group = "samples",
       mat_a <- NULL
       sample <- c()
       
-      for (j in seq(1:100)) {
+      for (j in seq(1:n.boots)) {
         x <- sample_n(data, min)
         sample <- diversityCall(x)
         mat_a <- rbind(mat_a, sample)
