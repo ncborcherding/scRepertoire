@@ -30,6 +30,8 @@
 #' CDR3 gene+nucleotide (gene+nt).
 #' @param groupBy The column label in the combined contig object in which 
 #' clonotype frequency will be calculated.
+#' @param proportion Whether to use the total frequency (FALSE) or the 
+#' proportion (TRUE) of the clonotype based on the groupBy variable.
 #' @param cloneTypes The bins for the grouping based on frequency
 #' @param filterNA Method to subset seurat object of barcodes without 
 #' clonotype information
@@ -39,9 +41,13 @@
 #' @export
 #' @return seurat or SingleCellExperiment object with attached clonotype 
 #' information
+#' 
+
 combineExpression <- function(df, sc, cloneCall="gene+nt", groupBy="none", 
-                        cloneTypes=c(None=0, Single=1, Small=5, Medium=20, 
-                        Large=100, Hyperexpanded=500), filterNA = FALSE) {
+                              proportion = TRUE,
+                            cloneTypes=c(Rare = 1e-4, Small = 0.001, 
+                            Medium = 0.01, Large = 0.1, Hyperexpanded = 1), filterNA = FALSE) {
+    cloneTypes <- c(None = 0, cloneTypes)
     df <- checkList(df)
     cloneCall <- theCall(cloneCall)
     Con.df <- NULL
@@ -52,8 +58,13 @@ combineExpression <- function(df, sc, cloneCall="gene+nt", groupBy="none",
             data <- data.frame(df[[i]], stringsAsFactors = FALSE)
             data2 <- unique(data[,c("barcode", cloneCall)])
             data2 <- na.omit(data2[data2[,"barcode"] %in% cell.names,])
+            if (proportion == TRUE) {
+                data2 <- data2 %>% group_by(data2[,cloneCall]) %>%
+                    summarise(Frequency = n()/nrow(data2))
+            } else {
             data2 <- data2 %>% group_by(data2[,cloneCall]) %>%
                 summarise(Frequency = n())
+            }
             colnames(data2)[1] <- cloneCall
             data <- merge(data, data2, by = cloneCall, all = TRUE)
             Con.df <- rbind.data.frame(Con.df, data)
@@ -70,9 +81,14 @@ combineExpression <- function(df, sc, cloneCall="gene+nt", groupBy="none",
             sub1 <- subset(data, data[,groupBy] == x[i])
             sub2 <- subset(data2, data2[,groupBy] == x[i])
             merge <- merge(sub1, sub2, by=cloneCall)
-            Con.df <- rbind.data.frame(Con.df, merge) 
-            } 
-        }
+            if (proportion == TRUE) {
+                merge$Frequency <- merge$Frequency/length(merge$Frequency)
+            }
+            Con.df <- rbind.data.frame(Con.df, merge)
+        } 
+        nsize <- Con.df %>% group_by(Con.df[,paste0(groupBy, ".x")])  %>% summarise(n = n())
+    }
+    
     Con.df$cloneType <- NA
     for (x in seq_along(cloneTypes)) { names(cloneTypes)[x] <- 
         paste0(names(cloneTypes[x]), ' (', cloneTypes[x-1], 
@@ -233,7 +249,7 @@ alluvialClonotypes <- function(sc,
 #' meta data after combineExpression(). The visualization will take the 
 #' new meta data variable "cloneType" and plot the number of cells with
 #' each designation using a secondary variable, like cluster. Credit to 
-#' the idea goes to Dr. Carmonia and his work with
+#' the idea goes to Drs. Carmona and Andreatta and their work with
 #' [ProjectTIL](https://github.com/carmonalab/ProjecTILs).
 #'
 #' @examples
@@ -282,4 +298,65 @@ occupiedscRepertoire <- function(sc, x.axis = "cluster", exportTable = FALSE) {
             theme_classic() + 
             theme(axis.title.x = element_blank())
     
+}
+
+#' Visualize distribution of clonal frequency overlaid on dimensional reduction plots
+#'
+#' This function allows the user to visualize the clonal expansion by overlaying the 
+#' cells with specific clonal frequency onto the dimensional reduction plots in Seurat.
+#' Credit to the idea goes to Dr. Carmona and his work with
+#' [ProjectTIL](https://github.com/carmonalab/ProjecTILs).
+#'
+#' @examples
+#' #Getting the combined contigs
+#' combined <- combineTCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), 
+#' rep(c("P", "T"), 3), cells ="T-AB")
+#' 
+#' #Getting a sample of a Seurat object
+#' screp_example <- get(data("screp_example"))
+#' sce <- suppressMessages(Seurat::UpdateSeuratObject(screp_example))
+#' 
+#' #Using combineExpresion()
+#' sce <- combineExpression(combined, sce)
+#' 
+#' #Using clonalOverlay()
+#' clonalOverlay(sce, freq.cutpoint = 0.3, bins = 5) 
+#' 
+#' @param sc The seurat or SCE object to visualize after combineExpression(). 
+#' @param reduction The dimensional reduction to visualize
+#' @param freq.cutpoint The overlay cutpoint to include, this corresponds to the 
+#' Frequency variable in the single-cell objecter
+#' @param bins The number of contours to the overlay
+#' @param facet meta data variable to facet the comparison
+#' 
+#' @import ggplot2
+#' @importFrom SeuratObject Embeddings
+#' @export
+#' @author Francesco Mazziotta, Nick Borcherding
+#' 
+#' @return ggplot object
+
+clonalOverlay <- function(sc, reduction = NULL, freq.cutpoint = 30, bins = 25, facet = NULL) {
+  checkSingleObject(sc)
+  if (is.null(reduction)) {
+    tmp <- data.frame(sc[[]], identity = sc@active.ident, Embeddings(sc, reduction = "pca"))
+  } else {
+    tmp <- data.frame(sc[[]], identity = sc@active.ident, Embeddings(sc, reduction = reduction))
+  }
+  if (!is.null(facet)) {
+    facet <- tmp[,facet]
+    tmp <-data.frame(facet, tmp)
+  }
+  tmp$include <- ifelse(tmp$Frequency >= freq.cutpoint, "Yes", NA)
+  tmp2 <- subset(tmp, include == "Yes")
+  plot <- ggplot(tmp2, mapping = aes(x=tmp2[,(ncol(tmp2)-2)], y = tmp2[,(ncol(tmp2)-1)])) +
+    geom_point(tmp, mapping = aes(x=as.numeric(tmp[,(ncol(tmp)-2)]), y = as.numeric(tmp[,(ncol(tmp)-1)]), color = tmp[,"identity"]), size= 0.5) +
+    geom_density_2d(color = "black", lwd=0.25, bins = bins) + 
+    theme_classic() +
+    labs(color = "Active Identity") +
+    xlab("Dimension 1") + ylab("Dimension 2")
+  if (!is.null(facet)) {
+    plot <- plot + facet_wrap(~facet) 
+  }
+  return(plot)
 }

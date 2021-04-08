@@ -1,19 +1,14 @@
 
 #Remove list elements that contain all NA values
 checkBlanks <- function(df, cloneCall) {
-    nulled <- NULL
     for (i in seq_along(df)) {
         if (length(df[[i]][,cloneCall]) == length(which(is.na(df[[i]][,cloneCall])))) {
-            nulled <- c(nulled, i)
+            df[[i]] <- NULL
         } else {
             next()
         }
     }
-    if (!is.null(nulled)) {
-        df2 <- df[-(unique(nulled))]
-        return(df2)
-    } 
-   return(df)
+    return(df)
 }
 
 
@@ -73,6 +68,7 @@ removingMulti <- function(final){
 }
 
 #Removing extra clonotypes in barcodes with > 2
+#' @import dplyr
 filteringMulti <- function(x) {
     table <- subset(as.data.frame(table(x$barcode)), Freq > 2)
     barcodes <- as.character(unique(table$Var1))
@@ -87,7 +83,10 @@ filteringMulti <- function(x) {
     return(x)
 }
 
+
+
 #Filtering NA contigs out of single-cell expression object
+#' @import dplyr
 filteringNA <- function(sc) {
     meta <- grabMeta(sc)
     evalNA <- data.frame(meta[,"cloneType"])
@@ -95,10 +94,15 @@ filteringNA <- function(sc) {
     evalNA <- evalNA %>%
         transmute(indicator = ifelse(is.na(indicator), 0, 1))
     rownames(evalNA) <- rownames(meta)
-    col.name <- names(evalNA) %||% colnames(evalNA)
-    sc[[col.name]] <- evalNA
-    sc <- subset(sc, cloneType != 0)
-    return(sc)
+    if (inherits(x=sc, what ="cell_data_set")){
+      colData(sc)[["evalNA"]]<-evalNA
+      return(sc[, !is.na(sc$cloneType)])
+    }else{
+      col.name <- names(evalNA) %||% colnames(evalNA)
+      sc[[col.name]] <- evalNA
+      sc <- subset(sc, cloneType != 0)
+      return(sc)
+    }
 }
 
 #Check the format of the cell barcode inputs and parameter lengthsd
@@ -223,14 +227,14 @@ parseTCR <- function(Con.df, unique_df, data2) {
                 Con.df[y,tcr2_lines]<-data2[location.i[2],data2_lines] }
         } else if (length(location.i) == 3) { 
             if (is.na(data2[location.i[1],c("TCR1")])) { 
-                Con.df[y,tcr2_lines]<-data2[location.i[1],data2_lines]
+                Con.df[y,tcr2_lines]<-data2[location.i[1],data2_lines] 
                 if (is.na(data2[location.i[2],c("TCR1")])) { 
                     TRdf <- paste(Con.df[y, tcr2_lines],
                         data2[location.i[2], data2_lines],sep=";") 
                     Con.df[y,tcr2_lines] <- TRdf 
                     Con.df[y,tcr1_lines] <- data2[location.i[3],data1_lines] 
                 } else { # if the 2nd location is occupied by TRA
-                    Con.df[y,tcr1_lines] <- data2[location.i[2],data1_lines] ##HERE
+                    Con.df[y,tcr1_lines] <- data2[location.i[2],data1_lines] 
                     if (is.na(data2[location.i[3],c("TCR1")])) { 
                         TRdf <- paste(Con.df[y, tcr2_lines],
                             data2[location.i[3], data2_lines],sep=";") 
@@ -298,8 +302,8 @@ cellT <- function(cells) {
         chain2 <- "TRB" 
         cellType <- "T-AB" 
     } else if (cells == "T-GD") {
-        chain1 <- "TRG"
-        chain2 <- "TRD"
+        chain1 <- "TRD"
+        chain2 <- "TRG"
         cellType <- "T-GD" 
     } else if (cells == "B") {
         chain1 <- "IGH"

@@ -1,7 +1,6 @@
 Package: scRepertoire
 Title: A toolkit for single-cell immune receptor profiling
-Version: 1.1.2
-
+Version: 1.0.3
 Authors@R: c(
     person(given = "Nick", family = "Borcherding", role = c("aut", "cre"), email = "ncborch@gmail.com"))
 Description: scRepertoire was built to process data derived from the 10x Genomics Chromium Immune Profiling for both T-cell receptor (TCR) and immunoglobulin (Ig) enrichment workflows and subsequently interacts with the popular Seurat and SingleCellExperiment R packages. It also allows for general analysis of single-cell clonotype information without the use of expression information. The package functions as a wrapper for Startrac and powerTCR R packages.
@@ -14,7 +13,7 @@ Depends:
 	ggplot2, 
 	R (>= 4.0)
 Imports: 
-	Biostrings,
+	stringdist,
 	dplyr,
 	reshape2,  
 	ggalluvial,
@@ -27,7 +26,9 @@ Imports:
 	doParallel,
 	methods,
 	utils, 
-	rlang
+	rlang,
+	igraph,
+	SeuratObject
 Suggests: 
 	knitr, 
 	rmarkdown, 

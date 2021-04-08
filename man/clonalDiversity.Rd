@@ -8,7 +8,8 @@ clonalDiversity(
   df,
   cloneCall = "gene+nt",
   group = "samples",
-  exportTable = FALSE
+  exportTable = FALSE,
+  n.boots = 100
 )
 }
 \arguments{
@@ -22,6 +23,8 @@ CDR3 gene+nucleotide (gene+nt).}
 
 \item{exportTable}{Exports a table of the data into the global environment 
 in addition to the visualization}
+
+\item{n.boots}{number of bootstraps to downsample in order to get mean diversity}
 }
 \value{
 ggplot of the diversity of clonotype sequences across list
@@ -29,9 +32,10 @@ ggplot of the diversity of clonotype sequences across list
 \description{
 This function calculates traditional measures of diversity - Shannon, 
 inverse Simpson, Chao1 index, and abundance-based coverage estimators 
-(ACE) by sample or group. The group paramter can be used to condense 
-the individual samples. If a matrix output for the data is preferred, 
-set exportTable = TRUE.
+(ACE) by sample or group. The function automatically down samples the
+diversity metrics using 100 boot straps The group paramter can be 
+used to condense the individual samples. If a matrix output for 
+the data is preferred, set exportTable = TRUE.
 }
 \examples{
 #Making combined contig data
@@ -40,4 +44,7 @@ combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2),
 rep(c("P", "T"), 3), cells ="T-AB")
 clonalDiversity(combined, cloneCall = "gene")
 
+}
+\author{
+Andrew Malone, Nick Borcherding
 }

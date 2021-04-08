@@ -41,3 +41,18 @@ will produce 3 indices: expa (clonal expansion), migra
 to understand the underlying analyses of the outputs please 
 read and cite the linked manuscript.
 }
+\examples{
+\dontrun{ 
+#Getting the combined contigs
+combined <- combineTCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), 
+rep(c("P", "T"), 3), cells ="T-AB")
+
+#Getting a sample of a Seurat object
+screp_example <- get(data("screp_example"))
+screp_example <- combineExpression(combined, screp_example)
+
+#Using occupiedscRepertoire()
+StartracDiversity(screp_example, type = "Type", sample = "Patient", by = "overall")
+}
+
+}
