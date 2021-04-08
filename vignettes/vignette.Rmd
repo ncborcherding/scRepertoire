@@ -291,32 +291,16 @@ Clonotype Cluster by distance:
 
 LD denotes if the cluster was called using the normalized Levenshtein distance
 
-
 ```{r}
 sub_combined <- clusterTCR(combined[[1]], chain = "TCRA", 
                            sequence = "aa", threshold = 0.85)
 sub_combined <- as.data.frame(sub_combined)
 
-#Making data frame to plot, include TCRA and TCRA cluster
-plot.df <- data.frame(barcode = sub_combined$barcode, 
-                      TCR1 = sub_combined$cdr3_nt1, 
-                      cluster = sub_combined$TCRA_cluster)
-plot.df <- na.omit(reshape2::melt(plot.df, id.vars = "barcode"))
-
-#Summarising the numbers 
-plot.df <- plot.df %>%
-    group_by(variable,value) %>%
-    summarise(n=n()) %>%
-    arrange(n)
-
-#Removing TCR or clusters with values <= 2
-plot.df <- plot.df[plot.df$n > 2,]
-
-ggplot(plot.df, aes(x = variable, y = n)) + 
-    geom_bar(stat = "identity", color = "black", fill = "grey")  + 
-    theme_classic()
+counts_TCRA <- table(sub_combined$TCR1)
+counts_TCRAcluster <- table(sub_combined$TCRA_cluster)
+plot(counts_TCRA, axes = FALSE)
+plot(counts_TCRAcluster, axes=FALSE)
 ```
-
 
 ***
 
