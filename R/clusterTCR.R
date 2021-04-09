@@ -84,7 +84,8 @@ clusterTCR <- function(df, chain = NULL, sequence = NULL, threshold = 0.85) {
     for (i in seq_along(df)) {
         tmp <- df[[i]]
         output2 <- output[output[,2] %in% tmp[,ref2],]
-        tmp <-  suppressMessages(join(tmp,output2))
+        tmp[,ref2] <- str_split(tmp[,ref2], ";", simplify = T)[,1]
+        tmp <-  suppressMessages(join(tmp,  output2))
         tmp[,colname] <- paste0(tmp[,colname], ".", str_split(tmp[,paste0("TCR", ref)], "[.]", simplify = TRUE)[,1])
         tmp[,colname][which(tmp[,colname] == "NA.NA")] <- NA ###here
          df[[i]] <- tmp
