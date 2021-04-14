@@ -272,6 +272,7 @@ parseBCR <- function(Con.df, unique_df, data2) {
     for (y in seq_along(unique_df)){
         barcode.i <- Con.df$barcode[y]
         location.i <- which(barcode.i == data2$barcode)
+        
         if (length(location.i) == 2){
             if (is.na(data2[location.i[1],c("IGHct")])) {
                 Con.df[y,heavy_lines]<-data2[location.i[2], h_lines]
@@ -279,11 +280,14 @@ parseBCR <- function(Con.df, unique_df, data2) {
                     Con.df[y,light_lines]<-data2[location.i[1], l_lines]
                 } else {
                     Con.df[y,light_lines]<-data2[location.i[1], k_lines]}
-            } else { Con.df[y,heavy_lines]<-data2[location.i[1], h_lines]
-            if (is.na(data2[location.i[1],c("IGKct")])) {
+            } else { 
+              Con.df[y,heavy_lines]<-data2[location.i[1], h_lines]
+              if (!is.na(data2[location.i[2],c("IGKct")])) {
+                Con.df[y,light_lines]<-data2[location.i[2],k_lines]
+              } else {
                 Con.df[y,light_lines]<- data2[location.i[2],l_lines]
-            } else {
-                Con.df[y,light_lines]<-data2[location.i[1],k_lines]}}
+                }}
+          
         } else if (length(location.i) == 1) {
             chain.i <- data2$chain[location.i]
             if (chain.i == "IGH"){
@@ -291,7 +295,8 @@ parseBCR <- function(Con.df, unique_df, data2) {
             } else if (chain.i == "IGL") {
                 Con.df[y,light_lines]<- data2[location.i[1],l_lines]}
             else {
-                Con.df[y,light_lines]<-data2[location.i[1], k_lines]}}}
+                Con.df[y,light_lines]<-data2[location.i[1], k_lines]
+            }}}
     return(Con.df)
 }
 
