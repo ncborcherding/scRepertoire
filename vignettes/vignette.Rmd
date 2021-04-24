@@ -389,7 +389,7 @@ plotUMAP(sce, colour_by = "cloneType")
 Using the dimensional reduction graphs as a reference, we can also generate an overlay of the position of clonally expanded cells using `clonalOverlay()`. Select the **reduction** for the visualization, default is "PCA" and the **freq.cutpoint** or lowest clonal frequency or proportion to generate the contour plot. We can modify the contours by selecting the number of **bins** or number of contours drawn. `clonalOverlay()` can be used to look across all cells or faceted by a meta data variable using **facet**. As we facet, the overall dimensional reduction will be maintained, while the contour plots will adjust based on the **facet** variable. Coloring of the dot plot is based on the active identity of the single-cell object. This visualization was authored by Dr. Francesco Mazziotta from Johns Hopkins and inspired by Drs. Carmona and Andreatta and their work with [ProjectTIL](https://github.com/carmonalab/ProjecTILs).
 
 ```{r}
-clonalOverlay(seurat, reduction = "umap", 
+clonalOverlay(screp_example, reduction = "umap", 
               freq.cutpoint = 30, bins = 10, facet = "Patient") + 
                 guides(color = FALSE)
 ```
@@ -408,7 +408,7 @@ Seurat::DimPlot(screp_example, group.by = "highlight")
 We can also look at the count of cells by cluster assigned into specific frequency ranges, by using the `occupiedscRepertoire()` function and selecting the **x.axis** to display cluster or other variables in the meta data of the single cell object. 
 
 ```{r}
-occupiedscRepertoire(seurat, x.axis = "cluster")
+occupiedscRepertoire(screp_example, x.axis = "cluster")
 ```
 
 ## alluvialClonotypes

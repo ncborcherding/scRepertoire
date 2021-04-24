@@ -223,7 +223,8 @@ parseTCR <- function(Con.df, unique_df, data2) {
             if (is.na(data2[location.i[1],c("TCR1")])) {
                 Con.df[y,tcr2_lines]<-data2[location.i[1],data2_lines]
                 Con.df[y,tcr1_lines]<-data2[location.i[2],data1_lines]
-            } else {Con.df[y,tcr1_lines]<-data2[location.i[1],data1_lines]
+            } else {
+                Con.df[y,tcr1_lines]<-data2[location.i[1],data1_lines]
                 Con.df[y,tcr2_lines]<-data2[location.i[2],data2_lines] }
         } else if (length(location.i) == 3) { 
             if (is.na(data2[location.i[1],c("TCR1")])) { 
@@ -246,14 +247,16 @@ parseTCR <- function(Con.df, unique_df, data2) {
             } else { # if 1st location is occupied by TRA
                 Con.df[y,tcr1_lines] <- data2[location.i[1],data1_lines] 
                 if (is.na(data2[location.i[2],c("TCR1")])) { 
-                    if (is.na(data2[location.i[3],c("TCR1")])) { 
+                    if (is.na(data2[location.i[3],c("TCR1")])) { #Two TRB chains
                         TRdf <- paste(data2[location.i[2], data2_lines],
                             data2[location.i[3], data2_lines],sep=";") 
                         Con.df[y,tcr2_lines] <- TRdf 
-                    } else { # if TRA is on 3rd location
+                    } else if (!is.na(data2[location.i[3],c("TCR1")])) { # if TRA is on 3rd location
                         TRdf <- paste(Con.df[y, tcr1_lines],
                             data2[location.i[3],data1_lines],sep=";") 
-                        Con.df[y,tcr1_lines] <- TRdf }
+                        Con.df[y,tcr1_lines] <- TRdf 
+                        Con.df[y,tcr2_lines] <- data2[location.i[2],data2_lines] 
+                        }
                 } else { # if TRA is on 2nd location
                     TRdf <- paste(Con.df[y, tcr1_lines],
                         data2[location.i[2], data1_lines],sep=";") 
