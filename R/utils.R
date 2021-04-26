@@ -328,7 +328,7 @@ lengthDF <- function(df, cloneCall, chains, group, c1, c2){
     names <- names(df)
     if (chains == "combined") {
             for (i in seq_along(df)) {
-                length <- nchar(df[[i]][,cloneCall])
+                length <- nchar(gsub("_", "", df[[i]][,cloneCall]))
                 val <- df[[i]][,cloneCall]
                 if (!is.null(group)) { 
                     cols <- df[[i]][,group]
