@@ -189,9 +189,10 @@ lvCompare <- function(dictionary, gene, chain) {
                 if (length[j] - length[k] >= 15) {
                     out_matrix[j,k] <- matrix[j,k]/(max(length[j], length[k]))
                     out_matrix[k,j] <- matrix[k,j]/(max(length[j], length[k]))
-                }
+                } else {
                 out_matrix[j,k] <- matrix[j,k]/((length[j]+ length[k])/2)
                 out_matrix[k,j] <- matrix[k,j]/((length[j]+ length[k])/2)
+                }
             }
         }
     }

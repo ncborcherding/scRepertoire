@@ -49,9 +49,10 @@ clusterTCR <- function(df, chain = NULL, sequence = NULL, threshold = 0.85) {
                 if (length[j] - length[k] >= round(mean(length)/2)) {
                     out_matrix[j,k] <- matrix[j,k]/(max(length[j], length[k]))
                     out_matrix[k,j] <- matrix[k,j]/(max(length[j], length[k]))
-                }
+                } else {
                 out_matrix[j,k] <- matrix[j,k]/((length[j]+ length[k])/2)
                 out_matrix[k,j] <- matrix[k,j]/((length[j]+ length[k])/2)
+                }
             }
         }
     }
