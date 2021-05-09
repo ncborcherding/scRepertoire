@@ -213,7 +213,7 @@ theCall <- function(x) {
     return(x)
 }
 
-# Assiging positions for TCR contig data
+# Assigning positions for TCR contig data
 #' @author Gloria Kraus, Nick Bormann, Nick Borcherding
 parseTCR <- function(Con.df, unique_df, data2) {
     for (y in seq_along(unique_df)){
@@ -224,8 +224,13 @@ parseTCR <- function(Con.df, unique_df, data2) {
                 Con.df[y,tcr2_lines]<-data2[location.i[1],data2_lines]
                 Con.df[y,tcr1_lines]<-data2[location.i[2],data1_lines]
             } else {
+              if(!is.na(data2[location.i[1],c("TCR1")])) {
                 Con.df[y,tcr1_lines]<-data2[location.i[1],data1_lines]
-                Con.df[y,tcr2_lines]<-data2[location.i[2],data2_lines] }
+              } 
+              if (!is.na(data2[location.i[2],c("TCR2")])) {
+                Con.df[y,tcr2_lines]<-data2[location.i[2],data2_lines] 
+              }
+            }
         } else if (length(location.i) == 3) { 
             if (is.na(data2[location.i[1],c("TCR1")])) { 
                 Con.df[y,tcr2_lines]<-data2[location.i[1],data2_lines] 

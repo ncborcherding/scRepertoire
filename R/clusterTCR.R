@@ -37,7 +37,7 @@ clusterTCR <- function(df, chain = NULL, sequence = NULL, threshold = 0.85) {
     ref2 <- paste0("cdr3_", sequence, ref)
     bound <- dplyr::bind_rows(df)
     dictionary <- na.omit(unique(bound[,ref2]))
-    dictionary <- str_split(dictionary, ";", simplify = T)[,1]
+    dictionary <- str_split(dictionary, ";", simplify = TRUE)[,1]
     length <- nchar(dictionary)
     matrix <- as.matrix(stringdistmatrix(dictionary, method = "lv"))    
     out_matrix <- matrix(ncol = ncol(matrix), nrow=ncol(matrix))
@@ -84,7 +84,7 @@ clusterTCR <- function(df, chain = NULL, sequence = NULL, threshold = 0.85) {
     colnames(output) <- c(colname, ref2)
     for (i in seq_along(df)) {
         tmp <- df[[i]]
-        tmp[,ref2] <- str_split(tmp[,ref2], ";", simplify = T)[,1]
+        tmp[,ref2] <- str_split(tmp[,ref2], ";", simplify = TRUE)[,1]
         output2 <- output[output[,2] %in% tmp[,ref2],]
         
         tmp <-  suppressMessages(join(tmp,  output2))
