@@ -75,7 +75,7 @@ filteringMulti <- function(x) {
     multichain <- NULL
     for (j in seq_along(barcodes)) {
         chain <- x[x$barcode == barcodes[j],] %>% 
-            group_by(barcode) %>% top_n(n = 2, wt = reads)
+            group_by(barcode, chain) %>% top_n(n = 1, wt = reads)
         multichain <- rbind(multichain, chain) }
     `%!in%` = Negate(`%in%`)
     x <- subset(x, barcode %!in% barcodes)
@@ -222,7 +222,9 @@ parseTCR <- function(Con.df, unique_df, data2) {
         if (length(location.i) == 2){
             if (is.na(data2[location.i[1],c("TCR1")])) {
                 Con.df[y,tcr2_lines]<-data2[location.i[1],data2_lines]
-                Con.df[y,tcr1_lines]<-data2[location.i[2],data1_lines]
+                if (is.na(data2[location.i[2],c("TCR2")])) {
+                  Con.df[y,tcr1_lines]<-data2[location.i[2],data1_lines]
+                }
             } else {
               if(!is.na(data2[location.i[1],c("TCR1")])) {
                 Con.df[y,tcr1_lines]<-data2[location.i[1],data1_lines]
