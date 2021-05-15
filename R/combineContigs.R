@@ -56,6 +56,7 @@ combineTCR <- function(df, samples = NULL, ID = NULL,
         df[[i]] <- subset(df[[i]], chain != "Multi")
         df[[i]] <- subset(df[[i]], chain %in% c(chain1, chain2))
         df[[i]] <- subset(df[[i]], productive %in% c(TRUE, "TRUE", "True", "true"))
+
         df[[i]] <- subset(df[[i]], cdr3 != "None")
         df[[i]]$sample <- samples[i]
         df[[i]]$ID <- ID[i]
