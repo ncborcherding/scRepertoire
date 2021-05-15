@@ -75,7 +75,7 @@ filteringMulti <- function(x) {
     multichain <- NULL
     for (j in seq_along(barcodes)) {
         chain <- x[x$barcode == barcodes[j],] %>% 
-            group_by(barcode) %>% top_n(n = 2, wt = reads)
+            group_by(barcode, chain) %>% top_n(n = 1, wt = reads)
         multichain <- rbind(multichain, chain) }
     `%!in%` = Negate(`%in%`)
     x <- subset(x, barcode %!in% barcodes)
@@ -213,7 +213,7 @@ theCall <- function(x) {
     return(x)
 }
 
-# Assiging positions for TCR contig data
+# Assigning positions for TCR contig data
 #' @author Gloria Kraus, Nick Bormann, Nick Borcherding
 parseTCR <- function(Con.df, unique_df, data2) {
     for (y in seq_along(unique_df)){
@@ -222,9 +222,17 @@ parseTCR <- function(Con.df, unique_df, data2) {
         if (length(location.i) == 2){
             if (is.na(data2[location.i[1],c("TCR1")])) {
                 Con.df[y,tcr2_lines]<-data2[location.i[1],data2_lines]
-                Con.df[y,tcr1_lines]<-data2[location.i[2],data1_lines]
-            } else {Con.df[y,tcr1_lines]<-data2[location.i[1],data1_lines]
-                Con.df[y,tcr2_lines]<-data2[location.i[2],data2_lines] }
+                if (is.na(data2[location.i[2],c("TCR2")])) {
+                  Con.df[y,tcr1_lines]<-data2[location.i[2],data1_lines]
+                }
+            } else {
+              if(!is.na(data2[location.i[1],c("TCR1")])) {
+                Con.df[y,tcr1_lines]<-data2[location.i[1],data1_lines]
+              } 
+              if (!is.na(data2[location.i[2],c("TCR2")])) {
+                Con.df[y,tcr2_lines]<-data2[location.i[2],data2_lines] 
+              }
+            }
         } else if (length(location.i) == 3) { 
             if (is.na(data2[location.i[1],c("TCR1")])) { 
                 Con.df[y,tcr2_lines]<-data2[location.i[1],data2_lines] 
@@ -246,14 +254,16 @@ parseTCR <- function(Con.df, unique_df, data2) {
             } else { # if 1st location is occupied by TRA
                 Con.df[y,tcr1_lines] <- data2[location.i[1],data1_lines] 
                 if (is.na(data2[location.i[2],c("TCR1")])) { 
-                    if (is.na(data2[location.i[3],c("TCR1")])) { 
+                    if (is.na(data2[location.i[3],c("TCR1")])) { #Two TRB chains
                         TRdf <- paste(data2[location.i[2], data2_lines],
                             data2[location.i[3], data2_lines],sep=";") 
                         Con.df[y,tcr2_lines] <- TRdf 
-                    } else { # if TRA is on 3rd location
+                    } else if (!is.na(data2[location.i[3],c("TCR1")])) { # if TRA is on 3rd location
                         TRdf <- paste(Con.df[y, tcr1_lines],
                             data2[location.i[3],data1_lines],sep=";") 
-                        Con.df[y,tcr1_lines] <- TRdf }
+                        Con.df[y,tcr1_lines] <- TRdf 
+                        Con.df[y,tcr2_lines] <- data2[location.i[2],data2_lines] 
+                        }
                 } else { # if TRA is on 2nd location
                     TRdf <- paste(Con.df[y, tcr1_lines],
                         data2[location.i[2], data1_lines],sep=";") 
@@ -272,6 +282,7 @@ parseBCR <- function(Con.df, unique_df, data2) {
     for (y in seq_along(unique_df)){
         barcode.i <- Con.df$barcode[y]
         location.i <- which(barcode.i == data2$barcode)
+        
         if (length(location.i) == 2){
             if (is.na(data2[location.i[1],c("IGHct")])) {
                 Con.df[y,heavy_lines]<-data2[location.i[2], h_lines]
@@ -279,11 +290,14 @@ parseBCR <- function(Con.df, unique_df, data2) {
                     Con.df[y,light_lines]<-data2[location.i[1], l_lines]
                 } else {
                     Con.df[y,light_lines]<-data2[location.i[1], k_lines]}
-            } else { Con.df[y,heavy_lines]<-data2[location.i[1], h_lines]
-            if (is.na(data2[location.i[1],c("IGKct")])) {
+            } else { 
+              Con.df[y,heavy_lines]<-data2[location.i[1], h_lines]
+              if (!is.na(data2[location.i[2],c("IGKct")])) {
+                Con.df[y,light_lines]<-data2[location.i[2],k_lines]
+              } else {
                 Con.df[y,light_lines]<- data2[location.i[2],l_lines]
-            } else {
-                Con.df[y,light_lines]<-data2[location.i[1],k_lines]}}
+                }}
+          
         } else if (length(location.i) == 1) {
             chain.i <- data2$chain[location.i]
             if (chain.i == "IGH"){
@@ -291,7 +305,8 @@ parseBCR <- function(Con.df, unique_df, data2) {
             } else if (chain.i == "IGL") {
                 Con.df[y,light_lines]<- data2[location.i[1],l_lines]}
             else {
-                Con.df[y,light_lines]<-data2[location.i[1], k_lines]}}}
+                Con.df[y,light_lines]<-data2[location.i[1], k_lines]
+            }}}
     return(Con.df)
 }
 
@@ -320,7 +335,7 @@ lengthDF <- function(df, cloneCall, chains, group, c1, c2){
     names <- names(df)
     if (chains == "combined") {
             for (i in seq_along(df)) {
-                length <- nchar(df[[i]][,cloneCall])
+                length <- nchar(gsub("_", "", df[[i]][,cloneCall]))
                 val <- df[[i]][,cloneCall]
                 if (!is.null(group)) { 
                     cols <- df[[i]][,group]

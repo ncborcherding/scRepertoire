@@ -56,6 +56,8 @@ combineTCR <- function(df, samples = NULL, ID = NULL,
         df[[i]] <- subset(df[[i]], chain != "Multi")
         df[[i]] <- subset(df[[i]], chain %in% c(chain1, chain2))
         df[[i]] <- subset(df[[i]], productive %in% c(TRUE, "TRUE", "True", "true"))
+
+        df[[i]] <- subset(df[[i]], cdr3 != "None")
         df[[i]]$sample <- samples[i]
         df[[i]]$ID <- ID[i]
         if (filterMulti == TRUE) { df[[i]] <- filteringMulti(df[[i]]) }
@@ -189,9 +191,10 @@ lvCompare <- function(dictionary, gene, chain) {
                 if (length[j] - length[k] >= 15) {
                     out_matrix[j,k] <- matrix[j,k]/(max(length[j], length[k]))
                     out_matrix[k,j] <- matrix[k,j]/(max(length[j], length[k]))
-                }
+                } else {
                 out_matrix[j,k] <- matrix[j,k]/((length[j]+ length[k])/2)
                 out_matrix[k,j] <- matrix[k,j]/((length[j]+ length[k])/2)
+                }
             }
         }
     }
