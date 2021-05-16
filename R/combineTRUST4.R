@@ -23,15 +23,13 @@
 #' @param ID The additional sample labeling option.
 #' @param cells The type of cell - T cell-AB or T cell-GD, or B cell
 #' @param removeNA This will remove any chain without values.
-#' @param removeMulti This will remove barcodes with greater than 2 chains.
 #' @import dplyr
 #' @export
 #' @return List of clonotypes for individual cell barcodes
 
 
 combineTRUST4 <- function(df, samples = NULL, ID = NULL, 
-                          cells = c("T-AB", "T-GD", "B"), removeNA = FALSE, 
-                          removeMulti = FALSE) {
+                          cells = c("T-AB", "T-GD", "B"), removeNA = FALSE) {
     df <- checkList(df)
     out <- NULL
     final <- NULL
@@ -135,6 +133,5 @@ combineTRUST4 <- function(df, samples = NULL, ID = NULL,
     for (i in seq_along(final)){
         final[[i]]<-final[[i]][!duplicated(final[[i]]$barcode),]}
     if (removeNA == TRUE) { final <- removingNA(final)}
-    if (removeMulti == TRUE) { final <- removingMulti(final) }
     return(final) 
 }
