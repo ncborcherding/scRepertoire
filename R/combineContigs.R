@@ -23,7 +23,7 @@ utils::globalVariables(c("heavy_lines", "light_lines", "l_lines", "k_lines",
 #' the individual cell barcodes. Using the samples and ID parameters, the 
 #' function will add the strings as prefixes to prevent issues with repeated 
 #' barcodes. The resulting new barcodes will need to match the seurat or SCE 
-#' object in order to use, @seealso \code{\link{combineExpression}}. Several 
+#' object in order to use, \code{\link{combineExpression}}. Several 
 #' levels of filtering exist - remove or filterMulti are parameters that 
 #' control how  the function  deals with barcodes with multiple chains 
 #' recovered.
@@ -97,7 +97,7 @@ combineTCR <- function(df, samples = NULL, ID = NULL,
 #' the function will add the strings as prefixes to prevent issues with 
 #' repeated barcodes. The resulting new barcodes will need to match the 
 #' seurat or SCE object in order to use, 
-#' @seealso \code{\link{combineExpression}}. Unlike combineTCR(), 
+#' \code{\link{combineExpression}}. Unlike combineTCR(), 
 #' combineBCR produces a column CTstrict of an index of nucleotide sequence 
 #' and the corresponding v-gene. This index automatically caluclates 
 #' the Hammings distance between sequences of the same length and will 

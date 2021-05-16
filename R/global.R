@@ -16,6 +16,7 @@
     utils::globalVariables ("barcode")
     utils::globalVariables ("reads")
     utils::globalVariables ("Freq")
+    utils::globalVariables ("cdr3")
     utils::globalVariables ("cdr3_nt1")
     utils::globalVariables ("cdr3_nt2")
     utils::globalVariables ("indicator")
