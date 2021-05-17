@@ -1,4 +1,10 @@
 
+CHANGES IN VERSION 1.1.5
+------------------------
+
+* number of changes to the parseTCR/BCR functions to limit assumptions
+* added the combineTRUST4 function to parse contigs from TUST4 pipeline
+* added the filter of contigs by chain in the combineTCR, combineBCR, and combineTRUST4 functions
 
 CHANGES IN VERSION 1.1.4
 ------------------------

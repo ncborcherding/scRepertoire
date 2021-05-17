@@ -4,7 +4,7 @@ author:
   name: Nick Borcherding
   email: ncborch@gmail.com
   affiliation: Washington University in St. Louis, School of Medicine, St. Louis, MO, USA
-date: "April 8, 2021"
+date: "May 17th, 2021"
 output:
   BiocStyle::html_document:
     toc_float: true
@@ -74,6 +74,10 @@ As the output of CellRanger are quantifications of both the TCRA and TCRB chains
 *cells*
 +  T-AB - T cells, alpha-beta TCR
 +  T-GD - T cells, gamma-delta TCR
+
+*chains*
+* T-AB - "both", "TRA", "TRB"
+* T-GD - "both", "TRG", "TRD"
 
 *removeNA*
 +  TRUE - this is a stringent filter to remove any cell barcode with an NA value in at least one of the chains
