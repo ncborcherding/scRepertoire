@@ -202,8 +202,8 @@ compareClonotypes(combined, numbers = 10, samples = c("PX_P", "PX_T"),
 Last of the basic analysis visualizations is the relative usage of vgenes of the TCR, using *vizVgenes()*.
 
 *TCR*
-+  For T-AB: TCR1 == TCRA and TCR2 == TCRB
-+  For T-GD: TCR1 == TCRG and TCR2 == TCRD
++  For T-AB: TRA and TRB
++  For T-GD: TRG and TRD
 
 *facet.x and facet.y*
 +  Any variable within the combined() object
