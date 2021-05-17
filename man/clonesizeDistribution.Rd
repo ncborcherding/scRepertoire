@@ -27,12 +27,12 @@ CDR3 gene+nucleotide (gene+nt).}
 ggplot dendrogram of the clone size distribution
 }
 \description{
-This functionn produces a heirachial clustering of clonotypes by sample 
+This function produces a hierarchical clustering of clonotypes by sample 
 using the Jensen-Shannon distance and discrete gamma-GPD spliced threshold 
-model in the [powerTCR R package]
-(https://bioconductor.org/packages/devel/bioc/html/powerTCR.html).
-Please read and cite PMID: 30485278 if using the function for analyses. 
-If a matrix output for the data is preferred set exportTable = TRUE.
+model in the \href{https://bioconductor.org/packages/devel/bioc/html/powerTCR.html}
+{powerTCR R package}.Please read and cite PMID: 30485278 if using 
+the function for analyses. If a matrix output for the data is preferred 
+set exportTable = TRUE.
 }
 \examples{
 #Making combined contig data

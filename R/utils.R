@@ -47,8 +47,12 @@ grabMeta <- function(sc) {
 modifyBarcodes <- function(df, samples, ID) {
     out <- NULL
     for (x in seq_along(df)) {
-        data <- df[[x]]
-        data$barcode <- paste0(samples[x], "_", ID[x], "_", data$barcode)
+        data <- df[[x]] 
+        if (!is.null(ID)){
+          data$barcode <- paste0(samples[x], "_", ID[x], "_", data$barcode)
+        } else {
+          data$barcode <- paste0(samples[x], "_", data$barcode)
+        }
         out[[x]] <- data }
     return(out)
 }
@@ -104,20 +108,6 @@ filteringNA <- function(sc) {
       return(sc)
     }
 }
-
-#Check the format of the cell barcode inputs and parameter lengths
-checkContigBarcodes <- function(df, samples, ID) {
-    count <- length(unlist(strsplit(df[[1]]$barcode[1], "[-]")))
-    count2 <- length(unlist(strsplit(df[[1]]$barcode[1], "[_]")))
-    if (count > 2 | count2 > 2) {
-        stop("Seems to be an error in the naming of the contigs, ensure 
-            the barcodes are labeled like, AAACGGGAGATGGCGT-1 or 
-            AAACGGGAGATGGCGT, use stripBarcode to get the basic 
-            format", call. = FALSE)
-    } else if (length(df) != length(samples) | length(df) != length(ID)) {
-        stop("Make sure the sample and ID labels match the length of the 
-            list of data frames (df).", call. = FALSE) }
-    }
 
 #Calculating diversity using Vegan R package
 #' @importFrom vegan diversity estimateR

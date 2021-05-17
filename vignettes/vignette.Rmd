@@ -65,11 +65,9 @@ for (i in seq_along(contig_list)) {
 }
 ```
 
-You can see now the barcode in column 1, we have removed the P#_#_ prefixes. 
-
 # Combining the Contigs
 
-As the output of CellRanger are quantifications of both the TCRA and TCRB chains, the next step is to create a single list object with the TCR gene and CDR3 sequences by cell barcode. This is performed using the *combineTCR()*, where the input is the stripped contig_list. There is also the relabeling of the barcodes by sample and ID information to prevent duplicates.
+As the output of CellRanger are quantifications of both the TCRA and TCRB chains, the next step is to create a single list object with the TCR gene and CDR3 sequences by cell barcode. This is performed using the *combineTCR()*, where the input is the stripped contig_list. There is also the relabeling of the barcodes by sample and ID information to prevent duplicates (ID can be left as NULL if you do not desire the addition of a second prefixes, this may alter the ability to add to single cell object down the road).
 
 *cells*
 +  T-AB - T cells, alpha-beta TCR

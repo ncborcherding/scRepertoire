@@ -315,13 +315,12 @@ compareClonotypes <- function(df, cloneCall = "gene+nt", samples = NULL,
 #' Hierarchical clustering of clonotypes on clonotype size and 
 #' Jensen-Shannon divergence
 #'
-#' This functionn produces a heirachial clustering of clonotypes by sample 
+#' This function produces a hierarchical clustering of clonotypes by sample 
 #' using the Jensen-Shannon distance and discrete gamma-GPD spliced threshold 
-#' model in the 
-#' \href{https://bioconductor.org/packages/devel/bioc/html/powerTCR.html}
-#' {powerTCR R package}.
-#' Please read and cite PMID: 30485278 if using the function for analyses. 
-#' If a matrix output for the data is preferred set exportTable = TRUE.
+#' model in the \href{https://bioconductor.org/packages/devel/bioc/html/powerTCR.html}
+#' {powerTCR R package}.Please read and cite PMID: 30485278 if using 
+#' the function for analyses. If a matrix output for the data is preferred 
+#' set exportTable = TRUE.
 #'
 #' @examples
 #' #Making combined contig data
@@ -424,7 +423,7 @@ makingLodes <- function(meta2, color, alpha, facet, set.axes) {
 #' vizVgenes(combined, TCR = "TCR1", facet.x = "sample")
 #'
 #' @param df The product of combineTCR(), combineBCR(), or expression2List().
-#' @param TCR Which TCR chain to use, TCR1 = TCRA or TCR2 = TCRB
+#' @param TCR Which TCR chain to use, TRA, TRB, TRG, TRD
 #' @param facet.x Categorical variable which to seperate by along x-axis
 #' @param facet.y Categorical variable which to seperate by along y-axis
 #' @param fill Categorical variable which to add color to bar chart
@@ -434,7 +433,7 @@ makingLodes <- function(meta2, color, alpha, facet, set.axes) {
 #' @export
 #' @return ggplot bar diagram of vgene counts
 
-vizVgenes <- function(df, TCR = "TCR1", 
+vizVgenes <- function(df, TCR = "TRA", 
                         facet.x = "sample", 
                         facet.y = NULL, 
                         fill = NULL, 
@@ -446,9 +445,9 @@ vizVgenes <- function(df, TCR = "TCR1",
     TCR2 <- str_split(TCR2, "[.]", simplify = TRUE)[,1] 
     df$TCR1_vgene <- TCR1
     df$TCR2_vgene <- TCR2
-    if (TCR == "TCR1") {
+    if (TCR == "TRA" | TCR == "TRG") {
         x <- "TCR1_vgene"}
-    else if (TCR == "TCR2") {
+    else if (TCR == "TCB" | TCR == "TRG") {
         x <- "TCR2_vgene"}
     df <- subset(df, !is.na(df[,x])) #remove NA values
     df <- subset(df, df[,x] != "NA") #remove values that are character "NA"

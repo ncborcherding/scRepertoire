@@ -39,6 +39,9 @@
     utils::globalVariables ("patient")
     utils::globalVariables ("combn")
     utils::globalVariables ("include")
+    utils::globalVariables ("cell")
+    utils::globalVariables ("chain1")
+    utils::globalVariables ("chain2")
     
 
     invisible ()

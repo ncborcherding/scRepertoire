@@ -9,22 +9,23 @@ combineTRUST4(
   samples = NULL,
   ID = NULL,
   cells = c("T-AB", "T-GD", "B"),
-  removeNA = FALSE,
-  removeMulti = FALSE
+  chain = "both",
+  removeNA = FALSE
 )
 }
 \arguments{
 \item{df}{List of Contig outputs from TRUST4}
 
-\item{samples}{The labels of samples.}
+\item{samples}{The labels of samples (required).}
 
-\item{ID}{The additional sample labeling option.}
+\item{ID}{The additional sample labeling (optional).}
 
 \item{cells}{The type of cell - T cell-AB or T cell-GD, or B cell}
 
-\item{removeNA}{This will remove any chain without values.}
+\item{chain}{Select a single or both chains for assigning clonotypes
+T-AB chain options "both", "TRA", "TRB" or B cells "heavy" or "light"}
 
-\item{removeMulti}{This will remove barcodes with greater than 2 chains.}
+\item{removeNA}{This will remove any chain without values.}
 }
 \value{
 List of clonotypes for individual cell barcodes
@@ -39,9 +40,13 @@ barcodes. The resulting new barcodes will need to match the seurat or SCE
 object in order to use, \code{\link{combineExpression}}. Several 
 levels of filtering exist - removeMulti are parameters that 
 control how  the function  deals with barcodes with multiple chains 
-recovered. Please [read more](https://github.com/liulab-dfci/TRUST4) 
+recovered. Please \href{https://github.com/liulab-dfci/TRUST4}{read more}
 and cite the TRUST4 pipeline if using this function.
 }
-\details{
+\examples{
+\dontrun{ 
+combineTRUST4(contig_list, rep(c("PX", "PY", "PZ"), each=2), 
+rep(c("P", "T"), 3), cells ="T-AB")
+}
 
 }

@@ -25,7 +25,7 @@ meta data after combineExpression(). The visualization will take the
 new meta data variable "cloneType" and plot the number of cells with
 each designation using a secondary variable, like cluster. Credit to 
 the idea goes to Drs. Carmona and Andreatta and their work with
-[ProjectTIL](https://github.com/carmonalab/ProjecTILs).
+\href{https://github.com/carmonalab/ProjecTILs}{ProjectTIL}.
 }
 \examples{
 #Getting the combined contigs

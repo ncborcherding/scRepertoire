@@ -12,15 +12,16 @@
 #' recovered. Please \href{https://github.com/liulab-dfci/TRUST4}{read more}
 #' and cite the TRUST4 pipeline if using this function.
 #' 
-#' \dontrun{ 
+#' 
 #' @examples
+#' \dontrun{ 
 #' combineTRUST4(contig_list, rep(c("PX", "PY", "PZ"), each=2), 
 #' rep(c("P", "T"), 3), cells ="T-AB")
 #' }
 #' 
 #' @param df List of Contig outputs from TRUST4
-#' @param samples The labels of samples.
-#' @param ID The additional sample labeling option.
+#' @param samples The labels of samples (required).
+#' @param ID The additional sample labeling (optional).
 #' @param cells The type of cell - T cell-AB or T cell-GD, or B cell
 #' @param chain Select a single or both chains for assigning clonotypes
 #' T-AB chain options "both", "TRA", "TRB" or B cells "heavy" or "light"
@@ -32,7 +33,7 @@
 
 combineTRUST4 <- function(df, samples = NULL, ID = NULL, 
                           cells = c("T-AB", "T-GD", "B"), 
-                          chains = "both", 
+                          chain = "both", 
                           removeNA = FALSE) {
     df <- checkList(df)
     out <- NULL
@@ -79,8 +80,13 @@ combineTRUST4 <- function(df, samples = NULL, ID = NULL,
             Con.df[Con.df == "NA_NA" | Con.df == "NA_NA_NA_NA"] <- NA 
             data3 <- merge(data2[,-which(names(data2) %in% c("TCR1","TCR2"))], 
                            Con.df, by = "barcode")
-            data3<-data3[,c("barcode","sample","ID",tcr1_lines,tcr2_lines,
-                            CT_lines)]
+            if (!is.null(sample) & !is.null(ID)) {
+              data3<-data3[,c("barcode","sample","ID",tcr1_lines,tcr2_lines,
+                              CT_lines)] }
+            else if (!is.null(sample) & is.null(ID)) {
+              data3<-data3[,c("barcode","sample",tcr1_lines,tcr2_lines,
+                              CT_lines)] 
+            }
             final[[i]] <- data3
         }
     }
@@ -130,14 +136,28 @@ combineTRUST4 <- function(df, samples = NULL, ID = NULL,
             final[[i]]$sample <- samples[i]
             final[[i]]$ID <- ID[i]
             final[[i]][final[[i]] == "NA_NA" | final[[i]] == "NA_NA_NA_NA"] <- NA 
-            final[[i]]<- final[[i]][, c("barcode", "sample", "ID", 
-                                        heavy_lines[c(1,2,3)], light_lines[c(1,2,3)], CT_lines)]
+            if (!is.null(sample) & !is.null(ID)) {
+              final[[i]]<- final[[i]][, c("barcode", "sample", "ID", 
+                                          heavy_lines[c(1,2,3)], light_lines[c(1,2,3)], CT_lines)]
+            }
+            else if (!is.null(sample) & is.null(ID)) {
+              final[[i]]<- final[[i]][, c("barcode", "sample", 
+                                          heavy_lines[c(1,2,3)], light_lines[c(1,2,3)], CT_lines)]
+            }
         }
     }
+    if (!is.null(samples)) {
+      final <- modifyBarcodes(final, samples, ID)
+    } 
     names <- NULL
-    for (i in seq_along(samples)) { c <- paste(samples[i], "_", ID[i], sep="")
-    names <- c(names, c)}
+    for (i in seq_along(samples)){
+      if (!is.null(sample) & !is.null(ID)) {
+        c <- paste(samples[i], "_", ID[i], sep="")
+      } else if (!is.null(sample) & is.null(ID)) {
+        c <- paste(samples[i], sep="")
+      }
     names(final) <- names
+    }
     for (i in seq_along(final)){
         final[[i]]<-final[[i]][!duplicated(final[[i]]$barcode),]}
     if (chain != "both") { final <- filterchain(final)}

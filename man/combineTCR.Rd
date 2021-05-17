@@ -9,6 +9,7 @@ combineTCR(
   samples = NULL,
   ID = NULL,
   cells = c("T-AB", "T-GD"),
+  chain = "both",
   removeNA = FALSE,
   removeMulti = FALSE,
   filterMulti = FALSE
@@ -17,11 +18,14 @@ combineTCR(
 \arguments{
 \item{df}{List of filtered contig annotations from 10x Genomics.}
 
-\item{samples}{The labels of samples.}
+\item{samples}{The labels of samples (required).}
 
-\item{ID}{The additional sample labeling option.}
+\item{ID}{The additional sample labeling (optional).}
 
 \item{cells}{The type of T cell - T cell-AB or T cell-GD}
+
+\item{chain}{Select a single or both chains for assigning clonotypes
+T-AB chain options "both", "TRA", "TRB"}
 
 \item{removeNA}{This will remove any chain without values.}
 

@@ -33,8 +33,8 @@ utils::globalVariables(c("heavy_lines", "light_lines", "l_lines", "k_lines",
 #' rep(c("P", "T"), 3), cells ="T-AB")
 #' 
 #' @param df List of filtered contig annotations from 10x Genomics.
-#' @param samples The labels of samples.
-#' @param ID The additional sample labeling option.
+#' @param samples The labels of samples (required).
+#' @param ID The additional sample labeling (optional).
 #' @param cells The type of T cell - T cell-AB or T cell-GD
 #' @param chain Select a single or both chains for assigning clonotypes
 #' T-AB chain options "both", "TRA", "TRB"
@@ -53,7 +53,6 @@ combineTCR <- function(df, samples = NULL, ID = NULL,
     df <- checkList(df)
     out <- NULL
     final <- NULL
-    checkContigBarcodes(df, samples, ID)
     chain1 <- cellT(cells)[[1]]
     chain2 <- cellT(cells)[[2]]
     cellType <- cellT(cells)[[3]]
@@ -68,7 +67,11 @@ combineTCR <- function(df, samples = NULL, ID = NULL,
         if (filterMulti == TRUE) { df[[i]] <- filteringMulti(df[[i]]) }
         if (nrow(df[[i]]) == 0) { stop("There are 0 contigs 
                 after filtering for celltype.", call. = FALSE) }}
-    out <- modifyBarcodes(df, samples, ID)
+    if (!is.null(samples)) {
+        out <- modifyBarcodes(df, samples, ID)
+    } else {
+      out <- df
+    }
     for (i in seq_along(out)) { 
         data2 <- out[[i]]
         data2 <- makeGenes(cellType, data2, chain1, chain2)
@@ -82,11 +85,21 @@ combineTCR <- function(df, samples = NULL, ID = NULL,
         Con.df[Con.df == "NA_NA" | Con.df == "NA_NA_NA_NA"] <- NA 
         data3 <- merge(data2[,-which(names(data2) %in% c("TCR1","TCR2"))], 
             Con.df, by = "barcode")
-        data3<-data3[,c("barcode","sample","ID",tcr1_lines,tcr2_lines,
-            CT_lines)]
+        if (!is.null(sample) & !is.null(ID)) {
+            data3<-data3[,c("barcode","sample","ID",tcr1_lines,tcr2_lines,
+                CT_lines)] }
+        else if (!is.null(sample) & is.null(ID)) {
+          data3<-data3[,c("barcode","sample",tcr1_lines,tcr2_lines,
+                          CT_lines)] 
+        }
         final[[i]] <- data3 }
     names <- NULL
-    for (i in seq_along(samples)) { c <- paste(samples[i], "_", ID[i], sep="")
+    for (i in seq_along(samples)) { 
+      if (!is.null(sample) & !is.null(ID)) {
+          c <- paste(samples[i], "_", ID[i], sep="")
+      } else if (!is.null(sample) & is.null(ID)) {
+          c <- paste(samples[i], sep="")
+      }
         names <- c(names, c)}
     names(final) <- names
     for (i in seq_along(final)){
@@ -119,8 +132,8 @@ combineTCR <- function(df, samples = NULL, ID = NULL,
 #' combined <- combineBCR(BCR, samples = "Patient1", ID = "Time1")
 #' 
 #' @param df List of filtered contig annotations from 10x Genomics.
-#' @param samples The labels of samples.
-#' @param ID The additional sample labeling option.
+#' @param samples The labels of samples (required).
+#' @param ID The additional sample labeling (optional).
 #' @param chain Select a single or both chains for assigning clonotypes
 #' B cells chain options "both", "heavy", "light"
 #' @param removeNA This will remove any chain without values.
@@ -137,7 +150,6 @@ combineBCR <- function(df, samples = NULL, ID = NULL,
     final <- list()
     chain1 <- "heavy"
     chain2 <- "light"
-    checkContigBarcodes(df, samples, ID)
     for (i in seq_along(df)) {
         df[[i]] <- subset(df[[i]], chain %in% c("IGH", "IGK", "IGL"))
         df[[i]] <- subset(df[[i]], productive %in% c(TRUE, "TRUE", "True", "true"))
@@ -145,7 +157,11 @@ combineBCR <- function(df, samples = NULL, ID = NULL,
         df[[i]]$sample <- samples[i]
         df[[i]]$ID <- ID[i]
         df[[i]] <- filteringMulti(df[[i]]) }
-    out <- modifyBarcodes(df, samples, ID)
+    if (!is.null(samples)) {
+      out <- modifyBarcodes(df, samples, ID)
+    } else {
+      out <- df
+    }
     for (i in seq_along(out)) { 
         data2 <- data.frame(out[[i]])
         data2 <- makeGenes(cellType = "B", data2)
@@ -171,12 +187,23 @@ combineBCR <- function(df, samples = NULL, ID = NULL,
         final[[i]]$sample <- samples[i]
         final[[i]]$ID <- ID[i]
         final[[i]][final[[i]] == "NA_NA" | final[[i]] == "NA_NA_NA_NA"] <- NA 
-        final[[i]]<- final[[i]][, c("barcode", "sample", "ID", 
-            heavy_lines[c(1,2,3)], light_lines[c(1,2,3)], CT_lines)]}
+        if (!is.null(sample) & !is.null(ID)) {
+          final[[i]]<- final[[i]][, c("barcode", "sample", "ID", 
+              heavy_lines[c(1,2,3)], light_lines[c(1,2,3)], CT_lines)]
+          }
+        else if (!is.null(sample) & is.null(ID)) {
+          final[[i]]<- final[[i]][, c("barcode", "sample", 
+                    heavy_lines[c(1,2,3)], light_lines[c(1,2,3)], CT_lines)]
+        }
+    }
     names <- NULL
-    for (i in seq_along(samples)){c <- paste(samples[i], "_", ID[i], sep="")
-        names <- c(names, c)}
-    names(final) <- names
+    for (i in seq_along(samples)){
+      if (!is.null(sample) & !is.null(ID)) {
+        c <- paste(samples[i], "_", ID[i], sep="")
+      } else if (!is.null(sample) & is.null(ID)) {
+        c <- paste(samples[i], sep="")
+      }
+      names <- c(names, c)}
     for (i in seq_along(final)) {
         final[[i]] <- final[[i]][!duplicated(final[[i]]$barcode),]}
     if (chain != "both") { final <- filterchain(final) } 
