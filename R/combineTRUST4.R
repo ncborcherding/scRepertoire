@@ -40,7 +40,7 @@ combineTRUST4 <- function(df, samples = NULL, ID = NULL,
     
     chain1 <- cellT(cells)[[1]]
     chain2 <- cellT(cells)[[2]]
-    if (cell = "B") {
+    if (cell == "B") {
       chain1 <- "heavy"
       chain2 <- "light"
     }
