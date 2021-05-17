@@ -9,7 +9,7 @@
 #' object in order to use, \code{\link{combineExpression}}. Several 
 #' levels of filtering exist - removeMulti are parameters that 
 #' control how  the function  deals with barcodes with multiple chains 
-#' recovered. Please [read more](https://github.com/liulab-dfci/TRUST4) 
+#' recovered. Please \href{https://github.com/liulab-dfci/TRUST4}{read more}
 #' and cite the TRUST4 pipeline if using this function.
 #' 
 #' \dontrun{ 
@@ -22,6 +22,8 @@
 #' @param samples The labels of samples.
 #' @param ID The additional sample labeling option.
 #' @param cells The type of cell - T cell-AB or T cell-GD, or B cell
+#' @param chain Select a single or both chains for assigning clonotypes
+#' T-AB chain options "both", "TRA", "TRB" or B cells "heavy" or "light"
 #' @param removeNA This will remove any chain without values.
 #' @import dplyr
 #' @export
@@ -29,13 +31,19 @@
 
 
 combineTRUST4 <- function(df, samples = NULL, ID = NULL, 
-                          cells = c("T-AB", "T-GD", "B"), removeNA = FALSE) {
+                          cells = c("T-AB", "T-GD", "B"), 
+                          chains = "both", 
+                          removeNA = FALSE) {
     df <- checkList(df)
     out <- NULL
     final <- NULL
     
     chain1 <- cellT(cells)[[1]]
     chain2 <- cellT(cells)[[2]]
+    if (cell = "B") {
+      chain1 <- "heavy"
+      chain2 <- "light"
+    }
     cellType <- cellT(cells)[[3]]
     if (cells != "B") {
         cells <- unname(c("T-AB" = "abT", "T-GD" = "gdT")[cells])
@@ -132,6 +140,7 @@ combineTRUST4 <- function(df, samples = NULL, ID = NULL,
     names(final) <- names
     for (i in seq_along(final)){
         final[[i]]<-final[[i]][!duplicated(final[[i]]$barcode),]}
+    if (chain != "both") { final <- filterchain(final)}
     if (removeNA == TRUE) { final <- removingNA(final)}
     return(final) 
 }

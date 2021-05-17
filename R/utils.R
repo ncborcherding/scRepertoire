@@ -105,7 +105,7 @@ filteringNA <- function(sc) {
     }
 }
 
-#Check the format of the cell barcode inputs and parameter lengthsd
+#Check the format of the cell barcode inputs and parameter lengths
 checkContigBarcodes <- function(df, samples, ID) {
     count <- length(unlist(strsplit(df[[1]]$barcode[1], "[-]")))
     count2 <- length(unlist(strsplit(df[[1]]$barcode[1], "[_]")))
@@ -119,7 +119,7 @@ checkContigBarcodes <- function(df, samples, ID) {
             list of data frames (df).", call. = FALSE) }
     }
 
-#Caclulating diversity using Vegan R package
+#Calculating diversity using Vegan R package
 #' @importFrom vegan diversity estimateR
 diversityCall <- function(data) {
     w <- diversity(data[,"Freq"], index = "shannon")
@@ -415,4 +415,31 @@ makeGenes <- function(cellType, data2, chain1, chain2) {
     }
     return(data2)
     
+}
+
+#Splitting clonotype by selected chain
+#' @importFrom stringr str_split
+filterchain <- function(final) {
+  if (chain %in% c(chain1, chain2)) {
+    for(i in seq_along(final)) {
+      if (chain == chain1) {
+        pos = 1
+        pos2 = c(1,2)
+      } else {
+        pos = 2
+        pos2 = c(3,4)
+      }
+      final[[i]]$CTgene <- str_split(final[[i]]$CTgene, "_", simplify = TRUE)[,pos]
+      final[[i]]$CTnt <- str_split(final[[i]]$CTnt, "_", simplify = TRUE)[,pos]
+      final[[i]]$CTaa <- str_split(final[[i]]$CTaa, "_", simplify = TRUE)[,pos]
+      tmp <- str_split(final[[i]]$CTstrict, "_", simplify = TRUE)[,pos2[1]]
+      tmp1 <- str_split(final[[i]]$CTstrict, "_", simplify = TRUE)[,pos2[2]]
+      final[[i]]$CTstrict <- paste0(tmp, "_", tmp1)
+      final[[i]][final[[i]] == "NA_NA" | final[[i]] == "NA"] <- NA 
+    }
+  }else {
+    stop("Ensure the cell and chain selection correpond, for instance 
+         `T-AB` can only have chain = `TRA` or `TRB`.")
+    return(final)
+  }
 }

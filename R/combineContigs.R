@@ -27,6 +27,7 @@ utils::globalVariables(c("heavy_lines", "light_lines", "l_lines", "k_lines",
 #' levels of filtering exist - remove or filterMulti are parameters that 
 #' control how  the function  deals with barcodes with multiple chains 
 #' recovered.
+#' 
 #' @examples
 #' combineTCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), 
 #' rep(c("P", "T"), 3), cells ="T-AB")
@@ -35,15 +36,19 @@ utils::globalVariables(c("heavy_lines", "light_lines", "l_lines", "k_lines",
 #' @param samples The labels of samples.
 #' @param ID The additional sample labeling option.
 #' @param cells The type of T cell - T cell-AB or T cell-GD
+#' @param chain Select a single or both chains for assigning clonotypes
+#' T-AB chain options "both", "TRA", "TRB"
 #' @param removeNA This will remove any chain without values.
 #' @param removeMulti This will remove barcodes with greater than 2 chains.
 #' @param filterMulti This option will allow for the selection of the 2 
 #' corresponding chains with the highest expression for a single barcode.
+
 #' @import dplyr
 #' @export
 #' @return List of clonotypes for individual cell barcodes
 combineTCR <- function(df, samples = NULL, ID = NULL, 
-                cells = c("T-AB", "T-GD"), removeNA = FALSE, 
+                cells = c("T-AB", "T-GD"), 
+                chain = "both", removeNA = FALSE, 
                 removeMulti = FALSE, filterMulti = FALSE) {
     df <- checkList(df)
     out <- NULL
@@ -86,6 +91,7 @@ combineTCR <- function(df, samples = NULL, ID = NULL,
     names(final) <- names
     for (i in seq_along(final)){
         final[[i]]<-final[[i]][!duplicated(final[[i]]$barcode),]}
+    if (chain != "both") { final <- filterchain(final) }
     if (removeNA == TRUE) { final <- removingNA(final)}
     if (removeMulti == TRUE) { final <- removingMulti(final) }
     return(final) }
@@ -115,16 +121,22 @@ combineTCR <- function(df, samples = NULL, ID = NULL,
 #' @param df List of filtered contig annotations from 10x Genomics.
 #' @param samples The labels of samples.
 #' @param ID The additional sample labeling option.
+#' @param chain Select a single or both chains for assigning clonotypes
+#' B cells chain options "both", "heavy", "light"
 #' @param removeNA This will remove any chain without values.
 #' @param removeMulti This will remove barcodes with greater than 2 chains.
 #' @import dplyr
 #' @export
 #' @return List of clonotypes for individual cell barcodes
-combineBCR <- function(df, samples = NULL, ID = NULL, removeNA = FALSE, 
+combineBCR <- function(df, samples = NULL, ID = NULL, 
+                        chain = "both",
+                        removeNA = FALSE, 
                         removeMulti = FALSE) {
     df <- checkList(df)
     out <- NULL
     final <- list()
+    chain1 <- "heavy"
+    chain2 <- "light"
     checkContigBarcodes(df, samples, ID)
     for (i in seq_along(df)) {
         df[[i]] <- subset(df[[i]], chain %in% c("IGH", "IGK", "IGL"))
@@ -167,6 +179,7 @@ combineBCR <- function(df, samples = NULL, ID = NULL, removeNA = FALSE,
     names(final) <- names
     for (i in seq_along(final)) {
         final[[i]] <- final[[i]][!duplicated(final[[i]]$barcode),]}
+    if (chain != "both") { final <- filterchain(final) } 
     if (removeNA == TRUE) { final <- removingNA(final) }
     if (removeMulti == TRUE) { final <- removingMulti(final) }
     return(final) }

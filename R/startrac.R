@@ -2,7 +2,7 @@
 #' Diversity indices for single-cell RNA-seq
 #'
 #' @description This function utilizes the Startrac R package derived from 
-#' [PMID: 30479382](https://pubmed.ncbi.nlm.nih.gov/30479382/) 
+#' \href{https://pubmed.ncbi.nlm.nih.gov/30479382/}{PMID: 30479382}
 #' Required to run the function, the "type" variable needs to include the 
 #' difference in where the cells were derived. The output of this function 
 #' will produce 3 indices: expa (clonal expansion), migra 
