@@ -177,8 +177,8 @@ jaccardIndex <- function(df, length, cloneCall, coef_matrix) {
     overlap <- length(intersect(df.i_unique[,cloneCall], 
                                 df.j_unique[,cloneCall]))
     coef_matrix[i,j] <- 
-      overlap/sum(length(df.i_unique[,cloneCall]), 
-                  length(df.j_unique[,cloneCall]))
+      overlap/(sum(length(df.i_unique[,cloneCall]), 
+                              length(df.j_unique[,cloneCall]))-overlap)
     } 
   }
 }
