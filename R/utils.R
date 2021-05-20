@@ -162,6 +162,28 @@ morisitaIndex <- function(df, length, cloneCall, coef_matrix) {
     return(coef_matrix)
 }
 
+
+#Calculate the Jaccard Similarity Index for Overlap Analysis
+jaccardIndex <- function(df, length, cloneCall, coef_matrix) {
+  df.i <- df[[i]]
+  df.i <- df.i[,c("barcode",cloneCall)]
+  df.i_unique <- df.i[!duplicated(df.i[,cloneCall]),]
+  for (j in seq_along(length)){
+    if (i >= j){ next }
+    else { 
+    df.j <- df[[j]]
+    df.j <- df.j[,c("barcode",cloneCall)]
+    df.j_unique <- df.j[!duplicated(df.j[,cloneCall]),]
+    overlap <- length(intersect(df.i_unique[,cloneCall], 
+                                df.j_unique[,cloneCall]))
+    coef_matrix[i,j] <- 
+      overlap/sum(length(df.i_unique[,cloneCall]), 
+                  length(df.j_unique[,cloneCall]))
+    } 
+  }
+}
+
+
 #Calculate the Overlap Coefficient for Overlap Analysis
 #' @author Nick Bormann, Nick Borcherding
 overlapIndex <- function(df, length, cloneCall, coef_matrix) {

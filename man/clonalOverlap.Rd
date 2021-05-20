@@ -7,7 +7,7 @@
 clonalOverlap(
   df,
   cloneCall = c("gene", "nt", "aa", "gene+nt"),
-  method = c("overlap", "morisita"),
+  method = c("overlap", "morisita", "jaccard"),
   exportTable = FALSE
 )
 }
@@ -19,7 +19,7 @@ CDR3 nucleotide (nt) or CDR3 amino acid (aa), or
 CDR3 gene+nucleotide (gene+nt).}
 
 \item{method}{The method to calculate the overlap, either the overlap 
-coefficient or morisita index.}
+coefficient, morisita or jaccard indices.}
 
 \item{exportTable}{Exports a table of the data into the global 
 environment in addition to the visualization}

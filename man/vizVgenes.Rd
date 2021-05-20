@@ -6,7 +6,7 @@
 \usage{
 vizVgenes(
   df,
-  TCR = "TCR1",
+  TCR = "TRA",
   facet.x = "sample",
   facet.y = NULL,
   fill = NULL,
@@ -16,7 +16,7 @@ vizVgenes(
 \arguments{
 \item{df}{The product of combineTCR(), combineBCR(), or expression2List().}
 
-\item{TCR}{Which TCR chain to use, TCR1 = TCRA or TCR2 = TCRB}
+\item{TCR}{Which TCR chain to use, TRA, TRB, TRG, TRD}
 
 \item{facet.x}{Categorical variable which to seperate by along x-axis}
 

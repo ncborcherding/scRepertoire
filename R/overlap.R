@@ -22,7 +22,7 @@
 #' CDR3 nucleotide (nt) or CDR3 amino acid (aa), or 
 #' CDR3 gene+nucleotide (gene+nt).
 #' @param method The method to calculate the overlap, either the overlap 
-#' coefficient or morisita index.
+#' coefficient, morisita or jaccard indices.
 #' @param exportTable Exports a table of the data into the global 
 #' environment in addition to the visualization
 #' @importFrom stringr str_sort
@@ -30,7 +30,7 @@
 #' @export
 #' @return ggplot of the clonotypic overlap between elements of a list
 clonalOverlap <- function(df, cloneCall = c("gene", "nt", "aa", "gene+nt"), 
-                                method = c("overlap", "morisita"), 
+                                method = c("overlap", "morisita", "jaccard"), 
                                 exportTable = FALSE){
     cloneCall <- theCall(cloneCall)
     df <- checkBlanks(df, cloneCall)
@@ -46,7 +46,9 @@ clonalOverlap <- function(df, cloneCall = c("gene", "nt", "aa", "gene+nt"),
     if (method == "overlap") {
         coef_matrix <- overlapIndex(df, length, cloneCall, coef_matrix)
     } else if (method == "morisita") {
-        coef_matrix <- morisitaIndex(df, length, cloneCall, coef_matrix)}
+        coef_matrix <- morisitaIndex(df, length, cloneCall, coef_matrix)
+    } else if (method == "jaccard") {
+        coef_matrix <- jaccardIndex(df, length, cloneCall, coef_matrix)}
     coef_matrix$names <- rownames(coef_matrix)
     if (exportTable == TRUE) { return(coef_matrix) }
     coef_matrix <- suppressMessages(melt(coef_matrix))[,-1]
