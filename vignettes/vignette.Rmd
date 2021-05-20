@@ -260,7 +260,7 @@ clonalProportion(combined, cloneCall = "nt")
 
 ## Overlap Analysis
 
-If you are interested in measures of similarity between the samples loaded into scRepertoire, using *clonalOverlap()* can assist in the visualization. Two methods currently can be performed in *clonalOverlap()* 1) overlap coefficient and 2) Morisita index. The former is looking at the overlap of clonotypes scaled to the length of unique clonotypes in the smaller sample. The Morisita index is more complex, it is an ecological measure of the dispersion of individuals within a population, incorporating the size of the population.
+If you are interested in measures of similarity between the samples loaded into scRepertoire, using *clonalOverlap()* can assist in the visualization. Three methods currently can be performed in *clonalOverlap()* 1) overlap coefficient, 2) Morisita index, 3) Jaccard Similarity index. The former is looking at the overlap of clonotypes scaled to the length of unique clonotypes in the smaller sample. The Morisita index is more complex, it is an ecological measure of the dispersion of individuals within a population, incorporating the size of the population. The Jaccard Similarity Index is very similar to the overlap coefficient - instead of using the length of the smaller sample, the denominator for the Jaccard Index is the union of the two comparisons, leading to a much smaller number. 
 
 ```{r}
 clonalOverlap(combined, cloneCall = "gene+nt", method = "morisita")
