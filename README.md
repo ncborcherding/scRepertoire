@@ -36,7 +36,7 @@ BiocManager::install("scRepertoire")
 
 ### Getting Data
 
-Unfortunately, Github limits the size of individual files. In order to access the seurat object paired with scRepetoire please download the .rda from [here](https://drive.google.com/open?id=1np-EzG7U9W_Fz_SchBrsAhtqE3_rB_H9).
+Unfortunately, Github limits the size of individual files. In order to access the seurat object paired with scRepertoire please download the .rda from [here](https://drive.google.com/open?id=1np-EzG7U9W_Fz_SchBrsAhtqE3_rB_H9).
 
 ### Learning To Use scRepertoire
 
@@ -49,5 +49,5 @@ Feel free to use, edit, modify scRepertoire, but if you do, please cite the [man
 Questions, comments, suggestions, please feel free to contact Nick Borcherding via this repository, [email](mailto:ncborch@gmail.com), or using [twitter](https://twitter.com/theHumanBorch). 
 
 ### More Information On VDJ Biology
-Our publication is limited in scope and size and we were unable to review VDJ biology and issues relevant to high-throuhput immune receptor profiling. If you are interested in the biology of the process, please refer to the excellent reviews from [Jahong Ji](https://www.nature.com/articles/nri2941) and [Frederick Alt](https://www.cell.com/fulltext/S0092-8674(04)00039-X). Additionally, the complexities of sequencing and quantifications of VDJs are discussed [here.](https://www.nature.com/articles/nprot.2018.021?)
+Our publication is limited in scope and size and we were unable to review VDJ biology and issues relevant to high-throughput immune receptor profiling. If you are interested in the biology of the process, please refer to the excellent reviews from [Jahong Ji](https://www.nature.com/articles/nri2941) and [Frederick Alt](https://www.cell.com/fulltext/S0092-8674(04)00039-X). Additionally, the complexities of sequencing and quantifications of VDJs are discussed [here.](https://www.nature.com/articles/nprot.2018.021?)
 
