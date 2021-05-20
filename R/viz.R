@@ -1,7 +1,7 @@
 #' Quantify the unique clonotypes in the filtered contigs.
 #'
-#' This function takes the output from combineTCR(), combineBCR(), or e
-#' xpression2List() and quantifies unique clonotypes. The unique clonotypes 
+#' This function takes the output from combineTCR(), combineBCR(), or 
+#' expression2List() and quantifies unique clonotypes. The unique clonotypes 
 #' can be either reported as a raw output or scaled to the total number of 
 #' clonotypes recovered using the scale parameter. Multiple sequencing 
 #' runs can be group together using the group parameter. If a matrix output 
@@ -445,9 +445,9 @@ vizVgenes <- function(df, TCR = "TCR1",
     TCR2 <- str_split(TCR2, "[.]", simplify = TRUE)[,1] 
     df$TCR1_vgene <- TCR1
     df$TCR2_vgene <- TCR2
-    if (TCR == "TCR1") {
+    if (TCR == "TRA" | TCR == "TRG") {
         x <- "TCR1_vgene"}
-    else if (TCR == "TCR2") {
+    else if (TCR == "TCB" | TCR == "TRG") {
         x <- "TCR2_vgene"}
     df <- subset(df, !is.na(df[,x])) #remove NA values
     df <- subset(df, df[,x] != "NA") #remove values that are character "NA"
