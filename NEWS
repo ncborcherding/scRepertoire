@@ -7,6 +7,8 @@ CHANGES IN VERSION 1.1.5
 * added the filter of contigs by chain in the combineTCR, combineBCR, and combineTRUST4 functions
 * no longer require the ID in the combineTCR/BCR/TRUST4 functions
 * added jaccard index for overlap analysis
+* replaced vizVgene with vizGene - allowing users to look at any gene in the combinedContig object
+* Fixed coloring scale on the overlap analysis
 
 CHANGES IN VERSION 1.1.4
 ------------------------
