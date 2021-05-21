@@ -409,10 +409,13 @@ makingLodes <- function(meta2, color, alpha, facet, set.axes) {
     return(lodes) }
 
 
-#' Visualizing the distribution of TCR V gene usage
+#' Visualizing the distribution of gene usage
 #' 
 #' This function will allow for the visualizing the distribution 
-#' ofthe V-genes of the TCR by categroical variables.
+#' of the any VDJ and C gene of the TCR or BCR using heatmap or
+#' bar chart. This function requires assumes two chains were used in 
+#' defining clonotype, if not, it will default to the only chain 
+#' present regardless of the chain parameter.
 #'
 #' @examples
 #' #Making combined contig data
@@ -420,56 +423,78 @@ makingLodes <- function(meta2, color, alpha, facet, set.axes) {
 #' combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), 
 #' rep(c("P", "T"), 3), cells ="T-AB")
 #' 
-#' vizVgenes(combined, TCR = "TCR1", facet.x = "sample")
+#' vizGenes(combined, gene = "V", chain = "TRB", plot = "bar", scale = TRUE)
 #'
 #' @param df The product of combineTCR(), combineBCR(), or expression2List().
-#' @param TCR Which TCR chain to use, TRA, TRB, TRG, TRD
-#' @param facet.x Categorical variable which to seperate by along x-axis
-#' @param facet.y Categorical variable which to seperate by along y-axis
-#' @param fill Categorical variable which to add color to bar chart
+#' @param gene Which part of the immune receptor to visualize - V, D, J, C
+#' @param chain Which TCR chain to use - TRA, TRB, TRG, TRD, Heavy, Light
+#' @param plot The type of plot to return - heatmap or bar 
+#' @param separate Categorical variable which to separate by along y-axis
+#' @param scale Converts the proportion of total genes 
 #' @param exportTable Returns the data frame used for forming the graph.
 #' @import ggplot2
 #' @importFrom stringr str_split
 #' @export
 #' @return ggplot bar diagram of vgene counts
 
-vizVgenes <- function(df, TCR = "TRA", 
-                        facet.x = "sample", 
-                        facet.y = NULL, 
-                        fill = NULL, 
-                        exportTable = FALSE){
+vizGenes <- function(df, 
+                      gene = "V",
+                      chain = "TRA", 
+                      plot = "heatmap",  
+                      separate = "sample", 
+                      scale = TRUE, 
+                      exportTable = FALSE) {
     df <- bind_rows(df)
-    TCR1 <- str_split(df[,"CTgene"], "_", simplify = TRUE)[,1] 
-    TCR1 <- str_split(TCR1, "[.]", simplify = TRUE)[,1] 
-    TCR2 <- str_split(df[,"CTgene"], "_", simplify = TRUE)[,2] 
-    TCR2 <- str_split(TCR2, "[.]", simplify = TRUE)[,1] 
-    df$TCR1_vgene <- TCR1
-    df$TCR2_vgene <- TCR2
-    if (TCR == "TRA" | TCR == "TRG") {
-        x <- "TCR1_vgene"}
-    else if (TCR == "TCB" | TCR == "TRG") {
-        x <- "TCR2_vgene"}
+    gene <- unname(c(V = 1, D = 2, J = 3, C = 4)[gene])
+    if (ncol(str_split(df[,"CTgene"], "_", simplify = TRUE)) == 1) {
+      C1 <- str_split(df[,"CTgene"], "_", simplify = TRUE)[,1] 
+      C1 <- str_split(C1, "[.]", simplify = TRUE)[,gene] 
+      df$C1 <- C1
+      x <- "C1"
+    } else {
+        C1 <- str_split(df[,"CTgene"], "_", simplify = TRUE)[,1] 
+        C1 <- str_split(C1, "[.]", simplify = TRUE)[,gene] 
+        C2 <- str_split(df[,"CTgene"], "_", simplify = TRUE)[,2] 
+        C2 <- str_split(C2, "[.]", simplify = TRUE)[,gene] 
+        df$C1 <- C1
+        df$C2 <- C2
+        if (chain %in% c("TRA", "TRD", "Heavy")) {
+            x <- "C1"}
+        else if (chain %in% c("TRB", "TRG", "Light")) {
+            x <- "C2"}
+    }
     df <- subset(df, !is.na(df[,x])) #remove NA values
     df <- subset(df, df[,x] != "NA") #remove values that are character "NA"
-    plot <- ggplot(df, aes(x=df[,x])) + 
-        geom_bar() + 
-        theme_classic() + 
-        theme(axis.title.x = element_blank(), #remove titles
-                axis.ticks.x = element_blank(), #removes ticks
-                axis.text.x = element_text(angle = 90, 
-                                    vjust = 0.5, hjust=1, size=rel(0.5)))
     
-    if (!is.null(fill)) {
-        plot <- plot + aes(fill = df[,fill]) + #Allow for coloring of bar
-            labs(fill = fill)
+    df <- table(df[,x], df[,separate])
+    if (scale == TRUE) {
+      for (i in seq_len(ncol(df))) {
+        df[,i] <- df[,i]/sum(df[,i])
+      }
     }
-    #This allows for adaptive facetting so you can select which facet you'd like
-    if (!is.null(facet.y) & !is.null(facet.x)) {
-        plot <- plot + facet_grid(df[,facet.y] ~ df[,facet.x])
-    } else if (is.null(facet.y) & !is.null(facet.x)) {
-        plot <- plot + facet_grid(. ~ df[,facet.x])
-    } else if (!is.null(facet.y) & is.null(facet.x)) {
-        plot <- plot + facet_grid(df[,facet.y] ~ .)
+    df <- as.data.frame(df)
+    if (plot == "bar") {
+      plot <- ggplot(df, aes(x=Var1, y = Freq)) + 
+          geom_bar(stat = "identity") + 
+          theme_classic() + 
+          theme(axis.title.x = element_blank(), #remove titles
+                axis.title.y = element_blank(), 
+                  axis.ticks.x = element_blank(), #removes ticks
+                  axis.text.x = element_text(angle = 90, 
+                                      vjust = 0.5, hjust=1, size=rel(0.5))) + 
+        facet_grid(Var2~.)
+    } else if (plot == "heatmap") {
+      
+      
+      plot <- ggplot(df, aes(x=Var1, y = Var2, fill = Freq)) + 
+      geom_tile() + 
+      theme_classic() + 
+      theme(axis.title.x = element_blank(), #remove titles
+            axis.ticks.x = element_blank(), #removes ticks
+            axis.text.x = element_text(angle = 90, 
+                                       vjust = 0.5, hjust=1, size=rel(0.5)), 
+            axis.title.y = element_blank()) + 
+        scale_fill_gradientn(colors = rev(colorblind_vector(5)))
     }
     if (exportTable == TRUE) { return(df) }
     return(plot)

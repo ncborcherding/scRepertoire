@@ -199,20 +199,36 @@ compareClonotypes(combined, numbers = 10, samples = c("PX_P", "PX_T"),
                     cloneCall="aa", graph = "alluvial")
 ```
 
-Last of the basic analysis visualizations is the relative usage of vgenes of the TCR, using *vizVgenes()*.
+Last of the basic analysis visualizations is the relative usage of genes of the TCR or BCR, using *vizGenes()*.
 
-*TCR*
-+  For T-AB: TRA and TRB
-+  For T-GD: TRG and TRD
+*gene*  
++  "V"  
++  "D"  
++  "J"  
++  "C"  
 
-*facet.x and facet.y*
-+  Any variable within the combined() object
+*chain*
++  "TRB"  
++  "TRA"  
++  "TRG"  
++  "TRD" 
++  "Heavy"  
++  "Light"  
 
-*fill*
-+  Color the bars by variable
+*plot*  
++ "bar" for a bar chart  
++ "heatmap" for a heatmap  
+
+*separate*  
+Variable to separate the counts along the y-axis  
+
+*scale*  
++ TRUE to scale the graph by number of genes per sample  
++ FALSE to report raw numbers  
+
 
 ```{r}
-vizVgenes(combined, TCR="TCR1", facet.x = "sample", facet.y = "ID")
+vizGenes(combined, gene = "V", chain = "TRB", plot = "bar", scale = TRUE)
 ```
 
 ***

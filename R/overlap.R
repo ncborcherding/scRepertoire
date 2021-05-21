@@ -58,8 +58,6 @@ clonalOverlap <- function(df, cloneCall = c("gene", "nt", "aa", "gene+nt"),
     plot <- ggplot(coef_matrix, aes(x=names, y=variable, fill=value)) +
             geom_tile() + labs(fill = method) +
             geom_text(aes(label = round(value, digits = 3))) +
-            scale_fill_gradient2(high = col[1], mid = col[4], 
-                    midpoint = ((range(na.omit(coef_matrix$value)))/2)[2], 
-                    low=col[7], na.value = "white") +
+            scale_fill_gradientn(colors = rev(colorblind_vector(5))) +
             theme_classic() + theme(axis.title = element_blank())
     return(plot) }
