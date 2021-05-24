@@ -172,17 +172,18 @@ jaccardIndex <- function(df, length, cloneCall, coef_matrix) {
     for (j in seq_along(length)){
       if (i >= j){ next }
       else { 
-      df.j <- df[[j]]
-      df.j <- df.j[,c("barcode",cloneCall)]
-      df.j_unique <- df.j[!duplicated(df.j[,cloneCall]),]
-      overlap <- length(intersect(df.i_unique[,cloneCall], 
-                                  df.j_unique[,cloneCall]))
-      coef_matrix[i,j] <- 
-        overlap/(sum(length(df.i_unique[,cloneCall]), 
-                                length(df.j_unique[,cloneCall]))-overlap)
+        df.j <- df[[j]]
+        df.j <- df.j[,c("barcode",cloneCall)]
+        df.j_unique <- df.j[!duplicated(df.j[,cloneCall]),]
+        overlap <- length(intersect(df.i_unique[,cloneCall], 
+                                    df.j_unique[,cloneCall]))
+        coef_matrix[i,j] <- 
+          overlap/(sum(length(df.i_unique[,cloneCall]), 
+                                  length(df.j_unique[,cloneCall]))-overlap)
       } 
     }
   }
+}
 
 
 #Calculate the Overlap Coefficient for Overlap Analysis

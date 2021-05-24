@@ -135,7 +135,7 @@ combineExpression <- function(df, sc, cloneCall="gene+nt", groupBy="none",
 #' @param cloneCall How to call the clonotype - CDR3 gene (gene), 
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
 #' CDR3 gene+nucleotide (gene+nt).
-#' @param sequence The specifc sequence or sequence to highlight
+#' @param sequence The specific sequence or sequence to highlight
 #'
 #' @export
 #' @return DimPlot with highlighted clonotypes

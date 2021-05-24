@@ -493,6 +493,38 @@ In order to use the ```StartracDiversity()``` function, you will need to include
 StartracDiversity(screp_example, type = "Type", sample = "Patient", by = "overall")
 ```
 
+## Regress out the effects of clonotypes on feature space (Dev Version Only)
+
+There is a high degree of overlap in the feature space of expanded clonotypes, not only in the adaptive receptor genes that form the clonotype, but also in potentially functional genes. In order to identify divergent clusters in shared clonotypes, we can regress out the effects of the expanded clonotypes on the feature space using ```regressClonotype()```, by first removing the adaptive receptor genes from the variable gene list and then using the [Harmony R package](https://github.com/immunogenomics/harmony) to re-integrate/re-embed the single-cell data using the clonotype variable as a correcting factor. We can also add additional variables to regress using the **groupVariable** parameter, such as batch or orig.ident. **Note: If running a number of single-cells with a diverse clonotype repertoire, this function may take a lot of time**
+
+**groupVariable**  
+* Other categorical variables in the meta data to include in model, such as batch or Patient
+
+**reduction**  
+* "UMAP" - re-embed the UMAP graph 
+* "TSNE" - re-embed the TSNE graph
+
+**dim**  
+* The number of dimensions of the correct PCA to use, i.e., 1:20 
+
+```{r}
+#To save space, the example Seurat only includes the integrated RNA values.
+#In order to regress out the effects of the clonotype, we need the RNA values
+#For the purposes of this demonstration, we are just going to assign the RNA
+#assay as the integrated assay, please don't to this for your data
+screp_example[["RNA"]] <- screp_example@assays$integrated
+
+#Quick Sampling just so it does not take too long
+set.seed(123)
+screp_example2 <- screp_example
+
+screp_example2 <- regressClonotype(screp_example2, cloneCall = "gene+nt", 
+              groupVariable = "Patient", reduction = "UMAP", dims = 1:10)
+
+#Difference Between Old and New UMAP
+DimPlot(screp_example, reduction = "umap")
+DimPlot(screp_example, reduction = "umap")
+```
 
 For users that would like greater ability to use the meta data in the Seurat objects to perform the analysis that scRepertoire provides, there is also the option of using the *expression2List()* function that will take the meta data and output the data as a list by cluster.
 

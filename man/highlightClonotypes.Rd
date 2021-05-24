@@ -17,7 +17,7 @@ highlightClonotypes(
 CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
 CDR3 gene+nucleotide (gene+nt).}
 
-\item{sequence}{The specifc sequence or sequence to highlight}
+\item{sequence}{The specific sequence or sequence to highlight}
 }
 \value{
 DimPlot with highlighted clonotypes
