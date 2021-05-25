@@ -10,6 +10,7 @@ CHANGES IN VERSION 1.1.5
 * replaced vizVgene with vizGene - allowing users to look at any gene in the combinedContig object
 * Fixed coloring scale on the overlap analysis
 * Added regressClonotype function using harmony to remove the clonotype effect on feature space
+* Changed grabMeta to include assessment of colnames
 
 CHANGES IN VERSION 1.1.4
 ------------------------
