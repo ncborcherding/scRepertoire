@@ -27,6 +27,8 @@ CDR3 gene+nucleotide (gene+nt).}
 \item{reduction}{Re-perform the dimensional reduction - "UMAP" or "TSNE"}
 
 \item{dims}{The number of dimensions to use in the reduction (i.e., 1:20)}
+
+\item{...}{Other parameters to be called from Harmony package}
 }
 \value{
 Seurat or SingleCellExperiment object
@@ -46,12 +48,11 @@ rep(c("P", "T"), 3), cells ="T-AB")
 #Getting a sample of a Seurat object
 screp_example <- get(data("screp_example"))
 sce <- suppressMessages(Seurat::UpdateSeuratObject(screp_example))
-sce <- Seurat::as.SingleCellExperiment(sce)
 
 #Using combineExpresion()
 sce <- combineExpression(combined, sce)
 
-sce <- regressClonotype(sce, groupVariable = "patient", reduction = "UMAP", dims = 1:20)
-
+sce[["RNA"]] <- sce[["integrated"]]
+sce <- regressClonotype(sce, groupVariable = NULL, reduction = "UMAP", dims = 1:5)
 
 }
