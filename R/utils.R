@@ -34,8 +34,9 @@ grabMeta <- function(sc) {
         meta <- data.frame(sc[[]], slot(sc, "active.ident"))
         if ("cluster" %in% colnames(meta)) {
           colnames(meta)[length(meta)] <- "cluster.active.ident"
-        }
+        } else {
         colnames(meta)[length(meta)] <- "cluster"
+        }
     }
     else if (inherits(x=sc, what ="SummarizedExperiment")){
         meta <- data.frame(colData(sc))
