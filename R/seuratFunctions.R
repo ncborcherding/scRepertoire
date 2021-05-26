@@ -189,14 +189,16 @@ highlightClonotypes <- function(sc,
 #' @param cloneCall How to call the clonotype - CDR3 gene (gene), 
 #' CDR3 nucleotide (nt) or CDR3 amino acid (aa), or 
 #' CDR3 gene+nucleotide (gene+nt).
-#' @param y.axes The columns that will seperate the proportional 
+#' @param y.axes The columns that will separate the proportional 
 #' visualizations.
 #' @param color The column header or clonotype(s) to be highlighted.
-#' @param facet The column label to seperate.
-#' @param alpha The column header to have gradieted opacity.
-#'
-#' @importFrom ggalluvial geom_stratum geom_alluvium geom_flow stat_stratum
-#' @import dplyr
+#' @param facet The column label to separate.
+#' @param alpha The column header to have gradated opacity.
+#' @import ggplot2
+#' 
+#' @importFrom ggalluvial StatStratum geom_flow geom_stratum to_lodes_form geom_alluvium
+#' @importFrom dplyr %>% mutate
+#' 
 #' @export
 #' @return Alluvial ggplot comparing clonotype distribution across 
 #' selected parameters.
@@ -213,18 +215,20 @@ alluvialClonotypes <- function(sc,
     check <- colnames(meta) == color
     if (length(unique(check)) == 1 & unique(check)[1] == FALSE & 
         !is.null(color)) {
-        meta <- meta %>% mutate(H.clonotypes = ifelse(meta[,cloneCall] %in% 
+        meta <- meta %>% mutate("clonotype(s)" = ifelse(meta[,cloneCall] %in% 
             color, "Selected", "Other"))
-        color <- "H.clonotypes" }
+        color <- "clonotype(s)" }
+    
     y.axes <- unique(c(y.axes, color, alpha, facet))
     set.axes <- seq_along(y.axes)
     meta2 <- meta[,c(y.axes, color, alpha, facet, cloneCall, "barcodes")]
     meta2 <- unique(na.omit(meta2[!duplicated(as.list(meta2))]))
+
     lodes <- makingLodes(meta2, color, alpha, facet, set.axes) 
     plot <- ggplot(data = lodes, aes(x = x, stratum = stratum, 
                 alluvium = alluvium, label = stratum)) +
         geom_stratum() + theme_classic() +
-        theme(axis.title.x = element_blank(), axis.ticks.x = element_blank())
+        theme(axis.title.x = element_blank(), axis.ticks.x = element_blank())  
     if (is.null(color) & is.null(alpha)) {
         plot <- plot + geom_alluvium()
     } else if (!is.null(color) & is.null(alpha)) {
@@ -240,6 +244,7 @@ alluvialClonotypes <- function(sc,
     if (length(facet) == 1 & length(facet) < 2) {
         plot <- plot + facet_wrap(.~lodes[,facet], scales="free_y")
     } else if (length(facet) == 0) { plot <- plot }
+    plot <- plot + geom_text(stat = ggalluvial::StatStratum, infer.label = FALSE, reverse = TRUE, size = 2)
     return(plot)}
 
 
