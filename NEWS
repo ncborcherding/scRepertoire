@@ -11,6 +11,8 @@ CHANGES IN VERSION 1.1.5
 * Fixed coloring scale on the overlap analysis
 * Added regressClonotype function using harmony to remove the clonotype effect on feature space
 * Changed grabMeta to include assessment of colnames
+* Added labels to alluvialClonotype and occupiedClonotype plotting
+* allowed occupiedRepertoire to use proportion.
 
 CHANGES IN VERSION 1.1.4
 ------------------------

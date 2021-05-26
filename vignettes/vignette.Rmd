@@ -430,10 +430,12 @@ Seurat::DimPlot(screp_example, group.by = "highlight")
 
 ## occupiedscRepertoire
 
-We can also look at the count of cells by cluster assigned into specific frequency ranges, by using the `occupiedscRepertoire()` function and selecting the **x.axis** to display cluster or other variables in the meta data of the single cell object. 
+We can also look at the count of cells by cluster assigned into specific frequency ranges, by using the `occupiedscRepertoire()` function and selecting the **x.axis** to display cluster or other variables in the meta data of the single cell object. In addition
+**proportion** can be used to looked at a relative level groupings by **x.axis**, label will still return absolute numbers. 
 
 ```{r}
 occupiedscRepertoire(screp_example, x.axis = "cluster")
+occupiedscRepertoire(screp_example, x.axis = "cluster", proportion = TRUE, label = FALSE)
 ```
 
 ## alluvialClonotypes
@@ -446,8 +448,7 @@ alluvialClonotypes(screp_example, cloneCall = "gene",
                    color = "TRAV12-2.TRAJ42.TRAC_TRBV20-1.TRBJ2-3.TRBD2.TRBC2") + 
     scale_fill_manual(values = c("grey", colorblind_vector(1)))
 
-
-alluvialClonotypes(sce, cloneCall = "gene", 
+alluvialClonotypes(screp_example, cloneCall = "gene", 
                    y.axes = c("Patient", "seurat_clusters", "Type"), 
                    color = "seurat_clusters") 
 ```

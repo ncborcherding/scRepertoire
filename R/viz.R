@@ -381,7 +381,7 @@ colorblind_vector <- colorRampPalette(c("#FF4B20", "#FFB433",
                                         "#C6FDEC", "#7AC5FF", "#0348A6"))
 
 #Making lodes to function in alluvial plots
-#' @import ggalluvial
+#' @importFrom ggalluvial to_lodes_form
 makingLodes <- function(meta2, color, alpha, facet, set.axes) {
     if (!is.null(color) & !is.null(alpha) & !is.null(facet)) {
         lodes <- to_lodes_form(meta2,key="x",value="stratum",id="alluvium",

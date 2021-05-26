@@ -21,6 +21,7 @@ Imports:
 	vegan, 
 	powerTCR, 
 	SummarizedExperiment,
+	SingleCellExperiment,
 	plyr,
 	parallel,
 	doParallel,

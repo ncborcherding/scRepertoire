@@ -42,6 +42,8 @@
     utils::globalVariables ("cell")
     utils::globalVariables ("chain1")
     utils::globalVariables ("chain2")
+    utils::globalVariables ("total")
+    utils::globalVariables ("prop")
     
 
     invisible ()

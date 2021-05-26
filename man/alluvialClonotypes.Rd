@@ -22,14 +22,14 @@ For SCE objects, the cluster variable must be in the meta data under
 CDR3 nucleotide (nt) or CDR3 amino acid (aa), or 
 CDR3 gene+nucleotide (gene+nt).}
 
-\item{y.axes}{The columns that will seperate the proportional 
+\item{y.axes}{The columns that will separate the proportional 
 visualizations.}
 
 \item{color}{The column header or clonotype(s) to be highlighted.}
 
-\item{alpha}{The column header to have gradieted opacity.}
+\item{alpha}{The column header to have gradated opacity.}
 
-\item{facet}{The column label to seperate.}
+\item{facet}{The column label to separate.}
 }
 \value{
 Alluvial ggplot comparing clonotype distribution across 
