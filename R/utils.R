@@ -2,7 +2,9 @@
 #Remove list elements that contain all NA values
 checkBlanks <- function(df, cloneCall) {
     for (i in seq_along(df)) {
-        if (length(df[[i]][,cloneCall]) == length(which(is.na(df[[i]][,cloneCall])))) {
+        if (length(df[[i]][,cloneCall]) == length(which(is.na(df[[i]][,cloneCall]))) | 
+            length(!is.na(df[[i]][,cloneCall])) == 0 | 
+            nrow(df[[i]]) == 0) {
             df[[i]] <- NULL
         } else {
             next()
