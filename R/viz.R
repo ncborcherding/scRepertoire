@@ -312,6 +312,87 @@ compareClonotypes <- function(df, cloneCall = "gene+nt", samples = NULL,
     return(plot)
 }
 
+#' Scatter plot comparing the expansion of two samples
+
+#' This function produces a scatter plot directly comparing the specific clonotypes
+#' between two samples. The clonotypes will be categorized by counts into singlets or multiplets, 
+#' either exclusive or shared between the selected samples. Visualization inspired 
+#' by the work of \href{https://pubmed.ncbi.nlm.nih.gov/32103181/}{Wu, T, et al 2020}. 
+#'
+#' @examples
+#' #Making combined contig data
+#' x <- contig_list
+#' combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), 
+#' rep(c("P", "T"), 3), cells ="T-AB")
+#' scatterClonotype(combined, x.axis = "PY_P", y.axis = "PY_T",
+#' graph = "proportion")
+#' 
+#' @param df The product of combineTCR(), combineBCR(), or expression2List()
+#' @param cloneCall How to call the clonotype - CDR3 gene (gene), 
+#' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
+#' CDR3 gene+nucleotide (gene+nt).
+#' @param x.axis name of the list element to appear on the x.axis
+#' @param y.axis name of the list element to appear on the y.axis
+#' @param graph graph either proportion or raw clonotype count
+#' @param exportTable Returns the data frame used for forming the graph.
+#' 
+#' @import ggplot2
+#' 
+#' @export
+#' @return ggplot of the relative clonotype numbers
+
+scatterClonotype <- function(df, cloneCall ="gene+nt", 
+                             x.axis = NULL, y.axis = NULL,
+                             graph = "proportion", 
+                             exportTable = FALSE) {
+  
+  cloneCall <- theCall(cloneCall)
+  x.df <- as.data.frame(table(df[[x.axis]][,cloneCall]))
+  colnames(x.df)[2] <- x.axis
+  y.df <- as.data.frame(table(df[[y.axis]][,cloneCall]))
+  colnames(y.df)[2] <- y.axis
+  combined.df <- merge(x.df, y.df, by = "Var1", all = TRUE)
+  combined.df[is.na(combined.df)] <- 0
+  combined.df[,paste0(x.axis, ".fraction")] <- combined.df[,2]/sum(combined.df[,2])
+  combined.df[,paste0(y.axis, ".fraction")] <- combined.df[,3]/sum(combined.df[,3])
+  combined.df[,"class"] <- NA
+  combined.df[,"class"] <- ifelse(combined.df[,x.axis] == 1 & combined.df[,y.axis] == 0, paste0(x.axis, ".singlet"), combined.df[,"class"])
+  combined.df[,"class"] <- ifelse(combined.df[,y.axis] == 1 & combined.df[,x.axis] == 0, paste0(y.axis, ".singlet"), combined.df[,"class"])
+  combined.df[,"class"] <- ifelse(combined.df[,x.axis] > 1 & combined.df[,y.axis] == 0, paste0(x.axis, ".multiplet"), combined.df[,"class"])
+  combined.df[,"class"] <- ifelse(combined.df[,y.axis] > 1 & combined.df[,x.axis] == 0, paste0(y.axis, ".multiplet"), combined.df[,"class"])
+  combined.df[,"class"] <- ifelse(combined.df[,y.axis] >= 1 & combined.df[,x.axis] >= 1, paste0("dual.expanded"), combined.df[,"class"])
+  combined.df[,"sum"] <- combined.df[,2] + combined.df[,3] 
+  if (graph == "proportion") {
+    x <- combined.df[,4]
+    y <- combined.df[,5]
+  } else if (graph == "count") {
+    x <- combined.df[,2]
+    y <- combined.df[,3]
+  }
+  if (exportTable == TRUE) { 
+    return(combined.df)
+    }
+  
+  plot <- ggplot(combined.df, aes(x=x, y = y, color = class)) + 
+    theme_classic() + 
+    scale_color_manual(values = colorblind_vector(length(unique(combined.df$class)))) + 
+    xlab(x.axis) + 
+    ylab(y.axis) +
+    labs(size = "Total n")
+
+  if (graph == "proportion") {
+    plot <- plot + geom_abline(slope = 1, intercept = 0, alpha = 0.4, lty=2)  + 
+      scale_y_sqrt() + 
+      scale_x_sqrt() 
+  } else if (graph == "count") {
+    plot <- plot + 
+      ylim(0, max(x,y)) + 
+      xlim(0, max(x,y)) 
+  }
+  plot <- plot + geom_jitter(aes(size = sum))
+  return(plot)  
+}
+
 #' Hierarchical clustering of clonotypes on clonotype size and 
 #' Jensen-Shannon divergence
 #'

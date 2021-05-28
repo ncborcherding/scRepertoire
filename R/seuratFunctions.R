@@ -281,7 +281,7 @@ alluvialClonotypes <- function(sc,
 #' @param proportion Convert the stacked bars into relative proption
 #' @param exportTable Exports a table of the data into the global 
 #' environment in addition to the visualization
-#' 
+#' @importFrom dplyr %>% group_by mutate
 #' @importFrom reshape2 melt
 #' @import ggplot2
 #' @export
@@ -300,6 +300,7 @@ occupiedscRepertoire <- function(sc, x.axis = "cluster",
         group_by(meta[,1]) %>%
         mutate(total = sum(value), 
                prop = value/total)
+      meta <- as.data.frame(meta)
     }
     if (exportTable == TRUE) {
         return(meta)

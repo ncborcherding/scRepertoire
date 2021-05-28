@@ -4,7 +4,7 @@ author:
   name: Nick Borcherding
   email: ncborch@gmail.com
   affiliation: Washington University in St. Louis, School of Medicine, St. Louis, MO, USA
-date: "May 25th, 2021"
+date: "May 28th, 2021"
 output:
   BiocStyle::html_document:
     toc_float: true
@@ -298,6 +298,22 @@ clonalDiversity(combined, cloneCall = "gene", group = "samples", n.boots = 100)
 clonalDiversity(combined, cloneCall = "gene", group = "ID")
 ```
 
+## Scatter Compare 
+
+A number of users requested a visualization from the work of [Wu, et al 2020, PMID: 32103181](https://pubmed.ncbi.nlm.nih.gov/32103181/) that allows for the direct comparison of clonotypes between 2 samples. ```scatterClonotype()``` will organize two samples from the combinedTCR/BCR product, count the relative clonotypes, and produce a scatter plot comparing the two samples. 
+
+**x-axis** and **y-axis**
+* Names of the list element to place on the x-axis and y-axis - so for example "PX_P" and "PX_T"  
+ 
+**graph**  
+* "proportion" for the relative proportion the clonotype represents across all clonotypes  
+* "count" for the total count of clonotypes by sample  
+
+```{r}
+scatterClonotype(combined, cloneCall ="gene", 
+                             x.axis = "PY_P", y.axis = "PY_T",
+                             graph = "proportion")
+```
 
 ## Clustering Clonotypes 
 

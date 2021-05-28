@@ -13,6 +13,7 @@ CHANGES IN VERSION 1.1.5
 * Changed grabMeta to include assessment of colnames
 * Added labels to alluvialClonotype and occupiedClonotype plotting
 * allowed occupiedRepertoire to use proportion.
+* added scatterClonotype function to Viz.R
 
 CHANGES IN VERSION 1.1.4
 ------------------------
