@@ -362,12 +362,12 @@ lengthDF <- function(df, cloneCall, chains, group, c1, c2){
                 val1 <- strings[,1]
                 for (i in seq_along(val1)) {
                     if (grepl(";", val1[i]) == TRUE) {
-                        val1[i] <- str_split(val1, ";", simplify = TRUE)[1] 
+                        val1[i] <- str_split(val1[i], ";", simplify = TRUE)[1] 
                     } else { next() } }
                 val2 <- strings[,2]
                 for (i in seq_along(val2)) {
                     if (grepl(";", val2[i]) == TRUE) {
-                        val2[i] <- str_split(val2, ";", simplify = TRUE)[1]
+                        val2[i] <- str_split(val2[i], ";", simplify = TRUE)[1]
                     } else { next() } }
                 chain1 <- nchar(val1)
                 chain2 <- nchar(val2)
