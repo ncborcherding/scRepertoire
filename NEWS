@@ -14,6 +14,7 @@ CHANGES IN VERSION 1.1.5
 * Added labels to alluvialClonotype and occupiedClonotype plotting
 * allowed occupiedRepertoire to use proportion.
 * added scatterClonotype function to Viz.R
+* fixed lengthDF handling of single chains with multi chains stored - ;
 
 CHANGES IN VERSION 1.1.4
 ------------------------
