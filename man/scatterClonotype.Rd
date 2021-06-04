@@ -47,7 +47,7 @@ by the work of \href{https://pubmed.ncbi.nlm.nih.gov/32103181/}{Wu, T, et al 202
 x <- contig_list
 combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), 
 rep(c("P", "T"), 3), cells ="T-AB")
-compareClonotypes(combined, numbers = 10, 
-samples = c("PX_P", "PX_T"), cloneCall="aa")
+scatterClonotype(combined, x.axis = "PY_P", y.axis = "PY_T",
+graph = "proportion")
 
 }
