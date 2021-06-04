@@ -1,8 +1,10 @@
 
-CHANGES IN VERSION 1.1.5
+CHANGES IN VERSION 1.2.2
 ------------------------
 
-* number of changes to the parseTCR/BCR functions to limit assumptions
+# Working on renumbering versions for consistency - this is the new current dev branch
+# The below have not been implemented into the master branch or the bioconductor version
+
 * added the combineTRUST4 function to parse contigs from TUST4 pipeline
 * added the filter of contigs by chain in the combineTCR, combineBCR, and combineTRUST4 functions
 * no longer require the ID in the combineTCR/BCR/TRUST4 functions
@@ -10,11 +12,16 @@ CHANGES IN VERSION 1.1.5
 * replaced vizVgene with vizGene - allowing users to look at any gene in the combinedContig object
 * Fixed coloring scale on the overlap analysis
 * Added regressClonotype function using harmony to remove the clonotype effect on feature space
-* Changed grabMeta to include assessment of colnames
-* Added labels to alluvialClonotype and occupiedClonotype plotting
 * allowed occupiedRepertoire to use proportion.
 * added scatterClonotype function to Viz.R
+
+CHANGES IN VERSION 1.2.1
+------------------------
+
+* number of changes to the parseTCR/BCR functions to limit assumptions
+* Changed grabMeta to include assessment of colnames
 * fixed lengthDF handling of single chains with multi chains stored - ;
+* Added labels to alluvialClonotype and occupiedClonotype plotting
 
 CHANGES IN VERSION 1.1.4
 ------------------------
