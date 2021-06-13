@@ -84,7 +84,7 @@ removingMulti <- function(final){
 #Removing extra clonotypes in barcodes with > 2
 #' @import dplyr
 filteringMulti <- function(x) {
-    table <- subset(as.data.frame(table(x$barcode)), Freq > 2)
+    table <- subset(as.data.frame(table(x$barcode)), Freq >= 2)
     barcodes <- as.character(unique(table$Var1))
     multichain <- NULL
     for (j in seq_along(barcodes)) {
