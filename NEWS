@@ -2,6 +2,12 @@
 CHANGES IN VERSION 1.2.2
 ------------------------
 
+* added dot.size parameter to scatterClonotype
+
+
+CHANGES IN VERSION 1.2.2
+------------------------
+
 # Working on renumbering versions for consistency - this is the new current dev branch
 # The below have not been implemented into the master branch or the bioconductor version
 

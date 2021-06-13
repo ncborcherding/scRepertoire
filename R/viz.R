@@ -313,7 +313,7 @@ compareClonotypes <- function(df, cloneCall = "gene+nt", samples = NULL,
 }
 
 #' Scatter plot comparing the expansion of two samples
-
+#'
 #' This function produces a scatter plot directly comparing the specific clonotypes
 #' between two samples. The clonotypes will be categorized by counts into singlets or multiplets, 
 #' either exclusive or shared between the selected samples. Visualization inspired 
@@ -333,6 +333,8 @@ compareClonotypes <- function(df, cloneCall = "gene+nt", samples = NULL,
 #' CDR3 gene+nucleotide (gene+nt).
 #' @param x.axis name of the list element to appear on the x.axis
 #' @param y.axis name of the list element to appear on the y.axis
+#' @param dot.size either total or the name of the list element to 
+#' use for size of dots
 #' @param graph graph either proportion or raw clonotype count
 #' @param exportTable Returns the data frame used for forming the graph.
 #' 
@@ -343,6 +345,7 @@ compareClonotypes <- function(df, cloneCall = "gene+nt", samples = NULL,
 
 scatterClonotype <- function(df, cloneCall ="gene+nt", 
                              x.axis = NULL, y.axis = NULL,
+                             dot.size = "total", 
                              graph = "proportion", 
                              exportTable = FALSE) {
   
@@ -352,22 +355,45 @@ scatterClonotype <- function(df, cloneCall ="gene+nt",
   y.df <- as.data.frame(table(df[[y.axis]][,cloneCall]))
   colnames(y.df)[2] <- y.axis
   combined.df <- merge(x.df, y.df, by = "Var1", all = TRUE)
-  combined.df[is.na(combined.df)] <- 0
-  combined.df[,paste0(x.axis, ".fraction")] <- combined.df[,2]/sum(combined.df[,2])
-  combined.df[,paste0(y.axis, ".fraction")] <- combined.df[,3]/sum(combined.df[,3])
-  combined.df[,"class"] <- NA
-  combined.df[,"class"] <- ifelse(combined.df[,x.axis] == 1 & combined.df[,y.axis] == 0, paste0(x.axis, ".singlet"), combined.df[,"class"])
-  combined.df[,"class"] <- ifelse(combined.df[,y.axis] == 1 & combined.df[,x.axis] == 0, paste0(y.axis, ".singlet"), combined.df[,"class"])
-  combined.df[,"class"] <- ifelse(combined.df[,x.axis] > 1 & combined.df[,y.axis] == 0, paste0(x.axis, ".multiplet"), combined.df[,"class"])
-  combined.df[,"class"] <- ifelse(combined.df[,y.axis] > 1 & combined.df[,x.axis] == 0, paste0(y.axis, ".multiplet"), combined.df[,"class"])
-  combined.df[,"class"] <- ifelse(combined.df[,y.axis] >= 1 & combined.df[,x.axis] >= 1, paste0("dual.expanded"), combined.df[,"class"])
-  combined.df[,"sum"] <- combined.df[,2] + combined.df[,3] 
+  if (dot.size != "total") {
+    size.df <- as.data.frame(table(df[[dot.size]][,cloneCall]))
+    colnames(size.df)[2] <- dot.size
+    combined.df <- merge(combined.df, size.df, by = "Var1", all = TRUE)
+    combined.df[is.na(combined.df)] <- 0
+    combined.df[,paste0("size", ".fraction")] <- combined.df[,dot.size]/sum(combined.df[,dot.size])
+    combined.df[,"class"] <- NA
+    combined.df[,"class"] <- ifelse(combined.df[,x.axis] == 1 & combined.df[,y.axis] == 0 & combined.df[,dot.size] == 0, paste0(x.axis, ".singlet"), combined.df[,"class"])
+    combined.df[,"class"] <- ifelse(combined.df[,y.axis] == 1 & combined.df[,x.axis] == 0 & combined.df[,dot.size] == 0, paste0(y.axis, ".singlet"), combined.df[,"class"])
+    combined.df[,"class"] <- ifelse(combined.df[,y.axis] == 0 & combined.df[,x.axis] == 0 & combined.df[,dot.size] == 1, paste0(dot.size, ".singlet"), combined.df[,"class"])
+    combined.df[,"class"] <- ifelse(combined.df[,x.axis] > 1 & combined.df[,y.axis] == 0 & combined.df[,dot.size] == 0, paste0(x.axis, ".multiplet"), combined.df[,"class"])
+    combined.df[,"class"] <- ifelse(combined.df[,y.axis] > 1 & combined.df[,x.axis] == 0 & combined.df[,dot.size] == 0, paste0(y.axis, ".multiplet"), combined.df[,"class"])
+    combined.df[,"class"] <- ifelse(combined.df[,y.axis] == 0 & combined.df[,x.axis] == 0 & combined.df[,dot.size] > 1, paste0(dot.size, ".multiplet"), combined.df[,"class"])
+    combined.df[,"class"] <- ifelse(combined.df[,y.axis] >= 1 & combined.df[,x.axis] >= 1, paste0("dual.expanded"), combined.df[,"class"])
+    combined.df[,"sum"] <- combined.df[,x.axis] + combined.df[,y.axis] + combined.df[,y.axis]
+  } else {
+    combined.df[is.na(combined.df)] <- 0
+    combined.df[,"class"] <- NA
+    combined.df[,"class"] <- ifelse(combined.df[,x.axis] == 1 & combined.df[,y.axis] == 0, paste0(x.axis, ".singlet"), combined.df[,"class"])
+    combined.df[,"class"] <- ifelse(combined.df[,y.axis] == 1 & combined.df[,x.axis] == 0, paste0(y.axis, ".singlet"), combined.df[,"class"])
+    combined.df[,"class"] <- ifelse(combined.df[,x.axis] > 1 & combined.df[,y.axis] == 0, paste0(x.axis, ".multiplet"), combined.df[,"class"])
+    combined.df[,"class"] <- ifelse(combined.df[,y.axis] > 1 & combined.df[,x.axis] == 0, paste0(y.axis, ".multiplet"), combined.df[,"class"])
+    combined.df[,"class"] <- ifelse(combined.df[,y.axis] >= 1 & combined.df[,x.axis] >= 1, paste0("dual.expanded"), combined.df[,"class"])
+    combined.df[,"sum"] <- combined.df[,x.axis] + combined.df[,y.axis] 
+  }
+  combined.df[,paste0(x.axis, ".fraction")] <- combined.df[,x.axis]/sum(combined.df[,x.axis])
+  combined.df[,paste0(y.axis, ".fraction")] <- combined.df[,y.axis]/sum(combined.df[,y.axis])
   if (graph == "proportion") {
-    x <- combined.df[,4]
-    y <- combined.df[,5]
+    x <- combined.df[,paste0(x.axis, ".fraction")]
+    y <- combined.df[,paste0(y.axis, ".fraction")]
   } else if (graph == "count") {
-    x <- combined.df[,2]
-    y <- combined.df[,3]
+    x <- combined.df[,x.axis]
+    y <- combined.df[,y.axis]
+    
+  }
+  if (dot.size != "total") {
+    size <- combined.df[,dot.size]
+  } else {
+    size <- combined.df[,"sum"]
   }
   if (exportTable == TRUE) { 
     return(combined.df)
@@ -389,7 +415,7 @@ scatterClonotype <- function(df, cloneCall ="gene+nt",
       ylim(0, max(x,y)) + 
       xlim(0, max(x,y)) 
   }
-  plot <- plot + geom_jitter(aes(size = sum))
+  plot <- plot + geom_jitter(aes(size = size))
   return(plot)  
 }
 
