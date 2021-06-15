@@ -105,8 +105,12 @@ combineExpression <- function(df, sc, cloneCall="gene+nt", groupBy="none",
         sc[[col.name]] <- PreMeta
     } else {
         rownames <- rownames(colData(sc))
-        colData(sc) <- cbind(colData(sc), PreMeta[rownames,])[, union(colnames(colData(sc)),  colnames(PreMeta))]
-        rownames(colData(sc)) <- rownames 
+        merge <- merge(colData(sc), PreMeta, by.x = "row.names", by.y = "barcode", all = TRUE)
+        rownames(merge) <- merge$Row.names
+        merge <- merge[,-1]
+        match <- match(rownames, rownames(merge))
+        merge <- merge[match,]
+        colData(sc) <- merge
     } 
     if (filterNA == TRUE) { sc <- filteringNA(sc) }
     return(sc) }

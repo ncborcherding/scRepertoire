@@ -4,6 +4,7 @@ CHANGES IN VERSION 1.2.2
 
 * added dot.size parameter to scatterClonotype
 * filteringMulti now subsets clonotypes with contains >=2, to prevent 2 of the same chains
+* changed how coldata is added to SCE objects using merge instead of union
 
 
 CHANGES IN VERSION 1.2.2
