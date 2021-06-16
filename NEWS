@@ -1,6 +1,6 @@
-
-CHANGES IN VERSION 1.2.2
+CHANGES IN VERSION 1.3.2
 ------------------------
+# This is the new numbering scheme apologies - we are all up-to-date now and now cell ranger >= 5 will # work on bioconductor, so let's all just take that as a win.
 
 * added dot.size parameter to scatterClonotype
 * filteringMulti now subsets clonotypes with contains >=2, to prevent 2 of the same chains
