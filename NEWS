@@ -1,8 +1,14 @@
+CHANGES IN VERSION 1.3.1
+------------------------
+# I think we can all agree I need to get better at version control - as of right now bioconductor is # at v1.3, so the better alignment here is to start the version alignment at 1.3.1, sorry for the 
+# confusion
+
 CHANGES IN VERSION 1.2.1
 ------------------------
 
 # Universalizing the versions across GitHub and bioconductor, we are now at 1.2 for bioconductor
-# and v1.2.1 for the master. Dev branch will be updated to reflect this change to v1.2.2. Apologies #for the confusion.
+# and v1.2.1 for the master. Dev branch will be updated to reflect this change to v1.2.2. Apologies 
+# for the confusion.
 
 * Updated coding practices based on devtools and bioccheck
 * Deprecated VizVgene() support - erroring during build and new version in dev branch to visualize any gene
