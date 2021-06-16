@@ -37,7 +37,7 @@
 #' clonotype information
 #' @importFrom dplyr bind_rows %>%
 #' @importFrom  rlang %||%
-#' @importFrom SummarizedExperiment colData colData<-
+#' @importFrom SingleCellExperiment colData 
 #' @export
 #' @return seurat or SingleCellExperiment object with attached clonotype 
 #' information
