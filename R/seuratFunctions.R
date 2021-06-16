@@ -63,12 +63,10 @@ combineExpression <- function(df, sc, cloneCall="gene+nt", groupBy="none",
                     summarise(Frequency = n()/nrow(data2))
             } else {
             data2 <- data2 %>% group_by(data2[,cloneCall]) %>%
-                summarise(Frequency = n())
-            }
+                summarise(Frequency = n()) }
             colnames(data2)[1] <- cloneCall
             data <- merge(data, data2, by = cloneCall, all = TRUE)
-            Con.df <- rbind.data.frame(Con.df, data)
-        }
+            Con.df <- rbind.data.frame(Con.df, data) }
     } else if (groupBy != "none") {
         data <- data.frame(bind_rows(df), stringsAsFactors = FALSE)
         data2 <- na.omit(unique(data[,c("barcode", cloneCall, groupBy)]))
@@ -82,13 +80,9 @@ combineExpression <- function(df, sc, cloneCall="gene+nt", groupBy="none",
             sub2 <- subset(data2, data2[,groupBy] == x[i])
             merge <- merge(sub1, sub2, by=cloneCall)
             if (proportion == TRUE) {
-                merge$Frequency <- merge$Frequency/length(merge$Frequency)
-            }
-            Con.df <- rbind.data.frame(Con.df, merge)
-        } 
-        nsize <- Con.df %>% group_by(Con.df[,paste0(groupBy, ".x")])  %>% summarise(n = n())
-    }
-    
+                merge$Frequency <- merge$Frequency/length(merge$Frequency) }
+            Con.df <- rbind.data.frame(Con.df, merge)} 
+        nsize <- Con.df %>% group_by(Con.df[,paste0(groupBy, ".x")])  %>% summarise(n = n())}
     Con.df$cloneType <- NA
     for (x in seq_along(cloneTypes)) { names(cloneTypes)[x] <- 
         paste0(names(cloneTypes[x]), ' (', cloneTypes[x-1], 
@@ -100,14 +94,12 @@ combineExpression <- function(df, sc, cloneCall="gene+nt", groupBy="none",
                 "CTaa", "CTstrict", "Frequency", "cloneType")])
     rownames(PreMeta) <- PreMeta$barcode
     if (inherits(x=sc, what ="Seurat")) { 
-        #######need to test out
         col.name <- names(PreMeta) %||% colnames(PreMeta)
         sc[[col.name]] <- PreMeta
     } else {
         rownames <- rownames(colData(sc))
         colData(sc) <- cbind(colData(sc), PreMeta[rownames,])[, union(colnames(colData(sc)),  colnames(PreMeta))]
-        rownames(colData(sc)) <- rownames 
-    } 
+        rownames(colData(sc)) <- rownames  } 
     if (filterNA == TRUE) { sc <- filteringNA(sc) }
     return(sc) }
 

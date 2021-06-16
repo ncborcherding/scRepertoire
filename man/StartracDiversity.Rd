@@ -42,7 +42,7 @@ to understand the underlying analyses of the outputs please
 read and cite the linked manuscript.
 }
 \examples{
-\dontrun{ 
+\donttest{ 
 #Getting the combined contigs
 combined <- combineTCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), 
 rep(c("P", "T"), 3), cells ="T-AB")

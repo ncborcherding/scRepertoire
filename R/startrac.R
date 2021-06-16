@@ -91,9 +91,6 @@ StartracDiversity <- function(sc,
     return(plot)
 }
 
-
-
-
 #' The Startrac Class
 #'
 #' The Startrac object store the data for tcr-based T cell dynamics analyis. The slots contained 
@@ -169,7 +166,7 @@ setValidity("Startrac",
 #' @aliases show,Startrac-method 
 #' @docType methods
 #' @keywords internal
-#' @returns method for show
+#' @return method for show
 setMethod("show",
             signature = "Startrac",
             definition = function(object) {
@@ -571,7 +568,6 @@ mcol.entropy <- function(x)
 
 Startrac.run <- function(cell.data, proj="CRC", cores=NULL,n.perm=NULL,verbose=FALSE)
 {
-    ##tic("obj.proj")
     loginfo("initialize Startrac ...")
     obj.proj <- new("Startrac",cell.data,aid=proj,n.perm=n.perm,cores=cores)
     loginfo("calculate startrac index ...")
@@ -582,17 +578,11 @@ Startrac.run <- function(cell.data, proj="CRC", cores=NULL,n.perm=NULL,verbose=F
         loginfo("get the significance")
         obj.proj <- getSig(obj.proj,obj.proj@cell.perm.data) 
     }else{
-        obj.proj <- getSig(obj.proj,NULL) 
-    }
-    ##toc()
-    
+        obj.proj <- getSig(obj.proj,NULL) }
     obj.list <- NULL
-    if(length(obj.proj@patient.size)>1)
-    {
+    if(length(obj.proj@patient.size)>1){
         loginfo("calculate indices of each patient ...")
         patient.vec <- names(obj.proj@patient.size[obj.proj@patient.size > 30])
-        #cl <- makeCluster(if(is.null(cores)) (detectCores()-2) else cores)
-        #registerDoParallel(cl)
         withCallingHandlers({
             obj.list <- llply(patient.vec,function(pid,cell.data){
                 obj <- new("Startrac",subset(cell.data,patient==pid),aid=pid)
@@ -603,32 +593,21 @@ Startrac.run <- function(cell.data, proj="CRC", cores=NULL,n.perm=NULL,verbose=F
             },cell.data=cell.data,.progress = "none",.parallel=FALSE)
         },warning=function(w) {
             if(grepl("... may be used in an incorrect context:",conditionMessage(w)))
-                ### strange bug, see https://github.com/hadley/plyr/issues/203
                 invokeRestart("muffleWarning")
         })
-        #stopCluster(cl)
     }
     loginfo("collect result")
     ret <- new("StartracOut",proj=proj)
     ## cluster index
     ret.slot.names <- c("cluster.data","pIndex.migr","pIndex.tran",
                         "cluster.sig.data","pIndex.sig.migr","pIndex.sig.tran")
-    #  if(!is.null(n.perm)){ 
-    #    ret.slot.names <- c(ret.slot.names,
-    #                        c("cluster.sig.data","pIndex.sig.migr","pIndex.sig.tran")) 
-    #  }
-    for(v in ret.slot.names)
-    {
+    for(v in ret.slot.names) {
         slot(ret, v) <- slot(obj.proj,v)
         if(!is.null(obj.list)){
             slot(ret, v) <- rbind(slot(ret, v),ldply(obj.list,function(obj){
-                slot(obj,v)
-            }))
-        }
-    }
+                slot(obj,v)}))}}
     if(verbose){
-        ret@objects <- c(obj.proj,obj.list)
-    }
+        ret@objects <- c(obj.proj,obj.list)}
     loginfo("return")
     return(ret)
 }

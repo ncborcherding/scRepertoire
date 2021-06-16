@@ -103,8 +103,9 @@ combineTCR <- function(df, samples = NULL, ID = NULL,
 #' the Hammings distance between sequences of the same length and will 
 #' index sequences with <= 0.15 normalized Levenshtein distance with the same 
 #' ID for sequences with < 15 nucleotide difference in length. After which, 
-#' clonotype clusters are called using the igraph component() function. Clonotype
-#' clusters will then be labeled with "LD" with the CTstrict header.
+#' clonotype clusters are called using the igraph component() function. 
+#' Clonotype clusters will then be labeled with "LD" with the CTstrict 
+#' header.
 #'
 #' @examples
 #' #Data derived from the 10x Genomics intratumoral NSCLC B cells
@@ -200,7 +201,7 @@ lvCompare <- function(dictionary, gene, chain) {
     }
     filtered <- which(out_matrix <= 0.15, arr.ind = TRUE)
     if (nrow(filtered) > 0) { 
-        for (i in 1:nrow(filtered)) {
+        for (i in seq_len(nrow(filtered))) {
             max <- max(filtered[i,])
             min <- min(filtered[i,])
             filtered[i,1] <- max

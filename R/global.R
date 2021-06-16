@@ -38,7 +38,6 @@
     utils::globalVariables ("patient")
     utils::globalVariables ("combn")
     utils::globalVariables ("include")
-    
-
+    utils::globalVariables ("cdr3")
     invisible ()
 }

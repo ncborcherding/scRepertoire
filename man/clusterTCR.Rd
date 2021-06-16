@@ -4,7 +4,7 @@
 \alias{clusterTCR}
 \title{Clustering T cell receptors}
 \usage{
-clusterTCR(df, chain = NULL, sequence = NULL, threshold = 0.85)
+clusterTCR(df, chain = NULL, sequence = NULL, threshold = 0.85, group = NULL)
 }
 \arguments{
 \item{df}{The product of CombineTCR() or CombineBCR().}
@@ -13,25 +13,29 @@ clusterTCR(df, chain = NULL, sequence = NULL, threshold = 0.85)
 
 \item{sequence}{Clustering based on either "aa" or "nt"}
 
-\item{threshold}{The normalized edit distance to consider. The higher the number the more 
-similarity of sequence will be used for clustering.}
+\item{threshold}{The normalized edit distance to consider. The higher 
+the number the more similarity of sequence will be used for clustering.}
+
+\item{group}{The column header used for to calculate the cluster by.}
 }
 \value{
 List of clonotypes for individual cell barcodes
 }
 \description{
 This function uses edit distances of either the nucleotide or amino acid 
-sequences of the CDR3 to cluster similar TCRs together. The distance clustering
-will then be ammended to the end of the list of combined contigs with the corresponding Vgene. The
-cluster will appear as CHAIN.num if a unique sequence or CHAIN:LD.num if clustered together.
-This function will only two chains recovered, multiple chains will automatically be reduced. This 
-function also underlies the combineBCR() function and therefore not needed for B cells. This may
+sequences of the CDR3 to cluster similar TCRs together. The distance 
+clustering will then be amended to the end of the list of combined 
+contigs with the corresponding Vgene. The cluster will appear as 
+CHAIN.num if a unique sequence or CHAIN:LD.num if clustered together.
+This function will only two chains recovered, multiple chains will 
+automatically be reduced. This function also underlies the combineBCR() 
+function and therefore not needed for B cells. This may
 take some time to calculate the distances and cluster.
 }
 \examples{
 combined <- combineTCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), 
 rep(c("P", "T"), 3), cells ="T-AB")
 
-sub_combined <- clusterTCR(combined[[1]], chain = "TCRA", sequence = "aa")
+sub_combined <- clusterTCR(combined[[2]], chain = "TCRA", sequence = "aa")
 
 }

@@ -4,6 +4,8 @@ CHANGES IN VERSION 1.2.1
 # Universalizing the versions across GitHub and bioconductor, we are now at 1.2 for bioconductor
 # and v1.2.1 for the master. Dev branch will be updated to reflect this change to v1.2.2. Apologies #for the confusion.
 
+* Updated coding practices based on devtools and bioccheck
+* Deprecated VizVgene() support - erroring during build and new version in dev branch to visualize any gene
 * fixed lengthDF handling of single chains with multi chains stored - ;
 * Changed grabMeta to include assessment of colnames
 * number of changes to the parseTCR/BCR functions to limit assumptions

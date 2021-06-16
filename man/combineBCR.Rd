@@ -47,6 +47,7 @@ and the corresponding v-gene. This index automatically caluclates
 the Hammings distance between sequences of the same length and will 
 index sequences with <= 0.15 normalized Levenshtein distance with the same 
 ID for sequences with < 15 nucleotide difference in length. After which, 
-clonotype clusters are called using the igraph component() function. Clonotype
-clusters will then be labeled with "LD" with the CTstrict header.
+clonotype clusters are called using the igraph component() function. 
+Clonotype clusters will then be labeled with "LD" with the CTstrict 
+header.
 }

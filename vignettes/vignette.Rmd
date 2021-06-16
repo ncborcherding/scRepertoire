@@ -197,22 +197,6 @@ compareClonotypes(combined, numbers = 10, samples = c("PX_P", "PX_T"),
                     cloneCall="aa", graph = "alluvial")
 ```
 
-Last of the basic analysis visualizations is the relative usage of vgenes of the TCR, using *vizVgenes()*.
-
-*TCR*
-+  For T-AB: TCR1 == TCRA and TCR2 == TCRB
-+  For T-GD: TCR1 == TCRG and TCR2 == TCRD
-
-*facet.x and facet.y*
-+  Any variable within the combined() object
-
-*fill*
-+  Color the bars by variable
-
-```{r}
-vizVgenes(combined, TCR="TCR1", facet.x = "sample", facet.y = "ID")
-```
-
 ***
 
 # More Advanced Clonal Analysis

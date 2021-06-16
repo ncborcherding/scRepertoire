@@ -179,7 +179,6 @@ getCirclize <- function(sc, cloneCall = "gene+nt",
     }
     colnames(matrix_out) <- colnames(dTest)
     rownames(matrix_out) <- colnames(dTest)
-    
     #Need to subtract extra cells - will take the difference of the sum of the 
     #column minus and the respective cell and subtract that from the respective cell
     for (y in seq_len(ncol(matrix_out))) {
@@ -195,14 +194,14 @@ getCirclize <- function(sc, cloneCall = "gene+nt",
                         stringsAsFactors = FALSE)
     # Reorder columns to eliminate redundant comparisons
     for (k in seq_len(nrow(output))) {
-        max <- order(output[k,1:2])[1] #which is first alphabetically
+        max <- order(output[k,c(1,2)])[1] #which is first alphabetically
         max <- output[k,max]
-        min <- order(output[k,1:2])[2] #which is second alphabetically
+        min <- order(output[k,c(1,2)])[2] #which is second alphabetically
         min <- output[k,min]
         output[k,1] <- max
         output[k,2] <- min
     }
-    unique <- rownames(unique(output[,1:2])) #removing redundant comparisons
+    unique <- rownames(unique(output[,c(1,2)])) #removing redundant comparisons
     output <- output[rownames(output) %in% unique, ]
     if (proportion == TRUE) {
         output$value <- output$value/total
