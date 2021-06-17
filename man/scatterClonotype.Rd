@@ -2,17 +2,14 @@
 % Please edit documentation in R/viz.R
 \name{scatterClonotype}
 \alias{scatterClonotype}
-\title{Scatter plot comparing the expansion of two samples
-This function produces a scatter plot directly comparing the specific clonotypes
-between two samples. The clonotypes will be categorized by counts into singlets or multiplets, 
-either exclusive or shared between the selected samples. Visualization inspired 
-by the work of \href{https://pubmed.ncbi.nlm.nih.gov/32103181/}{Wu, T, et al 2020}.}
+\title{Scatter plot comparing the expansion of two samples}
 \usage{
 scatterClonotype(
   df,
   cloneCall = "gene+nt",
   x.axis = NULL,
   y.axis = NULL,
+  dot.size = "total",
   graph = "proportion",
   exportTable = FALSE
 )
@@ -28,6 +25,9 @@ CDR3 gene+nucleotide (gene+nt).}
 
 \item{y.axis}{name of the list element to appear on the y.axis}
 
+\item{dot.size}{either total or the name of the list element to 
+use for size of dots}
+
 \item{graph}{graph either proportion or raw clonotype count}
 
 \item{exportTable}{Returns the data frame used for forming the graph.}
@@ -36,7 +36,6 @@ CDR3 gene+nucleotide (gene+nt).}
 ggplot of the relative clonotype numbers
 }
 \description{
-Scatter plot comparing the expansion of two samples
 This function produces a scatter plot directly comparing the specific clonotypes
 between two samples. The clonotypes will be categorized by counts into singlets or multiplets, 
 either exclusive or shared between the selected samples. Visualization inspired 

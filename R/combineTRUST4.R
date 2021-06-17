@@ -55,11 +55,11 @@ combineTRUST4 <- function(df, samples = NULL, ID = NULL,
             df[[i]] <- df[[i]][df[[i]]$cell_type == cells,]
             df[[i]][df[[i]] == "*"] <- NA
             
-            TCRB <- str_split(df[[i]]$chain1, ",", simplify = TRUE)[,1:6]
+            TCRB <- str_split(df[[i]]$chain1, ",", simplify = TRUE)[,seq_len(6)]
             TCRB[TCRB == "*"] <- "None"
             colnames(TCRB) <- c("v_gene", "d_gene", "j_gene", "c_gene", "cdr3_nt", "cdr3")
             TCRB <- data.frame(barcode = df[[i]][,1], chain = chain2, TCRB)
-            TCRA <- str_split(df[[i]]$chain2, ",", simplify = TRUE)[,1:6]
+            TCRA <- str_split(df[[i]]$chain2, ",", simplify = TRUE)[,seq_len(6)]
             TCRA[TCRA == "*"] <- "None"
             colnames(TCRA) <- c("v_gene", "d_gene", "j_gene", "c_gene", "cdr3_nt", "cdr3")
             TCRA <- data.frame(barcode = df[[i]][,1], chain = chain1, TCRA)
@@ -95,12 +95,12 @@ combineTRUST4 <- function(df, samples = NULL, ID = NULL,
             colnames(df[[i]])[1] <- "barcode"
             df[[i]] <- df[[i]][df[[i]]$cell_type == cells,]
             df[[i]][df[[i]] == "*"] <- NA
-            IGH <- str_split(df[[i]]$chain1, ",", simplify = TRUE)[,1:6]
+            IGH <- str_split(df[[i]]$chain1, ",", simplify = TRUE)[,seq_len(6)]
             IGH[IGH == "*"] <- "None"
             colnames(IGH ) <- c("v_gene", "d_gene", "j_gene", "c_gene", "cdr3_nt", "cdr3")
             IGH <- data.frame(barcode = df[[i]][,1], chain = chain1, IGH )
             
-            IGL <- str_split(df[[i]]$chain2, ",", simplify = TRUE)[,1:6]
+            IGL <- str_split(df[[i]]$chain2, ",", simplify = TRUE)[,seq_len(6)]
             IGL[IGL == "*"] <- "None"
             colnames(IGL) <- c("v_gene", "d_gene", "j_gene", "c_gene", "cdr3_nt", "cdr3")
             IGL <- as.data.frame(IGL)

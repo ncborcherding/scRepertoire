@@ -240,7 +240,7 @@ lvCompare <- function(dictionary, gene, chain) {
     }
     filtered <- which(out_matrix <= 0.15, arr.ind = TRUE)
     if (nrow(filtered) > 0) { 
-        for (i in 1:nrow(filtered)) {
+        for (i in seq_len(nrow(filtered))) {
             max <- max(filtered[i,])
             min <- min(filtered[i,])
             filtered[i,1] <- max

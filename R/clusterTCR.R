@@ -71,7 +71,7 @@ clusterTCR <- function(df, chain = NULL, sequence = NULL, threshold = 0.85, grou
       }
       filtered <- which(out_matrix <= (1-threshold), arr.ind = TRUE)
       if (nrow(filtered) > 0) { 
-          for (i in 1:nrow(filtered)) {
+          for (i in seq_len(nrow(filtered))) {
               max <- max(filtered[i,])
               min <- min(filtered[i,])
               filtered[i,1] <- max

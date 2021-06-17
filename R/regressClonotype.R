@@ -48,7 +48,7 @@ regressClonotype <- function(sc, cloneCall="gene+nt",
     groupVariable <- c(groupVariable, cloneCall)
     unwanted_genes <- "^IGHV*|^IGHJ*|^IGHD*|^IGKV*|^IGLV*|^TRBV*|^TRBD*|^TRBJ*|^TRDV*|^TRDD*|^TRDJ*|^TRAV*|^TRAJ*|^TRGV*|^TRGJ*"
     if (inherits(x=sc, what ="Seurat")) {
-        unwanted_genes <- grep(pattern = unwanted_genes, x = sc[["RNA"]]@var.features, value = T)
+        unwanted_genes <- grep(pattern = unwanted_genes, x = sc[["RNA"]]@var.features, value = TRUE)
         remove_genes <- sc[["RNA"]]@var.features %in% unwanted_genes
         sc[["RNA"]]@var.features = sc[["RNA"]]@var.features[!remove_genes]
         

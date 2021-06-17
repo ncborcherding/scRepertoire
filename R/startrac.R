@@ -129,6 +129,7 @@ StartracDiversity <- function(sc,
 #' @name Startrac
 #' @rdname Startrac
 #' @aliases Startrac-class
+#' @return method definition for runing startrac
 Startrac <- setClass("Startrac",
                     slots = c(aid = "character",
                         cell.data = "data.frame",
@@ -169,7 +170,7 @@ setValidity("Startrac",
 #' @aliases show,Startrac-method 
 #' @docType methods
 #' @keywords internal
-#' @returns method for show
+#' @return method for show
 setMethod("show",
             signature = "Startrac",
             definition = function(object) {
@@ -241,17 +242,13 @@ setMethod("initialize",
 #' @param normEntropy logical; whether normalize migration and transition index. default: FALSE.
 #' @return an object of class \code{Startrac}
 #' @keywords internal
-Startrac.calIndex <- function(object,cores,n.perm,normEntropy)
-{
-    ### cluster level expansion index (STARTRAC-expa)
-    #### Todo: special case: number of clonotype is 1, i.e. sum(x>0)==1
+Startrac.calIndex <- function(object,cores,n.perm,normEntropy){
     .entropy <- mcol.entropy(object@clonotype.dist.cluster)
     .entropy.max <- log2(colSums(object@clonotype.dist.cluster > 0))
     object@cluster.data <- data.frame("aid"=object@aid,
                             "majorCluster"=colnames(object@clonotype.dist.cluster),
                             "expa"=1-.entropy/.entropy.max,
                             stringsAsFactors = FALSE)
-    ### clone level migration and transition index
     if(normEntropy){
         .entropy.migr.max <- log2(ncol(object@clonotype.dist.loc))
         .entropy.tran.max <- log2(ncol(object@clonotype.dist.cluster))
@@ -259,22 +256,18 @@ Startrac.calIndex <- function(object,cores,n.perm,normEntropy)
         .entropy.migr.max <- 1
         .entropy.tran.max <- 1
     }
-    object@clonotype.data <- data.frame("clone.id"=rownames(object@clonotype.dist.loc),
-                                        "migr"=mrow.entropy(object@clonotype.dist.loc)/.entropy.migr.max,
-                                        "tran"=mrow.entropy(object@clonotype.dist.cluster)/.entropy.tran.max)
-    ### cluster level migration index (STARTRAC-migr) and transition index (STARTRAC-tran)
+    object@clonotype.data <- 
+      data.frame("clone.id"=rownames(object@clonotype.dist.loc),
+                  "migr"=mrow.entropy(object@clonotype.dist.loc)/.entropy.migr.max,
+                  "tran"=mrow.entropy(object@clonotype.dist.cluster)/.entropy.tran.max)
     weights.mtx <- sweep(object@clonotype.dist.cluster,2,colSums(object@clonotype.dist.cluster),"/")
     index.mtx <- t(weights.mtx) %*% (as.matrix(object@clonotype.data[,c("migr","tran")]))
     object@cluster.data <- cbind(object@cluster.data,index.mtx)
     if(!is.null(n.perm)){
-        #cl <- makeCluster(if(is.null(cores)) (detectCores()-2) else cores)
-        #registerDoParallel(cl)
         registerDoParallel(if(is.null(cores)) (detectCores()-2) else cores)
         object@cell.perm.data <- llply(object@cell.perm.data,function(x){
             calIndex(x,cores=1,normEntropy=normEntropy)
         },.progress = "none",.parallel=TRUE)
-        #stopCluster(cl)
-        
     }
     return(object)
 }
@@ -303,14 +296,8 @@ setMethod("calIndex", signature = "Startrac", definition = Startrac.calIndex)
 #' @param n.perm integer number of permutation will be performed. If NULL, no permutation. (default: NULL)
 #' @return an object of class \code{Startrac}
 #' @keywords internal
-Startrac.pIndex <- function(object,cores,n.perm)
-{
-    ####### index given two cluster or loc
-    ## migr 
+Startrac.pIndex <- function(object,cores,n.perm){
     clone.dist.loc.majorCluster <- table(object@cell.data[,c("majorCluster","clone.id","loc")])
-    
-    #tic("migr")
-    #clone.dist.loc.majorCluster.debug <<- clone.dist.loc.majorCluster
     withCallingHandlers({
         cls.migr.index.df <- ldply(seq_len(dim(clone.dist.loc.majorCluster)[1]),
                                 function(i,clone.dist.loc.majorCluster){
@@ -334,10 +321,8 @@ Startrac.pIndex <- function(object,cores,n.perm)
         },clone.dist.loc.majorCluster=clone.dist.loc.majorCluster,.progress = "none",.parallel=FALSE)
     },warning=function(w) {
         if(grepl("... may be used in an incorrect context:",conditionMessage(w)))
-            ### strange bug, see https://github.com/hadley/plyr/issues/203
             invokeRestart("muffleWarning")
     })
-    #toc()
     if(!is.null(cls.migr.index.df) && nrow(cls.migr.index.df)>0){
         cls.migr.index.df$crossLoc <- sprintf("%s-%s",cls.migr.index.df$V1,cls.migr.index.df$V2)
         object@pIndex.migr <- dcast(cls.migr.index.df,majorCluster ~ crossLoc,value.var = "pIndex.migr")
@@ -345,15 +330,10 @@ Startrac.pIndex <- function(object,cores,n.perm)
     }else{
         object@pIndex.migr <- data.frame()
     }
-    
-    ## tran
     if(!is.null(ncol(object@clonotype.dist.cluster)) && ncol(object@clonotype.dist.cluster)>=2){
-        ##comb.cls <- as.data.frame(t(combn(colnames(object@clonotype.dist.cluster),2)),stringsAsFactors=F)
         comb.cls <- expand.grid(colnames(object@clonotype.dist.cluster),
                                 colnames(object@clonotype.dist.cluster),stringsAsFactors = FALSE)
         comb.cls <- comb.cls[comb.cls[,1]!=comb.cls[,2],]
-        
-        #tic("tran")
         withCallingHandlers({
             cls.tran.index.df <- adply(comb.cls,1,function(x,object){
                 dat.block <- object@clonotype.dist.cluster[,c(x[[1]],x[[2]])]
@@ -363,28 +343,21 @@ Startrac.pIndex <- function(object,cores,n.perm)
             },object=object,.progress = "none",.parallel=FALSE)
         },warning=function(w) {
             if(grepl("... may be used in an incorrect context:",conditionMessage(w)))
-                ### strange bug, see https://github.com/hadley/plyr/issues/203
                 invokeRestart("muffleWarning")
         })
-        #toc()
-        
         object@pIndex.tran <- dcast(cls.tran.index.df,Var2~Var1,value.var = "pIndex.tran")
         colnames(object@pIndex.tran)[1] <- "majorCluster"
         object@pIndex.tran <- cbind(data.frame(aid=object@aid,stringsAsFactors = FALSE),object@pIndex.tran)
         
         if(!is.null(n.perm)){
-            #cl <- makeCluster(if(is.null(cores)) (detectCores()-2)  else cores)
-            #registerDoParallel(cl)
             registerDoParallel(if(is.null(cores)) (detectCores()-2)  else cores)
             object@cell.perm.data <- llply(object@cell.perm.data,function(x){
                 pIndex(x,n.perm=NULL)
             },.progress = "none",.parallel=TRUE)
-            #stopCluster(cl)
         }
     }else{
         object@pIndex.tran <- data.frame()
         if(!is.null(n.perm)){
-            ### nothing needed to do
         }
     }
     return(object)  

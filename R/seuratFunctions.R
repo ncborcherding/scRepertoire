@@ -37,7 +37,7 @@
 #' clonotype information
 #' @importFrom dplyr bind_rows %>%
 #' @importFrom  rlang %||%
-#' @importFrom SingleCellExperiment colData 
+#' @importFrom SummarizedExperiment colData<- colData
 #' @export
 #' @return seurat or SingleCellExperiment object with attached clonotype 
 #' information
@@ -104,14 +104,9 @@ combineExpression <- function(df, sc, cloneCall="gene+nt", groupBy="none",
         col.name <- names(PreMeta) %||% colnames(PreMeta)
         sc[[col.name]] <- PreMeta
     } else {
-        rownames <- rownames(colData(sc))
-        merge <- merge(colData(sc), PreMeta, by.x = "row.names", by.y = "barcode", all = TRUE)
-        rownames(merge) <- merge$Row.names
-        merge <- merge[,-1]
-        match <- match(rownames, rownames(merge))
-        merge <- merge[match,]
-        colData(sc) <- merge
-    } 
+      rownames <- rownames(colData(sc))
+      colData(sc) <- cbind(colData(sc), PreMeta[rownames,])[, union(colnames(colData(sc)),  colnames(PreMeta))]
+      rownames(colData(sc)) <- rownames  } 
     if (filterNA == TRUE) { sc <- filteringNA(sc) }
     return(sc) }
 

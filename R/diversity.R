@@ -49,7 +49,7 @@ clonalDiversity <- function(df, cloneCall = "gene+nt", group = "samples",
       mat_a <- NULL
       sample <- c()
       
-      for (j in seq(1:n.boots)) {
+      for (j in seq(seq_len(n.boots))) {
         x<-sample_n(data, min)
         sample <- diversityCall(x)
         mat_a <- rbind.data.frame(mat_a, sample)
@@ -76,7 +76,7 @@ clonalDiversity <- function(df, cloneCall = "gene+nt", group = "samples",
       mat_a <- NULL
       sample <- c()
       
-      for (j in seq(1:n.boots)) {
+      for (j in seq(seq_len(n.boots))) {
         x <- sample_n(data, min)
         sample <- diversityCall(x)
         mat_a <- rbind(mat_a, sample)

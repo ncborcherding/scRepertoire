@@ -30,7 +30,7 @@ checkSingleObject <- function(sc) {
     }
 
 #This is to grab the meta data from a seurat or SCE object
-#' @importFrom SummarizedExperiment colData 
+#' @importFrom SingleCellExperiment colData 
 grabMeta <- function(sc) {
     if (inherits(x=sc, what ="Seurat")) {
         meta <- data.frame(sc[[]], slot(sc, "active.ident"))
@@ -101,6 +101,7 @@ filteringMulti <- function(x) {
 
 #Filtering NA contigs out of single-cell expression object
 #' @import dplyr
+#' @importFrom SingleCellExperiment colData
 filteringNA <- function(sc) {
     meta <- grabMeta(sc)
     evalNA <- data.frame(meta[,"cloneType"])
