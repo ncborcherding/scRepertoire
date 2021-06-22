@@ -13,9 +13,9 @@ highlightClonotypes(
 \arguments{
 \item{sc}{The seurat object to attach}
 
-\item{cloneCall}{How to call the clonotype - CDR3 gene (gene), 
+\item{cloneCall}{How to call the clonotype - VDJC gene (gene), 
 CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
-CDR3 gene+nucleotide (gene+nt).}
+VDJC gene + CDR3 nucleotide (gene+nt).}
 
 \item{sequence}{The specific sequence or sequence to highlight}
 }

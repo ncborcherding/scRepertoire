@@ -15,9 +15,9 @@ quantContig(
 \arguments{
 \item{df}{The product of combineTCR() combineBCR() or expression2List().}
 
-\item{cloneCall}{How to call the clonotype - CDR3 gene (gene), 
+\item{cloneCall}{How to call the clonotype - VDJC gene (gene), 
 CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
-CDR3 gene+nucleotide (gene+nt).}
+VDJC gene + CDR3 nucleotide (gene+nt).}
 
 \item{scale}{Converts the graphs into percentage of unique clonotypes.}
 
@@ -29,8 +29,8 @@ CDR3 gene+nucleotide (gene+nt).}
 ggplot of the total or relative unique clonotypes
 }
 \description{
-This function takes the output from combineTCR(), combineBCR(), or e
-xpression2List() and quantifies unique clonotypes. The unique clonotypes 
+This function takes the output from combineTCR(), combineBCR(), or 
+expression2List() and quantifies unique clonotypes. The unique clonotypes 
 can be either reported as a raw output or scaled to the total number of 
 clonotypes recovered using the scale parameter. Multiple sequencing 
 runs can be group together using the group parameter. If a matrix output 

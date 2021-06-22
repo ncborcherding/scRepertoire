@@ -18,9 +18,9 @@ alluvialClonotypes(
 For SCE objects, the cluster variable must be in the meta data under 
 "cluster".}
 
-\item{cloneCall}{How to call the clonotype - CDR3 gene (gene), 
+\item{cloneCall}{How to call the clonotype - VDJC gene (gene), 
 CDR3 nucleotide (nt) or CDR3 amino acid (aa), or 
-CDR3 gene+nucleotide (gene+nt).}
+VDJC gene + CDR3 nucleotide (gene+nt).}
 
 \item{y.axes}{The columns that will separate the proportional 
 visualizations.}

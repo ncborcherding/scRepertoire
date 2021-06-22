@@ -17,9 +17,9 @@ compareClonotypes(
 \arguments{
 \item{df}{The product of combineTCR(), combineBCR(), or expression2List()}
 
-\item{cloneCall}{How to call the clonotype - CDR3 gene (gene), 
+\item{cloneCall}{How to call the clonotype - VDJC gene (gene), 
 CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
-CDR3 gene+nucleotide (gene+nt).}
+VDJC gene + CDR3 nucleotide (gene+nt).}
 
 \item{samples}{The specific samples to isolate for visualization.}
 
