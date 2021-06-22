@@ -16,9 +16,9 @@
 #'
 #' @param df The product of CombineContig() or expression2List()
 #' @param cloneTypes The cutpoints of the proportions.
-#' @param cloneCall How to call the clonotype - CDR3 gene (gene), CDR3 
-#' nucleotide (nt) or CDR3 amino acid (aa), or CDR3 gene+nucleotide 
-#' (gene+nt).
+#' @param cloneCall How to call the clonotype - VDJC gene (gene), 
+#' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
+#' VDJC gene + CDR3 nucleotide (gene+nt).
 #' @param exportTable Exports a table of the data into the global 
 #' environment in addition to the visualization
 #' @import ggplot2

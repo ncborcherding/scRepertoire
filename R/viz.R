@@ -1,7 +1,7 @@
 #' Quantify the unique clonotypes in the filtered contigs.
 #'
-#' This function takes the output from combineTCR(), combineBCR(), or e
-#' xpression2List() and quantifies unique clonotypes. The unique clonotypes 
+#' This function takes the output from combineTCR(), combineBCR(), or 
+#' expression2List() and quantifies unique clonotypes. The unique clonotypes 
 #' can be either reported as a raw output or scaled to the total number of 
 #' clonotypes recovered using the scale parameter. Multiple sequencing 
 #' runs can be group together using the group parameter. If a matrix output 
@@ -15,9 +15,9 @@
 #' quantContig(combined, cloneCall="gene+nt", scale = TRUE)
 #'
 #' @param df The product of combineTCR() combineBCR() or expression2List().
-#' @param cloneCall How to call the clonotype - CDR3 gene (gene), 
+#' @param cloneCall How to call the clonotype - VDJC gene (gene), 
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
-#' CDR3 gene+nucleotide (gene+nt).
+#' VDJC gene + CDR3 nucleotide (gene+nt).
 #' @param group The column header used for grouping.
 #' @param scale Converts the graphs into percentage of unique clonotypes.
 #' @param exportTable Returns the data frame used for forming the graph
@@ -93,9 +93,9 @@ quantContig <- function(df, cloneCall = "gene+nt", scale=FALSE, group = NULL,
 #' abundanceContig(combined, cloneCall = "gene", scale = FALSE)
 #'
 #' @param df The product of combineTCR(), combineBCR(), or expression2List().
-#' @param cloneCall How to call the clonotype - CDR3 gene (gene), 
-#' CDR3 nucleotide (nt), CDR3 amino acid (aa), or C
-#' DR3 gene+nucleotide (gene+nt).
+#' @param cloneCall How to call the clonotype - VDJC gene (gene), 
+#' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
+#' VDJC gene + CDR3 nucleotide (gene+nt).
 #' @param group The column header for which you would like to analyze the data.
 #' @param scale Converts the graphs into denisty plots in order to show 
 #' relative distributions.
@@ -258,9 +258,9 @@ lengthContig <- function(df, cloneCall = "aa", group = NULL, scale = FALSE,
 #' samples = c("PX_P", "PX_T"), cloneCall="aa")
 #'
 #' @param df The product of combineTCR(), combineBCR(), or expression2List()
-#' @param cloneCall How to call the clonotype - CDR3 gene (gene), 
+#' @param cloneCall How to call the clonotype - VDJC gene (gene), 
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
-#' CDR3 gene+nucleotide (gene+nt).
+#' VDJC gene + CDR3 nucleotide (gene+nt).
 #' @param samples The specific samples to isolate for visualization.
 #' @param clonotypes The specific sequences of interest.
 #' @param numbers The top number clonotype sequences.
@@ -328,9 +328,9 @@ compareClonotypes <- function(df, cloneCall = "gene+nt", samples = NULL,
 #' graph = "proportion")
 #' 
 #' @param df The product of combineTCR(), combineBCR(), or expression2List()
-#' @param cloneCall How to call the clonotype - CDR3 gene (gene), 
+#' @param cloneCall How to call the clonotype - VDJC gene (gene), 
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
-#' CDR3 gene+nucleotide (gene+nt).
+#' VDJC gene + CDR3 nucleotide (gene+nt).
 #' @param x.axis name of the list element to appear on the x.axis
 #' @param y.axis name of the list element to appear on the y.axis
 #' @param dot.size either total or the name of the list element to 
@@ -437,9 +437,9 @@ scatterClonotype <- function(df, cloneCall ="gene+nt",
 #' clonesizeDistribution(combined, cloneCall = "gene+nt", method="ward.D2")
 #'
 #' @param df The product of combineTCR(), combineBCR(), or expression2List().
-#' @param cloneCall How to call the clonotype - CDR3 gene (gene),
+#' @param cloneCall How to call the clonotype - VDJC gene (gene),
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
-#' CDR3 gene+nucleotide (gene+nt).
+#' VDJC gene + CDR3 nucleotide (gene+nt).
 #' @param method The clustering paramater for the dendrogram.
 #' @param exportTable Returns the data frame used for forming the graph.
 #' @importFrom  dplyr bind_rows

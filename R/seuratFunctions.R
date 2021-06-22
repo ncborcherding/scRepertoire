@@ -25,9 +25,9 @@
 #' 
 #' @param df The product of CombineTCR() or CombineBCR().
 #' @param sc The seurat or SingleCellExperiment (SCE) object to attach
-#' @param cloneCall How to call the clonotype - CDR3 gene (gene), 
+#' @param cloneCall How to call the clonotype - VDJC gene (gene), 
 #' CDR3 nucleotide (nt) CDR3 amino acid (aa), or 
-#' CDR3 gene+nucleotide (gene+nt).
+#' VDJC gene + CDR3 nucleotide (gene+nt).
 #' @param groupBy The column label in the combined contig object in which 
 #' clonotype frequency will be calculated.
 #' @param proportion Whether to use the total frequency (FALSE) or the 
@@ -131,9 +131,9 @@ combineExpression <- function(df, sc, cloneCall="gene+nt", groupBy="none",
 #' sequence = c("CAVNGGSQGNLIF_CSAEREDTDTQYF"))
 #' 
 #' @param sc The seurat object to attach
-#' @param cloneCall How to call the clonotype - CDR3 gene (gene), 
+#' @param cloneCall How to call the clonotype - VDJC gene (gene), 
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
-#' CDR3 gene+nucleotide (gene+nt).
+#' VDJC gene + CDR3 nucleotide (gene+nt).
 #' @param sequence The specific sequence or sequence to highlight
 #'
 #' @export
@@ -185,9 +185,9 @@ highlightClonotypes <- function(sc,
 #' @param sc The seurat or SCE object to visualize after combineExpression(). 
 #' For SCE objects, the cluster variable must be in the meta data under 
 #' "cluster".
-#' @param cloneCall How to call the clonotype - CDR3 gene (gene), 
+#' @param cloneCall How to call the clonotype - VDJC gene (gene), 
 #' CDR3 nucleotide (nt) or CDR3 amino acid (aa), or 
-#' CDR3 gene+nucleotide (gene+nt).
+#' VDJC gene + CDR3 nucleotide (gene+nt).
 #' @param y.axes The columns that will separate the proportional 
 #' visualizations.
 #' @param color The column header or clonotype(s) to be highlighted.

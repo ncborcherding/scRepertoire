@@ -24,9 +24,9 @@
 #' @param sc The seurat or SCE object to visualize after combineExpression(). 
 #' For SCE objects, the cluster variable must be in the meta data under 
 #' "cluster".
-#' @param cloneCall How to call the clonotype - CDR3 gene (gene), 
+#' @param cloneCall How to call the clonotype - VDJC gene (gene), 
 #' CDR3 nucleotide (nt) or CDR3 amino acid (aa), or 
-#' CDR3 gene+nucleotide (gene+nt).
+#' VDJC gene + CDR3 nucleotide (gene+nt).
 #' @param groupVariable Additional features to normalize the single cell object with
 #' @param reduction Re-perform the dimensional reduction - "UMAP" or "TSNE"
 #' @param dims The number of dimensions to use in the reduction (i.e., 1:20)

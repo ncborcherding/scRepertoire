@@ -150,8 +150,9 @@ expression2List <- function(sc, group) {
 #' 
 #' 
 #' @param sc object after combineExpression().
-#' @param cloneCall How to call the clonotype - CDR3 nucleotide (nt), 
-#' CDR3 amino acid (aa).
+#' @param cloneCall How to call the clonotype - VDJC gene (gene), 
+#' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
+#' VDJC gene + CDR3 nucleotide (gene+nt).
 #' @param groupBy The group header for which you would like to analyze 
 #' the data.
 #' @param proportion Binary will calculate relationship as unique clonotypes 
