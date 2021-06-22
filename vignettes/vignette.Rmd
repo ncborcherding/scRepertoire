@@ -82,7 +82,7 @@ for (i in seq_along(contig_list)) {
 
 # Combining the Contigs
 
-As the output of CellRanger are quantifications of both the TCRA and TCRB chains, the next step is to create a single list object with the TCR gene and CDR3 sequences by cell barcode. This is performed using the *combineTCR()*, where the input is the stripped contig_list. There is also the relabeling of the barcodes by sample and ID information to prevent duplicates (ID can be left as NULL if you do not desire the addition of a second prefixes, this may alter the ability to add to single cell object down the road).
+As the output of CellRanger are quantifications of both the TCRA and TCRB chains, the next step is to create a single list object with the TCR gene (comprised of VDJC) and CDR3 sequences by cell barcode. This is performed using the *combineTCR()*, where the input is the stripped contig_list. There is also the relabeling of the barcodes by sample and ID information to prevent duplicates (ID can be left as NULL if you do not desire the addition of a second prefixes, this may alter the ability to add to single cell object down the road).
 
 *cells*
 +  T-AB - T cells, alpha-beta TCR
@@ -110,7 +110,7 @@ combined <- combineTCR(contig_list,
                         ID = c("P", "T", "P", "T", "P", "T"), cells ="T-AB")
 ```
 
-The output of *combineTCR()* will be a list of contig data frames that will be reduced to the reads associated with a single cell barcode. It will also combine the multiple reads into clonotype calls by either the nucleotide sequence (CTnt), amino acid sequence (CTaa), the gene sequence (CTgene) or the combination of the nucleotide and gene sequence (CTstrict). The analogous function for B cells, *combineBCR()* functions similarly with 2 major caveats: 1) Each barcode can only have a maximum of 2 sequences, if greater exists, the 2 with the highest reads are selected. 2) The strict definition of clonotype (CTstrict) is based on the v gene and >85% normalized hamming distance of the nucleotide sequence. The hamming distance is calculated across all BCR sequences recovered, regardless of the run.
+The output of *combineTCR()* will be a list of contig data frames that will be reduced to the reads associated with a single cell barcode. It will also combine the multiple reads into clonotype calls by either the nucleotide sequence (CTnt), amino acid sequence (CTaa), the VDJC genes (CTgene) or the combination of the nucleotide and VDJC genes (CTstrict). The analogous function for B cells, *combineBCR()* functions similarly with 2 major caveats: 1) Each barcode can only have a maximum of 2 sequences, if greater exists, the 2 with the highest reads are selected. 2) The strict definition of clonotype (CTstrict) is based on the v gene and >85% normalized Levenshtein distance of the nucleotide sequence. The Levenshtein distance is calculated across all BCR sequences recovered, regardless of the run.
 
 # Other Processing Functions
 
@@ -139,12 +139,12 @@ subset <- subsetContig(combined, name = "sample",
 # Visualizing Contigs
 
 *cloneCall*
-+  "gene" - use the genes comprising the TCR/Ig
++  "gene" - use the VDJC genes comprising the TCR/Ig
 +  "nt" - use the nucleotide sequence of the CDR3 region
 +  "aa" - use the amino acid sequence of the CDR3 region
-+  "gene+nt" - use the genes comprising the TCR/Ig + the nucleotide sequence of the CDR3 region. This is the [proper definition of clonotype](https://www.ncbi.nlm.nih.gov/pubmed/19568742).
++  "gene+nt" - use the VDJC genes comprising the TCR/Ig + the nucleotide sequence of the CDR3 region. This is the [proper definition of clonotype](https://www.ncbi.nlm.nih.gov/pubmed/19568742).
 
-Important to note, that the clonotype is called using essentially the combination of genes or nt/aa CDR3 sequences for both loci. As of this implementation of scRepertoire, clonotype calling is not incorporating small variations within the CDR3 sequences. As such the *gene* approach will be the most sensitive, while the use of *nt* or *aa* moderately so, and the most specific for clonotypes being *gene+nt*. Additionally, the clonotype call is trying to incorporate both loci, *i.e*, both *TCRA* and *TCRB* chains and if a single cell barcode has multiple sequences identified (*i.e.*, 2 TCRA chains expressed in one cell). Using the 10x approach, there is a subset of barcodes that only return one of the immune receptor chains, the unreturned chain is assigned an *NA* value.
+Important to note, that the clonotype is called using essentially the combination of VDJC genes or nt/aa CDR3 sequences for both loci. As of this implementation of scRepertoire, clonotype calling is not incorporating small variations within the CDR3 sequences. As such the *gene* approach will be the most sensitive, while the use of *nt* or *aa* moderately so, and the most specific for clonotypes being *gene+nt*. Additionally, the clonotype call is trying to incorporate both loci, *i.e*, both *TCRA* and *TCRB* chains and if a single cell barcode has multiple sequences identified (*i.e.*, 2 TCRA chains expressed in one cell). Using the 10x approach, there is a subset of barcodes that only return one of the immune receptor chains, the unreturned chain is assigned an *NA* value.
 
 The first function to explore the clonotypes is *quantContig()* to return the total or relative numbers of unique clonotypes. 
 *scale*
@@ -386,7 +386,7 @@ table(screp_example$seurat_clusters)
 
 Next we can take the clonotypic information and attach it to our Seurat object using the *combineExpression()* function. **Importantly**, the major requirement for the attachment is matching contig cell barcodes and barcodes in the row names of the meta data of the Seurat or SCE object. If these do not match, the attachment will fail. Based on ease, we suggest you make the changes to the Seurat object row names.
 
-We can call (cloneCall) the 4 variations of clonotypes: 1) genes, 2) CDR3 amino acid sequence, 3) CDR3 nucleotide sequence, or 4) genes and CDR3 nucleotide sequence. The attaching function will also calculate the frequency of the clonotype based on the **groupBy** variable. If blank, **groupBy** will calculate frequencies of clonotypes by individual run, but because we have 6 samples of paired peripheral and tumor T cells, we are actually going to use the groupBy variable to call "sample" in order to calculate frequencies across both the peripheral blood and tumor T cells of the same patient.
+We can call (cloneCall) the 4 variations of clonotypes: 1) VDJC genes, 2) CDR3 amino acid sequence, 3) CDR3 nucleotide sequence, or 4) VDJC genes and CDR3 nucleotide sequence. The attaching function will also calculate the frequency of the clonotype based on the **groupBy** variable. If blank, **groupBy** will calculate frequencies of clonotypes by individual run, but because we have 6 samples of paired peripheral and tumor T cells, we are actually going to use the groupBy variable to call "sample" in order to calculate frequencies across both the peripheral blood and tumor T cells of the same patient.
 
 In order to categorize the frequency, we have the variable **proportion** which if TRUE allows for the relative proportion or when FALSE will use absolute frequency to define clonotype groups **cloneTypes**  acts as a bin to place labels. As a default, **cloneTypes** is set to equal cloneTypes=c(Rare = 1e-4, Small = 0.001, Medium = 0.01, Large = 0.1, Hyperexpanded = 1). However, below you can see an example of using total frequency as expansion assignments. 
 
@@ -506,7 +506,8 @@ chordDiagram(circles, self.link = 1, grid.col = grid.cols)
 
 From the excellent work by Lei Zhang, et al in [Lineage tracking reveals dynamic relationships of T cells in colorectal cancer](https://www.nature.com/articles/s41586-018-0694-x), the authors introduce new methods for looking at clonotypes by cellular origins and cluster identification. Their [startrac](https://github.com/Japrin/STARTRAC) software has been incorporated into scRepertoire. If you are using the output of this specific function, please cite their excellent work. 
 
-In order to use the ```StartracDiversity()``` function, you will need to include the product of the ```combinedSeurat()``` function. The second requirement is a column header in the meta data of the Seurat object that has tissue of origin. In the example data,**type** corresponds to the column "Type", which includes the "P" and "T" classifier. The indices can be subseted for a specific patient or examined overall using the **by** variable. Importantly, the function uses only the strict definition of clonotype of the genes and the CDR3 nucleotide sequence. 
+In order to use the ```StartracDiversity()``` function, you will need to include the product of the ```combinedSeurat()``` function. The second requirement is a column header in the meta data of the Seurat object that has tissue of origin. In the example data,**type** corresponds to the column "Type", which includes the "P" and "T" classifier. The indices can be subseted for a specific patient or examined overall using the **by** variable. Importantly, the function uses only the strict definition of clonotype of the VDJC genes and the CDR3 nucleotide sequence. 
+
 *The indices output includes:*
 +  expa - Clonal Expansion
 +  migr - Cross-tissue Migration
