@@ -100,11 +100,27 @@ combineExpression <- function(df, sc, cloneCall="gene+nt", groupBy="none",
                 "CTaa", "CTstrict", "Frequency", "cloneType")])
     rownames(PreMeta) <- PreMeta$barcode
     if (inherits(x=sc, what ="Seurat")) { 
-        #######need to test out
+        if (length(which(rownames(PreMeta) %in% 
+                         rownames(sc[[]])))/length(rownames(sc[[]])) < 0.01) {
+          warning("< 1% of barcodes match: Ensure the barcodes in 
+            the Seurat object match the 
+            barcodes in the combined immune receptor list from 
+            scRepertoire - most common issue is the addition of the 
+            prefixes corresponding to `samples` and 'ID' in the combineTCR/BCR() 
+            functions")
+        }
         col.name <- names(PreMeta) %||% colnames(PreMeta)
         sc[[col.name]] <- PreMeta
     } else {
       rownames <- rownames(colData(sc))
+      if (length(which(rownames(PreMeta) %in% 
+                       rownames))/length(rownames) < 0.01) {
+        warning("< 1% of barcodes match: Ensure the barcodes 
+          in the SingleCellExperiment object match the 
+          barcodes in the combined immune receptor list from 
+          scRepertoire - most common issue is the addition of the 
+          prefixes corresponding to `samples` and 'ID' in the combineTCR/BCR() 
+          functions")
       colData(sc) <- cbind(colData(sc), PreMeta[rownames,])[, union(colnames(colData(sc)),  colnames(PreMeta))]
       rownames(colData(sc)) <- rownames  } 
     if (filterNA == TRUE) { sc <- filteringNA(sc) }
