@@ -35,7 +35,7 @@
 #' @param cloneTypes The bins for the grouping based on frequency
 #' @param filterNA Method to subset seurat object of barcodes without 
 #' clonotype information
-#' @importFrom dplyr bind_rows %>%
+#' @importFrom dplyr bind_rows %>% summarise
 #' @importFrom  rlang %||%
 #' @importFrom SummarizedExperiment colData<- colData
 #' @export
@@ -47,6 +47,7 @@ combineExpression <- function(df, sc, cloneCall="gene+nt", groupBy="none",
                               proportion = TRUE,
                             cloneTypes=c(Rare = 1e-4, Small = 0.001, 
                             Medium = 0.01, Large = 0.1, Hyperexpanded = 1), filterNA = FALSE) {
+  options( dplyr.summarise.inform = FALSE )
     cloneTypes <- c(None = 0, cloneTypes)
     df <- checkList(df)
     cloneCall <- theCall(cloneCall)
@@ -67,6 +68,8 @@ combineExpression <- function(df, sc, cloneCall="gene+nt", groupBy="none",
             }
             colnames(data2)[1] <- cloneCall
             data <- merge(data, data2, by = cloneCall, all = TRUE)
+            data <- data[,c("barcode", "CTgene", "CTnt", 
+                             "CTaa", "CTstrict", "Frequency")]
             Con.df <- rbind.data.frame(Con.df, data)
         }
     } else if (groupBy != "none") {
@@ -98,6 +101,8 @@ combineExpression <- function(df, sc, cloneCall="gene+nt", groupBy="none",
         <= cloneTypes[i], names(cloneTypes[i]), Con.df$cloneType) }
     PreMeta <- unique(Con.df[,c("barcode", "CTgene", "CTnt", 
                 "CTaa", "CTstrict", "Frequency", "cloneType")])
+    `%!in%` = Negate(`%in%`)
+    PreMeta <- PreMeta[PreMeta$barcode %!in% dup,]
     rownames(PreMeta) <- PreMeta$barcode
     if (inherits(x=sc, what ="Seurat")) { 
         if (length(which(rownames(PreMeta) %in% 
@@ -123,8 +128,10 @@ combineExpression <- function(df, sc, cloneCall="gene+nt", groupBy="none",
           functions")
       colData(sc) <- cbind(colData(sc), PreMeta[rownames,])[, union(colnames(colData(sc)),  colnames(PreMeta))]
       rownames(colData(sc)) <- rownames  } 
+    }
     if (filterNA == TRUE) { sc <- filteringNA(sc) }
-    return(sc) }
+    return(sc) 
+}
 
 #' Highlighting specific clonotypes in Seurat
 #'
