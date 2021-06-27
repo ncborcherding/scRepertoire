@@ -348,7 +348,7 @@ scatterClonotype <- function(df, cloneCall ="gene+nt",
                              dot.size = "total", 
                              graph = "proportion", 
                              exportTable = FALSE) {
-  
+  `%!in%` = Negate(`%in%`)
   cloneCall <- theCall(cloneCall)
   x.df <- as.data.frame(table(df[[x.axis]][,cloneCall]))
   colnames(x.df)[2] <- x.axis
@@ -356,30 +356,31 @@ scatterClonotype <- function(df, cloneCall ="gene+nt",
   colnames(y.df)[2] <- y.axis
   combined.df <- merge(x.df, y.df, by = "Var1", all = TRUE)
   if (dot.size != "total") {
-    size.df <- as.data.frame(table(df[[dot.size]][,cloneCall]))
-    colnames(size.df)[2] <- dot.size
-    combined.df <- merge(combined.df, size.df, by = "Var1", all = TRUE)
+    if (dot.size %!in% colnames(combined.df)) {
+      size.df <- as.data.frame(table(df[[dot.size]][,cloneCall]))
+      colnames(size.df)[2] <- dot.size
+      combined.df <- merge(combined.df, size.df, by = "Var1", all = TRUE) }
     combined.df[is.na(combined.df)] <- 0
     combined.df[,paste0("size", ".fraction")] <- combined.df[,dot.size]/sum(combined.df[,dot.size])
-    combined.df[,"class"] <- NA
-    combined.df[,"class"] <- ifelse(combined.df[,x.axis] == 1 & combined.df[,y.axis] == 0 & combined.df[,dot.size] == 0, paste0(x.axis, ".singlet"), combined.df[,"class"])
-    combined.df[,"class"] <- ifelse(combined.df[,y.axis] == 1 & combined.df[,x.axis] == 0 & combined.df[,dot.size] == 0, paste0(y.axis, ".singlet"), combined.df[,"class"])
-    combined.df[,"class"] <- ifelse(combined.df[,y.axis] == 0 & combined.df[,x.axis] == 0 & combined.df[,dot.size] == 1, paste0(dot.size, ".singlet"), combined.df[,"class"])
-    combined.df[,"class"] <- ifelse(combined.df[,x.axis] > 1 & combined.df[,y.axis] == 0 & combined.df[,dot.size] == 0, paste0(x.axis, ".multiplet"), combined.df[,"class"])
-    combined.df[,"class"] <- ifelse(combined.df[,y.axis] > 1 & combined.df[,x.axis] == 0 & combined.df[,dot.size] == 0, paste0(y.axis, ".multiplet"), combined.df[,"class"])
-    combined.df[,"class"] <- ifelse(combined.df[,y.axis] == 0 & combined.df[,x.axis] == 0 & combined.df[,dot.size] > 1, paste0(dot.size, ".multiplet"), combined.df[,"class"])
-    combined.df[,"class"] <- ifelse(combined.df[,y.axis] >= 1 & combined.df[,x.axis] >= 1, paste0("dual.expanded"), combined.df[,"class"])
-    combined.df[,"sum"] <- combined.df[,x.axis] + combined.df[,y.axis] + combined.df[,y.axis]
+    labeling <- unique(c(x.axis, y.axis, dot.size))
   } else {
     combined.df[is.na(combined.df)] <- 0
-    combined.df[,"class"] <- NA
-    combined.df[,"class"] <- ifelse(combined.df[,x.axis] == 1 & combined.df[,y.axis] == 0, paste0(x.axis, ".singlet"), combined.df[,"class"])
-    combined.df[,"class"] <- ifelse(combined.df[,y.axis] == 1 & combined.df[,x.axis] == 0, paste0(y.axis, ".singlet"), combined.df[,"class"])
-    combined.df[,"class"] <- ifelse(combined.df[,x.axis] > 1 & combined.df[,y.axis] == 0, paste0(x.axis, ".multiplet"), combined.df[,"class"])
-    combined.df[,"class"] <- ifelse(combined.df[,y.axis] > 1 & combined.df[,x.axis] == 0, paste0(y.axis, ".multiplet"), combined.df[,"class"])
-    combined.df[,"class"] <- ifelse(combined.df[,y.axis] >= 1 & combined.df[,x.axis] >= 1, paste0("dual.expanded"), combined.df[,"class"])
-    combined.df[,"sum"] <- combined.df[,x.axis] + combined.df[,y.axis] 
-  }
+    labeling <- unique(c(x.axis, y.axis)) }
+  combined.df[,"class"] <- NA
+  combined.df[,"sum"] <- rowSums(combined.df[,labeling])
+  for (i in seq_along(labeling)) {
+    if (length(labeling) > 2) {
+      combined.df[,"class"] <- ifelse(combined.df[,labeling[i]] == 1 & rowSums(combined.df[,labeling[which(labeling != labeling[i])]]) == 0, 
+                                      paste0(labeling[i], ".singlet"), combined.df[,"class"])
+      combined.df[,"class"] <- ifelse(combined.df[,labeling[i]] > 1 & rowSums(combined.df[,labeling[which(labeling != labeling[i])]]) == 0, 
+                                      paste0(labeling[i], ".multiplet"), combined.df[,"class"])
+    } else if (length(labeling) == 2) {
+      combined.df[,"class"] <- ifelse(combined.df[,labeling[i]] == 1 & combined.df[,labeling[which(labeling != labeling[i])]] == 0, 
+                                      paste0(labeling[i], ".singlet"), combined.df[,"class"])
+      combined.df[,"class"] <- ifelse(combined.df[,labeling[i]] > 1 & combined.df[,labeling[which(labeling != labeling[i])]] == 0, 
+                                      paste0(labeling[i], ".multiplet"), combined.df[,"class"])
+  }}
+  combined.df[,"class"] <- ifelse(combined.df[,y.axis] >= 1 & combined.df[,x.axis] >= 1, paste0("dual.expanded"), combined.df[,"class"])
   combined.df[,paste0(x.axis, ".fraction")] <- combined.df[,x.axis]/sum(combined.df[,x.axis])
   combined.df[,paste0(y.axis, ".fraction")] <- combined.df[,y.axis]/sum(combined.df[,y.axis])
   if (graph == "proportion") {
@@ -387,33 +388,20 @@ scatterClonotype <- function(df, cloneCall ="gene+nt",
     y <- combined.df[,paste0(y.axis, ".fraction")]
   } else if (graph == "count") {
     x <- combined.df[,x.axis]
-    y <- combined.df[,y.axis]
-    
-  }
+    y <- combined.df[,y.axis] }
   if (dot.size != "total") {
     size <- combined.df[,dot.size]
-  } else {
-    size <- combined.df[,"sum"]
-  }
-  if (exportTable == TRUE) { 
-    return(combined.df)
-    }
-  
+  } else { size <- combined.df[,"sum"] }
+  if (exportTable == TRUE) { return(combined.df) }
   plot <- ggplot(combined.df, aes(x=x, y = y, color = class)) + 
     theme_classic() + 
     scale_color_manual(values = colorblind_vector(length(unique(combined.df$class)))) + 
-    xlab(x.axis) + 
-    ylab(y.axis) +
-    labs(size = "Total n")
-
+    xlab(x.axis) + ylab(y.axis) + labs(size = "Total n")
   if (graph == "proportion") {
     plot <- plot + geom_abline(slope = 1, intercept = 0, alpha = 0.4, lty=2)  + 
-      scale_y_sqrt() + 
-      scale_x_sqrt() 
+      scale_y_sqrt() + scale_x_sqrt() 
   } else if (graph == "count") {
-    plot <- plot + 
-      ylim(0, max(x,y)) + 
-      xlim(0, max(x,y)) 
+    plot <- plot + ylim(0, max(x,y)) + xlim(0, max(x,y)) 
   }
   plot <- plot + geom_jitter(aes(size = size))
   return(plot)  

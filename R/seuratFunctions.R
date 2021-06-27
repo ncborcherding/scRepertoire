@@ -7,8 +7,9 @@
 #' the groupBy variable. Importantly, before using combineExpression() 
 #' ensure the barcodes of the seurat or SCE object match the barcodes in the 
 #' output of the combinedContig() call. Check changeNames() to change the 
-#' prefix of the seurat object. If the dominant clonotypes have a greater 
-#' frequency than 500, adjust the cloneTypes variable.
+#' prefix of the seurat object. If combining more 
+#' than one immune receptor type, barcodes with both receptors will be removed
+#' during the combination process. 
 #'
 #' @examples
 #' #Getting the combined contigs
@@ -23,7 +24,8 @@
 #' #Using combineExpresion()
 #' sce <- combineExpression(combined, sce)
 #' 
-#' @param df The product of CombineTCR() or CombineBCR().
+#' @param df The product of CombineTCR() or CombineBCR() or a list of 
+#' both c(CombineTCR(), combineBCR())
 #' @param sc The seurat or SingleCellExperiment (SCE) object to attach
 #' @param cloneCall How to call the clonotype - VDJC gene (gene), 
 #' CDR3 nucleotide (nt) CDR3 amino acid (aa), or 
