@@ -43,6 +43,10 @@ Unfortunately, Github limits the size of individual files. In order to access th
 
 Vignette available [here](https://ncborcherding.github.io/vignettes/vignette.html), includes almost 13,000 T cells across 3 patients with renal clear cell carcinoma. 
 
+#### Going Beyond scRepertoire
+
+[Here](https://ncborcherding.github.io/vignettes/beyond_screpertoire.html) is an ever growing collection of features/approaches that users have requested that do no fit within the scope of scRepertoire or would require a prohibitive amount of dependencies to be imported.
+
 ### Please Cite
 Feel free to use, edit, modify scRepertoire, but if you do, please cite the [manuscript](https://f1000research.com/articles/9-47/v1).
 
