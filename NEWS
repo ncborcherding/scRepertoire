@@ -6,6 +6,7 @@ CHANGES IN VERSION 1.3.2
 * filteringMulti now subsets clonotypes with contains >=2, to prevent 2 of the same chains
 * changed how coldata is added to SCE objects using merge instead of union
 * Can now add BCR and TCR simultaneously by making large list
+* scatter plotting code is not so ugly and allows for user to select dot.size as a variable on the x or y axis
 
 
 CHANGES IN VERSION 1.2.2
