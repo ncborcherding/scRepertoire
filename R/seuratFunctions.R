@@ -103,6 +103,7 @@ combineExpression <- function(df, sc, cloneCall="gene+nt", groupBy="none",
         <= cloneTypes[i], names(cloneTypes[i]), Con.df$cloneType) }
     PreMeta <- unique(Con.df[,c("barcode", "CTgene", "CTnt", 
                 "CTaa", "CTstrict", "Frequency", "cloneType")])
+    dup <- PreMeta$barcode[which(duplicated(PreMeta$barcode))]
     `%!in%` = Negate(`%in%`)
     PreMeta <- PreMeta[PreMeta$barcode %!in% dup,]
     rownames(PreMeta) <- PreMeta$barcode
@@ -127,9 +128,9 @@ combineExpression <- function(df, sc, cloneCall="gene+nt", groupBy="none",
           barcodes in the combined immune receptor list from 
           scRepertoire - most common issue is the addition of the 
           prefixes corresponding to `samples` and 'ID' in the combineTCR/BCR() 
-          functions")
+          functions") }
       colData(sc) <- cbind(colData(sc), PreMeta[rownames,])[, union(colnames(colData(sc)),  colnames(PreMeta))]
-      rownames(colData(sc)) <- rownames  } 
+      rownames(colData(sc)) <- rownames  
     }
     if (filterNA == TRUE) { sc <- filteringNA(sc) }
     return(sc) 

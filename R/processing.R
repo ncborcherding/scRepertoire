@@ -100,10 +100,9 @@ subsetContig <- function(df, name, variables = NULL) {
 #' 
 #' #Getting a sample of a Seurat object
 #' screp_example <- get(data("screp_example"))
-#' sce <- suppressMessages(Seurat::UpdateSeuratObject(screp_example))
 #' 
 #' #Using expression2List
-#' newList <- expression2List(sce, group = "seurat_clusters")
+#' newList <- expression2List(screp_example, group = "seurat_clusters")
 #' 
 #' @param sc object after combineExpression().
 #' @param group The column header to group the new list by

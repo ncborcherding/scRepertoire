@@ -29,14 +29,13 @@ Imports:
 	utils, 
 	rlang,
 	igraph,
-	SeuratObject,
-	Seurat,
-	scater, 
-	harmony
+	SeuratObject
 Suggests: 
 	knitr, 
 	rmarkdown, 
 	BiocStyle,  
 	circlize, 
-	scales
+	scales, 
+	Seurat,
+	scater
 VignetteBuilder: knitr
