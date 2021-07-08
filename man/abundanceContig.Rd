@@ -7,6 +7,7 @@
 abundanceContig(
   df,
   cloneCall = "gene+nt",
+  chain = "both",
   scale = FALSE,
   group = NULL,
   exportTable = FALSE
@@ -19,7 +20,10 @@ abundanceContig(
 CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
 VDJC gene + CDR3 nucleotide (gene+nt).}
 
-\item{scale}{Converts the graphs into denisty plots in order to show 
+\item{chain}{indicate if both or a specific chain should be used - 
+e.g. "both", "TRA", "TRG", "IGH", "IGL"}
+
+\item{scale}{Converts the graphs into density plots in order to show 
 relative distributions.}
 
 \item{group}{The column header for which you would like to analyze the data.}
@@ -28,7 +32,7 @@ relative distributions.}
 to the visualization.}
 }
 \value{
-ggplot of the total or relative adundance of clonotypes 
+ggplot of the total or relative abundance of clonotypes 
 across quanta
 }
 \description{

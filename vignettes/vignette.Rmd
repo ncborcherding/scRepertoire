@@ -88,10 +88,6 @@ As the output of CellRanger are quantifications of both the TCRA and TCRB chains
 +  T-AB - T cells, alpha-beta TCR
 +  T-GD - T cells, gamma-delta TCR
 
-*chains*
-* T-AB - "both", "TRA", "TRB"
-* T-GD - "both", "TRG", "TRD"
-
 *removeNA*
 +  TRUE - this is a stringent filter to remove any cell barcode with an NA value in at least one of the chains
 +  FALSE - the default setting to include and incorporate cells with 1 NA value
@@ -147,12 +143,17 @@ subset <- subsetContig(combined, name = "sample",
 Important to note, that the clonotype is called using essentially the combination of VDJC genes or nt/aa CDR3 sequences for both loci. As of this implementation of scRepertoire, clonotype calling is not incorporating small variations within the CDR3 sequences. As such the *gene* approach will be the most sensitive, while the use of *nt* or *aa* moderately so, and the most specific for clonotypes being *gene+nt*. Additionally, the clonotype call is trying to incorporate both loci, *i.e*, both *TCRA* and *TCRB* chains and if a single cell barcode has multiple sequences identified (*i.e.*, 2 TCRA chains expressed in one cell). Using the 10x approach, there is a subset of barcodes that only return one of the immune receptor chains, the unreturned chain is assigned an *NA* value.
 
 The first function to explore the clonotypes is *quantContig()* to return the total or relative numbers of unique clonotypes. 
-*scale*
-+  TRUE - relative percent of unique clonotypes scaled by total size of the size of the clonotype repertoire
-+  FALSE - Report the total number of unique clonotypes
+
+*scale*  
++  TRUE - relative percent of unique clonotypes scaled by total size of the size of the clonotype repertoire  
++  FALSE - Report the total number of unique clonotypes  
+
+*chain*  
++ "both" for combined chain visualization  
++ "TRA", "TRB", "TRD", "TRG", "IGH" or "IGL" to select single chain
 
 ```{r}
-quantContig(combined, cloneCall="gene+nt", scale = TRUE)
+quantContig(combined, cloneCall="gene+nt", chain = "both", scale = TRUE)
 ```
 
 Within each of the general analysis functions, there is the ability to export the data frame used to create the visualization. To get the exported values, use **exportTable** = TRUE. It will return the data frame used to make the graph, instead of the visual output.  
@@ -184,14 +185,13 @@ abundanceContig(combined, group = "ID", scale = TRUE)
 
 Lastly on the basic visualization side, we can look at the length distribution of the CDR3 sequences by calling the *lengthContig()* function. Importantly, unlike the other basic visualizations, the **cloneCall** can only be "nt" or "aa". Due to the method of calling clonotypes as outlined above, the length should reveal a multimodal curve, this is a product of using the **NA** for the unreturned chain sequence and multiple chains within a single barcode. 
 
-```{r}
-lengthContig(combined, cloneCall="aa", chains = "combined") 
-```
-
-Or we can visualize the individual chains of the immune receptors by selecting **chains** = "single". Notably this will remove the NA component of combined clonotypes, so visualize is only the sequences recovered in the filtered contig annotation file from Cell Ranger. 
+*chain*  
++ "both" for combined chain visualization  
++ "TRA", "TRB", "TRD", "TRG", "IGH" or "IGL" to select single chain
 
 ```{r}
-lengthContig(combined, cloneCall="nt", chains = "single") 
+lengthContig(combined, cloneCall="aa", chain = "both") 
+lengthContig(combined, cloneCall="aa", chain = "TRA") 
 ```
 
 We can also look at clonotypes between samples and changes in dynamics by using the *compareClonotypes()* function.
@@ -227,8 +227,8 @@ Last of the basic analysis visualizations is the relative usage of genes of the 
 +  "TRA"  
 +  "TRG"  
 +  "TRD" 
-+  "Heavy"  
-+  "Light"  
++  "IGH"    
++  "IGL"  
 
 *plot*  
 + "bar" for a bar chart  
@@ -256,12 +256,12 @@ After we have completed the basic processing and summary functions in scRepertoi
 
 By examining the clonal space, we are effectively looking at the relative space occupied by clones at specific proportions. Another way to think about this would be thinking of the total immune receptor sequencing run as a measuring cup. In this cup, we will fill liquids of different viscosity - or different number of clonal proportions. Clonal space homeostasis is asking what percentage of the cup is filled by clones in distinct proportions (or liquids of different viscosity, to extend the analogy). The proportional cut points are set under the **cloneType** variable in the function and can be adjusted, at baseline the bins are as follows:
 
-*cloneTypes*
-+  Rare = .0001
-+  Small = .001
-+  Medium = .01
-+  Large = .1
-+  Hyperexpanded = 1
+*cloneTypes*  
++  Rare = .0001  
++  Small = .001  
++  Medium = .01  
++  Large = .1  
++  Hyperexpanded = 1  
 
 ```{r}
 clonalHomeostasis(combined, cloneCall = "gene")
@@ -275,13 +275,13 @@ Like clonal space homeostasis above, clonal proportion acts to place clones into
 
 The **split** represents ranking of clonotypes by copy or frequency of occurrence, meaning 1:10 are the top 10 clonotypes in each sample. The default bins are under the **split** variable in the function and can be adjusted, but at baseline they are as follows. 
 
-*split*
-+  10
-+  100
-+  1000 
-+  10000
-+  30000
-+  100000
+*split*  
++  10  
++  100  
++  1000  
++  10000  
++  30000  
++  100000  
 
 ```{r}
 clonalProportion(combined, cloneCall = "gene") 
@@ -317,7 +317,7 @@ clonalDiversity(combined, cloneCall = "gene", group = "ID")
 
 A number of users requested a visualization from the work of [Wu, et al 2020, PMID: 32103181](https://pubmed.ncbi.nlm.nih.gov/32103181/) that allows for the direct comparison of clonotypes between 2 samples. ```scatterClonotype()``` will organize two samples from the combinedTCR/BCR product, count the relative clonotypes, and produce a scatter plot comparing the two samples. 
 
-**x-axis** and **y-axis**
+**x-axis** and **y-axis**  
 * Names of the list element to place on the x-axis and y-axis - so for example "PX_P" and "PX_T"  
  
 **graph**  
@@ -505,16 +505,16 @@ From the excellent work by Lei Zhang, et al in [Lineage tracking reveals dynamic
 
 In order to use the ```StartracDiversity()``` function, you will need to include the product of the ```combinedSeurat()``` function. The second requirement is a column header in the meta data of the Seurat object that has tissue of origin. In the example data,**type** corresponds to the column "Type", which includes the "P" and "T" classifier. The indices can be subseted for a specific patient or examined overall using the **by** variable. Importantly, the function uses only the strict definition of clonotype of the VDJC genes and the CDR3 nucleotide sequence. 
 
-*The indices output includes:*
-+  expa - Clonal Expansion
-+  migr - Cross-tissue Migration
-+  tran - State Transition
+*The indices output includes:*  
++  expa - Clonal Expansion  
++  migr - Cross-tissue Migration  
++  tran - State Transition  
 
 ```{r}
 StartracDiversity(screp_example, type = "Type", sample = "Patient", by = "overall")
 ```
 
-# Working with clonotypes after clustering
+# Working with clonotypes after clustering  
 
 For users that would like greater ability to use the meta data in the Seurat objects to perform the analysis that scRepertoire provides, there is also the option of using the *expression2List()* function that will take the meta data and output the data as a list by cluster.
 
@@ -523,32 +523,32 @@ combined2 <- expression2List(screp_example, group = "cluster")
 combined3 <- expression2List(sce, group = "cluster")
 ```
 
-## 1. Clonal Diversity
+## 1. Clonal Diversity  
 ```{r}
 clonalDiversity(combined2, cloneCall = "nt")
 clonalDiversity(combined3, cloneCall = "nt")
 ```
 
-## 2. Clonal Homeostasis
+## 2. Clonal Homeostasis  
 ```{r}
 clonalHomeostasis(combined2, cloneCall = "nt")
 clonalHomeostasis(combined3, cloneCall = "nt")
 ```
 
-## 3. Clonal Proportion
+## 3. Clonal Proportion  
 ```{r}
 clonalProportion(combined2, cloneCall = "nt")
 clonalProportion(combined3, cloneCall = "nt")
 ```
 
-## 4. Clonal Overlap
+## 4. Clonal Overlap  
 ```{r}
 clonalOverlap(combined2, cloneCall="aa", method="overlap")
 clonalOverlap(combined3, cloneCall="aa", method="overlap")
 ```
 
 ***
-# Conclusion
+# Conclusion  
 
 This has been a general overview of the capabilities for scRepertoire from the initial processing and visualization to attach to the mRNA expression values in a Seurat object. If you have any questions, comments or suggestions, feel free to visit the github repository or [email me](mailto:ncborch@gmail.com).
 

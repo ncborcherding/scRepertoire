@@ -1,3 +1,17 @@
+#Use to shuffle between chains
+off.the.chain <- function(dat, chain,cloneCall) {
+  chain1 <- toupper(chain) #to just make it easier
+  if (chain1 %in% c("TRA", "TRD", "IGH")) {
+    x <- 1
+  } else if (chain1 %in% c("TRB", "TRG", "IGL")) {
+    x <- 2
+  } else {
+    warning("It looks like ", chain, " does not match the available options for `chain = `")
+  }
+  dat[,cloneCall] <- str_split(dat[,cloneCall], "_", simplify = TRUE)[,x]
+  return(dat)
+}
+
 
 #Remove list elements that contain all NA values
 checkBlanks <- function(df, cloneCall) {
@@ -20,7 +34,7 @@ checkList <- function(df) {
     return(df)
 }
 
-#This is to check the single-cell expresison object
+#This is to check the single-cell expression object
 checkSingleObject <- function(sc) {
     if (!inherits(x=sc, what ="Seurat") & 
         !inherits(x=sc, what ="SummarizedExperiment")){
@@ -355,10 +369,10 @@ cellT <- function(cells) {
 
 
 #Producing a data frame to visualize for lengthContig()
-lengthDF <- function(df, cloneCall, chains, group, c1, c2){
+lengthDF <- function(df, cloneCall, chain, group, c1, c2){
     Con.df <- NULL
     names <- names(df)
-    if (chains == "combined") {
+    if (chain == "both") {
             for (i in seq_along(df)) {
                 length <- nchar(gsub("_", "", df[[i]][,cloneCall]))
                 val <- df[[i]][,cloneCall]
@@ -371,38 +385,27 @@ lengthDF <- function(df, cloneCall, chains, group, c1, c2){
                     data <- na.omit(data.frame(length, val, names[i]))
                     colnames(data) <- c("length", "CT", "values")
                     Con.df<- rbind.data.frame(Con.df, data) }}
-    } else if (chains == "single") {
+    } else if (chain != "both") {
             for (x in seq_along(df)) {
+                df[[x]] <- off.the.chain(df[[x]], chain, cloneCall)
                 strings <- df[[x]][,cloneCall]
-                strings <- as.data.frame(str_split(strings, "_", 
-                        simplify = TRUE), stringsAsFactors = FALSE)
-                val1 <- strings[,1]
+                val1 <- strings
                 for (i in seq_along(val1)) {
                     if (grepl(";", val1[i]) == TRUE) {
                         val1[i] <- str_split(val1[i], ";", simplify = TRUE)[1] 
                     } else { next() } }
-                val2 <- strings[,2]
-                for (i in seq_along(val2)) {
-                    if (grepl(";", val2[i]) == TRUE) {
-                        val2[i] <- str_split(val2[i], ";", simplify = TRUE)[1]
-                    } else { next() } }
                 chain1 <- nchar(val1)
-                chain2 <- nchar(val2)
                 if (!is.null(group)) {
                     cols1 <- df[[x]][,group]
                     data1 <- data.frame(chain1, val1, names[x], c1, cols1)
                     colnames(data1)<-c("length","CT","values","chain",group)
-                    cols2 <- df[[x]][,group]
-                    data2 <- data.frame(chain2, val2, names[x], c2, cols2)
-                    colnames(data2)<-c("length","CT","values","chain",group)
                 }else if (is.null(group)){
                     data1 <- data.frame(chain1, val1, names[x], c1)
                     colnames(data1) <- c("length", "CT", "values", "chain")
-                    data2 <- data.frame(chain2, val2, names[x], c2)
-                    colnames(data2) <- c("length", "CT", "values", "chain")}
-                data <- na.omit(rbind(data1, data2))
-                data <- subset(data, CT != "NA" | CT != "")
+                data <- na.omit(data1)
+                data <- subset(data, CT != "NA" & CT != "")
                 Con.df<- rbind.data.frame(Con.df, data) }}
+    }
 return(Con.df)}
 
 #General combination of nucleotide, aa, and gene sequences for T/B cells
@@ -440,31 +443,4 @@ makeGenes <- function(cellType, data2, chain1, chain2) {
     }
     return(data2)
     
-}
-
-#Splitting clonotype by selected chain
-#' @importFrom stringr str_split
-filterchain <- function(final) {
-  if (chain %in% c(chain1, chain2)) {
-    for(i in seq_along(final)) {
-      if (chain == chain1) {
-        pos = 1
-        pos2 = c(1,2)
-      } else {
-        pos = 2
-        pos2 = c(3,4)
-      }
-      final[[i]]$CTgene <- str_split(final[[i]]$CTgene, "_", simplify = TRUE)[,pos]
-      final[[i]]$CTnt <- str_split(final[[i]]$CTnt, "_", simplify = TRUE)[,pos]
-      final[[i]]$CTaa <- str_split(final[[i]]$CTaa, "_", simplify = TRUE)[,pos]
-      tmp <- str_split(final[[i]]$CTstrict, "_", simplify = TRUE)[,pos2[1]]
-      tmp1 <- str_split(final[[i]]$CTstrict, "_", simplify = TRUE)[,pos2[2]]
-      final[[i]]$CTstrict <- paste0(tmp, "_", tmp1)
-      final[[i]][final[[i]] == "NA_NA" | final[[i]] == "NA"] <- NA 
-    }
-  }else {
-    stop("Ensure the cell and chain selection correpond, for instance 
-         `T-AB` can only have chain = `TRA` or `TRB`.")
-    return(final)
-  }
 }

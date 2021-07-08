@@ -8,6 +8,7 @@ clonalOverlap(
   df,
   cloneCall = c("gene", "nt", "aa", "gene+nt"),
   method = c("overlap", "morisita", "jaccard"),
+  chain = "both",
   exportTable = FALSE
 )
 }
@@ -20,6 +21,9 @@ VDJC gene + CDR3 nucleotide (gene+nt).}
 
 \item{method}{The method to calculate the overlap, either the overlap 
 coefficient, morisita or jaccard indices.}
+
+\item{chain}{indicate if both or a specific chain should be used - 
+e.g. "both", "TRA", "TRG", "IGH", "IGL"}
 
 \item{exportTable}{Exports a table of the data into the global 
 environment in addition to the visualization}

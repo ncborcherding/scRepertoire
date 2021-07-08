@@ -18,6 +18,8 @@
 #' @param cloneCall How to call the clonotype - VDJC gene (gene), 
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
 #' VDJC gene + CDR3 nucleotide (gene+nt).
+#' @param chain indicate if both or a specific chain should be used - 
+#' e.g. "both", "TRA", "TRG", "IGH", "IGL"
 #' @param group The column header for which you would like to analyze the data.
 #' @param exportTable Exports a table of the data into the global environment 
 #' in addition to the visualization
@@ -29,8 +31,9 @@
 #' @export
 #' @return ggplot of the diversity of clonotype sequences across list
 #' @author Andrew Malone, Nick Borcherding
-clonalDiversity <- function(df, cloneCall = "gene+nt", group = "samples", 
-                                exportTable = FALSE, n.boots = 100) {
+clonalDiversity <- function(df, cloneCall = "gene+nt", chain = "both",
+                            group = "samples", 
+                            exportTable = FALSE, n.boots = 100) {
   cloneCall <- theCall(cloneCall)
   df <- checkBlanks(df, cloneCall)
   mat <- NULL
@@ -44,7 +47,9 @@ clonalDiversity <- function(df, cloneCall = "gene+nt", group = "samples",
   min <- min(min)
   if (group == "samples") {
     for (i in seq_along(df)) {
-      
+      if (chain != "both") {
+        df[[i]] <- off.the.chain(df[[i]], chain, cloneCall)
+      }  
       data <- as.data.frame(table(df[[i]][,cloneCall]))
       mat_a <- NULL
       sample <- c()
@@ -70,7 +75,9 @@ clonalDiversity <- function(df, cloneCall = "gene+nt", group = "samples",
     
   } else {
     for (i in seq_along(df)) {
-      
+      if (chain != "both") {
+        df[[i]] <- off.the.chain(df[[i]], chain, cloneCall)
+      }
       data <- as.data.frame(table(df[[i]][,cloneCall]))
       color <- df[[i]][1,group]
       mat_a <- NULL

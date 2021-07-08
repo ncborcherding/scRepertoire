@@ -8,7 +8,6 @@ combineBCR(
   df,
   samples = NULL,
   ID = NULL,
-  chain = "both",
   removeNA = FALSE,
   removeMulti = FALSE
 )
@@ -19,9 +18,6 @@ combineBCR(
 \item{samples}{The labels of samples (required).}
 
 \item{ID}{The additional sample labeling (optional).}
-
-\item{chain}{Select a single or both chains for assigning clonotypes
-B cells chain options "both", "heavy", "light"}
 
 \item{removeNA}{This will remove any chain without values.}
 

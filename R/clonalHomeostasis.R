@@ -19,16 +19,19 @@
 #' @param cloneCall How to call the clonotype - VDJC gene (gene), 
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
 #' VDJC gene + CDR3 nucleotide (gene+nt).
+#' @param chain indicate if both or a specific chain should be used - 
+#' e.g. "both", "TRA", "TRG", "Heavy", "Light"
 #' @param exportTable Exports a table of the data into the global 
 #' environment in addition to the visualization
 #' @import ggplot2
 #' @importFrom stringr str_split
 #' @importFrom reshape2 melt
 #' @export
-#' @return ggplot of the space occupied by the specific propotion of clonotypes
+#' @return ggplot of the space occupied by the specific proportion of clonotypes
 clonalHomeostasis <- function(df, cloneTypes = c(Rare = .0001, Small = .001, 
                         Medium = .01, Large = .1, Hyperexpanded = 1),
-                        cloneCall = "gene+nt", exportTable = FALSE) {
+                        cloneCall = "gene+nt", chain = "both", 
+                        exportTable = FALSE) {
     cloneTypes <- c(None = 0, cloneTypes)
     cloneCall <- theCall(cloneCall)
     df <- checkList(df)
@@ -38,6 +41,9 @@ clonalHomeostasis <- function(df, cloneTypes = c(Rare = .0001, Small = .001,
                 names(cloneTypes)[-1]))
     df <- lapply(df, '[[', cloneCall)
     for (i in seq_along(df)) {
+        if (chain != "both") {
+            df[[i]] <- off.the.chain(df[[i]], chain, cloneCall)
+        }
         df[[i]] <- na.omit(df[[i]]) }
     fun <- function(x) { table(x)/length(x) }
     df <- lapply(df, fun)

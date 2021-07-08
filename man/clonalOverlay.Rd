@@ -30,7 +30,7 @@ ggplot object
 \description{
 This function allows the user to visualize the clonal expansion by overlaying the 
 cells with specific clonal frequency onto the dimensional reduction plots in Seurat.
-Credit to the idea goes to Dr. Carmona and his work with
+Credit to the idea goes to Drs Andreatta and Carmona and their work with
 \href{https://github.com/carmonalab/ProjecTILs}{ProjectTIL}.
 }
 \examples{

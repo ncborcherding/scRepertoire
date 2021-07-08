@@ -8,11 +8,12 @@ combineExpression(
   df,
   sc,
   cloneCall = "gene+nt",
+  chain = "both",
   groupBy = "none",
   proportion = TRUE,
+  filterNA = FALSE,
   cloneTypes = c(Rare = 1e-04, Small = 0.001, Medium = 0.01, Large = 0.1, Hyperexpanded
-    = 1),
-  filterNA = FALSE
+    = 1)
 )
 }
 \arguments{
@@ -25,16 +26,19 @@ both c(CombineTCR(), combineBCR())}
 CDR3 nucleotide (nt) CDR3 amino acid (aa), or 
 VDJC gene + CDR3 nucleotide (gene+nt).}
 
+\item{chain}{indicate if both or a specific chain should be used - 
+e.g. "both", "TRA", "TRG", "Heavy", "Light"}
+
 \item{groupBy}{The column label in the combined contig object in which 
 clonotype frequency will be calculated.}
 
 \item{proportion}{Whether to use the total frequency (FALSE) or the 
 proportion (TRUE) of the clonotype based on the groupBy variable.}
 
-\item{cloneTypes}{The bins for the grouping based on frequency}
-
 \item{filterNA}{Method to subset seurat object of barcodes without 
 clonotype information}
+
+\item{cloneTypes}{The bins for the grouping based on frequency}
 }
 \value{
 seurat or SingleCellExperiment object with attached clonotype 

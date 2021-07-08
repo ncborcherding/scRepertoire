@@ -7,6 +7,7 @@
 quantContig(
   df,
   cloneCall = "gene+nt",
+  chain = "both",
   scale = FALSE,
   group = NULL,
   exportTable = FALSE
@@ -18,6 +19,9 @@ quantContig(
 \item{cloneCall}{How to call the clonotype - VDJC gene (gene), 
 CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
 VDJC gene + CDR3 nucleotide (gene+nt).}
+
+\item{chain}{indicate if both or a specific chain should be used - 
+e.g. "both", "TRA", "TRG", "IGH", "IGL"}
 
 \item{scale}{Converts the graphs into percentage of unique clonotypes.}
 

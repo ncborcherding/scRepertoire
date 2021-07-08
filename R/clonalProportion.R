@@ -19,6 +19,8 @@
 #' @param cloneCall How to call the clonotype - VDJC gene (gene), 
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
 #' VDJC gene + CDR3 nucleotide (gene+nt).
+#' @param chain indicate if both or a specific chain should be used - 
+#' e.g. "both", "TRA", "TRG", "IGH", "IGL"
 #' @param exportTable Exports a table of the data into the global 
 #' environment in addition to the visualization
 #'
@@ -29,7 +31,8 @@
 #' @export
 #' @return ggplot of the space occupied by the specific rank of clonotypes
 clonalProportion <- function(df,split = c(10, 100, 1000, 10000, 30000, 
-                        100000), cloneCall = "gene+nt", exportTable = FALSE) {
+                        100000), cloneCall = "gene+nt", 
+                        chain = "both", exportTable = FALSE) {
     Con.df <- NULL
     cloneCall <- theCall(cloneCall)
     df <- checkList(df)
@@ -39,6 +42,9 @@ clonalProportion <- function(df,split = c(10, 100, 1000, 10000, 30000,
     df <- lapply(df, '[[', cloneCall)
     df <- lapply(df, as.data.frame(table))
     for (i in seq_along(df)) {
+        if (chain != "both") {
+            df[[i]] <- off.the.chain(df[[i]], chain, cloneCall)
+        }
         df[[i]] <- na.omit(df[[i]])
         df[[i]] <- rev(sort(as.numeric(df[[i]][,2])))
     }

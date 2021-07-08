@@ -30,6 +30,8 @@
 #' @param cloneCall How to call the clonotype - VDJC gene (gene), 
 #' CDR3 nucleotide (nt) CDR3 amino acid (aa), or 
 #' VDJC gene + CDR3 nucleotide (gene+nt).
+#' @param chain indicate if both or a specific chain should be used - 
+#' e.g. "both", "TRA", "TRG", "Heavy", "Light"
 #' @param groupBy The column label in the combined contig object in which 
 #' clonotype frequency will be calculated.
 #' @param proportion Whether to use the total frequency (FALSE) or the 
@@ -45,10 +47,11 @@
 #' information
 #' 
 
-combineExpression <- function(df, sc, cloneCall="gene+nt", groupBy="none", 
-                              proportion = TRUE,
-                            cloneTypes=c(Rare = 1e-4, Small = 0.001, 
-                            Medium = 0.01, Large = 0.1, Hyperexpanded = 1), filterNA = FALSE) {
+combineExpression <- function(df, sc, cloneCall="gene+nt", 
+                              chain = "both", groupBy="none", 
+                              proportion = TRUE, filterNA = FALSE,
+                              cloneTypes=c(Rare = 1e-4, Small = 0.001, 
+                              Medium = 0.01, Large = 0.1, Hyperexpanded = 1)) {
   options( dplyr.summarise.inform = FALSE )
     cloneTypes <- c(None = 0, cloneTypes)
     df <- checkList(df)
@@ -58,6 +61,9 @@ combineExpression <- function(df, sc, cloneCall="gene+nt", groupBy="none",
     cell.names <- rownames(meta)
     if (groupBy == "none") {
         for (i in seq_along(df)) {
+            if (chain != "both") {
+              df[[i]] <- off.the.chain(df[[i]], chain, cloneCall)
+            }
             data <- data.frame(df[[i]], stringsAsFactors = FALSE)
             data2 <- unique(data[,c("barcode", cloneCall)])
             data2 <- na.omit(data2[data2[,"barcode"] %in% cell.names,])
@@ -214,6 +220,8 @@ highlightClonotypes <- function(sc,
 #' @param cloneCall How to call the clonotype - VDJC gene (gene), 
 #' CDR3 nucleotide (nt) or CDR3 amino acid (aa), or 
 #' VDJC gene + CDR3 nucleotide (gene+nt).
+#' @param chain indicate if both or a specific chain should be used - 
+#' e.g. "both", "TRA", "TRG", "Heavy", "Light"
 #' @param y.axes The columns that will separate the proportional 
 #' visualizations.
 #' @param color The column header or clonotype(s) to be highlighted.
@@ -229,13 +237,16 @@ highlightClonotypes <- function(sc,
 #' selected parameters.
 alluvialClonotypes <- function(sc, 
                                 cloneCall = c("gene", "nt", "aa", "gene+nt"), 
-                                y.axes = NULL, color = NULL, alpha = NULL, 
-                                facet = NULL) {
+                                chain = "both", y.axes = NULL, 
+                                color = NULL, alpha = NULL, facet = NULL) {
     checkSingleObject(sc)
     cloneCall <- theCall(cloneCall)
     if (length(y.axes) == 0) {
         stop("Make sure you have selected the variable(s) to visualize") }
     meta <- grabMeta(sc)
+    if (chain != "both") {
+      meta <- off.the.chain(meta, chain, cloneCall)
+    }
     meta$barcodes <- rownames(meta)
     check <- colnames(meta) == color
     if (length(unique(check)) == 1 & unique(check)[1] == FALSE & 
@@ -356,7 +367,7 @@ occupiedscRepertoire <- function(sc, x.axis = "cluster",
 #'
 #' This function allows the user to visualize the clonal expansion by overlaying the 
 #' cells with specific clonal frequency onto the dimensional reduction plots in Seurat.
-#' Credit to the idea goes to Dr. Carmona and his work with
+#' Credit to the idea goes to Drs Andreatta and Carmona and their work with
 #' \href{https://github.com/carmonalab/ProjecTILs}{ProjectTIL}.
 #'
 #' @examples

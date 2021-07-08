@@ -7,6 +7,7 @@
 compareClonotypes(
   df,
   cloneCall = "gene+nt",
+  chain = "both",
   samples = NULL,
   clonotypes = NULL,
   numbers = NULL,
@@ -20,6 +21,9 @@ compareClonotypes(
 \item{cloneCall}{How to call the clonotype - VDJC gene (gene), 
 CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
 VDJC gene + CDR3 nucleotide (gene+nt).}
+
+\item{chain}{indicate if both or a specific chain should be used - 
+e.g. "both", "TRA", "TRG", "IGH", "IGL"}
 
 \item{samples}{The specific samples to isolate for visualization.}
 

@@ -19,7 +19,8 @@ vizGenes(
 
 \item{gene}{Which part of the immune receptor to visualize - V, D, J, C}
 
-\item{chain}{Which TCR chain to use - TRA, TRB, TRG, TRD, Heavy, Light}
+\item{chain}{indicate if both or a specific chain should be used - 
+e.g. "TRA", "TRG", "IGH", "IGL" (no both option here)}
 
 \item{plot}{The type of plot to return - heatmap or bar}
 

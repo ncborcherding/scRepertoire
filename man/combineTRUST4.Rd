@@ -9,7 +9,6 @@ combineTRUST4(
   samples = NULL,
   ID = NULL,
   cells = c("T-AB", "T-GD", "B"),
-  chain = "both",
   removeNA = FALSE
 )
 }
@@ -21,9 +20,6 @@ combineTRUST4(
 \item{ID}{The additional sample labeling (optional).}
 
 \item{cells}{The type of cell - T cell-AB or T cell-GD, or B cell}
-
-\item{chain}{Select a single or both chains for assigning clonotypes
-T-AB chain options "both", "TRA", "TRB" or B cells "heavy" or "light"}
 
 \item{removeNA}{This will remove any chain without values.}
 }

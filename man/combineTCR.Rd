@@ -9,7 +9,6 @@ combineTCR(
   samples = NULL,
   ID = NULL,
   cells = c("T-AB", "T-GD"),
-  chain = "both",
   removeNA = FALSE,
   removeMulti = FALSE,
   filterMulti = FALSE
@@ -23,9 +22,6 @@ combineTCR(
 \item{ID}{The additional sample labeling (optional).}
 
 \item{cells}{The type of T cell - T cell-AB or T cell-GD}
-
-\item{chain}{Select a single or both chains for assigning clonotypes
-T-AB chain options "both", "TRA", "TRB"}
 
 \item{removeNA}{This will remove any chain without values.}
 

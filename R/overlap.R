@@ -21,6 +21,8 @@
 #' @param cloneCall How to call the clonotype - VDJC gene (gene), 
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
 #' VDJC gene + CDR3 nucleotide (gene+nt).
+#' @param chain indicate if both or a specific chain should be used - 
+#' e.g. "both", "TRA", "TRG", "IGH", "IGL"
 #' @param method The method to calculate the overlap, either the overlap 
 #' coefficient, morisita or jaccard indices.
 #' @param exportTable Exports a table of the data into the global 
@@ -31,7 +33,7 @@
 #' @return ggplot of the clonotypic overlap between elements of a list
 clonalOverlap <- function(df, cloneCall = c("gene", "nt", "aa", "gene+nt"), 
                                 method = c("overlap", "morisita", "jaccard"), 
-                                exportTable = FALSE){
+                                chain = "both", exportTable = FALSE){
     cloneCall <- theCall(cloneCall)
     df <- checkBlanks(df, cloneCall)
     df <- df[order(names(df))]
@@ -43,6 +45,11 @@ clonalOverlap <- function(df, cloneCall = c("gene", "nt", "aa", "gene+nt"),
     colnames(coef_matrix) <- names_samples
     rownames(coef_matrix) <- names_samples
     length <- seq_len(num_samples)
+    if (chain != "both") {
+      for (i in seq_along(df)) {
+        df[[i]] <- off.the.chain(df[[i]], chain, cloneCall)
+      }
+    }
     if (method == "overlap") {
         coef_matrix <- overlapIndex(df, length, cloneCall, coef_matrix)
     } else if (method == "morisita") {

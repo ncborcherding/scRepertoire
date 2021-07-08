@@ -23,8 +23,6 @@
 #' @param samples The labels of samples (required).
 #' @param ID The additional sample labeling (optional).
 #' @param cells The type of cell - T cell-AB or T cell-GD, or B cell
-#' @param chain Select a single or both chains for assigning clonotypes
-#' T-AB chain options "both", "TRA", "TRB" or B cells "heavy" or "light"
 #' @param removeNA This will remove any chain without values.
 #' @import dplyr
 #' @export
@@ -33,7 +31,6 @@
 
 combineTRUST4 <- function(df, samples = NULL, ID = NULL, 
                           cells = c("T-AB", "T-GD", "B"), 
-                          chain = "both", 
                           removeNA = FALSE) {
     df <- checkList(df)
     out <- NULL
@@ -160,7 +157,6 @@ combineTRUST4 <- function(df, samples = NULL, ID = NULL,
     }
     for (i in seq_along(final)){
         final[[i]]<-final[[i]][!duplicated(final[[i]]$barcode),]}
-    if (chain != "both") { final <- filterchain(final)}
     if (removeNA == TRUE) { final <- removingNA(final)}
     return(final) 
 }

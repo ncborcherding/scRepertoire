@@ -9,6 +9,7 @@ scatterClonotype(
   cloneCall = "gene+nt",
   x.axis = NULL,
   y.axis = NULL,
+  chain = "both",
   dot.size = "total",
   graph = "proportion",
   exportTable = FALSE
@@ -24,6 +25,9 @@ VDJC gene + CDR3 nucleotide (gene+nt).}
 \item{x.axis}{name of the list element to appear on the x.axis}
 
 \item{y.axis}{name of the list element to appear on the y.axis}
+
+\item{chain}{indicate if both or a specific chain should be used - 
+e.g. "both", "TRA", "TRG", "IGH", "IGL"}
 
 \item{dot.size}{either total or the name of the list element to 
 use for size of dots}
