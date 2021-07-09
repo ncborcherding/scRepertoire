@@ -101,7 +101,8 @@ combineTCR <- function(df, samples = NULL, ID = NULL,
         names <- c(names, c)}
     names(final) <- names
     for (i in seq_along(final)){
-        final[[i]]<-final[[i]][!duplicated(final[[i]]$barcode),]}
+        final[[i]]<-final[[i]][!duplicated(final[[i]]$barcode),]
+        final[[i]]<-final[[i]][rowSums(is.na(final[[i]])) < 10, ]}
     if (removeNA == TRUE) { final <- removingNA(final)}
     if (removeMulti == TRUE) { final <- removingMulti(final) }
     return(final) }
@@ -199,7 +200,8 @@ combineBCR <- function(df, samples = NULL, ID = NULL,
       }
       names <- c(names, c)}
     for (i in seq_along(final)) {
-        final[[i]] <- final[[i]][!duplicated(final[[i]]$barcode),]}
+        final[[i]] <- final[[i]][!duplicated(final[[i]]$barcode),]
+        final[[i]]<-final[[i]][rowSums(is.na(final[[i]])) < 10, ]}
     if (removeNA == TRUE) { final <- removingNA(final) }
     if (removeMulti == TRUE) { final <- removingMulti(final) }
     return(final) }

@@ -156,7 +156,8 @@ combineTRUST4 <- function(df, samples = NULL, ID = NULL,
     names(final) <- names
     }
     for (i in seq_along(final)){
-        final[[i]]<-final[[i]][!duplicated(final[[i]]$barcode),]}
+        final[[i]]<-final[[i]][!duplicated(final[[i]]$barcode),]
+        final[[i]]<-final[[i]][rowSums(is.na(final[[i]])) < 10, ]}
     if (removeNA == TRUE) { final <- removingNA(final)}
     return(final) 
 }
