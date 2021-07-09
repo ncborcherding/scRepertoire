@@ -10,6 +10,7 @@ CHANGES IN VERSION 1.3.2
 * Removed regressClonotype function - too many dependencies required, adding an additional vignette to go through the process
 * Added chain option to visualizations and combineExpression to allow users to facilitate single chains - removed chain option from combineTCR/BCR/TRUST4 (the combined object will have both chains no matter what)
 * Added NA filter to combineTCR/BCR/TRUST4 for cell barcodes with only NA values
+* Added NA filter to expression2List() for cells with NA clonotypes.
 
 
 CHANGES IN VERSION 1.2.2

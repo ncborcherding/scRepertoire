@@ -120,6 +120,7 @@ expression2List <- function(sc, group) {
     df <- NULL
     for (i in seq_along(unique)) {
         subset <- subset(meta, meta[,group] == unique[i])
+        subset <- subset(subset, !is.na(cloneType))
         df[[i]] <- subset
     }
     names(df) <- unique
