@@ -22,7 +22,7 @@ utils::globalVariables(c("heavy_lines", "light_lines", "l_lines", "k_lines",
 #' This function consolidates a list of TCR sequencing results to the level of 
 #' the individual cell barcodes. Using the samples and ID parameters, the 
 #' function will add the strings as prefixes to prevent issues with repeated 
-#' barcodes. The resulting new barcodes will need to match the seurat or SCE 
+#' barcodes. The resulting new barcodes will need to match the Seurat or SCE 
 #' object in order to use, \code{\link{combineExpression}}. Several 
 #' levels of filtering exist - remove or filterMulti are parameters that 
 #' control how  the function  deals with barcodes with multiple chains 
@@ -58,13 +58,14 @@ combineTCR <- function(df, samples = NULL, ID = NULL,
         df[[i]] <- subset(df[[i]], chain != "Multi")
         df[[i]] <- subset(df[[i]], chain %in% c(chain1, chain2))
         df[[i]] <- subset(df[[i]], productive %in% c(TRUE, "TRUE", "True", "true"))
-
+        if (nrow(df[[i]]) == 0) { stop("There are 0 contigs 
+                after internal filtering - check the contig list to see 
+                if any issues exist for productive chains", call. = FALSE) }
         df[[i]] <- subset(df[[i]], cdr3 != "None")
         df[[i]]$sample <- samples[i]
         df[[i]]$ID <- ID[i]
         if (filterMulti == TRUE) { df[[i]] <- filteringMulti(df[[i]]) }
-        if (nrow(df[[i]]) == 0) { stop("There are 0 contigs 
-                after filtering for celltype.", call. = FALSE) }}
+        }
     if (!is.null(samples)) {
         out <- modifyBarcodes(df, samples, ID)
     } else {
@@ -148,6 +149,9 @@ combineBCR <- function(df, samples = NULL, ID = NULL,
     for (i in seq_along(df)) {
         df[[i]] <- subset(df[[i]], chain %in% c("IGH", "IGK", "IGL"))
         df[[i]] <- subset(df[[i]], productive %in% c(TRUE, "TRUE", "True", "true"))
+        if (nrow(df[[i]]) == 0) { stop("There are 0 contigs 
+                after internal filtering - check the contig list to see 
+                if any issues exist for productive chains", call. = FALSE) }
         df[[i]] <- df[[i]] %>% group_by(barcode,chain) %>% top_n(n=1,wt=reads)
         df[[i]]$sample <- samples[i]
         df[[i]]$ID <- ID[i]

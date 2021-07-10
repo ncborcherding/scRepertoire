@@ -85,12 +85,12 @@ subsetContig <- function(df, name, variables = NULL) {
     return(df2)
 }
 
-#' Allows users to take the meta data in seurat/SCE and place it into a list 
+#' Allows users to take the meta data in Seurat/SCE and place it into a list 
 #' that will work with all the functions
 #'
 #' Allows users to perform more fundamental measures of clonotype analysis 
-#' using the meta data from the seurat or SCE object. For Seurat objects the 
-#' active identity is automatically added as "cluster". Reamining grouping 
+#' using the meta data from the Seurat or SCE object. For Seurat objects the 
+#' active identity is automatically added as "cluster". Remaining grouping 
 #' parameters or SCE or Seurat objects must appear in the meta data.
 #'
 #' @examples
@@ -113,7 +113,7 @@ subsetContig <- function(df, name, variables = NULL) {
 expression2List <- function(sc, group) {
     if (!inherits(x=sc, what ="Seurat") & 
         !inherits(x=sc, what ="SummarizedExperiment")) {
-            stop("Use a seurat or SCE object to convert into a list")
+            stop("Use a Seurat or SCE object to convert into a list")
     }
     meta <- grabMeta(sc)
     unique <- str_sort(as.character(unique(meta[,group])), numeric = TRUE)
