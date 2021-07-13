@@ -133,8 +133,7 @@ expression2List <- function(sc, group) {
 #' This function will take the meta data from the product of 
 #' combineExpression()and generate a relational data frame to 
 #' be used for a chord diagram. The output is a measure of 
-#' relative clonotype overlap between groups and does not reflect
-#' exact clonotype matches between groups. 
+#' relative clonotype overlap between groups.
 #' 
 #' @examples
 #' #Getting the combined contigs
@@ -155,8 +154,9 @@ expression2List <- function(sc, group) {
 #' VDJC gene + CDR3 nucleotide (gene+nt).
 #' @param groupBy The group header for which you would like to analyze 
 #' the data.
-#' @param proportion Binary will calculate relationship as unique clonotypes 
-#' (proportion = TRUE) or proportion of unique clonotypes (proportion = FALSE)
+#' @param proportion Binary will calculate relationship unique 
+#' clonotypes (proportion = FALSE) or a ratio of the groupBy 
+#' variable (proportion = TRUE)
 #' 
 #' @importFrom reshape2 dcast
 #' @export
