@@ -167,7 +167,7 @@ getCirclize <- function(sc, cloneCall = "gene+nt",
     meta <- grabMeta(sc)
     cloneCall <- theCall(cloneCall)
     test <- meta[, c(cloneCall, groupBy)]
-    dTest <- dcast(test, test[,cloneCall] ~ test[,groupBy])
+    dTest <- suppressMessages(dcast(test, test[,cloneCall] ~ test[,groupBy]))
     dTest <- dTest[apply(dTest[,-1], 1, function(x) !all(x==0)),]
     dTest <- dTest[-1]
     total <- nrow(dTest)
