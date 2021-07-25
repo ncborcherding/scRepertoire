@@ -132,8 +132,8 @@ expression2List <- function(sc, group) {
 #' 
 #' This function will take the meta data from the product of 
 #' combineExpression()and generate a relational data frame to 
-#' be used for a chord diagram. The output is a measure of 
-#' relative clonotype overlap between groups.
+#' be used for a chord diagram. Each cord will represent the number of 
+#' clonotype unqiue and shared across the multiple groupBy variable.
 #' 
 #' @examples
 #' #Getting the combined contigs
@@ -167,46 +167,48 @@ getCirclize <- function(sc, cloneCall = "gene+nt",
     meta <- grabMeta(sc)
     cloneCall <- theCall(cloneCall)
     test <- meta[, c(cloneCall, groupBy)]
+    test <- test[!is.na(test[,cloneCall]),]
     dTest <- suppressMessages(dcast(test, test[,cloneCall] ~ test[,groupBy]))
     dTest <- dTest[apply(dTest[,-1], 1, function(x) !all(x==0)),]
-    dTest <- dTest[-1]
+    clones <- colSums(dTest2)
+    dTest2 <- dTest[-1]
+    dTest2[dTest2 >= 1] <- 1
     total <- nrow(dTest)
-    matrix_out <- matrix(ncol = ncol(dTest), nrow = ncol(dTest))
-    for (x in seq_len(ncol(dTest))) {
-        for (y in seq_len(ncol(dTest)) ){
-            matrix_out[y,x] <- length(which(dTest[,x] >= 1 & dTest[,y] >= 1))
-        }
+  
+    list <- list()
+    for (i in seq_len(nrow(dTest2))) {
+      list[[i]] <- which(dTest2[i,] > 0)
     }
-    colnames(matrix_out) <- colnames(dTest)
-    rownames(matrix_out) <- colnames(dTest)
+    matrix_out <- matrix(ncol = ncol(dTest2), nrow = ncol(dTest2), 0)
+    for (j in seq_along(list)) {
+      matrix_out[list[[j]],list[[j]]] <- matrix_out[list[[j]],list[[j]]] + 1
+      if (length(list[[j]]) > 1) {
+        #length <- length(list[[j]])
+        diag(matrix_out[list[[j]],list[[j]]]) <-  diag(matrix_out[list[[j]],list[[j]]]) - 1
+      }
+    }
+  
+    matrix_out[lower.tri(matrix_out)] <- NA
+
+    colnames(matrix_out) <- colnames(dTest2)
+    rownames(matrix_out) <- colnames(dTest2)
     
-    #Need to subtract extra cells - will take the difference of the sum of the 
-    #column minus and the respective cell and subtract that from the respective cell
-    for (y in seq_len(ncol(matrix_out))) {
-        matrix_out[y,y] <- matrix_out[y,y] - (sum(matrix_out[,y])-matrix_out[y,y])
-        if (matrix_out[y,y] < 0) {
-            matrix_out[y,y] <- 0
-        }
-    }
     output <- data.frame(from = rep(rownames(matrix_out), 
                         times = ncol(matrix_out)),
                         to = rep(colnames(matrix_out), each = nrow(matrix_out)),
                         value = as.vector(matrix_out),
                         stringsAsFactors = FALSE)
-    # Reorder columns to eliminate redundant comparisons
-    for (k in seq_len(nrow(output))) {
-        max <- order(output[k,seq_len(2)])[1] #which is first alphabetically
-        max <- output[k,max]
-        min <- order(output[k,seq_len(2)])[2] #which is second alphabetically
-        min <- output[k,min]
-        output[k,1] <- max
-        output[k,2] <- min
-    }
-    unique <- rownames(unique(output[,seq_len(2)])) #removing redundant comparisons
-    output <- output[rownames(output) %in% unique, ]
+    output <- na.omit(output)
+    
+  
     if (proportion == TRUE) {
         output$value <- output$value/total
     } 
     return(output)
 }
 
+x <- list[which(lapply(list, length) > 1)]
+out <- matrix(ncol = 12, nrow=12, 0) 
+for (i in seq_along(x)) {
+  out[unlist(x[i]), unlist(x[i])] <- out[unlist(x[i]), unlist(x[i])] + 1
+}
