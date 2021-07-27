@@ -100,6 +100,7 @@ subsetContig <- function(df, name, variables = NULL) {
 #' 
 #' #Getting a sample of a Seurat object
 #' screp_example <- get(data("screp_example"))
+#' screp_example <- combineExpression(combined, screp_example)
 #' 
 #' #Using expression2List
 #' newList <- expression2List(screp_example, group = "seurat_clusters")
@@ -170,7 +171,6 @@ getCirclize <- function(sc, cloneCall = "gene+nt",
     test <- test[!is.na(test[,cloneCall]),]
     dTest <- suppressMessages(dcast(test, test[,cloneCall] ~ test[,groupBy]))
     dTest <- dTest[apply(dTest[,-1], 1, function(x) !all(x==0)),]
-    clones <- colSums(dTest2)
     dTest2 <- dTest[-1]
     dTest2[dTest2 >= 1] <- 1
     total <- nrow(dTest)
@@ -200,15 +200,10 @@ getCirclize <- function(sc, cloneCall = "gene+nt",
                         stringsAsFactors = FALSE)
     output <- na.omit(output)
     
-  
     if (proportion == TRUE) {
         output$value <- output$value/total
     } 
     return(output)
 }
 
-x <- list[which(lapply(list, length) > 1)]
-out <- matrix(ncol = 12, nrow=12, 0) 
-for (i in seq_along(x)) {
-  out[unlist(x[i]), unlist(x[i])] <- out[unlist(x[i]), unlist(x[i])] + 1
-}
+

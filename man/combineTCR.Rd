@@ -37,7 +37,7 @@ List of clonotypes for individual cell barcodes
 This function consolidates a list of TCR sequencing results to the level of 
 the individual cell barcodes. Using the samples and ID parameters, the 
 function will add the strings as prefixes to prevent issues with repeated 
-barcodes. The resulting new barcodes will need to match the seurat or SCE 
+barcodes. The resulting new barcodes will need to match the Seurat or SCE 
 object in order to use, \code{\link{combineExpression}}. Several 
 levels of filtering exist - remove or filterMulti are parameters that 
 control how  the function  deals with barcodes with multiple chains 
