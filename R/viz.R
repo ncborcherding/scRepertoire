@@ -574,7 +574,11 @@ vizGenes <- function(df,
                       separate = "sample", 
                       scale = TRUE, 
                       exportTable = FALSE) {
-    df <- bind_rows(df)
+    df <- bind_rows(df, .id = "element.names")
+    "%!in%" <- Negate("%!in%")
+    if (separate %!in% colnames(df) | is.null(separate)) {
+      seperate <- "element.names"
+      }
     
     gene <- unname(c(V = 1, D = 2, J = 3, C = 4)[gene])
     if (ncol(str_split(df[,"CTgene"], "_", simplify = TRUE)) == 1) {
