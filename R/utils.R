@@ -430,7 +430,7 @@ makeGenes <- function(cellType, data2, chain1, chain2) {
             mutate(TCR1 = ifelse(chain == chain1, paste(with(data2, 
             interaction(v_gene,  j_gene, c_gene))), NA)) %>%
             mutate(TCR2 = ifelse(chain == chain2, paste(with(data2, 
-            interaction(v_gene,  j_gene, d_gene, c_gene))), NA))
+            interaction(v_gene, d_gene,  j_gene,  c_gene))), NA))
     }
     else {
         data2 <- data2 %>% 
@@ -439,7 +439,7 @@ makeGenes <- function(cellType, data2, chain1, chain2) {
             mutate(IGLct = ifelse(chain == "IGL", paste(with(data2, 
             interaction(v_gene,  j_gene, c_gene))), NA)) %>%
             mutate(IGHct = ifelse(chain == "IGH", paste(with(data2, 
-            interaction(v_gene, j_gene, d_gene, c_gene))), NA))
+            interaction(v_gene, d_gene, j_gene, c_gene))), NA))
     }
     return(data2)
     
