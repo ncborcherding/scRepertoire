@@ -579,7 +579,7 @@ vizGenes <- function(df,
     if (separate %!in% colnames(df) | is.null(separate)) {
       seperate <- "element.names"
       }
-    if (chain %in% c("TRB", "TRG", "IGH") {
+    if (chain %in% c("TRB", "TRG", "IGH")) {
         gene <- unname(c(V = 1, D = 2, J = 3, C = 4)[gene])
       } else {
         gene <- unname(c(V = 1, J = 2, C = 3)[gene])
