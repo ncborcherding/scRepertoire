@@ -575,12 +575,15 @@ vizGenes <- function(df,
                       scale = TRUE, 
                       exportTable = FALSE) {
     df <- bind_rows(df, .id = "element.names")
-    "%!in%" <- Negate("%!in%")
+    "%!in%" <- Negate("%in%")
     if (separate %!in% colnames(df) | is.null(separate)) {
       seperate <- "element.names"
       }
-    
-    gene <- unname(c(V = 1, D = 2, J = 3, C = 4)[gene])
+    if (chain %in% c("TRB", "TRG", "IGH") {
+        gene <- unname(c(V = 1, D = 2, J = 3, C = 4)[gene])
+      } else {
+        gene <- unname(c(V = 1, J = 2, C = 3)[gene])
+      }
     if (ncol(str_split(df[,"CTgene"], "_", simplify = TRUE)) == 1) {
       C1 <- str_split(df[,"CTgene"], "_", simplify = TRUE)[,1] 
       C1 <- str_split(C1, "[.]", simplify = TRUE)[,gene] 
@@ -619,8 +622,7 @@ vizGenes <- function(df,
                                       vjust = 0.5, hjust=1, size=rel(0.5))) + 
         facet_grid(Var2~.)
     } else if (plot == "heatmap") {
-      
-      
+     
       plot <- ggplot(df, aes(x=Var1, y = Var2, fill = Freq)) + 
       geom_tile() + 
       theme_classic() + 
