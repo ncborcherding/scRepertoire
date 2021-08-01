@@ -309,8 +309,7 @@ clonesizeDistribution(combined, cloneCall = "gene+nt",
 Diversity can also be measured for samples or by other variables. Diversity is calculated using four metrics: 1) Shannon, 2) inverse Simpson, 3) Chao1, and 4) Abundance-based Coverage Estimator (ACE). With the former two generally used to estimate baseline diversity and Chao/ACE indices used to estimate the richness of the samples. New implementation of this function include downsampling with 100 boot straps (n.boots) using the minimum number of unique clonotypes, as a more robust diversity estimate.
 
 ```{r}
-clonalDiversity(combined, cloneCall = "gene", group = "samples", n.boots = 100)
-clonalDiversity(combined, cloneCall = "gene", group = "ID")
+clonalDiversity(combined, cloneCall = "gene", groupBy = "sample", x.axis = "ID", n.boots = 100)
 ```
 
 ## Scatter Compare 

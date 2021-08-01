@@ -20,11 +20,12 @@
 #' VDJC gene + CDR3 nucleotide (gene+nt).
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL"
-#' @param group The column header for which you would like to analyze the data.
+#' @param groupBy Variable in which to group the diversity calculation
+#' @param x.axis Additional variable in which to split the x.axis
 #' @param exportTable Exports a table of the data into the global environment 
 #' in addition to the visualization
 #' @param n.boots number of bootstraps to downsample in order to get mean diversity
-#' @importFrom stringr str_sort
+#' @importFrom stringr str_sort str_split
 #' @importFrom reshape2 melt
 #' @importFrom dplyr sample_n
 #' @import ggplot2
@@ -32,54 +33,31 @@
 #' @return ggplot of the diversity of clonotype sequences across list
 #' @author Andrew Malone, Nick Borcherding
 clonalDiversity <- function(df, cloneCall = "gene+nt", chain = "both",
-                            group = "samples", 
+                            groupBy = NULL, x.axis = NULL,
                             exportTable = FALSE, n.boots = 100) {
   cloneCall <- theCall(cloneCall)
   df <- checkBlanks(df, cloneCall)
+  if (chain != "both") {
+    df[[i]] <- off.the.chain(df[[i]], chain, cloneCall)
+  }
+  min <- c()
   mat <- NULL
   mat_a <- NULL
   sample <- c()
-  min <- c()
+  if (!is.null(groupBy) || !is.null(x.axis)) {
+    df <- bind_rows(df, .id = "element.names")
+    df$group.element <- paste0(df[,groupBy], ".", df[,x.axis])
+    group.element.uniq <- unique(df$group.element)
+    df <- split(df, f = df[,"group.element"])
+  }
   for (x in seq_along(df)) {
     min.tmp <- length(which(!is.na(unique(df[[x]][,cloneCall]))))
     min <- c(min.tmp, min)
   }
   min <- min(min)
-  if (group == "samples") {
-    for (i in seq_along(df)) {
-      if (chain != "both") {
-        df[[i]] <- off.the.chain(df[[i]], chain, cloneCall)
-      }  
+  
+  for (i in seq_along(df)) {
       data <- as.data.frame(table(df[[i]][,cloneCall]))
-      mat_a <- NULL
-      sample <- c()
-      
-      for (j in seq(seq_len(n.boots))) {
-        x<-sample_n(data, min)
-        sample <- diversityCall(x)
-        mat_a <- rbind.data.frame(mat_a, sample)
-      }
-      mat_a[is.na(mat_a)] <- 0
-      mat_a<- as.data.frame(colMeans(mat_a))
-      mat_a<-t(mat_a)
-      colnames(mat_a)<-c("a","b","c","d")
-      mat <- rbind.data.frame(mat, mat_a)
-    }
-    
-    colnames(mat) <- c("Shannon", "Inv.Simpson", "Chao", "ACE")
-    rownames(mat) <- names(df)
-    mat[,group] <- rownames(mat)
-    melt <- melt(mat, id.vars = group)
-    plot <- ggplot(melt, aes(x = "", y=value)) +
-      geom_jitter(shape=21, size=3, width=0.2, aes(fill=melt[,group]))
-    
-  } else {
-    for (i in seq_along(df)) {
-      if (chain != "both") {
-        df[[i]] <- off.the.chain(df[[i]], chain, cloneCall)
-      }
-      data <- as.data.frame(table(df[[i]][,cloneCall]))
-      color <- df[[i]][1,group]
       mat_a <- NULL
       sample <- c()
       
@@ -91,27 +69,46 @@ clonalDiversity <- function(df, cloneCall = "gene+nt", chain = "both",
       mat_a[is.na(mat_a)] <- 0
       mat_a<- colMeans(mat_a)
       mat_a<-as.data.frame(t(mat_a))
-      mat_a$color <- color
       mat <- rbind(mat, mat_a)
     }
-    colnames(mat) <- c("Shannon", "Inv.Simpson", "Chao", "ACE", group)
+    colnames(mat) <- c("Shannon", "Inv.Simpson", "Chao", "ACE")
+    if (!is.null(groupBy)) {
+      mat[,groupBy] <- str_split(group.element.uniq, "[.]", simplify = TRUE)[,1]
+    } else {
+      groupBy <- "Group"
+      mat[,groupBy] <- names(df)
+    }
+    if (!is.null(x.axis)) {
+      mat[,x.axis] <- str_split(group.element.uniq, "[.]", simplify = TRUE)[,2]
+    } else {
+      x.axis <- "x.axis"
+      mat[,x.axis] <- 1
+    }
     rownames(mat) <- names(df)
-    melt <- suppressWarnings(melt(mat, id.vars = group))
-    values <- str_sort(as.character(unique(melt[,group])), 
+  
+    melt <- suppressMessages(melt(mat, id.vars = c(groupBy, x.axis)))
+    values <- str_sort(as.character(unique(melt[,groupBy])), 
                        numeric = TRUE)
-    values2 <- quiet(dput(values))
-    melt[,group] <- factor(melt[,group], levels = values2)
-    plot <- ggplot(melt, aes(x=melt[,group], y=as.numeric(value))) +
-      geom_jitter(shape=21, size=3, width=0.2, 
-                  aes(fill=melt[,group])) 
-  }
-  col <- length(unique(melt[,group]))
-  plot <- plot + ylab("Index Score") + scale_fill_manual(name = group, 
-                                                         values = colorblind_vector(col)) +
+    values <- quiet(dput(values))
+    melt[,groupBy] <- factor(melt[,groupBy], levels = values)
+    if (x.axis == "x.axis") {
+        plot <- ggplot(melt, aes(x=1, y=as.numeric(value)))
+    } else {
+      plot <- ggplot(melt, aes(x=melt[,x.axis], y=as.numeric(value)))
+    }
+    plot <- plot +
+      geom_boxplot() +
+      geom_jitter(aes(color = melt[,groupBy]), size = 3) + 
+      labs(color="Group") +
+      ylab("Index Score") +
+      scale_color_manual(values = colorblind_vector(length(unique(melt[,groupBy])))) +
     facet_wrap(~variable, scales = "free", ncol = 4) +
-    theme_classic() +
-    theme(axis.title.x = element_blank(),
-          axis.text.x = element_blank(),
-          axis.ticks.x = element_blank())
+      theme_classic() + 
+      theme(axis.title.x = element_blank())
+    if (x.axis == "x.axis") { 
+      plot <- plot + theme(axis.text.x = element_blank(),
+            axis.ticks.x = element_blank())
+      }
   if (exportTable == TRUE) { return(mat) }
-  return(plot) }
+  return(plot) 
+}

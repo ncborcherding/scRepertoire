@@ -29,6 +29,7 @@ rep(c("P", "T"), 3), cells ="T-AB")
 
 #Getting a sample of a Seurat object
 screp_example <- get(data("screp_example"))
+screp_example <- combineExpression(combined, screp_example)
 
 #Using expression2List
 newList <- expression2List(screp_example, group = "seurat_clusters")

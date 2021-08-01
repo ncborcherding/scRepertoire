@@ -8,7 +8,8 @@ clonalDiversity(
   df,
   cloneCall = "gene+nt",
   chain = "both",
-  group = "samples",
+  groupBy = NULL,
+  x.axis = NULL,
   exportTable = FALSE,
   n.boots = 100
 )
@@ -23,7 +24,9 @@ VDJC gene + CDR3 nucleotide (gene+nt).}
 \item{chain}{indicate if both or a specific chain should be used - 
 e.g. "both", "TRA", "TRG", "IGH", "IGL"}
 
-\item{group}{The column header for which you would like to analyze the data.}
+\item{groupBy}{Variable in which to group the diversity calculation}
+
+\item{x.axis}{Additional variable in which to split the x.axis}
 
 \item{exportTable}{Exports a table of the data into the global environment 
 in addition to the visualization}

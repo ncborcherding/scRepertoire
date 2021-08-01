@@ -560,6 +560,7 @@ makingLodes <- function(meta2, color, alpha, facet, set.axes) {
 #' e.g. "TRA", "TRG", "IGH", "IGL" (no both option here)
 #' @param plot The type of plot to return - heatmap or bar 
 #' @param separate Categorical variable which to separate by along y-axis
+#' @param order Categorixal variable to organize the x-axis, either "gene" or "variance"
 #' @param scale Converts the proportion of total genes 
 #' @param exportTable Returns the data frame used for forming the graph.
 #' @import ggplot2
@@ -572,6 +573,7 @@ vizGenes <- function(df,
                       chain = "TRA", 
                       plot = "heatmap",  
                       separate = "sample", 
+                      order = "gene",
                       scale = TRUE, 
                       exportTable = FALSE) {
     df <- bind_rows(df, .id = "element.names")
@@ -603,7 +605,7 @@ vizGenes <- function(df,
     }
     df <- subset(df, !is.na(df[,x])) #remove NA values
     df <- subset(df, df[,x] != "NA") #remove values that are character "NA"
-    
+    df <- subset(df, df[,x] != "") #remove rows with non genes
     df <- table(df[,x], df[,separate])
     if (scale == TRUE) {
       for (i in seq_len(ncol(df))) {
@@ -611,6 +613,14 @@ vizGenes <- function(df,
       }
     }
     df <- as.data.frame(df)
+    if (order == "variance") {
+      df2 <- df %>%
+        group_by(Var1) %>%
+        summarise(varcount = var(Freq))
+      geneOrder <- order(df2$mcount, decreasing = TRUE)
+      varOrder <- order(df2$varcount, decreasing = TRUE)
+      df$Var1 <- factor(df$Var1, levels = df$Var1[varOrder])
+    }
     if (plot == "bar") {
       plot <- ggplot(df, aes(x=Var1, y = Freq)) + 
           geom_bar(stat = "identity") + 

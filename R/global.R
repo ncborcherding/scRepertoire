@@ -45,6 +45,7 @@
     utils::globalVariables ("chain2")
     utils::globalVariables ("total")
     utils::globalVariables ("prop")
+    utils::globalVariables ("var")
     
 
     invisible ()

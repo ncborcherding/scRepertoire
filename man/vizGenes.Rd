@@ -10,6 +10,7 @@ vizGenes(
   chain = "TRA",
   plot = "heatmap",
   separate = "sample",
+  order = "gene",
   scale = TRUE,
   exportTable = FALSE
 )
@@ -25,6 +26,8 @@ e.g. "TRA", "TRG", "IGH", "IGL" (no both option here)}
 \item{plot}{The type of plot to return - heatmap or bar}
 
 \item{separate}{Categorical variable which to separate by along y-axis}
+
+\item{order}{Categorixal variable to organize the x-axis, either "gene" or "variance"}
 
 \item{scale}{Converts the proportion of total genes}
 
