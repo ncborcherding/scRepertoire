@@ -617,7 +617,6 @@ vizGenes <- function(df,
       df2 <- df %>%
         group_by(Var1) %>%
         summarise(varcount = var(Freq))
-      geneOrder <- order(df2$mcount, decreasing = TRUE)
       varOrder <- order(df2$varcount, decreasing = TRUE)
       df$Var1 <- factor(df$Var1, levels = df$Var1[varOrder])
     }
