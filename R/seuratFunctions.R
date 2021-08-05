@@ -113,6 +113,10 @@ combineExpression <- function(df, sc, cloneCall="gene+nt",
     `%!in%` = Negate(`%in%`)
     PreMeta <- PreMeta[PreMeta$barcode %!in% dup,]
     rownames(PreMeta) <- PreMeta$barcode
+    if (groupBy != "none") {
+      location <- which(colnames(PreMeta) == "Frequency")
+      colnames(PreMeta)[location] <- paste0("Frequency.", groupBy)
+    }
     if (inherits(x=sc, what ="Seurat")) { 
         if (length(which(rownames(PreMeta) %in% 
                          rownames(sc[[]])))/length(rownames(sc[[]])) < 0.01) {
