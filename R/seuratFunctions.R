@@ -9,7 +9,7 @@
 #' output of the combinedContig() call. Check changeNames() to change the 
 #' prefix of the seurat object. If combining more 
 #' than one immune receptor type, barcodes with both receptors will be removed
-#' during the combination process. 
+#' during the combination process.
 #'
 #' @examples
 #' #Getting the combined contigs
@@ -33,12 +33,15 @@
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "Heavy", "Light"
 #' @param groupBy The column label in the combined contig object in which 
-#' clonotype frequency will be calculated.
+#' clonotype frequency will be calculated. 
 #' @param proportion Whether to use the total frequency (FALSE) or the 
 #' proportion (TRUE) of the clonotype based on the groupBy variable.
 #' @param cloneTypes The bins for the grouping based on frequency
 #' @param filterNA Method to subset seurat object of barcodes without 
 #' clonotype information
+#' @param addLabel This will add a label to the frequency header, allowing
+#' the user to try multiple groupBy variables or recalculate frequencies after 
+#' subseting the data.
 #' @importFrom dplyr bind_rows %>% summarise
 #' @importFrom  rlang %||%
 #' @importFrom SummarizedExperiment colData<- colData
@@ -51,7 +54,8 @@ combineExpression <- function(df, sc, cloneCall="gene+nt",
                               chain = "both", groupBy="none", 
                               proportion = TRUE, filterNA = FALSE,
                               cloneTypes=c(Rare = 1e-4, Small = 0.001, 
-                              Medium = 0.01, Large = 0.1, Hyperexpanded = 1)) {
+                              Medium = 0.01, Large = 0.1, Hyperexpanded = 1)
+                              addLabel = FALSE) {
   options( dplyr.summarise.inform = FALSE )
     cloneTypes <- c(None = 0, cloneTypes)
     df <- checkList(df)
@@ -113,7 +117,7 @@ combineExpression <- function(df, sc, cloneCall="gene+nt",
     `%!in%` = Negate(`%in%`)
     PreMeta <- PreMeta[PreMeta$barcode %!in% dup,]
     rownames(PreMeta) <- PreMeta$barcode
-    if (groupBy != "none") {
+    if (groupBy != "none" && addLabel) {
       location <- which(colnames(PreMeta) == "Frequency")
       colnames(PreMeta)[location] <- paste0("Frequency.", groupBy)
     }

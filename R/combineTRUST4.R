@@ -153,8 +153,9 @@ combineTRUST4 <- function(df, samples = NULL, ID = NULL,
       } else if (!is.null(sample) & is.null(ID)) {
         c <- paste(samples[i], sep="")
       }
-    names(final) <- names
+      names <- c(names, c)
     }
+    names(final) <- names
     for (i in seq_along(final)){
         final[[i]]<-final[[i]][!duplicated(final[[i]]$barcode),]
         final[[i]]<-final[[i]][rowSums(is.na(final[[i]])) < 10, ]}
