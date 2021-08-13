@@ -506,8 +506,8 @@ clonesizeDistribution <- function(df,  cloneCall ="gene+nt", chain = "both",
 }
 
 #This is the basic color palette for the package
-colorblind_vector <- colorRampPalette(c("#FF4B20", "#FFB433", 
-                                        "#C6FDEC", "#7AC5FF", "#0348A6"))
+colorblind_vector <- colorRampPalette(rev(c("#0D0887FF", "#47039FFF", "#7301A8FF", "#9C179EFF", 
+              "#BD3786FF", "#D8576BFF","#ED7953FF","#FA9E3BFF", "#FDC926FF", "#F0F921FF")))
 
 #Making lodes to function in alluvial plots
 #' @importFrom ggalluvial to_lodes_form
