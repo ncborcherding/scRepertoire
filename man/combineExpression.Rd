@@ -8,21 +8,26 @@ combineExpression(
   df,
   sc,
   cloneCall = "gene+nt",
+  chain = "both",
   groupBy = "none",
   proportion = TRUE,
+  filterNA = FALSE,
   cloneTypes = c(Rare = 1e-04, Small = 0.001, Medium = 0.01, Large = 0.1, Hyperexpanded
-    = 1),
-  filterNA = FALSE
+    = 1)
 )
 }
 \arguments{
-\item{df}{The product of CombineTCR() or CombineBCR().}
+\item{df}{The product of CombineTCR() or CombineBCR() or a list of 
+both c(CombineTCR(), combineBCR())}
 
 \item{sc}{The seurat or SingleCellExperiment (SCE) object to attach}
 
-\item{cloneCall}{How to call the clonotype - CDR3 gene (gene), 
+\item{cloneCall}{How to call the clonotype - VDJC gene (gene), 
 CDR3 nucleotide (nt) CDR3 amino acid (aa), or 
-CDR3 gene+nucleotide (gene+nt).}
+VDJC gene + CDR3 nucleotide (gene+nt).}
+
+\item{chain}{indicate if both or a specific chain should be used - 
+e.g. "both", "TRA", "TRG", "Heavy", "Light"}
 
 \item{groupBy}{The column label in the combined contig object in which 
 clonotype frequency will be calculated.}
@@ -30,10 +35,10 @@ clonotype frequency will be calculated.}
 \item{proportion}{Whether to use the total frequency (FALSE) or the 
 proportion (TRUE) of the clonotype based on the groupBy variable.}
 
-\item{cloneTypes}{The bins for the grouping based on frequency}
-
 \item{filterNA}{Method to subset seurat object of barcodes without 
 clonotype information}
+
+\item{cloneTypes}{The bins for the grouping based on frequency}
 }
 \value{
 seurat or SingleCellExperiment object with attached clonotype 
@@ -47,8 +52,9 @@ To change how the frequencies are calculated, select a column header for
 the groupBy variable. Importantly, before using combineExpression() 
 ensure the barcodes of the seurat or SCE object match the barcodes in the 
 output of the combinedContig() call. Check changeNames() to change the 
-prefix of the seurat object. If the dominant clonotypes have a greater 
-frequency than 500, adjust the cloneTypes variable.
+prefix of the seurat object. If combining more 
+than one immune receptor type, barcodes with both receptors will be removed
+during the combination process.
 }
 \examples{
 #Getting the combined contigs

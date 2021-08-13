@@ -16,19 +16,22 @@
 #'
 #' @param df The product of CombineContig() or expression2List()
 #' @param cloneTypes The cutpoints of the proportions.
-#' @param cloneCall How to call the clonotype - CDR3 gene (gene), CDR3 
-#' nucleotide (nt) or CDR3 amino acid (aa), or CDR3 gene+nucleotide 
-#' (gene+nt).
+#' @param cloneCall How to call the clonotype - VDJC gene (gene), 
+#' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
+#' VDJC gene + CDR3 nucleotide (gene+nt).
+#' @param chain indicate if both or a specific chain should be used - 
+#' e.g. "both", "TRA", "TRG", "Heavy", "Light"
 #' @param exportTable Exports a table of the data into the global 
 #' environment in addition to the visualization
 #' @import ggplot2
 #' @importFrom stringr str_split
 #' @importFrom reshape2 melt
 #' @export
-#' @return ggplot of the space occupied by the specific propotion of clonotypes
+#' @return ggplot of the space occupied by the specific proportion of clonotypes
 clonalHomeostasis <- function(df, cloneTypes = c(Rare = .0001, Small = .001, 
                         Medium = .01, Large = .1, Hyperexpanded = 1),
-                        cloneCall = "gene+nt", exportTable = FALSE) {
+                        cloneCall = "gene+nt", chain = "both", 
+                        exportTable = FALSE) {
     cloneTypes <- c(None = 0, cloneTypes)
     cloneCall <- theCall(cloneCall)
     df <- checkList(df)
@@ -36,9 +39,13 @@ clonalHomeostasis <- function(df, cloneTypes = c(Rare = .0001, Small = .001,
     mat <- matrix(0, length(df), length(cloneTypes) - 1, 
                 dimnames = list(names(df), 
                 names(cloneTypes)[-1]))
+    if (chain != "both") {
+      for (x in seq_along(df)) {
+        df[[x]] <- off.the.chain(df[[x]], chain, cloneCall)
+      }
+    }
     df <- lapply(df, '[[', cloneCall)
-    for (i in seq_along(df)) {
-        df[[i]] <- na.omit(df[[i]]) }
+    df <- lapply(df, na.omit)
     fun <- function(x) { table(x)/length(x) }
     df <- lapply(df, fun)
     for (i in 2:length(cloneTypes)) {

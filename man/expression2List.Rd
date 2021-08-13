@@ -2,7 +2,7 @@
 % Please edit documentation in R/processing.R
 \name{expression2List}
 \alias{expression2List}
-\title{Allows users to take the meta data in seurat/SCE and place it into a list 
+\title{Allows users to take the meta data in Seurat/SCE and place it into a list 
 that will work with all the functions}
 \usage{
 expression2List(sc, group)
@@ -18,8 +18,8 @@ elements divided by the group parameter
 }
 \description{
 Allows users to perform more fundamental measures of clonotype analysis 
-using the meta data from the seurat or SCE object. For Seurat objects the 
-active identity is automatically added as "cluster". Reamining grouping 
+using the meta data from the Seurat or SCE object. For Seurat objects the 
+active identity is automatically added as "cluster". Remaining grouping 
 parameters or SCE or Seurat objects must appear in the meta data.
 }
 \examples{
@@ -29,10 +29,9 @@ rep(c("P", "T"), 3), cells ="T-AB")
 
 #Getting a sample of a Seurat object
 screp_example <- get(data("screp_example"))
-sce <- suppressMessages(Seurat::UpdateSeuratObject(screp_example))
-sce <- Seurat::as.SingleCellExperiment(sce)
+screp_example <- combineExpression(combined, screp_example)
 
 #Using expression2List
-newList <- expression2List(sce, group = "seurat_clusters")
+newList <- expression2List(screp_example, group = "seurat_clusters")
 
 }

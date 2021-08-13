@@ -18,11 +18,13 @@
 #' clonalOverlap(combined, cloneCall = "gene", method = "overlap")
 #'
 #' @param df The product of combineTCR(), combineBCR(),  or expression2List().
-#' @param cloneCall How to call the clonotype - CDR3 gene (gene), 
-#' CDR3 nucleotide (nt) or CDR3 amino acid (aa), or 
-#' CDR3 gene+nucleotide (gene+nt).
+#' @param cloneCall How to call the clonotype - VDJC gene (gene), 
+#' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
+#' VDJC gene + CDR3 nucleotide (gene+nt).
+#' @param chain indicate if both or a specific chain should be used - 
+#' e.g. "both", "TRA", "TRG", "IGH", "IGL"
 #' @param method The method to calculate the overlap, either the overlap 
-#' coefficient or morisita index.
+#' coefficient, morisita or jaccard indices.
 #' @param exportTable Exports a table of the data into the global 
 #' environment in addition to the visualization
 #' @importFrom stringr str_sort
@@ -30,8 +32,8 @@
 #' @export
 #' @return ggplot of the clonotypic overlap between elements of a list
 clonalOverlap <- function(df, cloneCall = c("gene", "nt", "aa", "gene+nt"), 
-                                method = c("overlap", "morisita"), 
-                                exportTable = FALSE){
+                                method = c("overlap", "morisita", "jaccard"), 
+                                chain = "both", exportTable = FALSE){
     cloneCall <- theCall(cloneCall)
     df <- checkBlanks(df, cloneCall)
     df <- df[order(names(df))]
@@ -43,10 +45,17 @@ clonalOverlap <- function(df, cloneCall = c("gene", "nt", "aa", "gene+nt"),
     colnames(coef_matrix) <- names_samples
     rownames(coef_matrix) <- names_samples
     length <- seq_len(num_samples)
+    if (chain != "both") {
+      for (i in seq_along(df)) {
+        df[[i]] <- off.the.chain(df[[i]], chain, cloneCall)
+      }
+    }
     if (method == "overlap") {
         coef_matrix <- overlapIndex(df, length, cloneCall, coef_matrix)
     } else if (method == "morisita") {
-        coef_matrix <- morisitaIndex(df, length, cloneCall, coef_matrix)}
+        coef_matrix <- morisitaIndex(df, length, cloneCall, coef_matrix)
+    } else if (method == "jaccard") {
+        coef_matrix <- jaccardIndex(df, length, cloneCall, coef_matrix)}
     coef_matrix$names <- rownames(coef_matrix)
     if (exportTable == TRUE) { return(coef_matrix) }
     coef_matrix <- suppressMessages(melt(coef_matrix))[,-1]
@@ -56,8 +65,6 @@ clonalOverlap <- function(df, cloneCall = c("gene", "nt", "aa", "gene+nt"),
     plot <- ggplot(coef_matrix, aes(x=names, y=variable, fill=value)) +
             geom_tile() + labs(fill = method) +
             geom_text(aes(label = round(value, digits = 3))) +
-            scale_fill_gradient2(high = col[1], mid = col[4], 
-                    midpoint = ((range(na.omit(coef_matrix$value)))/2)[2], 
-                    low=col[7], na.value = "white") +
+            scale_fill_gradientn(colors = rev(colorblind_vector(5)), na.value = "white") +
             theme_classic() + theme(axis.title = element_blank())
     return(plot) }

@@ -16,6 +16,7 @@
     utils::globalVariables ("barcode")
     utils::globalVariables ("reads")
     utils::globalVariables ("Freq")
+    utils::globalVariables ("cdr3")
     utils::globalVariables ("cdr3_nt1")
     utils::globalVariables ("cdr3_nt2")
     utils::globalVariables ("indicator")
@@ -33,11 +34,19 @@
     utils::globalVariables ("alluvium")
     utils::globalVariables ("x")
     utils::globalVariables ("colData")
+    utils::globalVariables ("colData<-")
     utils::globalVariables ("as.dendrogram")
     utils::globalVariables (".get.empirical.p")
     utils::globalVariables ("patient")
     utils::globalVariables ("combn")
     utils::globalVariables ("include")
-    utils::globalVariables ("cdr3")
+    utils::globalVariables ("cell")
+    utils::globalVariables ("chain1")
+    utils::globalVariables ("chain2")
+    utils::globalVariables ("total")
+    utils::globalVariables ("prop")
+    utils::globalVariables ("var")
+    
+
     invisible ()
 }

@@ -13,8 +13,8 @@ clusterTCR(df, chain = NULL, sequence = NULL, threshold = 0.85, group = NULL)
 
 \item{sequence}{Clustering based on either "aa" or "nt"}
 
-\item{threshold}{The normalized edit distance to consider. The higher 
-the number the more similarity of sequence will be used for clustering.}
+\item{threshold}{The normalized edit distance to consider. The higher the number the more 
+similarity of sequence will be used for clustering.}
 
 \item{group}{The column header used for to calculate the cluster by.}
 }
@@ -23,13 +23,11 @@ List of clonotypes for individual cell barcodes
 }
 \description{
 This function uses edit distances of either the nucleotide or amino acid 
-sequences of the CDR3 to cluster similar TCRs together. The distance 
-clustering will then be amended to the end of the list of combined 
-contigs with the corresponding Vgene. The cluster will appear as 
-CHAIN.num if a unique sequence or CHAIN:LD.num if clustered together.
-This function will only two chains recovered, multiple chains will 
-automatically be reduced. This function also underlies the combineBCR() 
-function and therefore not needed for B cells. This may
+sequences of the CDR3 to cluster similar TCRs together. The distance clustering
+will then be ammended to the end of the list of combined contigs with the corresponding Vgene. The
+cluster will appear as CHAIN.num if a unique sequence or CHAIN:LD.num if clustered together.
+This function will only two chains recovered, multiple chains will automatically be reduced. This 
+function also underlies the combineBCR() function and therefore not needed for B cells. This may
 take some time to calculate the distances and cluster.
 }
 \examples{

@@ -1,21 +1,47 @@
-CHANGES IN VERSION 1.3.1
+CHANGES IN VERSION 1.3.2
 ------------------------
-# I think we can all agree I need to get better at version control - as of right now bioconductor is # at v1.3, so the better alignment here is to start the version alignment at 1.3.1, sorry for the 
-# confusion
+# This is the new numbering scheme apologies - we are all up-to-date now and now cell ranger >= 5 will # work on bioconductor, so let's all just take that as a win.
+
+* added dot.size parameter to scatterClonotype
+* filteringMulti now subsets clonotypes with contains >=2, to prevent 2 of the same chains
+* changed how coldata is added to SCE objects using merge instead of union
+* Can now add BCR and TCR simultaneously by making large list
+* scatter plotting code is not so ugly and allows for user to select dot.size as a variable on the x or y axis
+* Removed regressClonotype function - too many dependencies required, adding an additional vignette to go through the process
+* Added chain option to visualizations and combineExpression to allow users to facilitate single chains - removed chain option from combineTCR/BCR/TRUST4 (the combined object will have both chains no matter what)
+* Added NA filter to combineTCR/BCR/TRUST4 for cell barcodes with only NA values
+* Added NA filter to expression2List() for cells with NA clonotypes.
+* Updated VizGene to order the genes automatically by highest to lowest variance
+* Updated VizGene to pull the correct genes based on selection
+* Updated parse method - old version had issue with place V-->J-->D in the TRB/Heavy chains 
+* Simplified the clonalDiversity() to allow for more options in organizing plot and box plots. 
+* CombineExpression() adds the groupBy variable to Frequency, allowing for multiple calculations to be saved in the meta data. 
+* Default color scheme now uses viridis plasma, because it I am on transfusion medicine.
+
+
+CHANGES IN VERSION 1.2.2
+------------------------
+
+# Working on renumbering versions for consistency - this is the new current dev branch
+# The below have not been implemented into the master branch or the bioconductor version
+
+* added the combineTRUST4 function to parse contigs from TUST4 pipeline
+* added the filter of contigs by chain in the combineTCR, combineBCR, and combineTRUST4 functions
+* no longer require the ID in the combineTCR/BCR/TRUST4 functions
+* added jaccard index for overlap analysis
+* replaced vizVgene with vizGene - allowing users to look at any gene in the combinedContig object
+* Fixed coloring scale on the overlap analysis
+* Added regressClonotype function using harmony to remove the clonotype effect on feature space
+* allowed occupiedRepertoire to use proportion.
+* added scatterClonotype function to Viz.R
 
 CHANGES IN VERSION 1.2.1
 ------------------------
 
-# Universalizing the versions across GitHub and bioconductor, we are now at 1.2 for bioconductor
-# and v1.2.1 for the master. Dev branch will be updated to reflect this change to v1.2.2. Apologies 
-# for the confusion.
-
-* Updated coding practices based on devtools and bioccheck
-* Deprecated VizVgene() support - erroring during build and new version in dev branch to visualize any gene
-* fixed lengthDF handling of single chains with multi chains stored - ;
-* Changed grabMeta to include assessment of colnames
 * number of changes to the parseTCR/BCR functions to limit assumptions
-
+* Changed grabMeta to include assessment of colnames
+* fixed lengthDF handling of single chains with multi chains stored - ;
+* Added labels to alluvialClonotype and occupiedClonotype plotting
 
 CHANGES IN VERSION 1.1.4
 ------------------------
@@ -32,7 +58,6 @@ CHANGES IN VERSION 1.1.4
 * Added function checkBlanks to remove list elements without clonotypes, this prevents errors for visualizations
 * Re-added Startrac metrics by stripping down the package and adding it piecemeal
 * Heavily modified dependencies to reduce total number 
-
 
 CHANGES IN VERSION 1.0.0
 ------------------------

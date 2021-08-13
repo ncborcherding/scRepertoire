@@ -9,7 +9,7 @@ lengthContig(
   cloneCall = "aa",
   group = NULL,
   scale = FALSE,
-  chains = "combined",
+  chain = "both",
   exportTable = FALSE
 )
 }
@@ -22,11 +22,11 @@ CDR3 amino acid (aa).}
 \item{group}{The group header for which you would like to analyze 
 the data.}
 
-\item{scale}{Converts the graphs into denisty plots in order to show 
+\item{scale}{Converts the graphs into density plots in order to show 
 relative distributions.}
 
-\item{chains}{Whether to keep clonotypes "combined" or visualize
-by chain.}
+\item{chain}{indicate if both or a specific chain should be used - 
+e.g. "both", "TRA", "TRG", "IGH", "IGL"}
 
 \item{exportTable}{Returns the data frame used for forming the graph.}
 }
@@ -50,6 +50,6 @@ exportTable = TRUE.
 x <- contig_list
 combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), 
 rep(c("P", "T"), 3), cells ="T-AB")
-lengthContig(combined, cloneCall="aa", chains = "combined")
+lengthContig(combined, cloneCall="aa", chain = "both")
 
 }

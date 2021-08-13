@@ -33,7 +33,7 @@ ggplot object of Startrac diversity metrics
 }
 \description{
 This function utilizes the Startrac R package derived from 
-[PMID: 30479382](https://pubmed.ncbi.nlm.nih.gov/30479382/) 
+\href{https://pubmed.ncbi.nlm.nih.gov/30479382/}{PMID: 30479382}
 Required to run the function, the "type" variable needs to include the 
 difference in where the cells were derived. The output of this function 
 will produce 3 indices: expa (clonal expansion), migra 
@@ -42,7 +42,7 @@ to understand the underlying analyses of the outputs please
 read and cite the linked manuscript.
 }
 \examples{
-\donttest{ 
+\dontrun{ 
 #Getting the combined contigs
 combined <- combineTCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), 
 rep(c("P", "T"), 3), cells ="T-AB")

@@ -16,9 +16,11 @@
 #'
 #' @param df The product of combineTCR(), combineBCR(),  or expression2List().
 #' @param split The cutpoints for the specific clonotypes.
-#' @param cloneCall How to call the clonotype - CDR3 gene (gene), 
-#' CDR3 nucleotide (nt) or CDR3 amino acid (aa), or CDR3 
-#' gene+nucleotide (gene+nt).
+#' @param cloneCall How to call the clonotype - VDJC gene (gene), 
+#' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
+#' VDJC gene + CDR3 nucleotide (gene+nt).
+#' @param chain indicate if both or a specific chain should be used - 
+#' e.g. "both", "TRA", "TRG", "IGH", "IGL"
 #' @param exportTable Exports a table of the data into the global 
 #' environment in addition to the visualization
 #'
@@ -29,17 +31,23 @@
 #' @export
 #' @return ggplot of the space occupied by the specific rank of clonotypes
 clonalProportion <- function(df,split = c(10, 100, 1000, 10000, 30000, 
-                        100000), cloneCall = "gene+nt", exportTable = FALSE) {
+                        100000), cloneCall = "gene+nt", 
+                        chain = "both", exportTable = FALSE) {
     Con.df <- NULL
     cloneCall <- theCall(cloneCall)
     df <- checkList(df)
     df <- checkBlanks(df, cloneCall)
     mat <- matrix(0, length(df), length(split), dimnames = list(names(df), 
             paste0('[', c(1, split[-length(split)] + 1), ':', split, ']')))
+    if (chain != "both") {
+      for (x in seq_along(df)) {
+        df[[x]] <- off.the.chain(df[[x]], chain, cloneCall)
+      }
+    }
     df <- lapply(df, '[[', cloneCall)
+    df <- lapply(df, na.omit)
     df <- lapply(df, as.data.frame(table))
     for (i in seq_along(df)) {
-        df[[i]] <- na.omit(df[[i]])
         df[[i]] <- rev(sort(as.numeric(df[[i]][,2])))
     }
     cut <- c(1, split[-length(split)] + 1)

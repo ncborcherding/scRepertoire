@@ -5,6 +5,9 @@
 \alias{Startrac}
 \alias{Startrac-class}
 \title{The Startrac Class}
+\value{
+method definition for runing startrac
+}
 \description{
 The Startrac object store the data for tcr-based T cell dynamics analyis. The slots contained 
 in Startrac object are listed below:

@@ -1,8 +1,24 @@
+#Use to shuffle between chains
+off.the.chain <- function(dat, chain,cloneCall) {
+  chain1 <- toupper(chain) #to just make it easier
+  if (chain1 %in% c("TRA", "TRD", "IGH")) {
+    x <- 1
+  } else if (chain1 %in% c("TRB", "TRG", "IGL")) {
+    x <- 2
+  } else {
+    warning("It looks like ", chain, " does not match the available options for `chain = `")
+  }
+  dat[,cloneCall] <- str_split(dat[,cloneCall], "_", simplify = TRUE)[,x]
+  return(dat)
+}
+
 
 #Remove list elements that contain all NA values
 checkBlanks <- function(df, cloneCall) {
     for (i in seq_along(df)) {
-        if (length(df[[i]][,cloneCall]) == length(which(is.na(df[[i]][,cloneCall])))) {
+        if (length(df[[i]][,cloneCall]) == length(which(is.na(df[[i]][,cloneCall]))) | 
+            length(!is.na(df[[i]][,cloneCall])) == 0 | 
+            nrow(df[[i]]) == 0) {
             df[[i]] <- NULL
         } else {
             next()
@@ -18,7 +34,7 @@ checkList <- function(df) {
     return(df)
 }
 
-#This is to check the single-cell expresison object
+#This is to check the single-cell expression object
 checkSingleObject <- function(sc) {
     if (!inherits(x=sc, what ="Seurat") & 
         !inherits(x=sc, what ="SummarizedExperiment")){
@@ -28,7 +44,7 @@ checkSingleObject <- function(sc) {
     }
 
 #This is to grab the meta data from a seurat or SCE object
-#' @importFrom SummarizedExperiment colData 
+#' @importFrom SingleCellExperiment colData 
 grabMeta <- function(sc) {
     if (inherits(x=sc, what ="Seurat")) {
         meta <- data.frame(sc[[]], slot(sc, "active.ident"))
@@ -55,8 +71,12 @@ grabMeta <- function(sc) {
 modifyBarcodes <- function(df, samples, ID) {
     out <- NULL
     for (x in seq_along(df)) {
-        data <- df[[x]]
-        data$barcode <- paste0(samples[x], "_", ID[x], "_", data$barcode)
+        data <- df[[x]] 
+        if (!is.null(ID)){
+          data$barcode <- paste0(samples[x], "_", ID[x], "_", data$barcode)
+        } else {
+          data$barcode <- paste0(samples[x], "_", data$barcode)
+        }
         out[[x]] <- data }
     return(out)
 }
@@ -78,7 +98,7 @@ removingMulti <- function(final){
 #Removing extra clonotypes in barcodes with > 2
 #' @import dplyr
 filteringMulti <- function(x) {
-    table <- subset(as.data.frame(table(x$barcode)), Freq > 2)
+    table <- subset(as.data.frame(table(x$barcode)), Freq >= 2)
     barcodes <- as.character(unique(table$Var1))
     multichain <- NULL
     for (j in seq_along(barcodes)) {
@@ -95,6 +115,7 @@ filteringMulti <- function(x) {
 
 #Filtering NA contigs out of single-cell expression object
 #' @import dplyr
+#' @importFrom SingleCellExperiment colData
 filteringNA <- function(sc) {
     meta <- grabMeta(sc)
     evalNA <- data.frame(meta[,"cloneType"])
@@ -113,21 +134,7 @@ filteringNA <- function(sc) {
     }
 }
 
-#Check the format of the cell barcode inputs and parameter lengthsd
-checkContigBarcodes <- function(df, samples, ID) {
-    count <- length(unlist(strsplit(df[[1]]$barcode[1], "[-]")))
-    count2 <- length(unlist(strsplit(df[[1]]$barcode[1], "[_]")))
-    if (count > 2 | count2 > 2) {
-        stop("Seems to be an error in the naming of the contigs, ensure 
-            the barcodes are labeled like, AAACGGGAGATGGCGT-1 or 
-            AAACGGGAGATGGCGT, use stripBarcode to get the basic 
-            format", call. = FALSE)
-    } else if (length(df) != length(samples) | length(df) != length(ID)) {
-        stop("Make sure the sample and ID labels match the length of the 
-            list of data frames (df).", call. = FALSE) }
-    }
-
-#Caclulating diversity using Vegan R package
+#Calculating diversity using Vegan R package
 #' @importFrom vegan diversity estimateR
 diversityCall <- function(data) {
     w <- diversity(data[,"Freq"], index = "shannon")
@@ -179,6 +186,30 @@ morisitaIndex <- function(df, length, cloneCall, coef_matrix) {
     }
     return(coef_matrix)
 }
+
+
+#Calculate the Jaccard Similarity Index for Overlap Analysis
+jaccardIndex <- function(df, length, cloneCall, coef_matrix) {
+  for (i in seq_along(length)){
+    df.i <- df[[i]]
+    df.i <- df.i[,c("barcode",cloneCall)]
+    df.i_unique <- df.i[!duplicated(df.i[,cloneCall]),]
+    for (j in seq_along(length)){
+      if (i >= j){ next }
+      else { 
+        df.j <- df[[j]]
+        df.j <- df.j[,c("barcode",cloneCall)]
+        df.j_unique <- df.j[!duplicated(df.j[,cloneCall]),]
+        overlap <- length(intersect(df.i_unique[,cloneCall], 
+                                    df.j_unique[,cloneCall]))
+        coef_matrix[i,j] <- 
+          overlap/(sum(length(df.i_unique[,cloneCall]), 
+                                  length(df.j_unique[,cloneCall]))-overlap)
+      } 
+    }
+  }
+}
+
 
 #Calculate the Overlap Coefficient for Overlap Analysis
 #' @author Nick Bormann, Nick Borcherding
@@ -338,10 +369,10 @@ cellT <- function(cells) {
 
 
 #Producing a data frame to visualize for lengthContig()
-lengthDF <- function(df, cloneCall, chains, group, c1, c2){
+lengthDF <- function(df, cloneCall, chain, group, c1, c2){
     Con.df <- NULL
     names <- names(df)
-    if (chains == "combined") {
+    if (chain == "both") {
             for (i in seq_along(df)) {
                 length <- nchar(gsub("_", "", df[[i]][,cloneCall]))
                 val <- df[[i]][,cloneCall]
@@ -354,38 +385,27 @@ lengthDF <- function(df, cloneCall, chains, group, c1, c2){
                     data <- na.omit(data.frame(length, val, names[i]))
                     colnames(data) <- c("length", "CT", "values")
                     Con.df<- rbind.data.frame(Con.df, data) }}
-    } else if (chains == "single") {
+    } else if (chain != "both") {
             for (x in seq_along(df)) {
+                df[[x]] <- off.the.chain(df[[x]], chain, cloneCall)
                 strings <- df[[x]][,cloneCall]
-                strings <- as.data.frame(str_split(strings, "_", 
-                        simplify = TRUE), stringsAsFactors = FALSE)
-                val1 <- strings[,1]
+                val1 <- strings
                 for (i in seq_along(val1)) {
                     if (grepl(";", val1[i]) == TRUE) {
                         val1[i] <- str_split(val1[i], ";", simplify = TRUE)[1] 
                     } else { next() } }
-                val2 <- strings[,2]
-                for (i in seq_along(val2)) {
-                    if (grepl(";", val2[i]) == TRUE) {
-                        val2[i] <- str_split(val2[i], ";", simplify = TRUE)[1]
-                    } else { next() } }
                 chain1 <- nchar(val1)
-                chain2 <- nchar(val2)
                 if (!is.null(group)) {
                     cols1 <- df[[x]][,group]
                     data1 <- data.frame(chain1, val1, names[x], c1, cols1)
                     colnames(data1)<-c("length","CT","values","chain",group)
-                    cols2 <- df[[x]][,group]
-                    data2 <- data.frame(chain2, val2, names[x], c2, cols2)
-                    colnames(data2)<-c("length","CT","values","chain",group)
                 }else if (is.null(group)){
                     data1 <- data.frame(chain1, val1, names[x], c1)
                     colnames(data1) <- c("length", "CT", "values", "chain")
-                    data2 <- data.frame(chain2, val2, names[x], c2)
-                    colnames(data2) <- c("length", "CT", "values", "chain")}
-                data <- na.omit(rbind(data1, data2))
-                data <- subset(data, CT != "NA" | CT != "")
+                data <- na.omit(data1)
+                data <- subset(data, CT != "NA" & CT != "")
                 Con.df<- rbind.data.frame(Con.df, data) }}
+    }
 return(Con.df)}
 
 #General combination of nucleotide, aa, and gene sequences for T/B cells
@@ -410,7 +430,7 @@ makeGenes <- function(cellType, data2, chain1, chain2) {
             mutate(TCR1 = ifelse(chain == chain1, paste(with(data2, 
             interaction(v_gene,  j_gene, c_gene))), NA)) %>%
             mutate(TCR2 = ifelse(chain == chain2, paste(with(data2, 
-            interaction(v_gene,  j_gene, d_gene, c_gene))), NA))
+            interaction(v_gene, d_gene,  j_gene,  c_gene))), NA))
     }
     else {
         data2 <- data2 %>% 
@@ -419,7 +439,7 @@ makeGenes <- function(cellType, data2, chain1, chain2) {
             mutate(IGLct = ifelse(chain == "IGL", paste(with(data2, 
             interaction(v_gene,  j_gene, c_gene))), NA)) %>%
             mutate(IGHct = ifelse(chain == "IGH", paste(with(data2, 
-            interaction(v_gene, j_gene, d_gene, c_gene))), NA))
+            interaction(v_gene, d_gene, j_gene, c_gene))), NA))
     }
     return(data2)
     

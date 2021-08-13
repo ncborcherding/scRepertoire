@@ -8,9 +8,10 @@ Single-cell sequencing is an emerging technology in the field of immunology and 
 
 
 ### Wrapper Functions
-As of scRepertoire v1.0.2, the functionality of the [powerTCR](https://github.com/hillarykoch/powerTCR) approach to comparing clone size distribution, [please cite](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1006571) the manuscript if using the ```clonesizeDistribution()``` function. In addition, we recently added the [Startrac](https://github.com/Japrin/STARTRAC) clonotype metrics, if using the ```StartracDiversity()``` please read and cite [the accompanying article](https://www.nature.com/articles/s41586-018-0694-x).
+scRepertoire v1.0.2 has the functionality of the [powerTCR](https://github.com/hillarykoch/powerTCR) approach to comparing clone size distribution, [please cite](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1006571) the manuscript if using the ```clonesizeDistribution()``` function. In addition, we recently added the [Startrac](https://github.com/Japrin/STARTRAC) clonotype metrics, if using the ```StartracDiversity()``` please read and cite [the accompanying article](https://www.nature.com/articles/s41586-018-0694-x).
 
-### Installation 
+### Installation of Development Branch
+
 
 ```
 devtools::install_github("ncborcherding/scRepertoire")
@@ -21,7 +22,7 @@ devtools::install_github("ncborcherding/scRepertoire")
 devtools::install_github("ncborcherding/scRepertoire@dev")
 ```
 
-We are working on constantly improving the scRepertoire package - these improvements can be found under the "dev" branch. These changes will be incorporated into the main branch as they are tested more thoroughly.
+We are working on constantly improving the scRepertoire package - these improvements can be found under the "refine" branch. These changes will be incorporated into the main branch as they are tested more throughly.
 
 #### Bioconductor
 
@@ -31,21 +32,16 @@ We are working on constantly improving the scRepertoire package - these improvem
 if (!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
 
-BiocManager::install("scRepertoire", version = "3.13")
-
+BiocManager::install("scRepertoire")
 ```
 
 ### Getting Data
 
-Unfortunately, Github limits the size of individual files. In order to access the seurat object paired with scRepertoire please download the .rda from [here](https://drive.google.com/open?id=1np-EzG7U9W_Fz_SchBrsAhtqE3_rB_H9).
+Unfortunately, Github limits the size of individual files. In order to access the seurat object paired with scRepetoire please download the .rda from [here](https://drive.google.com/open?id=1np-EzG7U9W_Fz_SchBrsAhtqE3_rB_H9).
 
 ### Learning To Use scRepertoire
 
 Vignette available [here](https://ncborcherding.github.io/vignettes/vignette.html), includes almost 13,000 T cells across 3 patients with renal clear cell carcinoma. 
-
-#### Going Beyond scRepertoire
-
-[Here](https://ncborcherding.github.io/vignettes/beyond_screpertoire.html) is an ever growing collection of features/approaches that users have requested that do no fit within the scope of scRepertoire or would require a prohibitive amount of dependencies to be imported.
 
 ### Please Cite
 Feel free to use, edit, modify scRepertoire, but if you do, please cite the [manuscript](https://f1000research.com/articles/9-47/v1).
@@ -54,5 +50,5 @@ Feel free to use, edit, modify scRepertoire, but if you do, please cite the [man
 Questions, comments, suggestions, please feel free to contact Nick Borcherding via this repository, [email](mailto:ncborch@gmail.com), or using [twitter](https://twitter.com/theHumanBorch). 
 
 ### More Information On VDJ Biology
-Our publication is limited in scope and size and we were unable to review VDJ biology and issues relevant to high-throughput immune receptor profiling. If you are interested in the biology of the process, please refer to the excellent reviews from [Jahong Ji](https://www.nature.com/articles/nri2941) and [Frederick Alt](https://www.cell.com/fulltext/S0092-8674(04)00039-X). Additionally, the complexities of sequencing and quantifications of VDJs are discussed [here.](https://www.nature.com/articles/nprot.2018.021?)
+Our publication is limited in scope and size and we were unable to review VDJ biology and issues relevant to high-throuhput immune receptor profiling. If you are interested in the biology of the process, please refer to the excellent reviews from [Jahong Ji](https://www.nature.com/articles/nri2941) and [Frederick Alt](https://www.cell.com/fulltext/S0092-8674(04)00039-X). Additionally, the complexities of sequencing and quantifications of VDJs are discussed [here.](https://www.nature.com/articles/nprot.2018.021?)
 

@@ -15,9 +15,9 @@ combineBCR(
 \arguments{
 \item{df}{List of filtered contig annotations from 10x Genomics.}
 
-\item{samples}{The labels of samples.}
+\item{samples}{The labels of samples (required).}
 
-\item{ID}{The additional sample labeling option.}
+\item{ID}{The additional sample labeling (optional).}
 
 \item{removeNA}{This will remove any chain without values.}
 
@@ -31,7 +31,15 @@ This function consolidates a list of BCR sequencing results to the level
 of the individual cell barcodes. Using the samples and ID parameters, 
 the function will add the strings as prefixes to prevent issues with 
 repeated barcodes. The resulting new barcodes will need to match the 
-seurat or SCE object in order to use,
+seurat or SCE object in order to use, 
+\code{\link{combineExpression}}. Unlike combineTCR(), 
+combineBCR produces a column CTstrict of an index of nucleotide sequence 
+and the corresponding v-gene. This index automatically caluclates 
+the Hammings distance between sequences of the same length and will 
+index sequences with <= 0.15 normalized Levenshtein distance with the same 
+ID for sequences with < 15 nucleotide difference in length. After which, 
+clonotype clusters are called using the igraph component() function. Clonotype
+clusters will then be labeled with "LD" with the CTstrict header.
 }
 \examples{
 #Data derived from the 10x Genomics intratumoral NSCLC B cells
@@ -39,15 +47,4 @@ BCR <- read.csv("https://ncborcherding.github.io/vignettes/b_contigs.csv",
 stringsAsFactors = FALSE)
 combined <- combineBCR(BCR, samples = "Patient1", ID = "Time1")
 
-}
-\seealso{
-\code{\link{combineExpression}}. Unlike combineTCR(), 
-combineBCR produces a column CTstrict of an index of nucleotide sequence 
-and the corresponding v-gene. This index automatically caluclates 
-the Hammings distance between sequences of the same length and will 
-index sequences with <= 0.15 normalized Levenshtein distance with the same 
-ID for sequences with < 15 nucleotide difference in length. After which, 
-clonotype clusters are called using the igraph component() function. 
-Clonotype clusters will then be labeled with "LD" with the CTstrict 
-header.
 }

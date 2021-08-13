@@ -85,12 +85,12 @@ subsetContig <- function(df, name, variables = NULL) {
     return(df2)
 }
 
-#' Allows users to take the meta data in seurat/SCE and place it into a list 
+#' Allows users to take the meta data in Seurat/SCE and place it into a list 
 #' that will work with all the functions
 #'
 #' Allows users to perform more fundamental measures of clonotype analysis 
-#' using the meta data from the seurat or SCE object. For Seurat objects the 
-#' active identity is automatically added as "cluster". Reamining grouping 
+#' using the meta data from the Seurat or SCE object. For Seurat objects the 
+#' active identity is automatically added as "cluster". Remaining grouping 
 #' parameters or SCE or Seurat objects must appear in the meta data.
 #'
 #' @examples
@@ -100,11 +100,10 @@ subsetContig <- function(df, name, variables = NULL) {
 #' 
 #' #Getting a sample of a Seurat object
 #' screp_example <- get(data("screp_example"))
-#' sce <- suppressMessages(Seurat::UpdateSeuratObject(screp_example))
-#' sce <- Seurat::as.SingleCellExperiment(sce)
+#' screp_example <- combineExpression(combined, screp_example)
 #' 
 #' #Using expression2List
-#' newList <- expression2List(sce, group = "seurat_clusters")
+#' newList <- expression2List(screp_example, group = "seurat_clusters")
 #' 
 #' @param sc object after combineExpression().
 #' @param group The column header to group the new list by
@@ -115,13 +114,14 @@ subsetContig <- function(df, name, variables = NULL) {
 expression2List <- function(sc, group) {
     if (!inherits(x=sc, what ="Seurat") & 
         !inherits(x=sc, what ="SummarizedExperiment")) {
-            stop("Use a seurat or SCE object to convert into a list")
+            stop("Use a Seurat or SCE object to convert into a list")
     }
     meta <- grabMeta(sc)
     unique <- str_sort(as.character(unique(meta[,group])), numeric = TRUE)
     df <- NULL
     for (i in seq_along(unique)) {
         subset <- subset(meta, meta[,group] == unique[i])
+        subset <- subset(subset, !is.na(cloneType))
         df[[i]] <- subset
     }
     names(df) <- unique
@@ -133,9 +133,8 @@ expression2List <- function(sc, group) {
 #' 
 #' This function will take the meta data from the product of 
 #' combineExpression()and generate a relational data frame to 
-#' be used for a chord diagram. The output is a measure of 
-#' relative clonotype overlap between groups and does not reflect
-#' exact clonotype matches between groups. 
+#' be used for a chord diagram. Each cord will represent the number of 
+#' clonotype unqiue and shared across the multiple groupBy variable.
 #' 
 #' @examples
 #' #Getting the combined contigs
@@ -151,12 +150,14 @@ expression2List <- function(sc, group) {
 #' 
 #' 
 #' @param sc object after combineExpression().
-#' @param cloneCall How to call the clonotype - CDR3 nucleotide (nt), 
-#' CDR3 amino acid (aa).
+#' @param cloneCall How to call the clonotype - VDJC gene (gene), 
+#' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
+#' VDJC gene + CDR3 nucleotide (gene+nt).
 #' @param groupBy The group header for which you would like to analyze 
 #' the data.
-#' @param proportion Binary will calculate relationship as unique clonotypes 
-#' (proportion = TRUE) or proportion of unique clonotypes (proportion = FALSE)
+#' @param proportion Binary will calculate relationship unique 
+#' clonotypes (proportion = FALSE) or a ratio of the groupBy 
+#' variable (proportion = TRUE)
 #' 
 #' @importFrom reshape2 dcast
 #' @export
@@ -167,45 +168,42 @@ getCirclize <- function(sc, cloneCall = "gene+nt",
     meta <- grabMeta(sc)
     cloneCall <- theCall(cloneCall)
     test <- meta[, c(cloneCall, groupBy)]
-    dTest <- dcast(test, test[,cloneCall] ~ test[,groupBy])
+    test <- test[!is.na(test[,cloneCall]),]
+    dTest <- suppressMessages(dcast(test, test[,cloneCall] ~ test[,groupBy]))
     dTest <- dTest[apply(dTest[,-1], 1, function(x) !all(x==0)),]
-    dTest <- dTest[-1]
+    dTest2 <- dTest[-1]
+    dTest2[dTest2 >= 1] <- 1
     total <- nrow(dTest)
-    matrix_out <- matrix(ncol = ncol(dTest), nrow = ncol(dTest))
-    for (x in seq_len(ncol(dTest))) {
-        for (y in seq_len(ncol(dTest)) ){
-            matrix_out[y,x] <- length(which(dTest[,x] >= 1 & dTest[,y] >= 1))
-        }
+  
+    list <- list()
+    for (i in seq_len(nrow(dTest2))) {
+      list[[i]] <- which(dTest2[i,] > 0)
     }
-    colnames(matrix_out) <- colnames(dTest)
-    rownames(matrix_out) <- colnames(dTest)
-    #Need to subtract extra cells - will take the difference of the sum of the 
-    #column minus and the respective cell and subtract that from the respective cell
-    for (y in seq_len(ncol(matrix_out))) {
-        matrix_out[y,y] <- matrix_out[y,y] - (sum(matrix_out[,y])-matrix_out[y,y])
-        if (matrix_out[y,y] < 0) {
-            matrix_out[y,y] <- 0
-        }
+    matrix_out <- matrix(ncol = ncol(dTest2), nrow = ncol(dTest2), 0)
+    for (j in seq_along(list)) {
+      matrix_out[list[[j]],list[[j]]] <- matrix_out[list[[j]],list[[j]]] + 1
+      if (length(list[[j]]) > 1) {
+        #length <- length(list[[j]])
+        diag(matrix_out[list[[j]],list[[j]]]) <-  diag(matrix_out[list[[j]],list[[j]]]) - 1
+      }
     }
+  
+    matrix_out[lower.tri(matrix_out)] <- NA
+
+    colnames(matrix_out) <- colnames(dTest2)
+    rownames(matrix_out) <- colnames(dTest2)
+    
     output <- data.frame(from = rep(rownames(matrix_out), 
                         times = ncol(matrix_out)),
                         to = rep(colnames(matrix_out), each = nrow(matrix_out)),
                         value = as.vector(matrix_out),
                         stringsAsFactors = FALSE)
-    # Reorder columns to eliminate redundant comparisons
-    for (k in seq_len(nrow(output))) {
-        max <- order(output[k,c(1,2)])[1] #which is first alphabetically
-        max <- output[k,max]
-        min <- order(output[k,c(1,2)])[2] #which is second alphabetically
-        min <- output[k,min]
-        output[k,1] <- max
-        output[k,2] <- min
-    }
-    unique <- rownames(unique(output[,c(1,2)])) #removing redundant comparisons
-    output <- output[rownames(output) %in% unique, ]
+    output <- na.omit(output)
+    
     if (proportion == TRUE) {
         output$value <- output$value/total
     } 
     return(output)
 }
+
 

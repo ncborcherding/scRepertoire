@@ -4,7 +4,13 @@
 \alias{occupiedscRepertoire}
 \title{Visualize the number of single cells with clonotype frequencies by cluster}
 \usage{
-occupiedscRepertoire(sc, x.axis = "cluster", exportTable = FALSE)
+occupiedscRepertoire(
+  sc,
+  x.axis = "cluster",
+  label = TRUE,
+  proportion = FALSE,
+  exportTable = FALSE
+)
 }
 \arguments{
 \item{sc}{The seurat or SCE object to visualize after combineExpression(). 
@@ -12,6 +18,10 @@ For SCE objects, the cluster variable must be in the meta data under
 "cluster".}
 
 \item{x.axis}{The variable in the meta data to graph along the x.axis}
+
+\item{label}{Include the number of clonotype in each category by x.axis variable}
+
+\item{proportion}{Convert the stacked bars into relative proption}
 
 \item{exportTable}{Exports a table of the data into the global 
 environment in addition to the visualization}
@@ -25,7 +35,7 @@ meta data after combineExpression(). The visualization will take the
 new meta data variable "cloneType" and plot the number of cells with
 each designation using a secondary variable, like cluster. Credit to 
 the idea goes to Drs. Carmona and Andreatta and their work with
-[ProjectTIL](https://github.com/carmonalab/ProjecTILs).
+\href{https://github.com/carmonalab/ProjecTILs}{ProjectTIL}.
 }
 \examples{
 #Getting the combined contigs
@@ -35,7 +45,6 @@ rep(c("P", "T"), 3), cells ="T-AB")
 #Getting a sample of a Seurat object
 screp_example <- get(data("screp_example"))
 sce <- suppressMessages(Seurat::UpdateSeuratObject(screp_example))
-sce <- Seurat::as.SingleCellExperiment(sce)
 
 #Using combineExpresion()
 sce <- combineExpression(combined, sce)
