@@ -54,7 +54,7 @@ combineExpression <- function(df, sc, cloneCall="gene+nt",
                               chain = "both", groupBy="none", 
                               proportion = TRUE, filterNA = FALSE,
                               cloneTypes=c(Rare = 1e-4, Small = 0.001, 
-                              Medium = 0.01, Large = 0.1, Hyperexpanded = 1)
+                              Medium = 0.01, Large = 0.1, Hyperexpanded = 1),
                               addLabel = FALSE) {
   options( dplyr.summarise.inform = FALSE )
     cloneTypes <- c(None = 0, cloneTypes)
