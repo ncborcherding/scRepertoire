@@ -39,13 +39,15 @@ clonalProportion <- function(df,split = c(10, 100, 1000, 10000, 30000,
     df <- checkBlanks(df, cloneCall)
     mat <- matrix(0, length(df), length(split), dimnames = list(names(df), 
             paste0('[', c(1, split[-length(split)] + 1), ':', split, ']')))
+    if (chain != "both") {
+      for (x in seq_along(df)) {
+        df[[x]] <- off.the.chain(df[[x]], chain, cloneCall)
+      }
+    }
     df <- lapply(df, '[[', cloneCall)
+    df <- lapply(df, na.omit)
     df <- lapply(df, as.data.frame(table))
     for (i in seq_along(df)) {
-        if (chain != "both") {
-            df[[i]] <- off.the.chain(df[[i]], chain, cloneCall)
-        }
-        df[[i]] <- na.omit(df[[i]])
         df[[i]] <- rev(sort(as.numeric(df[[i]][,2])))
     }
     cut <- c(1, split[-length(split)] + 1)

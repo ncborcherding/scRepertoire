@@ -34,7 +34,7 @@ quantContig <- function(df, cloneCall = "gene+nt", chain = "both", scale=FALSE, 
     df <- checkBlanks(df, cloneCall)
     if (chain != "both") {
       for(i in seq_along(df)) {
-      df[[i]] <- off.the.chain(df[[i]], chain, cloneCall)
+        df[[i]] <- off.the.chain(df[[i]], chain, cloneCall)
       }
     }
     if (!is.null(group)) {

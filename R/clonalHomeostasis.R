@@ -39,12 +39,13 @@ clonalHomeostasis <- function(df, cloneTypes = c(Rare = .0001, Small = .001,
     mat <- matrix(0, length(df), length(cloneTypes) - 1, 
                 dimnames = list(names(df), 
                 names(cloneTypes)[-1]))
+    if (chain != "both") {
+      for (x in seq_along(df)) {
+        df[[x]] <- off.the.chain(df[[x]], chain, cloneCall)
+      }
+    }
     df <- lapply(df, '[[', cloneCall)
-    for (i in seq_along(df)) {
-        if (chain != "both") {
-            df[[i]] <- off.the.chain(df[[i]], chain, cloneCall)
-        }
-        df[[i]] <- na.omit(df[[i]]) }
+    df <- lapply(df, na.omit)
     fun <- function(x) { table(x)/length(x) }
     df <- lapply(df, fun)
     for (i in 2:length(cloneTypes)) {
