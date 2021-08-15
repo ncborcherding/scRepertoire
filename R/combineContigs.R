@@ -196,13 +196,14 @@ combineBCR <- function(df, samples = NULL, ID = NULL,
         }
     }
     names <- NULL
-    for (i in seq_along(samples)){
+    for (i in seq_along(samples)) { 
       if (!is.null(sample) & !is.null(ID)) {
         c <- paste(samples[i], "_", ID[i], sep="")
       } else if (!is.null(sample) & is.null(ID)) {
         c <- paste(samples[i], sep="")
       }
       names <- c(names, c)}
+    names(final) <- names
     for (i in seq_along(final)) {
         final[[i]] <- final[[i]][!duplicated(final[[i]]$barcode),]
         final[[i]]<-final[[i]][rowSums(is.na(final[[i]])) < 10, ]}
