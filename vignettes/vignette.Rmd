@@ -51,6 +51,8 @@ It is now easy to create the contig list from a multiplexed experiment by first 
 
 ```{r, eval = F}
 contigs <- read.csv(".../outs/filtered_contig_annotations.csv")
+
+contig.list <- createHTOContigList(contigs, Seurat.Obj, groupBy = "HTO_maxID")
 ```
 
 scRepertoire comes with a data set derived from T cells derived from three patients with renal clear cell carcinoma in order to demonstrate the functionality of the R package. More information on the data set can be found at the corresponding [manuscript](https://www.nature.com/articles/s42003-020-01625-6). The samples consist of paired peripheral-blood and tumor-infiltrating runs, effectively creating 6 distinct runs for T cell receptor (TCR) enrichment. We can preview the elements in the list by using the head function and looking at the first contig annotation. 

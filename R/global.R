@@ -46,7 +46,9 @@
     utils::globalVariables ("total")
     utils::globalVariables ("prop")
     utils::globalVariables ("var")
-    
+    utils::globalVariables ("contig")
+    utils::globalVariables ("contigs")
+    utils::globalVariables ("groupBy")
 
     invisible ()
 }
