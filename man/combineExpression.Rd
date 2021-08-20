@@ -13,7 +13,8 @@ combineExpression(
   proportion = TRUE,
   filterNA = FALSE,
   cloneTypes = c(Rare = 1e-04, Small = 0.001, Medium = 0.01, Large = 0.1, Hyperexpanded
-    = 1)
+    = 1),
+  addLabel = FALSE
 )
 }
 \arguments{
@@ -39,6 +40,10 @@ proportion (TRUE) of the clonotype based on the groupBy variable.}
 clonotype information}
 
 \item{cloneTypes}{The bins for the grouping based on frequency}
+
+\item{addLabel}{This will add a label to the frequency header, allowing
+the user to try multiple groupBy variables or recalculate frequencies after 
+subseting the data.}
 }
 \value{
 seurat or SingleCellExperiment object with attached clonotype 

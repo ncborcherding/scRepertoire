@@ -431,3 +431,42 @@ clonalOverlay <- function(sc, reduction = NULL, freq.cutpoint = 30, bins = 25, f
   }
   return(plot)
 }
+
+#' Generate a contig list from a multiplexed experiment
+#'
+#' Multiplexing single-cell sequencing runs is an efficient method for quantifying 
+#' multiple samples or conditions simultaneously. Unfortunately, the hashing information
+#' is not stored in the TCR sequence data. In order preprocess and form a contig list
+#' for downstream analysis in scRepertoire, createHTOContigList() take the filtered contig 
+#' annotation output and the single-cell RNA object to create the list.
+#' 
+#' @param contig The filtered contig annotation file from multiplexed experiment
+#' @param sc The Seurat or SCE object.
+#' @param groupBy One or more meta data headers to create the contig list based on.
+#' If more than one header listed, the function combines them into a single variable.
+#'
+#'\dontrun{
+#' @examples
+#' filtered.contig <- read.csv(".../Sample/outs/filtered_contig_annotations.csv")
+#' contig.list <- createHTOContigList(filtered.contig, 
+#' Seurat.Obj, groupBy = "HTO_maxID")
+#' }
+#' 
+#' @export
+#' @return Returns a list of contigs corresponding to the multiplexed Seurat 
+#' or Single-Cell Experiment object
+
+createHTOContigList <- function(contigs, sc, groupBy = NULL){
+  contig.list <- NULL
+  checkSingleObject(sc)
+  meta <- grabMeta(sc)
+  cont.tmp <- contigs[contigs$barcode %in% rownames(meta), ]
+  meta["groupBy"] <- apply(meta[ , groupBy] , 1 , paste , collapse = "." )
+  unique.groups <- unique(meta$groupBy)
+  for (i in seq_along(unique.groups)) {
+    sub.con <- cont.tmp[cont.tmp$barcode %in% rownames(subset(meta, groupBy == unique.groups[i])),]
+    contig.list[[i]] <- sub.con
+  }
+  names(contig.list) <- unique.groups
+  return(contig.list)
+}
