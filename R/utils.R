@@ -141,7 +141,8 @@ diversityCall <- function(data) {
     x <- diversity(data[,"Freq"], index = "invsimpson")
     y <- estimateR(data[,"Freq"])[2] #Chao
     z <- estimateR(data[,"Freq"])[4] #ACE
-    out <- c(w,x,y,z)
+    z2 <- diversity(data[,"Freq"], index = "shannon")/log(length(data[,"Freq"]))
+    out <- c(w,x,y,z, z2)
     return(out)
 }
 

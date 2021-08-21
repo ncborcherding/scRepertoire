@@ -1,8 +1,9 @@
 #' Examine the clonal diversity of samples
 #'
 #' This function calculates traditional measures of diversity - Shannon, 
-#' inverse Simpson, Chao1 index, and abundance-based coverage estimators 
-#' (ACE) by sample or group. The function automatically down samples the
+#' inverse Simpson, Chao1 index, abundance-based coverage estimators 
+#' (ACE), and 1-Pielou's measure of species evenness by sample or group. 
+#' The function automatically down samples the
 #' diversity metrics using 100 boot straps The group paramter can be 
 #' used to condense the individual samples. If a matrix output for 
 #' the data is preferred, set exportTable = TRUE.
@@ -71,7 +72,8 @@ clonalDiversity <- function(df, cloneCall = "gene+nt", chain = "both",
       mat_a<-as.data.frame(t(mat_a))
       mat <- rbind(mat, mat_a)
     }
-    colnames(mat) <- c("Shannon", "Inv.Simpson", "Chao", "ACE")
+    colnames(mat) <- c("Shannon", "Inv.Simpson", "Chao", "ACE", "Inv.Pielou")
+    mat[,"Inv.Pielou"] <- 1 - mat[,"Inv.Pielou"]
     if (!is.null(groupBy)) {
       mat[,groupBy] <- str_split(group.element.uniq, "[.]", simplify = TRUE)[,1]
     } else {
