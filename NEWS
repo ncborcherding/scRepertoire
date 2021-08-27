@@ -1,7 +1,7 @@
 CHANGES IN VERSION 1.3.3
 ------------------------
 * CombineBCR() auto naming function updated to actually name the list elements. 
-* Added createHTOContigList() function to create contain list of multiplexed experiments
+* Added createHTOContigList() function to create contain list of multiplexed experiments. Fixed issue with groupBy variable
 * Added Inv.Pielou matric to diversity call - this is essentially 1-shannon/ln(length). Due to the bootstrapping the length with be constant.
 
 CHANGES IN VERSION 1.3.2

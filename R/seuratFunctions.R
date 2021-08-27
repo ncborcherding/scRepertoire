@@ -461,7 +461,8 @@ createHTOContigList <- function(contigs, sc, groupBy = NULL){
   checkSingleObject(sc)
   meta <- grabMeta(sc)
   cont.tmp <- contigs[contigs$barcode %in% rownames(meta), ]
-  meta["groupBy"] <- apply(meta[ , groupBy] , 1 , paste , collapse = "." )
+  #meta["groupBy"] <- apply(meta[ , groupBy] , 1 , paste , collapse = "." )
+  meta[,"groupBy"] <- meta[ , groupBy]
   unique.groups <- unique(meta$groupBy)
   for (i in seq_along(unique.groups)) {
     sub.con <- cont.tmp[cont.tmp$barcode %in% rownames(subset(meta, groupBy == unique.groups[i])),]
