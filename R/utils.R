@@ -1,3 +1,6 @@
+"%!in%" <- Negate("%in%")
+
+
 #Use to shuffle between chains
 off.the.chain <- function(dat, chain,cloneCall) {
   chain1 <- toupper(chain) #to just make it easier
@@ -34,9 +37,28 @@ checkList <- function(df) {
     return(df)
 }
 
+bound.input.return <- function(df) {
+  if (inherits(x=df, what ="Seurat") | inherits(x=df, what ="SummarizedExperiment")) {
+    df <- grabMeta(df)
+  } else {
+    df <- bind_rows(df, .id = "element.names")
+  }
+  return(df)
+}
+
+list.input.return <- function(df, split.by) {
+  if (inherits(x=df, what ="Seurat") | inherits(x=df, what ="SummarizedExperiment")) {
+    if(is.null(split.by)){
+      split.by <- "cluster"
+    }
+    df <- expression2List(df, split.by)
+  } 
+  return(df)
+}
+
 #This is to check the single-cell expression object
 checkSingleObject <- function(sc) {
-    if (!inherits(x=sc, what ="Seurat") & 
+    if (!inherits(x=sc, what ="Seurat") &&
         !inherits(x=sc, what ="SummarizedExperiment")){
         stop("Object indicated is not of class 'Seurat' or 
             'SummarizedExperiment', make sure you are using

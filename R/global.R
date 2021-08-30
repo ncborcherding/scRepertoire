@@ -48,7 +48,7 @@
     utils::globalVariables ("var")
     utils::globalVariables ("contig")
     utils::globalVariables ("contigs")
-    utils::globalVariables ("groupBy")
-
+    utils::globalVariables ("group.by")
+    utils::globalVariables ("split.by")
     invisible ()
 }

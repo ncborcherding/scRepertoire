@@ -4,7 +4,7 @@
 \alias{createHTOContigList}
 \title{Generate a contig list from a multiplexed experiment}
 \usage{
-createHTOContigList(contigs, sc, groupBy = NULL)
+createHTOContigList(contigs, sc, group.by = NULL)
 }
 \arguments{
 \item{sc}{The Seurat or SCE object.}

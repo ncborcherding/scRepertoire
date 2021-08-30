@@ -20,7 +20,7 @@
 #' @param sequence Clustering based on either "aa" or "nt"
 #' @param threshold The normalized edit distance to consider. The higher the number the more 
 #' similarity of sequence will be used for clustering.
-#' @param group The column header used for to calculate the cluster by.
+#' @param group.by The column header used for to calculate the cluster by.
 #' @importFrom stringdist stringdistmatrix
 #' @importFrom igraph graph_from_data_frame components
 #' @importFrom plyr join
@@ -28,9 +28,8 @@
 #' @export
 #' @return List of clonotypes for individual cell barcodes
 
-clusterTCR <- function(df, chain = NULL, sequence = NULL, threshold = 0.85, group = NULL) {
+clusterTCR <- function(df, chain = NULL, sequence = NULL, threshold = 0.85, group.by = NULL) {
     output.list <- list()
-    `%!in%` = Negate(`%in%`)
     df <- checkList(df)
     if(chain %in% c("TCRA", "TCRG")) {
         ref <- 1
@@ -40,8 +39,8 @@ clusterTCR <- function(df, chain = NULL, sequence = NULL, threshold = 0.85, grou
     ref2 <- paste0("cdr3_", sequence, ref)
     bound <- bind_rows(df)
     #Should make it work as either grouped or non-grouped
-    if (!is.null(group)) {
-      bound <- split(bound, bound[,group])
+    if (!is.null(group.by)) {
+      bound <- split(bound, bound[,group.by])
       list.length <- length(bound)
     } else {
       bound <- list(bound)

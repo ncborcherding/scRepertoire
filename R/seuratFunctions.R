@@ -2,9 +2,9 @@
 #'
 #' This function adds the immune receptor information to the seurat or 
 #' SCE object to the meta data. By defualt this function also calculates 
-#' the frequencies of the clonotypes by sequencing run (groupBy = "none"). 
+#' the frequencies of the clonotypes by sequencing run (group.by = "none"). 
 #' To change how the frequencies are calculated, select a column header for 
-#' the groupBy variable. Importantly, before using combineExpression() 
+#' the group.by variable. Importantly, before using combineExpression() 
 #' ensure the barcodes of the seurat or SCE object match the barcodes in the 
 #' output of the combinedContig() call. Check changeNames() to change the 
 #' prefix of the seurat object. If combining more 
@@ -32,15 +32,15 @@
 #' VDJC gene + CDR3 nucleotide (gene+nt).
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "Heavy", "Light"
-#' @param groupBy The column label in the combined contig object in which 
+#' @param group.by The column label in the combined contig object in which 
 #' clonotype frequency will be calculated. 
 #' @param proportion Whether to use the total frequency (FALSE) or the 
-#' proportion (TRUE) of the clonotype based on the groupBy variable.
+#' proportion (TRUE) of the clonotype based on the group.by variable.
 #' @param cloneTypes The bins for the grouping based on frequency
 #' @param filterNA Method to subset seurat object of barcodes without 
 #' clonotype information
 #' @param addLabel This will add a label to the frequency header, allowing
-#' the user to try multiple groupBy variables or recalculate frequencies after 
+#' the user to try multiple group.by variables or recalculate frequencies after 
 #' subseting the data.
 #' @importFrom dplyr bind_rows %>% summarise
 #' @importFrom  rlang %||%
@@ -51,7 +51,7 @@
 #' 
 
 combineExpression <- function(df, sc, cloneCall="gene+nt", 
-                              chain = "both", groupBy="none", 
+                              chain = "both", group.by="none", 
                               proportion = TRUE, filterNA = FALSE,
                               cloneTypes=c(Rare = 1e-4, Small = 0.001, 
                               Medium = 0.01, Large = 0.1, Hyperexpanded = 1),
@@ -63,7 +63,7 @@ combineExpression <- function(df, sc, cloneCall="gene+nt",
     Con.df <- NULL
     meta <- grabMeta(sc)
     cell.names <- rownames(meta)
-    if (groupBy == "none") {
+    if (group.by == "none") {
         for (i in seq_along(df)) {
             if (chain != "both") {
               df[[i]] <- off.the.chain(df[[i]], chain, cloneCall)
@@ -84,24 +84,24 @@ combineExpression <- function(df, sc, cloneCall="gene+nt",
                              "CTaa", "CTstrict", "Frequency")]
             Con.df <- rbind.data.frame(Con.df, data)
         }
-    } else if (groupBy != "none") {
+    } else if (group.by != "none") {
         data <- data.frame(bind_rows(df), stringsAsFactors = FALSE)
-        data2 <- na.omit(unique(data[,c("barcode", cloneCall, groupBy)]))
+        data2 <- na.omit(unique(data[,c("barcode", cloneCall, group.by)]))
         data2 <- data2[data2[,"barcode"] %in% cell.names, ]
         data2 <- as.data.frame(data2 %>% group_by(data2[,cloneCall], 
-                    data2[,groupBy]) %>% summarise(Frequency = n()))
-        colnames(data2)[c(1,2)] <- c(cloneCall, groupBy)
-        x <- unique(data[,groupBy])
+                    data2[,group.by]) %>% summarise(Frequency = n()))
+        colnames(data2)[c(1,2)] <- c(cloneCall, group.by)
+        x <- unique(data[,group.by])
         for (i in seq_along(x)) {
-            sub1 <- subset(data, data[,groupBy] == x[i])
-            sub2 <- subset(data2, data2[,groupBy] == x[i])
+            sub1 <- subset(data, data[,group.by] == x[i])
+            sub2 <- subset(data2, data2[,group.by] == x[i])
             merge <- merge(sub1, sub2, by=cloneCall)
             if (proportion == TRUE) {
                 merge$Frequency <- merge$Frequency/length(merge$Frequency)
             }
             Con.df <- rbind.data.frame(Con.df, merge)
         } 
-        nsize <- Con.df %>% group_by(Con.df[,paste0(groupBy, ".x")])  %>% summarise(n = n())
+        nsize <- Con.df %>% group_by(Con.df[,paste0(group.by, ".x")])  %>% summarise(n = n())
     }
     
     Con.df$cloneType <- NA
@@ -114,12 +114,11 @@ combineExpression <- function(df, sc, cloneCall="gene+nt",
     PreMeta <- unique(Con.df[,c("barcode", "CTgene", "CTnt", 
                 "CTaa", "CTstrict", "Frequency", "cloneType")])
     dup <- PreMeta$barcode[which(duplicated(PreMeta$barcode))]
-    `%!in%` = Negate(`%in%`)
     PreMeta <- PreMeta[PreMeta$barcode %!in% dup,]
     rownames(PreMeta) <- PreMeta$barcode
-    if (groupBy != "none" && addLabel) {
+    if (group.by != "none" && addLabel) {
       location <- which(colnames(PreMeta) == "Frequency")
-      colnames(PreMeta)[location] <- paste0("Frequency.", groupBy)
+      colnames(PreMeta)[location] <- paste0("Frequency.", group.by)
     }
     if (inherits(x=sc, what ="Seurat")) { 
         if (length(which(rownames(PreMeta) %in% 
@@ -322,7 +321,9 @@ alluvialClonotypes <- function(sc,
 #' "cluster".
 #' @param x.axis The variable in the meta data to graph along the x.axis
 #' @param label Include the number of clonotype in each category by x.axis variable
-#' @param proportion Convert the stacked bars into relative proption
+#' @param facet.by The column header used for faceting the graph
+#' @param proportion Convert the stacked bars into relative proportion
+#' @param na.include Visualize NA values or not.
 #' @param exportTable Exports a table of the data into the global 
 #' environment in addition to the visualization
 #' @importFrom dplyr %>% group_by mutate
@@ -332,12 +333,18 @@ alluvialClonotypes <- function(sc,
 #' @return Stacked bar plot of counts of cells by clonotype frequency group
 
 occupiedscRepertoire <- function(sc, x.axis = "cluster", 
-                                 label = TRUE, proportion = FALSE, 
+                                 label = TRUE, 
+                                 facet.by = NULL,
+                                 proportion = FALSE, 
+                                 na.include = FALSE,
                                  exportTable = FALSE) {
     checkSingleObject(sc)
     meta <- grabMeta(sc)
     meta <- melt(table(meta[!is.na(meta$Frequency), 
-                c(x.axis, "cloneType")]), varnames = c(x.axis, "cloneType"))
+                c(x.axis, facet.by, "cloneType")], useNA = "ifany"))
+    if (!na.include) {
+      meta <- na.omit(meta)
+    }
     meta <- meta[meta$value != 0,]
     if(proportion == TRUE) {
       meta <- meta %>%
@@ -353,18 +360,23 @@ occupiedscRepertoire <- function(sc, x.axis = "cluster",
     if(proportion == TRUE) {
       plot <- ggplot(meta, aes(x = meta[,x.axis], y = prop, fill = cloneType)) + 
         geom_bar(stat = "identity") 
+      lab <- "Proportion of Cells"
          
     } else {
       plot <- ggplot(meta, aes(x = meta[,x.axis], y = value, fill = cloneType)) + 
         geom_bar(stat = "identity") 
+      lab <- "Single Cells"
       
     } 
     plot <- plot + 
       theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
       scale_fill_manual(values = c(colorblind_vector(col))) + 
-      ylab("Single Cells") + 
+      ylab(lab) + 
       theme_classic() + 
       theme(axis.title.x = element_blank())
+    if (!is.null(facet.by)) {
+      plot <- plot + facet_grid(.~meta[,facet.by])
+    }
     if (label == TRUE) {
         plot <- plot + geom_text(aes(label = value), position = position_stack(vjust = 0.5))
       }
@@ -442,30 +454,33 @@ clonalOverlay <- function(sc, reduction = NULL, freq.cutpoint = 30, bins = 25, f
 #' 
 #' @param contig The filtered contig annotation file from multiplexed experiment
 #' @param sc The Seurat or SCE object.
-#' @param groupBy One or more meta data headers to create the contig list based on.
+#' @param group.by One or more meta data headers to create the contig list based on.
 #' If more than one header listed, the function combines them into a single variable.
 #'
 #'\dontrun{
 #' @examples
 #' filtered.contig <- read.csv(".../Sample/outs/filtered_contig_annotations.csv")
 #' contig.list <- createHTOContigList(filtered.contig, 
-#' Seurat.Obj, groupBy = "HTO_maxID")
+#' Seurat.Obj, group.by = "HTO_maxID")
 #' }
 #' 
 #' @export
 #' @return Returns a list of contigs corresponding to the multiplexed Seurat 
 #' or Single-Cell Experiment object
 
-createHTOContigList <- function(contigs, sc, groupBy = NULL){
+createHTOContigList <- function(contig, sc, group.by = NULL){
   contig.list <- NULL
   checkSingleObject(sc)
   meta <- grabMeta(sc)
   cont.tmp <- contigs[contigs$barcode %in% rownames(meta), ]
-  #meta["groupBy"] <- apply(meta[ , groupBy] , 1 , paste , collapse = "." )
-  meta[,"groupBy"] <- meta[ , groupBy]
-  unique.groups <- unique(meta$groupBy)
+  if (length(group.by) > 1) {
+    meta["group.by"] <- apply(meta[ , group.by] , 1 , paste , collapse = "." )
+  } else {
+    meta[,"group.by"] <- meta[ , group.by]
+  }
+  unique.groups <- unique(meta$group.by)
   for (i in seq_along(unique.groups)) {
-    sub.con <- cont.tmp[cont.tmp$barcode %in% rownames(subset(meta, groupBy == unique.groups[i])),]
+    sub.con <- cont.tmp[cont.tmp$barcode %in% rownames(subset(meta, group.by == unique.groups[i])),]
     contig.list[[i]] <- sub.con
   }
   names(contig.list) <- unique.groups

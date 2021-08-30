@@ -17,7 +17,7 @@
 #' 
 #' clonalOverlap(combined, cloneCall = "gene", method = "overlap")
 #'
-#' @param df The product of combineTCR(), combineBCR(),  or expression2List().
+#' @param df The product of combineTCR(), combineBCR(), expression2List(), or combineExpression().
 #' @param cloneCall How to call the clonotype - VDJC gene (gene), 
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
 #' VDJC gene + CDR3 nucleotide (gene+nt).
@@ -34,6 +34,7 @@
 clonalOverlap <- function(df, cloneCall = c("gene", "nt", "aa", "gene+nt"), 
                                 method = c("overlap", "morisita", "jaccard"), 
                                 chain = "both", exportTable = FALSE){
+    df <- list.input.return(df)
     cloneCall <- theCall(cloneCall)
     df <- checkBlanks(df, cloneCall)
     df <- df[order(names(df))]

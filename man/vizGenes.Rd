@@ -16,7 +16,7 @@ vizGenes(
 )
 }
 \arguments{
-\item{df}{The product of combineTCR(), combineBCR(), or expression2List().}
+\item{df}{The product of combineTCR(), combineBCR(), expression2List(), or combineExpression().}
 
 \item{gene}{Which part of the immune receptor to visualize - V, D, J, C}
 

@@ -216,7 +216,6 @@ combineBCR <- function(df, samples = NULL, ID = NULL,
 #' @importFrom stringdist stringdistmatrix
 #' @importFrom igraph graph_from_data_frame components
 lvCompare <- function(dictionary, gene, chain) {
-    `%!in%` = Negate(`%in%`)
     overlap <- NULL
     out <- NULL
     tmp <- na.omit(unique(dictionary[,chain]))

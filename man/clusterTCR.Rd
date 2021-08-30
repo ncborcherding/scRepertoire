@@ -4,7 +4,13 @@
 \alias{clusterTCR}
 \title{Clustering T cell receptors}
 \usage{
-clusterTCR(df, chain = NULL, sequence = NULL, threshold = 0.85, group = NULL)
+clusterTCR(
+  df,
+  chain = NULL,
+  sequence = NULL,
+  threshold = 0.85,
+  group.by = NULL
+)
 }
 \arguments{
 \item{df}{The product of CombineTCR() or CombineBCR().}
@@ -16,7 +22,7 @@ clusterTCR(df, chain = NULL, sequence = NULL, threshold = 0.85, group = NULL)
 \item{threshold}{The normalized edit distance to consider. The higher the number the more 
 similarity of sequence will be used for clustering.}
 
-\item{group}{The column header used for to calculate the cluster by.}
+\item{group.by}{The column header used for to calculate the cluster by.}
 }
 \value{
 List of clonotypes for individual cell barcodes

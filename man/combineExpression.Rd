@@ -9,7 +9,7 @@ combineExpression(
   sc,
   cloneCall = "gene+nt",
   chain = "both",
-  groupBy = "none",
+  group.by = "none",
   proportion = TRUE,
   filterNA = FALSE,
   cloneTypes = c(Rare = 1e-04, Small = 0.001, Medium = 0.01, Large = 0.1, Hyperexpanded
@@ -30,11 +30,11 @@ VDJC gene + CDR3 nucleotide (gene+nt).}
 \item{chain}{indicate if both or a specific chain should be used - 
 e.g. "both", "TRA", "TRG", "Heavy", "Light"}
 
-\item{groupBy}{The column label in the combined contig object in which 
+\item{group.by}{The column label in the combined contig object in which 
 clonotype frequency will be calculated.}
 
 \item{proportion}{Whether to use the total frequency (FALSE) or the 
-proportion (TRUE) of the clonotype based on the groupBy variable.}
+proportion (TRUE) of the clonotype based on the group.by variable.}
 
 \item{filterNA}{Method to subset seurat object of barcodes without 
 clonotype information}
@@ -42,7 +42,7 @@ clonotype information}
 \item{cloneTypes}{The bins for the grouping based on frequency}
 
 \item{addLabel}{This will add a label to the frequency header, allowing
-the user to try multiple groupBy variables or recalculate frequencies after 
+the user to try multiple group.by variables or recalculate frequencies after 
 subseting the data.}
 }
 \value{
@@ -52,9 +52,9 @@ information
 \description{
 This function adds the immune receptor information to the seurat or 
 SCE object to the meta data. By defualt this function also calculates 
-the frequencies of the clonotypes by sequencing run (groupBy = "none"). 
+the frequencies of the clonotypes by sequencing run (group.by = "none"). 
 To change how the frequencies are calculated, select a column header for 
-the groupBy variable. Importantly, before using combineExpression() 
+the group.by variable. Importantly, before using combineExpression() 
 ensure the barcodes of the seurat or SCE object match the barcodes in the 
 output of the combinedContig() call. Check changeNames() to change the 
 prefix of the seurat object. If combining more 

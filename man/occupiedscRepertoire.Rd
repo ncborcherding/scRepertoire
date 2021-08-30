@@ -8,7 +8,9 @@ occupiedscRepertoire(
   sc,
   x.axis = "cluster",
   label = TRUE,
+  facet.by = NULL,
   proportion = FALSE,
+  na.include = FALSE,
   exportTable = FALSE
 )
 }
@@ -21,7 +23,11 @@ For SCE objects, the cluster variable must be in the meta data under
 
 \item{label}{Include the number of clonotype in each category by x.axis variable}
 
-\item{proportion}{Convert the stacked bars into relative proption}
+\item{facet.by}{The column header used for faceting the graph}
+
+\item{proportion}{Convert the stacked bars into relative proportion}
+
+\item{na.include}{Visualize NA values or not.}
 
 \item{exportTable}{Exports a table of the data into the global 
 environment in addition to the visualization}

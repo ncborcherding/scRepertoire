@@ -7,19 +7,19 @@
 lengthContig(
   df,
   cloneCall = "aa",
-  group = NULL,
+  group.by = NULL,
   scale = FALSE,
   chain = "both",
   exportTable = FALSE
 )
 }
 \arguments{
-\item{df}{The product of combineTCR(), combineBCR(), or expression2List()}
+\item{df}{The product of combineTCR(), combineBCR(), expression2List(), or combineExpression().}
 
 \item{cloneCall}{How to call the clonotype - CDR3 nucleotide (nt), 
 CDR3 amino acid (aa).}
 
-\item{group}{The group header for which you would like to analyze 
+\item{group.by}{The group header for which you would like to analyze 
 the data.}
 
 \item{scale}{Converts the graphs into density plots in order to show 
@@ -29,6 +29,9 @@ relative distributions.}
 e.g. "both", "TRA", "TRG", "IGH", "IGL"}
 
 \item{exportTable}{Returns the data frame used for forming the graph.}
+
+\item{split.by}{If using a single-cell object, the column header 
+to group the new list. NULL will return clusters.}
 }
 \value{
 ggplot of the discrete or relative length distributions of 

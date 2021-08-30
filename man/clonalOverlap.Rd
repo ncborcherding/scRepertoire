@@ -13,7 +13,7 @@ clonalOverlap(
 )
 }
 \arguments{
-\item{df}{The product of combineTCR(), combineBCR(),  or expression2List().}
+\item{df}{The product of combineTCR(), combineBCR(), expression2List(), or combineExpression().}
 
 \item{cloneCall}{How to call the clonotype - VDJC gene (gene), 
 CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
