@@ -226,9 +226,18 @@ lengthContig <- function(df, cloneCall = "aa",
         ylab <- "CDR3 (AA)"
     } else { stop("Please make a selection of the type of
                 CDR3 sequence to analyze by using `cloneCall`") }
-    cells <- df[[1]][1,"cellType"]
-    c1 <- cellT(cells)[[1]]
-    c2 <- cellT(cells)[[2]]
+    AB <- grep("TRA", df[[1]]$TCR1)
+    IG <- grep("IGH", df[[1]]$TCR1)
+    if (length(AB) > 1 && length(IG) == 0) {
+      c1 <- "TRA"
+      c2 <- "TRB"
+    } else if (length(AB) > 1) {
+      c1 <- "IGH"
+      c2 <- "IGL"
+    } else {
+      c1 <- "TRD"
+      c2 <- "TRG"
+    }
     xlab <- "Length"
     Con.df <- NULL
     df <- list.input.return(df, split.by)

@@ -4,12 +4,12 @@
 \alias{createHTOContigList}
 \title{Generate a contig list from a multiplexed experiment}
 \usage{
-createHTOContigList(contigs, sc, group.by = NULL)
+createHTOContigList(contig, sc, group.by = NULL)
 }
 \arguments{
-\item{sc}{The Seurat or SCE object.}
-
 \item{contig}{The filtered contig annotation file from multiplexed experiment}
+
+\item{sc}{The Seurat or SCE object.}
 }
 \value{
 Returns a list of contigs corresponding to the multiplexed Seurat 

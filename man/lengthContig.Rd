@@ -8,6 +8,7 @@ lengthContig(
   df,
   cloneCall = "aa",
   group.by = NULL,
+  split.by = NULL,
   scale = FALSE,
   chain = "both",
   exportTable = FALSE
@@ -22,6 +23,9 @@ CDR3 amino acid (aa).}
 \item{group.by}{The group header for which you would like to analyze 
 the data.}
 
+\item{split.by}{If using a single-cell object, the column header 
+to group the new list. NULL will return clusters.}
+
 \item{scale}{Converts the graphs into density plots in order to show 
 relative distributions.}
 
@@ -29,9 +33,6 @@ relative distributions.}
 e.g. "both", "TRA", "TRG", "IGH", "IGL"}
 
 \item{exportTable}{Returns the data frame used for forming the graph.}
-
-\item{split.by}{If using a single-cell object, the column header 
-to group the new list. NULL will return clusters.}
 }
 \value{
 ggplot of the discrete or relative length distributions of 
