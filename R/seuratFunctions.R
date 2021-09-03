@@ -472,7 +472,7 @@ createHTOContigList <- function(contig, sc, group.by = NULL){
   contig.list <- NULL
   checkSingleObject(sc)
   meta <- grabMeta(sc)
-  cont.tmp <- contigs[contigs$barcode %in% rownames(meta), ]
+  cont.tmp <- contig[contig$barcode %in% rownames(meta), ]
   if (length(group.by) > 1) {
     meta["group.by"] <- apply(meta[ , group.by] , 1 , paste , collapse = "." )
   } else {
