@@ -117,19 +117,24 @@ removingMulti <- function(final){
     return(final)
 }
 
-#Removing extra clonotypes in barcodes with > 2
+#Removing extra clonotypes in barcodes with > 2 productive contigs
 #' @import dplyr
 filteringMulti <- function(x) {
-    table <- subset(as.data.frame(table(x$barcode)), Freq >= 2)
-    barcodes <- as.character(unique(table$Var1))
-    multichain <- NULL
-    for (j in seq_along(barcodes)) {
+    x <- x %>%
+      group_by(barcode, chain) %>% 
+      top_n(n = 1, wt = reads)
+    table <- subset(as.data.frame(table(x$barcode)), Freq > 2)
+    if (nrow(table) > 0) {
+      barcodes <- as.character(unique(table$Var1))
+      multichain <- NULL
+      for (j in seq_along(barcodes)) {
         chain <- x[x$barcode == barcodes[j],] %>% 
-            group_by(barcode, chain) %>% top_n(n = 1, wt = reads)
-        multichain <- rbind(multichain, chain) }
-    `%!in%` = Negate(`%in%`)
+            group_by(barcode) %>% top_n(n = 2, wt = reads)
+        multichain <- rbind(multichain, chain) 
+        }
     x <- subset(x, barcode %!in% barcodes)
     x <- rbind(x, multichain) 
+    }
     return(x)
 }
 
@@ -338,7 +343,7 @@ parseTCR <- function(Con.df, unique_df, data2) {
             } else {Con.df[y,tcr2_lines] <- data2[location.i[1],data2_lines]}}}
 return(Con.df)}
 
-#Assiging positions for BCR contig data
+#Assigning positions for BCR contig data
 #' @author Gloria Kraus, Nick Bormann, Nick Borcherding
 parseBCR <- function(Con.df, unique_df, data2) {
     for (y in seq_along(unique_df)){

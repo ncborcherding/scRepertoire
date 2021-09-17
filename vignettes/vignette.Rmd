@@ -4,7 +4,7 @@ author:
   name: Nick Borcherding
   email: ncborch@gmail.com
   affiliation: Washington University in St. Louis, School of Medicine, St. Louis, MO, USA
-date: "August 20, 2021"
+date: "September 17th, 2021"
 output:
   BiocStyle::html_document:
     toc_float: true
@@ -373,13 +373,13 @@ If performed over the number of samples, such as the list elements, **group.by**
 
 
 ```{r}
-sub_combined <- clusterTCR(combined[[2]], chain = "TCRA", 
+sub_combined <- clusterTCR(combined[[2]], chain = "TRA", 
                            sequence = "aa", 
                            threshold = 0.85, group.by = NULL)
 
 sub_combined <- as.data.frame(sub_combined)
 
-counts_TCRAcluster <- table(sub_combined$TCRA_cluster)
+counts_TCRAcluster <- table(sub_combined$TRA_cluster)
 counts_TCRA<- table(sub_combined$cdr3_aa1)
 
 #Change in histogram range using clusters over exact amino acid sequence

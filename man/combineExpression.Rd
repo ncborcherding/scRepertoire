@@ -2,7 +2,7 @@
 % Please edit documentation in R/seuratFunctions.R
 \name{combineExpression}
 \alias{combineExpression}
-\title{Adding clonotype information to a seurat or SCE object}
+\title{Adding clonotype information to a Seurat or SCE object}
 \usage{
 combineExpression(
   df,
@@ -50,16 +50,16 @@ seurat or SingleCellExperiment object with attached clonotype
 information
 }
 \description{
-This function adds the immune receptor information to the seurat or 
-SCE object to the meta data. By defualt this function also calculates 
+This function adds the immune receptor information to the Seurat or 
+SCE object to the meta data. By default this function also calculates 
 the frequencies of the clonotypes by sequencing run (group.by = "none"). 
 To change how the frequencies are calculated, select a column header for 
 the group.by variable. Importantly, before using combineExpression() 
 ensure the barcodes of the seurat or SCE object match the barcodes in the 
 output of the combinedContig() call. Check changeNames() to change the 
-prefix of the seurat object. If combining more 
-than one immune receptor type, barcodes with both receptors will be removed
-during the combination process.
+prefix of the Seurat object. If combining more than one immune receptor 
+type, barcodes with both receptors will be removed during the combination 
+process.
 }
 \examples{
 #Getting the combined contigs

@@ -39,7 +39,8 @@ utils::globalVariables(c("heavy_lines", "light_lines", "l_lines", "k_lines",
 #' @param removeNA This will remove any chain without values.
 #' @param removeMulti This will remove barcodes with greater than 2 chains.
 #' @param filterMulti This option will allow for the selection of the 2 
-#' corresponding chains with the highest expression for a single barcode.
+#' corresponding chains with the highest expression for a single barcode. 
+#' Default is set to TRUE.
 
 #' @import dplyr
 #' @export
@@ -47,7 +48,7 @@ utils::globalVariables(c("heavy_lines", "light_lines", "l_lines", "k_lines",
 combineTCR <- function(df, samples = NULL, ID = NULL, 
                 cells = c("T-AB", "T-GD"), 
                 removeNA = FALSE, removeMulti = FALSE, 
-                filterMulti = FALSE) {
+                filterMulti = TRUE) {
     df <- checkList(df)
     out <- NULL
     final <- NULL
@@ -58,13 +59,16 @@ combineTCR <- function(df, samples = NULL, ID = NULL,
         df[[i]] <- subset(df[[i]], chain != "Multi")
         df[[i]] <- subset(df[[i]], chain %in% c(chain1, chain2))
         df[[i]] <- subset(df[[i]], productive %in% c(TRUE, "TRUE", "True", "true"))
-        if (nrow(df[[i]]) == 0) { stop("There are 0 contigs 
+        if (nrow(df[[i]]) == 0) { 
+        stop("There are 0 contigs 
                 after internal filtering - check the contig list to see 
-                if any issues exist for productive chains", call. = FALSE) }
+                if any issues exist for productive chains", call. = FALSE) 
+          }
         df[[i]] <- subset(df[[i]], cdr3 != "None")
         df[[i]]$sample <- samples[i]
         df[[i]]$ID <- ID[i]
-        if (filterMulti == TRUE) { df[[i]] <- filteringMulti(df[[i]]) }
+        if (filterMulti == TRUE) { 
+          df[[i]] <- filteringMulti(df[[i]]) }
         }
     if (!is.null(samples)) {
         out <- modifyBarcodes(df, samples, ID)
@@ -128,17 +132,21 @@ combineTCR <- function(df, samples = NULL, ID = NULL,
 #' #Data derived from the 10x Genomics intratumoral NSCLC B cells
 #' BCR <- read.csv("https://ncborcherding.github.io/vignettes/b_contigs.csv", 
 #' stringsAsFactors = FALSE)
-#' combined <- combineBCR(BCR, samples = "Patient1", ID = "Time1")
+#' combined <- combineBCR(BCR, samples = "Patient1", 
+#' ID = "Time1", threshold = 0.85)
 #' 
 #' @param df List of filtered contig annotations from 10x Genomics.
 #' @param samples The labels of samples (required).
 #' @param ID The additional sample labeling (optional).
+#' @param threshold The normalized edit distance to consider. The higher the number the more 
+#' similarity of sequence will be used for clustering.
 #' @param removeNA This will remove any chain without values.
 #' @param removeMulti This will remove barcodes with greater than 2 chains.
 #' @import dplyr
 #' @export
 #' @return List of clonotypes for individual cell barcodes
 combineBCR <- function(df, samples = NULL, ID = NULL, 
+                       threshold = 0.85,
                         removeNA = FALSE, 
                         removeMulti = FALSE) {
     df <- checkList(df)
@@ -220,45 +228,33 @@ lvCompare <- function(dictionary, gene, chain) {
     out <- NULL
     tmp <- na.omit(unique(dictionary[,chain]))
     length <- nchar(tmp)
-    matrix <- as.matrix(stringdistmatrix(tmp, method = "lv"))
-    out_matrix <- matrix(ncol = ncol(matrix), nrow=ncol(matrix))
-    for (j in seq_len(ncol(matrix))) {
-        for (k in seq_len(nrow(matrix))) {
-            if (j == k) {
-                out_matrix[j,k] <- NA
-            } else{
-                if (length[j] - length[k] >= 15) {
-                    out_matrix[j,k] <- matrix[j,k]/(max(length[j], length[k]))
-                    out_matrix[k,j] <- matrix[k,j]/(max(length[j], length[k]))
-                } else {
-                out_matrix[j,k] <- matrix[j,k]/((length[j]+ length[k])/2)
-                out_matrix[k,j] <- matrix[k,j]/((length[j]+ length[k])/2)
-                }
-            }
-        }
+    dist <- stringdistmatrix(tmp, method = "lv")
+    edge.list <- NULL
+    for (j in seq_len(length(tmp))) {
+      row <- SliceExtract_dist(dist,j)
+      norm.row <- row
+      for (k in seq_len(length(norm.row))) {
+        norm.row[k] <- 1- (norm.row[k]/mean(c(length[j],length[k])))
+      }
+      neighbor <- which(norm.row >= threshold)
+      knn.norm = data.frame("from" = j,
+                            "to" = neighbor)
+      edge.list <- rbind(edge.list, knn.norm)
     }
-    filtered <- which(out_matrix <= 0.15, arr.ind = TRUE)
-    if (nrow(filtered) > 0) { 
-        for (i in seq_len(nrow(filtered))) {
-            max <- max(filtered[i,])
-            min <- min(filtered[i,])
-            filtered[i,1] <- max
-            filtered[i,2] <- min
-        }
-        filtered <- unique(filtered) #removing redundant comparisons
-        out <- NULL
-        colnames(filtered) <- c("To", "From")
-        
-        g <- graph_from_data_frame(filtered)
-        components <- components(g, mode = c("weak"))
-        out <- data.frame("cluster" = components$membership, 
-                "filtered" = names(components$membership))
-        out$cluster <- paste0(gene, ":LD", ".", out$cluster)
-        out$filtered <- tmp[as.numeric(out$filtered)]
-        
-        uni_IG <- as.data.frame(unique(tmp[tmp %!in% out$filtered]))
-        colnames(uni_IG) <- "filtered"
-        uni_IG$cluster <- paste0(gene, ".", seq_len(nrow(uni_IG)))
+    if (nrow(edge.list) > 0) { 
+      edge.list <- unique(edge.list)
+      g <- graph_from_data_frame(edge.list)
+      components <- components(g, mode = c("weak"))
+      out <- data.frame("cluster" = components$membership, 
+                  "filtered" = names(components$membership))
+      filter <- which(table(out$cluster) > 1)
+      out <- subset(out, cluster %in% filter)
+      out$cluster <- paste0(gene, ":LD", ".", out$cluster)
+      out$filtered <- tmp[as.numeric(out$filtered)]
+      
+      uni_IG <- as.data.frame(unique(tmp[tmp %!in% out$filtered]))
+      colnames(uni_IG) <- "filtered"
+      uni_IG$cluster <- paste0(gene, ".", seq_len(nrow(uni_IG)))
     }
     output <- rbind.data.frame(out, uni_IG)
     colnames(output) <- c("Hclonotype", "IG")

@@ -1,15 +1,15 @@
-#' Adding clonotype information to a seurat or SCE object
+#' Adding clonotype information to a Seurat or SCE object
 #'
-#' This function adds the immune receptor information to the seurat or 
-#' SCE object to the meta data. By defualt this function also calculates 
+#' This function adds the immune receptor information to the Seurat or 
+#' SCE object to the meta data. By default this function also calculates 
 #' the frequencies of the clonotypes by sequencing run (group.by = "none"). 
 #' To change how the frequencies are calculated, select a column header for 
 #' the group.by variable. Importantly, before using combineExpression() 
 #' ensure the barcodes of the seurat or SCE object match the barcodes in the 
 #' output of the combinedContig() call. Check changeNames() to change the 
-#' prefix of the seurat object. If combining more 
-#' than one immune receptor type, barcodes with both receptors will be removed
-#' during the combination process.
+#' prefix of the Seurat object. If combining more than one immune receptor 
+#' type, barcodes with both receptors will be removed during the combination 
+#' process.
 #'
 #' @examples
 #' #Getting the combined contigs
@@ -450,20 +450,21 @@ clonalOverlay <- function(sc, reduction = NULL, freq.cutpoint = 30, bins = 25, f
 #' multiple samples or conditions simultaneously. Unfortunately, the hashing information
 #' is not stored in the TCR sequence data. In order preprocess and form a contig list
 #' for downstream analysis in scRepertoire, createHTOContigList() take the filtered contig 
-#' annotation output and the single-cell RNA object to create the list.
+#' annotation output and the single-cell RNA object to create the list. If the single-cell
+#' object has multiple sequencing runs combined, this function will need to be run multiple 
+#' times.
+#' 
+#' @examples
+#' \dontrun{
+#' filtered.contig <- read.csv(".../Sample/outs/filtered_contig_annotations.csv")
+#' contig.list <- createHTOContigList(contig = filtered.contig, 
+#' sc = Seurat.Obj, group.by = "HTO_maxID")
+#' }
 #' 
 #' @param contig The filtered contig annotation file from multiplexed experiment
 #' @param sc The Seurat or SCE object.
-#' @param group.by One or more meta data headers to create the contig list based on.
+#' @param group.by One or more meta data headers to create the contig list based on. 
 #' If more than one header listed, the function combines them into a single variable.
-#'
-#'\dontrun{
-#' @examples
-#' filtered.contig <- read.csv(".../Sample/outs/filtered_contig_annotations.csv")
-#' contig.list <- createHTOContigList(filtered.contig, 
-#' Seurat.Obj, group.by = "HTO_maxID")
-#' }
-#' 
 #' @export
 #' @return Returns a list of contigs corresponding to the multiplexed Seurat 
 #' or Single-Cell Experiment object

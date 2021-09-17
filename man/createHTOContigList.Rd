@@ -10,6 +10,9 @@ createHTOContigList(contig, sc, group.by = NULL)
 \item{contig}{The filtered contig annotation file from multiplexed experiment}
 
 \item{sc}{The Seurat or SCE object.}
+
+\item{group.by}{One or more meta data headers to create the contig list based on. 
+If more than one header listed, the function combines them into a single variable.}
 }
 \value{
 Returns a list of contigs corresponding to the multiplexed Seurat 
@@ -20,5 +23,15 @@ Multiplexing single-cell sequencing runs is an efficient method for quantifying
 multiple samples or conditions simultaneously. Unfortunately, the hashing information
 is not stored in the TCR sequence data. In order preprocess and form a contig list
 for downstream analysis in scRepertoire, createHTOContigList() take the filtered contig 
-annotation output and the single-cell RNA object to create the list.
+annotation output and the single-cell RNA object to create the list. If the single-cell
+object has multiple sequencing runs combined, this function will need to be run multiple 
+times.
+}
+\examples{
+\dontrun{
+filtered.contig <- read.csv(".../Sample/outs/filtered_contig_annotations.csv")
+contig.list <- createHTOContigList(contig = filtered.contig, 
+sc = Seurat.Obj, group.by = "HTO_maxID")
+}
+
 }

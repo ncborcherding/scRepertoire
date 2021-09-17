@@ -13,9 +13,9 @@ clusterTCR(
 )
 }
 \arguments{
-\item{df}{The product of CombineTCR() or CombineBCR().}
+\item{df}{The product of combineTCR() or exppression2List().}
 
-\item{chain}{The TCR to cluster}
+\item{chain}{The TCR to cluster - TRA, TRB, TRG, TRD}
 
 \item{sequence}{Clustering based on either "aa" or "nt"}
 
@@ -40,6 +40,6 @@ take some time to calculate the distances and cluster.
 combined <- combineTCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), 
 rep(c("P", "T"), 3), cells ="T-AB")
 
-sub_combined <- clusterTCR(combined[[2]], chain = "TCRA", sequence = "aa")
+sub_combined <- clusterTCR(combined[[2]], chain = "TRA", sequence = "aa")
 
 }

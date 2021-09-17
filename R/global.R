@@ -50,5 +50,7 @@
     utils::globalVariables ("contigs")
     utils::globalVariables ("group.by")
     utils::globalVariables ("split.by")
+    utils::globalVariables ("cluster")
+    utils::globalVariables ("threshold")
     invisible ()
 }
