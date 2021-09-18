@@ -25,6 +25,7 @@
 #' @importFrom igraph graph_from_data_frame components
 #' @importFrom plyr join
 #' @importFrom dplyr bind_rows
+#' @importFrom stringr str_split
 #' @export
 #' @return List of clonotypes for individual cell barcodes
 

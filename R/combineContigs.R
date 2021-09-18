@@ -40,7 +40,6 @@ utils::globalVariables(c("heavy_lines", "light_lines", "l_lines", "k_lines",
 #' @param removeMulti This will remove barcodes with greater than 2 chains.
 #' @param filterMulti This option will allow for the selection of the 2 
 #' corresponding chains with the highest expression for a single barcode. 
-#' Default is set to TRUE.
 
 #' @import dplyr
 #' @export
@@ -48,7 +47,7 @@ utils::globalVariables(c("heavy_lines", "light_lines", "l_lines", "k_lines",
 combineTCR <- function(df, samples = NULL, ID = NULL, 
                 cells = c("T-AB", "T-GD"), 
                 removeNA = FALSE, removeMulti = FALSE, 
-                filterMulti = TRUE) {
+                filterMulti = FALSE) {
     df <- checkList(df)
     out <- NULL
     final <- NULL
@@ -182,8 +181,8 @@ combineBCR <- function(df, samples = NULL, ID = NULL,
             mutate(length2 = nchar(cdr3_nt2))
         final[[i]] <- data3 }
     dictionary <- bind_rows(final)
-    IGH <- lvCompare(dictionary, "IGH", "cdr3_nt1")
-    IGLC <- lvCompare(dictionary, "IGLC", "cdr3_nt2")
+    IGH <- lvCompare(dictionary, "IGH", "cdr3_nt1", threshold)
+    IGLC <- lvCompare(dictionary, "IGLC", "cdr3_nt2", threshold)
     for(i in seq_along(final)) {
         final[[i]]<-merge(final[[i]],IGH,by.x="cdr3_nt1",by.y="IG",all.x=TRUE)
         final[[i]]<-merge(final[[i]],IGLC,by.x="cdr3_nt2",by.y="IG",all.x=TRUE)
@@ -223,7 +222,7 @@ combineBCR <- function(df, samples = NULL, ID = NULL,
 # nucleotide sequence.
 #' @importFrom stringdist stringdistmatrix
 #' @importFrom igraph graph_from_data_frame components
-lvCompare <- function(dictionary, gene, chain) {
+lvCompare <- function(dictionary, gene, chain, threshold) {
     overlap <- NULL
     out <- NULL
     tmp <- na.omit(unique(dictionary[,chain]))

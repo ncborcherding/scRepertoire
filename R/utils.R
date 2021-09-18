@@ -173,7 +173,7 @@ diversityCall <- function(data) {
     return(out)
 }
 
-#Organizing list of contigs for vizualization
+#Organizing list of contigs for visualization
 parseContigs <- function(df, i, names, cloneCall) {
     data <- df[[i]]
     data1 <- data %>% group_by(data[,cloneCall]) %>%
