@@ -2,6 +2,7 @@ CHANGES IN VERSION 1.3.4
 ------------------------
 * Modification in clusterTCR() and combineBCR() to speed up the comparison and use less memory
 * FilteringMulti, now isolates the top contig by chain, then for barcodes with chains > 2, isolates the top expressing chains. This substantially increases the speed of the filtering step. 
+* Modified makeGenes() internal function to use strings str_c()
 
 
 CHANGES IN VERSION 1.3.3

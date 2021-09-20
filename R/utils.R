@@ -451,23 +451,34 @@ assignCT <- function(cellType, Con.df) {
 return(Con.df)
 }
 
+data2 <- data2 %>% 
+  group_by(chain) %>%
+  unite("TCR1", c(v_gene,  j_gene, c_gene), sep = ".", remove = FALSE)
+
+data2 <- data2 %>% 
+  mutate(TCR1 = ifelse(chain == chain1, str_c(v_gene,  j_gene, c_gene, sep = "."), NA)) %>%
+  mutate(TCR2 = ifelse(chain == chain2, str_c(v_gene, d_gene,  j_gene,  c_gene, sep = "."), NA))
+
+
+
 #Sorting the V/D/J/C gene sequences for T and B cells
+#' @importFrom stringr str_c
 makeGenes <- function(cellType, data2, chain1, chain2) {
     if(cellType %in% c("T-AB", "T-GD")) {
         data2 <- data2 %>% 
-            mutate(TCR1 = ifelse(chain == chain1, paste(with(data2, 
-            interaction(v_gene,  j_gene, c_gene))), NA)) %>%
-            mutate(TCR2 = ifelse(chain == chain2, paste(with(data2, 
-            interaction(v_gene, d_gene,  j_gene,  c_gene))), NA))
+            mutate(TCR1 = ifelse(chain == chain1, 
+                  str_c(v_gene,  j_gene, c_gene, sep = "."), NA)) %>%
+            mutate(TCR2 = ifelse(chain == chain2, 
+                  str_c(v_gene, d_gene,  j_gene,  c_gene, sep = "."), NA))
     }
     else {
         data2 <- data2 %>% 
-            mutate(IGKct = ifelse(chain == "IGK", paste(with(data2, 
-            interaction(v_gene,  j_gene, c_gene))), NA)) %>%
-            mutate(IGLct = ifelse(chain == "IGL", paste(with(data2, 
-            interaction(v_gene,  j_gene, c_gene))), NA)) %>%
-            mutate(IGHct = ifelse(chain == "IGH", paste(with(data2, 
-            interaction(v_gene, d_gene, j_gene, c_gene))), NA))
+            mutate(IGKct = ifelse(chain == "IGK", 
+                str_c(v_gene,  j_gene, c_gene, sep = "."), NA)) %>%
+            mutate(IGLct = ifelse(chain == "IGL", 
+                str_c(v_gene,  j_gene, c_gene, sep = "."), NA)) %>%
+            mutate(IGHct = ifelse(chain == "IGH",
+                str_c(v_gene, d_gene,  j_gene,  c_gene, sep = "."), NA))
     }
     return(data2)
     
