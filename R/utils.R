@@ -451,15 +451,6 @@ assignCT <- function(cellType, Con.df) {
 return(Con.df)
 }
 
-data2 <- data2 %>% 
-  group_by(chain) %>%
-  unite("TCR1", c(v_gene,  j_gene, c_gene), sep = ".", remove = FALSE)
-
-data2 <- data2 %>% 
-  mutate(TCR1 = ifelse(chain == chain1, str_c(v_gene,  j_gene, c_gene, sep = "."), NA)) %>%
-  mutate(TCR2 = ifelse(chain == chain2, str_c(v_gene, d_gene,  j_gene,  c_gene, sep = "."), NA))
-
-
 
 #Sorting the V/D/J/C gene sequences for T and B cells
 #' @importFrom stringr str_c
