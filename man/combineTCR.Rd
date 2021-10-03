@@ -8,7 +8,7 @@ combineTCR(
   df,
   samples = NULL,
   ID = NULL,
-  cells = c("T-AB", "T-GD"),
+  cells = "T-AB",
   removeNA = FALSE,
   removeMulti = FALSE,
   filterMulti = FALSE
@@ -21,7 +21,8 @@ combineTCR(
 
 \item{ID}{The additional sample labeling (optional).}
 
-\item{cells}{The type of T cell - T cell-AB or T cell-GD}
+\item{cells}{The type of T cell - T cell-AB or T cell-GD. Only 1 T cell type can
+be called at once.}
 
 \item{removeNA}{This will remove any chain without values.}
 

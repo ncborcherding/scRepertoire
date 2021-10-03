@@ -9,7 +9,8 @@ combineTRUST4(
   samples = NULL,
   ID = NULL,
   cells = c("T-AB", "T-GD", "B"),
-  removeNA = FALSE
+  removeNA = FALSE,
+  threshold = 0.85
 )
 }
 \arguments{
@@ -22,6 +23,10 @@ combineTRUST4(
 \item{cells}{The type of cell - T cell-AB or T cell-GD, or B cell}
 
 \item{removeNA}{This will remove any chain without values.}
+
+\item{threshold}{If combining B cells - the normalized edit 
+distance to consider. The higher the number the more similarity 
+of sequence will be used for clustering.}
 }
 \value{
 List of clonotypes for individual cell barcodes

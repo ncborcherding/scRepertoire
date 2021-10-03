@@ -35,7 +35,8 @@ utils::globalVariables(c("heavy_lines", "light_lines", "l_lines", "k_lines",
 #' @param df List of filtered contig annotations from 10x Genomics.
 #' @param samples The labels of samples (required).
 #' @param ID The additional sample labeling (optional).
-#' @param cells The type of T cell - T cell-AB or T cell-GD
+#' @param cells The type of T cell - T cell-AB or T cell-GD. Only 1 T cell type can
+#' be called at once. 
 #' @param removeNA This will remove any chain without values.
 #' @param removeMulti This will remove barcodes with greater than 2 chains.
 #' @param filterMulti This option will allow for the selection of the 2 
@@ -45,7 +46,7 @@ utils::globalVariables(c("heavy_lines", "light_lines", "l_lines", "k_lines",
 #' @export
 #' @return List of clonotypes for individual cell barcodes
 combineTCR <- function(df, samples = NULL, ID = NULL, 
-                cells = c("T-AB", "T-GD"), 
+                cells = "T-AB", 
                 removeNA = FALSE, removeMulti = FALSE, 
                 filterMulti = FALSE) {
     df <- checkList(df)
