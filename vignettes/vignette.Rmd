@@ -255,8 +255,9 @@ Last of the basic analysis visualizations is the relative usage of genes of the 
 + "bar" for a bar chart  
 + "heatmap" for a heatmap  
 
-**separate**  
-Variable to separate the counts along the y-axis  
+**y.axis**  
+Variable to separate the counts along the y-axis. If not specified
+the defualt is to sperate by the list element names.
 
 **scale**  
 + TRUE to scale the graph by number of genes per sample  
@@ -268,6 +269,18 @@ Variable to separate the counts along the y-axis
 
 ```{r}
 vizGenes(combined, gene = "V", chain = "TRB", plot = "bar", scale = TRUE)
+```
+
+We can also use `vizGenes()` to look at the usage of genes in a single chain. So for example say we are interesting in the diference in TRB V and J usage between tumor and peripheral blood samples - we can easily take a look at this using the following code:
+
+```{r}
+#Peripheral Blood
+vizGenes(combined[c(1,3,5)], gene = "V", chain = "TRB", 
+         y.axis = "J", plot = "heatmap", scale = TRUE, order = "variance")
+
+#Tumor Infiltrating
+vizGenes(combined[c(2,4,6)], gene = "V", chain = "TRB", 
+         y.axis = "J", plot = "heatmap", scale = TRUE, order = "variance")
 ```
 
 ***

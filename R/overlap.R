@@ -23,18 +23,21 @@
 #' VDJC gene + CDR3 nucleotide (gene+nt).
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL"
-#' @param method The method to calculate the overlap, either the overlap 
-#' coefficient, morisita or jaccard indices.
-#' @param exportTable Exports a table of the data into the global 
-#' environment in addition to the visualization
+#' @param method The method to calculate the overlap, either the "overlap" 
+#' coefficient, "morisita", "jaccard" indices, or "raw" for the base numbers.
+#' @param split.by If using a single-cell object, the column header 
+#' to group the new list. NULL will return clusters.
+#' @param exportTable Returns the data frame used for forming the graph
 #' @importFrom stringr str_sort
 #' @importFrom reshape2 melt
 #' @export
 #' @return ggplot of the clonotypic overlap between elements of a list
-clonalOverlap <- function(df, cloneCall = c("gene", "nt", "aa", "gene+nt"), 
-                                method = c("overlap", "morisita", "jaccard"), 
-                                chain = "both", exportTable = FALSE){
-    df <- list.input.return(df)
+clonalOverlap <- function(df, cloneCall = "gene+nt", 
+                                method = c("overlap", "morisita", "jaccard", "raw"), 
+                                chain = "both", 
+                                split.by = NULL, 
+                                exportTable = FALSE){
+    df <- list.input.return(df, split.by)
     cloneCall <- theCall(cloneCall)
     df <- checkBlanks(df, cloneCall)
     df <- df[order(names(df))]
@@ -57,6 +60,8 @@ clonalOverlap <- function(df, cloneCall = c("gene", "nt", "aa", "gene+nt"),
         coef_matrix <- morisitaIndex(df, length, cloneCall, coef_matrix)
     } else if (method == "jaccard") {
         coef_matrix <- jaccardIndex(df, length, cloneCall, coef_matrix)}
+    } else if (method == "raw") {
+        coef_matrix <- rawIndex(df, length, cloneCall, coef_matrix)}
     coef_matrix$names <- rownames(coef_matrix)
     if (exportTable == TRUE) { return(coef_matrix) }
     coef_matrix <- suppressMessages(melt(coef_matrix))[,-1]

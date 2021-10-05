@@ -1,8 +1,7 @@
 "%!in%" <- Negate("%in%")
 
-
 #Use to shuffle between chains
-off.the.chain <- function(dat, chain,cloneCall) {
+off.the.chain <- function(dat, chain, cloneCall) {
   chain1 <- toupper(chain) #to just make it easier
   if (chain1 %in% c("TRA", "TRD", "IGH")) {
     x <- 1
@@ -37,6 +36,7 @@ checkList <- function(df) {
     return(df)
 }
 
+#' @import dplyr bind_rows
 bound.input.return <- function(df) {
   if (inherits(x=df, what ="Seurat") | inherits(x=df, what ="SummarizedExperiment")) {
     df <- grabMeta(df)
@@ -236,6 +236,27 @@ jaccardIndex <- function(df, length, cloneCall, coef_matrix) {
       } 
     }
   }
+  return(coef_matrix)
+}
+
+rawIndex <- function(df, length, cloneCall, coef_matrix) {
+  for (i in seq_along(length)){
+    df.i <- df[[i]]
+    df.i <- df.i[,c("barcode",cloneCall)]
+    df.i_unique <- df.i[!duplicated(df.i[,cloneCall]),]
+    for (j in seq_along(length)){
+      if (i >= j){ next }
+      else { 
+        df.j <- df[[j]]
+        df.j <- df.j[,c("barcode",cloneCall)]
+        df.j_unique <- df.j[!duplicated(df.j[,cloneCall]),]
+        overlap <- length(intersect(df.i_unique[,cloneCall], 
+                                    df.j_unique[,cloneCall]))
+        coef_matrix[i,j] <- overlap
+      } 
+    }
+  }
+  return(coef_matrix)
 }
 
 
@@ -473,4 +494,39 @@ makeGenes <- function(cellType, data2, chain1, chain2) {
     }
     return(data2)
     
+}
+
+short.check <- function(df, cloneCall) {
+  for (x in seq_along(df)) {
+    min.tmp <- length(which(!is.na(unique(df[[x]][,cloneCall]))))
+    min <- c(min.tmp, min)
+  }
+  min <- min(min)
+  return(min)
+}
+
+select.gene <- function(df, chain, gene, label) {
+  if (chain %in% c("TRB", "TRG", "IGH")) {
+    gene <- unname(c(V = 1, D = 2, J = 3, C = 4)[gene])
+  } else {
+    gene <- unname(c(V = 1, J = 2, C = 3)[gene])
+  }
+  if (ncol(str_split(df[,"CTgene"], "_", simplify = TRUE)) == 1) {
+    C1 <- str_split(df[,"CTgene"], "_", simplify = TRUE)[,1] 
+    C1 <- str_split(C1, "[.]", simplify = TRUE)[,gene] 
+    df$C1 <- C1
+    x <- "C1"
+  } else {
+    C1 <- str_split(df[,"CTgene"], "_", simplify = TRUE)[,1] 
+    C1 <- str_split(C1, "[.]", simplify = TRUE)[,gene] 
+    C2 <- str_split(df[,"CTgene"], "_", simplify = TRUE)[,2] 
+    C2 <- str_split(C2, "[.]", simplify = TRUE)[,gene] 
+    df$C1 <- C1
+    df$C2 <- C2
+    if (chain %in% c("TRA", "TRD", "IGH")) {
+      x <- "C1"}
+    else if (chain %in% c("TRB", "TRG", "IGL")) {
+      x <- "C2"}
+  }
+  return(df)
 }

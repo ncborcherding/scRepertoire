@@ -42,7 +42,6 @@ clonalDiversity <- function(df, cloneCall = "gene+nt", chain = "both",
   if (chain != "both") {
     df[[i]] <- off.the.chain(df[[i]], chain, cloneCall)
   }
-  min <- c()
   mat <- NULL
   mat_a <- NULL
   sample <- c()
@@ -52,12 +51,7 @@ clonalDiversity <- function(df, cloneCall = "gene+nt", chain = "both",
     group.element.uniq <- unique(df$group.element)
     df <- split(df, f = df[,"group.element"])
   }
-  for (x in seq_along(df)) {
-    min.tmp <- length(which(!is.na(unique(df[[x]][,cloneCall]))))
-    min <- c(min.tmp, min)
-  }
-  min <- min(min)
-  
+  min <- short.check(df, cloneCall)
   for (i in seq_along(df)) {
       data <- as.data.frame(table(df[[i]][,cloneCall]))
       mat_a <- NULL
