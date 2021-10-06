@@ -36,7 +36,7 @@ checkList <- function(df) {
     return(df)
 }
 
-#' @import dplyr bind_rows
+#' @importFrom dplyr bind_rows
 bound.input.return <- function(df) {
   if (inherits(x=df, what ="Seurat") | inherits(x=df, what ="SummarizedExperiment")) {
     df <- grabMeta(df)
@@ -497,6 +497,7 @@ makeGenes <- function(cellType, data2, chain1, chain2) {
 }
 
 short.check <- function(df, cloneCall) {
+  min <- c()
   for (x in seq_along(df)) {
     min.tmp <- length(which(!is.na(unique(df[[x]][,cloneCall]))))
     min <- c(min.tmp, min)

@@ -4,7 +4,7 @@
 #' inverse Simpson, Chao1 index, abundance-based coverage estimators 
 #' (ACE), and 1-Pielou's measure of species evenness by sample or group. 
 #' The function automatically down samples the
-#' diversity metrics using 100 boot straps The group paramter can be 
+#' diversity metrics using 100 boot straps The group parameter can be 
 #' used to condense the individual samples. If a matrix output for 
 #' the data is preferred, set exportTable = TRUE.
 #'
@@ -23,6 +23,8 @@
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL"
 #' @param group.by Variable in which to group the diversity calculation
 #' @param x.axis Additional variable in which to split the x.axis
+#' @param split.by If using a single-cell object, the column header 
+#' to group the new list. NULL will return clusters.
 #' @param exportTable Exports a table of the data into the global environment 
 #' in addition to the visualization
 #' @param n.boots number of bootstraps to downsample in order to get mean diversity
@@ -34,13 +36,15 @@
 #' @return ggplot of the diversity of clonotype sequences across list
 #' @author Andrew Malone, Nick Borcherding
 clonalDiversity <- function(df, cloneCall = "gene+nt", chain = "both",
-                            group.by = NULL, x.axis = NULL,
+                            group.by = NULL, x.axis = NULL, split.by = NULL,
                             exportTable = FALSE, n.boots = 100) {
-  df <- list.input.return(df)
+  df <- list.input.return(df, split.by)
   cloneCall <- theCall(cloneCall)
   df <- checkBlanks(df, cloneCall)
-  if (chain != "both") {
-    df[[i]] <- off.the.chain(df[[i]], chain, cloneCall)
+  for (i in seq_along(df)) {
+    if (chain != "both") {
+      df[[i]] <- off.the.chain(df[[i]], chain, cloneCall)
+    }
   }
   mat <- NULL
   mat_a <- NULL

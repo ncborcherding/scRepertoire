@@ -4,7 +4,7 @@ author:
   name: Nick Borcherding
   email: ncborch@gmail.com
   affiliation: Washington University in St. Louis, School of Medicine, St. Louis, MO, USA
-date: "September 17th, 2021"
+date: "October 6, 2021"
 output:
   BiocStyle::html_document:
     toc_float: true
@@ -571,6 +571,22 @@ In order to use the ```StartracDiversity()``` function, you will need to include
 ```{r}
 StartracDiversity(screp_example, type = "Type", sample = "Patient", by = "overall")
 ```
+
+## Clonotype Bias
+
+A new metric proposed by [Massimo et al](https://www.biorxiv.org/content/10.1101/2021.09.20.458613v1), clonal bias, like Startac is a clonal metric that seeks to quantify how individual clones are skewed towards a  specific cellular compartment or cluster. With the minimal example present in the in-built vignette, this will not be as enlightening as when we use a full single-cell object.
+
+**split.by**   
+* Variable used to calculate the baseline frequencies  
+
+**group.by**  
+* The compartment/variable used for the purpose of the comparison  
+
+```{r}
+clonotypeBias(screp_example, cloneCall = "aa", split.by = "Type", group.by = "cluster",
+n.boots = 20, min.expand =1)
+```
+
 
 # Working with clonotypes after clustering  
 

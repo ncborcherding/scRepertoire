@@ -52,5 +52,9 @@
     utils::globalVariables ("split.by")
     utils::globalVariables ("cluster")
     utils::globalVariables ("threshold")
+    utils::globalVariables ("ncells")
+    utils::globalVariables ("Top_State")
+    utils::globalVariables ("mat")
+    utils::globalVariables ("element.names")
     invisible ()
 }

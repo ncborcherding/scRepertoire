@@ -1,12 +1,10 @@
 #' Examining the clonal overlap between groups or samples
 #'
-#' This functions allows for the caclulation and visualizations of the 
-#' overlap coefficient or morisita index for clonotypes using the product 
-#' of combineTCR(), combineBCR() or expression2list(). The overlap 
-#' coefficient is calculated using the intersection of clonotypes 
-#' divided by the length of the smallest componenet. Morisita index is 
-#' estimating the dispersion of a population, more information can be found 
-#' [here](https://en.wikipedia.org/wiki/Morisita%27s_overlap_index).
+#' This functions allows for the calculation and visualizations of the 
+#' overlap coefficient, morisita, or jaccard index for clonotypes 
+#' using the product of combineTCR(), combineBCR() or expression2list(). 
+#' The overlap coefficient is calculated using the intersection of clonotypes 
+#' divided by the length of the smallest component. 
 #' If a matrix output for the data is preferred, set exportTable = TRUE.
 #'
 #' @examples
@@ -59,9 +57,10 @@ clonalOverlap <- function(df, cloneCall = "gene+nt",
     } else if (method == "morisita") {
         coef_matrix <- morisitaIndex(df, length, cloneCall, coef_matrix)
     } else if (method == "jaccard") {
-        coef_matrix <- jaccardIndex(df, length, cloneCall, coef_matrix)}
+        coef_matrix <- jaccardIndex(df, length, cloneCall, coef_matrix)
     } else if (method == "raw") {
-        coef_matrix <- rawIndex(df, length, cloneCall, coef_matrix)}
+        coef_matrix <- rawIndex(df, length, cloneCall, coef_matrix)
+    }
     coef_matrix$names <- rownames(coef_matrix)
     if (exportTable == TRUE) { return(coef_matrix) }
     coef_matrix <- suppressMessages(melt(coef_matrix))[,-1]

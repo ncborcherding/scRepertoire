@@ -29,7 +29,11 @@
 #' @export
 #' @return List of clonotypes for individual cell barcodes
 
-clusterTCR <- function(df, chain = NULL, sequence = NULL, threshold = 0.85, group.by = NULL) {
+clusterTCR <- function(df, 
+                       chain = NULL, 
+                       sequence = NULL, t
+                       hreshold = 0.85, 
+                       group.by = NULL) {
     output.list <- list()
     df <- checkList(df)
     if(chain %in% c("TRA", "TRG")) {

@@ -598,6 +598,7 @@ makingLodes <- function(meta2, color, alpha, facet, set.axes) {
 #' @param exportTable Returns the data frame used for forming the graph.
 #' @import ggplot2
 #' @importFrom stringr str_split
+#' @importFrom stats sd
 #' @export
 #' @return ggplot bar diagram of vgene counts
 

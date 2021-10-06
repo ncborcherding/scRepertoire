@@ -6,6 +6,7 @@ CHANGES IN VERSION 1.3.4
 * Added threshold parameter to combineTRUST4 for B cell manipulation 
 * Changed combineTCR function to prevent cell type mix up and clarified in function documentation.
 * vizGenes can now be used to look at other component genes of the receptor and "separate" parameter was replaced by "y.axis" parameter.
+* Added clonotypeBias() function for inter-cluster comparison.
 
 
 CHANGES IN VERSION 1.3.3

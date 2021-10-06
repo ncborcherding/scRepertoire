@@ -10,6 +10,7 @@ clonalDiversity(
   chain = "both",
   group.by = NULL,
   x.axis = NULL,
+  split.by = NULL,
   exportTable = FALSE,
   n.boots = 100
 )
@@ -28,6 +29,9 @@ e.g. "both", "TRA", "TRG", "IGH", "IGL"}
 
 \item{x.axis}{Additional variable in which to split the x.axis}
 
+\item{split.by}{If using a single-cell object, the column header 
+to group the new list. NULL will return clusters.}
+
 \item{exportTable}{Exports a table of the data into the global environment 
 in addition to the visualization}
 
@@ -41,7 +45,7 @@ This function calculates traditional measures of diversity - Shannon,
 inverse Simpson, Chao1 index, abundance-based coverage estimators 
 (ACE), and 1-Pielou's measure of species evenness by sample or group. 
 The function automatically down samples the
-diversity metrics using 100 boot straps The group paramter can be 
+diversity metrics using 100 boot straps The group parameter can be 
 used to condense the individual samples. If a matrix output for 
 the data is preferred, set exportTable = TRUE.
 }
