@@ -85,10 +85,12 @@ clusterTCR <- function(df,
           
           uni_IG <- as.data.frame(unique(dictionary[dictionary %!in% out$filtered]))
           colnames(uni_IG) <- "filtered"
-          if (list.length == 1) {
-            uni_IG$cluster <- paste0(chain, ".", seq_len(nrow(uni_IG))) 
-          } else {
-            uni_IG$cluster <- paste0(names(bound)[x], ".", chain, ".", seq_len(nrow(uni_IG))) 
+          if (nrow(uni_IG) > 0) {
+            if (list.length == 1) {
+              uni_IG$cluster <- paste0(chain, ".", seq_len(nrow(uni_IG))) 
+            } else {
+              uni_IG$cluster <- paste0(names(bound)[x], ".", chain, ".", seq_len(nrow(uni_IG))) 
+            }
           }
       
       output <- rbind.data.frame(out, uni_IG)

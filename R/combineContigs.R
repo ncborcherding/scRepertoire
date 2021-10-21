@@ -59,11 +59,10 @@ combineTCR <- function(df, samples = NULL, ID = NULL,
         df[[i]] <- subset(df[[i]], chain != "Multi")
         df[[i]] <- subset(df[[i]], chain %in% c(chain1, chain2))
         df[[i]] <- subset(df[[i]], productive %in% c(TRUE, "TRUE", "True", "true"))
-        if (nrow(df[[i]]) == 0) { 
-        stop("There are 0 contigs 
-                after internal filtering - check the contig list to see 
-                if any issues exist for productive chains", call. = FALSE) 
-          }
+        if (nrow(df[[i]]) == 0) { stop(
+          "There are 0 contigs after internal filtering -
+        check the contig list to see if any issues exist 
+        for productive chains", call. = FALSE) }
         df[[i]] <- subset(df[[i]], cdr3 != "None")
         df[[i]]$sample <- samples[i]
         df[[i]]$ID <- ID[i]
@@ -157,9 +156,10 @@ combineBCR <- function(df, samples = NULL, ID = NULL,
     for (i in seq_along(df)) {
         df[[i]] <- subset(df[[i]], chain %in% c("IGH", "IGK", "IGL"))
         df[[i]] <- subset(df[[i]], productive %in% c(TRUE, "TRUE", "True", "true"))
-        if (nrow(df[[i]]) == 0) { stop("There are 0 contigs 
-                after internal filtering - check the contig list to see 
-                if any issues exist for productive chains", call. = FALSE) }
+        if (nrow(df[[i]]) == 0) { stop(
+                "There are 0 contigs after internal filtering -
+        check the contig list to see if any issues exist 
+        for productive chains", call. = FALSE) }
         df[[i]] <- df[[i]] %>% group_by(barcode,chain) %>% top_n(n=1,wt=reads)
         df[[i]]$sample <- samples[i]
         df[[i]]$ID <- ID[i]
@@ -254,7 +254,9 @@ lvCompare <- function(dictionary, gene, chain, threshold) {
       
       uni_IG <- as.data.frame(unique(tmp[tmp %!in% out$filtered]))
       colnames(uni_IG) <- "filtered"
-      uni_IG$cluster <- paste0(gene, ".", seq_len(nrow(uni_IG)))
+      if (nrow(uni_IG) > 0) {
+        uni_IG$cluster <- paste0(gene, ".", seq_len(nrow(uni_IG)))
+      }
     }
     output <- rbind.data.frame(out, uni_IG)
     colnames(output) <- c("Hclonotype", "IG")
