@@ -56,5 +56,6 @@
     utils::globalVariables ("Top_State")
     utils::globalVariables ("mat")
     utils::globalVariables ("element.names")
+    utils::globalVariables ("Top_state")
     invisible ()
 }

@@ -19,7 +19,7 @@ off.the.chain <- function(dat, chain, cloneCall) {
 checkBlanks <- function(df, cloneCall) {
     for (i in seq_along(df)) {
         if (length(df[[i]][,cloneCall]) == length(which(is.na(df[[i]][,cloneCall]))) | 
-            length(!is.na(df[[i]][,cloneCall])) == 0 | 
+            length(which(!is.na(df[[i]][,cloneCall]))) == 0 | 
             nrow(df[[i]]) == 0) {
             df[[i]] <- NULL
         } else {
@@ -373,13 +373,17 @@ parseBCR <- function(Con.df, unique_df, data2) {
         
         if (length(location.i) == 2){
             if (is.na(data2[location.i[1],c("IGHct")])) {
-                Con.df[y,heavy_lines]<-data2[location.i[2], h_lines]
+                if(is.na(data2[location.i[2],c("IGLct")]) & is.na(data2[location.i[2],c("IGKct")])){
+                  Con.df[y,heavy_lines]<-data2[location.i[2], h_lines]
+                }
                 if (is.na(data2[location.i[1],c("IGKct")])) {
                     Con.df[y,light_lines]<-data2[location.i[1], l_lines]
-                } else {
+                } else if (!is.na(data2[location.i[1],c("IGKct")])) {
                     Con.df[y,light_lines]<-data2[location.i[1], k_lines]}
             } else { 
-              Con.df[y,heavy_lines]<-data2[location.i[1], h_lines]
+              if(is.na(data2[location.i[2],c("IGLct")]) & is.na(data2[location.i[2],c("IGKct")])){
+                Con.df[y,heavy_lines]<-data2[location.i[1], h_lines]
+              }
               if (!is.na(data2[location.i[2],c("IGKct")])) {
                 Con.df[y,light_lines]<-data2[location.i[2],k_lines]
               } else {
@@ -531,3 +535,4 @@ select.gene <- function(df, chain, gene, label) {
   }
   return(df)
 }
+

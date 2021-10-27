@@ -501,6 +501,7 @@ clonesizeDistribution <- function(df,  cloneCall ="gene+nt",
                                   split.by = NULL, exportTable = FALSE) {
         df <- list.input.return(df, split.by)
         cloneCall <- theCall(cloneCall)
+        df <- checkBlanks(df, cloneCall)
         data <- bind_rows(df)
         unique_df <- unique(data[,cloneCall])
         Con.df <- data.frame(matrix(NA, length(unique_df), length(df)))
