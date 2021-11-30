@@ -98,12 +98,12 @@ clonalDiversity <- function(df, cloneCall = "gene+nt", chain = "both",
       plot <- ggplot(melt, aes(x=melt[,x.axis], y=as.numeric(value)))
     }
     plot <- plot +
-      geom_boxplot() +
+      geom_boxplot(outlier.alpha = 0) +
       geom_jitter(aes(color = melt[,group.by]), size = 3) + 
       labs(color="Group") +
       ylab("Index Score") +
       scale_color_manual(values = colorblind_vector(length(unique(melt[,group.by])))) +
-    facet_wrap(~variable, scales = "free", ncol = 4) +
+    facet_wrap(~variable, scales = "free", ncol = 5) +
       theme_classic() + 
       theme(axis.title.x = element_blank())
     if (x.axis == "x.axis") { 
