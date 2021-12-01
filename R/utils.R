@@ -56,6 +56,20 @@ list.input.return <- function(df, split.by) {
   return(df)
 }
 
+#Get UMAP or other coordinates
+#' @importFrom SingleCellExperiment reducedDim
+get.coord <- function(sc, reduction) { 
+  if (is.null(reduction)) {
+    reduction = "pca"
+  }
+  if (inherits(x=sc, what ="Seurat")) {
+    coord <- sc@reductions[[reduction]]@cell.embeddings
+  } else if (inherits(x=sc, what ="SummarizedExperiment")) {
+    coord <- reducedDim(sc, reduction)
+  }
+  return(coord)
+}
+
 #This is to check the single-cell expression object
 checkSingleObject <- function(sc) {
     if (!inherits(x=sc, what ="Seurat") &&

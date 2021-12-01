@@ -56,6 +56,11 @@
     utils::globalVariables ("Top_State")
     utils::globalVariables ("mat")
     utils::globalVariables ("element.names")
+    utils::globalVariables ("y")
+    utils::globalVariables ("to")
+    utils::globalVariables ("from")
+    utils::globalVariables ("weight")
+    utils::globalVariables ("size")
     utils::globalVariables ("Top_state")
     invisible ()
 }

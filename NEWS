@@ -2,6 +2,9 @@ CHANGES IN VERSION 1.3.5
 ------------------------
 * Modified parseBCR() to check for contents of the chains. Resolve issue with placing light chain into heavy chain slots when 2 contigs are present. 
 * Updated checkBlanks to include NA evaluation and placed the check in all .viz functions
+* Added clonalNetwork() function
+* Modified diversity visualization to remove outliers and place graphs on a single line
+* Modified clonalOverlay() to use new internal getCoord() function like clonalNetwork()
 
 
 CHANGES IN VERSION 1.3.4

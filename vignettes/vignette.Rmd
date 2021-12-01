@@ -47,7 +47,9 @@ contig_list <- list(S1, S2, S3, S4)
 
 ### Multiplexed Experiment? 
 
-It is now easy to create the contig list from a multiplexed experiment by first generating a single-cell RNA object (either Seurat or Single Cell Experiment),  loading the filtered contig file and then using `createHTOContigList()`. This function will return a list, seperated by the group.by variable(s)
+It is now easy to create the contig list from a multiplexed experiment by first generating a single-cell RNA object (either Seurat or Single Cell Experiment),  loading the filtered contig file and then using `createHTOContigList()`. This function will return a list, separated by the **group.by** variable(s). 
+
+This function depends on the match of barcodes between the single-cell object and contigs. If there is a prefix or different suffix added to the barcode, this will result in no contigs recovered. As of right now, it is recommended you do this step before the integrated, as integration workflows commonly alter the barcodes. There is a **multi.run** variable that can be used on the integrated object, but it assumes you have modified the barcodes with the Seurat pipeline (automatic addition of _# to end) and your contig list is in the same order.
 
 ```{r, eval = F}
 contigs <- read.csv(".../outs/filtered_contig_annotations.csv")
@@ -483,9 +485,48 @@ Using the dimensional reduction graphs as a reference, we can also generate an o
 
 ```{r}
 clonalOverlay(screp_example, reduction = "umap", 
-              freq.cutpoint = 30, bins = 10, facet = "Patient") + 
-                guides(color = FALSE)
+              freq.cutpoint = 1, bins = 10, facet = "Patient") + 
+                guides(color = "none")
 ```
+
+## clonalNetwork 
+
+Similar to `clonalOverlay()`, we can look at the network interaction of clonotypes shared between clusters along the single-cell dimensional reduction using `clonalNetwork()`. This function shows the relative proportion of clones that come from the starting node, with the ending node indicated by the arrow. 
+
+Filtering for clones can be accomplished using 3 methods:  
+**filter.clones**  
+* Select a number to isolate the clones comprising the top X number of cells (filter.clones = 2000)  
+* Select "min" to make sure all groups are scaled to the size of the minimum group
+
+**filter.identity**  
+* For the identity chosen to visualize, show the to and from netwrok connections for a single group  
+
+**filter.proportion**
+* Remove clones that comprise less than a certain proportion of clones in groups.
+                          
+
+```{r}
+#ggraph needs to be loaded due to issues with ggplot
+library(ggraph)
+
+#No Identity filter
+clonalNetwork(screp_example, 
+              reduction = "umap", 
+              identity = "cluster",
+              filter.clones = NULL,
+              filter.identity = NULL,
+              cloneCall = "aa")
+
+#Examining Cluster 2 only
+clonalNetwork(screp_example, 
+              reduction = "umap", 
+              identity = "cluster",
+              filter.identity = "C2",
+              cloneCall = "aa")
+```
+
+
+
 
 
 We can also look at the clonotypes by calling specific sequences in the `highlightClonotypes()` below. In order to highlight the clonotypes, we first need to use the **cloneCall** the type of sequence we will be using and then the specific sequences themselves using **sequence**. Below you can see the steps to highlight the two most prominent sequences *"CAVNGGSQGNLIF_CSAEREDTDTQYF"* with a frequency = 482 (clonotype 1) and *"NA_CATSATLRVVAEKLFF"* with a frequency = 287 (Clonotype2). 

@@ -29,6 +29,8 @@ Imports:
 	utils, 
 	rlang,
 	igraph,
+	ggraph,
+	tidygraph,
 	SeuratObject
 Suggests: 
 	knitr, 

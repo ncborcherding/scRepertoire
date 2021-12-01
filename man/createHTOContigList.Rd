@@ -4,7 +4,7 @@
 \alias{createHTOContigList}
 \title{Generate a contig list from a multiplexed experiment}
 \usage{
-createHTOContigList(contig, sc, group.by = NULL)
+createHTOContigList(contig, sc, group.by = NULL, multi.run = NULL)
 }
 \arguments{
 \item{contig}{The filtered contig annotation file from multiplexed experiment}
@@ -13,6 +13,9 @@ createHTOContigList(contig, sc, group.by = NULL)
 
 \item{group.by}{One or more meta data headers to create the contig list based on. 
 If more than one header listed, the function combines them into a single variable.}
+
+\item{multi.run}{If using integrated single-cell object, the meta data variable
+that indicates the sequencing run.}
 }
 \value{
 Returns a list of contigs corresponding to the multiplexed Seurat 
@@ -23,9 +26,11 @@ Multiplexing single-cell sequencing runs is an efficient method for quantifying
 multiple samples or conditions simultaneously. Unfortunately, the hashing information
 is not stored in the TCR sequence data. In order preprocess and form a contig list
 for downstream analysis in scRepertoire, createHTOContigList() take the filtered contig 
-annotation output and the single-cell RNA object to create the list. If the single-cell
-object has multiple sequencing runs combined, this function will need to be run multiple 
-times.
+annotation output and the single-cell RNA object to create the list. If using an 
+integrated single-cell object, it is recommended to split the object by sequencing run 
+and remove extra prefixes and suffixes on the barcode before using createHTOContigList().
+Alternatively, the variable multi.run can be used to separate a list of contigs by a meta data
+variable. This may have issues with the repeated barcodes.
 }
 \examples{
 \dontrun{
