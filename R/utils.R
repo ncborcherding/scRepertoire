@@ -497,18 +497,18 @@ makeGenes <- function(cellType, data2, chain1, chain2) {
     if(cellType %in% c("T-AB", "T-GD")) {
         data2 <- data2 %>% 
             mutate(TCR1 = ifelse(chain == chain1, 
-                  str_c(v_gene,  j_gene, c_gene, sep = "."), NA)) %>%
+                  str_c(na.omit(v_gene),  na.omit(j_gene), na.omit(c_gene), sep = "."), NA)) %>%
             mutate(TCR2 = ifelse(chain == chain2, 
-                  str_c(v_gene, d_gene,  j_gene,  c_gene, sep = "."), NA))
+                  str_c(na.omit(v_gene), na.omit(d_gene),  na.omit(j_gene),  na.omit(c_gene), sep = "."), NA))
     }
     else {
         data2 <- data2 %>% 
             mutate(IGKct = ifelse(chain == "IGK", 
-                str_c(v_gene,  j_gene, c_gene, sep = "."), NA)) %>%
+                str_c(na.omit(v_gene),  na.omit(j_gene), na.omit(c_gene), sep = "."), NA)) %>%
             mutate(IGLct = ifelse(chain == "IGL", 
-                str_c(v_gene,  j_gene, c_gene, sep = "."), NA)) %>%
+                str_c(na.omit(v_gene),  na.omit(j_gene), na.omit(c_gene), sep = "."), NA)) %>%
             mutate(IGHct = ifelse(chain == "IGH",
-                str_c(v_gene, d_gene,  j_gene,  c_gene, sep = "."), NA))
+                str_c(na.omit(v_gene), na.omit(d_gene),  na.omit(j_gene),  na.omit(c_gene), sep = "."), NA))
     }
     return(data2)
     
