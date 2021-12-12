@@ -3,9 +3,7 @@
 #' This function generates a network based on clonal 
 #' proportions of an indicated identity and then superimposes
 #' the network onto a single-cell object dimensional reduction
-#' plot. If not filtering by identity, the network will 
-#' automatically remove the reciprocal edges from the half
-#' for organizational purposes. 
+#' plot. 
 #' 
 #' @examples
 #' #Getting the combined contigs
@@ -31,6 +29,8 @@
 #' n of clones based on the minimum number of all the comparitors (filter.clone = "min").
 #' @param filter.identity Display the network for a specific level of the indicated identity
 #' @param filter.proportion Remove clonotypes from the network below a specific proportion
+#' @param filter.graph Remove the reciprocal edges from the half of the graph, 
+#' allowing for cleaner visualization
 #' @param cloneCall How to call the clonotype - VDJC gene (gene), 
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
 #' VDJC gene + CDR3 nucleotide (gene+nt).
@@ -54,6 +54,7 @@ clonalNetwork <- function(sc,
                           filter.clones = NULL,
                           filter.identity = NULL,
                           filter.proportion = NULL,
+                          filter.graph = FALSE,
                           cloneCall = "aa", 
                           chain = "both", 
                           exportTable = FALSE) {
@@ -147,7 +148,7 @@ clonalNetwork <- function(sc,
         col1 <- which(edge.list[,1] == filter.identity)
         col2 <- which(edge.list[,2] == filter.identity)
         edge.list <- edge.list[c(col1,col2),]
-    } else {
+    } else if (filter.graph) {
         unique.id <- str_sort(unique.id, numeric = TRUE)
         edge.list <- edge.list[edge.list[,1] %in% unique.id[seq_len(length(unique.id)/2)],]
     }
