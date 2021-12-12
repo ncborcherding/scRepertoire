@@ -486,6 +486,8 @@ scatterClonotype <- function(df, cloneCall ="gene+nt",
 #' VDJC gene + CDR3 nucleotide (gene+nt).
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL"
+#' @param threshold Numerical vector containing the thresholds 
+#' the grid search was performed over.
 #' @param method The clustering paramater for the dendrogram.
 #' @param split.by If using a single-cell object, the column header 
 #' to group the new list. NULL will return clusters.
@@ -497,8 +499,11 @@ scatterClonotype <- function(df, cloneCall ="gene+nt",
 #' @return ggplot dendrogram of the clone size distribution
 
 clonesizeDistribution <- function(df,  cloneCall ="gene+nt", 
-                                  chain = "both", method = "ward.D2", 
-                                  split.by = NULL, exportTable = FALSE) {
+                                  chain = "both", 
+                                  method = "ward.D2", 
+                                  threshold = 1, 
+                                  split.by = NULL, 
+                                  exportTable = FALSE) {
         df <- list.input.return(df, split.by)
         cloneCall <- theCall(cloneCall)
         df <- checkBlanks(df, cloneCall)
@@ -525,7 +530,7 @@ clonesizeDistribution <- function(df,  cloneCall ="gene+nt",
         list <- list()
         for (i in seq_along(df)) {
             list[[i]] <- Con.df[,i+1]
-            list[[i]] <- suppressWarnings(fdiscgammagpd(list[[i]], useq = 1))
+            list[[i]] <- suppressWarnings(fdiscgammagpd(list[[i]], useq = threshold))
             }
         names(list) <- names(df)
         grid <- 0:10000
