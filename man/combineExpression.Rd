@@ -2,18 +2,19 @@
 % Please edit documentation in R/seuratFunctions.R
 \name{combineExpression}
 \alias{combineExpression}
-\title{Adding clonotype information to a seurat or SCE object}
+\title{Adding clonotype information to a Seurat or SCE object}
 \usage{
 combineExpression(
   df,
   sc,
   cloneCall = "gene+nt",
   chain = "both",
-  groupBy = "none",
+  group.by = "none",
   proportion = TRUE,
   filterNA = FALSE,
   cloneTypes = c(Rare = 1e-04, Small = 0.001, Medium = 0.01, Large = 0.1, Hyperexpanded
-    = 1)
+    = 1),
+  addLabel = FALSE
 )
 }
 \arguments{
@@ -29,32 +30,36 @@ VDJC gene + CDR3 nucleotide (gene+nt).}
 \item{chain}{indicate if both or a specific chain should be used - 
 e.g. "both", "TRA", "TRG", "Heavy", "Light"}
 
-\item{groupBy}{The column label in the combined contig object in which 
+\item{group.by}{The column label in the combined contig object in which 
 clonotype frequency will be calculated.}
 
 \item{proportion}{Whether to use the total frequency (FALSE) or the 
-proportion (TRUE) of the clonotype based on the groupBy variable.}
+proportion (TRUE) of the clonotype based on the group.by variable.}
 
 \item{filterNA}{Method to subset seurat object of barcodes without 
 clonotype information}
 
 \item{cloneTypes}{The bins for the grouping based on frequency}
+
+\item{addLabel}{This will add a label to the frequency header, allowing
+the user to try multiple group.by variables or recalculate frequencies after 
+subseting the data.}
 }
 \value{
 seurat or SingleCellExperiment object with attached clonotype 
 information
 }
 \description{
-This function adds the immune receptor information to the seurat or 
-SCE object to the meta data. By defualt this function also calculates 
-the frequencies of the clonotypes by sequencing run (groupBy = "none"). 
+This function adds the immune receptor information to the Seurat or 
+SCE object to the meta data. By default this function also calculates 
+the frequencies of the clonotypes by sequencing run (group.by = "none"). 
 To change how the frequencies are calculated, select a column header for 
-the groupBy variable. Importantly, before using combineExpression() 
+the group.by variable. Importantly, before using combineExpression() 
 ensure the barcodes of the seurat or SCE object match the barcodes in the 
 output of the combinedContig() call. Check changeNames() to change the 
-prefix of the seurat object. If combining more 
-than one immune receptor type, barcodes with both receptors will be removed
-during the combination process.
+prefix of the Seurat object. If combining more than one immune receptor 
+type, barcodes with both receptors will be removed during the combination 
+process.
 }
 \examples{
 #Getting the combined contigs

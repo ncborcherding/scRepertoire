@@ -5,12 +5,12 @@
 \title{Allows users to take the meta data in Seurat/SCE and place it into a list 
 that will work with all the functions}
 \usage{
-expression2List(sc, group)
+expression2List(sc, split.by)
 }
 \arguments{
 \item{sc}{object after combineExpression().}
 
-\item{group}{The column header to group the new list by}
+\item{split.by}{The column header to group the new list. NULL will return clusters.}
 }
 \value{
 list derived from the meta data of single-cell object with 
@@ -32,6 +32,6 @@ screp_example <- get(data("screp_example"))
 screp_example <- combineExpression(combined, screp_example)
 
 #Using expression2List
-newList <- expression2List(screp_example, group = "seurat_clusters")
+newList <- expression2List(screp_example, split.by = "seurat_clusters")
 
 }

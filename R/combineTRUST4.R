@@ -24,6 +24,9 @@
 #' @param ID The additional sample labeling (optional).
 #' @param cells The type of cell - T cell-AB or T cell-GD, or B cell
 #' @param removeNA This will remove any chain without values.
+#' @param threshold If combining B cells - the normalized edit 
+#' distance to consider. The higher the number the more similarity 
+#' of sequence will be used for clustering.
 #' @import dplyr
 #' @export
 #' @return List of clonotypes for individual cell barcodes
@@ -31,7 +34,8 @@
 
 combineTRUST4 <- function(df, samples = NULL, ID = NULL, 
                           cells = c("T-AB", "T-GD", "B"), 
-                          removeNA = FALSE) {
+                          removeNA = FALSE, 
+                          threshold = 0.85) {
     df <- checkList(df)
     out <- NULL
     final <- NULL
@@ -121,8 +125,8 @@ combineTRUST4 <- function(df, samples = NULL, ID = NULL,
             final[[i]] <- data3 
         }
         dictionary <- bind_rows(final)
-        IGH <- lvCompare(dictionary, "IGH", "cdr3_nt1")
-        IGLC <- lvCompare(dictionary, "IGLC", "cdr3_nt2")
+        IGH <- lvCompare(dictionary, "IGH", "cdr3_nt1", threshold)
+        IGLC <- lvCompare(dictionary, "IGLC", "cdr3_nt2", threshold)
         for(i in seq_along(final)) {
             final[[i]]<-merge(final[[i]],IGH,by.x="cdr3_nt1",by.y="IG",all.x=TRUE)
             final[[i]]<-merge(final[[i]],IGLC,by.x="cdr3_nt2",by.y="IG",all.x=TRUE)

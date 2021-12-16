@@ -13,35 +13,39 @@
 #' combined <- combineTCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), 
 #' rep(c("P", "T"), 3), cells ="T-AB")
 #' 
-#' sub_combined <- clusterTCR(combined[[2]], chain = "TCRA", sequence = "aa")
+#' sub_combined <- clusterTCR(combined[[2]], chain = "TRA", sequence = "aa")
 #' 
-#' @param df The product of CombineTCR() or CombineBCR().
-#' @param chain The TCR to cluster
+#' @param df The product of combineTCR() or exppression2List().
+#' @param chain The TCR to cluster - TRA, TRB, TRG, TRD
 #' @param sequence Clustering based on either "aa" or "nt"
 #' @param threshold The normalized edit distance to consider. The higher the number the more 
 #' similarity of sequence will be used for clustering.
-#' @param group The column header used for to calculate the cluster by.
+#' @param group.by The column header used for to calculate the cluster by.
 #' @importFrom stringdist stringdistmatrix
 #' @importFrom igraph graph_from_data_frame components
 #' @importFrom plyr join
 #' @importFrom dplyr bind_rows
+#' @importFrom stringr str_split
 #' @export
 #' @return List of clonotypes for individual cell barcodes
 
-clusterTCR <- function(df, chain = NULL, sequence = NULL, threshold = 0.85, group = NULL) {
+clusterTCR <- function(df, 
+                       chain = NULL, 
+                       sequence = NULL, 
+                       threshold = 0.85, 
+                       group.by = NULL) {
     output.list <- list()
-    `%!in%` = Negate(`%in%`)
     df <- checkList(df)
-    if(chain %in% c("TCRA", "TCRG")) {
+    if(chain %in% c("TRA", "TRG")) {
         ref <- 1
-    } else if(chain %in% c("TCRB", "TCRD")) {
+    } else if(chain %in% c("TRB", "TRD")) {
         ref <- 2
     }
     ref2 <- paste0("cdr3_", sequence, ref)
     bound <- bind_rows(df)
     #Should make it work as either grouped or non-grouped
-    if (!is.null(group)) {
-      bound <- split(bound, bound[,group])
+    if (!is.null(group.by)) {
+      bound <- split(bound, bound[,group.by])
       list.length <- length(bound)
     } else {
       bound <- list(bound)
@@ -52,39 +56,26 @@ clusterTCR <- function(df, chain = NULL, sequence = NULL, threshold = 0.85, grou
       dictionary <- na.omit(unique(bound[[x]][,ref2]))
       dictionary <- str_split(dictionary, ";", simplify = TRUE)[,1]
       length <- nchar(dictionary)
-      matrix <- as.matrix(stringdistmatrix(dictionary, method = "lv"))    
-      out_matrix <- matrix(ncol = ncol(matrix), nrow=ncol(matrix))
-      for (j in seq_len(ncol(matrix))) {
-          for (k in seq_len(nrow(matrix))) {
-              if (j == k) {
-                  out_matrix[j,k] <- NA
-              } else{
-                  if (length[j] - length[k] >= round(mean(length)/2)) {
-                      out_matrix[j,k] <- matrix[j,k]/(max(length[j], length[k]))
-                      out_matrix[k,j] <- matrix[k,j]/(max(length[j], length[k]))
-                  } else {
-                  out_matrix[j,k] <- matrix[j,k]/((length[j]+ length[k])/2)
-                  out_matrix[k,j] <- matrix[k,j]/((length[j]+ length[k])/2)
-                  }
-              }
-          }
+      dist <- stringdistmatrix(dictionary, method = "lv")  
+      edge.list <- NULL
+      for (j in seq_len(length(dictionary))) {
+        row <- SliceExtract_dist(dist,j)
+        norm.row <- row
+        for (k in seq_len(length(norm.row))) {
+          norm.row[k] <- 1- (norm.row[k]/mean(c(length[j],length[k])))
+        }
+        neighbor <- which(norm.row >= threshold)
+        knn.norm = data.frame("from" = j,
+                              "to" = neighbor)
+        edge.list <- rbind(edge.list, knn.norm)
       }
-      filtered <- which(out_matrix <= (1-threshold), arr.ind = TRUE)
-      if (nrow(filtered) > 0) { 
-          for (i in seq_len(nrow(filtered))) {
-              max <- max(filtered[i,])
-              min <- min(filtered[i,])
-              filtered[i,1] <- max
-              filtered[i,2] <- min
-          }
-          filtered <- unique(filtered) #removing redundant comparisons
-          out <- NULL
-          colnames(filtered) <- c("To", "From")
-          
-          g <- graph_from_data_frame(filtered)
-          components <- components(g, mode = c("weak"))
-          out <- data.frame("cluster" = components$membership, 
-                            "filtered" = names(components$membership))
+      edge.list <- unique(edge.list)
+      g <- graph_from_data_frame(edge.list)
+      components <- components(g, mode = c("weak"))
+      out <- data.frame("cluster" = components$membership, 
+                        "filtered" = names(components$membership))
+      filter <- which(table(out$cluster) > 1)
+      out <- subset(out, cluster %in% filter)
           if (list.length == 1) {
             out$cluster <- paste0(chain, ":LD", ".", out$cluster)
           } else {
@@ -94,12 +85,14 @@ clusterTCR <- function(df, chain = NULL, sequence = NULL, threshold = 0.85, grou
           
           uni_IG <- as.data.frame(unique(dictionary[dictionary %!in% out$filtered]))
           colnames(uni_IG) <- "filtered"
-          if (list.length == 1) {
-            uni_IG$cluster <- paste0(chain, ".", seq_len(nrow(uni_IG))) 
-          } else {
-            uni_IG$cluster <- paste0(names(bound)[x], ".", chain, ".", seq_len(nrow(uni_IG))) 
+          if (nrow(uni_IG) > 0) {
+            if (list.length == 1) {
+              uni_IG$cluster <- paste0(chain, ".", seq_len(nrow(uni_IG))) 
+            } else {
+              uni_IG$cluster <- paste0(names(bound)[x], ".", chain, ".", seq_len(nrow(uni_IG))) 
+            }
           }
-      }
+      
       output <- rbind.data.frame(out, uni_IG)
       colname <- paste0(chain, "_cluster")
       colnames(output) <- c(colname, ref2)
@@ -117,3 +110,29 @@ clusterTCR <- function(df, chain = NULL, sequence = NULL, threshold = 0.85, grou
     return(df)
 }  
 
+#Code from https://stackoverflow.com/questions/57282842/how-to-efficiently-extract-a-row-or-column-from-a-dist-distance-matrix?rq=1
+f <- function (i, j, dist_obj) {
+      if (!inherits(dist_obj, "dist")) stop("please provide a 'dist' object")
+      n <- attr(dist_obj, "Size")
+      valid <- (i >= 1) & (j >= 1) & (i > j) & (i <= n) & (j <= n)
+      k <- (2 * n - j) * (j - 1) / 2 + (i - j)
+      k[!valid] <- NA_real_
+      k
+}
+    
+#Code from https://stackoverflow.com/questions/57282842/how-to-efficiently-extract-a-row-or-column-from-a-dist-distance-matrix?rq=1
+SliceExtract_dist <- function (dist_obj, k) {
+      if (length(k) > 1) stop("The function is not 'vectorized'!")
+      n <- attr(dist_obj, "Size")
+      if (k < 1 || k > n) stop("k out of bound!")
+      ##
+      i <- 1:(k - 1)
+      j <- rep.int(k, k - 1)
+      v1 <- dist_obj[f(j, i, dist_obj)]
+      ## 
+      i <- (k + 1):n
+      j <- rep.int(k, n - k)
+      v2 <- dist_obj[f(i, j, dist_obj)]
+      ## 
+      c(v1, 0, v2)
+}

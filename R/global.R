@@ -46,7 +46,21 @@
     utils::globalVariables ("total")
     utils::globalVariables ("prop")
     utils::globalVariables ("var")
-    
-
+    utils::globalVariables ("contig")
+    utils::globalVariables ("contigs")
+    utils::globalVariables ("group.by")
+    utils::globalVariables ("split.by")
+    utils::globalVariables ("cluster")
+    utils::globalVariables ("threshold")
+    utils::globalVariables ("ncells")
+    utils::globalVariables ("Top_State")
+    utils::globalVariables ("mat")
+    utils::globalVariables ("element.names")
+    utils::globalVariables ("y")
+    utils::globalVariables ("to")
+    utils::globalVariables ("from")
+    utils::globalVariables ("weight")
+    utils::globalVariables ("size")
+    utils::globalVariables ("Top_state")
     invisible ()
 }

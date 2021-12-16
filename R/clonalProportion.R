@@ -14,7 +14,7 @@
 #' rep(c("P", "T"), 3), cells ="T-AB")
 #' clonalProportion(combined, cloneCall = "gene")
 #'
-#' @param df The product of combineTCR(), combineBCR(),  or expression2List().
+#' @param df The product of combineTCR(), combineBCR(), expression2List(), or combineExpression().
 #' @param split The cutpoints for the specific clonotypes.
 #' @param cloneCall How to call the clonotype - VDJC gene (gene), 
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
@@ -34,6 +34,7 @@ clonalProportion <- function(df,split = c(10, 100, 1000, 10000, 30000,
                         100000), cloneCall = "gene+nt", 
                         chain = "both", exportTable = FALSE) {
     Con.df <- NULL
+    df <- list.input.return(df)
     cloneCall <- theCall(cloneCall)
     df <- checkList(df)
     df <- checkBlanks(df, cloneCall)

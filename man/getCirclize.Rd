@@ -5,7 +5,7 @@
 \title{Generate data frame to be used with circlize R package to visualize
 clonotypes as a chord diagram.}
 \usage{
-getCirclize(sc, cloneCall = "gene+nt", groupBy = NULL, proportion = FALSE)
+getCirclize(sc, cloneCall = "gene+nt", group.by = NULL, proportion = FALSE)
 }
 \arguments{
 \item{sc}{object after combineExpression().}
@@ -14,11 +14,11 @@ getCirclize(sc, cloneCall = "gene+nt", groupBy = NULL, proportion = FALSE)
 CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
 VDJC gene + CDR3 nucleotide (gene+nt).}
 
-\item{groupBy}{The group header for which you would like to analyze 
+\item{group.by}{The group header for which you would like to analyze 
 the data.}
 
 \item{proportion}{Binary will calculate relationship unique 
-clonotypes (proportion = FALSE) or a ratio of the groupBy 
+clonotypes (proportion = FALSE) or a ratio of the group.by 
 variable (proportion = TRUE)}
 }
 \value{
@@ -28,7 +28,7 @@ data frame of shared clonotypes between groups
 This function will take the meta data from the product of 
 combineExpression()and generate a relational data frame to 
 be used for a chord diagram. Each cord will represent the number of 
-clonotype unqiue and shared across the multiple groupBy variable.
+clonotype unqiue and shared across the multiple group.by variable.
 }
 \examples{
 #Getting the combined contigs
@@ -40,7 +40,7 @@ screp_example <- get(data("screp_example"))
 screp_example <- combineExpression(combined, screp_example)
 
 #Getting data frame output for Circilize
-circles <- getCirclize(screp_example, groupBy = "seurat_clusters")
+circles <- getCirclize(screp_example, group.by = "seurat_clusters")
 
 
 }

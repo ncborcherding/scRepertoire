@@ -14,22 +14,27 @@
 #' rep(c("P", "T"), 3), cells ="T-AB")
 #' quantContig(combined, cloneCall="gene+nt", scale = TRUE)
 #'
-#' @param df The product of combineTCR() combineBCR() or expression2List().
+#' @param df The product of combineTCR(), combineBCR(), expression2List(), or combineExpression().
 #' @param cloneCall How to call the clonotype - VDJC gene (gene), 
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
 #' VDJC gene + CDR3 nucleotide (gene+nt).
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL"
-#' @param group The column header used for grouping.
+#' @param group.by The column header used for grouping.
+#' @param split.by If using a single-cell object, the column header 
+#' to group the new list. NULL will return clusters.
 #' @param scale Converts the graphs into percentage of unique clonotypes.
 #' @param exportTable Returns the data frame used for forming the graph
 #' @import ggplot2
 #' @export
 #' @return ggplot of the total or relative unique clonotypes
-quantContig <- function(df, cloneCall = "gene+nt", chain = "both", scale=FALSE, group = NULL, 
-                    exportTable = FALSE) {
-    if (length(group) > 1) { stop("Only one item in the group variable can 
+quantContig <- function(df, cloneCall = "gene+nt", chain = "both", 
+                        scale=FALSE, group.by = NULL, 
+                        split.by = NULL,
+                        exportTable = FALSE) {
+    if (length(group.by) > 1) { stop("Only one item in the group.by variable can 
                                     be listed.") }
+    df <- list.input.return(df, split.by)
     cloneCall <- theCall(cloneCall)
     df <- checkBlanks(df, cloneCall)
     if (chain != "both") {
@@ -37,24 +42,24 @@ quantContig <- function(df, cloneCall = "gene+nt", chain = "both", scale=FALSE, 
         df[[i]] <- off.the.chain(df[[i]], chain, cloneCall)
       }
     }
-    if (!is.null(group)) {
-        x <- group
-        labs <- group
+    if (!is.null(group.by)) {
+        x <- group.by
+        labs <- group.by
         Con.df <- data.frame(matrix(NA, length(df), 4))
-        colnames(Con.df) <- c("contigs","values", "total", group)
+        colnames(Con.df) <- c("contigs","values", "total", group.by)
         for (i in seq_along(df)) {
             Con.df[i,1] <- length(unique(df[[i]][,cloneCall]))
             Con.df[i,2] <- names(df)[i]
             Con.df[i,3] <- length(df[[i]][,cloneCall])
-            location <- which(colnames(df[[i]]) == group)
+            location <- which(colnames(df[[i]]) == group.by)
             Con.df[i,4] <- df[[i]][1,location] }
-        col <- length(unique(Con.df[,group]))
+        col <- length(unique(Con.df[,group.by]))
         if (scale == TRUE) { y <- "scaled"
             Con.df$scaled <- Con.df$contigs/Con.df$total*100
             ylab <- "Percent of Unique Clonotype"
 
         } else { y <- "contigs"
-            x <- group
+            x <- group.by
             ylab <- "Unique Clonotypes"}
     } else {
         x <- "values"
@@ -99,13 +104,15 @@ quantContig <- function(df, cloneCall = "gene+nt", chain = "both", scale=FALSE, 
 #' rep(c("P", "T"), 3), cells ="T-AB")
 #' abundanceContig(combined, cloneCall = "gene", scale = FALSE)
 #'
-#' @param df The product of combineTCR(), combineBCR(), or expression2List().
+#' @param df The product of combineTCR(), combineBCR(), expression2List(), or combineExpression().
 #' @param cloneCall How to call the clonotype - VDJC gene (gene), 
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
 #' VDJC gene + CDR3 nucleotide (gene+nt).
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL"
-#' @param group The column header for which you would like to analyze the data.
+#' @param group.by The column header for which you would like to analyze the data.
+#' @param split.by If using a single-cell object, the column header 
+#' to group the new list. NULL will return clusters.
 #' @param scale Converts the graphs into density plots in order to show 
 #' relative distributions.
 #' @param exportTable Returns the data frame used for forming the graph
@@ -114,34 +121,36 @@ quantContig <- function(df, cloneCall = "gene+nt", chain = "both", scale=FALSE, 
 #' @export
 #' @return ggplot of the total or relative abundance of clonotypes 
 #' across quanta
-abundanceContig <- function(df, cloneCall = "gene+nt", chain = "both", scale=FALSE, 
-                        group = NULL, exportTable = FALSE) {
+abundanceContig <- function(df, cloneCall = "gene+nt", chain = "both", 
+                            scale=FALSE, group.by = NULL, 
+                            split.by = NULL, exportTable = FALSE) {
+    df <- list.input.return(df,split.by)
     Con.df <- NULL
     xlab <- "Abundance"
     cloneCall <- theCall(cloneCall)
     df <- checkBlanks(df, cloneCall)
     names <- names(df)
-    if (!is.null(group)) {
+    if (!is.null(group.by)) {
         for (i in seq_along(df)) {
             if (chain != "both") {
               df[[i]] <- off.the.chain(df[[i]], chain, cloneCall)
             }
             data1 <- parseContigs(df, i, names, cloneCall)
-            label <- df[[i]][1,group]
-            data1[,paste(group)] <- label
+            label <- df[[i]][1,group.by]
+            data1[,paste(group.by)] <- label
             Con.df<- rbind.data.frame(Con.df, data1) }
         Con.df <- data.frame(Con.df)
-        col <- length(unique(Con.df[,group]))
-        fill <- group
+        col <- length(unique(Con.df[,group.by]))
+        fill <- group.by
         if (scale == TRUE) { ylab <- "Density of Clonotypes"
-            plot <- ggplot(Con.df, aes(x=Abundance, fill=Con.df[,group])) +
+            plot <- ggplot(Con.df, aes(x=Abundance, fill=Con.df[,group.by])) +
                 geom_density(aes(y=..scaled..), alpha=0.5, 
                     lwd=0.25, color="black", bw=0.5)  +
                 scale_fill_manual(values = colorblind_vector(col)) +
                 labs(fill = fill)
         } else { ylab <- "Number of Clonotypes"
-            plot <- ggplot(Con.df, aes(x=Abundance, group = values, 
-                    color = Con.df[,group])) +
+            plot <- ggplot(Con.df, aes(x=Abundance, group.by = values, 
+                    color = Con.df[,group.by])) +
                 geom_line(stat="count") +
                 scale_color_manual(values = colorblind_vector(col)) +
                 labs(color = fill)}
@@ -190,11 +199,13 @@ return(plot) }
 #' rep(c("P", "T"), 3), cells ="T-AB")
 #' lengthContig(combined, cloneCall="aa", chain = "both")
 #'
-#' @param df The product of combineTCR(), combineBCR(), or expression2List()
+#' @param df The product of combineTCR(), combineBCR(), expression2List(), or combineExpression().
 #' @param cloneCall How to call the clonotype - CDR3 nucleotide (nt), 
 #' CDR3 amino acid (aa).
-#' @param group The group header for which you would like to analyze 
+#' @param group.by The group header for which you would like to analyze 
 #' the data.
+#' @param split.by If using a single-cell object, the column header 
+#' to group the new list. NULL will return clusters.
 #' @param scale Converts the graphs into density plots in order to show 
 #' relative distributions.
 #' @param chain indicate if both or a specific chain should be used - 
@@ -205,36 +216,47 @@ return(plot) }
 #' @export
 #' @return ggplot of the discrete or relative length distributions of 
 #' clonotype sequences
-lengthContig <- function(df, cloneCall = "aa", group = NULL, scale = FALSE, 
-                    chain = "both", exportTable = FALSE) {
+lengthContig <- function(df, cloneCall = "aa", 
+                         group.by = NULL, 
+                         split.by = NULL, scale = FALSE, 
+                          chain = "both", exportTable = FALSE) {
     if(cloneCall == "nt") { cloneCall <- "CTnt"
         ylab <- "CDR3 (NT)"
     } else if (cloneCall == "aa") { cloneCall <- "CTaa" 
         ylab <- "CDR3 (AA)"
     } else { stop("Please make a selection of the type of
                 CDR3 sequence to analyze by using `cloneCall`") }
-    cells <- df[[1]][1,"cellType"]
-    c1 <- cellT(cells)[[1]]
-    c2 <- cellT(cells)[[2]]
+    AB <- grep("TRA", df[[1]]$TCR1)
+    IG <- grep("IGH", df[[1]]$TCR1)
+    if (length(AB) > 1 && length(IG) == 0) {
+      c1 <- "TRA"
+      c2 <- "TRB"
+    } else if (length(AB) > 1) {
+      c1 <- "IGH"
+      c2 <- "IGL"
+    } else {
+      c1 <- "TRD"
+      c2 <- "TRG"
+    }
     xlab <- "Length"
     Con.df <- NULL
-   
-    Con.df <- lengthDF(df, cloneCall, chain, group, c1, c2)
+    df <- list.input.return(df, split.by)
+    Con.df <- lengthDF(df, cloneCall, chain, group.by, c1, c2)
     names <- names(df)
-    if (!is.null(group)) { 
-        fill = group
-        col <- length(unique(Con.df[,group]))
+    if (!is.null(group.by)) { 
+        fill = group.by
+        col <- length(unique(Con.df[,group.by]))
         if (scale == TRUE) { yplus <- "Percent of "
-            plot <- ggplot(Con.df, aes(fill=Con.df[,group],
+            plot <- ggplot(Con.df, aes(fill=Con.df[,group.by],
                 length,(..count..)/sum(..count..)*100)) + 
                 geom_density(aes(y=..scaled..),alpha=.5,lwd=.25,color="black")
         } else { yplus <- "Number of "
-            plot<-ggplot(Con.df,aes(as.factor(length),fill=Con.df[,group]))+
+            plot<-ggplot(Con.df,aes(as.factor(length),fill=Con.df[,group.by]))+
                 geom_bar(position = position_dodge2(preserve = "single"), 
                 color="black", lwd=0.25, width=0.9)  +
                 scale_x_discrete(breaks = round(seq(min(Con.df$length), 
                 max(Con.df$length), by = 5),10)) }
-    } else if (is.null(group)){ 
+    } else if (is.null(group.by)){ 
         fill <- "Samples"
         col <- length(unique(Con.df$values))
         if (scale == TRUE) { yplus <- "Percent of "
@@ -272,7 +294,7 @@ lengthContig <- function(df, cloneCall = "aa", group = NULL, scale = FALSE,
 #' compareClonotypes(combined, numbers = 10, 
 #' samples = c("PX_P", "PX_T"), cloneCall="aa")
 #'
-#' @param df The product of combineTCR(), combineBCR(), or expression2List()
+#' @param df The product of combineTCR(), combineBCR(), expression2List(), or combineExpression().
 #' @param cloneCall How to call the clonotype - VDJC gene (gene), 
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
 #' VDJC gene + CDR3 nucleotide (gene+nt).
@@ -281,6 +303,8 @@ lengthContig <- function(df, cloneCall = "aa", group = NULL, scale = FALSE,
 #' @param samples The specific samples to isolate for visualization.
 #' @param clonotypes The specific sequences of interest.
 #' @param numbers The top number clonotype sequences.
+#' @param split.by If using a single-cell object, the column header 
+#' to group the new list. NULL will return clusters.
 #' @param graph The type of graph produced, either "alluvial" or "area".
 #' @param exportTable Returns the data frame used for forming the graph.
 #' @import ggplot2
@@ -289,8 +313,9 @@ lengthContig <- function(df, cloneCall = "aa", group = NULL, scale = FALSE,
 #' @return ggplot of the proportion of total sequencing read of 
 #' selecting clonotypes
 compareClonotypes <- function(df, cloneCall = "gene+nt", chain = "both", samples = NULL, 
-                        clonotypes = NULL, numbers = NULL, graph = "alluvial",
-                        exportTable = FALSE){
+                        clonotypes = NULL, numbers = NULL, split.by = NULL, 
+                        graph = "alluvial", exportTable = FALSE){
+    df <- list.input.return(df, split.by)
     cloneCall <- theCall(cloneCall)
     df <- checkBlanks(df, cloneCall)
     if (!is.null(numbers) & !is.null(clonotypes)) {
@@ -347,7 +372,7 @@ compareClonotypes <- function(df, cloneCall = "gene+nt", chain = "both", samples
 #' scatterClonotype(combined, x.axis = "PY_P", y.axis = "PY_T",
 #' graph = "proportion")
 #' 
-#' @param df The product of combineTCR(), combineBCR(), or expression2List()
+#' @param df The product of combineTCR(), combineBCR(), expression2List(), or combineExpression().
 #' @param cloneCall How to call the clonotype - VDJC gene (gene), 
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
 #' VDJC gene + CDR3 nucleotide (gene+nt).
@@ -357,6 +382,8 @@ compareClonotypes <- function(df, cloneCall = "gene+nt", chain = "both", samples
 #' @param y.axis name of the list element to appear on the y.axis
 #' @param dot.size either total or the name of the list element to 
 #' use for size of dots
+#' @param split.by If using a single-cell object, the column header 
+#' to group the new list. NULL will return clusters.
 #' @param graph graph either proportion or raw clonotype count
 #' @param exportTable Returns the data frame used for forming the graph.
 #' 
@@ -369,9 +396,10 @@ scatterClonotype <- function(df, cloneCall ="gene+nt",
                              x.axis = NULL, y.axis = NULL,
                              chain = "both",
                              dot.size = "total", 
+                             split.by = NULL,
                              graph = "proportion", 
                              exportTable = FALSE) {
-  `%!in%` = Negate(`%in%`)
+  df <- list.input.return(df, split.by)
   cloneCall <- theCall(cloneCall)
   axes <- which(names(df) %in% c(x.axis, y.axis, dot.size))
   if (chain != "both") {
@@ -445,7 +473,6 @@ scatterClonotype <- function(df, cloneCall ="gene+nt",
 #' \href{https://bioconductor.org/packages/devel/bioc/html/powerTCR.html}{powerTCR R package}.
 #' Please read and cite PMID: 30485278 if using the function for analyses. 
 #' 
-#' 
 #' @examples
 #' #Making combined contig data
 #' x <- contig_list
@@ -453,13 +480,17 @@ scatterClonotype <- function(df, cloneCall ="gene+nt",
 #' rep(c("P", "T"), 3), cells ="T-AB")
 #' clonesizeDistribution(combined, cloneCall = "gene+nt", method="ward.D2")
 #'
-#' @param df The product of combineTCR(), combineBCR(), or expression2List().
+#' @param df The product of combineTCR(), combineBCR(), expression2List(), or combineExpression().
 #' @param cloneCall How to call the clonotype - VDJC gene (gene),
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
 #' VDJC gene + CDR3 nucleotide (gene+nt).
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL"
+#' @param threshold Numerical vector containing the thresholds 
+#' the grid search was performed over.
 #' @param method The clustering paramater for the dendrogram.
+#' @param split.by If using a single-cell object, the column header 
+#' to group the new list. NULL will return clusters.
 #' @param exportTable Returns the data frame used for forming the graph.
 #' @importFrom  dplyr bind_rows
 #' @importFrom ggplot2 ggplot
@@ -467,9 +498,15 @@ scatterClonotype <- function(df, cloneCall ="gene+nt",
 #' @export
 #' @return ggplot dendrogram of the clone size distribution
 
-clonesizeDistribution <- function(df,  cloneCall ="gene+nt", chain = "both",
-                            method = "ward.D2", exportTable = FALSE) {
+clonesizeDistribution <- function(df,  cloneCall ="gene+nt", 
+                                  chain = "both", 
+                                  method = "ward.D2", 
+                                  threshold = 1, 
+                                  split.by = NULL, 
+                                  exportTable = FALSE) {
+        df <- list.input.return(df, split.by)
         cloneCall <- theCall(cloneCall)
+        df <- checkBlanks(df, cloneCall)
         data <- bind_rows(df)
         unique_df <- unique(data[,cloneCall])
         Con.df <- data.frame(matrix(NA, length(unique_df), length(df)))
@@ -493,7 +530,7 @@ clonesizeDistribution <- function(df,  cloneCall ="gene+nt", chain = "both",
         list <- list()
         for (i in seq_along(df)) {
             list[[i]] <- Con.df[,i+1]
-            list[[i]] <- suppressWarnings(fdiscgammagpd(list[[i]], useq = 1))
+            list[[i]] <- suppressWarnings(fdiscgammagpd(list[[i]], useq = threshold))
             }
         names(list) <- names(df)
         grid <- 0:10000
@@ -554,17 +591,20 @@ makingLodes <- function(meta2, color, alpha, facet, set.axes) {
 #' 
 #' vizGenes(combined, gene = "V", chain = "TRB", plot = "bar", scale = TRUE)
 #'
-#' @param df The product of combineTCR(), combineBCR(), or expression2List().
+#' @param df The product of combineTCR(), combineBCR(), expression2List(), 
+#' or combineExpression().
 #' @param gene Which part of the immune receptor to visualize - V, D, J, C
-#' @param chain indicate if both or a specific chain should be used - 
+#' @param chain indicate the specific chain should be used - 
 #' e.g. "TRA", "TRG", "IGH", "IGL" (no both option here)
 #' @param plot The type of plot to return - heatmap or bar 
-#' @param separate Categorical variable which to separate by along y-axis
-#' @param order Categorixal variable to organize the x-axis, either "gene" or "variance"
+#' @param y.axis Variable to separate the y-axis, can be both categorical or other gene 
+#' gene segments such as V, D, J, or C.
+#' @param order Categorical variable to organize the x-axis, either "gene" or "variance"
 #' @param scale Converts the proportion of total genes 
 #' @param exportTable Returns the data frame used for forming the graph.
 #' @import ggplot2
 #' @importFrom stringr str_split
+#' @importFrom stats sd
 #' @export
 #' @return ggplot bar diagram of vgene counts
 
@@ -572,57 +612,61 @@ vizGenes <- function(df,
                       gene = "V",
                       chain = "TRA", 
                       plot = "heatmap",  
-                      separate = "sample", 
+                      y.axis = "sample", 
                       order = "gene",
                       scale = TRUE, 
                       exportTable = FALSE) {
-    df <- bind_rows(df, .id = "element.names")
-    "%!in%" <- Negate("%in%")
-    if (separate %!in% colnames(df) | is.null(separate)) {
-      seperate <- "element.names"
-      }
-    if (chain %in% c("TRB", "TRG", "IGH")) {
-        gene <- unname(c(V = 1, D = 2, J = 3, C = 4)[gene])
+    for(i in seq_along(df)) {
+      df[[i]] <- off.the.chain(df[[i]], chain, "CTgene")
+    }
+    df <- bound.input.return(df)
+    if (y.axis %!in% colnames(df) | is.null(y.axis)) {
+      if (y.axis %!in% c("V", "D", "J", "C")) {
+        y.axis <- "element.names"
       } else {
-        gene <- unname(c(V = 1, J = 2, C = 3)[gene])
+        df <- select.gene(df, chain, y.axis)
+        colnames(df)[ncol(df)] <- y.axis
       }
-    if (ncol(str_split(df[,"CTgene"], "_", simplify = TRUE)) == 1) {
-      C1 <- str_split(df[,"CTgene"], "_", simplify = TRUE)[,1] 
-      C1 <- str_split(C1, "[.]", simplify = TRUE)[,gene] 
-      df$C1 <- C1
-      x <- "C1"
+    }
+    df <- select.gene(df, chain, gene)
+    df <- subset(df, !is.na(df[,ncol(df)])) #remove NA values
+    df <- subset(df, df[,ncol(df)] != "NA") #remove values that are character "NA"
+    df <- subset(df, df[,ncol(df)] != "") #remove rows with non genes
+    #df <- table(df[,ncol(df)], df[,y.axis])
+    
+    if (!is.null(y.axis) && y.axis != "element.names") {
+      df <- df %>%
+        group_by(df[,ncol(df)], df[,y.axis], element.names) %>%
+        count() 
     } else {
-        C1 <- str_split(df[,"CTgene"], "_", simplify = TRUE)[,1] 
-        C1 <- str_split(C1, "[.]", simplify = TRUE)[,gene] 
-        C2 <- str_split(df[,"CTgene"], "_", simplify = TRUE)[,2] 
-        C2 <- str_split(C2, "[.]", simplify = TRUE)[,gene] 
-        df$C1 <- C1
-        df$C2 <- C2
-        if (chain %in% c("TRA", "TRD", "IGH")) {
-            x <- "C1"}
-        else if (chain %in% c("TRB", "TRG", "IGL")) {
-            x <- "C2"}
+      df <- df %>%
+        group_by(df[,ncol(df)], element.names) %>%
+        count() 
     }
-    df <- subset(df, !is.na(df[,x])) #remove NA values
-    df <- subset(df, df[,x] != "NA") #remove values that are character "NA"
-    df <- subset(df, df[,x] != "") #remove rows with non genes
-    df <- table(df[,x], df[,separate])
+    df <- df %>%
+      group_by(element.names) %>%
+      mutate(sum = sum(n))
+    col.lab <- "Total n"
     if (scale == TRUE) {
-      for (i in seq_len(ncol(df))) {
-        df[,i] <- df[,i]/sum(df[,i])
-      }
-    }
-    df <- as.data.frame(df)
+     df[,"n"] <- df[,"n"]/df[,"sum"]
+     col.lab <- "Scaled Values"
+    } 
+    colnames(df)[1:2] <- c("Var1", "Var2")
+    df <- df %>%
+      group_by(Var1, Var2) %>%
+      mutate(varcount = sum(n), 
+             sd = sd(n, na.rm = TRUE),
+             mean = mean(n))
     if (order == "variance") {
-      df2 <- df %>%
-        group_by(Var1) %>%
-        summarise(varcount = var(Freq))
-      varOrder <- order(df2$varcount, decreasing = TRUE)
-      df$Var1 <- factor(df$Var1, levels = df$Var1[varOrder])
+      varOrder <- order(df$varcount, decreasing = TRUE)
+      df$Var1 <- factor(df$Var1, levels = unique(df$Var1[varOrder]))
     }
     if (plot == "bar") {
-      plot <- ggplot(df, aes(x=Var1, y = Freq)) + 
+      df2 <- unique(df[,c("Var1", "Var2", "sd", "mean")])
+      plot <- ggplot(df2, aes(x=Var1, y = mean)) + 
           geom_bar(stat = "identity") + 
+          geom_errorbar(aes(ymin=mean, ymax=mean+sd), width=.2,
+                        position=position_dodge(.9)) + 
           theme_classic() + 
           theme(axis.title.x = element_blank(), #remove titles
                 axis.title.y = element_blank(), 
@@ -632,15 +676,17 @@ vizGenes <- function(df,
         facet_grid(Var2~.)
     } else if (plot == "heatmap") {
      
-      plot <- ggplot(df, aes(x=Var1, y = Var2, fill = Freq)) + 
-      geom_tile() + 
-      theme_classic() + 
-      theme(axis.title.x = element_blank(), #remove titles
-            axis.ticks.x = element_blank(), #removes ticks
-            axis.text.x = element_text(angle = 90, 
+      plot <- ggplot(df, aes(x=Var1, y = Var2, fill = n)) + 
+              geom_tile() + 
+              theme_classic() + 
+              labs(fill = col.lab) + 
+              theme(axis.title.x = element_blank(), #remove titles
+              axis.ticks.x = element_blank(), #removes ticks
+              axis.text.x = element_text(angle = 90, 
                                        vjust = 0.5, hjust=1, size=rel(0.5)), 
-            axis.title.y = element_blank()) + 
-        scale_fill_gradientn(colors = rev(colorblind_vector(5)))
+              axis.title.y = element_blank(), 
+              axis.text.y = element_text(size=rel(0.5))) + 
+              scale_fill_gradientn(colors = rev(colorblind_vector(5)))
     }
     if (exportTable == TRUE) { return(df) }
     return(plot)

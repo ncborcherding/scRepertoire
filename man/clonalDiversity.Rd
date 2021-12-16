@@ -8,14 +8,15 @@ clonalDiversity(
   df,
   cloneCall = "gene+nt",
   chain = "both",
-  groupBy = NULL,
+  group.by = NULL,
   x.axis = NULL,
+  split.by = NULL,
   exportTable = FALSE,
   n.boots = 100
 )
 }
 \arguments{
-\item{df}{The product of combineTCR(), combineBCR(),  or expression2List().}
+\item{df}{The product of combineTCR(), combineBCR(), expression2List(), or combineExpression().}
 
 \item{cloneCall}{How to call the clonotype - VDJC gene (gene), 
 CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
@@ -24,9 +25,12 @@ VDJC gene + CDR3 nucleotide (gene+nt).}
 \item{chain}{indicate if both or a specific chain should be used - 
 e.g. "both", "TRA", "TRG", "IGH", "IGL"}
 
-\item{groupBy}{Variable in which to group the diversity calculation}
+\item{group.by}{Variable in which to group the diversity calculation}
 
 \item{x.axis}{Additional variable in which to split the x.axis}
+
+\item{split.by}{If using a single-cell object, the column header 
+to group the new list. NULL will return clusters.}
 
 \item{exportTable}{Exports a table of the data into the global environment 
 in addition to the visualization}
@@ -38,9 +42,10 @@ ggplot of the diversity of clonotype sequences across list
 }
 \description{
 This function calculates traditional measures of diversity - Shannon, 
-inverse Simpson, Chao1 index, and abundance-based coverage estimators 
-(ACE) by sample or group. The function automatically down samples the
-diversity metrics using 100 boot straps The group paramter can be 
+inverse Simpson, Chao1 index, abundance-based coverage estimators 
+(ACE), and 1-Pielou's measure of species evenness by sample or group. 
+The function automatically down samples the
+diversity metrics using 100 boot straps The group parameter can be 
 used to condense the individual samples. If a matrix output for 
 the data is preferred, set exportTable = TRUE.
 }

@@ -10,11 +10,12 @@ clonesizeDistribution(
   cloneCall = "gene+nt",
   chain = "both",
   method = "ward.D2",
+  split.by = NULL,
   exportTable = FALSE
 )
 }
 \arguments{
-\item{df}{The product of combineTCR(), combineBCR(), or expression2List().}
+\item{df}{The product of combineTCR(), combineBCR(), expression2List(), or combineExpression().}
 
 \item{cloneCall}{How to call the clonotype - VDJC gene (gene),
 CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
@@ -24,6 +25,9 @@ VDJC gene + CDR3 nucleotide (gene+nt).}
 e.g. "both", "TRA", "TRG", "IGH", "IGL"}
 
 \item{method}{The clustering paramater for the dendrogram.}
+
+\item{split.by}{If using a single-cell object, the column header 
+to group the new list. NULL will return clusters.}
 
 \item{exportTable}{Returns the data frame used for forming the graph.}
 }

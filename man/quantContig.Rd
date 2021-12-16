@@ -9,12 +9,13 @@ quantContig(
   cloneCall = "gene+nt",
   chain = "both",
   scale = FALSE,
-  group = NULL,
+  group.by = NULL,
+  split.by = NULL,
   exportTable = FALSE
 )
 }
 \arguments{
-\item{df}{The product of combineTCR() combineBCR() or expression2List().}
+\item{df}{The product of combineTCR(), combineBCR(), expression2List(), or combineExpression().}
 
 \item{cloneCall}{How to call the clonotype - VDJC gene (gene), 
 CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
@@ -25,7 +26,10 @@ e.g. "both", "TRA", "TRG", "IGH", "IGL"}
 
 \item{scale}{Converts the graphs into percentage of unique clonotypes.}
 
-\item{group}{The column header used for grouping.}
+\item{group.by}{The column header used for grouping.}
+
+\item{split.by}{If using a single-cell object, the column header 
+to group the new list. NULL will return clusters.}
 
 \item{exportTable}{Returns the data frame used for forming the graph}
 }

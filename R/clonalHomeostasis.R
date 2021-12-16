@@ -14,7 +14,7 @@
 #' rep(c("P", "T"), 3), cells ="T-AB")
 #' clonalHomeostasis(combined, cloneCall = "gene")
 #'
-#' @param df The product of CombineContig() or expression2List()
+#' @param df The product of combineTCR(), combineBCR(), expression2List(), or combineExpression().
 #' @param cloneTypes The cutpoints of the proportions.
 #' @param cloneCall How to call the clonotype - VDJC gene (gene), 
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
@@ -33,6 +33,7 @@ clonalHomeostasis <- function(df, cloneTypes = c(Rare = .0001, Small = .001,
                         cloneCall = "gene+nt", chain = "both", 
                         exportTable = FALSE) {
     cloneTypes <- c(None = 0, cloneTypes)
+    df <- list.input.return(df)
     cloneCall <- theCall(cloneCall)
     df <- checkList(df)
     df <- checkBlanks(df, cloneCall)

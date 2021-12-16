@@ -9,25 +9,27 @@ vizGenes(
   gene = "V",
   chain = "TRA",
   plot = "heatmap",
-  separate = "sample",
+  y.axis = "sample",
   order = "gene",
   scale = TRUE,
   exportTable = FALSE
 )
 }
 \arguments{
-\item{df}{The product of combineTCR(), combineBCR(), or expression2List().}
+\item{df}{The product of combineTCR(), combineBCR(), expression2List(), 
+or combineExpression().}
 
 \item{gene}{Which part of the immune receptor to visualize - V, D, J, C}
 
-\item{chain}{indicate if both or a specific chain should be used - 
+\item{chain}{indicate the specific chain should be used - 
 e.g. "TRA", "TRG", "IGH", "IGL" (no both option here)}
 
 \item{plot}{The type of plot to return - heatmap or bar}
 
-\item{separate}{Categorical variable which to separate by along y-axis}
+\item{y.axis}{Variable to separate the y-axis, can be both categorical or other gene 
+gene segments such as V, D, J, or C.}
 
-\item{order}{Categorixal variable to organize the x-axis, either "gene" or "variance"}
+\item{order}{Categorical variable to organize the x-axis, either "gene" or "variance"}
 
 \item{scale}{Converts the proportion of total genes}
 

@@ -14,7 +14,7 @@ clonalHomeostasis(
 )
 }
 \arguments{
-\item{df}{The product of CombineContig() or expression2List()}
+\item{df}{The product of combineTCR(), combineBCR(), expression2List(), or combineExpression().}
 
 \item{cloneTypes}{The cutpoints of the proportions.}
 

@@ -13,7 +13,7 @@ clonalProportion(
 )
 }
 \arguments{
-\item{df}{The product of combineTCR(), combineBCR(),  or expression2List().}
+\item{df}{The product of combineTCR(), combineBCR(), expression2List(), or combineExpression().}
 
 \item{split}{The cutpoints for the specific clonotypes.}
 

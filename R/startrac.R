@@ -72,7 +72,7 @@ StartracDiversity <- function(sc,
             facet_grid(variable ~.) +
             theme_classic() +
             ylab("Index Score") +
-            guides(fill=FALSE) +
+            guides(fill="none") +
             theme(axis.title.x = element_blank())
         
     } else {
@@ -82,7 +82,7 @@ StartracDiversity <- function(sc,
             facet_grid(variable ~.) +
             theme_classic() +
             ylab("Index Score") +
-            guides(fill=FALSE) +
+            guides(fill="none") +
             theme(axis.title.x = element_blank())
     }
     if (exportTable == TRUE) { 

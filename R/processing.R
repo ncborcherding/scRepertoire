@@ -103,24 +103,27 @@ subsetContig <- function(df, name, variables = NULL) {
 #' screp_example <- combineExpression(combined, screp_example)
 #' 
 #' #Using expression2List
-#' newList <- expression2List(screp_example, group = "seurat_clusters")
+#' newList <- expression2List(screp_example, split.by = "seurat_clusters")
 #' 
 #' @param sc object after combineExpression().
-#' @param group The column header to group the new list by
+#' @param split.by The column header to group the new list. NULL will return clusters.
 #' @importFrom stringr str_sort
 #' @export
 #' @return list derived from the meta data of single-cell object with 
 #' elements divided by the group parameter
-expression2List <- function(sc, group) {
+expression2List <- function(sc, split.by) {
     if (!inherits(x=sc, what ="Seurat") & 
         !inherits(x=sc, what ="SummarizedExperiment")) {
             stop("Use a Seurat or SCE object to convert into a list")
     }
     meta <- grabMeta(sc)
-    unique <- str_sort(as.character(unique(meta[,group])), numeric = TRUE)
+    if(is.null(split.by)){
+      split.by <- "cluster"
+    }
+    unique <- str_sort(as.character(unique(meta[,split.by])), numeric = TRUE)
     df <- NULL
     for (i in seq_along(unique)) {
-        subset <- subset(meta, meta[,group] == unique[i])
+        subset <- subset(meta, meta[,split.by] == unique[i])
         subset <- subset(subset, !is.na(cloneType))
         df[[i]] <- subset
     }
@@ -134,7 +137,7 @@ expression2List <- function(sc, group) {
 #' This function will take the meta data from the product of 
 #' combineExpression()and generate a relational data frame to 
 #' be used for a chord diagram. Each cord will represent the number of 
-#' clonotype unqiue and shared across the multiple groupBy variable.
+#' clonotype unqiue and shared across the multiple group.by variable.
 #' 
 #' @examples
 #' #Getting the combined contigs
@@ -146,17 +149,17 @@ expression2List <- function(sc, group) {
 #' screp_example <- combineExpression(combined, screp_example)
 #' 
 #' #Getting data frame output for Circilize
-#' circles <- getCirclize(screp_example, groupBy = "seurat_clusters")
+#' circles <- getCirclize(screp_example, group.by = "seurat_clusters")
 #' 
 #' 
 #' @param sc object after combineExpression().
 #' @param cloneCall How to call the clonotype - VDJC gene (gene), 
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
 #' VDJC gene + CDR3 nucleotide (gene+nt).
-#' @param groupBy The group header for which you would like to analyze 
+#' @param group.by The group header for which you would like to analyze 
 #' the data.
 #' @param proportion Binary will calculate relationship unique 
-#' clonotypes (proportion = FALSE) or a ratio of the groupBy 
+#' clonotypes (proportion = FALSE) or a ratio of the group.by 
 #' variable (proportion = TRUE)
 #' 
 #' @importFrom reshape2 dcast
@@ -164,12 +167,12 @@ expression2List <- function(sc, group) {
 #' @return data frame of shared clonotypes between groups
 #' @author Dillon Corvino, Nick Borcherding
 getCirclize <- function(sc, cloneCall = "gene+nt", 
-                        groupBy = NULL, proportion = FALSE) {
+                        group.by = NULL, proportion = FALSE) {
     meta <- grabMeta(sc)
     cloneCall <- theCall(cloneCall)
-    test <- meta[, c(cloneCall, groupBy)]
+    test <- meta[, c(cloneCall, group.by)]
     test <- test[!is.na(test[,cloneCall]),]
-    dTest <- suppressMessages(dcast(test, test[,cloneCall] ~ test[,groupBy]))
+    dTest <- suppressMessages(dcast(test, test[,cloneCall] ~ test[,group.by]))
     dTest <- dTest[apply(dTest[,-1], 1, function(x) !all(x==0)),]
     dTest2 <- dTest[-1]
     dTest2[dTest2 >= 1] <- 1

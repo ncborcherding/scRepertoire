@@ -11,12 +11,13 @@ scatterClonotype(
   y.axis = NULL,
   chain = "both",
   dot.size = "total",
+  split.by = NULL,
   graph = "proportion",
   exportTable = FALSE
 )
 }
 \arguments{
-\item{df}{The product of combineTCR(), combineBCR(), or expression2List()}
+\item{df}{The product of combineTCR(), combineBCR(), expression2List(), or combineExpression().}
 
 \item{cloneCall}{How to call the clonotype - VDJC gene (gene), 
 CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
@@ -31,6 +32,9 @@ e.g. "both", "TRA", "TRG", "IGH", "IGL"}
 
 \item{dot.size}{either total or the name of the list element to 
 use for size of dots}
+
+\item{split.by}{If using a single-cell object, the column header 
+to group the new list. NULL will return clusters.}
 
 \item{graph}{graph either proportion or raw clonotype count}
 

@@ -6,39 +6,40 @@
 \usage{
 clonalOverlap(
   df,
-  cloneCall = c("gene", "nt", "aa", "gene+nt"),
-  method = c("overlap", "morisita", "jaccard"),
+  cloneCall = "gene+nt",
+  method = c("overlap", "morisita", "jaccard", "raw"),
   chain = "both",
+  split.by = NULL,
   exportTable = FALSE
 )
 }
 \arguments{
-\item{df}{The product of combineTCR(), combineBCR(),  or expression2List().}
+\item{df}{The product of combineTCR(), combineBCR(), expression2List(), or combineExpression().}
 
 \item{cloneCall}{How to call the clonotype - VDJC gene (gene), 
 CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
 VDJC gene + CDR3 nucleotide (gene+nt).}
 
-\item{method}{The method to calculate the overlap, either the overlap 
-coefficient, morisita or jaccard indices.}
+\item{method}{The method to calculate the overlap, either the "overlap" 
+coefficient, "morisita", "jaccard" indices, or "raw" for the base numbers.}
 
 \item{chain}{indicate if both or a specific chain should be used - 
 e.g. "both", "TRA", "TRG", "IGH", "IGL"}
 
-\item{exportTable}{Exports a table of the data into the global 
-environment in addition to the visualization}
+\item{split.by}{If using a single-cell object, the column header 
+to group the new list. NULL will return clusters.}
+
+\item{exportTable}{Returns the data frame used for forming the graph}
 }
 \value{
 ggplot of the clonotypic overlap between elements of a list
 }
 \description{
-This functions allows for the caclulation and visualizations of the 
-overlap coefficient or morisita index for clonotypes using the product 
-of combineTCR(), combineBCR() or expression2list(). The overlap 
-coefficient is calculated using the intersection of clonotypes 
-divided by the length of the smallest componenet. Morisita index is 
-estimating the dispersion of a population, more information can be found 
-[here](https://en.wikipedia.org/wiki/Morisita%27s_overlap_index).
+This functions allows for the calculation and visualizations of the 
+overlap coefficient, morisita, or jaccard index for clonotypes 
+using the product of combineTCR(), combineBCR() or expression2list(). 
+The overlap coefficient is calculated using the intersection of clonotypes 
+divided by the length of the smallest component. 
 If a matrix output for the data is preferred, set exportTable = TRUE.
 }
 \examples{

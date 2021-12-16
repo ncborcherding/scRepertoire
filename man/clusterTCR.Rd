@@ -4,19 +4,25 @@
 \alias{clusterTCR}
 \title{Clustering T cell receptors}
 \usage{
-clusterTCR(df, chain = NULL, sequence = NULL, threshold = 0.85, group = NULL)
+clusterTCR(
+  df,
+  chain = NULL,
+  sequence = NULL,
+  threshold = 0.85,
+  group.by = NULL
+)
 }
 \arguments{
-\item{df}{The product of CombineTCR() or CombineBCR().}
+\item{df}{The product of combineTCR() or exppression2List().}
 
-\item{chain}{The TCR to cluster}
+\item{chain}{The TCR to cluster - TRA, TRB, TRG, TRD}
 
 \item{sequence}{Clustering based on either "aa" or "nt"}
 
 \item{threshold}{The normalized edit distance to consider. The higher the number the more 
 similarity of sequence will be used for clustering.}
 
-\item{group}{The column header used for to calculate the cluster by.}
+\item{group.by}{The column header used for to calculate the cluster by.}
 }
 \value{
 List of clonotypes for individual cell barcodes
@@ -34,6 +40,6 @@ take some time to calculate the distances and cluster.
 combined <- combineTCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), 
 rep(c("P", "T"), 3), cells ="T-AB")
 
-sub_combined <- clusterTCR(combined[[2]], chain = "TCRA", sequence = "aa")
+sub_combined <- clusterTCR(combined[[2]], chain = "TRA", sequence = "aa")
 
 }

@@ -8,6 +8,7 @@ combineBCR(
   df,
   samples = NULL,
   ID = NULL,
+  threshold = 0.85,
   removeNA = FALSE,
   removeMulti = FALSE
 )
@@ -18,6 +19,9 @@ combineBCR(
 \item{samples}{The labels of samples (required).}
 
 \item{ID}{The additional sample labeling (optional).}
+
+\item{threshold}{The normalized edit distance to consider. The higher the number the more 
+similarity of sequence will be used for clustering.}
 
 \item{removeNA}{This will remove any chain without values.}
 
@@ -45,6 +49,7 @@ clusters will then be labeled with "LD" with the CTstrict header.
 #Data derived from the 10x Genomics intratumoral NSCLC B cells
 BCR <- read.csv("https://ncborcherding.github.io/vignettes/b_contigs.csv", 
 stringsAsFactors = FALSE)
-combined <- combineBCR(BCR, samples = "Patient1", ID = "Time1")
+combined <- combineBCR(BCR, samples = "Patient1", 
+ID = "Time1", threshold = 0.85)
 
 }
