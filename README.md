@@ -22,7 +22,7 @@ devtools::install_github("ncborcherding/scRepertoire")
 devtools::install_github("ncborcherding/scRepertoire@dev")
 ```
 
-We are working on constantly improving the scRepertoire package - these improvements can be found under the "refine" branch. These changes will be incorporated into the main branch as they are tested more throughly.
+We are working on constantly improving the scRepertoire package - these improvements can be found under the "dev" branch. These changes will be incorporated into the main branch as they are tested more throughly.
 
 #### Bioconductor
 
