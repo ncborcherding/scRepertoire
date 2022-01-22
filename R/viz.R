@@ -216,10 +216,14 @@ return(plot) }
 #' @export
 #' @return ggplot of the discrete or relative length distributions of 
 #' clonotype sequences
-lengthContig <- function(df, cloneCall = "aa", 
+lengthContig <- function(df, 
+                         cloneCall = "aa", 
                          group.by = NULL, 
-                         split.by = NULL, scale = FALSE, 
-                          chain = "both", exportTable = FALSE) {
+                         split.by = NULL, 
+                         scale = FALSE, 
+                         chain = "both", 
+                         exportTable = FALSE) {
+    df <- list.input.return(df, split.by)
     if(cloneCall == "nt") { cloneCall <- "CTnt"
         ylab <- "CDR3 (NT)"
     } else if (cloneCall == "aa") { cloneCall <- "CTaa" 
@@ -240,7 +244,6 @@ lengthContig <- function(df, cloneCall = "aa",
     }
     xlab <- "Length"
     Con.df <- NULL
-    df <- list.input.return(df, split.by)
     Con.df <- lengthDF(df, cloneCall, chain, group.by, c1, c2)
     names <- names(df)
     if (!is.null(group.by)) { 
@@ -616,10 +619,10 @@ vizGenes <- function(df,
                       order = "gene",
                       scale = TRUE, 
                       exportTable = FALSE) {
+    df <- bound.input.return(df)
     for(i in seq_along(df)) {
       df[[i]] <- off.the.chain(df[[i]], chain, "CTgene")
     }
-    df <- bound.input.return(df)
     if (y.axis %!in% colnames(df) | is.null(y.axis)) {
       if (y.axis %!in% c("V", "D", "J", "C")) {
         y.axis <- "element.names"
