@@ -604,6 +604,8 @@ makingLodes <- function(meta2, color, alpha, facet, set.axes) {
 #' gene segments such as V, D, J, or C.
 #' @param order Categorical variable to organize the x-axis, either "gene" or "variance"
 #' @param scale Converts the proportion of total genes 
+#' @param split.by If using a single-cell object, the column header 
+#' to group the new list. NULL will return clusters.
 #' @param exportTable Returns the data frame used for forming the graph.
 #' @import ggplot2
 #' @importFrom stringr str_split
@@ -618,11 +620,13 @@ vizGenes <- function(df,
                       y.axis = "sample", 
                       order = "gene",
                       scale = TRUE, 
+                      split.by = NULL,
                       exportTable = FALSE) {
-    df <- bound.input.return(df)
+    df <- list.input.return(df, split.by = split.by)
     for(i in seq_along(df)) {
       df[[i]] <- off.the.chain(df[[i]], chain, "CTgene")
     }
+    df <- bound.input.return(df)
     if (y.axis %!in% colnames(df) | is.null(y.axis)) {
       if (y.axis %!in% c("V", "D", "J", "C")) {
         y.axis <- "element.names"
