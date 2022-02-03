@@ -31,7 +31,7 @@
 #' CDR3 nucleotide (nt) CDR3 amino acid (aa), or 
 #' VDJC gene + CDR3 nucleotide (gene+nt).
 #' @param chain indicate if both or a specific chain should be used - 
-#' e.g. "both", "TRA", "TRG", "Heavy", "Light"
+#' e.g. "both", "TRA", "TRG", "IGH", "IGL"
 #' @param group.by The column label in the combined contig object in which 
 #' clonotype frequency will be calculated. 
 #' @param proportion Whether to use the total frequency (FALSE) or the 
@@ -228,7 +228,7 @@ highlightClonotypes <- function(sc,
 #' CDR3 nucleotide (nt) or CDR3 amino acid (aa), or 
 #' VDJC gene + CDR3 nucleotide (gene+nt).
 #' @param chain indicate if both or a specific chain should be used - 
-#' e.g. "both", "TRA", "TRG", "Heavy", "Light"
+#' e.g. "both", "TRA", "TRG", "IGH", "IGL"
 #' @param y.axes The columns that will separate the proportional 
 #' visualizations.
 #' @param color The column header or clonotype(s) to be highlighted.
