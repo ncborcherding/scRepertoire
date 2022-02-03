@@ -22,11 +22,11 @@
 #'               identity = "cluster",
 #'               filter.identity = "C1)
 #'               
-#' @param sc The seurat or SingleCellExperiment (SCE) after combineExpression().
+#' @param sc The Seurat or SingleCellExperiment (SCE) after combineExpression().
 #' @param reduction The name of the dimensional reduction of the single-cell object
 #' @param identity A variable in the meta data to use for the nodes.
 #' @param filter.clones Use to select the top n clones (filter.clones = 2000) or 
-#' n of clones based on the minimum number of all the comparitors (filter.clone = "min").
+#' n of clones based on the minimum number of all the comparators (filter.clone = "min").
 #' @param filter.identity Display the network for a specific level of the indicated identity
 #' @param filter.proportion Remove clonotypes from the network below a specific proportion
 #' @param filter.graph Remove the reciprocal edges from the half of the graph, 
@@ -35,7 +35,7 @@
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
 #' VDJC gene + CDR3 nucleotide (gene+nt).
 #' @param chain indicate if both or a specific chain should be used - 
-#' e.g. "both", "TRA", "TRG", "Heavy", "Light"
+#' e.g. "both", "TRA", "TRG", "IGH", "IGL"
 #' @param exportTable Exports a table of the data into the global 
 #' environment in addition to the visualization
 #' @import ggplot2
