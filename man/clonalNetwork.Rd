@@ -11,31 +11,35 @@ clonalNetwork(
   filter.clones = NULL,
   filter.identity = NULL,
   filter.proportion = NULL,
+  filter.graph = FALSE,
   cloneCall = "aa",
   chain = "both",
   exportTable = FALSE
 )
 }
 \arguments{
-\item{sc}{The seurat or SingleCellExperiment (SCE) after combineExpression().}
+\item{sc}{The Seurat or SingleCellExperiment (SCE) after combineExpression().}
 
 \item{reduction}{The name of the dimensional reduction of the single-cell object}
 
 \item{identity}{A variable in the meta data to use for the nodes.}
 
 \item{filter.clones}{Use to select the top n clones (filter.clones = 2000) or 
-n of clones based on the minimum number of all the comparitors (filter.clone = "min").}
+n of clones based on the minimum number of all the comparators (filter.clone = "min").}
 
 \item{filter.identity}{Display the network for a specific level of the indicated identity}
 
 \item{filter.proportion}{Remove clonotypes from the network below a specific proportion}
+
+\item{filter.graph}{Remove the reciprocal edges from the half of the graph, 
+allowing for cleaner visualization}
 
 \item{cloneCall}{How to call the clonotype - VDJC gene (gene), 
 CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
 VDJC gene + CDR3 nucleotide (gene+nt).}
 
 \item{chain}{indicate if both or a specific chain should be used - 
-e.g. "both", "TRA", "TRG", "Heavy", "Light"}
+e.g. "both", "TRA", "TRG", "IGH", "IGL"}
 
 \item{exportTable}{Exports a table of the data into the global 
 environment in addition to the visualization}
@@ -47,7 +51,5 @@ ggplot object
 This function generates a network based on clonal 
 proportions of an indicated identity and then superimposes
 the network onto a single-cell object dimensional reduction
-plot. If not filtering by identity, the network will 
-automatically remove the reciprocal edges from the half
-for organizational purposes.
+plot.
 }

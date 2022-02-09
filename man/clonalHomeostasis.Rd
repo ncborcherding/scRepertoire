@@ -23,7 +23,7 @@ CDR3 nucleotide (nt), CDR3 amino acid (aa), or
 VDJC gene + CDR3 nucleotide (gene+nt).}
 
 \item{chain}{indicate if both or a specific chain should be used - 
-e.g. "both", "TRA", "TRG", "Heavy", "Light"}
+e.g. "both", "TRA", "TRG", "IGH", "IGL"}
 
 \item{exportTable}{Exports a table of the data into the global 
 environment in addition to the visualization}
