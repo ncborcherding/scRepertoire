@@ -4,7 +4,7 @@ author:
   name: Nick Borcherding
   email: ncborch@gmail.com
   affiliation: Washington University in St. Louis, School of Medicine, St. Louis, MO, USA
-date: "October 6, 2021"
+date: "February 9th, 2022"
 output:
   BiocStyle::html_document:
     toc_float: true
@@ -374,34 +374,6 @@ scatterClonotype(combined, cloneCall ="gene",
                  graph = "proportion")
 ```
 
-
-## Clustering Clonotypes 
-
-The nucleotide or amino acid sequences of the chains can be used to cluster clonotypes, by examining the edit distance of the sequences. This approach is underlying the `combineBCR()` function, but now can be applied to the T cell receptors. It will add to the end of each list element a cluster by generating a network connected by the similarity in sequence. This network is directed by the threshold variable, where 0.85 is the normalized mean edit distance.
-
-Clonotype Cluster by distance:   
-*  TCRA:LD.1  [chain:] + :LD + [number]  
-*  TCRA.123 [chain:] + [number]  
-LD denotes if the cluster was called using the normalized Levenshtein distance
-
-If performed over the number of samples, such as the list elements, **group.by** can used to calculate only the clusters on the setting of patient sample (group.by = "Patient") or tissue type (group.by = "Type"). This will add the selected group.by to the beginning of the cluster designation.
-
-
-```{r}
-sub_combined <- clusterTCR(combined[[2]], chain = "TRA", 
-                           sequence = "aa", 
-                           threshold = 0.85, group.by = NULL)
-
-sub_combined <- as.data.frame(sub_combined)
-
-counts_TCRAcluster <- table(sub_combined$TRA_cluster)
-counts_TCRA<- table(sub_combined$cdr3_aa1)
-
-#Change in histogram range using clusters over exact amino acid sequence
-plot(rev(sort(counts_TCRAcluster)), xaxt='n')
-plot(rev(sort(counts_TCRA)), xaxt='n')
-```
-
 ***
 
 # Interacting with mRNA Expression
@@ -596,6 +568,43 @@ chordDiagram(circles, self.link = 1,
              grid.col = grid.cols, directional = 1, 
              direction.type =  "arrows",
             link.arr.type = "big.arrow")
+```
+
+## Clustering Clonotypes 
+
+The nucleotide or amino acid sequences of the chains can be used to cluster clonotypes, by examining the edit distance of the sequences. This approach is underlying the `combineBCR()` function, but now can be applied to the T cell receptors. It will add to the end of each list element a cluster by generating a network connected by the similarity in sequence. This network is directed by the threshold variable, where 0.85 is the normalized mean edit distance.
+
+Clonotype Cluster by distance:  
+
+*  TCRA:LD.1  [chain:] + :LD + [number]
+*  TCRA.123 [chain:] + [number]
+
+LD denotes if the cluster was called using the normalized Levenshtein distance
+
+If performed over the number of samples, such as the list elements, **group.by** can used to calculate only the clusters on the setting of patient sample (group.by = "Patient") or tissue type (group.by = "Type"). This will add the selected group to the beginning of the cluster designation.
+
+
+```{r}
+sub_combined <- clusterTCR(combined[[2]], 
+                           chain = "TRA", 
+                           sequence = "aa", 
+                           threshold = 0.85, 
+                           group.by = NULL)
+```
+
+### Single-cell object support (Dev Version Only)
+
+We can also use the single-cell object directly to cluster cells within the single-cell object using the same approach as above. 
+
+```{r}
+seurat <- clusterTCR(screp_example,
+                     chain = "TRB",
+                     group.by = "Patient", 
+                     sequence = "aa", 
+                     threshold = 0.85)
+
+DimPlot(screp_example, group.by = "TRB_cluster") + 
+  NoLegend()
 ```
 
 ## StartracDiversity
