@@ -39,7 +39,7 @@ clusterTCR <- function(df,
     output.list <- list()
     dat <- list.input.return(df, group.by)
     if (inherits(x=df, what ="Seurat") &&
-        !inherits(x=df, what ="SummarizedExperiment")) {
+        inherits(x=df, what ="SummarizedExperiment")) {
       for(y in seq_along(dat)) {
         dat[[y]]$cdr3_aa1 <- str_split(dat[[y]]$CTaa, "_", simplify = TRUE)[,1]
         dat[[y]]$cdr3_aa2 <- str_split(dat[[y]]$CTaa, "_", simplify = TRUE)[,2]
