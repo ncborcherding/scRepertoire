@@ -121,7 +121,7 @@ combineTCR <- function(df, samples = NULL, ID = NULL,
 #' \code{\link{combineExpression}}. Unlike combineTCR(), 
 #' combineBCR produces a column CTstrict of an index of nucleotide sequence 
 #' and the corresponding v-gene. This index automatically caluclates 
-#' the Hammings distance between sequences of the same length and will 
+#' the Levenshtein distance between sequences of the same length and will 
 #' index sequences with <= 0.15 normalized Levenshtein distance with the same 
 #' ID for sequences with < 15 nucleotide difference in length. After which, 
 #' clonotype clusters are called using the igraph component() function. Clonotype
