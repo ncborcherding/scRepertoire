@@ -169,14 +169,14 @@ combineExpression <- function(df, sc, cloneCall="gene+nt",
 #' screp_example  <- highlightClonotypes(screp_example, cloneCall= "aa", 
 #' sequence = c("CAVNGGSQGNLIF_CSAEREDTDTQYF"))
 #' 
-#' @param sc The seurat object to attach
+#' @param sc The Seurat object to attach
 #' @param cloneCall How to call the clonotype - VDJC gene (gene), 
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
 #' VDJC gene + CDR3 nucleotide (gene+nt).
 #' @param sequence The specific sequence or sequence to highlight
 #'
 #' @export
-#' @return DimPlot with highlighted clonotypes
+#' @return Seurat object with new meta data column for indicated clones
 highlightClonotypes <- function(sc, 
                             cloneCall = c("gene", "nt", "aa", "gene+nt"), 
                             sequence = NULL){
@@ -187,8 +187,9 @@ highlightClonotypes <- function(sc,
     meta <- grabMeta(sc)
     meta$highlight <- NA
     for(i in seq_along(sequence)) {
-        meta$highlight <- ifelse(meta[,cloneCall] == sequence[i], 
-                            paste("Clonotype", i, sep=""),  meta$highlight) }
+        meta$highlight <-  ifelse(meta[,cloneCall] == sequence[i], 
+                                  sequence[i], meta$highlight)
+    }
     meta <- meta[,-(which(colnames(meta) == "cluster"))]
     col.name <- names(meta) %||% colnames(meta)
     sc[[col.name]] <- meta

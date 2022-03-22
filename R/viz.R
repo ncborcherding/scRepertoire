@@ -305,7 +305,7 @@ lengthContig <- function(df,
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL"
 #' @param samples The specific samples to isolate for visualization.
 #' @param clonotypes The specific sequences of interest.
-#' @param numbers The top number clonotype sequences.
+#' @param numbers The top number clonotype sequences per group
 #' @param split.by If using a single-cell object, the column header 
 #' to group the new list. NULL will return clusters.
 #' @param graph The type of graph produced, either "alluvial" or "area".
@@ -340,7 +340,9 @@ compareClonotypes <- function(df, cloneCall = "gene+nt", chain = "both", samples
     if (!is.null(clonotypes)) {
         Con.df <- Con.df[Con.df$Clonotypes %in% clonotypes,] }
     if (!is.null(numbers)) {
-        top <- Con.df %>% top_n(n = numbers, wt = Proportion)
+        top <- Con.df %>%
+          group_by(Con.df[,3]) %>%
+          top_n(n = numbers, wt = Proportion)
         Con.df <- Con.df[Con.df$Clonotypes %in% top$Clonotypes,] }
     if (nrow(Con.df) < length(unique(Con.df$Sample))) {
         stop("Reasses the filtering strategies here, there is not 
