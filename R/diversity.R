@@ -52,7 +52,7 @@ clonalDiversity <- function(df, cloneCall = "gene+nt", chain = "both",
   if (!is.null(group.by) || !is.null(x.axis)) {
     df <- bind_rows(df, .id = "element.names")
     df$group.element <- paste0(df[,group.by], ".", df[,x.axis])
-    group.element.uniq <- unique(df$group.element)
+    #group.element.uniq <- unique(df$group.element)
     df <- split(df, f = df[,"group.element"])
   }
   min <- short.check(df, cloneCall)
@@ -74,13 +74,13 @@ clonalDiversity <- function(df, cloneCall = "gene+nt", chain = "both",
     colnames(mat) <- c("Shannon", "Inv.Simpson", "Chao", "ACE", "Inv.Pielou")
     mat[,"Inv.Pielou"] <- 1 - mat[,"Inv.Pielou"]
     if (!is.null(group.by)) {
-      mat[,group.by] <- str_split(group.element.uniq, "[.]", simplify = TRUE)[,1]
+      mat[,group.by] <- str_split(names(df), "[.]", simplify = TRUE)[,1]
     } else {
       group.by <- "Group"
       mat[,group.by] <- names(df)
     }
     if (!is.null(x.axis)) {
-      mat[,x.axis] <- str_split(group.element.uniq, "[.]", simplify = TRUE)[,2]
+      mat[,x.axis] <- str_split(names(df), "[.]", simplify = TRUE)[,2]
     } else {
       x.axis <- "x.axis"
       mat[,x.axis] <- 1
