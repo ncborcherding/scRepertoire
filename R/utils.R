@@ -392,7 +392,7 @@ parseBCR <- function (Con.df, unique_df, data2) {
           if (!is.na(data2[location.i[2], c("IGLct")])) {
             Con.df[y, light_lines] <- data2[location.i[2], l_lines]
           } else if(!is.na(data2[location.i[2], c("IGKct")])) {
-            Con.df[y, light_lines] <- data2[location.i[2], l_lines]
+            Con.df[y, light_lines] <- data2[location.i[2], k_lines]
           }
         }
       } else if (!is.na(data2[location.i[2], c("IGHct")])) {
@@ -401,7 +401,7 @@ parseBCR <- function (Con.df, unique_df, data2) {
           if (!is.na(data2[location.i[1], c("IGLct")])) {
             Con.df[y, light_lines] <- data2[location.i[1], l_lines]
           } else if(!is.na(data2[location.i[1], c("IGKct")])) {
-            Con.df[y, light_lines] <- data2[location.i[1], l_lines]
+            Con.df[y, light_lines] <- data2[location.i[1], k_lines]
           }
         }
       }
