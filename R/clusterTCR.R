@@ -28,6 +28,7 @@
 #' @importFrom stringr str_split
 #' @importFrom  rlang %||%
 #' @importFrom SummarizedExperiment colData<- colData
+#' @importFrom stats na.omit
 #' @export
 #' @return List of clonotypes for individual cell barcodes
 
@@ -38,7 +39,7 @@ clusterTCR <- function(df,
                        group.by = NULL) {
     output.list <- list()
     dat <- list.input.return(df, group.by)
-    if (inherits(x=df, what ="Seurat") &&
+    if (inherits(x=df, what ="Seurat") |
         inherits(x=df, what ="SummarizedExperiment")) {
       for(y in seq_along(dat)) {
         dat[[y]]$cdr3_aa1 <- str_split(dat[[y]]$CTaa, "_", simplify = TRUE)[,1]
@@ -88,13 +89,14 @@ clusterTCR <- function(df,
                         "filtered" = names(components$membership))
       filter <- which(table(out$cluster) > 1)
       out <- subset(out, cluster %in% filter)
+      if(nrow(out) > 1) {
           if (list.length == 1) {
             out$cluster <- paste0(chain, ":LD", ".", out$cluster)
           } else {
             out$cluster <- paste0(names(bound)[x], ".", chain, ":LD", ".", out$cluster)
           }
           out$filtered <- dictionary[as.numeric(out$filtered)]
-          
+      }
           uni_IG <- as.data.frame(unique(dictionary[dictionary %!in% out$filtered]))
           colnames(uni_IG) <- "filtered"
           if (nrow(uni_IG) > 0) {
@@ -107,14 +109,14 @@ clusterTCR <- function(df,
       
       output <- rbind.data.frame(out, uni_IG)
       colname <- paste0(chain, "_cluster")
-      colnames(output) <- c(colname, ref2)
+      colnames(output) <- c(ref2,colname)
       output.list[[x]] <- output
     }
       for (i in seq_along(bound)) {
           tmp <- bound[[i]]
           output <- bind_rows(output.list)
           tmp[,ref2] <- str_split(tmp[,ref2], ";", simplify = TRUE)[,1]
-          output2 <- output[output[,2] %in% tmp[,ref2],]
+          output2 <- output[output[,1] %in% tmp[,ref2],]
           
           tmp <-  unique(suppressMessages(join(tmp,  output2)))
           bound[[i]] <- tmp

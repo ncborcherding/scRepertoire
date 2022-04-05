@@ -595,7 +595,7 @@ sub_combined <- clusterTCR(combined[[2]],
 We can also use the single-cell object directly to cluster cells within the single-cell object using the same approach as above. 
 
 ```{r}
-seurat <- clusterTCR(screp_example,
+screp_example <- clusterTCR(screp_example,
                      chain = "TRB",
                      group.by = "Patient", 
                      sequence = "aa", 
@@ -622,7 +622,7 @@ StartracDiversity(screp_example, type = "Type", sample = "Patient", by = "overal
 
 ## Clonotype Bias
 
-A new metric proposed by [Massimo et al](https://www.biorxiv.org/content/10.1101/2021.09.20.458613v1), clonal bias, like Startac is a clonal metric that seeks to quantify how individual clones are skewed towards a  specific cellular compartment or cluster. With the minimal example present in the in-built vignette, this will not be as enlightening as when we use a full single-cell object.
+A new metric proposed by [Massimo et al](https://www.biorxiv.org/content/10.1101/2021.09.20.458613v1), clonal bias, like Startrac is a clonal metric that seeks to quantify how individual clones are skewed towards a  specific cellular compartment or cluster. With the minimal example present in the in-built vignette, this will not be as enlightening as when we use a full single-cell object.
 
 **split.by**   
 * Variable used to calculate the baseline frequencies  

@@ -379,41 +379,46 @@ parseTCR <- function(Con.df, unique_df, data2) {
 return(Con.df)}
 
 #Assigning positions for BCR contig data
+#Now assumes lambda over kappa in the context of only 2 light chains
 #' @author Gloria Kraus, Nick Bormann, Nick Borcherding
-parseBCR <- function(Con.df, unique_df, data2) {
-    for (y in seq_along(unique_df)){
-        barcode.i <- Con.df$barcode[y]
-        location.i <- which(barcode.i == data2$barcode)
-        
-        if (length(location.i) == 2){
-            if (is.na(data2[location.i[1],c("IGHct")])) {
-                if(is.na(data2[location.i[2],c("IGLct")]) & is.na(data2[location.i[2],c("IGKct")])){
-                  Con.df[y,heavy_lines]<-data2[location.i[2], h_lines]
-                }
-                if (is.na(data2[location.i[1],c("IGKct")])) {
-                    Con.df[y,light_lines]<-data2[location.i[1], l_lines]
-                } else if (!is.na(data2[location.i[1],c("IGKct")])) {
-                    Con.df[y,light_lines]<-data2[location.i[1], k_lines]}
-            } else { 
-              if(is.na(data2[location.i[2],c("IGLct")]) & is.na(data2[location.i[2],c("IGKct")])){
-                Con.df[y,heavy_lines]<-data2[location.i[1], h_lines]
-              }
-              if (!is.na(data2[location.i[2],c("IGKct")])) {
-                Con.df[y,light_lines]<-data2[location.i[1],k_lines]
-              } else {
-                Con.df[y,light_lines]<- data2[location.i[1],l_lines]
-                }}
-          
-        } else if (length(location.i) == 1) {
-            chain.i <- data2$chain[location.i]
-            if (chain.i == "IGH"){
-                Con.df[y,heavy_lines]<-data2[location.i[1],h_lines]
-            } else if (chain.i == "IGL") {
-                Con.df[y,light_lines]<- data2[location.i[1],l_lines]}
-            else {
-                Con.df[y,light_lines]<-data2[location.i[1], k_lines]
-            }}}
-    return(Con.df)
+parseBCR <- function (Con.df, unique_df, data2) {
+  for (y in seq_along(unique_df)) {
+    barcode.i <- Con.df$barcode[y]
+    location.i <- which(barcode.i == data2$barcode)
+    if (length(location.i) == 2) {
+      if (!is.na(data2[location.i[1], c("IGHct")])) {
+        Con.df[y, heavy_lines] <- data2[location.i[1], h_lines]
+        if(is.na(data2[location.i[2], c("IGHct")])) {
+          if (!is.na(data2[location.i[2], c("IGLct")])) {
+            Con.df[y, light_lines] <- data2[location.i[2], l_lines]
+          } else if(!is.na(data2[location.i[2], c("IGKct")])) {
+            Con.df[y, light_lines] <- data2[location.i[2], l_lines]
+          }
+        }
+      } else if (!is.na(data2[location.i[2], c("IGHct")])) {
+        Con.df[y, heavy_lines] <- data2[location.i[2], h_lines]
+        if(is.na(data2[location.i[1], c("IGHct")])) {
+          if (!is.na(data2[location.i[1], c("IGLct")])) {
+            Con.df[y, light_lines] <- data2[location.i[1], l_lines]
+          } else if(!is.na(data2[location.i[1], c("IGKct")])) {
+            Con.df[y, light_lines] <- data2[location.i[1], l_lines]
+          }
+        }
+      }
+    }else if (length(location.i) == 1) {
+      chain.i <- data2$chain[location.i]
+      if (chain.i == "IGH") {
+        Con.df[y, heavy_lines] <- data2[location.i[1], h_lines]
+      }
+      else if (chain.i == "IGL") {
+        Con.df[y, light_lines] <- data2[location.i[1], l_lines]
+      }
+      else {
+        Con.df[y, light_lines] <- data2[location.i[1], k_lines]
+      }
+    }
+  }
+  return(Con.df)
 }
 
 #Assign T/B cell chains and celltypes for combineTCR() and lengthContig

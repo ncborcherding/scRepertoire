@@ -30,7 +30,7 @@ e.g. "both", "TRA", "TRG", "IGH", "IGL"}
 
 \item{clonotypes}{The specific sequences of interest.}
 
-\item{numbers}{The top number clonotype sequences.}
+\item{numbers}{The top number clonotype sequences per group}
 
 \item{split.by}{If using a single-cell object, the column header 
 to group the new list. NULL will return clusters.}

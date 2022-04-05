@@ -4,6 +4,8 @@ CHANGES IN VERSION 1.5.2
 * highlightClonotypes() now returns the specific clones instead of clonotype 1, ...
 * compareClonotypes numbers parameter now for group-wide numbers and not overall top X numbers
 * Fixed issue with clonalDiversity that cause errors when group.by parameter was used. 
+* modified parseBCR() to reduce complexity and assume lambda >> kappa
+* fixed clusterTCR() function broken with Seurat Objects
 
 CHANGES IN VERSION 1.3.5
 ------------------------
