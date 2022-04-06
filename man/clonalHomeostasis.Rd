@@ -8,7 +8,7 @@ clonalHomeostasis(
   df,
   cloneTypes = c(Rare = 1e-04, Small = 0.001, Medium = 0.01, Large = 0.1, Hyperexpanded
     = 1),
-  cloneCall = "gene+nt",
+  cloneCall = "strict",
   chain = "both",
   exportTable = FALSE
 )
@@ -20,7 +20,7 @@ clonalHomeostasis(
 
 \item{cloneCall}{How to call the clonotype - VDJC gene (gene), 
 CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
-VDJC gene + CDR3 nucleotide (gene+nt).}
+VDJC gene + CDR3 nucleotide (strict).}
 
 \item{chain}{indicate if both or a specific chain should be used - 
 e.g. "both", "TRA", "TRG", "IGH", "IGL"}

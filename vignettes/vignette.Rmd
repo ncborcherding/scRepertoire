@@ -151,9 +151,9 @@ subset <- subsetContig(combined, name = "sample",
 * "gene" - use the VDJC genes comprising the TCR/Ig  
 * "nt" - use the nucleotide sequence of the CDR3 region  
 * "aa" - use the amino acid sequence of the CDR3 region  
-* "gene+nt" - use the VDJC genes comprising the TCR/Ig + the nucleotide sequence of the CDR3 region. This is the [proper definition of clonotype](https://www.ncbi.nlm.nih.gov/pubmed/19568742).  
+* "strict" - use the VDJC genes comprising the TCR + the nucleotide sequence of the CDR3 region. This is the [proper definition of clonotype](https://www.ncbi.nlm.nih.gov/pubmed/19568742). For ```combineBCR()``` strict refers to the edit distance clusters + Vgene of the Ig. 
 
-Important to note, that the clonotype is called using essentially the combination of genes or nt/aa CDR3 sequences for both loci. As of this implementation of scRepertoire, clonotype calling is not incorporating small variations within the CDR3 sequences. As such the **gene** approach will be the most sensitive, while the use of **nt** or **aa** moderately so, and the most specific for clonotypes being **gene+nt**. Additionally, the clonotype call is trying to incorporate both loci, *i.e*, both **TCRA** and **TCRB** chains and if a single cell barcode has multiple sequences identified (*i.e.*, 2 TCRA chains expressed in one cell). Using the 10x approach, there is a subset of barcodes that only return one of the immune receptor chains, the unreturned chain is assigned an **NA** value.
+Important to note, that the clonotype is called using essentially the combination of genes or nt/aa CDR3 sequences for both loci. As of this implementation of scRepertoire, clonotype calling is not incorporating small variations within the CDR3 sequences. As such the **gene** approach will be the most sensitive, while the use of **nt** or **aa** moderately so, and the most specific for clonotypes being **strict**. Additionally, the clonotype call is trying to incorporate both loci, *i.e*, both **TCRA** and **TCRB** chains and if a single cell barcode has multiple sequences identified (*i.e.*, 2 TCRA chains expressed in one cell). Using the 10x approach, there is a subset of barcodes that only return one of the immune receptor chains, the unreturned chain is assigned an **NA** value.
 
 ## Quantify Clonotypes
 
@@ -168,13 +168,13 @@ The first function to explore the clonotypes is `quantContig()` to return the to
 + "TRA", "TRB", "TRD", "TRG", "IGH" or "IGL" to select single chain
 
 ```{r}
-quantContig(combined, cloneCall="gene+nt", chain = "both", scale = TRUE)
+quantContig(combined, cloneCall="strict", chain = "both", scale = TRUE)
 ```
 
 Within each of the general analysis functions, there is the ability to export the data frame used to create the visualization. To get the exported values, use **exportTable** = TRUE. It will return the data frame used to make the graph, instead of the visual output.  
 
 ```{r}
-quantContig_output <- quantContig(combined, cloneCall="gene+nt", 
+quantContig_output <- quantContig(combined, cloneCall="strict", 
                                     scale = TRUE, exportTable = TRUE)
 quantContig_output
 ```
@@ -332,13 +332,13 @@ clonalProportion(combined, cloneCall = "nt")
 If you are interested in measures of similarity between the samples loaded into scRepertoire, using `clonalOverlap()` can assist in the visualization. Three methods currently can be performed in `clonalOverlap()` 1) overlap coefficient, 2) Morisita index, or 3) Jaccard index. The former is looking at the overlap of clonotypes scaled to the length of unique clonotypes in the smaller sample. The Morisita index is more complex, it is an ecological measure of the dispersion of individuals within a population, incorporating the size of the population. The Jaccard Similarity Index is very similar to the overlap coefficient - instead of using the length of the smaller sample, the denominator for the Jaccard Index is the union of the two comparisons, leading to a much smaller number. 
 
 ```{r}
-clonalOverlap(combined, cloneCall = "gene+nt", method = "morisita")
+clonalOverlap(combined, cloneCall = "strict", method = "morisita")
 ```
 
 Another addition to scRepertoire is the ability to cluster the samples by the clone size distribution using `clonesizeDistribution()` adapted from the [powerTCR](https://bioconductor.org/packages/release/bioc/html/powerTCR.html) R package. Please read and cite the respective [citation](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1006571) if using this function to analyze the similarities of sample clone size distributions. In this function, method refers to the method for which the hierarchical clustering will be based on. 
 
 ```{r}
-clonesizeDistribution(combined, cloneCall = "gene+nt", 
+clonesizeDistribution(combined, cloneCall = "strict", 
                       method="ward.D2")
 ```
 

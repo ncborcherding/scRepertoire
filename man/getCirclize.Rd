@@ -5,14 +5,14 @@
 \title{Generate data frame to be used with circlize R package to visualize
 clonotypes as a chord diagram.}
 \usage{
-getCirclize(sc, cloneCall = "gene+nt", group.by = NULL, proportion = FALSE)
+getCirclize(sc, cloneCall = "strict", group.by = NULL, proportion = FALSE)
 }
 \arguments{
 \item{sc}{object after combineExpression().}
 
 \item{cloneCall}{How to call the clonotype - VDJC gene (gene), 
 CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
-VDJC gene + CDR3 nucleotide (gene+nt).}
+VDJC gene + CDR3 nucleotide (strict).}
 
 \item{group.by}{The group header for which you would like to analyze 
 the data.}

@@ -155,7 +155,7 @@ expression2List <- function(sc, split.by) {
 #' @param sc object after combineExpression().
 #' @param cloneCall How to call the clonotype - VDJC gene (gene), 
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
-#' VDJC gene + CDR3 nucleotide (gene+nt).
+#' VDJC gene + CDR3 nucleotide (strict).
 #' @param group.by The group header for which you would like to analyze 
 #' the data.
 #' @param proportion Binary will calculate relationship unique 
@@ -166,7 +166,7 @@ expression2List <- function(sc, split.by) {
 #' @export
 #' @return data frame of shared clonotypes between groups
 #' @author Dillon Corvino, Nick Borcherding
-getCirclize <- function(sc, cloneCall = "gene+nt", 
+getCirclize <- function(sc, cloneCall = "strict", 
                         group.by = NULL, proportion = FALSE) {
     meta <- grabMeta(sc)
     cloneCall <- theCall(cloneCall)

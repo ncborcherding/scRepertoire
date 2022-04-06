@@ -303,13 +303,15 @@ quiet <- function(x) {
 
 # This is to help sort the type of clonotype data to use
 theCall <- function(x) {
-    if (x == "gene") {
+    if (x %in% c("CTnt", "CTgene", "CTaa", "CTstrict")) {
+      x <- x
+    }else if (x == "gene" | x == "genes") {
         x <- "CTgene"
-    } else if(x == "nt") {
+    } else if(x == "nt" | x == "nucleotide") {
         x <- "CTnt"
-    } else if (x == "aa") {
+    } else if (x == "aa" | x == "amino") {
         x <- "CTaa"
-    } else if (x == "gene+nt") {
+    } else if (x == "gene+nt" | x == "strict") {
         x <- "CTstrict"
     }
     return(x)

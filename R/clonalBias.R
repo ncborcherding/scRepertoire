@@ -29,7 +29,7 @@
 #' @param df The product of combineTCR(), combineBCR(), expression2List(), or combineExpression().
 #' @param cloneCall How to call the clonotype - VDJC gene (gene), 
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
-#' VDJC gene + CDR3 nucleotide (gene+nt).
+#' VDJC gene + CDR3 nucleotide (strict).
 #' @param group.by The column header used for comparisons of bias.
 #' @param split.by The column header used for calculating the baseline frequencies.
 #' For example, "Type" for tumor vs peripheral blood comparison 
@@ -41,7 +41,7 @@
 #' @export
 #' @return Returns ggplot of the clonotype bias
 clonotypeBias <- function(df, 
-                          cloneCall=cloneCall, 
+                          cloneCall="strict", 
                           split.by=NULL, 
                           group.by=NULL, 
                           n.boots = 20,

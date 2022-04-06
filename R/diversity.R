@@ -18,7 +18,7 @@
 #' @param df The product of combineTCR(), combineBCR(), expression2List(), or combineExpression().
 #' @param cloneCall How to call the clonotype - VDJC gene (gene), 
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
-#' VDJC gene + CDR3 nucleotide (gene+nt).
+#' VDJC gene + CDR3 nucleotide (strict).
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL"
 #' @param group.by Variable in which to group the diversity calculation
@@ -35,7 +35,7 @@
 #' @export
 #' @return ggplot of the diversity of clonotype sequences across list
 #' @author Andrew Malone, Nick Borcherding
-clonalDiversity <- function(df, cloneCall = "gene+nt", chain = "both",
+clonalDiversity <- function(df, cloneCall = "strict", chain = "both",
                             group.by = NULL, x.axis = NULL, split.by = NULL,
                             exportTable = FALSE, n.boots = 100) {
   df <- list.input.return(df, split.by)

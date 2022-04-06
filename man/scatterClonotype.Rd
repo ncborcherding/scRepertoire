@@ -6,7 +6,7 @@
 \usage{
 scatterClonotype(
   df,
-  cloneCall = "gene+nt",
+  cloneCall = "strict",
   x.axis = NULL,
   y.axis = NULL,
   chain = "both",
@@ -21,7 +21,7 @@ scatterClonotype(
 
 \item{cloneCall}{How to call the clonotype - VDJC gene (gene), 
 CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
-VDJC gene + CDR3 nucleotide (gene+nt).}
+VDJC gene + CDR3 nucleotide (strict).}
 
 \item{x.axis}{name of the list element to appear on the x.axis}
 

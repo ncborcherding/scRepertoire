@@ -6,7 +6,7 @@
 \usage{
 highlightClonotypes(
   sc,
-  cloneCall = c("gene", "nt", "aa", "gene+nt"),
+  cloneCall = c("gene", "nt", "aa", "strict"),
   sequence = NULL
 )
 }
@@ -15,7 +15,7 @@ highlightClonotypes(
 
 \item{cloneCall}{How to call the clonotype - VDJC gene (gene), 
 CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
-VDJC gene + CDR3 nucleotide (gene+nt).}
+VDJC gene + CDR3 nucleotide (strict).}
 
 \item{sequence}{The specific sequence or sequence to highlight}
 }

@@ -18,7 +18,7 @@
 #' @param split The cutpoints for the specific clonotypes.
 #' @param cloneCall How to call the clonotype - VDJC gene (gene), 
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
-#' VDJC gene + CDR3 nucleotide (gene+nt).
+#' VDJC gene + CDR3 nucleotide (strict).
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL"
 #' @param exportTable Exports a table of the data into the global 
@@ -31,7 +31,7 @@
 #' @export
 #' @return ggplot of the space occupied by the specific rank of clonotypes
 clonalProportion <- function(df,split = c(10, 100, 1000, 10000, 30000, 
-                        100000), cloneCall = "gene+nt", 
+                        100000), cloneCall = "strict", 
                         chain = "both", exportTable = FALSE) {
     Con.df <- NULL
     df <- list.input.return(df)

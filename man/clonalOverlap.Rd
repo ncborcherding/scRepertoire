@@ -6,7 +6,7 @@
 \usage{
 clonalOverlap(
   df,
-  cloneCall = "gene+nt",
+  cloneCall = "strict",
   method = c("overlap", "morisita", "jaccard", "raw"),
   chain = "both",
   split.by = NULL,
@@ -18,7 +18,7 @@ clonalOverlap(
 
 \item{cloneCall}{How to call the clonotype - VDJC gene (gene), 
 CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
-VDJC gene + CDR3 nucleotide (gene+nt).}
+VDJC gene + CDR3 nucleotide (strict).}
 
 \item{method}{The method to calculate the overlap, either the "overlap" 
 coefficient, "morisita", "jaccard" indices, or "raw" for the base numbers.}

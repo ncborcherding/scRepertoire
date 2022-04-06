@@ -6,7 +6,7 @@
 \usage{
 quantContig(
   df,
-  cloneCall = "gene+nt",
+  cloneCall = "strict",
   chain = "both",
   scale = FALSE,
   group.by = NULL,
@@ -19,7 +19,7 @@ quantContig(
 
 \item{cloneCall}{How to call the clonotype - VDJC gene (gene), 
 CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
-VDJC gene + CDR3 nucleotide (gene+nt).}
+VDJC gene + CDR3 nucleotide (strict).}
 
 \item{chain}{indicate if both or a specific chain should be used - 
 e.g. "both", "TRA", "TRG", "IGH", "IGL"}
@@ -49,6 +49,6 @@ for the data is preferred, set exportTable = TRUE.
 x <- contig_list
 combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), 
 rep(c("P", "T"), 3), cells ="T-AB")
-quantContig(combined, cloneCall="gene+nt", scale = TRUE)
+quantContig(combined, cloneCall="strict", scale = TRUE)
 
 }
