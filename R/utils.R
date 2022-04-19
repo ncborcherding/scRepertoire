@@ -36,6 +36,14 @@ checkList <- function(df) {
     return(df)
 }
 
+checkContigs <- function(df) {
+  df <- lapply(seq_len(length(df)), function(x) {
+    df[[x]] <- if(is(df[[x]])[1] != "data.frame") as.data.frame(df[[x]]) else df[[x]]
+    df[[x]][df[[x]] == ""] <- NA
+    df[[x]]
+  })
+}
+
 #' @importFrom dplyr bind_rows
 bound.input.return <- function(df) {
   if (inherits(x=df, what ="Seurat") | inherits(x=df, what ="SummarizedExperiment")) {

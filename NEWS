@@ -6,6 +6,7 @@ CHANGES IN VERSION 1.5.2
 * Fixed issue with clonalDiversity that cause errors when group.by parameter was used. 
 * modified parseBCR() to reduce complexity and assume lambda >> kappa
 * fixed clusterTCR() function broken with Seurat Objects
+* checkContigs no ensures data frames and that "" are converted into NAs
 
 CHANGES IN VERSION 1.3.5
 ------------------------

@@ -50,6 +50,7 @@ combineTCR <- function(df, samples = NULL, ID = NULL,
                 removeNA = FALSE, removeMulti = FALSE, 
                 filterMulti = FALSE) {
     df <- checkList(df)
+    df <- checkContigs(df)
     out <- NULL
     final <- NULL
     chain1 <- cellT(cells)[[1]]
@@ -149,6 +150,7 @@ combineBCR <- function(df, samples = NULL, ID = NULL,
                         removeNA = FALSE, 
                         removeMulti = FALSE) {
     df <- checkList(df)
+    df <- checkContigs(df)
     out <- NULL
     final <- list()
     chain1 <- "heavy"

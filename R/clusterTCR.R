@@ -109,14 +109,14 @@ clusterTCR <- function(df,
       
       output <- rbind.data.frame(out, uni_IG)
       colname <- paste0(chain, "_cluster")
-      colnames(output) <- c(ref2,colname)
+      colnames(output) <- c(colname,ref2)
       output.list[[x]] <- output
     }
       for (i in seq_along(bound)) {
           tmp <- bound[[i]]
           output <- bind_rows(output.list)
           tmp[,ref2] <- str_split(tmp[,ref2], ";", simplify = TRUE)[,1]
-          output2 <- output[output[,1] %in% tmp[,ref2],]
+          output2 <- output[output[,2] %in% tmp[,ref2],]
           
           tmp <-  unique(suppressMessages(join(tmp,  output2)))
           bound[[i]] <- tmp
