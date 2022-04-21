@@ -40,7 +40,7 @@ checkContigs <- function(df) {
   df <- lapply(seq_len(length(df)), function(x) {
     df[[x]] <- if(is(df[[x]])[1] != "data.frame") as.data.frame(df[[x]]) else df[[x]]
     df[[x]][df[[x]] == ""] <- NA
-    df[[x]]
+    df[[x]] <- df[[x]][with(df[[x]], order(reads, chain)),]
   })
 }
 
@@ -331,6 +331,30 @@ parseTCR <- function(Con.df, unique_df, data2) {
     for (y in seq_along(unique_df)){
         barcode.i <- Con.df$barcode[y]
         location.i <- which(barcode.i == data2$barcode)
+        for (z in seq_along(location.i)) {
+          where.chain <- data2[location.i[z],"chain"]
+          if (where.chain == "TRA") {
+            if(is.na(Con.df[y,"TCR1"])) {
+              Con.df[y,tcr1_lines] <- data2[location.i[z],data1_lines]
+            } else {
+              Con.df[y,tcr1_lines] <- paste(Con.df[y, tcr1_lines],
+                                            data2[location.i[z],data1_lines],sep=";") 
+            }
+          } else if (where.chain == "TRB") {
+            if(is.na(Con.df[y,"TCR2"])) {
+              Con.df[y,tcr2_lines] <- data2[location.i[z],data2_lines]
+            } else {
+              Con.df[y,tcr2_lines] <- paste(Con.df[y, tcr2_lines],
+                                            data2[location.i[z],data2_lines],sep=";") 
+            }
+          }
+        }
+    }
+  return(Con.df)
+}
+        
+        
+        
         if (length(location.i) == 2){
             if (is.na(data2[location.i[1],c("TCR1")])) {
                 Con.df[y,tcr2_lines]<-data2[location.i[1],data2_lines]
