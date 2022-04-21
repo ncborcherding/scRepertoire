@@ -7,6 +7,7 @@ CHANGES IN VERSION 1.5.2
 * modified parseBCR() to reduce complexity and assume lambda >> kappa
 * fixed clusterTCR() function broken with Seurat Objects
 * checkContigs no ensures data frames and that "" are converted into NAs
+* modified makeGenes() internal function changing na.omit to str_replace_na() and separating the BCR calls by chain to prevent combination errors. 
 
 CHANGES IN VERSION 1.3.5
 ------------------------

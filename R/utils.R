@@ -144,7 +144,7 @@ removingMulti <- function(final){
 filteringMulti <- function(x) {
     x <- x %>%
       group_by(barcode, chain) %>% 
-      top_n(n = 1, wt = reads)
+      slice_max(n = 1, order_by = reads)
     table <- subset(as.data.frame(table(x$barcode)), Freq > 2)
     if (nrow(table) > 0) {
       barcodes <- as.character(unique(table$Var1))
@@ -507,26 +507,25 @@ return(Con.df)
 
 
 #Sorting the V/D/J/C gene sequences for T and B cells
-#' @importFrom stringr str_c
+#' @importFrom stringr str_c str_replace_na
 makeGenes <- function(cellType, data2, chain1, chain2) {
     if(cellType %in% c("T-AB", "T-GD")) {
         data2 <- data2 %>% 
             mutate(TCR1 = ifelse(chain == chain1, 
-                  str_c(na.omit(v_gene),  na.omit(j_gene), na.omit(c_gene), sep = "."), NA)) %>%
+                  str_c(str_replace_na(v_gene),  str_replace_na(j_gene), str_replace_na(c_gene), sep = "."), NA)) %>%
             mutate(TCR2 = ifelse(chain == chain2, 
-                  str_c(na.omit(v_gene), na.omit(d_gene),  na.omit(j_gene),  na.omit(c_gene), sep = "."), NA))
+                  str_c(str_replace_na(v_gene), str_replace_na(d_gene),  str_replace_na(j_gene),  str_replace_na(c_gene), sep = "."), NA))
     }
     else {
-        data2 <- data2 %>% 
-            mutate(IGKct = ifelse(chain == "IGK", 
-                str_c(na.omit(v_gene),  na.omit(j_gene), na.omit(c_gene), sep = "."), NA)) %>%
-            mutate(IGLct = ifelse(chain == "IGL", 
-                str_c(na.omit(v_gene),  na.omit(j_gene), na.omit(c_gene), sep = "."), NA)) %>%
-            mutate(IGHct = ifelse(chain == "IGH",
-                str_c(na.omit(v_gene), na.omit(d_gene),  na.omit(j_gene),  na.omit(c_gene), sep = "."), NA))
+        heavy <- data2[data2$chain == "IGH",] %>% 
+          mutate(IGHct = str_c(str_replace_na(v_gene), str_replace_na(d_gene),  str_replace_na(j_gene),  str_replace_na(c_gene), sep = "."))
+        kappa <- data2[data2$chain == "IGK",] %>% 
+          mutate(IGKct = str_c(str_replace_na(v_gene),  str_replace_na(j_gene), str_replace_na(c_gene), sep = ".")) 
+        lambda <- data2[data2$chain == "IGL",] %>%
+          mutate(IGLct = str_c(str_replace_na(v_gene),  str_replace_na(j_gene), str_replace_na(c_gene), sep = "."))
+        data2 <- rbind.data.frame(heavy, kappa, lambda)
     }
     return(data2)
-    
 }
 
 short.check <- function(df, cloneCall) {
