@@ -473,6 +473,7 @@ return(Con.df)
 
 #Sorting the V/D/J/C gene sequences for T and B cells
 #' @importFrom stringr str_c str_replace_na
+#' @importFrom dplyr bind_rows
 makeGenes <- function(cellType, data2, chain1, chain2) {
     if(cellType %in% c("T-AB", "T-GD")) {
         data2 <- data2 %>% 
@@ -488,7 +489,7 @@ makeGenes <- function(cellType, data2, chain1, chain2) {
           mutate(IGKct = str_c(str_replace_na(v_gene),  str_replace_na(j_gene), str_replace_na(c_gene), sep = ".")) 
         lambda <- data2[data2$chain == "IGL",] %>%
           mutate(IGLct = str_c(str_replace_na(v_gene),  str_replace_na(j_gene), str_replace_na(c_gene), sep = "."))
-        data2 <- rbind.data.frame(heavy, kappa, lambda)
+        data2 <- bind_rows(heavy, kappa, lambda)
     }
     return(data2)
 }
