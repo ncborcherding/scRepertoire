@@ -590,21 +590,6 @@ sub_combined <- clusterTCR(combined[[2]],
                            group.by = NULL)
 ```
 
-### Single-cell object support (Dev Version Only)
-
-We can also use the single-cell object directly to cluster cells within the single-cell object using the same approach as above. 
-
-```{r}
-screp_example <- clusterTCR(screp_example,
-                     chain = "TRB",
-                     group.by = "Patient", 
-                     sequence = "aa", 
-                     threshold = 0.85)
-
-DimPlot(screp_example, group.by = "TRB_cluster") + 
-  NoLegend()
-```
-
 ## StartracDiversity
 
 From the excellent work by Lei Zhang, et al in [Lineage tracking reveals dynamic relationships of T cells in colorectal cancer](https://www.nature.com/articles/s41586-018-0694-x), the authors introduce new methods for looking at clonotypes by cellular origins and cluster identification. Their [startrac](https://github.com/Japrin/STARTRAC) software has been incorporated into scRepertoire. If you are using the output of this specific function, please cite their excellent work. 
