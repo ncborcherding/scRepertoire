@@ -12,12 +12,12 @@
 #' x <- contig_list
 #' combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), 
 #' rep(c("P", "T"), 3), cells ="T-AB")
-#' quantContig(combined, cloneCall="gene+nt", scale = TRUE)
+#' quantContig(combined, cloneCall="strict", scale = TRUE)
 #'
 #' @param df The product of combineTCR(), combineBCR(), expression2List(), or combineExpression().
 #' @param cloneCall How to call the clonotype - VDJC gene (gene), 
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
-#' VDJC gene + CDR3 nucleotide (gene+nt).
+#' VDJC gene + CDR3 nucleotide (strict).
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL"
 #' @param group.by The column header used for grouping.
@@ -28,7 +28,7 @@
 #' @import ggplot2
 #' @export
 #' @return ggplot of the total or relative unique clonotypes
-quantContig <- function(df, cloneCall = "gene+nt", chain = "both", 
+quantContig <- function(df, cloneCall = "strict", chain = "both", 
                         scale=FALSE, group.by = NULL, 
                         split.by = NULL,
                         exportTable = FALSE) {
@@ -107,7 +107,7 @@ quantContig <- function(df, cloneCall = "gene+nt", chain = "both",
 #' @param df The product of combineTCR(), combineBCR(), expression2List(), or combineExpression().
 #' @param cloneCall How to call the clonotype - VDJC gene (gene), 
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
-#' VDJC gene + CDR3 nucleotide (gene+nt).
+#' VDJC gene + CDR3 nucleotide (strict).
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL"
 #' @param group.by The column header for which you would like to analyze the data.
@@ -121,7 +121,7 @@ quantContig <- function(df, cloneCall = "gene+nt", chain = "both",
 #' @export
 #' @return ggplot of the total or relative abundance of clonotypes 
 #' across quanta
-abundanceContig <- function(df, cloneCall = "gene+nt", chain = "both", 
+abundanceContig <- function(df, cloneCall = "strict", chain = "both", 
                             scale=FALSE, group.by = NULL, 
                             split.by = NULL, exportTable = FALSE) {
     df <- list.input.return(df,split.by)
@@ -216,10 +216,14 @@ return(plot) }
 #' @export
 #' @return ggplot of the discrete or relative length distributions of 
 #' clonotype sequences
-lengthContig <- function(df, cloneCall = "aa", 
+lengthContig <- function(df, 
+                         cloneCall = "aa", 
                          group.by = NULL, 
-                         split.by = NULL, scale = FALSE, 
-                          chain = "both", exportTable = FALSE) {
+                         split.by = NULL, 
+                         scale = FALSE, 
+                         chain = "both", 
+                         exportTable = FALSE) {
+    df <- list.input.return(df, split.by)
     if(cloneCall == "nt") { cloneCall <- "CTnt"
         ylab <- "CDR3 (NT)"
     } else if (cloneCall == "aa") { cloneCall <- "CTaa" 
@@ -240,7 +244,6 @@ lengthContig <- function(df, cloneCall = "aa",
     }
     xlab <- "Length"
     Con.df <- NULL
-    df <- list.input.return(df, split.by)
     Con.df <- lengthDF(df, cloneCall, chain, group.by, c1, c2)
     names <- names(df)
     if (!is.null(group.by)) { 
@@ -297,12 +300,12 @@ lengthContig <- function(df, cloneCall = "aa",
 #' @param df The product of combineTCR(), combineBCR(), expression2List(), or combineExpression().
 #' @param cloneCall How to call the clonotype - VDJC gene (gene), 
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
-#' VDJC gene + CDR3 nucleotide (gene+nt).
+#' VDJC gene + CDR3 nucleotide (strict).
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL"
 #' @param samples The specific samples to isolate for visualization.
 #' @param clonotypes The specific sequences of interest.
-#' @param numbers The top number clonotype sequences.
+#' @param numbers The top number clonotype sequences per group
 #' @param split.by If using a single-cell object, the column header 
 #' to group the new list. NULL will return clusters.
 #' @param graph The type of graph produced, either "alluvial" or "area".
@@ -312,7 +315,7 @@ lengthContig <- function(df, cloneCall = "aa",
 #' @export
 #' @return ggplot of the proportion of total sequencing read of 
 #' selecting clonotypes
-compareClonotypes <- function(df, cloneCall = "gene+nt", chain = "both", samples = NULL, 
+compareClonotypes <- function(df, cloneCall = "strict", chain = "both", samples = NULL, 
                         clonotypes = NULL, numbers = NULL, split.by = NULL, 
                         graph = "alluvial", exportTable = FALSE){
     df <- list.input.return(df, split.by)
@@ -337,7 +340,9 @@ compareClonotypes <- function(df, cloneCall = "gene+nt", chain = "both", samples
     if (!is.null(clonotypes)) {
         Con.df <- Con.df[Con.df$Clonotypes %in% clonotypes,] }
     if (!is.null(numbers)) {
-        top <- Con.df %>% top_n(n = numbers, wt = Proportion)
+        top <- Con.df %>%
+          group_by(Con.df[,3]) %>%
+          top_n(n = numbers, wt = Proportion)
         Con.df <- Con.df[Con.df$Clonotypes %in% top$Clonotypes,] }
     if (nrow(Con.df) < length(unique(Con.df$Sample))) {
         stop("Reasses the filtering strategies here, there is not 
@@ -375,7 +380,7 @@ compareClonotypes <- function(df, cloneCall = "gene+nt", chain = "both", samples
 #' @param df The product of combineTCR(), combineBCR(), expression2List(), or combineExpression().
 #' @param cloneCall How to call the clonotype - VDJC gene (gene), 
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
-#' VDJC gene + CDR3 nucleotide (gene+nt).
+#' VDJC gene + CDR3 nucleotide (strict).
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL"
 #' @param x.axis name of the list element to appear on the x.axis
@@ -392,7 +397,7 @@ compareClonotypes <- function(df, cloneCall = "gene+nt", chain = "both", samples
 #' @export
 #' @return ggplot of the relative clonotype numbers
 
-scatterClonotype <- function(df, cloneCall ="gene+nt", 
+scatterClonotype <- function(df, cloneCall ="strict", 
                              x.axis = NULL, y.axis = NULL,
                              chain = "both",
                              dot.size = "total", 
@@ -478,12 +483,12 @@ scatterClonotype <- function(df, cloneCall ="gene+nt",
 #' x <- contig_list
 #' combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), 
 #' rep(c("P", "T"), 3), cells ="T-AB")
-#' clonesizeDistribution(combined, cloneCall = "gene+nt", method="ward.D2")
+#' clonesizeDistribution(combined, cloneCall = "strict", method="ward.D2")
 #'
 #' @param df The product of combineTCR(), combineBCR(), expression2List(), or combineExpression().
 #' @param cloneCall How to call the clonotype - VDJC gene (gene),
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
-#' VDJC gene + CDR3 nucleotide (gene+nt).
+#' VDJC gene + CDR3 nucleotide (strict).
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL"
 #' @param threshold Numerical vector containing the thresholds 
@@ -498,7 +503,7 @@ scatterClonotype <- function(df, cloneCall ="gene+nt",
 #' @export
 #' @return ggplot dendrogram of the clone size distribution
 
-clonesizeDistribution <- function(df,  cloneCall ="gene+nt", 
+clonesizeDistribution <- function(df,  cloneCall ="strict", 
                                   chain = "both", 
                                   method = "ward.D2", 
                                   threshold = 1, 
@@ -601,6 +606,8 @@ makingLodes <- function(meta2, color, alpha, facet, set.axes) {
 #' gene segments such as V, D, J, or C.
 #' @param order Categorical variable to organize the x-axis, either "gene" or "variance"
 #' @param scale Converts the proportion of total genes 
+#' @param split.by If using a single-cell object, the column header 
+#' to group the new list. NULL will return clusters.
 #' @param exportTable Returns the data frame used for forming the graph.
 #' @import ggplot2
 #' @importFrom stringr str_split
@@ -615,7 +622,9 @@ vizGenes <- function(df,
                       y.axis = "sample", 
                       order = "gene",
                       scale = TRUE, 
+                      split.by = NULL,
                       exportTable = FALSE) {
+    df <- list.input.return(df, split.by = split.by)
     for(i in seq_along(df)) {
       df[[i]] <- off.the.chain(df[[i]], chain, "CTgene")
     }

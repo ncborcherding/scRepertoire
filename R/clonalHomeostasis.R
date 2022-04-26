@@ -18,9 +18,9 @@
 #' @param cloneTypes The cutpoints of the proportions.
 #' @param cloneCall How to call the clonotype - VDJC gene (gene), 
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
-#' VDJC gene + CDR3 nucleotide (gene+nt).
+#' VDJC gene + CDR3 nucleotide (strict).
 #' @param chain indicate if both or a specific chain should be used - 
-#' e.g. "both", "TRA", "TRG", "Heavy", "Light"
+#' e.g. "both", "TRA", "TRG", "IGH", "IGL"
 #' @param exportTable Exports a table of the data into the global 
 #' environment in addition to the visualization
 #' @import ggplot2
@@ -30,7 +30,7 @@
 #' @return ggplot of the space occupied by the specific proportion of clonotypes
 clonalHomeostasis <- function(df, cloneTypes = c(Rare = .0001, Small = .001, 
                         Medium = .01, Large = .1, Hyperexpanded = 1),
-                        cloneCall = "gene+nt", chain = "both", 
+                        cloneCall = "strict", chain = "both", 
                         exportTable = FALSE) {
     cloneTypes <- c(None = 0, cloneTypes)
     df <- list.input.return(df)

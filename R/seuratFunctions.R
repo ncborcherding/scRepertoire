@@ -29,9 +29,9 @@
 #' @param sc The seurat or SingleCellExperiment (SCE) object to attach
 #' @param cloneCall How to call the clonotype - VDJC gene (gene), 
 #' CDR3 nucleotide (nt) CDR3 amino acid (aa), or 
-#' VDJC gene + CDR3 nucleotide (gene+nt).
+#' VDJC gene + CDR3 nucleotide (strict).
 #' @param chain indicate if both or a specific chain should be used - 
-#' e.g. "both", "TRA", "TRG", "Heavy", "Light"
+#' e.g. "both", "TRA", "TRG", "IGH", "IGL"
 #' @param group.by The column label in the combined contig object in which 
 #' clonotype frequency will be calculated. 
 #' @param proportion Whether to use the total frequency (FALSE) or the 
@@ -50,7 +50,7 @@
 #' information
 #' 
 
-combineExpression <- function(df, sc, cloneCall="gene+nt", 
+combineExpression <- function(df, sc, cloneCall="strict", 
                               chain = "both", group.by="none", 
                               proportion = TRUE, filterNA = FALSE,
                               cloneTypes=c(Rare = 1e-4, Small = 0.001, 
@@ -169,16 +169,16 @@ combineExpression <- function(df, sc, cloneCall="gene+nt",
 #' screp_example  <- highlightClonotypes(screp_example, cloneCall= "aa", 
 #' sequence = c("CAVNGGSQGNLIF_CSAEREDTDTQYF"))
 #' 
-#' @param sc The seurat object to attach
+#' @param sc The Seurat object to attach
 #' @param cloneCall How to call the clonotype - VDJC gene (gene), 
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
-#' VDJC gene + CDR3 nucleotide (gene+nt).
+#' VDJC gene + CDR3 nucleotide (strict).
 #' @param sequence The specific sequence or sequence to highlight
 #'
 #' @export
-#' @return DimPlot with highlighted clonotypes
+#' @return Seurat object with new meta data column for indicated clones
 highlightClonotypes <- function(sc, 
-                            cloneCall = c("gene", "nt", "aa", "gene+nt"), 
+                            cloneCall = c("gene", "nt", "aa", "strict"), 
                             sequence = NULL){
     if (!inherits(x=sc, what ="Seurat")) {
         stop("Object indicated is not of class 'Seurat', make sure you 
@@ -187,8 +187,9 @@ highlightClonotypes <- function(sc,
     meta <- grabMeta(sc)
     meta$highlight <- NA
     for(i in seq_along(sequence)) {
-        meta$highlight <- ifelse(meta[,cloneCall] == sequence[i], 
-                            paste("Clonotype", i, sep=""),  meta$highlight) }
+        meta$highlight <-  ifelse(meta[,cloneCall] == sequence[i], 
+                                  sequence[i], meta$highlight)
+    }
     meta <- meta[,-(which(colnames(meta) == "cluster"))]
     col.name <- names(meta) %||% colnames(meta)
     sc[[col.name]] <- meta
@@ -226,9 +227,9 @@ highlightClonotypes <- function(sc,
 #' "cluster".
 #' @param cloneCall How to call the clonotype - VDJC gene (gene), 
 #' CDR3 nucleotide (nt) or CDR3 amino acid (aa), or 
-#' VDJC gene + CDR3 nucleotide (gene+nt).
+#' VDJC gene + CDR3 nucleotide (strict).
 #' @param chain indicate if both or a specific chain should be used - 
-#' e.g. "both", "TRA", "TRG", "Heavy", "Light"
+#' e.g. "both", "TRA", "TRG", "IGH", "IGL"
 #' @param y.axes The columns that will separate the proportional 
 #' visualizations.
 #' @param color The column header or clonotype(s) to be highlighted.
@@ -243,7 +244,7 @@ highlightClonotypes <- function(sc,
 #' @return Alluvial ggplot comparing clonotype distribution across 
 #' selected parameters.
 alluvialClonotypes <- function(sc, 
-                                cloneCall = c("gene", "nt", "aa", "gene+nt"), 
+                                cloneCall = c("gene", "nt", "aa", "strict"), 
                                 chain = "both", y.axes = NULL, 
                                 color = NULL, alpha = NULL, facet = NULL) {
     checkSingleObject(sc)

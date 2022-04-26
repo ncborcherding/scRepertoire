@@ -12,6 +12,7 @@ vizGenes(
   y.axis = "sample",
   order = "gene",
   scale = TRUE,
+  split.by = NULL,
   exportTable = FALSE
 )
 }
@@ -32,6 +33,9 @@ gene segments such as V, D, J, or C.}
 \item{order}{Categorical variable to organize the x-axis, either "gene" or "variance"}
 
 \item{scale}{Converts the proportion of total genes}
+
+\item{split.by}{If using a single-cell object, the column header 
+to group the new list. NULL will return clusters.}
 
 \item{exportTable}{Returns the data frame used for forming the graph.}
 }

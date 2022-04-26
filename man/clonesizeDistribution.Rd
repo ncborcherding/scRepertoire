@@ -7,9 +7,10 @@ Jensen-Shannon divergence}
 \usage{
 clonesizeDistribution(
   df,
-  cloneCall = "gene+nt",
+  cloneCall = "strict",
   chain = "both",
   method = "ward.D2",
+  threshold = 1,
   split.by = NULL,
   exportTable = FALSE
 )
@@ -19,12 +20,15 @@ clonesizeDistribution(
 
 \item{cloneCall}{How to call the clonotype - VDJC gene (gene),
 CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
-VDJC gene + CDR3 nucleotide (gene+nt).}
+VDJC gene + CDR3 nucleotide (strict).}
 
 \item{chain}{indicate if both or a specific chain should be used - 
 e.g. "both", "TRA", "TRG", "IGH", "IGL"}
 
 \item{method}{The clustering paramater for the dendrogram.}
+
+\item{threshold}{Numerical vector containing the thresholds 
+the grid search was performed over.}
 
 \item{split.by}{If using a single-cell object, the column header 
 to group the new list. NULL will return clusters.}
@@ -46,6 +50,6 @@ Please read and cite PMID: 30485278 if using the function for analyses.
 x <- contig_list
 combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), 
 rep(c("P", "T"), 3), cells ="T-AB")
-clonesizeDistribution(combined, cloneCall = "gene+nt", method="ward.D2")
+clonesizeDistribution(combined, cloneCall = "strict", method="ward.D2")
 
 }

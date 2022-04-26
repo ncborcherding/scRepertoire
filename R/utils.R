@@ -36,6 +36,14 @@ checkList <- function(df) {
     return(df)
 }
 
+checkContigs <- function(df) {
+  df <- lapply(seq_len(length(df)), function(x) {
+    df[[x]] <- if(is(df[[x]])[1] != "data.frame") as.data.frame(df[[x]]) else df[[x]]
+    df[[x]][df[[x]] == ""] <- NA
+    df[[x]] <- df[[x]][with(df[[x]], order(reads, chain)),]
+  })
+}
+
 #' @importFrom dplyr bind_rows
 bound.input.return <- function(df) {
   if (inherits(x=df, what ="Seurat") | inherits(x=df, what ="SummarizedExperiment")) {
@@ -136,7 +144,7 @@ removingMulti <- function(final){
 filteringMulti <- function(x) {
     x <- x %>%
       group_by(barcode, chain) %>% 
-      top_n(n = 1, wt = reads)
+      slice_max(n = 1, order_by = reads)
     table <- subset(as.data.frame(table(x$barcode)), Freq > 2)
     if (nrow(table) > 0) {
       barcodes <- as.character(unique(table$Var1))
@@ -303,13 +311,15 @@ quiet <- function(x) {
 
 # This is to help sort the type of clonotype data to use
 theCall <- function(x) {
-    if (x == "gene") {
+    if (x %in% c("CTnt", "CTgene", "CTaa", "CTstrict")) {
+      x <- x
+    }else if (x == "gene" | x == "genes") {
         x <- "CTgene"
-    } else if(x == "nt") {
+    } else if(x == "nt" | x == "nucleotide") {
         x <- "CTnt"
-    } else if (x == "aa") {
+    } else if (x == "aa" | x == "amino") {
         x <- "CTaa"
-    } else if (x == "gene+nt") {
+    } else if (x == "gene+nt" | x == "strict") {
         x <- "CTstrict"
     }
     return(x)
@@ -321,99 +331,69 @@ parseTCR <- function(Con.df, unique_df, data2) {
     for (y in seq_along(unique_df)){
         barcode.i <- Con.df$barcode[y]
         location.i <- which(barcode.i == data2$barcode)
-        if (length(location.i) == 2){
-            if (is.na(data2[location.i[1],c("TCR1")])) {
-                Con.df[y,tcr2_lines]<-data2[location.i[1],data2_lines]
-                if (is.na(data2[location.i[2],c("TCR2")])) {
-                  Con.df[y,tcr1_lines]<-data2[location.i[2],data1_lines]
-                }
+        for (z in seq_along(location.i)) {
+          where.chain <- data2[location.i[z],"chain"]
+          if (where.chain == "TRA") {
+            if(is.na(Con.df[y,"TCR1"])) {
+              Con.df[y,tcr1_lines] <- data2[location.i[z],data1_lines]
             } else {
-              if(!is.na(data2[location.i[1],c("TCR1")])) {
-                Con.df[y,tcr1_lines]<-data2[location.i[1],data1_lines]
-              } 
-              if (!is.na(data2[location.i[2],c("TCR2")])) {
-                Con.df[y,tcr2_lines]<-data2[location.i[2],data2_lines] 
-              }
+              Con.df[y,tcr1_lines] <- paste(Con.df[y, tcr1_lines],
+                                            data2[location.i[z],data1_lines],sep=";") 
             }
-        } else if (length(location.i) == 3) { 
-            if (is.na(data2[location.i[1],c("TCR1")])) { 
-                Con.df[y,tcr2_lines]<-data2[location.i[1],data2_lines] 
-                if (is.na(data2[location.i[2],c("TCR1")])) { 
-                    TRdf <- paste(Con.df[y, tcr2_lines],
-                        data2[location.i[2], data2_lines],sep=";") 
-                    Con.df[y,tcr2_lines] <- TRdf 
-                    Con.df[y,tcr1_lines] <- data2[location.i[3],data1_lines] 
-                } else { # if the 2nd location is occupied by TRA
-                    Con.df[y,tcr1_lines] <- data2[location.i[2],data1_lines] 
-                    if (is.na(data2[location.i[3],c("TCR1")])) { 
-                        TRdf <- paste(Con.df[y, tcr2_lines],
-                            data2[location.i[3], data2_lines],sep=";") 
-                        Con.df[y,tcr2_lines] <- TRdf 
-                    } else { # if the 3rd location is occupied by TRA
-                        TRdf <- paste(Con.df[y, tcr1_lines],
-                            data2[location.i[3], data1_lines],sep=";") 
-                        Con.df[y,tcr1_lines] <- TRdf }}
-            } else { # if 1st location is occupied by TRA
-                Con.df[y,tcr1_lines] <- data2[location.i[1],data1_lines] 
-                if (is.na(data2[location.i[2],c("TCR1")])) { 
-                    if (is.na(data2[location.i[3],c("TCR1")])) { #Two TRB chains
-                        TRdf <- paste(data2[location.i[2], data2_lines],
-                            data2[location.i[3], data2_lines],sep=";") 
-                        Con.df[y,tcr2_lines] <- TRdf 
-                    } else if (!is.na(data2[location.i[3],c("TCR1")])) { # if TRA is on 3rd location
-                        TRdf <- paste(Con.df[y, tcr1_lines],
-                            data2[location.i[3],data1_lines],sep=";") 
-                        Con.df[y,tcr1_lines] <- TRdf 
-                        Con.df[y,tcr2_lines] <- data2[location.i[2],data2_lines] 
-                        }
-                } else { # if TRA is on 2nd location
-                    TRdf <- paste(Con.df[y, tcr1_lines],
-                        data2[location.i[2], data1_lines],sep=";") 
-                    Con.df[y,tcr1_lines] <- TRdf 
-                    Con.df[y,tcr2_lines] <- data2[location.i[3],data2_lines]}}
-        } else if (length(location.i) == 1) {
-            chain.i <- data2$chain[location.i]
-            if (chain.i == "TRA"){
-                Con.df[y,tcr1_lines] <- data2[location.i[1],data1_lines]
-            } else {Con.df[y,tcr2_lines] <- data2[location.i[1],data2_lines]}}}
-return(Con.df)}
+          } else if (where.chain == "TRB") {
+            if(is.na(Con.df[y,"TCR2"])) {
+              Con.df[y,tcr2_lines] <- data2[location.i[z],data2_lines]
+            } else {
+              Con.df[y,tcr2_lines] <- paste(Con.df[y, tcr2_lines],
+                                            data2[location.i[z],data2_lines],sep=";") 
+            }
+          }
+        }
+    }
+  return(Con.df)
+}
 
 #Assigning positions for BCR contig data
+#Now assumes lambda over kappa in the context of only 2 light chains
 #' @author Gloria Kraus, Nick Bormann, Nick Borcherding
-parseBCR <- function(Con.df, unique_df, data2) {
-    for (y in seq_along(unique_df)){
-        barcode.i <- Con.df$barcode[y]
-        location.i <- which(barcode.i == data2$barcode)
-        
-        if (length(location.i) == 2){
-            if (is.na(data2[location.i[1],c("IGHct")])) {
-                if(is.na(data2[location.i[2],c("IGLct")]) & is.na(data2[location.i[2],c("IGKct")])){
-                  Con.df[y,heavy_lines]<-data2[location.i[2], h_lines]
-                }
-                if (is.na(data2[location.i[1],c("IGKct")])) {
-                    Con.df[y,light_lines]<-data2[location.i[1], l_lines]
-                } else if (!is.na(data2[location.i[1],c("IGKct")])) {
-                    Con.df[y,light_lines]<-data2[location.i[1], k_lines]}
-            } else { 
-              if(is.na(data2[location.i[2],c("IGLct")]) & is.na(data2[location.i[2],c("IGKct")])){
-                Con.df[y,heavy_lines]<-data2[location.i[1], h_lines]
-              }
-              if (!is.na(data2[location.i[2],c("IGKct")])) {
-                Con.df[y,light_lines]<-data2[location.i[1],k_lines]
-              } else {
-                Con.df[y,light_lines]<- data2[location.i[1],l_lines]
-                }}
-          
-        } else if (length(location.i) == 1) {
-            chain.i <- data2$chain[location.i]
-            if (chain.i == "IGH"){
-                Con.df[y,heavy_lines]<-data2[location.i[1],h_lines]
-            } else if (chain.i == "IGL") {
-                Con.df[y,light_lines]<- data2[location.i[1],l_lines]}
-            else {
-                Con.df[y,light_lines]<-data2[location.i[1], k_lines]
-            }}}
-    return(Con.df)
+parseBCR <- function (Con.df, unique_df, data2) {
+  for (y in seq_along(unique_df)) {
+    barcode.i <- Con.df$barcode[y]
+    location.i <- which(barcode.i == data2$barcode)
+    if (length(location.i) == 2) {
+      if (!is.na(data2[location.i[1], c("IGHct")])) {
+        Con.df[y, heavy_lines] <- data2[location.i[1], h_lines]
+        if(is.na(data2[location.i[2], c("IGHct")])) {
+          if (!is.na(data2[location.i[2], c("IGLct")])) {
+            Con.df[y, light_lines] <- data2[location.i[2], l_lines]
+          } else if(!is.na(data2[location.i[2], c("IGKct")])) {
+            Con.df[y, light_lines] <- data2[location.i[2], k_lines]
+          }
+        }
+      } else if (!is.na(data2[location.i[2], c("IGHct")])) {
+        Con.df[y, heavy_lines] <- data2[location.i[2], h_lines]
+        if(is.na(data2[location.i[1], c("IGHct")])) {
+          if (!is.na(data2[location.i[1], c("IGLct")])) {
+            Con.df[y, light_lines] <- data2[location.i[1], l_lines]
+          } else if(!is.na(data2[location.i[1], c("IGKct")])) {
+            Con.df[y, light_lines] <- data2[location.i[1], k_lines]
+          }
+        }
+      }
+    }else if (length(location.i) == 1) {
+      chain.i <- data2$chain[location.i]
+      if (chain.i == "IGH") {
+        Con.df[y, heavy_lines] <- data2[location.i[1], h_lines]
+      }
+      else if (chain.i == "IGL") {
+        Con.df[y, light_lines] <- data2[location.i[1], l_lines]
+      }
+      else {
+        Con.df[y, light_lines] <- data2[location.i[1], k_lines]
+      }
+    }
+  }
+  return(Con.df)
 }
 
 #Assign T/B cell chains and celltypes for combineTCR() and lengthContig
@@ -492,26 +472,26 @@ return(Con.df)
 
 
 #Sorting the V/D/J/C gene sequences for T and B cells
-#' @importFrom stringr str_c
+#' @importFrom stringr str_c str_replace_na
+#' @importFrom dplyr bind_rows
 makeGenes <- function(cellType, data2, chain1, chain2) {
     if(cellType %in% c("T-AB", "T-GD")) {
         data2 <- data2 %>% 
             mutate(TCR1 = ifelse(chain == chain1, 
-                  str_c(na.omit(v_gene),  na.omit(j_gene), na.omit(c_gene), sep = "."), NA)) %>%
+                  str_c(str_replace_na(v_gene),  str_replace_na(j_gene), str_replace_na(c_gene), sep = "."), NA)) %>%
             mutate(TCR2 = ifelse(chain == chain2, 
-                  str_c(na.omit(v_gene), na.omit(d_gene),  na.omit(j_gene),  na.omit(c_gene), sep = "."), NA))
+                  str_c(str_replace_na(v_gene), str_replace_na(d_gene),  str_replace_na(j_gene),  str_replace_na(c_gene), sep = "."), NA))
     }
     else {
-        data2 <- data2 %>% 
-            mutate(IGKct = ifelse(chain == "IGK", 
-                str_c(na.omit(v_gene),  na.omit(j_gene), na.omit(c_gene), sep = "."), NA)) %>%
-            mutate(IGLct = ifelse(chain == "IGL", 
-                str_c(na.omit(v_gene),  na.omit(j_gene), na.omit(c_gene), sep = "."), NA)) %>%
-            mutate(IGHct = ifelse(chain == "IGH",
-                str_c(na.omit(v_gene), na.omit(d_gene),  na.omit(j_gene),  na.omit(c_gene), sep = "."), NA))
+        heavy <- data2[data2$chain == "IGH",] %>% 
+          mutate(IGHct = str_c(str_replace_na(v_gene), str_replace_na(d_gene),  str_replace_na(j_gene),  str_replace_na(c_gene), sep = "."))
+        kappa <- data2[data2$chain == "IGK",] %>% 
+          mutate(IGKct = str_c(str_replace_na(v_gene),  str_replace_na(j_gene), str_replace_na(c_gene), sep = ".")) 
+        lambda <- data2[data2$chain == "IGL",] %>%
+          mutate(IGLct = str_c(str_replace_na(v_gene),  str_replace_na(j_gene), str_replace_na(c_gene), sep = "."))
+        data2 <- bind_rows(heavy, kappa, lambda)
     }
     return(data2)
-    
 }
 
 short.check <- function(df, cloneCall) {

@@ -6,21 +6,21 @@
 \usage{
 highlightClonotypes(
   sc,
-  cloneCall = c("gene", "nt", "aa", "gene+nt"),
+  cloneCall = c("gene", "nt", "aa", "strict"),
   sequence = NULL
 )
 }
 \arguments{
-\item{sc}{The seurat object to attach}
+\item{sc}{The Seurat object to attach}
 
 \item{cloneCall}{How to call the clonotype - VDJC gene (gene), 
 CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
-VDJC gene + CDR3 nucleotide (gene+nt).}
+VDJC gene + CDR3 nucleotide (strict).}
 
 \item{sequence}{The specific sequence or sequence to highlight}
 }
 \value{
-DimPlot with highlighted clonotypes
+Seurat object with new meta data column for indicated clones
 }
 \description{
 Use a specific clonotype sequence to highlight on top of the dimensional 

@@ -45,11 +45,15 @@ utils::globalVariables(c("heavy_lines", "light_lines", "l_lines", "k_lines",
 #' @import dplyr
 #' @export
 #' @return List of clonotypes for individual cell barcodes
-combineTCR <- function(df, samples = NULL, ID = NULL, 
-                cells = "T-AB", 
-                removeNA = FALSE, removeMulti = FALSE, 
-                filterMulti = FALSE) {
+combineTCR <- function(df, 
+                       samples = NULL, 
+                       ID = NULL, 
+                       cells = "T-AB", 
+                       removeNA = FALSE, 
+                       removeMulti = FALSE, 
+                       filterMulti = FALSE) {
     df <- checkList(df)
+    df <- checkContigs(df)
     out <- NULL
     final <- NULL
     chain1 <- cellT(cells)[[1]]
@@ -149,6 +153,7 @@ combineBCR <- function(df, samples = NULL, ID = NULL,
                         removeNA = FALSE, 
                         removeMulti = FALSE) {
     df <- checkList(df)
+    df <- checkContigs(df)
     out <- NULL
     final <- list()
     chain1 <- "heavy"

@@ -18,7 +18,7 @@
 #' @param df The product of combineTCR(), combineBCR(), expression2List(), or combineExpression().
 #' @param cloneCall How to call the clonotype - VDJC gene (gene), 
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
-#' VDJC gene + CDR3 nucleotide (gene+nt).
+#' VDJC gene + CDR3 nucleotide (strict).
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL"
 #' @param method The method to calculate the overlap, either the "overlap" 
@@ -30,7 +30,7 @@
 #' @importFrom reshape2 melt
 #' @export
 #' @return ggplot of the clonotypic overlap between elements of a list
-clonalOverlap <- function(df, cloneCall = "gene+nt", 
+clonalOverlap <- function(df, cloneCall = "strict", 
                                 method = c("overlap", "morisita", "jaccard", "raw"), 
                                 chain = "both", 
                                 split.by = NULL, 

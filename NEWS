@@ -1,3 +1,14 @@
+CHANGES IN VERSION 1.5.2
+------------------------
+* Arbitrarily numbering system to match new bio conductor dev version
+* highlightClonotypes() now returns the specific clones instead of clonotype 1, ...
+* compareClonotypes numbers parameter now for group-wide numbers and not overall top X numbers
+* Fixed issue with clonalDiversity that cause errors when group.by parameter was used. 
+* modified parseBCR() to reduce complexity and assume lambda >> kappa
+* fixed clusterTCR() function broken with Seurat Objects
+* checkContigs no ensures data frames and that "" are converted into NAs
+* modified makeGenes() internal function changing na.omit to str_replace_na() and separating the BCR calls by chain to prevent combination errors. 
+
 CHANGES IN VERSION 1.3.5
 ------------------------
 * Modified parseBCR() to check for contents of the chains. Resolve issue with placing light chain into heavy chain slots when 2 contigs are present. 
@@ -6,6 +17,7 @@ CHANGES IN VERSION 1.3.5
 * Modified diversity visualization to remove outliers and place graphs on a single line
 * Modified clonalOverlay() to use new internal getCoord() function like clonalNetwork()
 * Added threshold parameter to clonesizeDistribution()
+* Added support for single-cell objects to clusterTCR()
 
 
 CHANGES IN VERSION 1.3.4

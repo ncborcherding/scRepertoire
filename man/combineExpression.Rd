@@ -7,7 +7,7 @@
 combineExpression(
   df,
   sc,
-  cloneCall = "gene+nt",
+  cloneCall = "strict",
   chain = "both",
   group.by = "none",
   proportion = TRUE,
@@ -25,10 +25,10 @@ both c(CombineTCR(), combineBCR())}
 
 \item{cloneCall}{How to call the clonotype - VDJC gene (gene), 
 CDR3 nucleotide (nt) CDR3 amino acid (aa), or 
-VDJC gene + CDR3 nucleotide (gene+nt).}
+VDJC gene + CDR3 nucleotide (strict).}
 
 \item{chain}{indicate if both or a specific chain should be used - 
-e.g. "both", "TRA", "TRG", "Heavy", "Light"}
+e.g. "both", "TRA", "TRG", "IGH", "IGL"}
 
 \item{group.by}{The column label in the combined contig object in which 
 clonotype frequency will be calculated.}

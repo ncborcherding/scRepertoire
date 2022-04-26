@@ -6,7 +6,7 @@
 \usage{
 alluvialClonotypes(
   sc,
-  cloneCall = c("gene", "nt", "aa", "gene+nt"),
+  cloneCall = c("gene", "nt", "aa", "strict"),
   chain = "both",
   y.axes = NULL,
   color = NULL,
@@ -21,10 +21,10 @@ For SCE objects, the cluster variable must be in the meta data under
 
 \item{cloneCall}{How to call the clonotype - VDJC gene (gene), 
 CDR3 nucleotide (nt) or CDR3 amino acid (aa), or 
-VDJC gene + CDR3 nucleotide (gene+nt).}
+VDJC gene + CDR3 nucleotide (strict).}
 
 \item{chain}{indicate if both or a specific chain should be used - 
-e.g. "both", "TRA", "TRG", "Heavy", "Light"}
+e.g. "both", "TRA", "TRG", "IGH", "IGL"}
 
 \item{y.axes}{The columns that will separate the proportional 
 visualizations.}
