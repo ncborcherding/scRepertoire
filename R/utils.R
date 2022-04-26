@@ -40,7 +40,7 @@ checkContigs <- function(df) {
   df <- lapply(seq_len(length(df)), function(x) {
     df[[x]] <- if(is(df[[x]])[1] != "data.frame") as.data.frame(df[[x]]) else df[[x]]
     df[[x]][df[[x]] == ""] <- NA
-    df[[x]] <- df[[x]][with(df[[x]], order(reads, chain)),]
+    df[[x]]
   })
 }
 

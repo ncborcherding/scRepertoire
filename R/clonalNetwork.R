@@ -6,21 +6,21 @@
 #' plot. 
 #' 
 #' @examples
+#' \dontrun{
 #' #Getting the combined contigs
 #' combined <- combineTCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), 
 #' rep(c("P", "T"), 3), cells ="T-AB")
 #' 
 #' #Getting a sample of a Seurat object
 #' screp_example <- get(data("screp_example"))
-#' sce <- suppressMessages(Seurat::UpdateSeuratObject(screp_example))
 #' 
 #' #Using combineExpresion()
-#' sce <- combineExpression(combined, sce)
+#' screp_example <- combineExpression(combined, screp_example)
 #' 
 #' #Using clonalNetwork()
-#' clonalNetwork(sce, reduction = "umap",
-#'               identity = "cluster",
-#'               filter.identity = "C1)
+#' clonalNetwork(screp_example, reduction = "umap",
+#'               identity = "cluster")
+#' }
 #'               
 #' @param sc The Seurat or SingleCellExperiment (SCE) after combineExpression().
 #' @param reduction The name of the dimensional reduction of the single-cell object
@@ -43,7 +43,7 @@
 #' @importFrom igraph graph_from_data_frame V `V<-`
 #' @importFrom dplyr %>% group_by select summarize_all count
 #' @importFrom tidygraph as_tbl_graph activate
-#' @importFrom ggraph ggraph geom_edge_bend  geom_node_point scale_edge_color_viridis circle 
+#' @importFrom ggraph ggraph geom_edge_bend  geom_node_point scale_edge_color_viridis circle guide_edge_colourbar
 #' @export
 #' @return ggplot object
 #' 

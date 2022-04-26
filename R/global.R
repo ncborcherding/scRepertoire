@@ -62,5 +62,9 @@
     utils::globalVariables ("weight")
     utils::globalVariables ("size")
     utils::globalVariables ("Top_state")
+    utils::globalVariables ("read.csv")
+    utils::globalVariables ("read.delim")
+    utils::globalVariables ("parse10x")
+    utils::globalVariables ("parseAIRR")
     invisible ()
 }

@@ -1,3 +1,8 @@
+CHANGES IN VERSION 1.5.3
+------------------------
+* Added loadContigs for non-10X formatted single-cell data
+* removed combineTRUST4, supersceded by loadContigs
+
 CHANGES IN VERSION 1.5.2
 ------------------------
 * Arbitrarily numbering system to match new bio conductor dev version

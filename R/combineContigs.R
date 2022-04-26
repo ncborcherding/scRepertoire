@@ -60,14 +60,6 @@ combineTCR <- function(df,
     chain2 <- cellT(cells)[[2]]
     cellType <- cellT(cells)[[3]]
     for (i in seq_along(df)) {
-        df[[i]] <- subset(df[[i]], chain != "Multi")
-        df[[i]] <- subset(df[[i]], chain %in% c(chain1, chain2))
-        df[[i]] <- subset(df[[i]], productive %in% c(TRUE, "TRUE", "True", "true"))
-        if (nrow(df[[i]]) == 0) { stop(
-          "There are 0 contigs after internal filtering -
-        check the contig list to see if any issues exist 
-        for productive chains", call. = FALSE) }
-        df[[i]] <- subset(df[[i]], cdr3 != "None")
         df[[i]]$sample <- samples[i]
         df[[i]]$ID <- ID[i]
         if (filterMulti == TRUE) { 
@@ -160,11 +152,6 @@ combineBCR <- function(df, samples = NULL, ID = NULL,
     chain2 <- "light"
     for (i in seq_along(df)) {
         df[[i]] <- subset(df[[i]], chain %in% c("IGH", "IGK", "IGL"))
-        df[[i]] <- subset(df[[i]], productive %in% c(TRUE, "TRUE", "True", "true"))
-        if (nrow(df[[i]]) == 0) { stop(
-                "There are 0 contigs after internal filtering -
-        check the contig list to see if any issues exist 
-        for productive chains", call. = FALSE) }
         df[[i]] <- df[[i]] %>% group_by(barcode,chain) %>% top_n(n=1,wt=reads)
         df[[i]]$sample <- samples[i]
         df[[i]]$ID <- ID[i]
