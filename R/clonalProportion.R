@@ -30,9 +30,11 @@
 #'
 #' @export
 #' @return ggplot of the space occupied by the specific rank of clonotypes
-clonalProportion <- function(df,split = c(10, 100, 1000, 10000, 30000, 
-                        100000), cloneCall = "strict", 
-                        chain = "both", exportTable = FALSE) {
+clonalProportion <- function(df,
+                             split = c(10, 100, 1000, 10000, 30000, 100000), 
+                             cloneCall = "strict", 
+                             chain = "both", 
+                             exportTable = FALSE) {
     Con.df <- NULL
     df <- list.input.return(df)
     cloneCall <- theCall(cloneCall)

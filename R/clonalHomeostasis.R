@@ -28,10 +28,12 @@
 #' @importFrom reshape2 melt
 #' @export
 #' @return ggplot of the space occupied by the specific proportion of clonotypes
-clonalHomeostasis <- function(df, cloneTypes = c(Rare = .0001, Small = .001, 
-                        Medium = .01, Large = .1, Hyperexpanded = 1),
-                        cloneCall = "strict", chain = "both", 
-                        exportTable = FALSE) {
+clonalHomeostasis <- function(df, 
+                              cloneTypes = c(Rare = .0001, Small = .001, 
+                              Medium = .01, Large = .1, Hyperexpanded = 1),
+                              cloneCall = "strict", 
+                              chain = "both", 
+                              exportTable = FALSE) {
     cloneTypes <- c(None = 0, cloneTypes)
     df <- list.input.return(df)
     cloneCall <- theCall(cloneCall)
