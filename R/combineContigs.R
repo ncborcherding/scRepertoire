@@ -60,6 +60,12 @@ combineTCR <- function(df,
     chain2 <- cellT(cells)[[2]]
     cellType <- cellT(cells)[[3]]
     for (i in seq_along(df)) {
+        if(c("chain") %in% colnames(df[[i]])) {
+          df[[i]] <- subset(df[[i]], chain != "Multi")
+        }
+        if(c("productive") %in% colnames(df[[i]])) {
+          df[[i]] <- subset(df[[i]], productive %in% c(TRUE, "TRUE", "True", "true"))
+        }
         df[[i]]$sample <- samples[i]
         df[[i]]$ID <- ID[i]
         if (filterMulti == TRUE) { 
