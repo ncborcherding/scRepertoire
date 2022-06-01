@@ -4,6 +4,7 @@ CHANGES IN VERSION 1.5.3
 * removed combineTRUST4, superseded by loadContigs
 * combineTCR() now allows for > 3 recovered TCRs per barcode
 * Readded the filtering steps to combineTCR(), will detect if data is from 10X and automatically remove nonproductive or multi chains. 
+* Updated parseTCR() to include evaluation for gamma/delta chains. 
 
 CHANGES IN VERSION 1.5.2
 ------------------------
