@@ -333,14 +333,14 @@ parseTCR <- function(Con.df, unique_df, data2) {
         location.i <- which(barcode.i == data2$barcode)
         for (z in seq_along(location.i)) {
           where.chain <- data2[location.i[z],"chain"]
-          if (where.chain == "TRA") {
+          if (where.chain == "TRA" | where.chain == "TRD") {
             if(is.na(Con.df[y,"TCR1"])) {
               Con.df[y,tcr1_lines] <- data2[location.i[z],data1_lines]
             } else {
               Con.df[y,tcr1_lines] <- paste(Con.df[y, tcr1_lines],
                                             data2[location.i[z],data1_lines],sep=";") 
             }
-          } else if (where.chain == "TRB") {
+          } else if (where.chain == "TRB" | where.chain == "TRG") {
             if(is.na(Con.df[y,"TCR2"])) {
               Con.df[y,tcr2_lines] <- data2[location.i[z],data2_lines]
             } else {
