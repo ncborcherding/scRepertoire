@@ -21,6 +21,8 @@
 #' VDJC gene + CDR3 nucleotide (strict).
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL"
+#' @param split.by If using a single-cell object, the column header 
+#' to group the new list. NULL will return clusters.
 #' @param exportTable Exports a table of the data into the global 
 #' environment in addition to the visualization
 #' @import ggplot2
@@ -33,9 +35,10 @@ clonalHomeostasis <- function(df,
                               Medium = .01, Large = .1, Hyperexpanded = 1),
                               cloneCall = "strict", 
                               chain = "both", 
+                              split.by = NULL,
                               exportTable = FALSE) {
     cloneTypes <- c(None = 0, cloneTypes)
-    df <- list.input.return(df)
+    df <- list.input.return(df, split.by = split.by)
     cloneCall <- theCall(cloneCall)
     df <- checkList(df)
     df <- checkBlanks(df, cloneCall)
