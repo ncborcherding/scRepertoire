@@ -49,6 +49,9 @@ Feel free to use, edit, modify scRepertoire, but if you do, please cite the [man
 ### Contact
 Questions, comments, suggestions, please feel free to contact Nick Borcherding via this repository, [email](mailto:ncborch@gmail.com), or using [twitter](https://twitter.com/theHumanBorch). 
 
-### More Information On VDJ Biology
-Our publication is limited in scope and size and we were unable to review VDJ biology and issues relevant to high-throuhput immune receptor profiling. If you are interested in the biology of the process, please refer to the excellent reviews from [Jahong Ji](https://www.nature.com/articles/nri2941) and [Frederick Alt](https://www.cell.com/fulltext/S0092-8674(04)00039-X). Additionally, the complexities of sequencing and quantifications of VDJs are discussed [here.](https://www.nature.com/articles/nprot.2018.021?)
+******
+### How to Support 
+This package was originally designed to functionalize some of the code for my PhD thesis. It has morphed into a hobby and passion for me. If interested in collaboration, please see the contact information above. Alternatively, if interested in supporting me, a new father, directly, consider the gift of caffeine.
+
+[<img width="208" alt="snapshot-bmc-button" src="https://user-images.githubusercontent.com/22754118/175768906-2061f309-d038-4a0a-8f5b-5f250bf451cf.png">](https://www.buymeacoffee.com/theHumanBorch)
 
