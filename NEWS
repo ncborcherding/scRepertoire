@@ -1,3 +1,7 @@
+CHANGES IN VERSION 1.5.4
+------------------------
+* modified grabMeta() internal function to no longer assume the active Identity is clusters. 
+
 CHANGES IN VERSION 1.5.3
 ------------------------
 * Added loadContigs for non-10X formatted single-cell data

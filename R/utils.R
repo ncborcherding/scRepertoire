@@ -92,21 +92,12 @@ checkSingleObject <- function(sc) {
 grabMeta <- function(sc) {
     if (inherits(x=sc, what ="Seurat")) {
         meta <- data.frame(sc[[]], slot(sc, "active.ident"))
-        if ("cluster" %in% colnames(meta)) {
-          colnames(meta)[length(meta)] <- "cluster.active.ident"
-        } else {
-        colnames(meta)[length(meta)] <- "cluster"
-        }
-    }
-    else if (inherits(x=sc, what ="SummarizedExperiment")){
+        colnames(meta)[length(meta)] <- "ident"
+    } else if (inherits(x=sc, what ="SummarizedExperiment")){
         meta <- data.frame(colData(sc))
         rownames(meta) <- sc@colData@rownames
         clu <- which(colnames(meta) == "ident")
-        if ("cluster" %in% colnames(meta)) {
-          colnames(meta)[clu] <- "cluster.active.idents"
-        } else {
-          colnames(meta)[clu] <- "cluster"
-        }
+        colnames(meta)[clu] <- "ident"
     }
     return(meta)
 }

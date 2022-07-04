@@ -190,7 +190,7 @@ highlightClonotypes <- function(sc,
         meta$highlight <-  ifelse(meta[,cloneCall] == sequence[i], 
                                   sequence[i], meta$highlight)
     }
-    meta <- meta[,-(which(colnames(meta) == "cluster"))]
+    meta <- meta[,-(which(colnames(meta) == "ident"))]
     col.name <- names(meta) %||% colnames(meta)
     sc[[col.name]] <- meta
     return(sc)
@@ -220,7 +220,7 @@ highlightClonotypes <- function(sc,
 #' 
 #' #Using alluvialClonotypes()
 #' alluvialClonotypes(sce, cloneCall = "gene", 
-#' y.axes = c("Patient", "cluster"), color = "cluster")
+#' y.axes = c("Patient", "ident"), color = "ident")
 #' 
 #' @param sc The seurat or SCE object to visualize after combineExpression(). 
 #' For SCE objects, the cluster variable must be in the meta data under 
@@ -244,9 +244,12 @@ highlightClonotypes <- function(sc,
 #' @return Alluvial ggplot comparing clonotype distribution across 
 #' selected parameters.
 alluvialClonotypes <- function(sc, 
-                                cloneCall = c("gene", "nt", "aa", "strict"), 
-                                chain = "both", y.axes = NULL, 
-                                color = NULL, alpha = NULL, facet = NULL) {
+                               cloneCall = c("gene", "nt", "aa", "strict"), 
+                               chain = "both",
+                               y.axes = NULL, 
+                               color = NULL, 
+                               alpha = NULL, 
+                               facet = NULL) {
     checkSingleObject(sc)
     cloneCall <- theCall(cloneCall)
     if (length(y.axes) == 0) {
@@ -314,12 +317,10 @@ alluvialClonotypes <- function(sc,
 #' sce <- combineExpression(combined, sce)
 #' 
 #' #Using occupiedscRepertoire()
-#' occupiedscRepertoire(sce, x.axis = "cluster")
-#' table <- occupiedscRepertoire(sce, x.axis = "cluster", exportTable = TRUE)
+#' occupiedscRepertoire(sce, x.axis = "ident")
+#' table <- occupiedscRepertoire(sce, x.axis = "ident", exportTable = TRUE)
 #' 
-#' @param sc The seurat or SCE object to visualize after combineExpression(). 
-#' For SCE objects, the cluster variable must be in the meta data under 
-#' "cluster".
+#' @param sc The Seurat or SCE object to visualize after combineExpression(). 
 #' @param x.axis The variable in the meta data to graph along the x.axis
 #' @param label Include the number of clonotype in each category by x.axis variable
 #' @param facet.by The column header used for faceting the graph
@@ -333,7 +334,8 @@ alluvialClonotypes <- function(sc,
 #' @export
 #' @return Stacked bar plot of counts of cells by clonotype frequency group
 
-occupiedscRepertoire <- function(sc, x.axis = "cluster", 
+occupiedscRepertoire <- function(sc, 
+                                 x.axis = "ident", 
                                  label = TRUE, 
                                  facet.by = NULL,
                                  proportion = FALSE, 
@@ -347,7 +349,7 @@ occupiedscRepertoire <- function(sc, x.axis = "cluster",
       meta <- na.omit(meta)
     }
     meta <- meta[meta$value != 0,]
-    if(proportion == TRUE) {
+    if(proportion) {
       meta <- meta %>%
         group_by(meta[,1]) %>%
         mutate(total = sum(value), 
@@ -358,7 +360,7 @@ occupiedscRepertoire <- function(sc, x.axis = "cluster",
         return(meta)
     }
     col <- length(unique(meta$cloneType))
-    if(proportion == TRUE) {
+    if(proportion) {
       plot <- ggplot(meta, aes(x = meta[,x.axis], y = prop, fill = cloneType)) + 
         geom_bar(stat = "identity") 
       lab <- "Proportion of Cells"
@@ -470,7 +472,10 @@ clonalOverlay <- function(sc, reduction = NULL, freq.cutpoint = 30, bins = 25, f
 #' @return Returns a list of contigs corresponding to the multiplexed Seurat 
 #' or Single-Cell Experiment object
 
-createHTOContigList <- function(contig, sc, group.by = NULL, multi.run = NULL){
+createHTOContigList <- function(contig, 
+                                sc, 
+                                group.by = NULL, 
+                                multi.run = NULL){
   contig.list <- NULL
   checkSingleObject(sc)
   meta <- grabMeta(sc)

@@ -49,11 +49,17 @@ clonotypeBias <- function(df,
                           exportTable = FALSE) {
   
   bias <- get_clono_bias(df, split.by = split.by, 
-                         group.by = group.by , cloneCall=cloneCall, min.expand=min.expand)
+                         group.by = group.by , 
+                         cloneCall=cloneCall, 
+                         min.expand=min.expand)
   df_shuffle.list <- list()
   for (ii in seq_len(n.boots)) {
     df_shuffle.list[[ii]] <- get_clono_bias(df, split.by = split.by,
-                                group.by = group.by, cloneCall=cloneCall, min.expand=min.expand, do.shuffle = T, seed=ii)
+                                group.by = group.by, 
+                                cloneCall=cloneCall, 
+                                min.expand=min.expand, 
+                                do.shuffle = T, 
+                                seed=ii)
   }
   df_shuffle <- Reduce(rbind, df_shuffle.list)
   
@@ -115,10 +121,12 @@ get_clono_bias <- function(df,
                     Top_state=double(), 
                     freq=double(),
                     freq_diff=double(),
-                    bias=double() 
-  ) 
+                    bias=double()) 
   
-  bg <- get_clono_bg(df, split.by=split.by, min.expand = min.expand, group.by = group.by, cloneCall = cloneCall)
+  bg <- get_clono_bg(df, split.by=split.by, 
+                     min.expand = min.expand, 
+                     group.by = group.by, 
+                     cloneCall = cloneCall)
   if (!is.null(split.by)) {
     df <- list.input.return(df, split.by)
   } else {
