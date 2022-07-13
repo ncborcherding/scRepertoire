@@ -144,11 +144,13 @@ clonalNetwork <- function(sc,
           edge.list <- rbind(edge.list, summary)
        }
     }
-    if(dim(edge.list)[1] != 0) {
-      edge.list <- data.frame(edge.list)
-      colnames(edge.list)[3] <-"weight"
-      }
+    if(!is.null(edge.list)) {
+      stop("No shared clonotypes between the indicated identity")
     }
+    
+    edge.list <- data.frame(edge.list)
+    colnames(edge.list)[3] <-"weight"
+   
     
     if (!is.null(filter.identity)) { 
         col1 <- which(edge.list[,1] == filter.identity)

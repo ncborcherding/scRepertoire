@@ -17,15 +17,17 @@ off.the.chain <- function(dat, chain, cloneCall) {
 
 #Remove list elements that contain all NA values
 checkBlanks <- function(df, cloneCall) {
+  count <- NULL
     for (i in seq_along(df)) {
         if (length(df[[i]][,cloneCall]) == length(which(is.na(df[[i]][,cloneCall]))) | 
             length(which(!is.na(df[[i]][,cloneCall]))) == 0 | 
             nrow(df[[i]]) == 0) {
-            df[[i]] <- NULL
+          count <- c(i, count)
         } else {
             next()
         }
     }
+  df <- df[-count]
     return(df)
 }
 
