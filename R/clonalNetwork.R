@@ -134,14 +134,20 @@ clonalNetwork <- function(sc,
        pos <- which(meta[,cloneCall] == clones.duplicated[i])
        num <- table(meta[pos,identity])
        num <- num[num > 0]
+       if(length(num) == 1) {
+         next()
+       }
        grid <- expand.grid(names(num),names(num))
        grid <- grid[grid[,1] != grid[,2],]
        for (x in seq_len(nrow(grid))) {
           summary <- c(to = as.vector(grid[x,1]), from = as.vector(grid[x,2]), weight = num[grid[x,2]]/total.number[as.vector(grid[x,1])])
           edge.list <- rbind(edge.list, summary)
        }
-    edge.list <- data.frame(edge.list)
-    colnames(edge.list)[3] <-"weight"
+    }
+    if(dim(edge.list)[1] != 0) {
+      edge.list <- data.frame(edge.list)
+      colnames(edge.list)[3] <-"weight"
+      }
     }
     
     if (!is.null(filter.identity)) { 
