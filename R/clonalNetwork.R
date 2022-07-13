@@ -50,7 +50,7 @@
 #' 
 clonalNetwork <- function(sc, 
                           reduction = "umap",
-                          identity = "cluster",
+                          identity = "ident",
                           filter.clones = NULL,
                           filter.identity = NULL,
                           filter.proportion = NULL,
