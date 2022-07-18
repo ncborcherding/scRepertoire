@@ -514,8 +514,6 @@ clonalNetwork(screp_example,
               cloneCall = "aa")
 ```
 
-
-
 We can also look at the clonotypes by calling specific sequences in the `highlightClonotypes()` below. In order to highlight the clonotypes, we first need to use the **cloneCall** the type of sequence we will be using and then the specific sequences themselves using **sequence**. Below you can see the steps to highlight the two most prominent sequences *"CAVNGGSQGNLIF_CSAEREDTDTQYF"* with a frequency = 482 and *"NA_CATSATLRVVAEKLFF"* with a frequency = 287. 
 
 ```{r}

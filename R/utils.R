@@ -27,7 +27,9 @@ checkBlanks <- function(df, cloneCall) {
             next()
         }
     }
-  df <- df[-count]
+  if (!is.null(count)) {
+    df <- df[-count]
+  }
     return(df)
 }
 
@@ -91,6 +93,7 @@ checkSingleObject <- function(sc) {
 
 #This is to grab the meta data from a seurat or SCE object
 #' @importFrom SingleCellExperiment colData 
+#' @importFrom SeuratObject Idents
 grabMeta <- function(sc) {
     if (inherits(x=sc, what ="Seurat")) {
         meta <- data.frame(sc[[]], slot(sc, "active.ident"))

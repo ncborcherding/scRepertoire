@@ -116,7 +116,7 @@ clonalNetwork <- function(sc,
         group_by(meta[,identity]) %>% 
         na.omit() %>%
         unique() %>%
-        count()
+        summarise(n = n())
     names <- clone.number[,1]
     clone.number <- unlist(clone.number[,2])
     names(clone.number) <- unlist(names[,1])
@@ -124,7 +124,7 @@ clonalNetwork <- function(sc,
     total.number <- meta[,c(cloneCall, identity)] %>%
         group_by(meta[,identity]) %>% 
         na.omit() %>%
-        count()
+      summarise(n = n())
     names <- total.number[,1]
     total.number <- unlist(total.number[,2])
     names(total.number) <- unlist(names[,1])
@@ -144,7 +144,7 @@ clonalNetwork <- function(sc,
           edge.list <- rbind(edge.list, summary)
        }
     }
-    if(!is.null(edge.list)) {
+    if(is.null(edge.list)) {
       stop("No shared clonotypes between the indicated identity")
     }
     

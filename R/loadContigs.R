@@ -43,7 +43,7 @@ loadContigs <- function(dir,
                 df <- parseAIRR(df)
             }
         }
-    return(list)
+    return(df)
 }
 
 #Formats TRUST4 data

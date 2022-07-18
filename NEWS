@@ -1,6 +1,8 @@
 CHANGES IN VERSION 1.5.4
 ------------------------
 * modified grabMeta() internal function to no longer assume the active Identity is clusters. 
+* checkBlanks() now checks if a blank was detected before trying to remove it
+* clonalNetwork() automatically resulted in default error message, bug now removed.
 
 CHANGES IN VERSION 1.5.3
 ------------------------
