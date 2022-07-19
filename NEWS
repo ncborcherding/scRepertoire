@@ -3,6 +3,7 @@ CHANGES IN VERSION 1.5.4
 * modified grabMeta() internal function to no longer assume the active Identity is clusters. 
 * checkBlanks() now checks if a blank was detected before trying to remove it
 * clonalNetwork() automatically resulted in default error message, bug now removed.
+* clonotypeBias now adds z-score of bias when matrix is exported. exportTable parameter is now fixed.
 
 CHANGES IN VERSION 1.5.3
 ------------------------

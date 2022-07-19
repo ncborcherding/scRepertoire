@@ -65,13 +65,14 @@ clonotypeBias <- function(df,
   
   corrected_p <- 1-(0.05/nrow(bias))
   bias$Top_state <- factor(bias$Top_state, str_sort(unique(bias$Top_state), numeric = TRUE))
+  bias$z_score <- scale(bias$bias)
   plot <- ggplot(bias, aes(x=ncells,y=bias)) + 
     geom_point(aes(colour=Top_state)) + 
     quiet(stat_quantile(data=df_shuffle, quantiles = c(corrected_p), method = "rqss", lambda=3)) + 
     theme_classic() + 
     xlab("Clone Size") + 
     ylab("Clonotype Bias")
-  if (exportTable == TRUE) { return(mat) }
+  if (exportTable == TRUE) { return(bias) }
   return(plot) 
 }
 
