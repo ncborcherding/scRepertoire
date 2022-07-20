@@ -53,6 +53,7 @@ proportions of an indicated identity and then superimposes
 the network onto a single-cell object dimensional reduction
 plot.
 }
+
 \examples{
 \dontrun{
 #Getting the combined contigs

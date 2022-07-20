@@ -6,6 +6,7 @@
 #' plot. 
 #' 
 #' @examples
+
 #' \dontrun{
 #' #Getting the combined contigs
 #' combined <- combineTCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), 

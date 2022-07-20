@@ -81,7 +81,6 @@ CHANGES IN VERSION 1.3.2
 * CombineExpression() adds the groupBy variable to Frequency, allowing for multiple calculations to be saved in the meta data. 
 * Default color scheme now uses viridis plasma, because it I am on transfusion medicine.
 
-
 CHANGES IN VERSION 1.2.2
 ------------------------
 

@@ -49,6 +49,7 @@ clonotypeBias <- function(df,
                           exportTable = FALSE) {
   
   bias <- get_clono_bias(df, split.by = split.by, 
+
                          group.by = group.by , 
                          cloneCall=cloneCall, 
                          min.expand=min.expand)

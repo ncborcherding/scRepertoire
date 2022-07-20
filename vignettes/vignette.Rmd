@@ -168,6 +168,16 @@ The first function to explore the clonotypes is `quantContig()` to return the to
 * TRUE - relative percent of unique clonotypes scaled by total size of the size of the clonotype repertoire  
 * FALSE - Report the total number of unique clonotypes  
 
+Important to note, that the clonotype is called using essentially the combination of genes or nt/aa CDR3 sequences for both loci. As of this implementation of scRepertoire, clonotype calling is not incorporating small variations within the CDR3 sequences. As such the **gene** approach will be the most sensitive, while the use of **nt** or **aa** moderately so, and the most specific for clonotypes being **strict**. Additionally, the clonotype call is trying to incorporate both loci, *i.e*, both **TCRA** and **TCRB** chains and if a single cell barcode has multiple sequences identified (*i.e.*, 2 TCRA chains expressed in one cell). Using the 10x approach, there is a subset of barcodes that only return one of the immune receptor chains, the unreturned chain is assigned an **NA** value.
+
+## Quantify Clonotypes
+
+The first function to explore the clonotypes is `quantContig()` to return the total or relative numbers of unique clonotypes. 
+
+**scale**  
+* TRUE - relative percent of unique clonotypes scaled by total size of the size of the clonotype repertoire  
+* FALSE - Report the total number of unique clonotypes  
+
 **chain**  
 + "both" for combined chain visualization  
 + "TRA", "TRB", "TRD", "TRG", "IGH" or "IGL" to select single chain
@@ -232,6 +242,18 @@ We can also look at clonotypes between samples and changes in dynamics by using 
 **number**  
 * The top number of clonotypes to graph, this will be calculated based on the frequency of the individual sample. This can also be left blank.  
 
+We can also look at clonotypes between samples and changes in dynamics by using the `compareClonotypes()` function.
+
+**samples**  
+* Can be used to isolate specific samples based on the name of the list element
+
+**graph**  
+* "alluvial" - graph imaged below  
+* "area" - graph by area of the respective clonotype  
+
+**number**  
+* The top number of clonotypes to graph, this will be calculated based on the frequency of the individual sample. This can also be left blank.  
+
 **clonotypes**  
 * Can be used to isolate specific clonotype sequences, ensure the call matches the sequences you would like to visualize.  
 
@@ -241,6 +263,26 @@ compareClonotypes(combined, numbers = 10, samples = c("PX_P", "PX_T"),
 ```
 
 ## Visualize Gene Usage
+
+Last of the basic analysis visualizations is the relative usage of genes of the TCR or BCR, using `vizGenes()`. 
+
+**gene**  
++  "V"  
++  "D"  
++  "J"  
++  "C"  
+
+**chain**
++  "TRB"  
++  "TRA"  
++  "TRG"  
++  "TRD" 
++  "IGH"  
++  "IGL"  
+
+**plot**  
++ "bar" for a bar chart  
++ "heatmap" for a heatmap  
 
 Last of the basic analysis visualizations is the relative usage of genes of the TCR or BCR, using `vizGenes()`. 
 
@@ -420,6 +462,8 @@ screp_example <- combineExpression(combined,
                                    proportion = FALSE, 
                                    cloneTypes=c(Single=1, Small=5, Medium=20, Large=100, Hyperexpanded=500))
 
+screp_example <- combineExpression(combined, screp_example, cloneCall="gene", group.by = "sample", proportion = FALSE, cloneTypes=c(Single=1, Small=5, Medium=20, Large=100, Hyperexpanded=500))
+
 sce <- combineExpression(combined, sce, cloneCall = "gene", group.by = "sample")
 ```
 
@@ -432,6 +476,7 @@ If you have performed TCR/BCR enrichment or want to add info for both gamma-delt
 TCR <- combineTCR(...)
 BCR <- combineBCR(...)
 list.receptors <- c(TCR, BCR)
+
 
 seurat <- combineExpression(list.receptors, 
                             seurat, 
@@ -514,6 +559,7 @@ clonalNetwork(screp_example,
               cloneCall = "aa")
 ```
 
+
 We can also look at the clonotypes by calling specific sequences in the `highlightClonotypes()` below. In order to highlight the clonotypes, we first need to use the **cloneCall** the type of sequence we will be using and then the specific sequences themselves using **sequence**. Below you can see the steps to highlight the two most prominent sequences *"CAVNGGSQGNLIF_CSAEREDTDTQYF"* with a frequency = 482 and *"NA_CATSATLRVVAEKLFF"* with a frequency = 287. 
 
 ```{r}
@@ -533,6 +579,7 @@ We can also look at the count of cells by cluster assigned into specific frequen
 +  **label** will still return absolute number of clonotypes  
 
 ```{r}
+
 occupiedscRepertoire(screp_example, 
                      x.axis = "seurat_clusters")
 
@@ -548,9 +595,10 @@ After the metadata has been modified, we can look at clonotypes across multiple 
 
 ```{r}
 alluvialClonotypes(screp_example, cloneCall = "gene", 
-                   y.axes = c("Patient", "seurat_clusters", "Type"), 
-                   color = "TRAV12-2.TRAJ42.TRAC_TRBV20-1.TRBD2.TRBJ2-3.TRBC2") + 
-    scale_fill_manual(values = c("grey", colorblind_vector(5)[5]))
+                   y.axes = c("Patient", "cluster", "Type"), 
+                   color = "TRAV12-2.TRAJ42.TRAC_TRBV20-1.TRBJ2-3.TRBD2.TRBC2") + 
+    scale_fill_manual(values = c("grey", colorblind_vector(1)))
+
 
 alluvialClonotypes(screp_example, cloneCall = "gene", 
                    y.axes = c("Patient", "ident", "Type"), 
@@ -564,6 +612,7 @@ Like alluvial graphs, we can also visualize the interconnection of clusters usin
 ```{r}
 library(circlize)
 library(scales)
+
 
 circles <- getCirclize(screp_example, 
                        group.by = "seurat_clusters")
@@ -580,6 +629,7 @@ This can also be used if we wanted to explore just the tumor-specific T cells by
 
 ```{r}
 subset <- subset(screp_example, Type == "T")
+
 
 circles <- getCirclize(subset, group.by = "ident")
 
@@ -640,6 +690,7 @@ A new metric proposed by [Massimo et al](https://www.biorxiv.org/content/10.1101
 * The compartment/variable used for the purpose of the comparison  
 
 ```{r}
+
 clonotypeBias(screp_example, 
               cloneCall = "aa", 
               split.by = "Type", 
@@ -655,7 +706,7 @@ For users that would like greater ability to use the meta data in the Seurat obj
 
 ```{r}
 combined2 <- expression2List(screp_example, split.by = "seurat_clusters")
-combined3 <- expression2List(sce, split.by = "seurat_clusters")
+combined3 <- expression2List(sce, split.by = "seurat_clusters")x
 ```
 
 ## 1. Clonal Diversity  

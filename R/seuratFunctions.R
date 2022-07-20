@@ -349,6 +349,7 @@ occupiedscRepertoire <- function(sc,
       meta <- na.omit(meta)
     }
     meta <- meta[meta$value != 0,]
+
     if(proportion) {
       meta <- meta %>%
         group_by(meta[,1]) %>%
@@ -471,6 +472,7 @@ clonalOverlay <- function(sc, reduction = NULL, freq.cutpoint = 30, bins = 25, f
 #' @export
 #' @return Returns a list of contigs corresponding to the multiplexed Seurat 
 #' or Single-Cell Experiment object
+
 
 createHTOContigList <- function(contig, 
                                 sc, 
