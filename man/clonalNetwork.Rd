@@ -7,7 +7,7 @@
 clonalNetwork(
   sc,
   reduction = "umap",
-  identity = "cluster",
+  identity = "ident",
   filter.clones = NULL,
   filter.identity = NULL,
   filter.proportion = NULL,
@@ -52,4 +52,23 @@ This function generates a network based on clonal
 proportions of an indicated identity and then superimposes
 the network onto a single-cell object dimensional reduction
 plot.
+}
+
+\examples{
+\dontrun{
+#Getting the combined contigs
+combined <- combineTCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), 
+rep(c("P", "T"), 3), cells ="T-AB")
+
+#Getting a sample of a Seurat object
+screp_example <- get(data("screp_example"))
+
+#Using combineExpresion()
+screp_example <- combineExpression(combined, screp_example)
+
+#Using clonalNetwork()
+clonalNetwork(screp_example, reduction = "umap",
+              identity = "cluster")
+}
+              
 }

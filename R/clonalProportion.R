@@ -21,6 +21,8 @@
 #' VDJC gene + CDR3 nucleotide (strict).
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL"
+#' @param split.by If using a single-cell object, the column header 
+#' to group the new list. NULL will return clusters.
 #' @param exportTable Exports a table of the data into the global 
 #' environment in addition to the visualization
 #'
@@ -30,11 +32,14 @@
 #'
 #' @export
 #' @return ggplot of the space occupied by the specific rank of clonotypes
-clonalProportion <- function(df,split = c(10, 100, 1000, 10000, 30000, 
-                        100000), cloneCall = "strict", 
-                        chain = "both", exportTable = FALSE) {
+clonalProportion <- function(df,
+                             split = c(10, 100, 1000, 10000, 30000, 100000), 
+                             cloneCall = "strict", 
+                             chain = "both", 
+                             split.by = NULL,
+                             exportTable = FALSE) {
     Con.df <- NULL
-    df <- list.input.return(df)
+    df <- list.input.return(df, split.by = split.by)
     cloneCall <- theCall(cloneCall)
     df <- checkList(df)
     df <- checkBlanks(df, cloneCall)

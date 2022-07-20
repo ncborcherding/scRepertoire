@@ -7,10 +7,11 @@
 lengthContig(
   df,
   cloneCall = "aa",
+  chain = "both",
   group.by = NULL,
   split.by = NULL,
+  order = TRUE,
   scale = FALSE,
-  chain = "both",
   exportTable = FALSE
 )
 }
@@ -20,17 +21,20 @@ lengthContig(
 \item{cloneCall}{How to call the clonotype - CDR3 nucleotide (nt), 
 CDR3 amino acid (aa).}
 
+
+\item{chain}{indicate if both or a specific chain should be used - 
+e.g. "both", "TRA", "TRG", "IGH", "IGL"}
+
 \item{group.by}{The group header for which you would like to analyze 
 the data.}
 
 \item{split.by}{If using a single-cell object, the column header 
 to group the new list. NULL will return clusters.}
 
+\item{order}{Maintain the order of the list when plotting}
+
 \item{scale}{Converts the graphs into density plots in order to show 
 relative distributions.}
-
-\item{chain}{indicate if both or a specific chain should be used - 
-e.g. "both", "TRA", "TRG", "IGH", "IGL"}
 
 \item{exportTable}{Returns the data frame used for forming the graph.}
 }

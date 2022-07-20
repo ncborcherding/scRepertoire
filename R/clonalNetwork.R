@@ -6,21 +6,22 @@
 #' plot. 
 #' 
 #' @examples
+
+#' \dontrun{
 #' #Getting the combined contigs
 #' combined <- combineTCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), 
 #' rep(c("P", "T"), 3), cells ="T-AB")
 #' 
 #' #Getting a sample of a Seurat object
 #' screp_example <- get(data("screp_example"))
-#' sce <- suppressMessages(Seurat::UpdateSeuratObject(screp_example))
 #' 
 #' #Using combineExpresion()
-#' sce <- combineExpression(combined, sce)
+#' screp_example <- combineExpression(combined, screp_example)
 #' 
 #' #Using clonalNetwork()
-#' clonalNetwork(sce, reduction = "umap",
-#'               identity = "cluster",
-#'               filter.identity = "C1)
+#' clonalNetwork(screp_example, reduction = "umap",
+#'               identity = "cluster")
+#' }
 #'               
 #' @param sc The Seurat or SingleCellExperiment (SCE) after combineExpression().
 #' @param reduction The name of the dimensional reduction of the single-cell object
@@ -43,14 +44,14 @@
 #' @importFrom igraph graph_from_data_frame V `V<-`
 #' @importFrom dplyr %>% group_by select summarize_all count
 #' @importFrom tidygraph as_tbl_graph activate
-#' @importFrom ggraph ggraph geom_edge_bend  geom_node_point scale_edge_color_viridis circle 
+#' @importFrom ggraph ggraph geom_edge_bend  geom_node_point scale_edge_color_viridis circle guide_edge_colourbar
 #' @export
 #' @return ggplot object
 #' 
 #' 
 clonalNetwork <- function(sc, 
                           reduction = "umap",
-                          identity = "cluster",
+                          identity = "ident",
                           filter.clones = NULL,
                           filter.identity = NULL,
                           filter.proportion = NULL,
@@ -116,7 +117,7 @@ clonalNetwork <- function(sc,
         group_by(meta[,identity]) %>% 
         na.omit() %>%
         unique() %>%
-        count()
+        summarise(n = n())
     names <- clone.number[,1]
     clone.number <- unlist(clone.number[,2])
     names(clone.number) <- unlist(names[,1])
@@ -124,7 +125,7 @@ clonalNetwork <- function(sc,
     total.number <- meta[,c(cloneCall, identity)] %>%
         group_by(meta[,identity]) %>% 
         na.omit() %>%
-        count()
+      summarise(n = n())
     names <- total.number[,1]
     total.number <- unlist(total.number[,2])
     names(total.number) <- unlist(names[,1])
@@ -134,15 +135,23 @@ clonalNetwork <- function(sc,
        pos <- which(meta[,cloneCall] == clones.duplicated[i])
        num <- table(meta[pos,identity])
        num <- num[num > 0]
+       if(length(num) == 1) {
+         next()
+       }
        grid <- expand.grid(names(num),names(num))
        grid <- grid[grid[,1] != grid[,2],]
        for (x in seq_len(nrow(grid))) {
           summary <- c(to = as.vector(grid[x,1]), from = as.vector(grid[x,2]), weight = num[grid[x,2]]/total.number[as.vector(grid[x,1])])
           edge.list <- rbind(edge.list, summary)
        }
+    }
+    if(is.null(edge.list)) {
+      stop("No shared clonotypes between the indicated identity")
+    }
+    
     edge.list <- data.frame(edge.list)
     colnames(edge.list)[3] <-"weight"
-    }
+   
     
     if (!is.null(filter.identity)) { 
         col1 <- which(edge.list[,1] == filter.identity)

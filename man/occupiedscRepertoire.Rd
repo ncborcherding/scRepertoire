@@ -6,7 +6,7 @@
 \usage{
 occupiedscRepertoire(
   sc,
-  x.axis = "cluster",
+  x.axis = "ident",
   label = TRUE,
   facet.by = NULL,
   proportion = FALSE,
@@ -15,9 +15,7 @@ occupiedscRepertoire(
 )
 }
 \arguments{
-\item{sc}{The seurat or SCE object to visualize after combineExpression(). 
-For SCE objects, the cluster variable must be in the meta data under 
-"cluster".}
+\item{sc}{The Seurat or SCE object to visualize after combineExpression().}
 
 \item{x.axis}{The variable in the meta data to graph along the x.axis}
 
@@ -56,7 +54,7 @@ sce <- suppressMessages(Seurat::UpdateSeuratObject(screp_example))
 sce <- combineExpression(combined, sce)
 
 #Using occupiedscRepertoire()
-occupiedscRepertoire(sce, x.axis = "cluster")
-table <- occupiedscRepertoire(sce, x.axis = "cluster", exportTable = TRUE)
+occupiedscRepertoire(sce, x.axis = "ident")
+table <- occupiedscRepertoire(sce, x.axis = "ident", exportTable = TRUE)
 
 }

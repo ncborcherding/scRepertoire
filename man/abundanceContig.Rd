@@ -11,6 +11,7 @@ abundanceContig(
   scale = FALSE,
   group.by = NULL,
   split.by = NULL,
+  order = TRUE,
   exportTable = FALSE
 )
 }
@@ -31,6 +32,8 @@ relative distributions.}
 
 \item{split.by}{If using a single-cell object, the column header 
 to group the new list. NULL will return clusters.}
+
+\item{order}{Maintain the order of the list when plotting}
 
 \item{exportTable}{Returns the data frame used for forming the graph
 to the visualization.}

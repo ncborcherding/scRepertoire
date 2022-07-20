@@ -23,14 +23,19 @@
 #' @param group.by The column header used for grouping.
 #' @param split.by If using a single-cell object, the column header 
 #' to group the new list. NULL will return clusters.
+#' @param order Maintain the order of the list when plotting
 #' @param scale Converts the graphs into percentage of unique clonotypes.
 #' @param exportTable Returns the data frame used for forming the graph
 #' @import ggplot2
 #' @export
 #' @return ggplot of the total or relative unique clonotypes
-quantContig <- function(df, cloneCall = "strict", chain = "both", 
-                        scale=FALSE, group.by = NULL, 
+quantContig <- function(df, 
+                        cloneCall = "strict", 
+                        chain = "both", 
+                        scale=FALSE, 
+                        group.by = NULL, 
                         split.by = NULL,
+                        order = TRUE,
                         exportTable = FALSE) {
     if (length(group.by) > 1) { stop("Only one item in the group.by variable can 
                                     be listed.") }
@@ -77,6 +82,9 @@ quantContig <- function(df, cloneCall = "strict", chain = "both",
         } else { y <- "contigs"
             ylab <- "Unique Clonotypes" } }
     if (exportTable == TRUE) { return(Con.df) }
+    if(order & is.null(group.by)) {
+      Con.df[,x] <- factor(Con.df[,x], levels = Con.df[,x])
+    }
     plot <- ggplot(aes(x=Con.df[,x], y=Con.df[,y],
             fill=as.factor(Con.df[,x])), data = Con.df) +
         stat_summary(geom = "errorbar", fun.data = mean_se, 
@@ -113,6 +121,7 @@ quantContig <- function(df, cloneCall = "strict", chain = "both",
 #' @param group.by The column header for which you would like to analyze the data.
 #' @param split.by If using a single-cell object, the column header 
 #' to group the new list. NULL will return clusters.
+#' @param order Maintain the order of the list when plotting
 #' @param scale Converts the graphs into density plots in order to show 
 #' relative distributions.
 #' @param exportTable Returns the data frame used for forming the graph
@@ -121,9 +130,14 @@ quantContig <- function(df, cloneCall = "strict", chain = "both",
 #' @export
 #' @return ggplot of the total or relative abundance of clonotypes 
 #' across quanta
-abundanceContig <- function(df, cloneCall = "strict", chain = "both", 
-                            scale=FALSE, group.by = NULL, 
-                            split.by = NULL, exportTable = FALSE) {
+abundanceContig <- function(df, 
+                            cloneCall = "strict", 
+                            chain = "both", 
+                            scale=FALSE, 
+                            group.by = NULL, 
+                            split.by = NULL, 
+                            order = TRUE,
+                            exportTable = FALSE) {
     df <- list.input.return(df,split.by)
     Con.df <- NULL
     xlab <- "Abundance"
@@ -154,13 +168,17 @@ abundanceContig <- function(df, cloneCall = "strict", chain = "both",
                 geom_line(stat="count") +
                 scale_color_manual(values = colorblind_vector(col)) +
                 labs(color = fill)}
-    } else{
+    } else {
         for (i in seq_along(df)) {
           if (chain != "both") {
             df[[i]] <- off.the.chain(df[[i]], chain, cloneCall)
           }
             data1 <- parseContigs(df, i, names, cloneCall)
             Con.df<- rbind.data.frame(Con.df, data1) }
+      Con.df <- data.frame(Con.df)
+        if(order) {
+           Con.df[,"values"] <- factor(Con.df[,"values"], levels = names(df))
+        }
         col <- length(unique(Con.df$values))
         fill <- "Samples"
         if (scale == TRUE) { ylab <- "Density of Clonotypes"
@@ -175,10 +193,11 @@ abundanceContig <- function(df, cloneCall = "strict", chain = "both",
                 geom_line(stat="count") +
                 scale_color_manual(values = colorblind_vector(col)) +
                 labs(color = fill)} }
-    if (exportTable == TRUE) { return(Con.df)}
+    if (exportTable == TRUE) { return(Con.df) }
     plot <- plot + scale_x_log10() + ylab(ylab) + xlab(xlab) +
         theme_classic()
-return(plot) }
+return(plot) 
+}
 
 #' Demonstrate the distribution of lengths filtered contigs.
 #'
@@ -208,6 +227,7 @@ return(plot) }
 #' to group the new list. NULL will return clusters.
 #' @param scale Converts the graphs into density plots in order to show 
 #' relative distributions.
+#' @param order Maintain the order of the list when plotting
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL"
 #' @param exportTable Returns the data frame used for forming the graph.
@@ -218,10 +238,11 @@ return(plot) }
 #' clonotype sequences
 lengthContig <- function(df, 
                          cloneCall = "aa", 
+                         chain = "both", 
                          group.by = NULL, 
                          split.by = NULL, 
+                         order = TRUE,
                          scale = FALSE, 
-                         chain = "both", 
                          exportTable = FALSE) {
     df <- list.input.return(df, split.by)
     if(cloneCall == "nt") { cloneCall <- "CTnt"
@@ -245,6 +266,9 @@ lengthContig <- function(df,
     xlab <- "Length"
     Con.df <- NULL
     Con.df <- lengthDF(df, cloneCall, chain, group.by, c1, c2)
+    if(is.null(group.by) & order) {
+        Con.df[,"values"] <- factor(Con.df[,"values"], levels = names(df))
+    }
     names <- names(df)
     if (!is.null(group.by)) { 
         fill = group.by

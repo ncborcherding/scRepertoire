@@ -17,15 +17,19 @@ off.the.chain <- function(dat, chain, cloneCall) {
 
 #Remove list elements that contain all NA values
 checkBlanks <- function(df, cloneCall) {
+  count <- NULL
     for (i in seq_along(df)) {
         if (length(df[[i]][,cloneCall]) == length(which(is.na(df[[i]][,cloneCall]))) | 
             length(which(!is.na(df[[i]][,cloneCall]))) == 0 | 
             nrow(df[[i]]) == 0) {
-            df[[i]] <- NULL
+          count <- c(i, count)
         } else {
             next()
         }
     }
+  if (!is.null(count)) {
+    df <- df[-count]
+  }
     return(df)
 }
 
@@ -40,7 +44,7 @@ checkContigs <- function(df) {
   df <- lapply(seq_len(length(df)), function(x) {
     df[[x]] <- if(is(df[[x]])[1] != "data.frame") as.data.frame(df[[x]]) else df[[x]]
     df[[x]][df[[x]] == ""] <- NA
-    df[[x]] <- df[[x]][with(df[[x]], order(reads, chain)),]
+    df[[x]]
   })
 }
 
@@ -89,24 +93,16 @@ checkSingleObject <- function(sc) {
 
 #This is to grab the meta data from a seurat or SCE object
 #' @importFrom SingleCellExperiment colData 
+#' @importFrom SeuratObject Idents
 grabMeta <- function(sc) {
     if (inherits(x=sc, what ="Seurat")) {
         meta <- data.frame(sc[[]], slot(sc, "active.ident"))
-        if ("cluster" %in% colnames(meta)) {
-          colnames(meta)[length(meta)] <- "cluster.active.ident"
-        } else {
-        colnames(meta)[length(meta)] <- "cluster"
-        }
-    }
-    else if (inherits(x=sc, what ="SummarizedExperiment")){
+        colnames(meta)[length(meta)] <- "ident"
+    } else if (inherits(x=sc, what ="SummarizedExperiment")){
         meta <- data.frame(colData(sc))
         rownames(meta) <- sc@colData@rownames
         clu <- which(colnames(meta) == "ident")
-        if ("cluster" %in% colnames(meta)) {
-          colnames(meta)[clu] <- "cluster.active.idents"
-        } else {
-          colnames(meta)[clu] <- "cluster"
-        }
+        colnames(meta)[clu] <- "ident"
     }
     return(meta)
 }
@@ -333,14 +329,15 @@ parseTCR <- function(Con.df, unique_df, data2) {
         location.i <- which(barcode.i == data2$barcode)
         for (z in seq_along(location.i)) {
           where.chain <- data2[location.i[z],"chain"]
-          if (where.chain == "TRA") {
+
+          if (where.chain == "TRA" | where.chain == "TRD") {
             if(is.na(Con.df[y,"TCR1"])) {
               Con.df[y,tcr1_lines] <- data2[location.i[z],data1_lines]
             } else {
               Con.df[y,tcr1_lines] <- paste(Con.df[y, tcr1_lines],
                                             data2[location.i[z],data1_lines],sep=";") 
             }
-          } else if (where.chain == "TRB") {
+          } else if (where.chain == "TRB" | where.chain == "TRG") {
             if(is.na(Con.df[y,"TCR2"])) {
               Con.df[y,tcr2_lines] <- data2[location.i[z],data2_lines]
             } else {
