@@ -594,10 +594,10 @@ occupiedscRepertoire(screp_example,
 After the metadata has been modified, we can look at clonotypes across multiple categories using the `alluvialClonotypes()` function. To understand the basic concepts of this graphing method, I'd highly recommend reading [this post](https://cran.r-project.org/web/packages/ggalluvial/vignettes/ggalluvial.html), essentially we are able to use the plots to examine the interchange of categorical variables. Because this function will produce a graph with each clonotype arranged by called stratifications, this will take some time depending on the size of your total cells. To expedite, we will actually subset the seurat object before using `alluvialClonotypes()`.
 
 ```{r}
-alluvialClonotypes(screp_example, cloneCall = "gene", 
-                   y.axes = c("Patient", "cluster", "Type"), 
-                   color = "TRAV12-2.TRAJ42.TRAC_TRBV20-1.TRBJ2-3.TRBD2.TRBC2") + 
-    scale_fill_manual(values = c("grey", colorblind_vector(1)))
+alluvialClonotypes(screp_example, cloneCall = "aa", 
+                   y.axes = c("Patient", "ident", "Type"), 
+                   color = "CAVNGGSQGNLIF_CSAEREDTDTQYF") + 
+    scale_fill_manual(values = c("grey", colorblind_vector(5)[5]))
 
 
 alluvialClonotypes(screp_example, cloneCall = "gene", 
@@ -690,7 +690,6 @@ A new metric proposed by [Massimo et al](https://www.biorxiv.org/content/10.1101
 * The compartment/variable used for the purpose of the comparison  
 
 ```{r}
-
 clonotypeBias(screp_example, 
               cloneCall = "aa", 
               split.by = "Type", 
@@ -706,7 +705,7 @@ For users that would like greater ability to use the meta data in the Seurat obj
 
 ```{r}
 combined2 <- expression2List(screp_example, split.by = "seurat_clusters")
-combined3 <- expression2List(sce, split.by = "seurat_clusters")x
+combined3 <- expression2List(sce, split.by = "seurat_clusters")
 ```
 
 ## 1. Clonal Diversity  

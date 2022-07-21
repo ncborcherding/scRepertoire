@@ -665,6 +665,12 @@ vizGenes <- function(df,
     df <- subset(df, !is.na(df[,ncol(df)])) #remove NA values
     df <- subset(df, df[,ncol(df)] != "NA") #remove values that are character "NA"
     df <- subset(df, df[,ncol(df)] != "") #remove rows with non genes
+    df <- subset(df, df[,ncol(df)] != "None") #remove rows with non genes
+    if (y.axis %in% c("V", "D", "J", "C")) {
+      df <- subset(df, df[,ncol(df)-1] != "None")
+      df <- subset(df, df[,ncol(df)-1] != "NA") #remove values that are character "NA"
+      df <- subset(df, df[,ncol(df)-1] != "")
+    }
     #df <- table(df[,ncol(df)], df[,y.axis])
     
     if (!is.null(y.axis) && y.axis != "element.names") {
@@ -709,8 +715,8 @@ vizGenes <- function(df,
         facet_grid(Var2~.)
     } else if (plot == "heatmap") {
      
-      plot <- ggplot(df, aes(x=Var1, y = Var2, fill = n)) + 
-              geom_tile() + 
+      plot <- ggplot(df, aes(x=Var1, y = Var2)) + 
+              geom_tile(aes(fill = mean), color = "black") + 
               theme_classic() + 
               labs(fill = col.lab) + 
               theme(axis.title.x = element_blank(), #remove titles
@@ -719,7 +725,7 @@ vizGenes <- function(df,
                                        vjust = 0.5, hjust=1, size=rel(0.5)), 
               axis.title.y = element_blank(), 
               axis.text.y = element_text(size=rel(0.5))) + 
-              scale_fill_gradientn(colors = rev(colorblind_vector(5)))
+              scale_fill_gradientn(colors = rev(colorblind_vector(11)), na.value = "white")
     }
     if (exportTable == TRUE) { return(df) }
     return(plot)

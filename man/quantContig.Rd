@@ -34,7 +34,6 @@ to group the new list. NULL will return clusters.}
 
 \item{order}{Maintain the order of the list when plotting}
 
-
 \item{exportTable}{Returns the data frame used for forming the graph}
 }
 \value{
