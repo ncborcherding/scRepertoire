@@ -141,6 +141,7 @@ filteringMulti <- function(x) {
     x <- x %>%
       group_by(barcode, chain) %>% 
       slice_max(n = 1, order_by = reads)
+    #checking the number of productive contigs
     table <- subset(as.data.frame(table(x$barcode)), Freq > 2)
     if (nrow(table) > 0) {
       barcodes <- as.character(unique(table$Var1))
@@ -152,7 +153,7 @@ filteringMulti <- function(x) {
         }
     x <- subset(x, barcode %!in% barcodes)
     x <- rbind(x, multichain) 
-    }
+    } 
     return(x)
 }
 

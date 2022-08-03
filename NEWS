@@ -2,6 +2,7 @@ CHANGES IN VERSION 1.7.2
 ------------------------
 * Rebumping the version change with new release of Bioconductor
 * Added mean call to the heatmap of vizGenes()
+* To combineTCR, filteringMulti now checks to remove list elements with 0 cells.
 
 CHANGES IN VERSION 1.5.4
 ------------------------

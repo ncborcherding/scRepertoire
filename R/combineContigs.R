@@ -29,8 +29,10 @@ utils::globalVariables(c("heavy_lines", "light_lines", "l_lines", "k_lines",
 #' recovered.
 #' 
 #' @examples
-#' combineTCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), 
-#' rep(c("P", "T"), 3), cells ="T-AB")
+#' combineTCR(contig_list, 
+#'            samples = rep(c("PX", "PY", "PZ"), each=2), 
+#'            ID = rep(c("P", "T"), 3), 
+#'            cells ="T-AB")
 #' 
 #' @param df List of filtered contig annotations from 10x Genomics.
 #' @param samples The labels of samples (required).
@@ -69,7 +71,11 @@ combineTCR <- function(df,
         df[[i]]$sample <- samples[i]
         df[[i]]$ID <- ID[i]
         if (filterMulti == TRUE) { 
-          df[[i]] <- filteringMulti(df[[i]]) }
+          df[[i]] <- filteringMulti(df[[i]]) 
+          #Prevents error caused by list containing elements with 0 rows
+          blank.rows <- which(unlist(lapply(df, nrow)) == 0)
+          df <- df[-blank.rows]
+          }
         }
     if (!is.null(samples)) {
         out <- modifyBarcodes(df, samples, ID)
