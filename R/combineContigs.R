@@ -72,11 +72,12 @@ combineTCR <- function(df,
         df[[i]]$ID <- ID[i]
         if (filterMulti == TRUE) { 
           df[[i]] <- filteringMulti(df[[i]]) 
-          #Prevents error caused by list containing elements with 0 rows
-          blank.rows <- which(unlist(lapply(df, nrow)) == 0)
-          df <- df[-blank.rows]
           }
-        }
+    }
+    #Prevents error caused by list containing elements with 0 rows
+    blank.rows <- which(unlist(lapply(df, nrow)) == 0)
+    df <- df[-blank.rows]
+    
     if (!is.null(samples)) {
         out <- modifyBarcodes(df, samples, ID)
     } else {
