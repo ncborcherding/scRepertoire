@@ -76,8 +76,9 @@ combineTCR <- function(df,
     }
     #Prevents error caused by list containing elements with 0 rows
     blank.rows <- which(unlist(lapply(df, nrow)) == 0)
-    df <- df[-blank.rows]
-    
+    if(length(blank.rows) != 0) {
+      df <- df[-blank.rows]
+    }
     if (!is.null(samples)) {
         out <- modifyBarcodes(df, samples, ID)
     } else {
@@ -103,7 +104,8 @@ combineTCR <- function(df,
           data3<-data3[,c("barcode","sample",tcr1_lines,tcr2_lines,
                           CT_lines)] 
         }
-        final[[i]] <- data3 }
+        final[[i]] <- data3 
+    }
     names <- NULL
     for (i in seq_along(samples)) { 
       if (!is.null(sample) & !is.null(ID)) {
@@ -111,7 +113,8 @@ combineTCR <- function(df,
       } else if (!is.null(sample) & is.null(ID)) {
           c <- paste(samples[i], sep="")
       }
-        names <- c(names, c)}
+        names <- c(names, c)
+    }
     names(final) <- names
     for (i in seq_along(final)){
         final[[i]]<-final[[i]][!duplicated(final[[i]]$barcode),]

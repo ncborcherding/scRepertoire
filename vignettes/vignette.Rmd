@@ -121,7 +121,8 @@ As the output of CellRanger are quantifications of both the TCRA and TCRB chains
 ```{r}
 combined <- combineTCR(contig_list, 
                         samples = c("PY", "PY", "PX", "PX", "PZ","PZ"), 
-                        ID = c("P", "T", "P", "T", "P", "T"), cells ="T-AB")
+                        ID = c("P", "T", "P", "T", "P", "T"), 
+                        cells ="T-AB")
 ```
 
 The output of `combineTCR()` will be a list of contig data frames that will be reduced to the reads associated with a single cell barcode. It will also combine the multiple reads into clonotype calls by either the nucleotide sequence (CTnt), amino acid sequence (CTaa), the VDJC gene sequence (CTgene) or the combination of the nucleotide and gene sequence (CTstrict). The analogous function for B cells, `combineBCR()` functions similarly with 2 major caveats: 1) Each barcode can only have a maximum of 2 sequences, if greater exists, the 2 with the highest reads are selected. 2) The strict definition of clonotype (CTstrict) is based on the V gene and >85% normalized Levenshtein distance of the nucleotide sequence. The Levenshtein distance is calculated across all BCR sequences recovered, regardless of the run.
