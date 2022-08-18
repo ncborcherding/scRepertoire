@@ -308,10 +308,7 @@ lengthContig <- function(df,
 #' the indicated clonotypes for all or selected samples. Clonotypes can be 
 #' selected using the clonotypes parameter with the specific sequence of 
 #' interest or using the number parameter with the top n clonotypes by 
-#' proportion to be visualized. If multiple clonotypes have the same proportion 
-#' and are within the selection by the number parameter, all the clonotypes 
-#' will be visualized. In this instance, if less clonotypes are desired, 
-#' reduce the number parameter.
+#' proportion to be visualized. 
 #'
 #' @examples
 #' #Making combined contig data
@@ -366,7 +363,7 @@ compareClonotypes <- function(df, cloneCall = "strict", chain = "both", samples 
     if (!is.null(numbers)) {
         top <- Con.df %>%
           group_by(Con.df[,3]) %>%
-          top_n(n = numbers, wt = Proportion)
+          slice_max(n = numbers, order_by = Proportion, with_ties = FALSE)
         Con.df <- Con.df[Con.df$Clonotypes %in% top$Clonotypes,] }
     if (nrow(Con.df) < length(unique(Con.df$Sample))) {
         stop("Reasses the filtering strategies here, there is not 

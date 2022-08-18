@@ -137,6 +137,7 @@ removingMulti <- function(final){
 
 #Removing extra clonotypes in barcodes with > 2 productive contigs
 #' @import dplyr
+
 filteringMulti <- function(x) {
     x <- x %>%
       group_by(barcode, chain) %>% 
@@ -148,7 +149,8 @@ filteringMulti <- function(x) {
       multichain <- NULL
       for (j in seq_along(barcodes)) {
         chain <- x[x$barcode == barcodes[j],] %>% 
-            group_by(barcode) %>% top_n(n = 2, wt = reads)
+            group_by(barcode) %>% 
+            slice_max(n = 2, order_by = reads, with_ties = FALSE)
         multichain <- rbind(multichain, chain) 
         }
     x <- subset(x, barcode %!in% barcodes)

@@ -168,7 +168,8 @@ combineBCR <- function(df, samples = NULL, ID = NULL,
     chain2 <- "light"
     for (i in seq_along(df)) {
         df[[i]] <- subset(df[[i]], chain %in% c("IGH", "IGK", "IGL"))
-        df[[i]] <- df[[i]] %>% group_by(barcode,chain) %>% top_n(n=1,wt=reads)
+        df[[i]] <- df[[i]] %>% group_by(barcode,chain) %>% 
+          slice_max(n=1,order_by=reads, with_ties = FALSE)
         df[[i]]$sample <- samples[i]
         df[[i]]$ID <- ID[i]
         df[[i]] <- filteringMulti(df[[i]]) }
