@@ -325,8 +325,9 @@ theCall <- function(x) {
 }
 
 # Assigning positions for TCR contig data
-#' @author Gloria Kraus, Nick Bormann, Nick Borcherding
+#' @author Gloria Kraus, Nick Bormann, Nicky de Vrij, Nick Borcherding
 parseTCR <- function(Con.df, unique_df, data2) {
+    data2 <- data2 %>% arrange(., chain, cdr3_nt)
     for (y in seq_along(unique_df)){
         barcode.i <- Con.df$barcode[y]
         location.i <- which(barcode.i == data2$barcode)

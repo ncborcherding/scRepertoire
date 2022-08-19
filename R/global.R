@@ -66,5 +66,7 @@
     utils::globalVariables ("read.delim")
     utils::globalVariables ("parse10x")
     utils::globalVariables ("parseAIRR")
+    utils::globalVariables (".")
+    utils::globalVariables ("cdr3_nt")
     invisible ()
 }
