@@ -45,7 +45,9 @@ control how  the function  deals with barcodes with multiple chains
 recovered.
 }
 \examples{
-combineTCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), 
-rep(c("P", "T"), 3), cells ="T-AB")
+combineTCR(contig_list, 
+           samples = rep(c("PX", "PY", "PZ"), each=2), 
+           ID = rep(c("P", "T"), 3), 
+           cells ="T-AB")
 
 }
