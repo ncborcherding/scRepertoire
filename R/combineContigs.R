@@ -76,8 +76,14 @@ combineTCR <- function(df,
     }
     #Prevents error caused by list containing elements with 0 rows
     blank.rows <- which(unlist(lapply(df, nrow)) == 0)
-    if(length(blank.rows) != 0) {
+    if(length(blank.rows) > 0) {
       df <- df[-blank.rows]
+      if(!is.null(samples)) {
+        samples <- samples[-blank.rows]
+      }
+      if(!is.null(ID)) {
+        ID <- ID[-blank.rows]
+      }
     }
     if (!is.null(samples)) {
         out <- modifyBarcodes(df, samples, ID)
