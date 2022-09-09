@@ -713,7 +713,7 @@ vizGenes <- function(df,
     } else if (plot == "heatmap") {
      
       plot <- ggplot(df, aes(x=Var1, y = Var2)) + 
-              geom_tile(aes(fill = mean), color = "black") + 
+              geom_tile(aes(fill = n), color = "black") + 
               theme_classic() + 
               labs(fill = col.lab) + 
               theme(axis.title.x = element_blank(), #remove titles
