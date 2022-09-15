@@ -260,8 +260,8 @@ lengthContig <- function(df,
       c1 <- "IGH"
       c2 <- "IGL"
     } else {
-      c1 <- "TRD"
-      c2 <- "TRG"
+      c1 <- "TRG"
+      c2 <- "TRD"
     }
     xlab <- "Length"
     Con.df <- NULL

@@ -3,9 +3,9 @@
 #Use to shuffle between chains
 off.the.chain <- function(dat, chain, cloneCall) {
   chain1 <- toupper(chain) #to just make it easier
-  if (chain1 %in% c("TRA", "TRD", "IGH")) {
+  if (chain1 %in% c("TRA", "TRG", "IGH")) {
     x <- 1
-  } else if (chain1 %in% c("TRB", "TRG", "IGL")) {
+  } else if (chain1 %in% c("TRB", "TRD", "IGL")) {
     x <- 2
   } else {
     warning("It looks like ", chain, " does not match the available options for `chain = `")
@@ -334,14 +334,14 @@ parseTCR <- function(Con.df, unique_df, data2) {
         for (z in seq_along(location.i)) {
           where.chain <- data2[location.i[z],"chain"]
 
-          if (where.chain == "TRA" | where.chain == "TRD") {
+          if (where.chain == "TRA" | where.chain == "TRG") {
             if(is.na(Con.df[y,"TCR1"])) {
               Con.df[y,tcr1_lines] <- data2[location.i[z],data1_lines]
             } else {
               Con.df[y,tcr1_lines] <- paste(Con.df[y, tcr1_lines],
                                             data2[location.i[z],data1_lines],sep=";") 
             }
-          } else if (where.chain == "TRB" | where.chain == "TRG") {
+          } else if (where.chain == "TRB" | where.chain == "TRD") {
             if(is.na(Con.df[y,"TCR2"])) {
               Con.df[y,tcr2_lines] <- data2[location.i[z],data2_lines]
             } else {
@@ -404,8 +404,8 @@ cellT <- function(cells) {
         chain2 <- "TRB" 
         cellType <- "T-AB" 
     } else if (cells == "T-GD") {
-        chain1 <- "TRD"
-        chain2 <- "TRG"
+        chain1 <- "TRG"
+        chain2 <- "TRD"
         cellType <- "T-GD" 
     } else if (cells == "B") {
         chain1 <- "IGH"
@@ -506,7 +506,7 @@ short.check <- function(df, cloneCall) {
 }
 
 select.gene <- function(df, chain, gene, label) {
-  if (chain %in% c("TRB", "TRG", "IGH")) {
+  if (chain %in% c("TRB", "TRD", "IGH")) {
     gene <- unname(c(V = 1, D = 2, J = 3, C = 4)[gene])
   } else {
     gene <- unname(c(V = 1, J = 2, C = 3)[gene])
@@ -523,9 +523,9 @@ select.gene <- function(df, chain, gene, label) {
     C2 <- str_split(C2, "[.]", simplify = TRUE)[,gene] 
     df$C1 <- C1
     df$C2 <- C2
-    if (chain %in% c("TRA", "TRD", "IGH")) {
+    if (chain %in% c("TRA", "TRG", "IGH")) {
       x <- "C1"}
-    else if (chain %in% c("TRB", "TRG", "IGL")) {
+    else if (chain %in% c("TRB", "TRD", "IGL")) {
       x <- "C2"}
   }
   return(df)
