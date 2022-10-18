@@ -6,8 +6,8 @@
 \usage{
 clonalHomeostasis(
   df,
-  cloneTypes = c(Rare = 1e-04, Small = 0.001, Medium = 0.01, Large = 0.1, Hyperexpanded
-    = 1),
+  cloneTypes = c(Rare = 1e-04, Small = 0.001, Medium = 0.01, Large = 0.1, Hyperexpanded =
+    1),
   cloneCall = "strict",
   chain = "both",
   split.by = NULL,
