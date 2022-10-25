@@ -33,6 +33,11 @@ checkBlanks <- function(df, cloneCall) {
     return(df)
 }
 
+groupList <- function(df, group.by) {
+    df <- bind_rows(df)
+    df <- split(df, df[,group.by])
+    return(df)
+}
 
 #Ensure df is in list format
 checkList <- function(df) {

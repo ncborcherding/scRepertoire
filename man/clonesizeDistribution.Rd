@@ -11,6 +11,7 @@ clonesizeDistribution(
   chain = "both",
   method = "ward.D2",
   threshold = 1,
+  group.by = NULL,
   split.by = NULL,
   exportTable = FALSE
 )
@@ -25,10 +26,12 @@ VDJC gene + CDR3 nucleotide (strict).}
 \item{chain}{indicate if both or a specific chain should be used - 
 e.g. "both", "TRA", "TRG", "IGH", "IGL"}
 
-\item{method}{The clustering paramater for the dendrogram.}
+\item{method}{The clustering parameter for the dendrogram.}
 
 \item{threshold}{Numerical vector containing the thresholds 
 the grid search was performed over.}
+
+\item{group.by}{The column header used for grouping.}
 
 \item{split.by}{If using a single-cell object, the column header 
 to group the new list. NULL will return clusters.}

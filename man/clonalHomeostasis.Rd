@@ -10,6 +10,7 @@ clonalHomeostasis(
     1),
   cloneCall = "strict",
   chain = "both",
+  group.by = NULL,
   split.by = NULL,
   exportTable = FALSE
 )
@@ -25,6 +26,8 @@ VDJC gene + CDR3 nucleotide (strict).}
 
 \item{chain}{indicate if both or a specific chain should be used - 
 e.g. "both", "TRA", "TRG", "IGH", "IGL"}
+
+\item{group.by}{The column header used for grouping.}
 
 \item{split.by}{If using a single-cell object, the column header 
 to group the new list. NULL will return clusters.}

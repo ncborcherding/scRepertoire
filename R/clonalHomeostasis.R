@@ -21,6 +21,7 @@
 #' VDJC gene + CDR3 nucleotide (strict).
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL"
+#' @param group.by The column header used for grouping.
 #' @param split.by If using a single-cell object, the column header 
 #' to group the new list. NULL will return clusters.
 #' @param exportTable Exports a table of the data into the global 
@@ -28,6 +29,7 @@
 #' @import ggplot2
 #' @importFrom stringr str_split
 #' @importFrom reshape2 melt
+#' @importFrom dplyr bind_rows
 #' @export
 #' @return ggplot of the space occupied by the specific proportion of clonotypes
 clonalHomeostasis <- function(df, 
@@ -35,6 +37,7 @@ clonalHomeostasis <- function(df,
                               Medium = .01, Large = .1, Hyperexpanded = 1),
                               cloneCall = "strict", 
                               chain = "both", 
+                              group.by = NULL,
                               split.by = NULL,
                               exportTable = FALSE) {
     cloneTypes <- c(None = 0, cloneTypes)
@@ -42,6 +45,10 @@ clonalHomeostasis <- function(df,
     cloneCall <- theCall(cloneCall)
     df <- checkList(df)
     df <- checkBlanks(df, cloneCall)
+    if(!is.null(group.by)) {
+      df <- groupList(df, group.by)
+    }
+
     mat <- matrix(0, length(df), length(cloneTypes) - 1, 
                 dimnames = list(names(df), 
                 names(cloneTypes)[-1]))

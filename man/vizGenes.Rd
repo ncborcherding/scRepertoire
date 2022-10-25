@@ -12,6 +12,7 @@ vizGenes(
   y.axis = "sample",
   order = "gene",
   scale = TRUE,
+  group.by = NULL,
   split.by = NULL,
   exportTable = FALSE
 )
@@ -34,13 +35,15 @@ gene segments such as V, D, J, or C.}
 
 \item{scale}{Converts the proportion of total genes}
 
+\item{group.by}{The column header used for grouping.}
+
 \item{split.by}{If using a single-cell object, the column header 
 to group the new list. NULL will return clusters.}
 
 \item{exportTable}{Returns the data frame used for forming the graph.}
 }
 \value{
-ggplot bar diagram of vgene counts
+ggplot bar diagram or heatmap of gene usage
 }
 \description{
 This function will allow for the visualizing the distribution 

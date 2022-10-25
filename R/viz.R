@@ -336,9 +336,15 @@ lengthContig <- function(df,
 #' @export
 #' @return ggplot of the proportion of total sequencing read of 
 #' selecting clonotypes
-compareClonotypes <- function(df, cloneCall = "strict", chain = "both", samples = NULL, 
-                        clonotypes = NULL, numbers = NULL, split.by = NULL, 
-                        graph = "alluvial", exportTable = FALSE){
+compareClonotypes <- function(df, 
+                              cloneCall = "strict", 
+                              chain = "both", 
+                              samples = NULL, 
+                              clonotypes = NULL, 
+                              numbers = NULL, 
+                              split.by = NULL, 
+                              graph = "alluvial", 
+                              exportTable = FALSE){
     df <- list.input.return(df, split.by)
     cloneCall <- theCall(cloneCall)
     df <- checkBlanks(df, cloneCall)
@@ -514,11 +520,12 @@ scatterClonotype <- function(df, cloneCall ="strict",
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL"
 #' @param threshold Numerical vector containing the thresholds 
 #' the grid search was performed over.
-#' @param method The clustering paramater for the dendrogram.
+#' @param method The clustering parameter for the dendrogram.
+#' @param group.by The column header used for grouping.
 #' @param split.by If using a single-cell object, the column header 
 #' to group the new list. NULL will return clusters.
 #' @param exportTable Returns the data frame used for forming the graph.
-#' @importFrom  dplyr bind_rows
+#' @importFrom dplyr bind_rows
 #' @importFrom ggplot2 ggplot
 #' @importFrom powerTCR fdiscgammagpd get_distances
 #' @export
@@ -528,11 +535,15 @@ clonesizeDistribution <- function(df,  cloneCall ="strict",
                                   chain = "both", 
                                   method = "ward.D2", 
                                   threshold = 1, 
+                                  group.by = NULL,
                                   split.by = NULL, 
                                   exportTable = FALSE) {
         df <- list.input.return(df, split.by)
         cloneCall <- theCall(cloneCall)
         df <- checkBlanks(df, cloneCall)
+        if(!is.null(group.by)) {
+          df <- groupList(df, group.by)
+        }
         data <- bind_rows(df)
         unique_df <- unique(data[,cloneCall])
         Con.df <- data.frame(matrix(NA, length(unique_df), length(df)))
@@ -627,14 +638,16 @@ makingLodes <- function(meta2, color, alpha, facet, set.axes) {
 #' gene segments such as V, D, J, or C.
 #' @param order Categorical variable to organize the x-axis, either "gene" or "variance"
 #' @param scale Converts the proportion of total genes 
+#' @param group.by The column header used for grouping.
 #' @param split.by If using a single-cell object, the column header 
 #' to group the new list. NULL will return clusters.
 #' @param exportTable Returns the data frame used for forming the graph.
 #' @import ggplot2
 #' @importFrom stringr str_split
 #' @importFrom stats sd
+#' @importFrom dplyr bind_rows
 #' @export
-#' @return ggplot bar diagram of vgene counts
+#' @return ggplot bar diagram or heatmap of gene usage
 
 vizGenes <- function(df, 
                       gene = "V",
@@ -643,9 +656,13 @@ vizGenes <- function(df,
                       y.axis = "sample", 
                       order = "gene",
                       scale = TRUE, 
+                      group.by = NULL,
                       split.by = NULL,
                       exportTable = FALSE) {
     df <- list.input.return(df, split.by = split.by)
+    if(!is.null(group.by)) {
+      df <- groupList(df, group.by)
+    }
     for(i in seq_along(df)) {
       df[[i]] <- off.the.chain(df[[i]], chain, "CTgene")
     }
