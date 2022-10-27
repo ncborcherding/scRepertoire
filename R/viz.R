@@ -679,12 +679,6 @@ vizGenes <- function(df,
     df <- subset(df, !is.na(df[,ncol(df)])) #remove NA values
     df <- subset(df, df[,ncol(df)] != "NA") #remove values that are character "NA"
     df <- subset(df, df[,ncol(df)] != "") #remove rows with non genes
-    df <- subset(df, df[,ncol(df)] != "None") #remove rows with non genes
-    if (y.axis %in% c("V", "D", "J", "C")) {
-      df <- subset(df, df[,ncol(df)-1] != "None")
-      df <- subset(df, df[,ncol(df)-1] != "NA") #remove values that are character "NA"
-      df <- subset(df, df[,ncol(df)-1] != "")
-    }
     #df <- table(df[,ncol(df)], df[,y.axis])
     
     if (!is.null(y.axis) && y.axis != "element.names") {
@@ -739,7 +733,7 @@ vizGenes <- function(df,
                                        vjust = 0.5, hjust=1, size=rel(0.5)), 
               axis.title.y = element_blank(), 
               axis.text.y = element_text(size=rel(0.5))) + 
-              scale_fill_gradientn(colors = rev(colorblind_vector(11)), na.value = "white")
+              scale_fill_gradientn(colors = rev(colorblind_vector(5)))
     }
     if (exportTable == TRUE) { return(df) }
     return(plot)
