@@ -12,7 +12,8 @@ clonalDiversity(
   x.axis = NULL,
   split.by = NULL,
   exportTable = FALSE,
-  n.boots = 100
+  n.boots = 100,
+  return.boots = FALSE
 )
 }
 \arguments{
@@ -36,6 +37,9 @@ to group the new list. NULL will return clusters.}
 in addition to the visualization}
 
 \item{n.boots}{number of bootstraps to downsample in order to get mean diversity}
+
+\item{return.boots}{export boot strapped values calculated - 
+will automatically exportTable = TRUE}
 }
 \value{
 ggplot of the diversity of clonotype sequences across list

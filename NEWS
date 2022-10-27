@@ -9,6 +9,7 @@ CHANGES IN VERSION 1.7.2
 * Removed viridis call in the clonalNetwork() function that was leading to errors
 * Matched syntax for strict clonotype in combineBCR()
 * Added group.by variable to all applicable visualizations
+* Added return.boots to clonalDiversity(), allow for export of all bootstrapped values
 
 CHANGES IN VERSION 1.5.4
 ------------------------

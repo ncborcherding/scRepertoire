@@ -28,6 +28,8 @@
 #' @param exportTable Exports a table of the data into the global environment 
 #' in addition to the visualization
 #' @param n.boots number of bootstraps to downsample in order to get mean diversity
+#' @param return.boots export boot strapped values calculated - 
+#' will automatically exportTable = TRUE
 #' @importFrom stringr str_sort str_split
 #' @importFrom reshape2 melt
 #' @importFrom dplyr sample_n
@@ -35,9 +37,18 @@
 #' @export
 #' @return ggplot of the diversity of clonotype sequences across list
 #' @author Andrew Malone, Nick Borcherding
-clonalDiversity <- function(df, cloneCall = "strict", chain = "both",
-                            group.by = NULL, x.axis = NULL, split.by = NULL,
-                            exportTable = FALSE, n.boots = 100) {
+clonalDiversity <- function(df, 
+                            cloneCall = "strict", 
+                            chain = "both",
+                            group.by = NULL, 
+                            x.axis = NULL, 
+                            split.by = NULL,
+                            exportTable = FALSE, 
+                            n.boots = 100, 
+                            return.boots = FALSE) {
+  if(return.boots) {
+    exportTable <- TRUE
+  }
   df <- list.input.return(df, split.by)
   cloneCall <- theCall(cloneCall)
   df <- checkBlanks(df, cloneCall)
@@ -47,7 +58,6 @@ clonalDiversity <- function(df, cloneCall = "strict", chain = "both",
     }
   }
   mat <- NULL
-  mat_a <- NULL
   sample <- c()
   if (!is.null(group.by) || !is.null(x.axis)) {
     df <- bind_rows(df, .id = "element.names")
@@ -67,9 +77,15 @@ clonalDiversity <- function(df, cloneCall = "strict", chain = "both",
         mat_a <- rbind(mat_a, sample)
       }
       mat_a[is.na(mat_a)] <- 0
-      mat_a<- colMeans(mat_a)
-      mat_a<-as.data.frame(t(mat_a))
-      mat <- rbind(mat, mat_a)
+      if(return.boots) {
+        mat_a <- as.data.frame(mat_a)
+        mat_a$sample <- names(df)[i]
+        mat <- rbind(mat, mat_a)
+      } else {
+        mat_b<- colMeans(mat_a)
+        mat_b<-as.data.frame(t(mat_b))
+       mat <- rbind(mat, mat_b)
+      }
     }
     colnames(mat) <- c("Shannon", "Inv.Simpson", "Chao", "ACE", "Inv.Pielou")
     mat[,"Inv.Pielou"] <- 1 - mat[,"Inv.Pielou"]
@@ -84,6 +100,9 @@ clonalDiversity <- function(df, cloneCall = "strict", chain = "both",
     } else {
       x.axis <- "x.axis"
       mat[,x.axis] <- 1
+    }
+    if (exportTable == TRUE) { 
+      return(mat) 
     }
     rownames(mat) <- names(df)
   
@@ -110,6 +129,6 @@ clonalDiversity <- function(df, cloneCall = "strict", chain = "both",
       plot <- plot + theme(axis.text.x = element_blank(),
             axis.ticks.x = element_blank())
       }
-  if (exportTable == TRUE) { return(mat) }
+  
   return(plot) 
 }

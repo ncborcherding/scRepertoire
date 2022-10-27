@@ -134,8 +134,9 @@ The output of `combineTCR()` will be a list of contig data frames that will be r
 What if there are more variables to add than just sample and ID? We can add them by using the `addVariable()` function. All we need is the **name** of the variable you'd like to add and the specific character or numeric values (**variables**). As an example, here we add the batches in which the samples were processed and sequenced. 
 
 ```{r}
-example <- addVariable(combined, name = "batch", 
-                        variables = c("b1", "b1", "b2", "b2", "b2", "b2"))
+example <- addVariable(combined, 
+                      name = "batch", 
+                      variables = c("b1", "b1", "b2", "b2", "b2", "b2"))
 
 example[[1]][1:5,ncol(example[[1]])] # This is showing the first 5 values of the new column added
 ```
@@ -145,8 +146,9 @@ example[[1]][1:5,ncol(example[[1]])] # This is showing the first 5 values of the
 Likewise we can remove specific list elements after `combineTCR()` using the `subsetContig()` function. In order to subset, we need to identify the vector we would like to use for subsetting (**name**) and also the variable values to subset (**variables**). Below you can see us isolate just the 4 sequencing results from PX and PY. 
 
 ```{r}
-subset <- subsetContig(combined, name = "sample", 
-                        variables = c("PX", "PY"))
+subset <- subsetContig(combined, 
+                       name = "sample", 
+                      variables = c("PX", "PY"))
 ```
 
 ***
@@ -184,21 +186,29 @@ The first function to explore the clonotypes is `quantContig()` to return the to
 + "TRA", "TRB", "TRD", "TRG", "IGH" or "IGL" to select single chain
 
 ```{r}
-quantContig(combined, cloneCall="strict", chain = "both", scale = TRUE)
+quantContig(combined, 
+            cloneCall="strict", 
+            chain = "both", 
+            scale = TRUE)
 ```
 
 Within each of the general analysis functions, there is the ability to export the data frame used to create the visualization. To get the exported values, use **exportTable** = TRUE. It will return the data frame used to make the graph, instead of the visual output.  
 
 ```{r}
-quantContig_output <- quantContig(combined, cloneCall="strict", 
-                                    scale = TRUE, exportTable = TRUE)
+quantContig_output <- quantContig(combined, 
+                                  cloneCall="strict", 
+                                  scale = TRUE, 
+                                  exportTable = TRUE)
 quantContig_output
 ```
 
 The other option here is to be able to define the visualization by data classes. Here we used the *combineTCR()* to define the **ID** variable as part of the naming structure. We can the **group.by** to specifically use a column in the data set to organize the visualization.
 
 ```{r}
-quantContig(combined, cloneCall="gene", group.by = "ID", scale = TRUE)
+quantContig(combined, 
+            cloneCall="gene", 
+            group.by = "ID", 
+            scale = TRUE)
 ```
 
 ## Clonotype Abundance
@@ -206,14 +216,21 @@ quantContig(combined, cloneCall="gene", group.by = "ID", scale = TRUE)
 We can also examine the relative distribution of clonotypes by abundance. Here `abundanceContig()` will produce a line graph with a total number of clonotypes by the number of instances within the sample or run. Like above, we can also group.by this by vectors within the contig object using the **group.by** variable in the function.
 
 ```{r}
-abundanceContig(combined, cloneCall = "gene", scale = FALSE)
-abundanceContig(combined, cloneCall = "gene", group.by = "ID", scale = FALSE)
+abundanceContig(combined, 
+                cloneCall = "gene", 
+                scale = FALSE)
+abundanceContig(combined, 
+                cloneCall = "gene", 
+                group.by = "ID", 
+                scale = FALSE)
 ```
 
 As you can see the peripheral blood sample derived from patient 1 is a relative extreme outlier. Another method to examine the relative abundance is to look at the density by using the **scale** call in the function.
 
 ```{r}
-abundanceContig(combined, group.by = "ID", scale = TRUE)
+abundanceContig(combined, 
+                group.by = "ID", 
+                scale = TRUE)
 ```
 
 ## Length of Clonotypes
@@ -225,8 +242,12 @@ We can look at the length distribution of the CDR3 sequences by calling the `len
 + "TRA", "TRB", "TRD", "TRG", "IGH" or "IGL" to select single chain  
 
 ```{r}
-lengthContig(combined, cloneCall="aa", chain = "both") 
-lengthContig(combined, cloneCall="aa", chain = "TRA") 
+lengthContig(combined, 
+             cloneCall="aa", 
+             chain = "both") 
+lengthContig(combined, 
+             cloneCall="aa", 
+             chain = "TRA") 
 ```
 
 ## Compare Clonotypes
@@ -259,8 +280,11 @@ We can also look at clonotypes between samples and changes in dynamics by using 
 * Can be used to isolate specific clonotype sequences, ensure the call matches the sequences you would like to visualize.  
 
 ```{r}
-compareClonotypes(combined, numbers = 10, samples = c("PX_P", "PX_T"), 
-                    cloneCall="aa", graph = "alluvial")
+compareClonotypes(combined, 
+                  numbers = 10, 
+                  samples = c("PX_P", "PX_T"), 
+                  cloneCall="aa", 
+                  graph = "alluvial")
 ```
 
 ## Visualize Gene Usage
@@ -307,7 +331,7 @@ Last of the basic analysis visualizations is the relative usage of genes of the 
 
 **y.axis**  
 Variable to separate the counts along the y-axis. If not specified
-the defualt is to sperate by the list element names.
+the default is to separate by the list element names.
 
 **scale**  
 + TRUE to scale the graph by number of genes per sample  
@@ -318,19 +342,32 @@ the defualt is to sperate by the list element names.
 + "variance" to order by variance between the separate variable categories  
 
 ```{r}
-vizGenes(combined, gene = "V", chain = "TRB", plot = "bar", scale = TRUE)
+vizGenes(combined, gene = "V", 
+         chain = "TRB", 
+         plot = "bar", 
+         scale = TRUE)
 ```
 
-We can also use `vizGenes()` to look at the usage of genes in a single chain. So for example say we are interesting in the diference in TRB V and J usage between tumor and peripheral blood samples - we can easily take a look at this using the following code:
+We can also use `vizGenes()` to look at the usage of genes in a single chain. So for example say we are interesting in the difference in TRB V and J usage between tumor and peripheral blood samples - we can easily take a look at this using the following code:
 
 ```{r}
 #Peripheral Blood
-vizGenes(combined[c(1,3,5)], gene = "V", chain = "TRB", 
-         y.axis = "J", plot = "heatmap", scale = TRUE, order = "variance")
+vizGenes(combined[c(1,3,5)], 
+         gene = "V", 
+         chain = "TRB", 
+         y.axis = "J", 
+         plot = "heatmap", 
+         scale = TRUE, 
+         order = "variance")
 
 #Tumor Infiltrating
-vizGenes(combined[c(2,4,6)], gene = "V", chain = "TRB", 
-         y.axis = "J", plot = "heatmap", scale = TRUE, order = "variance")
+vizGenes(combined[c(2,4,6)], 
+         gene = "V", 
+         chain = "TRB", 
+         y.axis = "J", 
+         plot = "heatmap", 
+         scale = TRUE, 
+         order = "variance")
 ```
 
 ***
@@ -380,23 +417,29 @@ clonalProportion(combined, cloneCall = "nt")
 If you are interested in measures of similarity between the samples loaded into scRepertoire, using `clonalOverlap()` can assist in the visualization. Three methods currently can be performed in `clonalOverlap()` 1) overlap coefficient, 2) Morisita index, or 3) Jaccard index. The former is looking at the overlap of clonotypes scaled to the length of unique clonotypes in the smaller sample. The Morisita index is more complex, it is an ecological measure of the dispersion of individuals within a population, incorporating the size of the population. The Jaccard Similarity Index is very similar to the overlap coefficient - instead of using the length of the smaller sample, the denominator for the Jaccard Index is the union of the two comparisons, leading to a much smaller number. 
 
 ```{r}
-clonalOverlap(combined, cloneCall = "strict", method = "morisita")
+clonalOverlap(combined, 
+              cloneCall = "strict", 
+              method = "morisita")
 ```
 
 Another addition to scRepertoire is the ability to cluster the samples by the clone size distribution using `clonesizeDistribution()` adapted from the [powerTCR](https://bioconductor.org/packages/release/bioc/html/powerTCR.html) R package. Please read and cite the respective [citation](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1006571) if using this function to analyze the similarities of sample clone size distributions. In this function, method refers to the method for which the hierarchical clustering will be based on. 
 
 ```{r}
-clonesizeDistribution(combined, cloneCall = "strict", 
+clonesizeDistribution(combined, 
+                      cloneCall = "strict", 
                       method="ward.D2")
 ```
 
 ## Diversity Analysis
 
-Diversity can also be measured for samples or by other variables. Diversity is calculated using four metrics: 1) Shannon, 2) inverse Simpson, 3) Chao1, and 4) Abundance-based Coverage Estimator (ACE). With the former two generally used to estimate baseline diversity and Chao/ACE indices used to estimate the richness of the samples. New implementation of this function include downsampling with 100 boot straps (n.boots) using the minimum number of unique clonotypes, as a more robust diversity estimate.
+Diversity can also be measured for samples or by other variables. Diversity is calculated using five metrics: 1) Shannon, 2) inverse Simpson, 3) Chao1, and 4) Abundance-based Coverage Estimator (ACE), and 5) inverse Pielou. With the former two generally used to estimate baseline diversity and Chao/ACE indices used to estimate the richness of the samples. New implementation of this function include downsampling with 100 boot straps (**n.boots**) using the minimum number of unique clonotypes, as a more robust diversity estimate. To get a table of the bootstrapped values, set **return.boots** = TRUE.
 
 ```{r}
-clonalDiversity(combined, cloneCall = "gene", group.by = "sample", 
-                x.axis = "ID", n.boots = 100)
+clonalDiversity(combined, 
+                cloneCall = "gene", 
+                group.by = "sample", 
+                x.axis = "ID", 
+                n.boots = 100)
 ```
 
 ## Scatter Compare 
@@ -463,7 +506,11 @@ screp_example <- combineExpression(combined,
                                    proportion = FALSE, 
                                    cloneTypes=c(Single=1, Small=5, Medium=20, Large=100, Hyperexpanded=500))
 
-screp_example <- combineExpression(combined, screp_example, cloneCall="gene", group.by = "sample", proportion = FALSE, cloneTypes=c(Single=1, Small=5, Medium=20, Large=100, Hyperexpanded=500))
+screp_example <- combineExpression(combined, 
+                                   screp_example, 
+                                   cloneCall="gene", 
+                                   group.by = "sample", 
+                                   proportion = TRUE)
 
 sce <- combineExpression(combined, sce, cloneCall = "gene", group.by = "sample")
 ```
@@ -521,7 +568,7 @@ clonalOverlay(screp_example,
               freq.cutpoint = 1, 
               bins = 10, 
               facet = "Patient") + 
-               guides(color = "none")
+              guides(color = "none")
 ```
 
 ## clonalNetwork 
@@ -534,7 +581,7 @@ Filtering for clones can be accomplished using 3 methods:
 * Select "min" to make sure all groups are scaled to the size of the minimum group
 
 **filter.identity**  
-* For the identity chosen to visualize, show the to and from netwrok connections for a single group  
+* For the identity chosen to visualize, show the to and from network connections for a single group  
 
 **filter.proportion**
 * Remove clones that comprise less than a certain proportion of clones in groups.
@@ -580,7 +627,6 @@ We can also look at the count of cells by cluster assigned into specific frequen
 +  **label** will still return absolute number of clonotypes  
 
 ```{r}
-
 occupiedscRepertoire(screp_example, 
                      x.axis = "seurat_clusters")
 
@@ -592,16 +638,18 @@ occupiedscRepertoire(screp_example,
 
 ## alluvialClonotypes
 
-After the metadata has been modified, we can look at clonotypes across multiple categories using the `alluvialClonotypes()` function. To understand the basic concepts of this graphing method, I'd highly recommend reading [this post](https://cran.r-project.org/web/packages/ggalluvial/vignettes/ggalluvial.html), essentially we are able to use the plots to examine the interchange of categorical variables. Because this function will produce a graph with each clonotype arranged by called stratifications, this will take some time depending on the size of your total cells. To expedite, we will actually subset the seurat object before using `alluvialClonotypes()`.
+After the metadata has been modified, we can look at clonotypes across multiple categories using the `alluvialClonotypes()` function. To understand the basic concepts of this graphing method, I'd highly recommend reading [this post](https://cran.r-project.org/web/packages/ggalluvial/vignettes/ggalluvial.html), essentially we are able to use the plots to examine the interchange of categorical variables. Because this function will produce a graph with each clonotype arranged by called stratification, this will take some time depending on the size of your total cells. To expedite, we will actually subset the Seurat object before using `alluvialClonotypes()`.
 
 ```{r}
-alluvialClonotypes(screp_example, cloneCall = "aa", 
+alluvialClonotypes(screp_example, 
+                   cloneCall = "aa", 
                    y.axes = c("Patient", "ident", "Type"), 
                    color = "CAVNGGSQGNLIF_CSAEREDTDTQYF") + 
     scale_fill_manual(values = c("grey", colorblind_vector(5)[5]))
 
 
-alluvialClonotypes(screp_example, cloneCall = "gene", 
+alluvialClonotypes(screp_example, 
+                   cloneCall = "gene", 
                    y.axes = c("Patient", "ident", "Type"), 
                    color = "seurat_clusters") 
 ```
@@ -613,7 +661,6 @@ Like alluvial graphs, we can also visualize the interconnection of clusters usin
 ```{r}
 library(circlize)
 library(scales)
-
 
 circles <- getCirclize(screp_example, 
                        group.by = "seurat_clusters")
@@ -637,10 +684,12 @@ circles <- getCirclize(subset, group.by = "ident")
 grid.cols <- scales::hue_pal()(length(unique(subset@active.ident)))
 names(grid.cols) <- levels(subset@active.ident)
 
-chordDiagram(circles, self.link = 1, 
-             grid.col = grid.cols, directional = 1, 
+chordDiagram(circles, 
+             self.link = 1, 
+             grid.col = grid.cols, 
+             directional = 1, 
              direction.type =  "arrows",
-            link.arr.type = "big.arrow")
+             link.arr.type = "big.arrow")
 ```
 
 ## Clustering Clonotypes 
@@ -677,7 +726,10 @@ In order to use the ```StartracDiversity()``` function, you will need to include
 +  tran - State Transition  
 
 ```{r}
-StartracDiversity(screp_example, type = "Type", sample = "Patient", by = "overall")
+StartracDiversity(screp_example, 
+                  type = "Type", 
+                  sample = "Patient", 
+                  by = "overall")
 ```
 
 ## Clonotype Bias
