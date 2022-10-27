@@ -3,9 +3,9 @@
 #Use to shuffle between chains
 off.the.chain <- function(dat, chain, cloneCall) {
   chain1 <- toupper(chain) #to just make it easier
-  if (chain1 %in% c("TRA", "TRD", "IGH")) {
+  if (chain1 %in% c("TRA", "TRG", "IGH")) {
     x <- 1
-  } else if (chain1 %in% c("TRB", "TRG", "IGL")) {
+  } else if (chain1 %in% c("TRB", "TRD", "IGL")) {
     x <- 2
   } else {
     warning("It looks like ", chain, " does not match the available options for `chain = `")
@@ -33,6 +33,11 @@ checkBlanks <- function(df, cloneCall) {
     return(df)
 }
 
+groupList <- function(df, group.by) {
+    df <- bind_rows(df)
+    df <- split(df, df[,group.by])
+    return(df)
+}
 
 #Ensure df is in list format
 checkList <- function(df) {
@@ -137,6 +142,7 @@ removingMulti <- function(final){
 
 #Removing extra clonotypes in barcodes with > 2 productive contigs
 #' @import dplyr
+
 filteringMulti <- function(x) {
     x <- x %>%
       group_by(barcode, chain) %>% 
@@ -148,7 +154,8 @@ filteringMulti <- function(x) {
       multichain <- NULL
       for (j in seq_along(barcodes)) {
         chain <- x[x$barcode == barcodes[j],] %>% 
-            group_by(barcode) %>% top_n(n = 2, wt = reads)
+            group_by(barcode) %>% 
+            slice_max(n = 2, order_by = reads, with_ties = FALSE)
         multichain <- rbind(multichain, chain) 
         }
     x <- subset(x, barcode %!in% barcodes)
@@ -323,22 +330,23 @@ theCall <- function(x) {
 }
 
 # Assigning positions for TCR contig data
-#' @author Gloria Kraus, Nick Bormann, Nick Borcherding
+#' @author Gloria Kraus, Nick Bormann, Nicky de Vrij, Nick Borcherding
 parseTCR <- function(Con.df, unique_df, data2) {
+    data2 <- data2 %>% arrange(., chain, cdr3_nt)
     for (y in seq_along(unique_df)){
         barcode.i <- Con.df$barcode[y]
         location.i <- which(barcode.i == data2$barcode)
         for (z in seq_along(location.i)) {
           where.chain <- data2[location.i[z],"chain"]
 
-          if (where.chain == "TRA" | where.chain == "TRD") {
+          if (where.chain == "TRA" | where.chain == "TRG") {
             if(is.na(Con.df[y,"TCR1"])) {
               Con.df[y,tcr1_lines] <- data2[location.i[z],data1_lines]
             } else {
               Con.df[y,tcr1_lines] <- paste(Con.df[y, tcr1_lines],
                                             data2[location.i[z],data1_lines],sep=";") 
             }
-          } else if (where.chain == "TRB" | where.chain == "TRG") {
+          } else if (where.chain == "TRB" | where.chain == "TRD") {
             if(is.na(Con.df[y,"TCR2"])) {
               Con.df[y,tcr2_lines] <- data2[location.i[z],data2_lines]
             } else {
@@ -401,8 +409,8 @@ cellT <- function(cells) {
         chain2 <- "TRB" 
         cellType <- "T-AB" 
     } else if (cells == "T-GD") {
-        chain1 <- "TRD"
-        chain2 <- "TRG"
+        chain1 <- "TRG"
+        chain2 <- "TRD"
         cellType <- "T-GD" 
     } else if (cells == "B") {
         chain1 <- "IGH"
@@ -503,7 +511,7 @@ short.check <- function(df, cloneCall) {
 }
 
 select.gene <- function(df, chain, gene, label) {
-  if (chain %in% c("TRB", "TRG", "IGH")) {
+  if (chain %in% c("TRB", "TRD", "IGH")) {
     gene <- unname(c(V = 1, D = 2, J = 3, C = 4)[gene])
   } else {
     gene <- unname(c(V = 1, J = 2, C = 3)[gene])
@@ -520,9 +528,9 @@ select.gene <- function(df, chain, gene, label) {
     C2 <- str_split(C2, "[.]", simplify = TRUE)[,gene] 
     df$C1 <- C1
     df$C2 <- C2
-    if (chain %in% c("TRA", "TRD", "IGH")) {
+    if (chain %in% c("TRA", "TRG", "IGH")) {
       x <- "C1"}
-    else if (chain %in% c("TRB", "TRG", "IGL")) {
+    else if (chain %in% c("TRB", "TRD", "IGL")) {
       x <- "C2"}
   }
   return(df)

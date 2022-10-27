@@ -44,7 +44,7 @@
 #' @importFrom igraph graph_from_data_frame V `V<-`
 #' @importFrom dplyr %>% group_by select summarize_all count
 #' @importFrom tidygraph as_tbl_graph activate
-#' @importFrom ggraph ggraph geom_edge_bend  geom_node_point scale_edge_color_viridis circle guide_edge_colourbar
+#' @importFrom ggraph ggraph geom_edge_bend  geom_node_point scale_edge_colour_gradientn circle guide_edge_colourbar
 #' @export
 #' @return ggplot object
 #' 
@@ -56,7 +56,7 @@ clonalNetwork <- function(sc,
                           filter.identity = NULL,
                           filter.proportion = NULL,
                           filter.graph = FALSE,
-                          cloneCall = "aa", 
+                          cloneCall = "strict", 
                           chain = "both", 
                           exportTable = FALSE) {
     
@@ -184,7 +184,7 @@ clonalNetwork <- function(sc,
         ylab(paste0(reduction, "_2")) + 
         xlab(paste0(reduction, "_1")) + 
         guides(color = "none") + 
-        scale_edge_color_viridis(option = "C", trans = "log10") + 
+        scale_edge_colour_gradientn(colors  = rev(colorblind_vector(13)), trans = "log10") + 
         labs(size = "Unique Clones", edge_color = "Relative Proportion of \nClones of Starting Node") + 
         theme(
             panel.background = element_blank(),

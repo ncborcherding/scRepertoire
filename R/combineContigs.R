@@ -72,11 +72,19 @@ combineTCR <- function(df,
         df[[i]]$ID <- ID[i]
         if (filterMulti == TRUE) { 
           df[[i]] <- filteringMulti(df[[i]]) 
-          #Prevents error caused by list containing elements with 0 rows
-          blank.rows <- which(unlist(lapply(df, nrow)) == 0)
-          df <- df[-blank.rows]
           }
-        }
+    }
+    #Prevents error caused by list containing elements with 0 rows
+    blank.rows <- which(unlist(lapply(df, nrow)) == 0)
+    if(length(blank.rows) > 0) {
+      df <- df[-blank.rows]
+      if(!is.null(samples)) {
+        samples <- samples[-blank.rows]
+      }
+      if(!is.null(ID)) {
+        ID <- ID[-blank.rows]
+      }
+    }
     if (!is.null(samples)) {
         out <- modifyBarcodes(df, samples, ID)
     } else {
@@ -102,7 +110,8 @@ combineTCR <- function(df,
           data3<-data3[,c("barcode","sample",tcr1_lines,tcr2_lines,
                           CT_lines)] 
         }
-        final[[i]] <- data3 }
+        final[[i]] <- data3 
+    }
     names <- NULL
     for (i in seq_along(samples)) { 
       if (!is.null(sample) & !is.null(ID)) {
@@ -110,7 +119,8 @@ combineTCR <- function(df,
       } else if (!is.null(sample) & is.null(ID)) {
           c <- paste(samples[i], sep="")
       }
-        names <- c(names, c)}
+        names <- c(names, c)
+    }
     names(final) <- names
     for (i in seq_along(final)){
         final[[i]]<-final[[i]][!duplicated(final[[i]]$barcode),]
@@ -137,8 +147,7 @@ combineTCR <- function(df,
 #'
 #' @examples
 #' #Data derived from the 10x Genomics intratumoral NSCLC B cells
-#' BCR <- read.csv("https://ncborcherding.github.io/vignettes/b_contigs.csv", 
-#' stringsAsFactors = FALSE)
+#' BCR <- read.csv("https://ncborcherding.github.io/vignettes/b_contigs.csv")
 #' combined <- combineBCR(BCR, samples = "Patient1", 
 #' ID = "Time1", threshold = 0.85)
 #' 
@@ -152,10 +161,12 @@ combineTCR <- function(df,
 #' @import dplyr
 #' @export
 #' @return List of clonotypes for individual cell barcodes
-combineBCR <- function(df, samples = NULL, ID = NULL, 
+combineBCR <- function(df, 
+                       samples = NULL, 
+                       ID = NULL, 
                        threshold = 0.85,
-                        removeNA = FALSE, 
-                        removeMulti = FALSE) {
+                       removeNA = FALSE, 
+                       removeMulti = FALSE) {
     df <- checkList(df)
     df <- checkContigs(df)
     out <- NULL
@@ -164,7 +175,8 @@ combineBCR <- function(df, samples = NULL, ID = NULL,
     chain2 <- "light"
     for (i in seq_along(df)) {
         df[[i]] <- subset(df[[i]], chain %in% c("IGH", "IGK", "IGL"))
-        df[[i]] <- df[[i]] %>% group_by(barcode,chain) %>% top_n(n=1,wt=reads)
+        df[[i]] <- df[[i]] %>% group_by(barcode,chain) %>% 
+          slice_max(n=1,order_by=reads, with_ties = FALSE)
         df[[i]]$sample <- samples[i]
         df[[i]]$ID <- ID[i]
         df[[i]] <- filteringMulti(df[[i]]) }
@@ -184,7 +196,8 @@ combineBCR <- function(df, samples = NULL, ID = NULL,
         Con.df <- assignCT(cellType = "B", Con.df)
         data3<-Con.df %>% mutate(length1 = nchar(cdr3_nt1)) %>%
             mutate(length2 = nchar(cdr3_nt2))
-        final[[i]] <- data3 }
+        final[[i]] <- data3 
+    }
     dictionary <- bind_rows(final)
     IGH <- lvCompare(dictionary, "IGH", "cdr3_nt1", threshold)
     IGLC <- lvCompare(dictionary, "IGLC", "cdr3_nt2", threshold)
@@ -192,8 +205,8 @@ combineBCR <- function(df, samples = NULL, ID = NULL,
         final[[i]]<-merge(final[[i]],IGH,by.x="cdr3_nt1",by.y="IG",all.x=TRUE)
         final[[i]]<-merge(final[[i]],IGLC,by.x="cdr3_nt2",by.y="IG",all.x=TRUE)
         num <- ncol(final[[i]])
-        final[[i]][,"CTstrict"] <- paste0(final[[i]][,num-1],"_",
-        final[[i]][,"vgene1"],"_",final[[i]][,num],"_",final[[i]][,"vgene2"])
+        final[[i]][,"CTstrict"] <- paste0(final[[i]][,num-1],".",
+        final[[i]][,"vgene1"],"_",final[[i]][,num],".",final[[i]][,"vgene2"])
         final[[i]]$cellType <- "B"
         final[[i]]$sample <- samples[i]
         final[[i]]$ID <- ID[i]

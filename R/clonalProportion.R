@@ -21,6 +21,7 @@
 #' VDJC gene + CDR3 nucleotide (strict).
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL"
+#' @param group.by The column header used for grouping.
 #' @param split.by If using a single-cell object, the column header 
 #' to group the new list. NULL will return clusters.
 #' @param exportTable Exports a table of the data into the global 
@@ -29,6 +30,7 @@
 #' @import ggplot2
 #' @importFrom stringr str_sort
 #' @importFrom reshape2 melt
+#' @importFrom dplyr bind_rows
 #'
 #' @export
 #' @return ggplot of the space occupied by the specific rank of clonotypes
@@ -36,6 +38,7 @@ clonalProportion <- function(df,
                              split = c(10, 100, 1000, 10000, 30000, 100000), 
                              cloneCall = "strict", 
                              chain = "both", 
+                             group.by = NULL,
                              split.by = NULL,
                              exportTable = FALSE) {
     Con.df <- NULL
@@ -43,6 +46,9 @@ clonalProportion <- function(df,
     cloneCall <- theCall(cloneCall)
     df <- checkList(df)
     df <- checkBlanks(df, cloneCall)
+    if(!is.null(group.by)) {
+      df <- groupList(df, group.by)
+    }
     mat <- matrix(0, length(df), length(split), dimnames = list(names(df), 
             paste0('[', c(1, split[-length(split)] + 1), ':', split, ']')))
     if (chain != "both") {

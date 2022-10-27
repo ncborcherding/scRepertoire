@@ -48,8 +48,8 @@ clonotypeBias <- function(df,
                           min.expand=10,
                           exportTable = FALSE) {
   
-  bias <- get_clono_bias(df, split.by = split.by, 
-
+  bias <- get_clono_bias(df, 
+                         split.by = split.by, 
                          group.by = group.by , 
                          cloneCall=cloneCall, 
                          min.expand=min.expand)
@@ -64,16 +64,31 @@ clonotypeBias <- function(df,
   }
   df_shuffle <- Reduce(rbind, df_shuffle.list)
   
+  stat.summary <- df_shuffle %>%
+                      group_by(ncells) %>%
+                      summarise(mean = mean(bias), 
+                                std = sd(bias))
+  
   corrected_p <- 1-(0.05/nrow(bias))
   bias$Top_state <- factor(bias$Top_state, str_sort(unique(bias$Top_state), numeric = TRUE))
-  bias$z_score <- scale(bias$bias)
+  
+  bias$Z.score <- NA
+  for(i in seq_len(nrow(bias))) {
+      stat.pos <- bias[i,]$ncells
+      row.pull <- stat.summary[stat.summary$ncells == stat.pos,]
+      z.score <- (bias[i,]$bias - row.pull$mean)/row.pull$std
+      bias$Z.score[i] <- z.score
+  }
+  
   plot <- ggplot(bias, aes(x=ncells,y=bias)) + 
     geom_point(aes(colour=Top_state)) + 
     quiet(stat_quantile(data=df_shuffle, quantiles = c(corrected_p), method = "rqss", lambda=3)) + 
     theme_classic() + 
     xlab("Clone Size") + 
     ylab("Clonotype Bias")
-  if (exportTable == TRUE) { return(bias) }
+  if (exportTable == TRUE) { 
+    return(bias) 
+  }
   return(plot) 
 }
 

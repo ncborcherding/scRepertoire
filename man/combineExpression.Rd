@@ -12,8 +12,8 @@ combineExpression(
   group.by = "none",
   proportion = TRUE,
   filterNA = FALSE,
-  cloneTypes = c(Rare = 1e-04, Small = 0.001, Medium = 0.01, Large = 0.1, Hyperexpanded
-    = 1),
+  cloneTypes = c(Rare = 1e-04, Small = 0.001, Medium = 0.01, Large = 0.1, Hyperexpanded =
+    1),
   addLabel = FALSE
 )
 }

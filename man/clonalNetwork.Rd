@@ -12,7 +12,7 @@ clonalNetwork(
   filter.identity = NULL,
   filter.proportion = NULL,
   filter.graph = FALSE,
-  cloneCall = "aa",
+  cloneCall = "strict",
   chain = "both",
   exportTable = FALSE
 )
