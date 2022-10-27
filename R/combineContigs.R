@@ -147,8 +147,7 @@ combineTCR <- function(df,
 #'
 #' @examples
 #' #Data derived from the 10x Genomics intratumoral NSCLC B cells
-#' BCR <- read.csv("https://ncborcherding.github.io/vignettes/b_contigs.csv", 
-#' stringsAsFactors = FALSE)
+#' BCR <- read.csv("https://ncborcherding.github.io/vignettes/b_contigs.csv")
 #' combined <- combineBCR(BCR, samples = "Patient1", 
 #' ID = "Time1", threshold = 0.85)
 #' 
@@ -162,10 +161,12 @@ combineTCR <- function(df,
 #' @import dplyr
 #' @export
 #' @return List of clonotypes for individual cell barcodes
-combineBCR <- function(df, samples = NULL, ID = NULL, 
+combineBCR <- function(df, 
+                       samples = NULL, 
+                       ID = NULL, 
                        threshold = 0.85,
-                        removeNA = FALSE, 
-                        removeMulti = FALSE) {
+                       removeNA = FALSE, 
+                       removeMulti = FALSE) {
     df <- checkList(df)
     df <- checkContigs(df)
     out <- NULL
@@ -195,7 +196,8 @@ combineBCR <- function(df, samples = NULL, ID = NULL,
         Con.df <- assignCT(cellType = "B", Con.df)
         data3<-Con.df %>% mutate(length1 = nchar(cdr3_nt1)) %>%
             mutate(length2 = nchar(cdr3_nt2))
-        final[[i]] <- data3 }
+        final[[i]] <- data3 
+    }
     dictionary <- bind_rows(final)
     IGH <- lvCompare(dictionary, "IGH", "cdr3_nt1", threshold)
     IGLC <- lvCompare(dictionary, "IGLC", "cdr3_nt2", threshold)
@@ -203,8 +205,8 @@ combineBCR <- function(df, samples = NULL, ID = NULL,
         final[[i]]<-merge(final[[i]],IGH,by.x="cdr3_nt1",by.y="IG",all.x=TRUE)
         final[[i]]<-merge(final[[i]],IGLC,by.x="cdr3_nt2",by.y="IG",all.x=TRUE)
         num <- ncol(final[[i]])
-        final[[i]][,"CTstrict"] <- paste0(final[[i]][,num-1],"_",
-        final[[i]][,"vgene1"],"_",final[[i]][,num],"_",final[[i]][,"vgene2"])
+        final[[i]][,"CTstrict"] <- paste0(final[[i]][,num-1],".",
+        final[[i]][,"vgene1"],"_",final[[i]][,num],".",final[[i]][,"vgene2"])
         final[[i]]$cellType <- "B"
         final[[i]]$sample <- samples[i]
         final[[i]]$ID <- ID[i]

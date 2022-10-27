@@ -7,6 +7,8 @@ CHANGES IN VERSION 1.7.2
 * Add arrange() call during parseTCR() to organize the chains
 * Correct the gd flip in the combineContig and subsequent functions
 * Removed viridis call in the clonalNetwork() function that was leading to errors
+* Matched syntax for strict clonotype in combineBCR()
+* Added group.by variable to all applicable visualizations
 
 CHANGES IN VERSION 1.5.4
 ------------------------
