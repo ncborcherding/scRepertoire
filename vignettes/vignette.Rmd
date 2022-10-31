@@ -4,7 +4,7 @@ author:
   name: Nick Borcherding
   email: ncborch@gmail.com
   affiliation: Washington University in St. Louis, School of Medicine, St. Louis, MO, USA
-date: "July 4th 2022"
+date: "October 31, 2022"
 output:
   BiocStyle::html_document:
     toc_float: true
@@ -506,13 +506,11 @@ screp_example <- combineExpression(combined,
                                    proportion = FALSE, 
                                    cloneTypes=c(Single=1, Small=5, Medium=20, Large=100, Hyperexpanded=500))
 
-screp_example <- combineExpression(combined, 
-                                   screp_example, 
-                                   cloneCall="gene", 
-                                   group.by = "sample", 
-                                   proportion = TRUE)
-
-sce <- combineExpression(combined, sce, cloneCall = "gene", group.by = "sample")
+sce <- combineExpression(combined, 
+                          sce, 
+                          cloneCall="gene", 
+                          group.by = "sample", 
+                          proportion = TRUE)
 ```
 
 ## Combining both TCR and BCR 
