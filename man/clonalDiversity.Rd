@@ -13,7 +13,8 @@ clonalDiversity(
   split.by = NULL,
   exportTable = FALSE,
   n.boots = 100,
-  return.boots = FALSE
+  return.boots = FALSE,
+  skip.boots = FALSE
 )
 }
 \arguments{
@@ -40,6 +41,8 @@ in addition to the visualization}
 
 \item{return.boots}{export boot strapped values calculated - 
 will automatically exportTable = TRUE}
+
+\item{skip.boots}{remove downsampling and boot strapping from the calculation}
 }
 \value{
 ggplot of the diversity of clonotype sequences across list

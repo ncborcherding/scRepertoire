@@ -1,4 +1,9 @@
-CHANGES IN VERSION 1.7.2
+CHANGES IN VERSION 1.7.1
+------------------------
+* ClonalDiversity() now has skip.boots to stop bootstrapping and downsampling
+
+
+CHANGES IN VERSION 1.7.0
 ------------------------
 * Rebumping the version change with new release of Bioconductor
 * Added mean call to the heatmap of vizGenes()

@@ -506,12 +506,6 @@ screp_example <- combineExpression(combined,
                                    proportion = FALSE, 
                                    cloneTypes=c(Single=1, Small=5, Medium=20, Large=100, Hyperexpanded=500))
 
-screp_example <- combineExpression(combined, 
-                                   screp_example, 
-                                   cloneCall="gene", 
-                                   group.by = "sample", 
-                                   proportion = TRUE)
-
 sce <- combineExpression(combined, sce, cloneCall = "gene", group.by = "sample")
 ```
 
