@@ -10,7 +10,7 @@ Single-cell sequencing is an emerging technology in the field of immunology and 
 ### Wrapper Functions
 scRepertoire v1.0.2 has the functionality of the [powerTCR](https://github.com/hillarykoch/powerTCR) approach to comparing clone size distribution, [please cite](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1006571) the manuscript if using the ```clonesizeDistribution()``` function. In addition, we recently added the [Startrac](https://github.com/Japrin/STARTRAC) clonotype metrics, if using the ```StartracDiversity()``` please read and cite [the accompanying article](https://www.nature.com/articles/s41586-018-0694-x).
 
-### Installation of Development Branch
+### Installation of Master Branch
 
 
 ```
