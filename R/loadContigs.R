@@ -108,7 +108,7 @@ parseAIRR <- function(df) {
 }
 
 #Loads 10x data
-pasrse10x <- function(df) {
+parse10x <- function(df) {
     for (i in seq_along(df)) {
         df[[i]] <- subset(df[[i]], chain != "Multi")
         df[[i]] <- subset(df[[i]], productive %in% c(TRUE, "TRUE", "True", "true"))
