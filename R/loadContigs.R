@@ -76,7 +76,7 @@ parseWAT3R <- function(df) {
         colnames(df[[i]])[1] <- "barcode"
         df[[i]][df[[i]] == ""] <- NA
         chain2 <- df[[i]][,c(1,8,9,10,4,3,7,5)]
-        chain2 <- data.frame(chain2[,1:4], chain = "TRA", chain2[,2:4], c_gene = NA, chain2[,5:8])
+        chain2 <- data.frame(chain2[,1], chain = "TRA", chain2[,2:4], c_gene = NA, chain2[,5:8])
         colnames(chain2) <- c("barcode", "v_gene", "d_gene", "j_gene", "c_gene", "cdr3_nt", "cdr3", "reads", "umis")
         
         #TRA Chain 1
