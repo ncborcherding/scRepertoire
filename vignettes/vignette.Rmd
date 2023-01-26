@@ -4,7 +4,7 @@ author:
   name: Nick Borcherding
   email: ncborch@gmail.com
   affiliation: Washington University in St. Louis, School of Medicine, St. Louis, MO, USA
-date: "July 4th 2022"
+date: "January 26th, 2023"
 output:
   BiocStyle::html_document:
     toc_float: true
@@ -90,7 +90,7 @@ for (i in seq_along(contig_list)) {
 
 ## Loading from other pipelines
 
-New to this version of the package is support for AIRR, [WAT3R](https://www.biorxiv.org/content/10.1101/2022.01.26.477886v1), and [TRUST4](https://www.nature.com/articles/s41592-021-01142-2) single-cell outputs. By indicating the directory or directories the outputs from these pipelines are located, ```loadContigs()``` will generate a contig list that is compatible with the rest of scRepertoire. In addition, although not necessary, ```loadContigs()``` can be used for 10X filtered_contig_annotation.csv files. 
+New to this version of the package is support for BD Rhapsody, AIRR, [WAT3R](https://www.biorxiv.org/content/10.1101/2022.01.26.477886v1), and [TRUST4](https://www.nature.com/articles/s41592-021-01142-2) single-cell outputs. By indicating the directory or directories the outputs from these pipelines are located, ```loadContigs()``` will generate a contig list that is compatible with the rest of scRepertoire. In addition, although not necessary, ```loadContigs()``` can be used for 10X filtered_contig_annotation.csv files. 
 
 ```{r, eval=FALSE}
 contig.output <- c("./Sample1/outs/", "./Sample2/outs/", "./Sample3/outs/")

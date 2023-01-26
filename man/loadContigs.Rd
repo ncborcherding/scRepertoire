@@ -16,11 +16,14 @@ List of contigs for further processing in scRepertoire
 }
 \description{
 This function generates a contig list and formats the data to allow for 
-function with  \code{\link{combineTCR}} or \code{\link{combineTCR}}. If 
+function with  \code{\link{combineTCR}} or \code{\link{combineBCR}}. If 
 using data derived from filtered outputs of 10X Genomics, there is no 
 need to use this function as the data is already compatible. The function
 assumes if listing multiple directories, there are distinct outputs with
-unmodified file names in them.
+unmodified file names in them. The files that this function parses includes: 
+WAT3R = "barcode_results.csv", 10X =  "filtered_contig_annotation.csv", 
+AIRR = "airr_rearrangement.tsv", TRUST4 = "barcode_report.tsv", and 
+BD = "Contigs_AIRR.tsv".
 }
 \examples{
 \dontrun{

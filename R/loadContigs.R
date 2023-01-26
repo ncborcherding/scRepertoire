@@ -1,11 +1,14 @@
 #' Loading the contigs derived from single-cell sequencing
 #'
 #' This function generates a contig list and formats the data to allow for 
-#' function with  \code{\link{combineTCR}} or \code{\link{combineTCR}}. If 
+#' function with  \code{\link{combineTCR}} or \code{\link{combineBCR}}. If 
 #' using data derived from filtered outputs of 10X Genomics, there is no 
 #' need to use this function as the data is already compatible. The function
 #' assumes if listing multiple directories, there are distinct outputs with
-#' unmodified file names in them.
+#' unmodified file names in them. The files that this function parses includes: 
+#' WAT3R = "barcode_results.csv", 10X =  "filtered_contig_annotation.csv", 
+#' AIRR = "airr_rearrangement.tsv", TRUST4 = "barcode_report.tsv", and 
+#' BD = "Contigs_AIRR.tsv".
 #' 
 #' @examples
 #' \dontrun{
@@ -23,9 +26,10 @@ loadContigs <- function(dir,
     format.list <- list("WAT3R" = "barcode_results.csv", 
                         "10X" =  "filtered_contig_annotation.csv", 
                         "AIRR" = "airr_rearrangement.tsv", 
-                        "TRUST4" = "barcode_report.tsv")
+                        "TRUST4" = "barcode_report.tsv", 
+                        "BD" = "Contigs_AIRR.tsv")
         file.pattern <- format.list[[format]]
-        contig.files <- list.files(dir, file.pattern)
+        contig.files <- list.files(dir, file.pattern, recursive = T, full.names = T)
         contig.files <- paste0(dir, "/", file.pattern)
         
         if (format %in% c("10X", "WAT3R")) {
@@ -39,8 +43,10 @@ loadContigs <- function(dir,
             df <- lapply(dir, read.delim)
             if (format =="TRUST4") {
                 df <- parseTRUST4(df) 
-            } else {
+            } else if (format == "AIRR") {
                 df <- parseAIRR(df)
+            } else {
+              df <- parseBD(df)
             }
         }
     return(df)
@@ -53,14 +59,14 @@ parseTRUST4 <- function(df) {
         colnames(df[[i]])[1] <- "barcode"
         df[[i]][df[[i]] == "*"] <- NA
         
-        chain2 <- str_split(df[[i]]$chain1, ",", simplify = TRUE)[,seq_len(6)]
+        chain2 <- str_split(df[[i]]$chain1, ",", simplify = TRUE)[,seq_len(7)]
         chain2[chain2 == "*"] <- "None"
-        colnames(chain2) <- c("v_gene", "d_gene", "j_gene", "c_gene", "cdr3_nt", "cdr3")
+        colnames(chain2) <- c("v_gene", "d_gene", "j_gene", "c_gene", "cdr3_nt", "cdr3", "reads")
         chain2 <- data.frame(barcode = df[[i]][,1], chain2)
 
-        chain1 <- str_split(df[[i]]$chain2, ",", simplify = TRUE)[,seq_len(6)]
+        chain1 <- str_split(df[[i]]$chain2, ",", simplify = TRUE)[,seq_len(7)]
         chain1[chain1 == "*"] <- "None"
-        colnames(chain1) <- c("v_gene", "d_gene", "j_gene", "c_gene", "cdr3_nt", "cdr3")
+        colnames(chain1) <- c("v_gene", "d_gene", "j_gene", "c_gene", "cdr3_nt", "cdr3", "reads")
         chain1 <- data.frame(barcode = df[[i]][,1], chain1)
         data2 <- rbind(chain1, chain2)
         data2[data2 == ""] <- NA
@@ -103,6 +109,7 @@ parseAIRR <- function(df) {
     for (i in seq_along(df)) {
         df[[i]] <- df[[i]][,c("cell_id", "locus", "v_call", "d_call", "j_call", "c_call", "junction", "junction_aa")]
         colnames(df[[i]]) <- c("barcode", "chain", "v_gene", "d_gene", "j_gene", "c_gene", "cdr3_nt", "cdr3")
+        df[[i]] <- df[[i]][with(df[[i]], order(reads, chain)),]
     }
     return(df)
 }
@@ -121,6 +128,15 @@ parse10x <- function(df) {
         df[[i]] <- df[[i]][with(df[[i]], order(reads, chain)),]
     }
     return(df)
+}
+#Loads BD AIRR
+parseBD <- function(df) {
+  for (i in seq_along(df)) {
+    df[[i]] <- df[[i]][,c(1,2,20,25,30, 35, 48,49,4)]
+    colnames(df[[i]]) <- c("barcode", "chain", "v_gene", "d_gene", "j_gene", "c_gene", "cdr3_nt", "cdr3", "reads")
+    df[[i]] <- df[[i]][with(df[[i]], order(reads, chain)),]
+  }
+  return(df)
 }
 #Grabs the chain info from v_gene
 chain.parser <- function(df) {

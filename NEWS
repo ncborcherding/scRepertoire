@@ -1,4 +1,13 @@
-CHANGES IN VERSION 1.7.1
+CHANGES IN VERSION 1.7.3
+------------------------
+* Fix misspellings for parse contains functions
+* Optimize WAT3R and 10x loadContigs()
+* Remove combineTRUST4 - superseded by loadContigs()
+* Added support of TRUST4 for combineBCR()
+* Added support for BD in loadContigs()
+
+
+CHANGES IN VERSION 1.7.2
 ------------------------
 * ClonalDiversity() now has skip.boots to stop bootstrapping and downsampling
 
