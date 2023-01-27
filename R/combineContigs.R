@@ -266,10 +266,14 @@ lvCompare <- function(dictionary, gene, chain, threshold) {
                   "filtered" = names(components$membership))
       filter <- which(table(out$cluster) > 1)
       out <- subset(out, cluster %in% filter)
-      out$cluster <- paste0(gene, ":LD", ".", out$cluster)
-      out$filtered <- tmp[as.numeric(out$filtered)]
-      
-      uni_IG <- as.data.frame(unique(tmp[tmp %!in% out$filtered]))
+      if(nrow(out) > 1) {
+        out$cluster <- paste0(gene, ":LD", ".", out$cluster)
+        out$filtered <- tmp[as.numeric(out$filtered)]
+        uni_IG <- as.data.frame(unique(tmp[tmp %!in% out$filtered]))
+      } else {
+        uni_IG <- as.data.frame(unique(tmp))
+        colnames(uni_IG) <- "filtered"
+      }
       colnames(uni_IG) <- "filtered"
       if (nrow(uni_IG) > 0) {
         uni_IG$cluster <- paste0(gene, ".", seq_len(nrow(uni_IG)))
