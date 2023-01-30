@@ -89,14 +89,14 @@ parseWAT3R <- function(df) {
         #TRA Chain 1
         chain1 <-  df[[i]][,c(1,16,17,12,11,15,13)]
         chain1 <- data.frame(chain1[,1], chain = "TRA",chain1[,2], d_gene = NA, chain1[,3], c_gene = NA, chain1[,4:7])
-        colnames(chain1) <- c("barcode", "chain" "v_gene", "d_gene", "j_gene", "c_gene", "cdr3_nt", "cdr3", "reads", "umis")
+        colnames(chain1) <- c("barcode", "chain", "v_gene", "d_gene", "j_gene", "c_gene", "cdr3_nt", "cdr3", "reads", "umis")
         data2 <- rbind(chain1, chain2)
         data2[data2 == ""] <- NA
         
         #TRA Chain 2
         chain3 <-  df[[i]][,c(1,23,24,19,18,22,20)]
         chain3 <- data.frame(chain3[,1], chain = "TRA",chain3[,2],  d_gene = NA, chain3[,3], c_gene = NA, chain3[,4:7])
-        colnames(chain3) <- c("barcode", "chain" "v_gene", "d_gene", "j_gene", "c_gene", "cdr3_nt", "cdr3", "reads", "umis")
+        colnames(chain3) <- c("barcode", "chain", "v_gene", "d_gene", "j_gene", "c_gene", "cdr3_nt", "cdr3", "reads", "umis")
         data2 <- rbind(chain1, chain2, chain3)
         data2[data2 == ""] <- NA
         df[[i]] <- data2
