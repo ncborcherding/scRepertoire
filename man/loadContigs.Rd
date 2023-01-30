@@ -9,7 +9,8 @@ loadContigs(dir, format = "10X")
 \arguments{
 \item{dir}{The directory or directories with single-cell contig data}
 
-\item{format}{The format of the single-cell contig, currently supporting: "10X", "AIRR", "TRUST4", and "WAT3R"}
+\item{format}{The format of the single-cell contig, currently supporting: 
+"10X", "AIRR", "TRUST4", "BD", and "WAT3R"}
 }
 \value{
 List of contigs for further processing in scRepertoire

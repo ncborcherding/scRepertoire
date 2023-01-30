@@ -17,7 +17,8 @@
 #' }
 #' 
 #' @param dir The directory or directories with single-cell contig data
-#' @param format The format of the single-cell contig, currently supporting: "10X", "AIRR", "TRUST4", and "WAT3R"
+#' @param format The format of the single-cell contig, currently supporting: 
+#' "10X", "AIRR", "TRUST4", "BD", and "WAT3R"
 #' @export
 #' @return List of contigs for further processing in scRepertoire
 loadContigs <- function(dir, 
@@ -30,17 +31,16 @@ loadContigs <- function(dir,
                         "BD" = "Contigs_AIRR.tsv")
         file.pattern <- format.list[[format]]
         contig.files <- list.files(dir, file.pattern, recursive = T, full.names = T)
-        contig.files <- paste0(dir, "/", file.pattern)
         
         if (format %in% c("10X", "WAT3R")) {
-            df <- lapply(dir, read.csv) 
+            df <- lapply(contig.files, read.csv) 
             if (format =="WAT3R") {
                 df <- parseWAT3R(df)
             } else {
                 df <- parse10x(df)
             }
         } else {
-            df <- lapply(dir, read.delim)
+            df <- lapply(contig.files, read.delim)
             if (format =="TRUST4") {
                 df <- parseTRUST4(df) 
             } else if (format == "AIRR") {
@@ -59,13 +59,21 @@ parseTRUST4 <- function(df) {
         colnames(df[[i]])[1] <- "barcode"
         df[[i]][df[[i]] == "*"] <- NA
         
-        chain2 <- str_split(df[[i]]$chain1, ",", simplify = TRUE)[,seq_len(7)]
-        chain2[chain2 == "*"] <- "None"
+        if(length(which(is.na(df[[i]]$chain1))) == length(df[[i]]$chain1)) {
+          chain2 <- matrix(ncol = 7, nrow = length(df[[i]]$chain1))
+        } else {
+          chain2 <- str_split(df[[i]]$chain1, ",", simplify = TRUE)[,seq_len(7)]
+          chain2[chain2 == "*"] <- "None"
+        }
         colnames(chain2) <- c("v_gene", "d_gene", "j_gene", "c_gene", "cdr3_nt", "cdr3", "reads")
         chain2 <- data.frame(barcode = df[[i]][,1], chain2)
-
-        chain1 <- str_split(df[[i]]$chain2, ",", simplify = TRUE)[,seq_len(7)]
-        chain1[chain1 == "*"] <- "None"
+        
+        if(length(which(is.na(df[[i]]$chain2))) == length(df[[i]]$chain2)) {
+          chain1 <- matrix(ncol = 7, nrow = length(df[[i]]$chain2))
+        } else {
+          chain1 <- str_split(df[[i]]$chain2, ",", simplify = TRUE)[,seq_len(7)]
+          chain1[chain1 == "*"] <- "None"
+        }
         colnames(chain1) <- c("v_gene", "d_gene", "j_gene", "c_gene", "cdr3_nt", "cdr3", "reads")
         chain1 <- data.frame(barcode = df[[i]][,1], chain1)
         data2 <- rbind(chain1, chain2)
