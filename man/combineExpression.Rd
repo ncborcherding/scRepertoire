@@ -31,7 +31,8 @@ VDJC gene + CDR3 nucleotide (strict).}
 e.g. "both", "TRA", "TRG", "IGH", "IGL"}
 
 \item{group.by}{The column label in the combined contig object in which 
-clonotype frequency will be calculated.}
+clonotype frequency will be calculated. "none" will keep the list as is, 
+while NULL will merge all the contigs into a single data frame.}
 
 \item{proportion}{Whether to use the total frequency (FALSE) or the 
 proportion (TRUE) of the clonotype based on the group.by variable.}

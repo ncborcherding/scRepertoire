@@ -6,6 +6,7 @@ CHANGES IN VERSION 1.7.3
 * Added support of TRUST4 for combineBCR()
 * Added support for BD in loadContigs()
 * loadContigs() TRUST4 parsing allows for all NA values in a chain
+* combineExpression() group.by = NULL will now collapse the whole list. 
 
 
 CHANGES IN VERSION 1.7.2

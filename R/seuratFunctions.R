@@ -33,7 +33,8 @@
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL"
 #' @param group.by The column label in the combined contig object in which 
-#' clonotype frequency will be calculated. 
+#' clonotype frequency will be calculated. "none" will keep the list as is, 
+#' while NULL will merge all the contigs into a single data frame. 
 #' @param proportion Whether to use the total frequency (FALSE) or the 
 #' proportion (TRUE) of the clonotype based on the group.by variable.
 #' @param cloneTypes The bins for the grouping based on frequency
@@ -63,7 +64,7 @@ combineExpression <- function(df, sc, cloneCall="strict",
     Con.df <- NULL
     meta <- grabMeta(sc)
     cell.names <- rownames(meta)
-    if (group.by == "none") {
+    if (group.by == "none" | !is.null(group.by)) {
         for (i in seq_along(df)) {
             if (chain != "both") {
               df[[i]] <- off.the.chain(df[[i]], chain, cloneCall)
@@ -84,24 +85,40 @@ combineExpression <- function(df, sc, cloneCall="strict",
                              "CTaa", "CTstrict", "Frequency")]
             Con.df <- rbind.data.frame(Con.df, data)
         }
-    } else if (group.by != "none") {
+    } else if (group.by != "none" | is.null(group.by)) {
         data <- data.frame(bind_rows(df), stringsAsFactors = FALSE)
         data2 <- na.omit(unique(data[,c("barcode", cloneCall, group.by)]))
         data2 <- data2[data2[,"barcode"] %in% cell.names, ]
         data2 <- as.data.frame(data2 %>% group_by(data2[,cloneCall], 
                     data2[,group.by]) %>% summarise(Frequency = n()))
-        colnames(data2)[c(1,2)] <- c(cloneCall, group.by)
-        x <- unique(data[,group.by])
-        for (i in seq_along(x)) {
-            sub1 <- subset(data, data[,group.by] == x[i])
-            sub2 <- subset(data2, data2[,group.by] == x[i])
-            merge <- merge(sub1, sub2, by=cloneCall)
-            if (proportion == TRUE) {
-                merge$Frequency <- merge$Frequency/length(merge$Frequency)
-            }
-            Con.df <- rbind.data.frame(Con.df, merge)
-        } 
-        nsize <- Con.df %>% group_by(Con.df[,paste0(group.by, ".x")])  %>% summarise(n = n())
+        if(!is.null(group.by)) {
+          colnames(data2)[c(1,2)] <- c(cloneCall, group.by)
+          x <- unique(data[,group.by])
+          for (i in seq_along(x)) {
+              sub1 <- subset(data, data[,group.by] == x[i])
+              sub2 <- subset(data2, data2[,group.by] == x[i])
+              merge <- merge(sub1, sub2, by=cloneCall)
+              if (proportion == TRUE) {
+                  merge$Frequency <- merge$Frequency/length(merge$Frequency)
+              }
+              Con.df <- rbind.data.frame(Con.df, merge)
+          }
+          nsize <- Con.df %>% group_by(Con.df[,paste0(group.by, ".x")])  %>% summarise(n = n())
+        } else {
+          if (proportion == TRUE) {
+            data <- data %>%
+              group_by(data[,cloneCall]) %>%
+              mutate(Frequency = n()/nrow(data))
+          } else {
+            data <- data %>% 
+              group_by(data[,cloneCall]) %>%
+              mutate(Frequency = n())
+          }
+          Con.df <- data[,c("barcode", "CTgene", "CTnt", 
+                          "CTaa", "CTstrict", "Frequency")]
+          nsize <- length(Con.df)
+        }
+        
     }
     
     Con.df$cloneType <- NA
