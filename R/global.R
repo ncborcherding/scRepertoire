@@ -68,5 +68,8 @@
     utils::globalVariables ("parseAIRR")
     utils::globalVariables (".")
     utils::globalVariables ("cdr3_nt")
+    utils::globalVariables ("CTaa")
+    utils::globalVariables ("NA.values")
+    utils::globalVariables ("total.cells")
     invisible ()
 }

@@ -4,7 +4,7 @@ author:
   name: Nick Borcherding
   email: ncborch@gmail.com
   affiliation: Washington University in St. Louis, School of Medicine, St. Louis, MO, USA
-date: "January 26th, 2023"
+date: "February 8th, 2023"
 output:
   BiocStyle::html_document:
     toc_float: true
@@ -209,6 +209,29 @@ quantContig(combined,
             cloneCall="gene", 
             group.by = "ID", 
             scale = TRUE)
+```
+
+## Checking NA values
+
+Depending on the experiment or sequencing run, a number of NAs can appear in either the sequence or VDJC gene usage. A quick way to check the percentage of NA values is to use ```checkContigs()```
+
+**chain**  
++ "TRA", "TRB", "TRD", "TRG", "IGH" or "IGL" 
+
+**examine**  
++ "gene" - examining the VDJC NA values 
++ "chain" = examining the sequence-specific NA values
+
+```{r}
+checkContig(combined, 
+            chain = "TRA", 
+            examine = "gene",
+            group.by = "ID")
+
+checkContig(combined, 
+            chain = "TRB", 
+            examine = "chain",
+            group.by = "sample")
 ```
 
 ## Clonotype Abundance

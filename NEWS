@@ -1,3 +1,9 @@
+CHANGES IN VERSION 1.7.4
+------------------------
+* Added checkContigs() function to quantify the percentages of NA values by genes or sequences
+
+
+
 CHANGES IN VERSION 1.7.3
 ------------------------
 * Fix misspellings for parse contains functions
