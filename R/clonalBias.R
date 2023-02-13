@@ -104,7 +104,7 @@ get_clono_bg <- function(df,
       df <- list("Object" = grabMeta(df))
     } 
   }
-#  cloneCall <- theCall(cloneCall)
+  cloneCall <- theCall(cloneCall)
   df <- checkBlanks(df, cloneCall)
   
   bg <- list()
