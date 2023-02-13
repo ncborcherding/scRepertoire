@@ -106,7 +106,8 @@ get_clono_bg <- function(df,
   }
   cloneCall <- theCall(cloneCall)
   df <- checkBlanks(df, cloneCall)
-  bg <- NULL
+  
+  bg <- list()
   for (s in seq_along(df)) {
     
     clones <-  table(df[[s]][,cloneCall])
@@ -115,10 +116,10 @@ get_clono_bg <- function(df,
     if (length(clones)>0) {
       
       expanded <- df[[s]][which(df[[s]][,cloneCall] %in% names(clones)), group.by]
-      bg <- cbind(bg,table(expanded) / sum(table(expanded)))
+      bg[[s]] <- table(expanded) / sum(table(expanded))
     }
   }
-  colnames(bg) <- names(df)
+  names(bg) <- names(df)
   return(bg)
 }
 
@@ -154,10 +155,11 @@ get_clono_bias <- function(df,
   cloneCall <- theCall(cloneCall)
   df <- checkBlanks(df, cloneCall)
   
-  for (s in colnames(bg)) {
+  for (s in names(bg)) {
     
     clones <-  table(df[[s]][,cloneCall])
     clones <- clones[clones>=min.expand]
+    subtypes <- names(bg[[s]])
     
     if (length(clones)>0) {
       clones <- sort(clones, decreasing = T)
@@ -173,10 +175,12 @@ get_clono_bias <- function(df,
         this.s <- paste0(this, "_", s)
         
         ncells <- clones[i]
-        sub <- expanded[which(expanded[, cloneCall] == this), group.by]    
+        sub <- expanded[which(expanded[, cloneCall] == this), group.by]   
+        sub <- factor(sub, levels=subtypes)
+        
         comp <- table(sub) / sum(table(sub))
-        diff <- comp - bg[,s]
-        diff_norm <- round((comp - bg[,s])/(1-bg[,s]), 3)
+        diff <- comp - bg[[s]]
+        diff_norm <- round((comp - bg[[s]])/(1-bg[[s]]), 3)
         top_state <- names(which.max(diff_norm))[1]
         
         new_row <- c(s, this.s, this, as.integer(ncells), top_state, 
