@@ -22,8 +22,8 @@
 #' sce <- combineExpression(combined, sce)
 #' 
 #' #Using occupiedscRepertoire()
-#' clonotypeBias(sce, cloneCall = "aa", split.by = "Patient", group.by = "cluster",
-#' n.boots = 20, min.expand =10)
+#' clonotypeBias(sce, cloneCall = "CTaa", split.by = "Patient", group.by = "seurat_clusters",
+#' n.boots = 20, min.expand = 2)
 #' }
 #' 
 #' @param df The product of combineTCR(), combineBCR(), expression2List(), or combineExpression().
@@ -157,37 +157,41 @@ get_clono_bias <- function(df,
   
   for (s in names(bg)) {
     
-    clones <-  table(df[[s]][,cloneCall])
-    clones <- clones[clones>=min.expand]
-    subtypes <- names(bg[[s]])
-    
-    if (length(clones)>0) {
-      clones <- sort(clones, decreasing = T)
-      expanded <- df[[s]][which(df[[s]][,cloneCall] %in% names(clones)), c(group.by, cloneCall)]
+    #All cells have the same type. Cannot calculate bias for this sample
+    if (length(bg[[s]]) > 1) {  
       
-      if (do.shuffle) {  #reshuffle annotation column
-        set.seed(seed)
-        expanded[[group.by]] <- sample(expanded[[group.by]])
-      }
+      clones <-  table(df[[s]][,cloneCall])
+      clones <- clones[clones>=min.expand]
+      subtypes <- names(bg[[s]])
       
-      for (i in seq_along(clones)) {
-        this <- names(clones)[i]
-        this.s <- paste0(this, "_", s)
+      if (length(clones)>0) {
+        clones <- sort(clones, decreasing = T)
+        expanded <- df[[s]][which(df[[s]][,cloneCall] %in% names(clones)), c(group.by, cloneCall)]
         
-        ncells <- clones[i]
-        sub <- expanded[which(expanded[, cloneCall] == this), group.by]   
-        sub <- factor(sub, levels=subtypes)
+        if (do.shuffle) {  #reshuffle annotation column
+          set.seed(seed)
+          expanded[[group.by]] <- sample(expanded[[group.by]])
+        }
         
-        comp <- table(sub) / sum(table(sub))
-        diff <- comp - bg[[s]]
-        diff_norm <- round((comp - bg[[s]])/(1-bg[[s]]), 3)
-        top_state <- names(which.max(diff_norm))[1]
-        
-        new_row <- c(s, this.s, this, as.integer(ncells), top_state, 
-                     as.double(comp[top_state]), 
-                     as.double(diff[top_state]), 
-                     as.double(diff_norm[top_state]))
-        dat[nrow(dat) + 1,] = new_row
+        for (i in seq_along(clones)) {
+          this <- names(clones)[i]
+          this.s <- paste0(this, "_", s)
+          
+          ncells <- clones[i]
+          sub <- expanded[which(expanded[, cloneCall] == this), group.by]   
+          sub <- factor(sub, levels=subtypes)
+          
+          comp <- table(sub) / sum(table(sub))
+          diff <- comp - bg[[s]]
+          diff_norm <- round((comp - bg[[s]])/(1-bg[[s]]), 3)
+          top_state <- names(which.max(diff_norm))[1]
+          
+          new_row <- c(s, this.s, this, as.integer(ncells), top_state, 
+                       as.double(comp[top_state]), 
+                       as.double(diff[top_state]), 
+                       as.double(diff_norm[top_state]))
+          dat[nrow(dat) + 1,] = new_row
+        }
       }
     }
   }
