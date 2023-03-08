@@ -7,7 +7,7 @@ Description: scRepertoire was built to process data derived from the 10x Genomic
 License: GPL-2
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
 biocViews: Software, ImmunoOncology, SingleCell, Classification, Annotation, Sequencing
 Depends: 
 	ggplot2, 

@@ -19,25 +19,25 @@ checkContig(
 \item{chain}{indicate if both or a specific chain should be used - 
 e.g. "both", "TRA", "TRG", "IGH", "IGL"}
 
+\item{examine}{indicate either "chain" for sequence-based NA or 
+"gene" for NA percentages across the VDJC genes.}
+
 \item{group.by}{The column header used for grouping.}
 
 \item{split.by}{If using a single-cell object, the column header 
 to group the new list. NULL will return clusters.}
 
 \item{exportTable}{Returns the data frame used for forming the graph}
-
-\item{examin}{indicate either "chain" for sequence-based NA or 
-"gene" for NA percentages across the VDJC genes.}
 }
 \value{
 ggplot of the percentage of NA values
 }
 \description{
 This function takes the output from combineTCR(), combineBCR(), 
-combineExpresion() or expression2List() and quantifies the 
+combineExpression() or expression2List() and quantifies the 
 percent of NA values in either the sequence information of 
 the VDJC gene usage. If a data frame output for the raw numbers 
-and percentage of NAs are prefered, set exportTable = TRUE.
+and percentage of NAs are preferred, set exportTable = TRUE.
 }
 \examples{
 #Making combined contig data
