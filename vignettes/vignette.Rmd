@@ -751,7 +751,7 @@ StartracDiversity(screp_example,
 
 ## Clonotype Bias
 
-A new metric proposed by [Massimo et al](https://www.biorxiv.org/content/10.1101/2021.09.20.458613v1), clonal bias, like Startrac is a clonal metric that seeks to quantify how individual clones are skewed towards a  specific cellular compartment or cluster. With the minimal example present in the in-built vignette, this will not be as enlightening as when we use a full single-cell object.
+A new metric proposed by [Massimo et al](https://pubmed.ncbi.nlm.nih.gov/35829695/), clonal bias, like Startrac is a clonal metric that seeks to quantify how individual clones are skewed towards a  specific cellular compartment or cluster. With the minimal example present in the in-built vignette, this will not be as enlightening as when we use a full single-cell object.
 
 **split.by**   
 * Variable used to calculate the baseline frequencies  
