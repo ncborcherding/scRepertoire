@@ -71,5 +71,6 @@
     utils::globalVariables ("CTaa")
     utils::globalVariables ("NA.values")
     utils::globalVariables ("total.cells")
+    utils::globalVariables ("clone")
     invisible ()
 }

@@ -37,7 +37,7 @@ Returns ggplot of the clonotype bias
 }
 \description{
 Clonotype bias method was developed and outlined from a single-cell 
-\href{https://www.biorxiv.org/content/10.1101/2021.09.20.458613v1}{manuscript} 
+\href{https://pubmed.ncbi.nlm.nih.gov/35829695/}{manuscript} 
 characterizing CD4 responses to acute and chronic infection. The metric seeks to 
 quantify how individual clones are skewed towards a specific cellular 
 compartment or cluster. A clonotype bias of 1 indicates that a clonotype 
@@ -58,8 +58,8 @@ sce <- suppressMessages(Seurat::UpdateSeuratObject(screp_example))
 sce <- combineExpression(combined, sce)
 
 #Using occupiedscRepertoire()
-clonotypeBias(sce, cloneCall = "aa", split.by = "Patient", group.by = "cluster",
-n.boots = 20, min.expand =10)
+clonotypeBias(sce, cloneCall = "CTaa", split.by = "Patient", group.by = "seurat_clusters",
+n.boots = 20, min.expand = 2)
 }
 
 }

@@ -4,7 +4,7 @@ author:
   name: Nick Borcherding
   email: ncborch@gmail.com
   affiliation: Washington University in St. Louis, School of Medicine, St. Louis, MO, USA
-date: "February 8th, 2023"
+date: "April 5th, 2023"
 output:
   BiocStyle::html_document:
     toc_float: true
@@ -624,6 +624,18 @@ clonalNetwork(screp_example,
               cloneCall = "aa")
 ```
 
+We can also use **exportClones** to quickly get clones that are shared across multiple identity groups, along with the total number of clones in the data set.
+
+```{r}
+shared.clones <- clonalNetwork(screp_example, 
+                              reduction = "umap", 
+                              identity = "ident",
+                              cloneCall = "aa", 
+                              exportClones = TRUE)
+head(shared.clones)
+```
+
+## highlightClonotypes
 
 We can also look at the clonotypes by calling specific sequences in the `highlightClonotypes()` below. In order to highlight the clonotypes, we first need to use the **cloneCall** the type of sequence we will be using and then the specific sequences themselves using **sequence**. Below you can see the steps to highlight the two most prominent sequences *"CAVNGGSQGNLIF_CSAEREDTDTQYF"* with a frequency = 482 and *"NA_CATSATLRVVAEKLFF"* with a frequency = 287. 
 
