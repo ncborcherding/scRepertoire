@@ -116,8 +116,8 @@ parseWAT3R <- function(df) {
 #Formats AIRR data
 parseAIRR <- function(df) {
     for (i in seq_along(df)) {
-        df[[i]] <- df[[i]][,c("cell_id", "locus", "v_call", "d_call", "j_call", "c_call", "junction", "junction_aa")]
-        colnames(df[[i]]) <- c("barcode", "chain", "v_gene", "d_gene", "j_gene", "c_gene", "cdr3_nt", "cdr3")
+        df[[i]] <- df[[i]][,c("cell_id", "locus", "consensus_count", "v_call", "d_call", "j_call", "c_call", "junction", "junction_aa")]
+        colnames(df[[i]]) <- c("barcode", "chain", "reads", "v_gene", "d_gene", "j_gene", "c_gene", "cdr3_nt", "cdr3")
         df[[i]] <- df[[i]][with(df[[i]], order(reads, chain)),]
     }
     return(df)
