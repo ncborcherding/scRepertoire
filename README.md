@@ -43,7 +43,7 @@ Unfortunately, Github limits the size of individual files. In order to access th
 
 ### Learning To Use scRepertoire
 
-Vignette available [here](https://ncborcherding.github.io/vignettes/vignette.html), includes almost 13,000 T cells across 3 patients with renal clear cell carcinoma. 
+Vignette available [here](https://www.borch.dev/uploads/vignette), includes almost 13,000 T cells across 3 patients with renal clear cell carcinoma. 
 
 ### Please Cite
 Feel free to use, edit, modify scRepertoire, but if you do, please cite the [manuscript](https://f1000research.com/articles/9-47/v1).
