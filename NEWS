@@ -6,6 +6,7 @@ CHANGES IN VERSION 1.7.4
 * Adding reads variable to parseAIRR
 * Adding exportClones to clonalNetwork() to isolate clones shared across identities.
 * Fixing handling of samples parameter in combine contain functions
+* removed need to relevel the cloneType factor after combineExpression()
 
 
 CHANGES IN VERSION 1.7.3

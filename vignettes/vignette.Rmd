@@ -558,22 +558,9 @@ colorblind_vector <- colorRampPalette(rev(c("#0D0887FF", "#47039FFF",
 
 DimPlot(screp_example, group.by = "Type") + NoLegend() +
     scale_color_manual(values=colorblind_vector(2))
-```
-
-
-Now we can look at the distribution of the clonotype bins by first ordering the **clonoType** as a factor, this prevents the coloring from being in alphabetical order. Next we use the *DimPlot()* function call in Seurat with our scale_color_manual additional layer. 
-
-```{r}
-slot(screp_example, "meta.data")$cloneType <- factor(slot(screp_example, "meta.data")$cloneType, 
-                levels = c("Hyperexpanded (100 < X <= 500)", 
-                           "Large (20 < X <= 100)", 
-                           "Medium (5 < X <= 20)", 
-                           "Small (1 < X <= 5)", 
-                           "Single (0 < X <= 1)", NA))
 
 DimPlot(screp_example, group.by = "cloneType") 
 ```
-
 
 ## clonalOverlay 
 

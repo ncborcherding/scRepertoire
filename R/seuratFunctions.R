@@ -51,13 +51,17 @@
 #' information
 #' 
 
-combineExpression <- function(df, sc, cloneCall="strict", 
-                              chain = "both", group.by="none", 
-                              proportion = TRUE, filterNA = FALSE,
+combineExpression <- function(df, 
+                              sc, 
+                              cloneCall="strict", 
+                              chain = "both", 
+                              group.by="none", 
+                              proportion = TRUE, 
+                              filterNA = FALSE,
                               cloneTypes=c(Rare = 1e-4, Small = 0.001, 
                               Medium = 0.01, Large = 0.1, Hyperexpanded = 1),
                               addLabel = FALSE) {
-  options( dplyr.summarise.inform = FALSE )
+    options( dplyr.summarise.inform = FALSE )
     cloneTypes <- c(None = 0, cloneTypes)
     df <- checkList(df)
     cloneCall <- theCall(cloneCall)
@@ -163,6 +167,7 @@ combineExpression <- function(df, sc, cloneCall="strict",
       rownames(colData(sc)) <- rownames  
     }
     if (filterNA == TRUE) { sc <- filteringNA(sc) }
+    sc$cloneType <- factor(sc$cloneType, levels = rev(names(cloneTypes)))
     return(sc) 
 }
 
