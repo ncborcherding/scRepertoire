@@ -5,6 +5,7 @@ CHANGES IN VERSION 1.7.4
 * Fixing underlying assumptions with clonalBias()
 * Adding reads variable to parseAIRR
 * Adding exportClones to clonalNetwork() to isolate clones shared across identities.
+* Fixing handling of samples parameter in combine contain functions
 
 
 CHANGES IN VERSION 1.7.3

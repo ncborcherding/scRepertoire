@@ -103,10 +103,10 @@ combineTCR <- function(df,
         Con.df[Con.df == "NA_NA" | Con.df == "NA_NA_NA_NA"] <- NA 
         data3 <- merge(data2[,-which(names(data2) %in% c("TCR1","TCR2"))], 
             Con.df, by = "barcode")
-        if (!is.null(sample) & !is.null(ID)) {
+        if (!is.null(samples) & !is.null(ID)) {
             data3<-data3[,c("barcode","sample","ID",tcr1_lines,tcr2_lines,
                 CT_lines)] }
-        else if (!is.null(sample) & is.null(ID)) {
+        else if (!is.null(samples) & is.null(ID)) {
           data3<-data3[,c("barcode","sample",tcr1_lines,tcr2_lines,
                           CT_lines)] 
         }
@@ -114,9 +114,9 @@ combineTCR <- function(df,
     }
     names <- NULL
     for (i in seq_along(samples)) { 
-      if (!is.null(sample) & !is.null(ID)) {
+      if (!is.null(samples) & !is.null(ID)) {
           c <- paste(samples[i], "_", ID[i], sep="")
-      } else if (!is.null(sample) & is.null(ID)) {
+      } else if (!is.null(samples) & is.null(ID)) {
           c <- paste(samples[i], sep="")
       }
         names <- c(names, c)
@@ -222,9 +222,9 @@ combineBCR <- function(df,
     }
     names <- NULL
     for (i in seq_along(samples)) { 
-      if (!is.null(sample) & !is.null(ID)) {
+      if (!is.null(samples) & !is.null(ID)) {
         c <- paste(samples[i], "_", ID[i], sep="")
-      } else if (!is.null(sample) & is.null(ID)) {
+      } else if (!is.null(samples) & is.null(ID)) {
         c <- paste(samples[i], sep="")
       }
       names <- c(names, c)}
