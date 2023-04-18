@@ -429,7 +429,7 @@ occupiedscRepertoire <- function(sc,
 #' sce <- combineExpression(combined, sce)
 #' 
 #' #Using clonalOverlay()
-#' clonalOverlay(sce, freq.cutpoint = 0.3, bins = 5) 
+#' clonalOverlay(sce, reduction = "umap", freq.cutpoint = 0.3, bins = 5) 
 #' 
 #' @param sc The seurat or SCE object to visualize after combineExpression(). 
 #' @param reduction The dimensional reduction to visualize
@@ -445,7 +445,11 @@ occupiedscRepertoire <- function(sc,
 #' 
 #' @return ggplot object
 
-clonalOverlay <- function(sc, reduction = NULL, freq.cutpoint = 30, bins = 25, facet = NULL) {
+clonalOverlay <- function(sc, 
+                          reduction = NULL, 
+                          freq.cutpoint = 30, 
+                          bins = 25, 
+                          facet = NULL) {
   checkSingleObject(sc)
   tmp <- data.frame(grabMeta(sc), identity = sc@active.ident, get.coord(sc, reduction))
   if (!is.null(facet)) {
