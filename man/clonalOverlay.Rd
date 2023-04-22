@@ -46,7 +46,7 @@ sce <- suppressMessages(Seurat::UpdateSeuratObject(screp_example))
 sce <- combineExpression(combined, sce)
 
 #Using clonalOverlay()
-clonalOverlay(sce, freq.cutpoint = 0.3, bins = 5) 
+clonalOverlay(sce, reduction = "umap", freq.cutpoint = 0.3, bins = 5) 
 
 }
 \author{

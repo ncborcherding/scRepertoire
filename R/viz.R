@@ -158,7 +158,7 @@ abundanceContig <- function(df,
         fill <- group.by
         if (scale == TRUE) { ylab <- "Density of Clonotypes"
             plot <- ggplot(Con.df, aes(x=Abundance, fill=Con.df[,group.by])) +
-                geom_density(aes(y=..scaled..), alpha=0.5, 
+                geom_density(aes(y=after_stat(scaled)), alpha=0.5, 
                     lwd=0.25, color="black", bw=0.5)  +
                 scale_fill_manual(values = colorblind_vector(col)) +
                 labs(fill = fill)
@@ -183,7 +183,7 @@ abundanceContig <- function(df,
         fill <- "Samples"
         if (scale == TRUE) { ylab <- "Density of Clonotypes"
             plot <- ggplot(Con.df, aes(Abundance, fill=values)) +
-                geom_density(aes(y=..scaled..), alpha=0.5, lwd=0.25, 
+                geom_density(aes(y=after_stat(scaled)), alpha=0.5, lwd=0.25, 
                     color="black", bw=0.5) +
                 scale_fill_manual(values = colorblind_vector(col)) +
                 labs(fill = fill)
@@ -275,8 +275,8 @@ lengthContig <- function(df,
         col <- length(unique(Con.df[,group.by]))
         if (scale == TRUE) { yplus <- "Percent of "
             plot <- ggplot(Con.df, aes(fill=Con.df[,group.by],
-                length,(..count..)/sum(..count..)*100)) + 
-                geom_density(aes(y=..scaled..),alpha=.5,lwd=.25,color="black")
+                length,(after_stat(count))/sum(after_stat(count))*100)) + 
+                geom_density(aes(y=after_stat(scaled)),alpha=.5,lwd=.25,color="black")
         } else { yplus <- "Number of "
             plot<-ggplot(Con.df,aes(as.factor(length),fill=Con.df[,group.by]))+
                 geom_bar(position = position_dodge2(preserve = "single"), 
@@ -287,8 +287,8 @@ lengthContig <- function(df,
         fill <- "Samples"
         col <- length(unique(Con.df$values))
         if (scale == TRUE) { yplus <- "Percent of "
-            plot <- ggplot(Con.df, aes(length, (..count..)/sum(..count..)*100, 
-                fill=values)) + geom_density(aes(y=..scaled..), alpha=0.5, 
+            plot <- ggplot(Con.df, aes(length, (after_stat(count))/sum(after_stat(count))*100, 
+                fill=values)) + geom_density(aes(y=after_stat(scaled)), alpha=0.5, 
                 lwd=0.25, color="black")
     }  else { yplus <- "Number of "
         plot <- ggplot(Con.df, aes(as.factor(length), fill=values)) +

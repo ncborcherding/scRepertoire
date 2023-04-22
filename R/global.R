@@ -5,7 +5,7 @@
     utils::globalVariables ("majorCluster")
     utils::globalVariables ("value")
     utils::globalVariables ("Abundance")
-    utils::globalVariables ("..scaled..")
+    utils::globalVariables ("scaled")
     utils::globalVariables ("values")
     utils::globalVariables ("df")
     utils::globalVariables ("reorder")
