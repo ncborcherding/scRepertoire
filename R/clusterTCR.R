@@ -86,7 +86,7 @@ clusterTCR <- function(df,
     })
     edge.list = edge.list[-which(sapply(edge.list, is.null))]
     edge.list <- do.call(rbind, edge.list)
-    edge.list$to <-ifelse(edge.list$to > edge.list$from, edge.list$to + 1, edge.list$to - 1)
+    edge.list$to <-ifelse(edge.list$to > edge.list$from, edge.list$to + 1, edge.list$to)
     edge.list <- unique(edge.list)
     g <- graph_from_data_frame(edge.list)
     components <- components(g, mode = c("weak"))

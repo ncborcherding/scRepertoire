@@ -245,20 +245,24 @@ lvCompare <- function(dictionary, gene, chain, threshold) {
     out <- NULL
     tmp <- na.omit(unique(dictionary[,chain]))
     length <- nchar(tmp)
-    dist <- stringdistmatrix(tmp, method = "lv")
-    edge.list <- NULL
-    for (j in seq_len(length(tmp))) {
-      row <- SliceExtract_dist(dist,j)
-      norm.row <- row
-      for (k in seq_len(length(norm.row))) {
-        norm.row[k] <- 1- (norm.row[k]/mean(c(length[j],length[k])))
-      }
+    edge.list <- lapply(tmp, function(y) {
+      pos <- which(tmp == y)
+      dist <- stringdist(y, tmp[-pos], method = "lv")
+      norm.row <- dist
+      norm.row <- 1 - (norm.row/((length[pos] + length[-pos])/2))
       neighbor <- which(norm.row >= threshold)
-      knn.norm = data.frame("from" = j,
-                            "to" = neighbor)
-      edge.list <- rbind(edge.list, knn.norm)
-    }
+      if(length(neighbor) > 0) {
+        nn.norm = data.frame("from" = pos,
+                             "to" = neighbor)
+      } else {
+        nn.norm <- NULL
+      }
+      nn.norm
+    })
+    edge.list = edge.list[-which(sapply(edge.list, is.null))]
+    edge.list <- do.call(rbind, edge.list)
     if (nrow(edge.list) > 0) { 
+      edge.list$to <-ifelse(edge.list$to > edge.list$from, edge.list$to + 1, edge.list$to)
       edge.list <- unique(edge.list)
       g <- graph_from_data_frame(edge.list)
       components <- components(g, mode = c("weak"))
