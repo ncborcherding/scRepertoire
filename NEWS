@@ -8,6 +8,8 @@ CHANGES IN VERSION 1.7.4
 * Fixing handling of samples parameter in combine contain functions
 * removed need to relevel the cloneType factor after combineExpression()
 * set up lapply() for combineBCR() and clusterTCR() - no more pairwise distance matrix calculation
+* loadContigs() support for data.frames or lists of contigs
+* Added examples for loadContigs() to test function
 
 
 CHANGES IN VERSION 1.7.3

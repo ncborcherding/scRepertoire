@@ -7,7 +7,7 @@
 loadContigs(dir, format = "10X")
 }
 \arguments{
-\item{dir}{The directory or directories with single-cell contig data}
+\item{dir}{The directory in which contigs are located or a list with contig elements}
 
 \item{format}{The format of the single-cell contig, currently supporting: 
 "10X", "AIRR", "TRUST4", "BD", and "WAT3R"}
@@ -28,8 +28,17 @@ BD = "Contigs_AIRR.tsv".
 }
 \examples{
 \dontrun{
-dir <- c("./Sample1/outs/", "./Sample2/outs/", "./Sample3/outs/")
+dir <- c("./Sample1/outs/")
 contig.list <- loadContigs(dir, format = "10X")
 }
+
+TRUST4 <- read.csv("https://www.borch.dev/uploads/contigs/TRUST4_contigs.csv")
+contig.list <- loadContigs(TRUST4, format = "TRUST4")
+
+BD <- read.csv("https://www.borch.dev/uploads/contigs/BD_contigs.csv")
+contig.list <- loadContigs(BD, format = "BD")
+
+WAT3R <- read.csv("https://www.borch.dev/uploads/contigs/WAT3R_contigs.csv")
+contig.list <- loadContigs(WAT3R, format = "WAT3R")
 
 }

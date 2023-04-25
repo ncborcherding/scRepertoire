@@ -12,18 +12,28 @@
 #' 
 #' @examples
 #' \dontrun{
-#' dir <- c("./Sample1/outs/", "./Sample2/outs/", "./Sample3/outs/")
+#' dir <- c("./Sample1/outs/")
 #' contig.list <- loadContigs(dir, format = "10X")
 #' }
 #' 
-#' @param dir The directory or directories with single-cell contig data
+#' TRUST4 <- read.csv("https://www.borch.dev/uploads/contigs/TRUST4_contigs.csv")
+#' contig.list <- loadContigs(TRUST4, format = "TRUST4")
+#' 
+#' BD <- read.csv("https://www.borch.dev/uploads/contigs/BD_contigs.csv")
+#' contig.list <- loadContigs(BD, format = "BD")
+#' 
+#' WAT3R <- read.csv("https://www.borch.dev/uploads/contigs/WAT3R_contigs.csv")
+#' contig.list <- loadContigs(WAT3R, format = "WAT3R")
+#' 
+#' @param dir The directory in which contigs are located or a list with contig elements
 #' @param format The format of the single-cell contig, currently supporting: 
 #' "10X", "AIRR", "TRUST4", "BD", and "WAT3R"
 #' @export
 #' @return List of contigs for further processing in scRepertoire
 loadContigs <- function(dir, 
                         format = "10X") {
-    
+  #Loading from directory, recursively
+  if (inherits(x=dir, what ="character")) {
     format.list <- list("WAT3R" = "barcode_results.csv", 
                         "10X" =  "filtered_contig_annotation.csv", 
                         "AIRR" = "airr_rearrangement.tsv", 
@@ -31,16 +41,23 @@ loadContigs <- function(dir,
                         "BD" = "Contigs_AIRR.tsv")
         file.pattern <- format.list[[format]]
         contig.files <- list.files(dir, file.pattern, recursive = T, full.names = T)
+        if (format %in% c("10X", "WAT3R")) {
+          df <- lapply(contig.files, read.csv) 
+        } else if (format %!in% c("10X", "WAT3R")) {
+          df <- lapply(contig.files, read.delim)
+        }
+  #Already loaded list or data frame
+  } else if (inherits(x=dir, what ="list") | inherits(x=dir, what ="data.frame")) {
+    df <- checkList(dir)
+  }
         
         if (format %in% c("10X", "WAT3R")) {
-            df <- lapply(contig.files, read.csv) 
             if (format =="WAT3R") {
                 df <- parseWAT3R(df)
             } else {
                 df <- parse10x(df)
             }
         } else {
-            df <- lapply(contig.files, read.delim)
             if (format =="TRUST4") {
                 df <- parseTRUST4(df) 
             } else if (format == "AIRR") {
