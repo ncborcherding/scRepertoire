@@ -11,7 +11,7 @@
 #' #Making combined contig data
 #' x <- contig_list
 #' combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), 
-#' rep(c("P", "T"), 3), cells ="T-AB")
+#' rep(c("P", "T"), 3))
 #' quantContig(combined, cloneCall="strict", scale = TRUE)
 #'
 #' @param df The product of combineTCR(), combineBCR(), expression2List(), or combineExpression().
@@ -109,7 +109,7 @@ quantContig <- function(df,
 #' #Making combined contig data
 #' x <- contig_list
 #' combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), 
-#' rep(c("P", "T"), 3), cells ="T-AB")
+#' rep(c("P", "T"), 3))
 #' abundanceContig(combined, cloneCall = "gene", scale = FALSE)
 #'
 #' @param df The product of combineTCR(), combineBCR(), expression2List(), or combineExpression().
@@ -215,7 +215,7 @@ return(plot)
 #' #Making combined contig data
 #' x <- contig_list
 #' combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), 
-#' rep(c("P", "T"), 3), cells ="T-AB")
+#' rep(c("P", "T"), 3))
 #' lengthContig(combined, cloneCall="aa", chain = "both")
 #'
 #' @param df The product of combineTCR(), combineBCR(), expression2List(), or combineExpression().
@@ -314,7 +314,7 @@ lengthContig <- function(df,
 #' #Making combined contig data
 #' x <- contig_list
 #' combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), 
-#' rep(c("P", "T"), 3), cells ="T-AB")
+#' rep(c("P", "T"), 3))
 #' compareClonotypes(combined, numbers = 10, 
 #' samples = c("PX_P", "PX_T"), cloneCall="aa")
 #'
@@ -400,7 +400,7 @@ compareClonotypes <- function(df,
 #' #Making combined contig data
 #' x <- contig_list
 #' combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), 
-#' rep(c("P", "T"), 3), cells ="T-AB")
+#' rep(c("P", "T"), 3))
 #' scatterClonotype(combined, x.axis = "PY_P", y.axis = "PY_T",
 #' graph = "proportion")
 #' 
@@ -509,7 +509,7 @@ scatterClonotype <- function(df, cloneCall ="strict",
 #' #Making combined contig data
 #' x <- contig_list
 #' combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), 
-#' rep(c("P", "T"), 3), cells ="T-AB")
+#' rep(c("P", "T"), 3))
 #' clonesizeDistribution(combined, cloneCall = "strict", method="ward.D2")
 #'
 #' @param df The product of combineTCR(), combineBCR(), expression2List(), or combineExpression().
@@ -624,7 +624,7 @@ makingLodes <- function(meta2, color, alpha, facet, set.axes) {
 #' #Making combined contig data
 #' x <- contig_list
 #' combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), 
-#' rep(c("P", "T"), 3), cells ="T-AB")
+#' rep(c("P", "T"), 3))
 #' 
 #' vizGenes(combined, gene = "V", chain = "TRB", plot = "bar", scale = TRUE)
 #'
@@ -637,7 +637,8 @@ makingLodes <- function(meta2, color, alpha, facet, set.axes) {
 #' @param y.axis Variable to separate the y-axis, can be both categorical or other gene 
 #' gene segments such as V, D, J, or C.
 #' @param order Categorical variable to organize the x-axis, either "gene" or "variance"
-#' @param scale Converts the proportion of total genes 
+#' @param scale Converts the individual count of genes to proportion using the total 
+#' respective reprtoire size 
 #' @param group.by The column header used for grouping.
 #' @param split.by If using a single-cell object, the column header 
 #' to group the new list. NULL will return clusters.

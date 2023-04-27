@@ -53,7 +53,7 @@ by the work of \href{https://pubmed.ncbi.nlm.nih.gov/32103181/}{Wu, T, et al 202
 #Making combined contig data
 x <- contig_list
 combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), 
-rep(c("P", "T"), 3), cells ="T-AB")
+rep(c("P", "T"), 3))
 scatterClonotype(combined, x.axis = "PY_P", y.axis = "PY_T",
 graph = "proportion")
 

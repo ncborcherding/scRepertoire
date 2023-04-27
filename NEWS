@@ -10,6 +10,7 @@ CHANGES IN VERSION 1.7.4
 * set up lapply() for combineBCR() and clusterTCR() - no more pairwise distance matrix calculation
 * loadContigs() support for data.frames or lists of contigs
 * Added examples for loadContigs() to test function
+* Removed requirement for T cell type designation - will combine A/B and G/D simultaneously
 
 
 CHANGES IN VERSION 1.7.3

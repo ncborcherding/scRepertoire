@@ -60,7 +60,7 @@ the data is preferred, set exportTable = TRUE.
 #Making combined contig data
 x <- contig_list
 combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), 
-rep(c("P", "T"), 3), cells ="T-AB")
+rep(c("P", "T"), 3))
 clonalDiversity(combined, cloneCall = "gene")
 
 }

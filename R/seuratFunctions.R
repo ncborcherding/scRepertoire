@@ -14,7 +14,7 @@
 #' @examples
 #' #Getting the combined contigs
 #' combined <- combineTCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), 
-#' rep(c("P", "T"), 3), cells ="T-AB")
+#' rep(c("P", "T"), 3))
 #' 
 #' #Getting a sample of a Seurat object
 #' screp_example <- get(data("screp_example"))
@@ -179,7 +179,7 @@ combineExpression <- function(df,
 #' @examples
 #' #' #Getting the combined contigs
 #' combined <- combineTCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), 
-#' rep(c("P", "T"), 3), cells ="T-AB")
+#' rep(c("P", "T"), 3))
 #' 
 #' #Getting a sample of a Seurat object
 #' screp_example <- get(data("screp_example"))
@@ -230,7 +230,7 @@ highlightClonotypes <- function(sc,
 #' @examples
 #' #Getting the combined contigs
 #' combined <- combineTCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), 
-#' rep(c("P", "T"), 3), cells ="T-AB")
+#' rep(c("P", "T"), 3))
 #' 
 #' #Getting a sample of a Seurat object
 #' screp_example <- get(data("screp_example"))
@@ -329,7 +329,7 @@ alluvialClonotypes <- function(sc,
 #' @examples
 #' #Getting the combined contigs
 #' combined <- combineTCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), 
-#' rep(c("P", "T"), 3), cells ="T-AB")
+#' rep(c("P", "T"), 3))
 #' 
 #' #Getting a sample of a Seurat object
 #' screp_example <- get(data("screp_example"))
@@ -419,7 +419,7 @@ occupiedscRepertoire <- function(sc,
 #' @examples
 #' #Getting the combined contigs
 #' combined <- combineTCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), 
-#' rep(c("P", "T"), 3), cells ="T-AB")
+#' rep(c("P", "T"), 3))
 #' 
 #' #Getting a sample of a Seurat object
 #' screp_example <- get(data("screp_example"))

@@ -402,23 +402,6 @@ parseBCR <- function (Con.df, unique_df, data2) {
   return(Con.df)
 }
 
-#Assign T/B cell chains and celltypes for combineTCR() and lengthContig
-cellT <- function(cells) {
-    if (cells == "T-AB") { 
-        chain1 <- "TRA"
-        chain2 <- "TRB" 
-        cellType <- "T-AB" 
-    } else if (cells == "T-GD") {
-        chain1 <- "TRG"
-        chain2 <- "TRD"
-        cellType <- "T-GD" 
-    } else if (cells == "B") {
-        chain1 <- "IGH"
-        chain2 <- "IGL"
-        cellType <- "B" 
-    }
-    return(list(chain1, chain2, cellType))
-}
 
 
 #Producing a data frame to visualize for lengthContig()
@@ -463,7 +446,7 @@ return(Con.df)}
 
 #General combination of nucleotide, aa, and gene sequences for T/B cells
 assignCT <- function(cellType, Con.df) {
-    if (cellType %in% c("T-AB", "T-GD")) {
+    if (cellType == "T") {
         Con.df$CTgene <- paste(Con.df$TCR1, Con.df$TCR2, sep="_")
         Con.df$CTnt <- paste(Con.df$cdr3_nt1, Con.df$cdr3_nt2, sep="_")
         Con.df$CTaa <- paste(Con.df$cdr3_aa1, Con.df$cdr3_aa2, sep="_")
@@ -481,11 +464,11 @@ return(Con.df)
 #' @importFrom stringr str_c str_replace_na
 #' @importFrom dplyr bind_rows
 makeGenes <- function(cellType, data2, chain1, chain2) {
-    if(cellType %in% c("T-AB", "T-GD")) {
+    if(cellType %in% c("T")) {
         data2 <- data2 %>% 
-            mutate(TCR1 = ifelse(chain == chain1, 
+            mutate(TCR1 = ifelse(chain %in% c("TRA", "TRG"), 
                   str_c(str_replace_na(v_gene),  str_replace_na(j_gene), str_replace_na(c_gene), sep = "."), NA)) %>%
-            mutate(TCR2 = ifelse(chain == chain2, 
+            mutate(TCR2 = ifelse(chain %in% c("TRB", "TRD"), 
                   str_c(str_replace_na(v_gene), str_replace_na(d_gene),  str_replace_na(j_gene),  str_replace_na(c_gene), sep = "."), NA))
     }
     else {

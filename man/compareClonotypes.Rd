@@ -54,7 +54,7 @@ proportion to be visualized.
 #Making combined contig data
 x <- contig_list
 combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), 
-rep(c("P", "T"), 3), cells ="T-AB")
+rep(c("P", "T"), 3))
 compareClonotypes(combined, numbers = 10, 
 samples = c("PX_P", "PX_T"), cloneCall="aa")
 

@@ -30,7 +30,7 @@ stripBarcode <- function(contigs, column = 1, connector = "_",
 #' @examples
 #' x <- contig_list
 #' combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), 
-#' rep(c("P", "T"), 3), cells ="T-AB")
+#' rep(c("P", "T"), 3))
 #' combined <- addVariable(combined, name = "batch", variables = c(1,1,1,1,2,2))
 #'
 #' @param df The product of combineTCR() combineBCR() or expression2List().
@@ -59,7 +59,7 @@ addVariable <- function(df, name = NULL, variables =  NULL) {
 #' @examples
 #' x <- contig_list
 #' combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), 
-#' rep(c("P", "T"), 3), cells ="T-AB")
+#' rep(c("P", "T"), 3))
 #' subset <- subsetContig(combined, name = "sample", variables = c("PX"))
 #'
 #' @param df The product of combineTCR(), combineBCR(), or expression2List().
@@ -96,7 +96,7 @@ subsetContig <- function(df, name, variables = NULL) {
 #' @examples
 #' #Getting the combined contigs
 #' combined <- combineTCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), 
-#' rep(c("P", "T"), 3), cells ="T-AB")
+#' rep(c("P", "T"), 3))
 #' 
 #' #Getting a sample of a Seurat object
 #' screp_example <- get(data("screp_example"))
@@ -142,7 +142,7 @@ expression2List <- function(sc, split.by) {
 #' @examples
 #' #Getting the combined contigs
 #' combined <- combineTCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), 
-#' rep(c("P", "T"), 3), cells ="T-AB")
+#' rep(c("P", "T"), 3))
 #' 
 #' #Getting a sample of a Seurat object
 #' screp_example <- get(data("screp_example"))

@@ -10,7 +10,7 @@
 #' \dontrun{
 #' #Getting the combined contigs
 #' combined <- combineTCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), 
-#' rep(c("P", "T"), 3), cells ="T-AB")
+#' rep(c("P", "T"), 3))
 #' 
 #' #Getting a sample of a Seurat object
 #' screp_example <- get(data("screp_example"))

@@ -11,7 +11,7 @@ tcr1_lines <- c("TCR1", "cdr3_aa1", "cdr3_nt1")
 tcr2_lines <- c("TCR2", "cdr3_aa2", "cdr3_nt2")
 data1_lines <- c("TCR1", "cdr3", "cdr3_nt")
 data2_lines <- c("TCR2", "cdr3", "cdr3_nt")
-CT_lines <- c("CTgene", "CTnt", "CTaa", "CTstrict", "cellType")
+CT_lines <- c("CTgene", "CTnt", "CTaa", "CTstrict")
 
 utils::globalVariables(c("heavy_lines", "light_lines", "l_lines", "k_lines", 
             "h_lines", "tcr1_lines", "tcr2_lines", "data1_lines", 
@@ -31,14 +31,11 @@ utils::globalVariables(c("heavy_lines", "light_lines", "l_lines", "k_lines",
 #' @examples
 #' combineTCR(contig_list, 
 #'            samples = rep(c("PX", "PY", "PZ"), each=2), 
-#'            ID = rep(c("P", "T"), 3), 
-#'            cells ="T-AB")
+#'            ID = rep(c("P", "T"), 3))
 #' 
 #' @param df List of filtered contig annotations from 10x Genomics.
 #' @param samples The labels of samples (required).
 #' @param ID The additional sample labeling (optional).
-#' @param cells The type of T cell - T cell-AB or T cell-GD. Only 1 T cell type can
-#' be called at once. 
 #' @param removeNA This will remove any chain without values.
 #' @param removeMulti This will remove barcodes with greater than 2 chains.
 #' @param filterMulti This option will allow for the selection of the 2 
@@ -50,7 +47,6 @@ utils::globalVariables(c("heavy_lines", "light_lines", "l_lines", "k_lines",
 combineTCR <- function(df, 
                        samples = NULL, 
                        ID = NULL, 
-                       cells = "T-AB", 
                        removeNA = FALSE, 
                        removeMulti = FALSE, 
                        filterMulti = FALSE) {
@@ -58,9 +54,6 @@ combineTCR <- function(df,
     df <- checkContigs(df)
     out <- NULL
     final <- NULL
-    chain1 <- cellT(cells)[[1]]
-    chain2 <- cellT(cells)[[2]]
-    cellType <- cellT(cells)[[3]]
     for (i in seq_along(df)) {
         if(c("chain") %in% colnames(df[[i]])) {
           df[[i]] <- subset(df[[i]], chain != "Multi")
@@ -92,14 +85,13 @@ combineTCR <- function(df,
     }
     for (i in seq_along(out)) { 
         data2 <- out[[i]]
-        data2 <- makeGenes(cellType, data2, chain1, chain2)
+        data2 <- makeGenes(cellType = "T", data2)
         unique_df <- unique(data2$barcode)
         Con.df <- data.frame(matrix(NA, length(unique_df), 7))
         colnames(Con.df) <- c("barcode",tcr1_lines, tcr2_lines)
         Con.df$barcode <- unique_df
         Con.df <- parseTCR(Con.df, unique_df, data2)
-        Con.df <- assignCT(cellType, Con.df)
-        Con.df$cellType <- cells 
+        Con.df <- assignCT(cellType = "T", Con.df)
         Con.df[Con.df == "NA_NA" | Con.df == "NA_NA_NA_NA"] <- NA 
         data3 <- merge(data2[,-which(names(data2) %in% c("TCR1","TCR2"))], 
             Con.df, by = "barcode")
@@ -207,7 +199,6 @@ combineBCR <- function(df,
         num <- ncol(final[[i]])
         final[[i]][,"CTstrict"] <- paste0(final[[i]][,num-1],".",
         final[[i]][,"vgene1"],"_",final[[i]][,num],".",final[[i]][,"vgene2"])
-        final[[i]]$cellType <- "B"
         final[[i]]$sample <- samples[i]
         final[[i]]$ID <- ID[i]
         final[[i]][final[[i]] == "NA_NA" | final[[i]] == "NA_NA_NA_NA"] <- NA 

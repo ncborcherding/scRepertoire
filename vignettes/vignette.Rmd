@@ -102,10 +102,6 @@ contig.list <- loadContigs(dir = contig.output,
 
 As the output of CellRanger are quantifications of both the TCRA and TCRB chains, the next step is to create a single list object with the TCR genes (comprised of the VDJC genes) and CDR3 sequences by cell barcode. This is performed using the `combineTCR()`, where the input is the stripped contig_list. There is also the relabeling of the barcodes by sample and ID information to prevent duplicates.
 
-**cells**  
-* T-AB - T cells, alpha-beta TCR  
-* T-GD - T cells, gamma-delta TCR  
-
 **removeNA**  
 * TRUE - this is a stringent filter to remove any cell barcode with an NA value in at least one of the chains  
 * FALSE - the default setting to include and incorporate cells with 1 NA value  
@@ -121,8 +117,7 @@ As the output of CellRanger are quantifications of both the TCRA and TCRB chains
 ```{r}
 combined <- combineTCR(contig_list, 
                         samples = c("PY", "PY", "PX", "PX", "PZ","PZ"), 
-                        ID = c("P", "T", "P", "T", "P", "T"), 
-                        cells ="T-AB")
+                        ID = c("P", "T", "P", "T", "P", "T"))
 ```
 
 The output of `combineTCR()` will be a list of contig data frames that will be reduced to the reads associated with a single cell barcode. It will also combine the multiple reads into clonotype calls by either the nucleotide sequence (CTnt), amino acid sequence (CTaa), the VDJC gene sequence (CTgene) or the combination of the nucleotide and gene sequence (CTstrict). The analogous function for B cells, `combineBCR()` functions similarly with 2 major caveats: 1) Each barcode can only have a maximum of 2 sequences, if greater exists, the 2 with the highest reads are selected. 2) The strict definition of clonotype (CTstrict) is based on the V gene and >85% normalized Levenshtein distance of the nucleotide sequence. The Levenshtein distance is calculated across all BCR sequences recovered, regardless of the run.

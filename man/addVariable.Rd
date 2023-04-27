@@ -26,7 +26,7 @@ the combined object.
 \examples{
 x <- contig_list
 combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), 
-rep(c("P", "T"), 3), cells ="T-AB")
+rep(c("P", "T"), 3))
 combined <- addVariable(combined, name = "batch", variables = c(1,1,1,1,2,2))
 
 }
