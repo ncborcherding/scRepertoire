@@ -72,5 +72,6 @@
     utils::globalVariables ("NA.values")
     utils::globalVariables ("total.cells")
     utils::globalVariables ("clone")
+    utils::globalVariables ("v.gene")
     invisible ()
 }

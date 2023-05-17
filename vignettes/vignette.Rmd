@@ -90,12 +90,21 @@ for (i in seq_along(contig_list)) {
 
 ## Loading from other pipelines
 
-New to this version of the package is support for BD Rhapsody, AIRR, [WAT3R](https://www.biorxiv.org/content/10.1101/2022.01.26.477886v1), and [TRUST4](https://www.nature.com/articles/s41592-021-01142-2) single-cell outputs. By indicating the directory or directories the outputs from these pipelines are located, ```loadContigs()``` will generate a contig list that is compatible with the rest of scRepertoire. In addition, although not necessary, ```loadContigs()``` can be used for 10X filtered_contig_annotation.csv files. 
+New to this version of the package is support for BD Rhapsody, AIRR, [WAT3R](https://www.biorxiv.org/content/10.1101/2022.01.26.477886v1), and [TRUST4](https://www.nature.com/articles/s41592-021-01142-2) single-cell outputs. By indicating the directory of the outputs from these pipelines are located, ```loadContigs()``` will generate a contig list that is compatible with the rest of scRepertoire. Alternatively, ```loadContigs()``` will also accept a list of data frames that you have loaded individualy. In addition, although not necessary, ```loadContigs()``` can be used for 10X filtered_contig_annotation.csv files. 
 
 ```{r, eval=FALSE}
-contig.output <- c("./Sample1/outs/", "./Sample2/outs/", "./Sample3/outs/")
+contig.output <- c("~/Documents/MyExperiment")
 contig.list <- loadContigs(dir = contig.output, 
                            format = "TRUST4")
+
+S1 <- read.csv("~/Documents/MyExperiment/Sample1/outs/barcode_results.csv")
+S2 <- read.csv("~/Documents/MyExperiment/Sample2/outs/barcode_results.csv")
+S3 <- read.csv("~/Documents/MyExperiment/Sample3/outs/barcode_results.csv")
+S4 <- read.csv("~/Documents/MyExperiment/Sample4/outs/barcode_results.csv")
+
+contig_list <- list(S1, S2, S3, S4)
+contig.list <- loadContigs(dir = contig.output, 
+                           format = "WAT3R")
 ```
 
 # Combining the Contigs

@@ -130,12 +130,12 @@ combineTCR <- function(df,
 #' seurat or SCE object in order to use, 
 #' \code{\link{combineExpression}}. Unlike combineTCR(), 
 #' combineBCR produces a column CTstrict of an index of nucleotide sequence 
-#' and the corresponding v-gene. This index automatically caluclates 
-#' the Levenshtein distance between sequences of the same length and will 
+#' and the corresponding v-gene. This index automatically calculates 
+#' the Levenshtein distance between sequences with the same V gene and will 
 #' index sequences with <= 0.15 normalized Levenshtein distance with the same 
 #' ID. After which, clonotype clusters are called using the igraph 
 #' component() function. Clonotype that are clustered across multiple 
-#' sequences will then be labeled with "LD" with the CTstrict header.
+#' sequences will then be labeled with "LD" in the CTstrict header.
 #'
 #' @examples
 #' #Data derived from the 10x Genomics intratumoral NSCLC B cells
@@ -146,6 +146,8 @@ combineTCR <- function(df,
 #' @param df List of filtered contig annotations from 10x Genomics.
 #' @param samples The labels of samples (required).
 #' @param ID The additional sample labeling (optional).
+#' @param call.related.clones Use the nucleotide sequence and V gene to call related clones. 
+#' Default is set to TRUE. FALSE will return a CTstrict or strict clonotype as V gene + amino acid sequence
 #' @param threshold The normalized edit distance to consider. The higher the number the more 
 #' similarity of sequence will be used for clustering.
 #' @param removeNA This will remove any chain without values.
@@ -156,6 +158,7 @@ combineTCR <- function(df,
 combineBCR <- function(df, 
                        samples = NULL, 
                        ID = NULL, 
+                       call.related.clones = TRUE,
                        threshold = 0.85,
                        removeNA = FALSE, 
                        removeMulti = FALSE) {
@@ -191,14 +194,20 @@ combineBCR <- function(df,
         final[[i]] <- data3 
     }
     dictionary <- bind_rows(final)
-    IGH <- lvCompare(dictionary, "IGH", "cdr3_nt1", threshold)
-    IGLC <- lvCompare(dictionary, "IGLC", "cdr3_nt2", threshold)
+    if(call.related.clones) {
+      IGH <- lvCompare(dictionary, "IGH", "cdr3_nt1", threshold)
+      IGLC <- lvCompare(dictionary, "IGLC", "cdr3_nt2", threshold)
+    } 
     for(i in seq_along(final)) {
+      if(call.related.clones) {
         final[[i]]<-merge(final[[i]],IGH,by.x="cdr3_nt1",by.y="IG",all.x=TRUE)
         final[[i]]<-merge(final[[i]],IGLC,by.x="cdr3_nt2",by.y="IG",all.x=TRUE)
         num <- ncol(final[[i]])
         final[[i]][,"CTstrict"] <- paste0(final[[i]][,num-1],".",
-        final[[i]][,"vgene1"],"_",final[[i]][,num],".",final[[i]][,"vgene2"])
+              final[[i]][,"vgene1"],"_",final[[i]][,num],".",final[[i]][,"vgene2"])
+      } else {
+        final[[i]][,"CTstrict"] <- paste0(final[[i]][,"vgene1"], ".", final[[i]][,"cdr3_aa1"], "_", final[[i]][,"vgene2"], ".", final[[i]][,"cdr3_aa2"])
+      }
         final[[i]]$sample <- samples[i]
         final[[i]]$ID <- ID[i]
         final[[i]][final[[i]] == "NA_NA" | final[[i]] == "NA_NA_NA_NA"] <- NA 
@@ -225,48 +234,79 @@ combineBCR <- function(df,
         final[[i]]<-final[[i]][rowSums(is.na(final[[i]])) < 10, ]}
     if (removeNA == TRUE) { final <- removingNA(final) }
     if (removeMulti == TRUE) { final <- removingMulti(final) }
-    return(final) }
+    return(final) 
+}
 
 # Calculates the normalized Levenshtein Distance between the contig 
 # nucleotide sequence.
 #' @importFrom stringdist stringdistmatrix
 #' @importFrom igraph graph_from_data_frame components
+#' @importFrom dplyr bind_rows
 lvCompare <- function(dictionary, gene, chain, threshold) {
     overlap <- NULL
     out <- NULL
-    tmp <- na.omit(unique(dictionary[,chain]))
-    length <- nchar(tmp)
-    edge.list <- lapply(tmp, function(y) {
-      pos <- which(tmp == y)
-      dist <- stringdist(y, tmp[-pos], method = "lv")
-      norm.row <- dist
-      norm.row <- 1 - (norm.row/((length[pos] + length[-pos])/2))
-      neighbor <- which(norm.row >= threshold)
-      if(length(neighbor) > 0) {
-        nn.norm = data.frame("from" = pos,
-                             "to" = neighbor)
-      } else {
-        nn.norm <- NULL
+    dictionary[dictionary == "None"] <- NA
+    dictionary$v.gene <- stringr::str_split(dictionary[,gene], "[.]", simplify = TRUE)[,1]
+    tmp <- na.omit(unique(dictionary[,c(chain, "v.gene")]))
+    #chunking the sequences for distance by v.gene
+    unique.v <- na.omit(unique(tmp$v.gene))
+    edge.list <- list()
+    
+    edge.list <- lapply(unique.v, function(y) {
+    #for(y in unique.v) {
+      secondary.list <- NULL
+      filtered_df <- tmp %>% filter(v.gene == y)
+      filtered_df <- filtered_df[!is.na(filtered_df[,chain]),]
+      nucleotides <- filtered_df[,chain]
+      if (length(nucleotides) > 1) {
+        for (i in 1:(length(nucleotides) - 1)) {
+          list <- NULL
+          for (j in (i + 1):length(nucleotides)) {
+            distance <- stringdist::stringdist(nucleotides[i], nucleotides[j], method = "lv")
+            distance <- 1-distance/((nchar(nucleotides[i]) + nchar(nucleotides[j]))/2)
+            
+            if (!is.na(distance) & distance > threshold) {
+              if(which(tmp[,chain] == nucleotides[j]) %!in% which(tmp[,chain] == nucleotides[i])) {
+                # Store this pair in the edge list that is not the same chain
+                 list[[j]] <- list(from = which(tmp[,chain] == nucleotides[i]), 
+                                  to = which(tmp[,chain] == nucleotides[j]))
+              }
+            }      
+          }
+          #Remove any NULL or 0 list elements
+          if(length(list) > 0) {
+            list <-  list[-which(unlist(lapply(list, is.null)))]
+            list <-  list[lapply(list,length)>0]
+            list <- bind_rows(list) %>% as.data.frame()
+            secondary.list[[i]] <- list
+          }
+        }
+        #Remove any NULL or 0 list elements
+        if(length(secondary.list) > 0) {
+          secondary.list <-  secondary.list[-which(unlist(lapply(secondary.list, is.null)))]
+          secondary.list <-  secondary.list[lapply(secondary.list,length)>0]
+        }
       }
-      nn.norm
+      secondary.list
     })
+    #Remove NULL elements and make data.frame
     edge.list = edge.list[-which(sapply(edge.list, is.null))]
-    edge.list <- do.call(rbind, edge.list)
+    edge.list <- bind_rows(edge.list)
+    
     if (nrow(edge.list) > 0) { 
-      edge.list$to <-ifelse(edge.list$to > edge.list$from, edge.list$to + 1, edge.list$to)
       edge.list <- unique(edge.list)
       g <- graph_from_data_frame(edge.list)
       components <- components(g, mode = c("weak"))
       out <- data.frame("cluster" = components$membership, 
-                  "filtered" = names(components$membership))
+                        "filtered" = names(components$membership))
       filter <- which(table(out$cluster) > 1)
       out <- subset(out, cluster %in% filter)
       if(nrow(out) > 1) {
         out$cluster <- paste0(gene, ":LD", ".", out$cluster)
-        out$filtered <- tmp[as.numeric(out$filtered)]
-        uni_IG <- as.data.frame(unique(tmp[tmp %!in% out$filtered]))
+        out$filtered <- tmp[,1][as.numeric(out$filtered)]
+        uni_IG <- as.data.frame(unique(tmp[,1][tmp[,1] %!in% out$filtered]))
       } else {
-        uni_IG <- as.data.frame(unique(tmp))
+        uni_IG <- as.data.frame(unique(tmp[,1]))
         colnames(uni_IG) <- "filtered"
       }
       colnames(uni_IG) <- "filtered"
