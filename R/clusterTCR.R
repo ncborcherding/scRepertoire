@@ -1,12 +1,13 @@
 #' Clustering T cell receptors
 #'
 #' This function uses edit distances of either the nucleotide or amino acid 
-#' sequences of the CDR3 to cluster similar TCRs together. The distance clustering
-#' will then be amended to the end of the list of combined contigs. The cluster 
-#' will appear as CHAIN.num if a unique sequence or CHAIN:LD.num if clustered together.
-#' This function will only two chains recovered, multiple chains will automatically 
-#' be reduced. This function also underlies the combineBCR() function and therefore 
-#' not needed for B cells. This may take some time to calculate the distances and cluster. 
+#' sequences of the CDR3 and V genes to cluster similar TCRs together. 
+#' The distance clustering will then be amended to the end of the list of 
+#' combined contigs. The cluster will appear as CHAIN.num if a unique sequence or 
+#' CHAIN:LD.num if clustered together.T his function will only two chains 
+#' recovered, multiple chains will automatically be reduced. This function 
+#' also underlies the combineBCR() function and therefore not needed for 
+#' B cells. This may take some time to calculate the distances and cluster. 
 #' 
 #' @examples
 # Getting the combined contigs
@@ -20,13 +21,13 @@
 #' @param sequence Clustering based on either "aa" or "nt"
 #' @param threshold The normalized edit distance to consider. The higher the number the more 
 #' similarity of sequence will be used for clustering.
-#' @param group.by The column header used for to calculate the cluster
+#' @param group.by The column header used for to group contigs.
 #' @importFrom stringdist stringdist
 #' @importFrom igraph graph_from_data_frame components
 #' @importFrom plyr join
 #' @importFrom dplyr bind_rows
-#' @importFrom stringr str_split
-#' @importFrom  rlang %||%
+#' @importFrom stringr str_split str_replace_all
+#' @importFrom rlang %||%
 #' @importFrom SummarizedExperiment colData<- colData
 #' @importFrom stats na.omit
 #' @export
@@ -64,59 +65,21 @@ clusterTCR <- function(df,
     bound <- list(bound)
     list.length <- 1
   }
-  
+  #Defining clusters by edit distance
   output.list <- lapply(bound, function(x) {
-    dictionary <- na.omit(unique(x[,ref2]))
-    dictionary <- str_split(dictionary, ";", simplify = TRUE)[,1]
-    dictionary <- na.omit(unique(dictionary))
-    length <- nchar(dictionary)
-    edge.list <- lapply(dictionary, function(y) {
-      pos <- which(dictionary == y)
-      dist <- stringdist(y, dictionary[-pos], method = "lv")
-      norm.row <- dist
-      norm.row <- 1 - (norm.row/((length[pos] + length[-pos])/2))
-      neighbor <- which(norm.row >= threshold)
-      if(length(neighbor) > 0) {
-        nn.norm = data.frame("from" = pos,
-                             "to" = neighbor)
-      } else {
-        nn.norm <- NULL
-      }
-      nn.norm
-    })
-    edge.list = edge.list[-which(sapply(edge.list, is.null))]
-    edge.list <- do.call(rbind, edge.list)
-    edge.list$to <-ifelse(edge.list$to > edge.list$from, edge.list$to + 1, edge.list$to)
-    edge.list <- unique(edge.list)
-    g <- graph_from_data_frame(edge.list)
-    components <- components(g, mode = c("weak"))
-    out <- data.frame("cluster" = components$membership, 
-                      "filtered" = names(components$membership))
-    filter <- which(table(out$cluster) > 1)
-    out <- subset(out, cluster %in% filter)
-    if(nrow(out) > 1) {
-      if (list.length == 1) {
-        out$cluster <- paste0(chain, ":LD", ".", out$cluster)
-      } else {
-        out$cluster <- paste0(names(bound)[x], ".", chain, ":LD", ".", out$cluster)
-      }
-      out$filtered <- dictionary[as.numeric(out$filtered)]
-    }
-    uni_IG <- as.data.frame(unique(dictionary[dictionary %!in% out$filtered]))
-    colnames(uni_IG) <- "filtered"
-    if (nrow(uni_IG) > 0) {
-      if (list.length == 1) {
-        uni_IG$cluster <- paste0(chain, ".", seq_len(nrow(uni_IG))) 
-      } else {
-        uni_IG$cluster <- paste0(names(bound)[x], ".", chain, ".", seq_len(nrow(uni_IG))) 
-      }
-    }
-    
-    output <- rbind.data.frame(out, uni_IG)
-    colname <- paste0(chain, "_cluster")
-    colnames(output) <- c(colname,ref2)
-    output
+    cluster <- lvCompare(x, gene = paste0("TCR", ref), chain = ref2, threshold = threshold)
+    cluster
   })
+  #Reformating output for compatibility
+  for (i in seq_along(output.list)) {
+        output.list[[i]][,1] <- str_replace_all(output.list[[i]][,1], paste0("TCR", ref), chain)
+        if (length(output.list) > 1) {
+          output.list[[i]][,1] <- paste0(names(bound)[i], ".", output.list[[i]][,1]) 
+        }
+        colnames(output.list[[i]])[1] <- paste0(chain, "_cluster")
+        colnames(output.list[[i]])[2] <- paste0(ref2)
+  }
+  #Merging with contig info
   for (i in seq_along(bound)) {
     tmp <- bound[[i]]
     output <- bind_rows(output.list)
@@ -126,6 +89,7 @@ clusterTCR <- function(df,
     tmp <-  unique(suppressMessages(join(tmp,  output2)))
     bound[[i]] <- tmp
   }
+  #Adding to potential single-cell object
   if(inherits(x=df, what ="Seurat") | inherits(x=df, what ="SummarizedExperiment")) {
     PreMeta <- bind_rows(bound)
     x <- colnames(PreMeta)[ncol(PreMeta)]
@@ -144,3 +108,4 @@ clusterTCR <- function(df,
   }
   return(df)
 }  
+

@@ -12,6 +12,7 @@ CHANGES IN VERSION 1.7.4
 * Added examples for loadContigs() to test function
 * Removed requirement for T cell type designation - will combine A/B and G/D simultaneously
 * Updated combineBCR() to chunk nucleotide edit distance calculations by V gene and give option to skip edit distance calculation with call.related.clones = FALSE
+* Updated clusterTCR() to use lvcompare() function and base edit distances of V gene usage. 
 
 
 CHANGES IN VERSION 1.7.3
