@@ -176,7 +176,14 @@ combineBCR <- function(df,
         df[[i]]$sample <- samples[i]
         df[[i]]$ID <- ID[i]
         if (filterMulti) {
+                    # Keep IGH / IGK / IGL info in save_chain
+                    df[[i]]$save_chain=df[[i]]$chain
+                    # Collapse IGK and IGL chains
+                    df[[i]]$chain=ifelse(df[[i]]$chain=="IGH","IGH","IGLC")
                     df[[i]] <- filteringMulti(df[[i]])
+                    # Get back IGK / IGL distinction
+                    df[[i]]$chain=df[[i]]$save_chain
+                    df[[i]]$save_chain=NULL
         }
     }
     if (!is.null(samples)) {
