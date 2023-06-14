@@ -30,6 +30,9 @@ similarity of sequence will be used for clustering.}
 \item{removeNA}{This will remove any chain without values.}
 
 \item{removeMulti}{This will remove barcodes with greater than 2 chains.}
+
+\item{filterMulti}{This option will allow for the selection of the 2 
+corresponding chains with the highest expression for a single barcode.}
 }
 \value{
 List of clonotypes for individual cell barcodes

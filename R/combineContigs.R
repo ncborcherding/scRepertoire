@@ -152,6 +152,7 @@ combineTCR <- function(df,
 #' similarity of sequence will be used for clustering.
 #' @param removeNA This will remove any chain without values.
 #' @param removeMulti This will remove barcodes with greater than 2 chains.
+#' @param filterMulti This option will allow for the selection of the 2 
 #' @import dplyr
 #' @export
 #' @return List of clonotypes for individual cell barcodes
@@ -161,7 +162,8 @@ combineBCR <- function(df,
                        call.related.clones = TRUE,
                        threshold = 0.85,
                        removeNA = FALSE, 
-                       removeMulti = FALSE) {
+                       removeMulti = FALSE,
+                      filterMulti = FALSE) {
     df <- checkList(df)
     df <- checkContigs(df)
     out <- NULL
@@ -170,11 +172,20 @@ combineBCR <- function(df,
     chain2 <- "light"
     for (i in seq_along(df)) {
         df[[i]] <- subset(df[[i]], chain %in% c("IGH", "IGK", "IGL"))
-        df[[i]] <- df[[i]] %>% group_by(barcode,chain) %>% 
-          slice_max(n=1,order_by=reads, with_ties = FALSE)
+        #df[[i]] <- df[[i]] %>% group_by(barcode,chain) %>% slice_max(n=1,order_by=reads, with_ties = FALSE)
         df[[i]]$sample <- samples[i]
         df[[i]]$ID <- ID[i]
-        df[[i]] <- filteringMulti(df[[i]]) }
+        if (filterMulti) {
+                    # Keep IGH / IGK / IGL info in save_chain
+                    df[[i]]$save_chain=df[[i]]$chain
+                    # Collapse IGK and IGL chains
+                    df[[i]]$chain=ifelse(df[[i]]$chain=="IGH","IGH","IGLC")
+                    df[[i]] <- filteringMulti(df[[i]])
+                    # Get back IGK / IGL distinction
+                    df[[i]]$chain=df[[i]]$save_chain
+                    df[[i]]$save_chain=NULL
+        }
+    }
     if (!is.null(samples)) {
       out <- modifyBarcodes(df, samples, ID)
     } else {
