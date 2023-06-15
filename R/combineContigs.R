@@ -268,7 +268,7 @@ lvCompare <- function(dictionary, gene, chain, threshold) {
       secondary.list <- NULL
       filtered_df <- tmp %>% filter(v.gene == y)
       filtered_df <- filtered_df[!is.na(filtered_df[,chain]),]
-      nucleotides <- filtered_df[,chain]
+      nucleotides <- unique(filtered_df[,chain])
       if (length(nucleotides) > 1) {
         for (i in 1:(length(nucleotides) - 1)) {
           list <- NULL
@@ -277,10 +277,11 @@ lvCompare <- function(dictionary, gene, chain, threshold) {
             distance <- 1-distance/((nchar(nucleotides[i]) + nchar(nucleotides[j]))/2)
             
             if (!is.na(distance) & distance > threshold) {
-              if(which(tmp[,chain] == nucleotides[j]) %!in% which(tmp[,chain] == nucleotides[i])) {
+              if(any(which(tmp[,chain] == nucleotides[j]) %!in% which(tmp[,chain] == nucleotides[i]))) {
+                stored.positions <- which(tmp[,chain] == nucleotides[j])[which(tmp[,chain] == nucleotides[j]) %!in% which(tmp[,chain] == nucleotides[i])]
                 # Store this pair in the edge list that is not the same chain
                  list[[j]] <- list(from = which(tmp[,chain] == nucleotides[i]), 
-                                  to = which(tmp[,chain] == nucleotides[j]))
+                                  to = stored.positions)
               }
             }      
           }
