@@ -152,7 +152,8 @@ combineTCR <- function(df,
 #' similarity of sequence will be used for clustering.
 #' @param removeNA This will remove any chain without values.
 #' @param removeMulti This will remove barcodes with greater than 2 chains.
-#' @param filterMulti This option will allow for the selection of the 2 
+#' @param filterMulti This option will allow for the selection of the highest-expressing light and heavy 
+#' chains, if not calling related clones.
 #' @import dplyr
 #' @export
 #' @return List of clonotypes for individual cell barcodes
@@ -163,7 +164,7 @@ combineBCR <- function(df,
                        threshold = 0.85,
                        removeNA = FALSE, 
                        removeMulti = FALSE,
-                      filterMulti = FALSE) {
+                       filterMulti = TRUE) {
     df <- checkList(df)
     df <- checkContigs(df)
     out <- NULL
@@ -280,8 +281,11 @@ lvCompare <- function(dictionary, gene, chain, threshold) {
               if(any(which(tmp[,chain] == nucleotides[j]) %!in% which(tmp[,chain] == nucleotides[i]))) {
                 stored.positions <- which(tmp[,chain] == nucleotides[j])[which(tmp[,chain] == nucleotides[j]) %!in% which(tmp[,chain] == nucleotides[i])]
                 # Store this pair in the edge list that is not the same chain
-                 list[[j]] <- list(from = which(tmp[,chain] == nucleotides[i]), 
-                                  to = stored.positions)
+                 ex.grid <- expand.grid(which(tmp[,chain] == nucleotides[i]), stored.positions)
+                 colnames(ex.grid) <- c("from", "to")
+                 list[[j]] <- ex.grid
+                 
+                 
               }
             }      
           }

@@ -12,7 +12,7 @@ combineBCR(
   threshold = 0.85,
   removeNA = FALSE,
   removeMulti = FALSE,
-  filterMulti = FALSE
+  filterMulti = TRUE
 )
 }
 \arguments{
@@ -32,7 +32,8 @@ similarity of sequence will be used for clustering.}
 
 \item{removeMulti}{This will remove barcodes with greater than 2 chains.}
 
-\item{filterMulti}{This option will allow for the selection of the 2}
+\item{filterMulti}{This option will allow for the selection of the highest-expressing light and heavy 
+chains, if not calling related clones.}
 }
 \value{
 List of clonotypes for individual cell barcodes
