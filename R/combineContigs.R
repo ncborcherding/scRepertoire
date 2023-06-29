@@ -321,14 +321,13 @@ lvCompare <- function(dictionary, gene, chain, threshold) {
         out$cluster <- paste0(gene, ":LD", ".", out$cluster)
         out$filtered <- tmp[,1][as.numeric(out$filtered)]
         uni_IG <- as.data.frame(unique(tmp[,1][tmp[,1] %!in% out$filtered]))
-      } else {
-        uni_IG <- as.data.frame(unique(tmp[,1]))
-        colnames(uni_IG) <- "filtered"
       }
-      colnames(uni_IG) <- "filtered"
-      if (nrow(uni_IG) > 0) {
-        uni_IG$cluster <- paste0(gene, ".", seq_len(nrow(uni_IG)))
-      }
+    } else {
+      uni_IG <- as.data.frame(unique(tmp[,1]))
+    }
+    colnames(uni_IG)[1] <- "filtered"
+    if (nrow(uni_IG) > 0) {
+      uni_IG$cluster <- paste0(gene, ".", seq_len(nrow(uni_IG)))
     }
     output <- rbind.data.frame(out, uni_IG)
     colnames(output) <- c("Hclonotype", "IG")
