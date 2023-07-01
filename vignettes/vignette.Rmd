@@ -533,7 +533,12 @@ screp_example <- combineExpression(combined,
                                    proportion = FALSE, 
                                    cloneTypes=c(Single=1, Small=5, Medium=20, Large=100, Hyperexpanded=500))
 
-sce <- combineExpression(combined, sce, cloneCall = "gene", group.by = "sample")
+
+sce <- combineExpression(combined, 
+                          sce, 
+                          cloneCall="gene", 
+                          group.by = "sample", 
+                          proportion = TRUE)
 ```
 
 ## Combining both TCR and BCR 
