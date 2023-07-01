@@ -271,7 +271,7 @@ lengthContig <- function(df,
     }
     names <- names(df)
     if (!is.null(group.by)) { 
-        fill = group.by
+        fill <- group.by
         col <- length(unique(Con.df[,group.by]))
         if (scale == TRUE) { yplus <- "Percent of "
             plot <- ggplot(Con.df, aes(fill=Con.df[,group.by],
@@ -382,9 +382,9 @@ compareClonotypes <- function(df,
                 theme_classic() +
                 theme(axis.title.x = element_blank())
     if (graph == "alluvial") {
-        plot = plot +  geom_stratum() + geom_flow(stat = "alluvium")
+        plot <- plot +  geom_stratum() + geom_flow(stat = "alluvium")
     } else if (graph == "area") {
-        plot = plot +
+        plot <- plot +
             geom_area(aes(group = Clonotypes), color = "black") }
     return(plot)
 }

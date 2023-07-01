@@ -40,7 +40,7 @@ loadContigs <- function(dir,
                         "TRUST4" = "barcode_report.tsv", 
                         "BD" = "Contigs_AIRR.tsv")
         file.pattern <- format.list[[format]]
-        contig.files <- list.files(dir, file.pattern, recursive = T, full.names = T)
+        contig.files <- list.files(dir, file.pattern, recursive = TRUE, full.names = TRUE)
         if (format %in% c("10X", "WAT3R")) {
           df <- lapply(contig.files, read.csv) 
         } else if (format %!in% c("10X", "WAT3R")) {

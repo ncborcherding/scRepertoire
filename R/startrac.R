@@ -512,7 +512,7 @@ loginfo <- function(msg) {
 mrow.entropy <- function(x)
 {
     freqs <- sweep(x,1,rowSums(x),"/")
-    H = - rowSums(ifelse(freqs>0,freqs* log2(freqs),0))
+    H <- - rowSums(ifelse(freqs>0,freqs* log2(freqs),0))
     return(H)
 }
 
@@ -523,7 +523,7 @@ mrow.entropy <- function(x)
 mcol.entropy <- function(x)
 {
     freqs <- sweep(x,2,colSums(x),"/")
-    H = - colSums(ifelse(freqs>0,freqs* log2(freqs),0))
+    H <- - colSums(ifelse(freqs>0,freqs* log2(freqs),0))
     return(H)
 }
 

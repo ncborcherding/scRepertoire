@@ -26,7 +26,8 @@
 #' n.boots = 20, min.expand = 2)
 #' }
 #' 
-#' @param df The product of combineTCR(), combineBCR(), expression2List(), or combineExpression().
+#' @param df The product of combineTCR(), combineBCR(), expression2List(), 
+#' or combineExpression().
 #' @param cloneCall How to call the clonotype - VDJC gene (gene), 
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
 #' VDJC gene + CDR3 nucleotide (strict).
@@ -59,7 +60,7 @@ clonotypeBias <- function(df,
                                             group.by = group.by, 
                                             cloneCall=cloneCall, 
                                             min.expand=min.expand, 
-                                            do.shuffle = T, 
+                                            do.shuffle = TRUE, 
                                             seed=ii)
   }
   df_shuffle <- Reduce(rbind, df_shuffle.list)
@@ -165,7 +166,7 @@ get_clono_bias <- function(df,
       subtypes <- names(bg[[s]])
       
       if (length(clones)>0) {
-        clones <- sort(clones, decreasing = T)
+        clones <- sort(clones, decreasing = TRUE)
         expanded <- df[[s]][which(df[[s]][,cloneCall] %in% names(clones)), c(group.by, cloneCall)]
         
         if (do.shuffle) {  #reshuffle annotation column
@@ -190,7 +191,7 @@ get_clono_bias <- function(df,
                        as.double(comp[top_state]), 
                        as.double(diff[top_state]), 
                        as.double(diff_norm[top_state]))
-          dat[nrow(dat) + 1,] = new_row
+          dat[nrow(dat) + 1,] <- new_row
         }
       }
     }

@@ -77,7 +77,7 @@ list.input.return <- function(df, split.by) {
 #' @importFrom SingleCellExperiment reducedDim
 get.coord <- function(sc, reduction) { 
   if (is.null(reduction)) {
-    reduction = "pca"
+    reduction <- "pca"
   }
   if (inherits(x=sc, what ="Seurat")) {
     coord <- sc@reductions[[reduction]]@cell.embeddings

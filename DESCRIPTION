@@ -31,7 +31,8 @@ Imports:
 	igraph,
 	ggraph,
 	tidygraph,
-	SeuratObject
+	SeuratObject,
+	stats
 Suggests: 
 	knitr, 
 	rmarkdown, 
