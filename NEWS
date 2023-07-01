@@ -1,3 +1,7 @@
+CHANGES IN VERSION 1.11.0
+------------------------
+* Rebasing for the purposes of bioconductor version
+
 CHANGES IN VERSION 1.7.5
 ------------------------
 * Fixed combineBCR() to allow for non-related sequences
