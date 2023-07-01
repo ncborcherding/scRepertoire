@@ -52,7 +52,7 @@ Please read and cite PMID: 30485278 if using the function for analyses.
 #Making combined contig data
 x <- contig_list
 combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), 
-rep(c("P", "T"), 3), cells ="T-AB")
+rep(c("P", "T"), 3))
 clonesizeDistribution(combined, cloneCall = "strict", method="ward.D2")
 
 }

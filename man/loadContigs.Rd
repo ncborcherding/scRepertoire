@@ -7,25 +7,38 @@
 loadContigs(dir, format = "10X")
 }
 \arguments{
-\item{dir}{The directory or directories with single-cell contig data}
+\item{dir}{The directory in which contigs are located or a list with contig elements}
 
-\item{format}{The format of the single-cell contig, currently supporting: "10X", "AIRR", "TRUST4", and "WAT3R"}
+\item{format}{The format of the single-cell contig, currently supporting: 
+"10X", "AIRR", "TRUST4", "BD", and "WAT3R"}
 }
 \value{
 List of contigs for further processing in scRepertoire
 }
 \description{
 This function generates a contig list and formats the data to allow for 
-function with  \code{\link{combineTCR}} or \code{\link{combineTCR}}. If 
+function with  \code{\link{combineTCR}} or \code{\link{combineBCR}}. If 
 using data derived from filtered outputs of 10X Genomics, there is no 
 need to use this function as the data is already compatible. The function
 assumes if listing multiple directories, there are distinct outputs with
-unmodified file names in them.
+unmodified file names in them. The files that this function parses includes: 
+WAT3R = "barcode_results.csv", 10X =  "filtered_contig_annotation.csv", 
+AIRR = "airr_rearrangement.tsv", TRUST4 = "barcode_report.tsv", and 
+BD = "Contigs_AIRR.tsv".
 }
 \examples{
 \dontrun{
-dir <- c("./Sample1/outs/", "./Sample2/outs/", "./Sample3/outs/")
+dir <- c("./Sample1/outs/")
 contig.list <- loadContigs(dir, format = "10X")
 }
+
+TRUST4 <- read.csv("https://www.borch.dev/uploads/contigs/TRUST4_contigs.csv")
+contig.list <- loadContigs(TRUST4, format = "TRUST4")
+
+BD <- read.csv("https://www.borch.dev/uploads/contigs/BD_contigs.csv")
+contig.list <- loadContigs(BD, format = "BD")
+
+WAT3R <- read.csv("https://www.borch.dev/uploads/contigs/WAT3R_contigs.csv")
+contig.list <- loadContigs(WAT3R, format = "WAT3R")
 
 }

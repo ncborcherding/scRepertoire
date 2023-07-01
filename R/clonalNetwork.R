@@ -10,7 +10,7 @@
 #' \dontrun{
 #' #Getting the combined contigs
 #' combined <- combineTCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), 
-#' rep(c("P", "T"), 3), cells ="T-AB")
+#' rep(c("P", "T"), 3))
 #' 
 #' #Getting a sample of a Seurat object
 #' screp_example <- get(data("screp_example"))
@@ -39,6 +39,9 @@
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL"
 #' @param exportTable Exports a table of the data into the global 
 #' environment in addition to the visualization
+#' @param exportClones Exports a table of clones that are shared
+#' across multiple identity groups and ordered by the total number
+#' of clone copies.
 #' @import ggplot2
 #' @importFrom stringr str_sort
 #' @importFrom igraph graph_from_data_frame V `V<-`
@@ -58,7 +61,8 @@ clonalNetwork <- function(sc,
                           filter.graph = FALSE,
                           cloneCall = "strict", 
                           chain = "both", 
-                          exportTable = FALSE) {
+                          exportTable = FALSE, 
+                          exportClones = FALSE) {
     
     cloneCall <- theCall(cloneCall)
     meta <- grabMeta(sc)  
@@ -75,7 +79,7 @@ clonalNetwork <- function(sc,
         min <- min(min)
         table <- meta %>%
             group_by(meta[,identity], meta[, cloneCall]) %>%
-            count() %>%
+            dplyr::count() %>%
             na.omit() %>%
             arrange(desc(n)) 
         runSum <-as.vector(cumsum(table[,3])) 
@@ -84,7 +88,7 @@ clonalNetwork <- function(sc,
         clones.to.filter <- table[seq_len(cut),1]
     } else if (is.numeric(filter.clones)) {
         table <- meta %>%
-          count(meta[, cloneCall]) %>%
+          dplyr::count(meta[, cloneCall]) %>%
           na.omit() %>%
           arrange(desc(n)) 
         runSum <-as.vector(cumsum(table[,2])) 
@@ -98,6 +102,23 @@ clonalNetwork <- function(sc,
       meta <- meta[meta[,cloneCall] %in% clones.to.filter,]
     }
     clones.duplicated <- na.omit(unique(meta[which(duplicated(meta[,cloneCall])),cloneCall]))
+    if(exportClones) {
+      table <- meta %>%
+        group_by(meta[,identity], meta[, cloneCall]) %>%
+        dplyr::count() %>%
+        na.omit() %>%
+        arrange(desc(n))
+      
+      clones.across.identities <- names(table(table[,2])[which(table(table[,2]) > 1)])
+      subset.table <- as.data.frame(table)
+      subset.table <- subset.table[subset.table[,2] %in% clones.across.identities,]
+      colnames(subset.table) <- c("id", "clone", "n")
+      dupl.clones <- subset.table %>%
+                      group_by(clone) %>%
+                      summarise(sum = sum(n))%>%
+                      arrange(desc(sum)) 
+      return(dupl.clones)
+    }
     id <- as.vector(meta[,identity])
     id.names <- id
     names(id.names) <- row.names(meta)
@@ -152,7 +173,6 @@ clonalNetwork <- function(sc,
     edge.list <- data.frame(edge.list)
     colnames(edge.list)[3] <-"weight"
    
-    
     if (!is.null(filter.identity)) { 
         col1 <- which(edge.list[,1] == filter.identity)
         col2 <- which(edge.list[,2] == filter.identity)
@@ -194,7 +214,9 @@ clonalNetwork <- function(sc,
             axis.line = element_line(colour = "black"), 
             legend.key=element_blank()
         )
-    if (exportTable == TRUE) { return(edge.list1)}
+    if (exportTable) { 
+      return(edge.list1)
+    }
     return(plot1)
 }
 

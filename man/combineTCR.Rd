@@ -8,7 +8,6 @@ combineTCR(
   df,
   samples = NULL,
   ID = NULL,
-  cells = "T-AB",
   removeNA = FALSE,
   removeMulti = FALSE,
   filterMulti = FALSE
@@ -20,9 +19,6 @@ combineTCR(
 \item{samples}{The labels of samples (required).}
 
 \item{ID}{The additional sample labeling (optional).}
-
-\item{cells}{The type of T cell - T cell-AB or T cell-GD. Only 1 T cell type can
-be called at once.}
 
 \item{removeNA}{This will remove any chain without values.}
 
@@ -47,7 +43,6 @@ recovered.
 \examples{
 combineTCR(contig_list, 
            samples = rep(c("PX", "PY", "PZ"), each=2), 
-           ID = rep(c("P", "T"), 3), 
-           cells ="T-AB")
+           ID = rep(c("P", "T"), 3))
 
 }

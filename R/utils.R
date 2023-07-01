@@ -77,7 +77,7 @@ list.input.return <- function(df, split.by) {
 #' @importFrom SingleCellExperiment reducedDim
 get.coord <- function(sc, reduction) { 
   if (is.null(reduction)) {
-    reduction = "pca"
+    reduction <- "pca"
   }
   if (inherits(x=sc, what ="Seurat")) {
     coord <- sc@reductions[[reduction]]@cell.embeddings
@@ -366,59 +366,38 @@ parseBCR <- function (Con.df, unique_df, data2) {
   for (y in seq_along(unique_df)) {
     barcode.i <- Con.df$barcode[y]
     location.i <- which(barcode.i == data2$barcode)
-    if (length(location.i) == 2) {
-      if (!is.na(data2[location.i[1], c("IGHct")])) {
-        Con.df[y, heavy_lines] <- data2[location.i[1], h_lines]
-        if(is.na(data2[location.i[2], c("IGHct")])) {
-          if (!is.na(data2[location.i[2], c("IGLct")])) {
-            Con.df[y, light_lines] <- data2[location.i[2], l_lines]
-          } else if(!is.na(data2[location.i[2], c("IGKct")])) {
-            Con.df[y, light_lines] <- data2[location.i[2], k_lines]
-          }
+    
+    for (z in seq_along(location.i)) {
+      where.chain <- data2[location.i[z],"chain"]
+      
+      if (where.chain == "IGH") {
+        if(is.na(Con.df[y,"IGH"])) {
+          Con.df[y,heavy_lines] <- data2[location.i[z],h_lines]
+        } else {
+          Con.df[y,heavy_lines] <- paste(Con.df[y, heavy_lines],
+                                         data2[location.i[z],h_lines],sep=";") 
         }
-      } else if (!is.na(data2[location.i[2], c("IGHct")])) {
-        Con.df[y, heavy_lines] <- data2[location.i[2], h_lines]
-        if(is.na(data2[location.i[1], c("IGHct")])) {
-          if (!is.na(data2[location.i[1], c("IGLct")])) {
-            Con.df[y, light_lines] <- data2[location.i[1], l_lines]
-          } else if(!is.na(data2[location.i[1], c("IGKct")])) {
-            Con.df[y, light_lines] <- data2[location.i[1], k_lines]
-          }
+      } else if (where.chain == "IGK") {
+        if(is.na(Con.df[y,"IGLC"])) {
+          Con.df[y,light_lines] <- data2[location.i[z],k_lines]
+        } else {
+          Con.df[y,light_lines] <- paste(Con.df[y, light_lines],
+                                         data2[location.i[z],k_lines],sep=";") 
         }
-      }
-    }else if (length(location.i) == 1) {
-      chain.i <- data2$chain[location.i]
-      if (chain.i == "IGH") {
-        Con.df[y, heavy_lines] <- data2[location.i[1], h_lines]
-      }
-      else if (chain.i == "IGL") {
-        Con.df[y, light_lines] <- data2[location.i[1], l_lines]
-      }
-      else {
-        Con.df[y, light_lines] <- data2[location.i[1], k_lines]
+      }else if (where.chain == "IGL") {
+        if(is.na(Con.df[y,"IGLC"])) {
+          Con.df[y,light_lines] <- data2[location.i[z],l_lines]
+        } else {
+          Con.df[y,light_lines] <- paste(Con.df[y, light_lines],
+                                         data2[location.i[z],l_lines],sep=";") 
+        }
       }
     }
+    
   }
   return(Con.df)
 }
 
-#Assign T/B cell chains and celltypes for combineTCR() and lengthContig
-cellT <- function(cells) {
-    if (cells == "T-AB") { 
-        chain1 <- "TRA"
-        chain2 <- "TRB" 
-        cellType <- "T-AB" 
-    } else if (cells == "T-GD") {
-        chain1 <- "TRG"
-        chain2 <- "TRD"
-        cellType <- "T-GD" 
-    } else if (cells == "B") {
-        chain1 <- "IGH"
-        chain2 <- "IGL"
-        cellType <- "B" 
-    }
-    return(list(chain1, chain2, cellType))
-}
 
 
 #Producing a data frame to visualize for lengthContig()
@@ -463,7 +442,7 @@ return(Con.df)}
 
 #General combination of nucleotide, aa, and gene sequences for T/B cells
 assignCT <- function(cellType, Con.df) {
-    if (cellType %in% c("T-AB", "T-GD")) {
+    if (cellType == "T") {
         Con.df$CTgene <- paste(Con.df$TCR1, Con.df$TCR2, sep="_")
         Con.df$CTnt <- paste(Con.df$cdr3_nt1, Con.df$cdr3_nt2, sep="_")
         Con.df$CTaa <- paste(Con.df$cdr3_aa1, Con.df$cdr3_aa2, sep="_")
@@ -481,11 +460,11 @@ return(Con.df)
 #' @importFrom stringr str_c str_replace_na
 #' @importFrom dplyr bind_rows
 makeGenes <- function(cellType, data2, chain1, chain2) {
-    if(cellType %in% c("T-AB", "T-GD")) {
+    if(cellType %in% c("T")) {
         data2 <- data2 %>% 
-            mutate(TCR1 = ifelse(chain == chain1, 
+            mutate(TCR1 = ifelse(chain %in% c("TRA", "TRG"), 
                   str_c(str_replace_na(v_gene),  str_replace_na(j_gene), str_replace_na(c_gene), sep = "."), NA)) %>%
-            mutate(TCR2 = ifelse(chain == chain2, 
+            mutate(TCR2 = ifelse(chain %in% c("TRB", "TRD"), 
                   str_c(str_replace_na(v_gene), str_replace_na(d_gene),  str_replace_na(j_gene),  str_replace_na(c_gene), sep = "."), NA))
     }
     else {

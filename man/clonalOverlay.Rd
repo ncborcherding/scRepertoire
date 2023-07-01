@@ -36,7 +36,7 @@ Credit to the idea goes to Drs Andreatta and Carmona and their work with
 \examples{
 #Getting the combined contigs
 combined <- combineTCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), 
-rep(c("P", "T"), 3), cells ="T-AB")
+rep(c("P", "T"), 3))
 
 #Getting a sample of a Seurat object
 screp_example <- get(data("screp_example"))
@@ -46,7 +46,7 @@ sce <- suppressMessages(Seurat::UpdateSeuratObject(screp_example))
 sce <- combineExpression(combined, sce)
 
 #Using clonalOverlay()
-clonalOverlay(sce, freq.cutpoint = 0.3, bins = 5) 
+clonalOverlay(sce, reduction = "umap", freq.cutpoint = 0.3, bins = 5) 
 
 }
 \author{

@@ -8,9 +8,11 @@ combineBCR(
   df,
   samples = NULL,
   ID = NULL,
+  call.related.clones = TRUE,
   threshold = 0.85,
   removeNA = FALSE,
-  removeMulti = FALSE
+  removeMulti = FALSE,
+  filterMulti = TRUE
 )
 }
 \arguments{
@@ -20,12 +22,18 @@ combineBCR(
 
 \item{ID}{The additional sample labeling (optional).}
 
+\item{call.related.clones}{Use the nucleotide sequence and V gene to call related clones. 
+Default is set to TRUE. FALSE will return a CTstrict or strict clonotype as V gene + amino acid sequence}
+
 \item{threshold}{The normalized edit distance to consider. The higher the number the more 
 similarity of sequence will be used for clustering.}
 
 \item{removeNA}{This will remove any chain without values.}
 
 \item{removeMulti}{This will remove barcodes with greater than 2 chains.}
+
+\item{filterMulti}{This option will allow for the selection of the highest-expressing light and heavy 
+chains, if not calling related clones.}
 }
 \value{
 List of clonotypes for individual cell barcodes
@@ -38,16 +46,16 @@ repeated barcodes. The resulting new barcodes will need to match the
 seurat or SCE object in order to use, 
 \code{\link{combineExpression}}. Unlike combineTCR(), 
 combineBCR produces a column CTstrict of an index of nucleotide sequence 
-and the corresponding v-gene. This index automatically caluclates 
-the Levenshtein distance between sequences of the same length and will 
+and the corresponding v-gene. This index automatically calculates 
+the Levenshtein distance between sequences with the same V gene and will 
 index sequences with <= 0.15 normalized Levenshtein distance with the same 
 ID. After which, clonotype clusters are called using the igraph 
 component() function. Clonotype that are clustered across multiple 
-sequences will then be labeled with "LD" with the CTstrict header.
+sequences will then be labeled with "LD" in the CTstrict header.
 }
 \examples{
 #Data derived from the 10x Genomics intratumoral NSCLC B cells
-BCR <- read.csv("https://ncborcherding.github.io/vignettes/b_contigs.csv")
+BCR <- read.csv("https://www.borch.dev/uploads/contigs/b_contigs.csv")
 combined <- combineBCR(BCR, samples = "Patient1", 
 ID = "Time1", threshold = 0.85)
 

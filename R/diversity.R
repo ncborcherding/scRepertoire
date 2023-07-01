@@ -12,7 +12,7 @@
 #' #Making combined contig data
 #' x <- contig_list
 #' combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), 
-#' rep(c("P", "T"), 3), cells ="T-AB")
+#' rep(c("P", "T"), 3))
 #' clonalDiversity(combined, cloneCall = "gene")
 #'
 #' @param df The product of combineTCR(), combineBCR(), expression2List(), or combineExpression().
@@ -30,6 +30,7 @@
 #' @param n.boots number of bootstraps to downsample in order to get mean diversity
 #' @param return.boots export boot strapped values calculated - 
 #' will automatically exportTable = TRUE
+#' @param skip.boots remove downsampling and boot strapping from the calculation
 #' @importFrom stringr str_sort str_split
 #' @importFrom reshape2 melt
 #' @importFrom dplyr sample_n
@@ -45,7 +46,8 @@ clonalDiversity <- function(df,
                             split.by = NULL,
                             exportTable = FALSE, 
                             n.boots = 100, 
-                            return.boots = FALSE) {
+                            return.boots = FALSE, 
+                            skip.boots = FALSE) {
   if(return.boots) {
     exportTable <- TRUE
   }
@@ -70,21 +72,28 @@ clonalDiversity <- function(df,
       data <- as.data.frame(table(df[[i]][,cloneCall]))
       mat_a <- NULL
       sample <- c()
-      
-      for (j in seq(seq_len(n.boots))) {
-        x <- sample_n(data, min)
-        sample <- diversityCall(x)
+      if(skip.boots == TRUE) {
+        sample <- diversityCall(data)
         mat_a <- rbind(mat_a, sample)
-      }
-      mat_a[is.na(mat_a)] <- 0
-      if(return.boots) {
-        mat_a <- as.data.frame(mat_a)
-        mat_a$sample <- names(df)[i]
+        mat_a[is.na(mat_a)] <- 0
         mat <- rbind(mat, mat_a)
+        mat <- as.data.frame(mat)
       } else {
-        mat_b<- colMeans(mat_a)
-        mat_b<-as.data.frame(t(mat_b))
-       mat <- rbind(mat, mat_b)
+        for (j in seq(seq_len(n.boots))) {
+          x <- sample_n(data, min)
+          sample <- diversityCall(x)
+          mat_a <- rbind(mat_a, sample)
+        }
+        mat_a[is.na(mat_a)] <- 0
+        if(return.boots) {
+          mat_a <- as.data.frame(mat_a)
+          mat_a$sample <- names(df)[i]
+          mat <- rbind(mat, mat_a)
+        } else {
+          mat_b<- colMeans(mat_a)
+          mat_b<-as.data.frame(t(mat_b))
+          mat <- rbind(mat, mat_b)
+        }
       }
     }
     colnames(mat) <- c("Shannon", "Inv.Simpson", "Chao", "ACE", "Inv.Pielou")

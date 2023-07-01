@@ -11,7 +11,7 @@
 #' #Making combined contig data
 #' x <- contig_list
 #' combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), 
-#' rep(c("P", "T"), 3), cells ="T-AB")
+#' rep(c("P", "T"), 3))
 #' quantContig(combined, cloneCall="strict", scale = TRUE)
 #'
 #' @param df The product of combineTCR(), combineBCR(), expression2List(), or combineExpression().
@@ -109,7 +109,7 @@ quantContig <- function(df,
 #' #Making combined contig data
 #' x <- contig_list
 #' combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), 
-#' rep(c("P", "T"), 3), cells ="T-AB")
+#' rep(c("P", "T"), 3))
 #' abundanceContig(combined, cloneCall = "gene", scale = FALSE)
 #'
 #' @param df The product of combineTCR(), combineBCR(), expression2List(), or combineExpression().
@@ -158,7 +158,7 @@ abundanceContig <- function(df,
         fill <- group.by
         if (scale == TRUE) { ylab <- "Density of Clonotypes"
             plot <- ggplot(Con.df, aes(x=Abundance, fill=Con.df[,group.by])) +
-                geom_density(aes(y=..scaled..), alpha=0.5, 
+                geom_density(aes(y=after_stat(scaled)), alpha=0.5, 
                     lwd=0.25, color="black", bw=0.5)  +
                 scale_fill_manual(values = colorblind_vector(col)) +
                 labs(fill = fill)
@@ -183,7 +183,7 @@ abundanceContig <- function(df,
         fill <- "Samples"
         if (scale == TRUE) { ylab <- "Density of Clonotypes"
             plot <- ggplot(Con.df, aes(Abundance, fill=values)) +
-                geom_density(aes(y=..scaled..), alpha=0.5, lwd=0.25, 
+                geom_density(aes(y=after_stat(scaled)), alpha=0.5, lwd=0.25, 
                     color="black", bw=0.5) +
                 scale_fill_manual(values = colorblind_vector(col)) +
                 labs(fill = fill)
@@ -215,7 +215,7 @@ return(plot)
 #' #Making combined contig data
 #' x <- contig_list
 #' combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), 
-#' rep(c("P", "T"), 3), cells ="T-AB")
+#' rep(c("P", "T"), 3))
 #' lengthContig(combined, cloneCall="aa", chain = "both")
 #'
 #' @param df The product of combineTCR(), combineBCR(), expression2List(), or combineExpression().
@@ -271,12 +271,12 @@ lengthContig <- function(df,
     }
     names <- names(df)
     if (!is.null(group.by)) { 
-        fill = group.by
+        fill <- group.by
         col <- length(unique(Con.df[,group.by]))
         if (scale == TRUE) { yplus <- "Percent of "
             plot <- ggplot(Con.df, aes(fill=Con.df[,group.by],
-                length,(..count..)/sum(..count..)*100)) + 
-                geom_density(aes(y=..scaled..),alpha=.5,lwd=.25,color="black")
+                length,(after_stat(count))/sum(after_stat(count))*100)) + 
+                geom_density(aes(y=after_stat(scaled)),alpha=.5,lwd=.25,color="black")
         } else { yplus <- "Number of "
             plot<-ggplot(Con.df,aes(as.factor(length),fill=Con.df[,group.by]))+
                 geom_bar(position = position_dodge2(preserve = "single"), 
@@ -287,8 +287,8 @@ lengthContig <- function(df,
         fill <- "Samples"
         col <- length(unique(Con.df$values))
         if (scale == TRUE) { yplus <- "Percent of "
-            plot <- ggplot(Con.df, aes(length, (..count..)/sum(..count..)*100, 
-                fill=values)) + geom_density(aes(y=..scaled..), alpha=0.5, 
+            plot <- ggplot(Con.df, aes(length, (after_stat(count))/sum(after_stat(count))*100, 
+                fill=values)) + geom_density(aes(y=after_stat(scaled)), alpha=0.5, 
                 lwd=0.25, color="black")
     }  else { yplus <- "Number of "
         plot <- ggplot(Con.df, aes(as.factor(length), fill=values)) +
@@ -314,7 +314,7 @@ lengthContig <- function(df,
 #' #Making combined contig data
 #' x <- contig_list
 #' combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), 
-#' rep(c("P", "T"), 3), cells ="T-AB")
+#' rep(c("P", "T"), 3))
 #' compareClonotypes(combined, numbers = 10, 
 #' samples = c("PX_P", "PX_T"), cloneCall="aa")
 #'
@@ -382,9 +382,9 @@ compareClonotypes <- function(df,
                 theme_classic() +
                 theme(axis.title.x = element_blank())
     if (graph == "alluvial") {
-        plot = plot +  geom_stratum() + geom_flow(stat = "alluvium")
+        plot <- plot +  geom_stratum() + geom_flow(stat = "alluvium")
     } else if (graph == "area") {
-        plot = plot +
+        plot <- plot +
             geom_area(aes(group = Clonotypes), color = "black") }
     return(plot)
 }
@@ -400,7 +400,7 @@ compareClonotypes <- function(df,
 #' #Making combined contig data
 #' x <- contig_list
 #' combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), 
-#' rep(c("P", "T"), 3), cells ="T-AB")
+#' rep(c("P", "T"), 3))
 #' scatterClonotype(combined, x.axis = "PY_P", y.axis = "PY_T",
 #' graph = "proportion")
 #' 
@@ -509,7 +509,7 @@ scatterClonotype <- function(df, cloneCall ="strict",
 #' #Making combined contig data
 #' x <- contig_list
 #' combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), 
-#' rep(c("P", "T"), 3), cells ="T-AB")
+#' rep(c("P", "T"), 3))
 #' clonesizeDistribution(combined, cloneCall = "strict", method="ward.D2")
 #'
 #' @param df The product of combineTCR(), combineBCR(), expression2List(), or combineExpression().
@@ -624,7 +624,7 @@ makingLodes <- function(meta2, color, alpha, facet, set.axes) {
 #' #Making combined contig data
 #' x <- contig_list
 #' combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), 
-#' rep(c("P", "T"), 3), cells ="T-AB")
+#' rep(c("P", "T"), 3))
 #' 
 #' vizGenes(combined, gene = "V", chain = "TRB", plot = "bar", scale = TRUE)
 #'
@@ -637,7 +637,8 @@ makingLodes <- function(meta2, color, alpha, facet, set.axes) {
 #' @param y.axis Variable to separate the y-axis, can be both categorical or other gene 
 #' gene segments such as V, D, J, or C.
 #' @param order Categorical variable to organize the x-axis, either "gene" or "variance"
-#' @param scale Converts the proportion of total genes 
+#' @param scale Converts the individual count of genes to proportion using the total 
+#' respective reprtoire size 
 #' @param group.by The column header used for grouping.
 #' @param split.by If using a single-cell object, the column header 
 #' to group the new list. NULL will return clusters.

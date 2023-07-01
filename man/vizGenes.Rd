@@ -33,7 +33,8 @@ gene segments such as V, D, J, or C.}
 
 \item{order}{Categorical variable to organize the x-axis, either "gene" or "variance"}
 
-\item{scale}{Converts the proportion of total genes}
+\item{scale}{Converts the individual count of genes to proportion using the total 
+respective reprtoire size}
 
 \item{group.by}{The column header used for grouping.}
 
@@ -56,7 +57,7 @@ present regardless of the chain parameter.
 #Making combined contig data
 x <- contig_list
 combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), 
-rep(c("P", "T"), 3), cells ="T-AB")
+rep(c("P", "T"), 3))
 
 vizGenes(combined, gene = "V", chain = "TRB", plot = "bar", scale = TRUE)
 

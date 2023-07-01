@@ -26,7 +26,7 @@ or expression2List() across a string or individual name.
 \examples{
 x <- contig_list
 combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), 
-rep(c("P", "T"), 3), cells ="T-AB")
+rep(c("P", "T"), 3))
 subset <- subsetContig(combined, name = "sample", variables = c("PX"))
 
 }

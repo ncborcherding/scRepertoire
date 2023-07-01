@@ -1,4 +1,45 @@
+CHANGES IN VERSION 1.11.0
+------------------------
+* Rebasing for the purposes of bioconductor version
+
+CHANGES IN VERSION 1.7.5
+------------------------
+* Fixed combineBCR() to allow for non-related sequences
+
+CHANGES IN VERSION 1.7.4
+------------------------
+* Added checkContigs() function to quantify the percentages of NA values by genes or sequences
+* Fix issue with clonalDiversity() and skipping boots
+* Fixing underlying assumptions with clonalBias()
+* Adding reads variable to parseAIRR
+* Adding exportClones to clonalNetwork() to isolate clones shared across identities.
+* Fixing handling of samples parameter in combine contain functions
+* removed need to relevel the cloneType factor after combineExpression()
+* set up lapply() for combineBCR() and clusterTCR() - no more pairwise distance matrix calculation
+* loadContigs() support for data.frames or lists of contigs
+* Added examples for loadContigs() to test function
+* Removed requirement for T cell type designation - will combine A/B and G/D simultaneously
+* Updated combineBCR() to chunk nucleotide edit distance calculations by V gene and give option to skip edit distance calculation with call.related.clones = FALSE
+* Updated clusterTCR() to use lvcompare() function and base edit distances of V gene usage. 
+
+
+CHANGES IN VERSION 1.7.3
+------------------------
+* Fix misspellings for parse contains functions
+* Optimize WAT3R and 10x loadContigs()
+* Remove combineTRUST4 - superseded by loadContigs()
+* Added support of TRUST4 for combineBCR()
+* Added support for BD in loadContigs()
+* loadContigs() TRUST4 parsing allows for all NA values in a chain
+* combineExpression() group.by = NULL will now collapse the whole list. 
+
+
 CHANGES IN VERSION 1.7.2
+------------------------
+* ClonalDiversity() now has skip.boots to stop bootstrapping and downsampling
+
+
+CHANGES IN VERSION 1.7.0
 ------------------------
 * Rebumping the version change with new release of Bioconductor
 * Added mean call to the heatmap of vizGenes()
@@ -73,8 +114,7 @@ CHANGES IN VERSION 1.3.3
 
 CHANGES IN VERSION 1.3.2
 ------------------------
-# This is the new numbering scheme apologies - we are all up-to-date now and now cell ranger >= 5 will # work on bioconductor, so let's all just take that as a win.
-
+* This is the new numbering scheme apologies - we are all up-to-date now and now cell ranger >= 5 will # work on bioconductor, so let's all just take that as a win.
 * added dot.size parameter to scatterClonotype
 * filteringMulti now subsets clonotypes with contains >=2, to prevent 2 of the same chains
 * changed how coldata is added to SCE objects using merge instead of union
@@ -93,9 +133,6 @@ CHANGES IN VERSION 1.3.2
 
 CHANGES IN VERSION 1.2.2
 ------------------------
-
-# Working on renumbering versions for consistency - this is the new current dev branch
-# The below have not been implemented into the master branch or the bioconductor version
 
 * added the combineTRUST4 function to parse contigs from TUST4 pipeline
 * added the filter of contigs by chain in the combineTCR, combineBCR, and combineTRUST4 functions
@@ -265,8 +302,6 @@ DEPRECATED AND DEFUNCT
 
 CHANGES IN VERSION 1.2.0
 ------------------------
-
-The first version of scRepertoire submitted to Bioconductor.
 
 SIGNIFICANT USER-VISIBLE CHANGES
 

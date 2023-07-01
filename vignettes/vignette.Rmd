@@ -4,7 +4,7 @@ author:
   name: Nick Borcherding
   email: ncborch@gmail.com
   affiliation: Washington University in St. Louis, School of Medicine, St. Louis, MO, USA
-date: "October 31, 2022"
+date: "July 1st, 2023"
 output:
   BiocStyle::html_document:
     toc_float: true
@@ -90,21 +90,26 @@ for (i in seq_along(contig_list)) {
 
 ## Loading from other pipelines
 
-New to this version of the package is support for AIRR, [WAT3R](https://www.biorxiv.org/content/10.1101/2022.01.26.477886v1), and [TRUST4](https://www.nature.com/articles/s41592-021-01142-2) single-cell outputs. By indicating the directory or directories the outputs from these pipelines are located, ```loadContigs()``` will generate a contig list that is compatible with the rest of scRepertoire. In addition, although not necessary, ```loadContigs()``` can be used for 10X filtered_contig_annotation.csv files. 
+New to this version of the package is support for BD Rhapsody, AIRR, [WAT3R](https://www.biorxiv.org/content/10.1101/2022.01.26.477886v1), and [TRUST4](https://www.nature.com/articles/s41592-021-01142-2) single-cell outputs. By indicating the directory of the outputs from these pipelines are located, ```loadContigs()``` will generate a contig list that is compatible with the rest of scRepertoire. Alternatively, ```loadContigs()``` will also accept a list of data frames that you have loaded individualy. In addition, although not necessary, ```loadContigs()``` can be used for 10X filtered_contig_annotation.csv files. 
 
 ```{r, eval=FALSE}
-contig.output <- c("./Sample1/outs/", "./Sample2/outs/", "./Sample3/outs/")
+contig.output <- c("~/Documents/MyExperiment")
 contig.list <- loadContigs(dir = contig.output, 
                            format = "TRUST4")
+
+S1 <- read.csv("~/Documents/MyExperiment/Sample1/outs/barcode_results.csv")
+S2 <- read.csv("~/Documents/MyExperiment/Sample2/outs/barcode_results.csv")
+S3 <- read.csv("~/Documents/MyExperiment/Sample3/outs/barcode_results.csv")
+S4 <- read.csv("~/Documents/MyExperiment/Sample4/outs/barcode_results.csv")
+
+contig_list <- list(S1, S2, S3, S4)
+contig.list <- loadContigs(dir = contig.output, 
+                           format = "WAT3R")
 ```
 
 # Combining the Contigs
 
 As the output of CellRanger are quantifications of both the TCRA and TCRB chains, the next step is to create a single list object with the TCR genes (comprised of the VDJC genes) and CDR3 sequences by cell barcode. This is performed using the `combineTCR()`, where the input is the stripped contig_list. There is also the relabeling of the barcodes by sample and ID information to prevent duplicates.
-
-**cells**  
-* T-AB - T cells, alpha-beta TCR  
-* T-GD - T cells, gamma-delta TCR  
 
 **removeNA**  
 * TRUE - this is a stringent filter to remove any cell barcode with an NA value in at least one of the chains  
@@ -121,8 +126,7 @@ As the output of CellRanger are quantifications of both the TCRA and TCRB chains
 ```{r}
 combined <- combineTCR(contig_list, 
                         samples = c("PY", "PY", "PX", "PX", "PZ","PZ"), 
-                        ID = c("P", "T", "P", "T", "P", "T"), 
-                        cells ="T-AB")
+                        ID = c("P", "T", "P", "T", "P", "T"))
 ```
 
 The output of `combineTCR()` will be a list of contig data frames that will be reduced to the reads associated with a single cell barcode. It will also combine the multiple reads into clonotype calls by either the nucleotide sequence (CTnt), amino acid sequence (CTaa), the VDJC gene sequence (CTgene) or the combination of the nucleotide and gene sequence (CTstrict). The analogous function for B cells, `combineBCR()` functions similarly with 2 major caveats: 1) Each barcode can only have a maximum of 2 sequences, if greater exists, the 2 with the highest reads are selected. 2) The strict definition of clonotype (CTstrict) is based on the V gene and >85% normalized Levenshtein distance of the nucleotide sequence. The Levenshtein distance is calculated across all BCR sequences recovered, regardless of the run.
@@ -209,6 +213,29 @@ quantContig(combined,
             cloneCall="gene", 
             group.by = "ID", 
             scale = TRUE)
+```
+
+## Checking NA values
+
+Depending on the experiment or sequencing run, a number of NAs can appear in either the sequence or VDJC gene usage. A quick way to check the percentage of NA values is to use ```checkContigs()```
+
+**chain**  
++ "TRA", "TRB", "TRD", "TRG", "IGH" or "IGL" 
+
+**examine**  
++ "gene" - examining the VDJC NA values 
++ "chain" = examining the sequence-specific NA values
+
+```{r}
+checkContig(combined, 
+            chain = "TRA", 
+            examine = "gene",
+            group.by = "ID")
+
+checkContig(combined, 
+            chain = "TRB", 
+            examine = "chain",
+            group.by = "sample")
 ```
 
 ## Clonotype Abundance
@@ -506,6 +533,7 @@ screp_example <- combineExpression(combined,
                                    proportion = FALSE, 
                                    cloneTypes=c(Single=1, Small=5, Medium=20, Large=100, Hyperexpanded=500))
 
+
 sce <- combineExpression(combined, 
                           sce, 
                           cloneCall="gene", 
@@ -539,22 +567,9 @@ colorblind_vector <- colorRampPalette(rev(c("#0D0887FF", "#47039FFF",
 
 DimPlot(screp_example, group.by = "Type") + NoLegend() +
     scale_color_manual(values=colorblind_vector(2))
-```
-
-
-Now we can look at the distribution of the clonotype bins by first ordering the **clonoType** as a factor, this prevents the coloring from being in alphabetical order. Next we use the *DimPlot()* function call in Seurat with our scale_color_manual additional layer. 
-
-```{r}
-slot(screp_example, "meta.data")$cloneType <- factor(slot(screp_example, "meta.data")$cloneType, 
-                levels = c("Hyperexpanded (100 < X <= 500)", 
-                           "Large (20 < X <= 100)", 
-                           "Medium (5 < X <= 20)", 
-                           "Small (1 < X <= 5)", 
-                           "Single (0 < X <= 1)", NA))
 
 DimPlot(screp_example, group.by = "cloneType") 
 ```
-
 
 ## clonalOverlay 
 
@@ -605,6 +620,18 @@ clonalNetwork(screp_example,
               cloneCall = "aa")
 ```
 
+We can also use **exportClones** to quickly get clones that are shared across multiple identity groups, along with the total number of clones in the data set.
+
+```{r}
+shared.clones <- clonalNetwork(screp_example, 
+                              reduction = "umap", 
+                              identity = "ident",
+                              cloneCall = "aa", 
+                              exportClones = TRUE)
+head(shared.clones)
+```
+
+## highlightClonotypes
 
 We can also look at the clonotypes by calling specific sequences in the `highlightClonotypes()` below. In order to highlight the clonotypes, we first need to use the **cloneCall** the type of sequence we will be using and then the specific sequences themselves using **sequence**. Below you can see the steps to highlight the two most prominent sequences *"CAVNGGSQGNLIF_CSAEREDTDTQYF"* with a frequency = 482 and *"NA_CATSATLRVVAEKLFF"* with a frequency = 287. 
 
@@ -694,7 +721,7 @@ chordDiagram(circles,
 
 The nucleotide or amino acid sequences of the chains can be used to cluster clonotypes, by examining the edit distance of the sequences. This approach is underlying the `combineBCR()` function, but now can be applied to the T cell receptors. It will add to the end of each list element a cluster by generating a network connected by the similarity in sequence. This network is directed by the threshold variable, where 0.85 is the normalized mean edit distance.
 
-Clonotype Cluster by distance:  
+Clonotype cluster by distance:  
 
 *  TCRA:LD.1  [chain:] + :LD + [number]
 *  TCRA.123 [chain:] + [number]
@@ -732,7 +759,7 @@ StartracDiversity(screp_example,
 
 ## Clonotype Bias
 
-A new metric proposed by [Massimo et al](https://www.biorxiv.org/content/10.1101/2021.09.20.458613v1), clonal bias, like Startrac is a clonal metric that seeks to quantify how individual clones are skewed towards a  specific cellular compartment or cluster. With the minimal example present in the in-built vignette, this will not be as enlightening as when we use a full single-cell object.
+A new metric proposed by [Massimo et al](https://pubmed.ncbi.nlm.nih.gov/35829695/), clonal bias, like Startrac is a clonal metric that seeks to quantify how individual clones are skewed towards a  specific cellular compartment or cluster. With the minimal example present in the in-built vignette, this will not be as enlightening as when we use a full single-cell object.
 
 **split.by**   
 * Variable used to calculate the baseline frequencies  

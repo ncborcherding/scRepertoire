@@ -1,7 +1,7 @@
 #' Examine clonotype bias
 #' 
 #' Clonotype bias method was developed and outlined from a single-cell 
-#' \href{https://www.biorxiv.org/content/10.1101/2021.09.20.458613v1}{manuscript} 
+#' \href{https://pubmed.ncbi.nlm.nih.gov/35829695/}{manuscript} 
 #' characterizing CD4 responses to acute and chronic infection. The metric seeks to 
 #' quantify how individual clones are skewed towards a specific cellular 
 #' compartment or cluster. A clonotype bias of 1 indicates that a clonotype 
@@ -12,7 +12,7 @@
 #' \dontrun{
 #' Getting the combined contigs
 #' combined <- combineTCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), 
-#' rep(c("P", "T"), 3), cells ="T-AB")
+#' rep(c("P", "T"), 3))
 #' 
 #' #Getting a sample of a Seurat object
 #' screp_example <- get(data("screp_example"))
@@ -26,7 +26,8 @@
 #' n.boots = 20, min.expand = 2)
 #' }
 #' 
-#' @param df The product of combineTCR(), combineBCR(), expression2List(), or combineExpression().
+#' @param df The product of combineTCR(), combineBCR(), expression2List(), 
+#' or combineExpression().
 #' @param cloneCall How to call the clonotype - VDJC gene (gene), 
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
 #' VDJC gene + CDR3 nucleotide (strict).
@@ -56,28 +57,28 @@ clonotypeBias <- function(df,
   df_shuffle.list <- list()
   for (ii in seq_len(n.boots)) {
     df_shuffle.list[[ii]] <- get_clono_bias(df, split.by = split.by,
-                                group.by = group.by, 
-                                cloneCall=cloneCall, 
-                                min.expand=min.expand, 
-                                do.shuffle = T, 
-                                seed=ii)
+                                            group.by = group.by, 
+                                            cloneCall=cloneCall, 
+                                            min.expand=min.expand, 
+                                            do.shuffle = TRUE, 
+                                            seed=ii)
   }
   df_shuffle <- Reduce(rbind, df_shuffle.list)
   
   stat.summary <- df_shuffle %>%
-                      group_by(ncells) %>%
-                      summarise(mean = mean(bias), 
-                                std = sd(bias))
+    group_by(ncells) %>%
+    summarise(mean = mean(bias), 
+              std = sd(bias))
   
   corrected_p <- 1-(0.05/nrow(bias))
   bias$Top_state <- factor(bias$Top_state, str_sort(unique(bias$Top_state), numeric = TRUE))
   
   bias$Z.score <- NA
   for(i in seq_len(nrow(bias))) {
-      stat.pos <- bias[i,]$ncells
-      row.pull <- stat.summary[stat.summary$ncells == stat.pos,]
-      z.score <- (bias[i,]$bias - row.pull$mean)/row.pull$std
-      bias$Z.score[i] <- z.score
+    stat.pos <- bias[i,]$ncells
+    row.pull <- stat.summary[stat.summary$ncells == stat.pos,]
+    z.score <- (bias[i,]$bias - row.pull$mean)/row.pull$std
+    bias$Z.score[i] <- z.score
   }
   
   plot <- ggplot(bias, aes(x=ncells,y=bias)) + 
@@ -165,7 +166,7 @@ get_clono_bias <- function(df,
       subtypes <- names(bg[[s]])
       
       if (length(clones)>0) {
-        clones <- sort(clones, decreasing = T)
+        clones <- sort(clones, decreasing = TRUE)
         expanded <- df[[s]][which(df[[s]][,cloneCall] %in% names(clones)), c(group.by, cloneCall)]
         
         if (do.shuffle) {  #reshuffle annotation column
@@ -190,7 +191,7 @@ get_clono_bias <- function(df,
                        as.double(comp[top_state]), 
                        as.double(diff[top_state]), 
                        as.double(diff_norm[top_state]))
-          dat[nrow(dat) + 1,] = new_row
+          dat[nrow(dat) + 1,] <- new_row
         }
       }
     }
@@ -201,4 +202,3 @@ get_clono_bias <- function(df,
   dat$bias <- as.double(dat$bias)
   return(dat)
 }
-  
