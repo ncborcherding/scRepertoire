@@ -17,7 +17,23 @@ vignette: >
 
 ```{r, echo=FALSE, results="hide", message=FALSE}
 knitr::opts_chunk$set(error=FALSE, message=FALSE, warning=FALSE)
+
+# to pass R CMD check, these can be installed in the knitted scope quietly
+if (!require("BiocManager", quietly = TRUE)) {
+  install.packages("BiocManager")
+}
+library(BiocManager)
+
+if (!require("BiocStyle", quietly = TRUE)) {
+  BiocManager::install("BiocStyle")
+}
 library(BiocStyle)
+
+if (!require("scater", quietly = TRUE)) {
+  BiocManager::install("scater")
+}
+library(scater)
+
 ```
 
 # Introduction

@@ -1,4 +1,9 @@
 # scRepertoire
+<!-- badges: start -->
+[![BioC status](http://www.bioconductor.org/shields/build/release/bioc/scRepertoire.svg)](https://bioconductor.org/checkResults/release/bioc-LATEST/scRepertoire)
+[![Documentation](https://img.shields.io/badge/docs-stable-blue.svg)](https://www.borch.dev/uploads/vignette/vignette)
+<!-- badges: end -->
+
 #### A toolkit for single-cell immune profiling
 
 <img align="right" src="https://github.com/ncborcherding/scRepertoire/blob/dev/www/screpertoire_hex.png" width="305" height="352">
