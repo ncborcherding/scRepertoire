@@ -76,7 +76,7 @@ combineExpression <- function(df,
             data <- data.frame(df[[i]], stringsAsFactors = FALSE)
             data2 <- unique(data[,c("barcode", cloneCall)])
             data2 <- na.omit(data2[data2[,"barcode"] %in% cell.names,])
-            if (proportion == TRUE) {
+            if (proportion) {
                 data2 <- data2 %>% group_by(data2[,cloneCall]) %>%
                     summarise(Frequency = n()/nrow(data2))
             } else {
@@ -102,14 +102,14 @@ combineExpression <- function(df,
               sub1 <- subset(data, data[,group.by] == x[i])
               sub2 <- subset(data2, data2[,group.by] == x[i])
               merge <- merge(sub1, sub2, by=cloneCall)
-              if (proportion == TRUE) {
+              if (proportion) {
                   merge$Frequency <- merge$Frequency/length(merge$Frequency)
               }
               Con.df <- rbind.data.frame(Con.df, merge)
           }
           nsize <- Con.df %>% group_by(Con.df[,paste0(group.by, ".x")])  %>% summarise(n = n())
         } else {
-          if (proportion == TRUE) {
+          if (proportion) {
             data <- data %>%
               group_by(data[,cloneCall]) %>%
               mutate(Frequency = n()/nrow(data))
@@ -141,15 +141,18 @@ combineExpression <- function(df,
       location <- which(colnames(PreMeta) == "Frequency")
       colnames(PreMeta)[location] <- paste0("Frequency.", group.by)
     }
-    if (inherits(x=sc, what ="Seurat")) { 
-        if (length(which(rownames(PreMeta) %in% 
-                         rownames(sc[[]])))/length(rownames(sc[[]])) < 0.01) {
-          warning("< 1% of barcodes match: Ensure the barcodes in 
+    
+    warn_str <- "< 1% of barcodes match: Ensure the barcodes in 
             the Seurat object match the 
             barcodes in the combined immune receptor list from 
             scRepertoire - most common issue is the addition of the 
             prefixes corresponding to `samples` and 'ID' in the combineTCR/BCR() 
-            functions")
+            functions"
+    
+    if (inherits(x=sc, what ="Seurat")) { 
+        if (length(which(rownames(PreMeta) %in% 
+                         rownames(sc[[]])))/length(rownames(sc[[]])) < 0.01) {
+          warning(warn_str)
         }
         col.name <- names(PreMeta) %||% colnames(PreMeta)
         sc[[col.name]] <- PreMeta
@@ -157,18 +160,13 @@ combineExpression <- function(df,
       rownames <- rownames(colData(sc))
       if (length(which(rownames(PreMeta) %in% 
                        rownames))/length(rownames) < 0.01) {
-        warning("< 1% of barcodes match: Ensure the barcodes 
-          in the SingleCellExperiment object match the 
-          barcodes in the combined immune receptor list from 
-          scRepertoire - most common issue is the addition of the 
-          prefixes corresponding to `samples` and 'ID' in the combineTCR/BCR() 
-          functions") }
+        warning(warn_str) }
       colData(sc) <- cbind(colData(sc), PreMeta[rownames,])[, union(colnames(colData(sc)),  colnames(PreMeta))]
       rownames(colData(sc)) <- rownames  
     }
-    if (filterNA == TRUE) { sc <- filteringNA(sc) }
+    if (filterNA) { sc <- filteringNA(sc) }
     sc$cloneType <- factor(sc$cloneType, levels = rev(names(cloneTypes)))
-    return(sc) 
+    sc
 }
 
 #' Highlighting specific clonotypes in Seurat
@@ -215,7 +213,7 @@ highlightClonotypes <- function(sc,
     meta <- meta[,-(which(colnames(meta) == "ident"))]
     col.name <- names(meta) %||% colnames(meta)
     sc[[col.name]] <- meta
-    return(sc)
+    sc
 }
 
 #' Exploring interaction of clonotypes by seurat or SCE dynamics
@@ -379,7 +377,7 @@ occupiedscRepertoire <- function(sc,
                prop = value/total)
       meta <- as.data.frame(meta)
     }
-    if (exportTable == TRUE) {
+    if (exportTable) {
         return(meta)
     }
     col <- length(unique(meta$cloneType))
@@ -403,10 +401,10 @@ occupiedscRepertoire <- function(sc,
     if (!is.null(facet.by)) {
       plot <- plot + facet_grid(.~meta[,facet.by])
     }
-    if (label == TRUE) {
+    if (label) {
         plot <- plot + geom_text(aes(label = value), position = position_stack(vjust = 0.5))
-      }
-    return(plot)
+    }
+    plot
 }
 
 #' Visualize distribution of clonal frequency overlaid on dimensional reduction plots
@@ -467,7 +465,7 @@ clonalOverlay <- function(sc,
   if (!is.null(facet)) {
     plot <- plot + facet_wrap(~facet) 
   }
-  return(plot)
+  plot
 }
 
 #' Generate a contig list from a multiplexed experiment
@@ -541,5 +539,5 @@ createHTOContigList <- function(contig,
     }
     names(contig.list) <- unique.groups
   }
-  return(contig.list)
+  contig.list
 }

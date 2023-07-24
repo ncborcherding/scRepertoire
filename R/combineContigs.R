@@ -63,9 +63,9 @@ combineTCR <- function(df,
         }
         df[[i]]$sample <- samples[i]
         df[[i]]$ID <- ID[i]
-        if (filterMulti == TRUE) { 
+        if (filterMulti) { 
           df[[i]] <- filteringMulti(df[[i]]) 
-          }
+        }
     }
     #Prevents error caused by list containing elements with 0 rows
     blank.rows <- which(unlist(lapply(df, nrow)) == 0)
