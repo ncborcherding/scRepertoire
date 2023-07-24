@@ -17,7 +17,24 @@ vignette: >
 
 ```{r, echo=FALSE, results="hide", message=FALSE}
 knitr::opts_chunk$set(error=FALSE, message=FALSE, warning=FALSE)
-library(BiocStyle)
+
+# to pass R CMD check, packages can be installed in the knitted environment
+if (!require("BiocManager", quietly = TRUE)) {
+    install.packages("BiocManager")
+}
+library(BiocManager)
+
+quiet_bioc_load <- function(...) {
+  pkgs <- list(...)
+  for (pkg in pkgs) {
+      if (!require(pkg, character.only = TRUE, quietly = TRUE)) {
+          BiocManager::install(pkg)
+      }
+  suppressPackageStartupMessages(invisible(library(pkg, character.only = TRUE)))
+  }
+}
+
+quiet_bioc_load("BiocStyle", "scater")
 ```
 
 # Introduction
