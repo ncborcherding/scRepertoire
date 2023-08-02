@@ -1,4 +1,10 @@
+# readability functions
 "%!in%" <- Negate("%in%")
+is_seurat_object <- function(obj) inherits(obj, "Seurat")
+is_se_object <- function(obj) inherits(obj, "SummarizedExperiment")
+is_seurat_or_se_object <- function(obj) {
+    is_seurat_object(obj) || is_se_object(obj)
+}
 
 #Use to shuffle between chains
 off.the.chain <- function(dat, chain, cloneCall) {
@@ -55,22 +61,20 @@ checkContigs <- function(df) {
 
 #' @importFrom dplyr bind_rows
 bound.input.return <- function(df) {
-  if (inherits(x=df, what ="Seurat") | inherits(x=df, what ="SummarizedExperiment")) {
-    df <- grabMeta(df)
-  } else {
-    df <- bind_rows(df, .id = "element.names")
-  }
-  return(df)
+  if (is_seurat_or_se_object(df)) {
+    return(grabMeta(df))
+  } 
+  bind_rows(df, .id = "element.names")
 }
 
 list.input.return <- function(df, split.by) {
-  if (inherits(x=df, what ="Seurat") | inherits(x=df, what ="SummarizedExperiment")) {
-    if(is.null(split.by)){
-      split.by <- "cluster"
-    }
-    df <- expression2List(df, split.by)
-  } 
-  return(df)
+    if (is_seurat_or_se_object(df)) {
+        if(is.null(split.by)){
+            split.by <- "cluster"
+        }
+        df <- expression2List(df, split.by)
+    } 
+    df
 }
 
 #Get UMAP or other coordinates
@@ -79,9 +83,9 @@ get.coord <- function(sc, reduction) {
   if (is.null(reduction)) {
     reduction <- "pca"
   }
-  if (inherits(x=sc, what ="Seurat")) {
+  if (is_seurat_object(sc)) {
     coord <- sc@reductions[[reduction]]@cell.embeddings
-  } else if (inherits(x=sc, what ="SummarizedExperiment")) {
+  } else if (is_se_object(sc)) {
     coord <- reducedDim(sc, reduction)
   }
   return(coord)
@@ -89,21 +93,22 @@ get.coord <- function(sc, reduction) {
 
 #This is to check the single-cell expression object
 checkSingleObject <- function(sc) {
-    if (!inherits(x=sc, what ="Seurat") &&
-        !inherits(x=sc, what ="SummarizedExperiment")){
+    if (!is_seurat_or_se_object(sc)){
         stop("Object indicated is not of class 'Seurat' or 
             'SummarizedExperiment', make sure you are using
-            the correct data.") }
+            the correct data.") 
     }
+}
 
 #This is to grab the meta data from a seurat or SCE object
 #' @importFrom SingleCellExperiment colData 
 #' @importFrom SeuratObject Idents
 grabMeta <- function(sc) {
-    if (inherits(x=sc, what ="Seurat")) {
+    if (is_seurat_object(sc)) {
         meta <- data.frame(sc[[]], slot(sc, "active.ident"))
         colnames(meta)[length(meta)] <- "ident"
-    } else if (inherits(x=sc, what ="SummarizedExperiment")){
+        
+    } else if (is_se_object(sc)){
         meta <- data.frame(colData(sc))
         rownames(meta) <- sc@colData@rownames
         clu <- which(colnames(meta) == "ident")
@@ -250,16 +255,15 @@ jaccardIndex <- function(df, length, cloneCall, coef_matrix) {
     df.i_unique <- df.i[!duplicated(df.i[,cloneCall]),]
     for (j in seq_along(length)){
       if (i >= j){ next }
-      else { 
-        df.j <- df[[j]]
-        df.j <- df.j[,c("barcode",cloneCall)]
-        df.j_unique <- df.j[!duplicated(df.j[,cloneCall]),]
-        overlap <- length(intersect(df.i_unique[,cloneCall], 
-                                    df.j_unique[,cloneCall]))
-        coef_matrix[i,j] <- 
-          overlap/(sum(length(df.i_unique[,cloneCall]), 
-                                  length(df.j_unique[,cloneCall]))-overlap)
-      } 
+
+      df.j <- df[[j]]
+      df.j <- df.j[,c("barcode",cloneCall)]
+      df.j_unique <- df.j[!duplicated(df.j[,cloneCall]),]
+      overlap <- length(intersect(df.i_unique[,cloneCall], 
+                                  df.j_unique[,cloneCall]))
+      coef_matrix[i,j] <- 
+        overlap/(sum(length(df.i_unique[,cloneCall]), 
+                                length(df.j_unique[,cloneCall]))-overlap)
     }
   }
   return(coef_matrix)
@@ -272,14 +276,12 @@ rawIndex <- function(df, length, cloneCall, coef_matrix) {
     df.i_unique <- df.i[!duplicated(df.i[,cloneCall]),]
     for (j in seq_along(length)){
       if (i >= j){ next }
-      else { 
-        df.j <- df[[j]]
-        df.j <- df.j[,c("barcode",cloneCall)]
-        df.j_unique <- df.j[!duplicated(df.j[,cloneCall]),]
-        overlap <- length(intersect(df.i_unique[,cloneCall], 
-                                    df.j_unique[,cloneCall]))
-        coef_matrix[i,j] <- overlap
-      } 
+      df.j <- df[[j]]
+      df.j <- df.j[,c("barcode",cloneCall)]
+      df.j_unique <- df.j[!duplicated(df.j[,cloneCall]),]
+      overlap <- length(intersect(df.i_unique[,cloneCall], 
+                                  df.j_unique[,cloneCall]))
+      coef_matrix[i,j] <- overlap
     }
   }
   return(coef_matrix)
