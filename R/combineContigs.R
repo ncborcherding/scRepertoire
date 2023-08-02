@@ -188,9 +188,9 @@ combineBCR <- function(df,
         }
     }
     if (!is.null(samples)) {
-      out <- modifyBarcodes(df, samples, ID)
+        out <- modifyBarcodes(df, samples, ID)
     } else {
-      out <- df
+        out <- df
     }
     for (i in seq_along(out)) { 
         data2 <- data.frame(out[[i]])
@@ -226,7 +226,7 @@ combineBCR <- function(df,
         if (!is.null(sample) & !is.null(ID)) {
           final[[i]]<- final[[i]][, c("barcode", "sample", "ID", 
               heavy_lines[c(1,2,3)], light_lines[c(1,2,3)], CT_lines)]
-          }
+        }
         else if (!is.null(sample) & is.null(ID)) {
           final[[i]]<- final[[i]][, c("barcode", "sample", 
                     heavy_lines[c(1,2,3)], light_lines[c(1,2,3)], CT_lines)]
@@ -234,18 +234,19 @@ combineBCR <- function(df,
     }
     names <- NULL
     for (i in seq_along(samples)) { 
-      if (!is.null(samples) & !is.null(ID)) {
-        c <- paste(samples[i], "_", ID[i], sep="")
-      } else if (!is.null(samples) & is.null(ID)) {
-        c <- paste(samples[i], sep="")
-      }
-      names <- c(names, c)}
+        if (!is.null(samples) & !is.null(ID)) {
+            c <- paste(samples[i], "_", ID[i], sep="")
+        } else if (!is.null(samples) & is.null(ID)) {
+            c <- paste(samples[i], sep="")
+        }
+        names <- c(names, c)
+    }
     names(final) <- names
     for (i in seq_along(final)) {
         final[[i]] <- final[[i]][!duplicated(final[[i]]$barcode),]
         final[[i]]<-final[[i]][rowSums(is.na(final[[i]])) < 10, ]}
-    if (removeNA == TRUE) { final <- removingNA(final) }
-    if (removeMulti == TRUE) { final <- removingMulti(final) }
+    if (removeNA) { final <- removingNA(final) }
+    if (removeMulti) { final <- removingMulti(final) }
     return(final) 
 }
 

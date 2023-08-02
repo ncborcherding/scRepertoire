@@ -37,8 +37,10 @@ quantContig <- function(df,
                         split.by = NULL,
                         order = TRUE,
                         exportTable = FALSE) {
-    if (length(group.by) > 1) { stop("Only one item in the group.by variable can 
-                                    be listed.") }
+  
+    if (length(group.by) > 1) { 
+        stop("Only one item in the group.by variable can be listed.")
+    }
     df <- list.input.return(df, split.by)
     cloneCall <- theCall(cloneCall)
     df <- checkBlanks(df, cloneCall)
@@ -59,7 +61,7 @@ quantContig <- function(df,
             location <- which(colnames(df[[i]]) == group.by)
             Con.df[i,4] <- df[[i]][1,location] }
         col <- length(unique(Con.df[,group.by]))
-        if (scale == TRUE) { y <- "scaled"
+        if (scale) { y <- "scaled"
             Con.df$scaled <- Con.df$contigs/Con.df$total*100
             ylab <- "Percent of Unique Clonotype"
 

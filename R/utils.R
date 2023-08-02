@@ -404,7 +404,7 @@ parseBCR <- function (Con.df, unique_df, data2) {
 lengthDF <- function(df, cloneCall, chain, group, c1, c2){
     Con.df <- NULL
     names <- names(df)
-    if (chain == "both") {
+    if (identical(chain, "both")) {
             for (i in seq_along(df)) {
                 length <- nchar(gsub("_", "", df[[i]][,cloneCall]))
                 val <- df[[i]][,cloneCall]
@@ -417,7 +417,7 @@ lengthDF <- function(df, cloneCall, chain, group, c1, c2){
                     data <- na.omit(data.frame(length, val, names[i]))
                     colnames(data) <- c("length", "CT", "values")
                     Con.df<- rbind.data.frame(Con.df, data) }}
-    } else if (chain != "both") {
+    } else {
             for (x in seq_along(df)) {
                 df[[x]] <- off.the.chain(df[[x]], chain, cloneCall)
                 strings <- df[[x]][,cloneCall]
@@ -438,7 +438,8 @@ lengthDF <- function(df, cloneCall, chain, group, c1, c2){
                 data <- subset(data, CT != "NA" & CT != "")
                 Con.df<- rbind.data.frame(Con.df, data) }}
     }
-return(Con.df)}
+    return(Con.df)
+}
 
 #General combination of nucleotide, aa, and gene sequences for T/B cells
 assignCT <- function(cellType, Con.df) {
