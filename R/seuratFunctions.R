@@ -50,7 +50,6 @@
 #' @return seurat or SingleCellExperiment object with attached clonotype 
 #' information
 #' 
-
 combineExpression <- function(
     df, 
     sc, 
@@ -324,7 +323,8 @@ alluvialClonotypes <- function(sc,
         plot <- plot + facet_wrap(.~lodes[,facet], scales="free_y")
     } else if (length(facet) == 0) { plot <- plot }
     plot <- plot + geom_text(stat = ggalluvial::StatStratum, infer.label = FALSE, reverse = TRUE, size = 2)
-    return(plot)}
+    return(plot)
+}
 
 
 #' Visualize the number of single cells with clonotype frequencies by cluster

@@ -488,7 +488,7 @@ makeGenes <- function(cellType, data2, chain1, chain2) {
             mutate(TCR2 = ifelse(chain %in% c("TRB", "TRD"), 
                   str_c(str_replace_na(v_gene), str_replace_na(d_gene),  str_replace_na(j_gene),  str_replace_na(c_gene), sep = "."), NA))
     }
-    else {
+    else { # assume BCR (`c("B")`)
         heavy <- data2[data2$chain == "IGH",] %>% 
           mutate(IGHct = str_c(str_replace_na(v_gene), str_replace_na(d_gene),  str_replace_na(j_gene),  str_replace_na(c_gene), sep = "."))
         kappa <- data2[data2$chain == "IGK",] %>% 
@@ -497,7 +497,7 @@ makeGenes <- function(cellType, data2, chain1, chain2) {
           mutate(IGLct = str_c(str_replace_na(v_gene),  str_replace_na(j_gene), str_replace_na(c_gene), sep = "."))
         data2 <- bind_rows(heavy, kappa, lambda)
     }
-    return(data2)
+    data2
 }
 
 short.check <- function(df, cloneCall) {

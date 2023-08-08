@@ -1,3 +1,7 @@
+# script of slightly modified versions of the seurat command script in Seurat
+# commands should be added to the seurat@command attribute if the seurat object
+# is modified. 
+
 # function needed for make_screp_seurat_cmd
 seurat_extractfield <- function(string, field = 1, delim = "_") {
 	fields <- as.numeric(
@@ -11,9 +15,10 @@ seurat_extractfield <- function(string, field = 1, delim = "_") {
 	))
 }
 
-# seurat's command adding but if an input is a dataframe or list of dataframes,
+# seurat's command adding but if a param is a dataframe or list of dataframes,
 # completely omits them to save memory. 
 make_screp_seurat_cmd <- function(call_time, assay) {
+	
 	if (as.character(x = sys.calls()[[1]])[1] == "do.call") {
 		call_string <- deparse(expr = sys.calls()[[1]])
 		command_name <- as.character(x = sys.calls()[[1]])[2]
