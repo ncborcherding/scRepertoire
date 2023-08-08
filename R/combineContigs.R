@@ -119,7 +119,8 @@ combineTCR <- function(df,
         final[[i]]<-final[[i]][rowSums(is.na(final[[i]])) < 10, ]}
     if (removeNA == TRUE) { final <- removingNA(final)}
     if (removeMulti == TRUE) { final <- removingMulti(final) }
-    return(final) }
+    return(final) 
+}
 
 #' Combining the list of B Cell Receptor contigs
 #'

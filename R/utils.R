@@ -45,18 +45,36 @@ groupList <- function(df, group.by) {
     return(df)
 }
 
-#Ensure df is in list format
+# Ensure df is in list format
 checkList <- function(df) {
-    df <- if(is(df)[1] != "list") list(df) else df
-    return(df)
+  df <- tryCatch(
+      {
+          if (is(df)[1] != "list") { 
+              df <- list(df)
+          }
+          df
+      },
+      error = function(e) {
+          stop(
+              "Please ensure that the input consists of at least one dataframe"
+          )
+      }
+    )
+    df
 }
 
+#checkList <- function(df) {
+#  df <- if(is(df)[1] != "list") list(df) else df
+#  return(df)
+#}
+
 checkContigs <- function(df) {
-  df <- lapply(seq_len(length(df)), function(x) {
-    df[[x]] <- if(is(df[[x]])[1] != "data.frame") as.data.frame(df[[x]]) else df[[x]]
-    df[[x]][df[[x]] == ""] <- NA
-    df[[x]]
-  })
+    df <- lapply(seq_len(length(df)), function(x) {
+        df[[x]] <- if(!is.data.frame(df[[x]])) as.data.frame(df[[x]]) else df[[x]]
+        df[[x]][df[[x]] == ""] <- NA
+        df[[x]]
+    })
+    df
 }
 
 #' @importFrom dplyr bind_rows
@@ -518,3 +536,16 @@ select.gene <- function(df, chain, gene, label) {
   return(df)
 }
 
+# check if object is a dataframe or list of dataframes
+is_df_or_list_of_df <- function(x) {
+    if (is.data.frame(x)) {
+        return(TRUE)
+    } else if (is.list(x)) {
+        if (length(x) == 0) {
+            return(FALSE)
+        }
+        return(all(sapply(x, is.data.frame)))
+    } else {
+        return(FALSE)
+    }
+}

@@ -51,16 +51,21 @@
 #' information
 #' 
 
-combineExpression <- function(df, 
-                              sc, 
-                              cloneCall="strict", 
-                              chain = "both", 
-                              group.by="none", 
-                              proportion = TRUE, 
-                              filterNA = FALSE,
-                              cloneTypes=c(Rare = 1e-4, Small = 0.001, 
-                              Medium = 0.01, Large = 0.1, Hyperexpanded = 1),
-                              addLabel = FALSE) {
+combineExpression <- function(
+    df, 
+    sc, 
+    cloneCall="strict", 
+    chain = "both", 
+    group.by="none", 
+    proportion = TRUE, 
+    filterNA = FALSE,
+    cloneTypes = c(
+        Rare = 1e-4,Small = 0.001,Medium = 0.01,Large = 0.1,Hyperexpanded = 1
+    ),
+    addLabel = FALSE
+) {
+    call_time <- Sys.time()
+  
     options( dplyr.summarise.inform = FALSE )
     cloneTypes <- c(None = 0, cloneTypes)
     df <- checkList(df)
@@ -149,7 +154,7 @@ combineExpression <- function(df,
             prefixes corresponding to `samples` and 'ID' in the combineTCR/BCR() 
             functions"
     
-    if (inherits(x=sc, what ="Seurat")) { 
+    if (is_seurat_object(sc)) { 
         if (length(which(rownames(PreMeta) %in% 
                          rownames(sc[[]])))/length(rownames(sc[[]])) < 0.01) {
           warning(warn_str)
@@ -166,6 +171,13 @@ combineExpression <- function(df,
     }
     if (filterNA) { sc <- filteringNA(sc) }
     sc$cloneType <- factor(sc$cloneType, levels = rev(names(cloneTypes)))
+    
+    if(is_seurat_object(sc)) {
+        sc@commands[["combineExpression"]] <- make_screp_seurat_cmd(
+            call_time, sc@active.assay
+        )
+    }
+    
     sc
 }
 
