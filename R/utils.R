@@ -357,26 +357,32 @@ parseTCR <- function(Con.df, unique_df, data2) {
         barcode.i <- Con.df$barcode[y]
         location.i <- which(barcode.i == data2$barcode)
         for (z in seq_along(location.i)) {
-          where.chain <- data2[location.i[z],"chain"]
-
-          if (where.chain == "TRA" | where.chain == "TRG") {
-            if(is.na(Con.df[y,"TCR1"])) {
-              Con.df[y,tcr1_lines] <- data2[location.i[z],data1_lines]
-            } else {
-              Con.df[y,tcr1_lines] <- paste(Con.df[y, tcr1_lines],
-                                            data2[location.i[z],data1_lines],sep=";") 
+            where.chain <- data2[location.i[z],"chain"]
+  
+            if (where.chain == "TRA" | where.chain == "TRG") {
+                if (is.na(Con.df[y,"TCR1"])) {
+                    Con.df[y,tcr1_lines] <- data2[location.i[z],data1_lines]
+                } else {
+                    Con.df[y,tcr1_lines] <- paste(
+                        Con.df[y, tcr1_lines],
+                        data2[location.i[z],data1_lines],
+                        sep=";"
+                    ) 
+                }
+            } else if (where.chain == "TRB" | where.chain == "TRD") {
+                if (is.na(Con.df[y,"TCR2"])) {
+                    Con.df[y,tcr2_lines] <- data2[location.i[z],data2_lines]
+                } else {
+                    Con.df[y,tcr2_lines] <- paste(
+                        Con.df[y, tcr2_lines],
+                        data2[location.i[z],data2_lines],
+                        sep=";"
+                    ) 
+                }
             }
-          } else if (where.chain == "TRB" | where.chain == "TRD") {
-            if(is.na(Con.df[y,"TCR2"])) {
-              Con.df[y,tcr2_lines] <- data2[location.i[z],data2_lines]
-            } else {
-              Con.df[y,tcr2_lines] <- paste(Con.df[y, tcr2_lines],
-                                            data2[location.i[z],data2_lines],sep=";") 
-            }
-          }
         }
     }
-  return(Con.df)
+    Con.df
 }
 
 #Assigning positions for BCR contig data
@@ -469,11 +475,12 @@ assignCT <- function(cellType, Con.df) {
         Con.df$CTaa <- paste(Con.df$cdr3_aa1, Con.df$cdr3_aa2, sep="_")
         Con.df$CTstrict <- paste(Con.df$TCR1, Con.df$cdr3_nt1, 
             Con.df$TCR2, Con.df$cdr3_nt2, sep="_")
-    } else {
+    } else { # assume cellType = B
         Con.df$CTgene <- paste(Con.df$IGH, Con.df$IGLC, sep="_")
         Con.df$CTnt <- paste(Con.df$cdr3_nt1, Con.df$cdr3_nt2, sep="_")
-        Con.df$CTaa <- paste(Con.df$cdr3_aa1, Con.df$cdr3_aa2, sep="_") }
-return(Con.df)
+        Con.df$CTaa <- paste(Con.df$cdr3_aa1, Con.df$cdr3_aa2, sep="_")
+    }
+    return(Con.df)
 }
 
 

@@ -1,5 +1,4 @@
 # test script for utils.R - testcases are NOT comprehensive!
-source("testdata/utils-testdata.R")
 
 test_that("'%!in%' works", {
     v <- c(1, 2, 3, 4, 5)
@@ -46,21 +45,10 @@ test_that("checkContigs works", {
 
 # Test cases
 test_that("Modifying barcodes without ID works correctly", {
-    # Simulated dataframes for testing
-    df1 <- data.frame(
-        barcode = c("A", "B", "C"),
-        value = c(10, 20, 30)
-    )
-    
-    df2 <- data.frame(
-        barcode = c("X", "Y", "Z"),
-        value = c(100, 200, 300)
-    )
-    
-    df_list <- list(df1, df2)
-    
     samples <- c("sample1", "sample2")
-    modified_data <- modifyBarcodes(df_list, samples, NULL)
+    modified_data <- modifyBarcodes(
+        df = getdata("utils", "df_list"), samples = samples, ID = NULL
+    )
     
     expected_modified_data <- list(
         data.frame(
@@ -77,22 +65,11 @@ test_that("Modifying barcodes without ID works correctly", {
 })
 
 test_that("Modifying barcodes with ID works correctly", {
-    # Simulated dataframes for testing
-    df1 <- data.frame(
-        barcode = c("A", "B", "C"),
-        value = c(10, 20, 30)
-    )
-    
-    df2 <- data.frame(
-        barcode = c("X", "Y", "Z"),
-        value = c(100, 200, 300)
-    )
-    
-    df_list <- list(df1, df2)
-    
     samples <- c("sample3", "sample4")
     ID <- c("id1", "id2")
-    modified_data <- modifyBarcodes(df_list, samples, ID)
+    modified_data <- modified_data <- modifyBarcodes(
+        df = getdata("utils", "df_list"), samples = samples, ID = ID
+    )
     
     expected_modified_data <- list(
         data.frame(
@@ -114,7 +91,7 @@ test_that("Modifying barcodes with ID works correctly", {
 test_that("filteringMulti works", {
     expect_identical(
         filteringMulti(head(contig_list[[1]])),
-        filteringMulti_expected
+        getdata("utils", "filteringMulti_expected")
     )
 })
 
@@ -134,8 +111,8 @@ test_that("filteringMulti works", {
 
 test_that("makeGenes works for cellType T", {
     expect_identical(
-        makeGenes("T", makeGenes_T_input),
-        makeGenes_T_expected
+        makeGenes("T", getdata("utils", "makeGenes_T_input")),
+        getdata("utils", "makeGenes_T_expected")
     )
 })
 

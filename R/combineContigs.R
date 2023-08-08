@@ -89,10 +89,10 @@ combineTCR <- function(df,
     } else {
       out <- df
     }
-    for (i in seq_along(out)) { 
+    for (i in seq_along(out)) { # ideally the nested code could be in a function for a better development/testing experience
         data2 <- out[[i]]
         data2 <- makeGenes(cellType = "T", data2)
-        unique_df <- unique(data2$barcode)
+        unique_df <- unique(data2$barcode) # could potentially display % here
         Con.df <- data.frame(matrix(NA, length(unique_df), 7))
         colnames(Con.df) <- c("barcode",tcr1_lines, tcr2_lines)
         Con.df$barcode <- unique_df
@@ -110,22 +110,23 @@ combineTCR <- function(df,
         }
         final[[i]] <- data3 
     }
-    names <- NULL
+    name_vector <- character(length(samples))
     for (i in seq_along(samples)) { 
-      if (!is.null(samples) & !is.null(ID)) {
-          c <- paste(samples[i], "_", ID[i], sep="")
-      } else if (!is.null(samples) & is.null(ID)) {
-          c <- paste(samples[i], sep="")
-      }
-        names <- c(names, c)
+        if (!is.null(samples) & !is.null(ID)) {
+            curr <- paste(samples[i], "_", ID[i], sep="")
+        } else if (!is.null(samples) & is.null(ID)) {
+            curr <- paste(samples[i], sep="")
+        }
+        name_vector[i] <- curr
     }
-    names(final) <- names
+    names(final) <- name_vector
     for (i in seq_along(final)){
-        final[[i]]<-final[[i]][!duplicated(final[[i]]$barcode),]
-        final[[i]]<-final[[i]][rowSums(is.na(final[[i]])) < 10, ]}
-    if (removeNA == TRUE) { final <- removingNA(final)}
-    if (removeMulti == TRUE) { final <- removingMulti(final) }
-    return(final) 
+      final[[i]]<-final[[i]][!duplicated(final[[i]]$barcode),]
+      final[[i]]<-final[[i]][rowSums(is.na(final[[i]])) < 10, ]
+    }
+    if (removeNA) { final <- removingNA(final)}
+    if (removeMulti) { final <- removingMulti(final) }
+    final
 }
 
 #' Combining the list of B Cell Receptor contigs

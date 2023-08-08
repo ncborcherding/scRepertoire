@@ -49,8 +49,8 @@ combineBCR produces a column CTstrict of an index of nucleotide sequence
 and the corresponding v-gene. This index automatically calculates 
 the Levenshtein distance between sequences with the same V gene and will 
 index sequences with <= 0.15 normalized Levenshtein distance with the same 
-ID. After which, clonotype clusters are called using the igraph 
-component() function. Clonotype that are clustered across multiple 
+ID. After which, clonotype clusters are called using the
+`igraph:: component()` function. Clonotype that are clustered across multiple 
 sequences will then be labeled with "LD" in the CTstrict header.
 }
 \examples{

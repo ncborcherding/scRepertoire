@@ -12,6 +12,7 @@ biocViews: Software, ImmunoOncology, SingleCell, Classification, Annotation, Seq
 Depends: 
 	ggplot2, 
 	R (>= 4.0)
+	Seurat
 Imports: 
     stringdist,
     dplyr,
@@ -33,7 +34,6 @@ Imports:
     tidygraph,
     SeuratObject,
     stats,
-    Seurat,
     Rcpp
 Suggests: 
     knitr,
