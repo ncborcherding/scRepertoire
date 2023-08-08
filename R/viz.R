@@ -83,7 +83,19 @@ quantContig <- function(df,
             ylab <- "Percent of Unique Clonotype"
         } else { y <- "contigs"
             ylab <- "Unique Clonotypes" } }
-    if (exportTable == TRUE) { return(Con.df) }
+    
+    if (exportTable) {
+        if (length(df) > 1) {
+            return(Con.df)
+        }
+        
+        # if a single sample, remove the "values" column if NA
+        if (is.na(Con.df[[2]])) {
+            Con.df[[2]] <- NULL
+        }
+        return(Con.df)
+    }
+    
     if(order & is.null(group.by)) {
       Con.df[,x] <- factor(Con.df[,x], levels = Con.df[,x])
     }
@@ -94,8 +106,18 @@ quantContig <- function(df,
         stat_summary(fun=mean, geom="bar", color="black", lwd=0.25)+
         theme_classic() + xlab("Samples") + ylab(ylab) +
         scale_fill_manual(values = colorblind_vector(col))
-    return(plot) }
-
+    
+    # if it is a single run, remove x axis labels if sample name missing
+    if ((length(df) == 1) && identical(names(df), NA_character_)) {
+        plot <- plot +
+            ggplot2::theme(
+                axis.title.x = element_blank(),
+                axis.text.x = element_blank(),
+                axis.ticks.x = element_blank()
+            )
+    }
+    return(plot)
+}
 
 #' Demonstrate the relative abundance of clonotypes by group or sample.
 #'
@@ -420,19 +442,25 @@ compareClonotypes <- function(df,
 #' to group the new list. NULL will return clusters.
 #' @param graph graph either proportion or raw clonotype count
 #' @param exportTable Returns the data frame used for forming the graph.
+#' @param seed the integer seed to set for the random variation of point coords.
 #' 
 #' @import ggplot2
 #' 
 #' @export
 #' @return ggplot of the relative clonotype numbers
 
-scatterClonotype <- function(df, cloneCall ="strict", 
-                             x.axis = NULL, y.axis = NULL,
-                             chain = "both",
-                             dot.size = "total", 
-                             split.by = NULL,
-                             graph = "proportion", 
-                             exportTable = FALSE) {
+scatterClonotype <- function(
+    df, cloneCall ="strict", 
+    x.axis = NULL, y.axis = NULL,
+    chain = "both",
+    dot.size = "total", 
+    split.by = NULL,
+    graph = "proportion", 
+    exportTable = FALSE,
+    seed = NULL
+) {
+  if (!is.null(seed)) {set.seed(seed)}
+  
   df <- list.input.return(df, split.by)
   cloneCall <- theCall(cloneCall)
   axes <- which(names(df) %in% c(x.axis, y.axis, dot.size))
