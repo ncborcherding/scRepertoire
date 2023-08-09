@@ -111,7 +111,7 @@ StartracDiversity <- function(sc,
 #' @slot pIndex.migr data.frame. Each line for a cluster; pairwise migration 
 #' index between the two locations indicated in the column name.
 #' @slot pIndex.tran data.frame. Each line for a cluster; pairwise transition 
-#' index betwwen the two major clusters indicated by the row name and column name.
+#' index between the two major clusters indicated by the row name and column name.
 #' @slot cluster.sig.data data.frame. Each line for a cluster; contains the 
 #' p values of cluster indices.
 #' @slot pIndex.sig.migr data.frame. Each line for a cluster; contains the 
@@ -129,7 +129,7 @@ StartracDiversity <- function(sc,
 #' @name Startrac
 #' @rdname Startrac
 #' @aliases Startrac-class
-#' @return method definition for runing startrac
+#' @return method definition for running startrac
 Startrac <- setClass("Startrac",
                     slots = c(aid = "character",
                         cell.data = "data.frame",
@@ -527,7 +527,7 @@ mcol.entropy <- function(x)
     return(H)
 }
 
-#' warpper function for Startrac analysis
+#' wrapper function for Startrac analysis
 #' @importFrom reshape2 dcast
 #' @importFrom plyr ldply adply llply
 #' @importFrom parallel makeCluster stopCluster
@@ -537,7 +537,7 @@ mcol.entropy <- function(x)
 #' @param proj character. String used to annotate the project.
 #' @param cores integer. number of core to be used. default: NULL.
 #' @param n.perm integer. number of permutation will be performed. If NULL, no permutation. (default: NULL)
-#' @param verbose logical. wheter return intermediate result (some Startrac objects) 
+#' @param verbose logical. whether return intermediate result (some Startrac objects) 
 #' @details run the Startrac pipeline
 #' @keywords internal
 #' @return an list contains data.frame elements "cluster.data","pIndex.migr" and "pIndex.tran"

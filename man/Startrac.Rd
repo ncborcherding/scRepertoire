@@ -6,7 +6,7 @@
 \alias{Startrac-class}
 \title{The Startrac Class}
 \value{
-method definition for runing startrac
+method definition for running startrac
 }
 \description{
 The Startrac object store the data for tcr-based T cell dynamics analyis. The slots contained 
@@ -34,7 +34,7 @@ level indexes information}
 index between the two locations indicated in the column name.}
 
 \item{\code{pIndex.tran}}{data.frame. Each line for a cluster; pairwise transition 
-index betwwen the two major clusters indicated by the row name and column name.}
+index between the two major clusters indicated by the row name and column name.}
 
 \item{\code{cluster.sig.data}}{data.frame. Each line for a cluster; contains the 
 p values of cluster indices.}

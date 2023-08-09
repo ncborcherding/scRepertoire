@@ -65,11 +65,8 @@ aa
 airr
 al
 alluvialClonotypes
-analyis
-autencoding
 barcode
 barcodes
-betwwen
 changeNames
 circlize
 clonalNetwork
@@ -134,15 +131,10 @@ rda
 registerDoParallel
 removeMulti
 removeNA
-reprtoire
-runing
-scRepetoire
 scater
 seurat
 startrac
 stripBarcode
-subseted
-subseting
 subtype
 sys
 tcr
@@ -152,5 +144,6 @@ transcriptomic
 tsv
 unqiue
 unreturned
-warpper
-wheter
+CMD
+Codecov
+coords

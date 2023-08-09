@@ -668,7 +668,7 @@ makingLodes <- function(meta2, color, alpha, facet, set.axes) {
 #' gene segments such as V, D, J, or C.
 #' @param order Categorical variable to organize the x-axis, either "gene" or "variance"
 #' @param scale Converts the individual count of genes to proportion using the total 
-#' respective reprtoire size 
+#' respective repertoire size 
 #' @param group.by The column header used for grouping.
 #' @param split.by If using a single-cell object, the column header 
 #' to group the new list. NULL will return clusters.

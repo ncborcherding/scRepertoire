@@ -11,9 +11,10 @@ combined <- combineTCR(
 
 single_contig <- combineTCR(contig_list[[1]])
 
-single_contig_with__sample <- combineTCR(
+single_contig_with_sample <- combineTCR(
 	contig_list[[1]], samples = "PX", ID = "P"
 )
+# TODO test more cases with single_contig
 
 test_that("quantContig works", {
 	expect_doppelganger(

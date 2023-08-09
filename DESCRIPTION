@@ -11,7 +11,7 @@ RoxygenNote: 7.2.3
 biocViews: Software, ImmunoOncology, SingleCell, Classification, Annotation, Sequencing
 Depends: 
 	ggplot2, 
-	R (>= 4.0)
+	R (>= 4.0),
 	Seurat
 Imports: 
     stringdist,

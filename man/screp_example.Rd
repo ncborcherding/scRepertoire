@@ -3,9 +3,9 @@
 \docType{data}
 \name{screp_example}
 \alias{screp_example}
-\title{A seurat object of 1000 single T cells derived
+\title{A seurat object of 100 single T cells derived
 from 3 clear cell renal carcinoma patients.}
 \description{
-A seurat object of 1000 single T cells derived
-from 3 clear cell renal carcinoma patients.
+The object is compatible with `contig_list` and the TCR
+sequencing data can be added with `combineExpression`.
 }

@@ -42,7 +42,7 @@
 #' clonotype information
 #' @param addLabel This will add a label to the frequency header, allowing
 #' the user to try multiple group.by variables or recalculate frequencies after 
-#' subseting the data.
+#' subsetting the data.
 #' @importFrom dplyr bind_rows %>% summarise
 #' @importFrom  rlang %||%
 #' @importFrom SummarizedExperiment colData<- colData
@@ -147,11 +147,10 @@ combineExpression <- function(
     }
     
     warn_str <- "< 1% of barcodes match: Ensure the barcodes in 
-            the Seurat object match the 
-            barcodes in the combined immune receptor list from 
-            scRepertoire - most common issue is the addition of the 
-            prefixes corresponding to `samples` and 'ID' in the combineTCR/BCR() 
-            functions"
+        the Seurat object match the barcodes in the combined immune receptor
+        list from scRepertoire - most common issue is the addition of the 
+        prefixes corresponding to `samples` and 'ID' in the combineTCR/BCR() 
+        functions"
     
     if (is_seurat_object(sc)) { 
         if (length(which(rownames(PreMeta) %in% 
