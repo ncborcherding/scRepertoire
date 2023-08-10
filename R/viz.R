@@ -561,52 +561,56 @@ scatterClonotype <- function(
 #' @export
 #' @return ggplot dendrogram of the clone size distribution
 
-clonesizeDistribution <- function(df,  cloneCall ="strict", 
-                                  chain = "both", 
-                                  method = "ward.D2", 
-                                  threshold = 1, 
-                                  group.by = NULL,
-                                  split.by = NULL, 
-                                  exportTable = FALSE) {
-        df <- list.input.return(df, split.by)
-        cloneCall <- theCall(cloneCall)
-        df <- checkBlanks(df, cloneCall)
-        if(!is.null(group.by)) {
-          df <- groupList(df, group.by)
-        }
-        data <- bind_rows(df)
-        unique_df <- unique(data[,cloneCall])
-        Con.df <- data.frame(matrix(NA, length(unique_df), length(df)))
-        Con.df <- data.frame(unique_df, Con.df, stringsAsFactors = FALSE)
-        colnames(Con.df)[1] <- "clonotype"
-        for (i in seq_along(df)) {
-          if (chain != "both") {
+clonesizeDistribution <- function(
+    df,
+    cloneCall ="strict", 
+    chain = "both", 
+    method = "ward.D2", 
+    threshold = 1, 
+    group.by = NULL,
+    split.by = NULL, 
+    exportTable = FALSE
+) {
+    df <- list.input.return(df, split.by)
+    cloneCall <- theCall(cloneCall)
+    df <- checkBlanks(df, cloneCall)
+    if(!is.null(group.by)) {
+        df <- groupList(df, group.by)
+    }
+    data <- bind_rows(df)
+    unique_df <- unique(data[,cloneCall])
+    Con.df <- data.frame(matrix(NA, length(unique_df), length(df)))
+    Con.df <- data.frame(unique_df, Con.df, stringsAsFactors = FALSE)
+    colnames(Con.df)[1] <- "clonotype"
+    for (i in seq_along(df)) {
+        if (chain != "both") {
             df[[i]] <- off.the.chain(df[[i]], chain, cloneCall)
-          }
-            data <- df[[i]]
-            data <- data.frame(table(data[,cloneCall]), 
-                        stringsAsFactors = FALSE)
-            colnames(data) <- c(cloneCall, "Freq")
-            for (y in seq_along(unique_df)){
-                    clonotype.y <- Con.df$clonotype[y]
-                    location.y <- which(clonotype.y == data[,cloneCall])
-                    Con.df[y,i+1] <- data[location.y[1],"Freq"] }
         }
-        colnames(Con.df)[2:(length(df)+1)] <- names(df)
-        Con.df[is.na(Con.df)] <- 0
-        list <- list()
-        for (i in seq_along(df)) {
-            list[[i]] <- Con.df[,i+1]
-            list[[i]] <- suppressWarnings(fdiscgammagpd(list[[i]], useq = threshold))
-            }
-        names(list) <- names(df)
-        grid <- 0:10000
-        distances <- get_distances(list, grid, modelType="Spliced")
-        hclust <- hclust(as.dist(distances), method = method)
-        hcd <- as.dendrogram(hclust)
-        plot <- plot(hcd)
-        if (exportTable == TRUE) { return(distances) }
-        return(plot)
+        data <- df[[i]]
+        data <- data.frame(table(data[,cloneCall]), 
+                    stringsAsFactors = FALSE)
+        colnames(data) <- c(cloneCall, "Freq")
+        for (y in seq_along(unique_df)){
+                clonotype.y <- Con.df$clonotype[y]
+                location.y <- which(clonotype.y == data[,cloneCall])
+                Con.df[y,i+1] <- data[location.y[1],"Freq"]
+        }
+    }
+    colnames(Con.df)[2:(length(df)+1)] <- names(df)
+    Con.df[is.na(Con.df)] <- 0
+    list <- list()
+    for (i in seq_along(df)) {
+        list[[i]] <- Con.df[,i+1]
+        list[[i]] <- suppressWarnings(fdiscgammagpd(list[[i]], useq = threshold))
+        }
+    names(list) <- names(df)
+    grid <- 0:10000
+    distances <- get_distances(list, grid, modelType="Spliced")
+    hclust <- hclust(as.dist(distances), method = method)
+    hcd <- as.dendrogram(hclust)
+    plot <- plot(hcd)
+    if (exportTable) { return(distances) }
+    return(plot)
 }
 
 #This is the basic color palette for the package

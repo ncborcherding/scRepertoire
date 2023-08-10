@@ -95,6 +95,7 @@ test_that("scatterClonotype works", {
 	# TODO test the exportTable arg
 })
 
+# something in `clonesizeDistribution` prints "NULL" to the terminal
 test_that("clonesizeDistribution works", {
 	expect_doppelganger(
 		"clonesizeDistribution_vignette_plot",

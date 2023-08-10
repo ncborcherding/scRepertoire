@@ -53,9 +53,9 @@
 combineExpression <- function(
     df, 
     sc, 
-    cloneCall="strict", 
+    cloneCall ="strict", 
     chain = "both", 
-    group.by="none", 
+    group.by ="none", 
     proportion = TRUE, 
     filterNA = FALSE,
     cloneTypes = c(
@@ -75,7 +75,7 @@ combineExpression <- function(
     if (group.by == "none" | !is.null(group.by)) {
         for (i in seq_along(df)) {
             if (chain != "both") {
-              df[[i]] <- off.the.chain(df[[i]], chain, cloneCall)
+                df[[i]] <- off.the.chain(df[[i]], chain, cloneCall)
             }
             data <- data.frame(df[[i]], stringsAsFactors = FALSE)
             data2 <- unique(data[,c("barcode", cloneCall)])
@@ -84,8 +84,8 @@ combineExpression <- function(
                 data2 <- data2 %>% group_by(data2[,cloneCall]) %>%
                     summarise(Frequency = n()/nrow(data2))
             } else {
-            data2 <- data2 %>% group_by(data2[,cloneCall]) %>%
-                summarise(Frequency = n())
+                data2 <- data2 %>% group_by(data2[,cloneCall]) %>%
+                    summarise(Frequency = n())
             }
             colnames(data2)[1] <- cloneCall
             data <- merge(data, data2, by = cloneCall, all = TRUE)
@@ -175,9 +175,8 @@ combineExpression <- function(
             call_time, sc@active.assay
         )
     }
-    
     sc
-}
+} # Qile: I think the barcode column added to the metadata is redundant? Since it matches the row names?
 
 #' Highlighting specific clonotypes in Seurat
 #'
