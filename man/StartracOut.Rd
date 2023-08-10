@@ -11,19 +11,27 @@ Object store the result of Startrac.run:
 \section{Slots}{
 
 \describe{
-\item{\code{proj}}{character. identification of the object. For example, patient id. default: "AID"}
+\item{\code{proj}}{character. identification of the object. For example, patient id.
+default: "AID"}
 
-\item{\code{cluster.data}}{data.frame. Each line for a cluster; contain the cluster level indexes information}
+\item{\code{cluster.data}}{data.frame. Each line for a cluster; contain the cluster
+level indexes information}
 
-\item{\code{pIndex.migr}}{data.frame. Each line for a cluster; pairwise migration index between the two locations indicated in the column name.}
+\item{\code{pIndex.migr}}{data.frame. Each line for a cluster; pairwise migration
+index between the two locations indicated in the column name.}
 
-\item{\code{pIndex.tran}}{data.frame. Each line for a cluster; pairwise transition index betwwen the two major clusters indicated by the row name and column name.}
+\item{\code{pIndex.tran}}{data.frame. Each line for a cluster; pairwise transition
+index between the two major clusters indicated by the row name and column
+name.}
 
-\item{\code{cluster.sig.data}}{data.frame. Each line for a cluster; contains the p values of cluster indices.}
+\item{\code{cluster.sig.data}}{data.frame. Each line for a cluster; contains the p
+values of cluster indices.}
 
-\item{\code{pIndex.sig.migr}}{data.frame. Each line for a cluster; contains the p values of pairwise migration indices.}
+\item{\code{pIndex.sig.migr}}{data.frame. Each line for a cluster; contains the p
+values of pairwise migration indices.}
 
-\item{\code{pIndex.sig.tran}}{data.frame. Each line for a cluster; contains the p values of pairwise transition indices.}
+\item{\code{pIndex.sig.tran}}{data.frame. Each line for a cluster; contains the p
+values of pairwise transition indices.}
 
 \item{\code{objects}}{list. other objects}
 }}

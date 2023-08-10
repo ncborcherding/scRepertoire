@@ -9,8 +9,7 @@
 method definition for running startrac
 }
 \description{
-The Startrac object store the data for tcr-based T cell dynamics analyis. The slots contained 
-in Startrac object are listed below:
+The Startrac object store the data for tcr-based T cell dynamics analysis.
 }
 \section{Slots}{
 

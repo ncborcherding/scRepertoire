@@ -85,9 +85,9 @@ StartracDiversity <- function(sc,
             guides(fill="none") +
             theme(axis.title.x = element_blank())
     }
-    if (exportTable == TRUE) { 
+    if (exportTable) { 
         return(indices) 
-        } 
+    } 
     return(plot)
 }
 
@@ -96,8 +96,7 @@ StartracDiversity <- function(sc,
 
 #' The Startrac Class
 #'
-#' The Startrac object store the data for tcr-based T cell dynamics analyis. The slots contained 
-#' in Startrac object are listed below:
+#' The Startrac object store the data for tcr-based T cell dynamics analysis.
 #' @slot aid character. aid of the object, used for identification of the object. 
 #' For example, patient id. default: "AID"
 #' @slot cell.data data.frame. Each line for a cell, and these columns as 
@@ -430,13 +429,21 @@ setMethod("getSig", signature = "Startrac", definition = Startrac.getSig)
 #' The StartracOUt Class
 #'
 #' Object store the result of Startrac.run:
-#' @slot proj character. identification of the object. For example, patient id. default: "AID"
-#' @slot cluster.data data.frame. Each line for a cluster; contain the cluster level indexes information
-#' @slot pIndex.migr data.frame. Each line for a cluster; pairwise migration index between the two locations indicated in the column name.
-#' @slot pIndex.tran data.frame. Each line for a cluster; pairwise transition index betwwen the two major clusters indicated by the row name and column name.
-#' @slot cluster.sig.data data.frame. Each line for a cluster; contains the p values of cluster indices.
-#' @slot pIndex.sig.migr data.frame. Each line for a cluster; contains the p values of pairwise migration indices.
-#' @slot pIndex.sig.tran data.frame. Each line for a cluster; contains the p values of pairwise transition indices.
+#' @slot proj character. identification of the object. For example, patient id.
+#' default: "AID"
+#' @slot cluster.data data.frame. Each line for a cluster; contain the cluster
+#' level indexes information
+#' @slot pIndex.migr data.frame. Each line for a cluster; pairwise migration
+#' index between the two locations indicated in the column name.
+#' @slot pIndex.tran data.frame. Each line for a cluster; pairwise transition
+#' index between the two major clusters indicated by the row name and column
+#' name.
+#' @slot cluster.sig.data data.frame. Each line for a cluster; contains the p
+#' values of cluster indices.
+#' @slot pIndex.sig.migr data.frame. Each line for a cluster; contains the p
+#' values of pairwise migration indices.
+#' @slot pIndex.sig.tran data.frame. Each line for a cluster; contains the p
+#' values of pairwise transition indices.
 #' @slot objects list. other objects
 #' @name StartracOut
 #' @rdname StartracOut
