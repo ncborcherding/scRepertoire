@@ -42,7 +42,7 @@
 #' clonotype information
 #' @param addLabel This will add a label to the frequency header, allowing
 #' the user to try multiple group.by variables or recalculate frequencies after 
-#' subseting the data.
+#' subsetting the data.
 #' @importFrom dplyr bind_rows %>% summarise
 #' @importFrom  rlang %||%
 #' @importFrom SummarizedExperiment colData<- colData
@@ -50,17 +50,21 @@
 #' @return seurat or SingleCellExperiment object with attached clonotype 
 #' information
 #' 
-
-combineExpression <- function(df, 
-                              sc, 
-                              cloneCall="strict", 
-                              chain = "both", 
-                              group.by="none", 
-                              proportion = TRUE, 
-                              filterNA = FALSE,
-                              cloneTypes=c(Rare = 1e-4, Small = 0.001, 
-                              Medium = 0.01, Large = 0.1, Hyperexpanded = 1),
-                              addLabel = FALSE) {
+combineExpression <- function(
+    df, 
+    sc, 
+    cloneCall ="strict", 
+    chain = "both", 
+    group.by ="none", 
+    proportion = TRUE, 
+    filterNA = FALSE,
+    cloneTypes = c(
+        Rare = 1e-4,Small = 0.001,Medium = 0.01,Large = 0.1,Hyperexpanded = 1
+    ),
+    addLabel = FALSE
+) {
+    call_time <- Sys.time()
+  
     options( dplyr.summarise.inform = FALSE )
     cloneTypes <- c(None = 0, cloneTypes)
     df <- checkList(df)
@@ -71,7 +75,7 @@ combineExpression <- function(df,
     if (group.by == "none" | !is.null(group.by)) {
         for (i in seq_along(df)) {
             if (chain != "both") {
-              df[[i]] <- off.the.chain(df[[i]], chain, cloneCall)
+                df[[i]] <- off.the.chain(df[[i]], chain, cloneCall)
             }
             data <- data.frame(df[[i]], stringsAsFactors = FALSE)
             data2 <- unique(data[,c("barcode", cloneCall)])
@@ -80,8 +84,8 @@ combineExpression <- function(df,
                 data2 <- data2 %>% group_by(data2[,cloneCall]) %>%
                     summarise(Frequency = n()/nrow(data2))
             } else {
-            data2 <- data2 %>% group_by(data2[,cloneCall]) %>%
-                summarise(Frequency = n())
+                data2 <- data2 %>% group_by(data2[,cloneCall]) %>%
+                    summarise(Frequency = n())
             }
             colnames(data2)[1] <- cloneCall
             data <- merge(data, data2, by = cloneCall, all = TRUE)
@@ -143,13 +147,12 @@ combineExpression <- function(df,
     }
     
     warn_str <- "< 1% of barcodes match: Ensure the barcodes in 
-            the Seurat object match the 
-            barcodes in the combined immune receptor list from 
-            scRepertoire - most common issue is the addition of the 
-            prefixes corresponding to `samples` and 'ID' in the combineTCR/BCR() 
-            functions"
+        the Seurat object match the barcodes in the combined immune receptor
+        list from scRepertoire - most common issue is the addition of the 
+        prefixes corresponding to `samples` and 'ID' in the combineTCR/BCR() 
+        functions"
     
-    if (inherits(x=sc, what ="Seurat")) { 
+    if (is_seurat_object(sc)) { 
         if (length(which(rownames(PreMeta) %in% 
                          rownames(sc[[]])))/length(rownames(sc[[]])) < 0.01) {
           warning(warn_str)
@@ -166,8 +169,14 @@ combineExpression <- function(df,
     }
     if (filterNA) { sc <- filteringNA(sc) }
     sc$cloneType <- factor(sc$cloneType, levels = rev(names(cloneTypes)))
+    
+    if(is_seurat_object(sc)) {
+        sc@commands[["combineExpression"]] <- make_screp_seurat_cmd(
+            call_time, sc@active.assay
+        )
+    }
     sc
-}
+} # Qile: I think the barcode column added to the metadata is redundant? Since it matches the row names?
 
 #' Highlighting specific clonotypes in Seurat
 #'
@@ -312,7 +321,8 @@ alluvialClonotypes <- function(sc,
         plot <- plot + facet_wrap(.~lodes[,facet], scales="free_y")
     } else if (length(facet) == 0) { plot <- plot }
     plot <- plot + geom_text(stat = ggalluvial::StatStratum, infer.label = FALSE, reverse = TRUE, size = 2)
-    return(plot)}
+    return(plot)
+}
 
 
 #' Visualize the number of single cells with clonotype frequencies by cluster

@@ -44,7 +44,7 @@ clonotype information}
 
 \item{addLabel}{This will add a label to the frequency header, allowing
 the user to try multiple group.by variables or recalculate frequencies after 
-subseting the data.}
+subsetting the data.}
 }
 \value{
 seurat or SingleCellExperiment object with attached clonotype 

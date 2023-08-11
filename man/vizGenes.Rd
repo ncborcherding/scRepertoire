@@ -34,7 +34,7 @@ gene segments such as V, D, J, or C.}
 \item{order}{Categorical variable to organize the x-axis, either "gene" or "variance"}
 
 \item{scale}{Converts the individual count of genes to proportion using the total 
-respective reprtoire size}
+respective repertoire size}
 
 \item{group.by}{The column header used for grouping.}
 

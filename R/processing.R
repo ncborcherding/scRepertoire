@@ -9,12 +9,16 @@
 #' stripBarcode(contig_list[[1]], column = 1, connector = "_", num_connects = 1)
 #' @export
 #' @return list with the suffixes of the barcodes removed.
-stripBarcode <- function(contigs, column = 1, connector = "_", 
-                            num_connects = 3) {
-    count <- as.data.frame(t(data.frame(strsplit(contigs[,column], 
-                            paste("['", connector, "']", sep="")), 
-                            stringsAsFactors = FALSE)), 
-                            stringsAsFactors = FALSE)[num_connects]
+stripBarcode <- function(contigs, column = 1, connector = "_", num_connects = 3)
+{
+    count <- as.data.frame(
+        t(data.frame(
+            strsplit(contigs[,column], paste("['", connector, "']", sep="")), 
+            stringsAsFactors = FALSE
+        )), 
+        stringsAsFactors = FALSE
+    )[num_connects]
+    
     contigs[,column] <- count
     return(contigs)
 }

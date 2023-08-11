@@ -11,7 +11,8 @@ RoxygenNote: 7.2.3
 biocViews: Software, ImmunoOncology, SingleCell, Classification, Annotation, Sequencing
 Depends: 
 	ggplot2, 
-	R (>= 4.0)
+	R (>= 4.0),
+	Seurat
 Imports: 
     stringdist,
     dplyr,
@@ -33,7 +34,7 @@ Imports:
     tidygraph,
     SeuratObject,
     stats,
-    Seurat
+    Rcpp
 Suggests: 
     knitr,
     rmarkdown,
@@ -41,8 +42,11 @@ Suggests:
     circlize,
     scales,
     scater,
+    spelling,
     testthat (>= 3.0.0),
-    spelling
+    vdiffr
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 Language: en-US
+LinkingTo: 
+    Rcpp
