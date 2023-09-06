@@ -216,17 +216,7 @@ filteringNA <- function(sc) {
     }
 }
 
-#Calculating diversity using Vegan R package
-#' @importFrom vegan diversity estimateR
-diversityCall <- function(data) {
-    w <- diversity(data[,"Freq"], index = "shannon")
-    x <- diversity(data[,"Freq"], index = "invsimpson")
-    y <- estimateR(data[,"Freq"])[2] #Chao
-    z <- estimateR(data[,"Freq"])[4] #ACE
-    z2 <- diversity(data[,"Freq"], index = "shannon")/log(length(data[,"Freq"]))
-    out <- c(w,x,y,z, z2)
-    return(out)
-}
+
 
 #Organizing list of contigs for visualization
 parseContigs <- function(df, i, names, cloneCall) {

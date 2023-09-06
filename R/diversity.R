@@ -1,12 +1,11 @@
 #' Examine the clonal diversity of samples
 #'
 #' This function calculates traditional measures of diversity - Shannon, 
-#' inverse Simpson, Chao1 index, abundance-based coverage estimators 
-#' (ACE), and 1-Pielou's measure of species evenness by sample or group. 
-#' The function automatically down samples the
-#' diversity metrics using 100 boot straps The group parameter can be 
-#' used to condense the individual samples. If a matrix output for 
-#' the data is preferred, set exportTable = TRUE.
+#' inverse Simpson, normalized entropy, Gini-Simpson, Chao1 index, and
+#' abundance-based coverage estimators (ACE) measure of species evenness by sample or group. 
+#' The function automatically down samples the diversity metrics using 
+#' 100 boot straps The group parameter can be used to condense the individual 
+#' samples. If a matrix output for the data is preferred, set exportTable = TRUE.
 #'
 #' @examples
 #' #Making combined contig data
@@ -25,6 +24,8 @@
 #' @param x.axis Additional variable in which to split the x.axis
 #' @param split.by If using a single-cell object, the column header 
 #' to group the new list. NULL will return clusters.
+#' @param metrics The indices to use in diversity calculations - "shannon", "inv.simpson", 
+#' "norm.entropy", "gini.simpson", "chao1", "ACE"
 #' @param exportTable Exports a table of the data into the global environment 
 #' in addition to the visualization
 #' @param n.boots number of bootstraps to downsample in order to get mean diversity
@@ -44,6 +45,7 @@ clonalDiversity <- function(df,
                             group.by = NULL, 
                             x.axis = NULL, 
                             split.by = NULL,
+                            metrics = c("shannon", "inv.simpson", "norm.entropy", "gini.simpson", "chao1", "ACE"),
                             exportTable = FALSE, 
                             n.boots = 100, 
                             return.boots = FALSE, 
@@ -73,7 +75,7 @@ clonalDiversity <- function(df,
       mat_a <- NULL
       sample <- c()
       if(skip.boots == TRUE) {
-        sample <- diversityCall(data)
+        sample <- .diversityCall(data)
         mat_a <- rbind(mat_a, sample)
         mat_a[is.na(mat_a)] <- 0
         mat <- rbind(mat, mat_a)
@@ -96,8 +98,8 @@ clonalDiversity <- function(df,
         }
       }
     }
-    colnames(mat) <- c("Shannon", "Inv.Simpson", "Chao", "ACE", "Inv.Pielou")
-    mat[,"Inv.Pielou"] <- 1 - mat[,"Inv.Pielou"]
+    colnames(mat) <- c("shannon", "inv.simpson", "norm.entropy", "gini.simpson", "chao1", "ACE")
+    mat <- mat[,colnames(mat) %in% metrics]
     if (!is.null(group.by)) {
       mat[,group.by] <- str_split(names(df), "[.]", simplify = TRUE)[,1]
     } else {
@@ -141,3 +143,79 @@ clonalDiversity <- function(df,
   
   return(plot) 
 }
+
+
+.diversityCall <- function(data) {
+  shannon <- .shannon(data[,"Freq"])
+  inv_simpson <- .invsimpson(data[,"Freq"])
+  norm_entropy <- .normentropy(data[,"Freq"]) 
+  gini_simpson <- .ginisimpson(data[,"Freq"]) 
+  chao1 <- .chao1(data[,"Freq"])
+  ACE <- .ACE(data[,"Freq"])
+  out <- c(shannon, inv_simpson, norm_entropy, gini_simpson, chao1,ACE)
+  return(out)
+}
+
+
+.shannon <- function(p){
+  p <- p[which(p > 0)]
+  p <- p / sum(p)
+  p <- p[which(p > 0)]
+  return(-sum(p * log(p)))
+}
+.normentropy <- function(p){
+  p <- p[which(p > 0)]
+  p <- p / sum(p)
+  p <- p[which(p > 0)]
+  return(-sum(p * log(p)) / log(length(p)))
+}
+.invsimpson <- function(p){
+  p <- p[which(p > 0)]
+  p <- p / sum(p)
+  p <- p[which(p > 0)]
+  return(1 / sum(p^2))
+}
+.ginisimpson <- function(p){
+  p <- p[which(p > 0)]
+  p <- p / sum(p)
+  p <- p[which(p > 0)]
+  return(1 - sum(p^2))
+}
+
+.chao1 <- function(p){
+  n1 <- sum(p == 1)
+  n2 <- sum(p == 2)
+  S_obs <- length(p)
+  # Chao1 index calculation
+  if(n1 > 1 && n2 > 0) {
+    chao1 <- S_obs + (n1 * (n1 - 1)) / (2 * (n2 + 1))
+  } else {
+    # In cases where n1 <= 1 or n2 == 0, Chao1 is undefined
+    chao1 <- NA
+  }
+  return(chao1)
+}
+
+.ACE <- function(p) {
+  q = 10
+  S_abund <- sum(p > q)
+  rare_data <- p[p <= q]
+  S_rare <- length(rare_data)
+  n_rare <- sum(rare_data)
+  
+  # Calculate C_ACE
+  C_ACE <- sum(p) / n_rare
+  
+  # Calculate gamma
+  gamma <- 0
+  for(i in 1:q) {
+    f_i <- sum(rare_data == i)
+    gamma <- gamma + (1 - i / q)^f_i
+  }
+  
+  # Calculate ACE
+  ACE <- S_abund + (S_rare / C_ACE) + (1 - C_ACE) * gamma
+  return(ACE)
+}
+
+
