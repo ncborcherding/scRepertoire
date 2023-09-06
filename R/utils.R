@@ -20,10 +20,12 @@ off.the.chain <- function(dat, chain, cloneCall) {
   return(dat)
 }
 
-#This is the basic color palette for the package
-colorblind_vector <- colorRampPalette(rev(c("#0D0887FF", "#47039FFF", "#7301A8FF", "#9C179EFF", 
-                                            "#BD3786FF", "#D8576BFF","#ED7953FF","#FA9E3BFF", "#FDC926FF", "#F0F921FF")))
-
+.colorizer <- function(palette = "inferno", 
+                        n= NULL) {
+  
+  colors <- hcl.colors(n=n, palette = palette, fixup = TRUE)
+  return(colors)
+}
 
 
 

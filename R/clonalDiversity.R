@@ -28,6 +28,7 @@
 #' "norm.entropy", "gini.simpson", "chao1", "ACE"
 #' @param exportTable Exports a table of the data into the global environment 
 #' in addition to the visualization
+#' @param palette Colors to use in visualization - input any hcl.pals()
 #' @param n.boots number of bootstraps to downsample in order to get mean diversity
 #' @param return.boots export boot strapped values calculated - 
 #' will automatically exportTable = TRUE
@@ -47,6 +48,7 @@ clonalDiversity <- function(df,
                             split.by = NULL,
                             metrics = c("shannon", "inv.simpson", "norm.entropy", "gini.simpson", "chao1", "ACE"),
                             exportTable = FALSE, 
+                            palette = "inferno",
                             n.boots = 100, 
                             return.boots = FALSE, 
                             skip.boots = FALSE) {
@@ -132,7 +134,7 @@ clonalDiversity <- function(df,
       geom_jitter(aes(color = melt[,group.by]), size = 3) + 
       labs(color="Group") +
       ylab("Index Score") +
-      scale_color_manual(values = colorblind_vector(length(unique(melt[,group.by])))) +
+      scale_color_manual(values = .colorizer(palette,length(unique(melt[,group.by])))) +
     facet_wrap(~variable, scales = "free", ncol = 5) +
       theme_classic() + 
       theme(axis.title.x = element_blank())

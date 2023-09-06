@@ -22,6 +22,7 @@
 #' @param split.by If using a single-cell object, the column header 
 #' to group the new list. NULL will return clusters.
 #' @param exportTable Returns the data frame used for forming the graph
+#' @param palette Colors to use in visualization - input any hcl.pals()
 #' @import dplyr
 #' @importFrom stringr str_split
 #' @export
@@ -32,7 +33,8 @@ checkContig <- function(df,
                          examine = "gene",
                          group.by = NULL, 
                          split.by = NULL, 
-                         exportTable = FALSE) {
+                         exportTable = FALSE, 
+                         palette = "inferno") {
   
   x.axis <- c(split.by, group.by) #condensing for ploting.
   x.axis <- x.axis[1]
@@ -116,7 +118,7 @@ checkContig <- function(df,
     labs(color = x.axis) + 
     theme_classic() + 
     ylab("Percent of NAs") + 
-    scale_color_manual(values = colorblind_vector(col)) + 
+    scale_color_manual(values = .colorizer(palette, col)) + 
     theme(axis.title.x = element_blank())
   return(plot)
 }

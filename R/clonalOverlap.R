@@ -27,6 +27,7 @@
 #' @param split.by If using a single-cell object, the column header 
 #' to group the new list. NULL will return clusters.
 #' @param exportTable Returns the data frame used for forming the graph
+#' @param palette Colors to use in visualization - input any hcl.pals()
 #' @importFrom stringr str_sort
 #' @importFrom reshape2 melt
 #' @export
@@ -36,7 +37,8 @@ clonalOverlap <- function(df,
                           method = c("overlap", "morisita", "jaccard", "raw"), 
                           chain = "both", 
                           split.by = NULL, 
-                          exportTable = FALSE){
+                          exportTable = FALSE,
+                          palette = "inferno"){
     df <- list.input.return(df, split.by)
     cloneCall <- theCall(cloneCall)
     df <- checkBlanks(df, cloneCall)
@@ -65,13 +67,12 @@ clonalOverlap <- function(df,
     coef_matrix$names <- rownames(coef_matrix)
     if (exportTable == TRUE) { return(coef_matrix) }
     coef_matrix <- suppressMessages(melt(coef_matrix))[,-1]
-    col <- colorblind_vector(7)
     coef_matrix$variable <- factor(coef_matrix$variable, levels = values)
     coef_matrix$names <- factor(coef_matrix$names, levels = values)
     plot <- ggplot(coef_matrix, aes(x=names, y=variable, fill=value)) +
             geom_tile() + labs(fill = method) +
             geom_text(aes(label = round(value, digits = 3))) +
-            scale_fill_gradientn(colors = rev(colorblind_vector(5)), na.value = "white") +
+            scale_fill_gradientn(colors = rev(.colorizer(palette, 7)), na.value = "white") +
             theme_classic() + theme(axis.title = element_blank())
     return(plot) 
 }

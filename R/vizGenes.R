@@ -29,6 +29,7 @@
 #' @param split.by If using a single-cell object, the column header 
 #' to group the new list. NULL will return clusters.
 #' @param exportTable Returns the data frame used for forming the graph.
+#' @param palette Colors to use in visualization - input any hcl.pals()
 #' @import ggplot2
 #' @importFrom stringr str_split
 #' @importFrom stats sd
@@ -45,7 +46,8 @@ vizGenes <- function(df,
                      scale = TRUE, 
                      group.by = NULL,
                      split.by = NULL,
-                     exportTable = FALSE) {
+                     exportTable = FALSE,
+                     palette = "inferno") {
   df <- list.input.return(df, split.by = split.by)
   if(!is.null(group.by)) {
     df <- groupList(df, group.by)
@@ -120,7 +122,7 @@ vizGenes <- function(df,
                                        vjust = 0.5, hjust=1, size=rel(0.5)), 
             axis.title.y = element_blank(), 
             axis.text.y = element_text(size=rel(0.5))) + 
-      scale_fill_gradientn(colors = rev(colorblind_vector(5)))
+      scale_fill_gradientn(colors = rev(.colorizer(palette,5)))
   }
   if (exportTable == TRUE) { return(df) }
   return(plot)

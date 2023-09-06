@@ -18,6 +18,7 @@
 #' to group the new list. NULL will return clusters.
 #' @param aa.length The maximum length of the cdr3 amino acid sequence 
 #' @param exportTable Returns the data frame used for forming the graph
+#' @param palette Colors to use in visualization - input any hcl.pals()
 #' @import ggplot2
 #' @export
 #' @return ggplot of stacked bar graphs of amino acid proportions
@@ -26,7 +27,8 @@ percentAA <- function(df,
                         group.by = NULL, 
                         split.by = NULL,
                         aa.length = 30,
-                        exportTable = FALSE) 
+                        exportTable = FALSE, 
+                        palette = "inferno") 
   df <- list.input.return(df, split.by)
   df <- checkBlanks(df, "CTaa")
   for(i in seq_along(df)) {
@@ -58,7 +60,7 @@ percentAA <- function(df,
   plot <- ggplot(mat_melt, aes(x=as.factor(variable), y = value, fill=AA)) +
     geom_bar(stat = "identity", position="fill", lwd= 0.25, color = "black") +
     scale_fill_manual(name = "Amino Acid", 
-                      values = rev(colorblind_vector(21))) +
+                      values = rev(.colorizer(palette,21))) +
     xlab("Amino Acid Residues") +
     ylab("Relative Percent") +
     theme_classic() + 

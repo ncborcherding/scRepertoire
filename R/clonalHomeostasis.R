@@ -26,6 +26,7 @@
 #' to group the new list. NULL will return clusters.
 #' @param exportTable Exports a table of the data into the global 
 #' environment in addition to the visualization
+#' @param palette Colors to use in visualization - input any hcl.pals()
 #' @import ggplot2
 #' @importFrom stringr str_split
 #' @importFrom reshape2 melt
@@ -39,7 +40,8 @@ clonalHomeostasis <- function(df,
                               chain = "both", 
                               group.by = NULL,
                               split.by = NULL,
-                              exportTable = FALSE) {
+                              exportTable = FALSE, 
+                              palette = "inferno") {
     cloneTypes <- c(None = 0, cloneTypes)
     df <- list.input.return(df, split.by = split.by)
     cloneCall <- theCall(cloneCall)
@@ -74,7 +76,7 @@ clonalHomeostasis <- function(df,
         geom_bar(stat = "identity", position="fill", 
                     color = "black", lwd= 0.25) +
         scale_fill_manual(name = "Clonotype Group", 
-                    values = rev(colorblind_vector(col))) +
+                    values = rev(.colorizer(palette,col))) +
         xlab("Samples") +
         ylab("Relative Abundance") +
         theme_classic()

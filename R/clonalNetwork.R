@@ -40,6 +40,7 @@
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL"
 #' @param exportTable Exports a table of the data into the global 
 #' environment in addition to the visualization
+#' @param palette Colors to use in visualization - input any hcl.pals()
 #' @param exportClones Exports a table of clones that are shared
 #' across multiple identity groups and ordered by the total number
 #' of clone copies.
@@ -63,6 +64,7 @@ clonalNetwork <- function(sc,
                           cloneCall = "strict", 
                           chain = "both", 
                           exportTable = FALSE, 
+                          palette = "inferno",
                           exportClones = FALSE) {
     
     cloneCall <- theCall(cloneCall)
@@ -205,7 +207,7 @@ clonalNetwork <- function(sc,
         ylab(paste0(reduction, "_2")) + 
         xlab(paste0(reduction, "_1")) + 
         guides(color = "none") + 
-        scale_edge_colour_gradientn(colors  = rev(colorblind_vector(13)), trans = "log10") + 
+        scale_edge_colour_gradientn(colors  = rev(.colorizer(palette,13)), trans = "log10") + 
         labs(size = "Unique Clones", edge_color = "Relative Proportion of \nClones of Starting Node") + 
         theme(
             panel.background = element_blank(),

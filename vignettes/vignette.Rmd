@@ -562,12 +562,10 @@ seurat <- combineExpression(list.receptors,
 We first want to look at the distribution of peripheral versus tumor T cells. We can use the same color scheme as the rest of the scRepertoire package by calling the object **colorblind_vector** using the following hex codes. 
 
 ```{r}
-colorblind_vector <- colorRampPalette(rev(c("#0D0887FF", "#47039FFF", 
-              "#7301A8FF", "#9C179EFF", "#BD3786FF", "#D8576BFF",
-              "#ED7953FF","#FA9E3BFF", "#FDC926FF", "#F0F921FF")))
+colorblind_vector <- hcl.pal("inferno", 7)
 
 DimPlot(scRep_example, group.by = "Type") + NoLegend() +
-    scale_color_manual(values=colorblind_vector(2))
+    scale_color_manual(values=colorblind_vector[c(1,7)])
 
 DimPlot(scRep_example, group.by = "cloneType") 
 ```
@@ -671,7 +669,7 @@ alluvialClonotypes(scRep_example,
                    cloneCall = "aa", 
                    y.axes = c("Patient", "ident", "Type"), 
                    color = "CAVNGGSQGNLIF_CSAEREDTDTQYF") + 
-    scale_fill_manual(values = c("grey", colorblind_vector(5)[5]))
+    scale_fill_manual(values = c("grey", colorblind_vector[7]))
 
 
 alluvialClonotypes(scRep_example, 

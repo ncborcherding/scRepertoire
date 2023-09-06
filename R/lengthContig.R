@@ -30,6 +30,7 @@
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL"
 #' @param exportTable Returns the data frame used for forming the graph.
+#' @param palette Colors to use in visualization - input any hcl.pals()
 #' @importFrom stringr str_split
 #' @importFrom ggplot2 ggplot
 #' @export
@@ -42,7 +43,8 @@ lengthContig <- function(df,
                          split.by = NULL, 
                          order = TRUE,
                          scale = FALSE, 
-                         exportTable = FALSE) {
+                         exportTable = FALSE, 
+                         palette = "inferno") {
   df <- list.input.return(df, split.by)
   if(cloneCall == "nt") { cloneCall <- "CTnt"
   ylab <- "CDR3 (NT)"
@@ -95,7 +97,7 @@ lengthContig <- function(df,
                color="black", lwd=0.25) +
       scale_x_discrete(breaks = round(seq(min(Con.df$length), 
                                           max(Con.df$length), by = 5),10))} }
-  plot <- plot + scale_fill_manual(values = colorblind_vector(col)) +
+  plot <- plot + scale_fill_manual(values = .colorizer(palette,col)) +
     labs(fill = fill) + ylab(paste(yplus, ylab, sep="")) +
     xlab(xlab) + theme_classic()
   if (exportTable == TRUE) { return(Con.df) }

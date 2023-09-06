@@ -26,6 +26,7 @@
 #' to group the new list. NULL will return clusters.
 #' @param exportTable Exports a table of the data into the global 
 #' environment in addition to the visualization
+#' @param palette Colors to use in visualization - input any hcl.pals()
 #'
 #' @import ggplot2
 #' @importFrom stringr str_sort
@@ -40,7 +41,8 @@ clonalProportion <- function(df,
                              chain = "both", 
                              group.by = NULL,
                              split.by = NULL,
-                             exportTable = FALSE) {
+                             exportTable = FALSE, 
+                             palette = "inferno") {
     Con.df <- NULL
     df <- list.input.return(df, split.by = split.by)
     cloneCall <- theCall(cloneCall)
@@ -76,7 +78,7 @@ clonalProportion <- function(df,
         geom_bar(stat = "identity", position="fill", 
                     color = "black", lwd= 0.25) +
         scale_fill_manual(name = "Clonal Indices", 
-                        values = colorblind_vector(col)) +
+                        values = .colorizer(palette,col)) +
         xlab("Samples") +
         ylab("Occupied Repertoire Space") +
         theme_classic()

@@ -27,6 +27,7 @@
 #' to group the new list. NULL will return clusters.
 #' @param graph graph either proportion or raw clonotype count
 #' @param exportTable Returns the data frame used for forming the graph.
+#' @param palette Colors to use in visualization - input any hcl.pals()
 #' @param seed the integer seed to set for the random variation of point coords.
 #' 
 #' @import ggplot2
@@ -34,16 +35,17 @@
 #' @export
 #' @return ggplot of the relative clonotype numbers
 
-scatterClonotype <- function(
-    df, cloneCall ="strict", 
-    x.axis = NULL, y.axis = NULL,
-    chain = "both",
-    dot.size = "total", 
-    split.by = NULL,
-    graph = "proportion", 
-    exportTable = FALSE,
-    seed = NULL
-) {
+scatterClonotype <- function(df, 
+                             cloneCall ="strict", 
+                             x.axis = NULL, 
+                             y.axis = NULL,
+                             chain = "both",
+                             dot.size = "total", 
+                             split.by = NULL,
+                             graph = "proportion", 
+                             exportTable = FALSE,
+                             palette = "inferno",
+                             seed = NULL) {
   if (!is.null(seed)) {set.seed(seed)}
   
   df <- list.input.return(df, split.by)
@@ -99,7 +101,7 @@ scatterClonotype <- function(
   if (exportTable == TRUE) { return(combined.df) }
   plot <- ggplot(combined.df, aes(x=x, y = y, color = class)) + 
     theme_classic() + 
-    scale_color_manual(values = colorblind_vector(length(unique(combined.df$class)))) + 
+    scale_color_manual(values = .colorizer(palette,length(unique(combined.df$class)))) + 
     xlab(x.axis) + ylab(y.axis) + labs(size = "Total n")
   if (graph == "proportion") {
     plot <- plot + geom_abline(slope = 1, intercept = 0, alpha = 0.4, lty=2)  + 

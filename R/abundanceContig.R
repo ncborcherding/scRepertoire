@@ -29,6 +29,7 @@
 #' relative distributions.
 #' @param exportTable Returns the data frame used for forming the graph
 #' to the visualization.
+#' @param palette Colors to use in visualization - input any hcl.pals()
 #' @importFrom ggplot2 ggplot
 #' @export
 #' @return ggplot of the total or relative abundance of clonotypes 
@@ -40,7 +41,8 @@ abundanceContig <- function(df,
                             group.by = NULL, 
                             split.by = NULL, 
                             order = TRUE,
-                            exportTable = FALSE) {
+                            exportTable = FALSE, 
+                            palette = "inferno") {
   df <- list.input.return(df,split.by)
   Con.df <- NULL
   xlab <- "Abundance"
@@ -63,13 +65,13 @@ abundanceContig <- function(df,
     plot <- ggplot(Con.df, aes(x=Abundance, fill=Con.df[,group.by])) +
       geom_density(aes(y=after_stat(scaled)), alpha=0.5, 
                    lwd=0.25, color="black", bw=0.5)  +
-      scale_fill_manual(values = colorblind_vector(col)) +
+      scale_fill_manual(values = .colorizer(palette,col)) +
       labs(fill = fill)
     } else { ylab <- "Number of Clonotypes"
     plot <- ggplot(Con.df, aes(x=Abundance, group.by = values, 
                                color = Con.df[,group.by])) +
       geom_line(stat="count") +
-      scale_color_manual(values = colorblind_vector(col)) +
+      scale_color_manual(values = .colorizer(palette,col)) +
       labs(color = fill)}
   } else {
     for (i in seq_along(df)) {
@@ -88,13 +90,13 @@ abundanceContig <- function(df,
     plot <- ggplot(Con.df, aes(Abundance, fill=values)) +
       geom_density(aes(y=after_stat(scaled)), alpha=0.5, lwd=0.25, 
                    color="black", bw=0.5) +
-      scale_fill_manual(values = colorblind_vector(col)) +
+      scale_fill_manual(values = .colorizer(col)) +
       labs(fill = fill)
     } else { ylab <- "Number of Clonotypes"
     plot <- ggplot(Con.df, aes(x=Abundance, group = values, 
                                color = values)) +
       geom_line(stat="count") +
-      scale_color_manual(values = colorblind_vector(col)) +
+      scale_color_manual(values = .colorizer(col)) +
       labs(color = fill)} }
   if (exportTable == TRUE) { return(Con.df) }
   plot <- plot + scale_x_log10() + ylab(ylab) + xlab(xlab) +

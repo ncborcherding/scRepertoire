@@ -25,7 +25,8 @@
 #' to group the new list. NULL will return clusters.
 #' @param order Maintain the order of the list when plotting
 #' @param scale Converts the graphs into percentage of unique clonotypes.
-#' @param exportTable Returns the data frame used for forming the graph
+#' @param exportTable Returns the data frame used for forming the graph.
+#' @param palette Colors to use in visualization - input any hcl.pals()
 #' @import ggplot2
 #' @export
 #' @return ggplot of the total or relative unique clonotypes
@@ -36,7 +37,8 @@ quantContig <- function(df,
                         group.by = NULL, 
                         split.by = NULL,
                         order = TRUE,
-                        exportTable = FALSE) {
+                        exportTable = FALSE, 
+                        palette = "inferno") {
   
   if (length(group.by) > 1) { 
     stop("Only one item in the group.by variable can be listed.")
@@ -105,7 +107,7 @@ quantContig <- function(df,
                  position = "dodge", width=.5) + labs(fill = labs) +
     stat_summary(fun=mean, geom="bar", color="black", lwd=0.25)+
     theme_classic() + xlab("Samples") + ylab(ylab) +
-    scale_fill_manual(values = colorblind_vector(col))
+    scale_fill_manual(values = .colorizer(palette, col))
   
   # if it is a single run, remove x axis labels if sample name missing
   if ((length(df) == 1) && identical(names(df), NA_character_)) {

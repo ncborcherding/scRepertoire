@@ -32,6 +32,7 @@
 #' @param na.include Visualize NA values or not.
 #' @param exportTable Exports a table of the data into the global 
 #' environment in addition to the visualization
+#' @param palette Colors to use in visualization - input any hcl.pals()
 #' @importFrom dplyr %>% group_by mutate
 #' @importFrom reshape2 melt
 #' @import ggplot2
@@ -44,7 +45,8 @@ occupiedscRepertoire <- function(sc,
                                  facet.by = NULL,
                                  proportion = FALSE, 
                                  na.include = FALSE,
-                                 exportTable = FALSE) {
+                                 exportTable = FALSE, 
+                                 palette = "inferno") {
   checkSingleObject(sc)
   meta <- grabMeta(sc)
   meta <- melt(table(meta[!is.na(meta$Frequency), 
@@ -78,7 +80,7 @@ occupiedscRepertoire <- function(sc,
   } 
   plot <- plot + 
     theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
-    scale_fill_manual(values = c(colorblind_vector(col))) + 
+    scale_fill_manual(values = c(.colorizer(palette,col))) + 
     ylab(lab) + 
     theme_classic() + 
     theme(axis.title.x = element_blank())
