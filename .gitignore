@@ -2,3 +2,5 @@
 .DS_Store
 .Rhistory
 .Rhistory
+local_tests.R
+.RData

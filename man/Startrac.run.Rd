@@ -2,7 +2,7 @@
 % Please edit documentation in R/startrac.R
 \name{Startrac.run}
 \alias{Startrac.run}
-\title{warpper function for Startrac analysis}
+\title{wrapper function for Startrac analysis}
 \usage{
 Startrac.run(
   cell.data,
@@ -21,13 +21,13 @@ Startrac.run(
 
 \item{n.perm}{integer. number of permutation will be performed. If NULL, no permutation. (default: NULL)}
 
-\item{verbose}{logical. wheter return intermediate result (some Startrac objects)}
+\item{verbose}{logical. whether return intermediate result (some Startrac objects)}
 }
 \value{
 an list contains data.frame elements "cluster.data","pIndex.migr" and "pIndex.tran"
 }
 \description{
-warpper function for Startrac analysis
+wrapper function for Startrac analysis
 }
 \details{
 run the Startrac pipeline

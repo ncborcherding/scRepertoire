@@ -13,7 +13,8 @@ scatterClonotype(
   dot.size = "total",
   split.by = NULL,
   graph = "proportion",
-  exportTable = FALSE
+  exportTable = FALSE,
+  seed = NULL
 )
 }
 \arguments{
@@ -39,6 +40,8 @@ to group the new list. NULL will return clusters.}
 \item{graph}{graph either proportion or raw clonotype count}
 
 \item{exportTable}{Returns the data frame used for forming the graph.}
+
+\item{seed}{the integer seed to set for the random variation of point coords.}
 }
 \value{
 ggplot of the relative clonotype numbers

@@ -1,0 +1,18 @@
+citHeader("To cite scRepertoire in publications use:")
+
+citEntry(
+  entry = "Article",
+  title = "scRepertoire: An R-based toolkit for single-cell immune receptor analysis",
+  author = personList(
+      as.person("Nicholas Borcherding"),
+      as.person("Nicholas L Bormann"),
+      as.person("Gloria Kraus")
+  ),
+  journal = "F1000Research",
+  volume = "9",
+  year = "2022",
+  publisher = "Faculty of 1000 Ltd",
+  doi = "10.12688/f1000research.22139.2",
+  url = "https://doi.org/10.12688/f1000research.22139.2",
+  textVersion = "Borcherding N, Bormann NL and Kraus G. scRepertoire: An R-based toolkit for single-cell immune receptor analysis [version 2; peer review: 2 approved]. F1000Research 2020, 9:47 (https://doi.org/10.12688/f1000research.22139.2)"
+)
