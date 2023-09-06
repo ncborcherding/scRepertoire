@@ -13,13 +13,13 @@
 #' rep(c("P", "T"), 3))
 #' 
 #' #Getting a sample of a Seurat object
-#' screp_example <- get(data("screp_example"))
+#' scRep_example  <- get(data("scRep_example"))
 #' 
 #' #Using combineExpresion()
-#' screp_example <- combineExpression(combined, screp_example)
+#' scRep_example  <- combineExpression(combined, scRep_example)
 #' 
 #' #Using clonalNetwork()
-#' clonalNetwork(screp_example, reduction = "umap",
+#' clonalNetwork(scRep_example, reduction = "umap",
 #'               identity = "cluster")
 #' }
 #'               

@@ -103,11 +103,11 @@ subsetContig <- function(df, name, variables = NULL) {
 #' rep(c("P", "T"), 3))
 #' 
 #' #Getting a sample of a Seurat object
-#' screp_example <- get(data("screp_example"))
-#' screp_example <- combineExpression(combined, screp_example)
+#' scRep_example <- get(data("scRep_example"))
+#' scRep_example <- combineExpression(combined, scRep_example)
 #' 
 #' #Using expression2List
-#' newList <- expression2List(screp_example, split.by = "seurat_clusters")
+#' newList <- expression2List(scRep_example, split.by = "seurat_clusters")
 #' 
 #' @param sc object after combineExpression().
 #' @param split.by The column header to group the new list. NULL will return clusters.
@@ -149,11 +149,11 @@ expression2List <- function(sc, split.by) {
 #' rep(c("P", "T"), 3))
 #' 
 #' #Getting a sample of a Seurat object
-#' screp_example <- get(data("screp_example"))
-#' screp_example <- combineExpression(combined, screp_example)
+#' scRep_example <- get(data("scRep_example"))
+#' scRep_example <- combineExpression(combined, scRep_example)
 #' 
 #' #Getting data frame output for Circilize
-#' circles <- getCirclize(screp_example, group.by = "seurat_clusters")
+#' circles <- getCirclize(scRep_example, group.by = "seurat_clusters")
 #' 
 #' 
 #' @param sc object after combineExpression().

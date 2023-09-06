@@ -4,7 +4,7 @@ author:
   name: Nick Borcherding
   email: ncborch@gmail.com
   affiliation: Washington University in St. Louis, School of Medicine, St. Louis, MO, USA
-date: "July 1st, 2023"
+date: "September 6th, 2023"
 output:
   BiocStyle::html_document:
     toc_float: true
@@ -141,8 +141,7 @@ As the output of CellRanger are quantifications of both the TCRA and TCRB chains
 
 ```{r}
 combined <- combineTCR(contig_list, 
-                        samples = c("PY", "PY", "PX", "PX", "PZ","PZ"), 
-                        ID = c("P", "T", "P", "T", "P", "T"))
+                        samples = c("P17B", "P17L", "P18B", "P18L", "P19B","P19L", "P20B", "P20L"))
 ```
 
 The output of `combineTCR()` will be a list of contig data frames that will be reduced to the reads associated with a single cell barcode. It will also combine the multiple reads into clonotype calls by either the nucleotide sequence (CTnt), amino acid sequence (CTaa), the VDJC gene sequence (CTgene) or the combination of the nucleotide and gene sequence (CTstrict). The analogous function for B cells, `combineBCR()` functions similarly with 2 major caveats: 1) Each barcode can only have a maximum of 2 sequences, if greater exists, the 2 with the highest reads are selected. 2) The strict definition of clonotype (CTstrict) is based on the V gene and >85% normalized Levenshtein distance of the nucleotide sequence. The Levenshtein distance is calculated across all BCR sequences recovered, regardless of the run.
@@ -512,17 +511,17 @@ scatterClonotype(combined, cloneCall ="gene",
 
 # Interacting with mRNA Expression
 
-As mentioned previously, this data set is derived from work performed in the laboratory of [Weizhou Zhang]("https://pathology.ufl.edu/faculty/experimental-pathology/weizhou-zhang-ph-d/"). For the purposes of the vignette, we have randomly sampled 100 cells from the the fully integrated Seurat object to minimize the size of the package. A full version of the Seurat object is available via [GitHub](https://github.com/ncborcherding/scRepertoire) under the *Getting Data* header. We will use both Seurat and SingleCellExperiment (SCE) with scater to perform the further visualizations in tandem. 
+The data in the scRepertoire package is derived from a [study](https://pubmed.ncbi.nlm.nih.gov/33622974/) of acute respiratory stress disorder in the context of bacterial and COVID-19 infections. For the purposes of the vignette, we have randomly sampled 500 cells from the the fully integrated Seurat object to minimize the size of the package. A full version of the Seurat object is available via [GitHub](https://github.com/ncborcherding/scRepertoire) under the *Getting Data* header. We will use both Seurat and SingleCellExperiment (SCE) with scater to perform the further visualizations in tandem. 
 
 ```{r}
 library(Seurat)
 library(scater)
-screp_example <- get(data("screp_example"))
-sce <- suppressMessages(UpdateSeuratObject(screp_example))
-sce <- as.SingleCellExperiment(screp_example)
+scRep_example <- get(data("scRep_example"))
+sce <- suppressMessages(UpdateSeuratObject(scRep_example))
+sce <- as.SingleCellExperiment(scRep_example)
 
 #Seurat Format
-DimPlot(screp_example)
+DimPlot(scRep_example)
 
 ##Single Cell Experiment Format
 plotUMAP(sce, colour_by = "seurat_clusters")
@@ -531,7 +530,7 @@ plotUMAP(sce, colour_by = "seurat_clusters")
 Here you can see we have 12 total clusters (C1-12), which we have labeled as such for simplicity. We can also get a little more granular information on the number of cells by using the *table()* function. 
 
 ```{r}
-table(screp_example$seurat_clusters)
+table(scRep_example$seurat_clusters)
 ```
 
 
@@ -542,8 +541,8 @@ We can call (cloneCall) the 4 variations of clonotypes: 1) VDJC genes, 2) CDR3 a
 In order to categorize the frequency, we have the variable **proportion** which if TRUE allows for the relative proportion or when FALSE will use absolute frequency to define clonotype groups **cloneTypes**  acts as a bin to place labels. As a default, **cloneTypes** is set to equal cloneTypes=c(Rare = 1e-4, Small = 0.001, Medium = 0.01, Large = 0.1, Hyperexpanded = 1). However, below you can see an example of using total frequency as expansion assignments. 
 
 ```{r}
-screp_example <- combineExpression(combined, 
-                                   screp_example, 
+scRep_example <- combineExpression(combined, 
+                                   scRep_example, 
                                    cloneCall="gene", 
                                    group.by = "sample", 
                                    proportion = FALSE, 
@@ -581,10 +580,10 @@ colorblind_vector <- colorRampPalette(rev(c("#0D0887FF", "#47039FFF",
               "#7301A8FF", "#9C179EFF", "#BD3786FF", "#D8576BFF",
               "#ED7953FF","#FA9E3BFF", "#FDC926FF", "#F0F921FF")))
 
-DimPlot(screp_example, group.by = "Type") + NoLegend() +
+DimPlot(scRep_example, group.by = "Type") + NoLegend() +
     scale_color_manual(values=colorblind_vector(2))
 
-DimPlot(screp_example, group.by = "cloneType") 
+DimPlot(scRep_example, group.by = "cloneType") 
 ```
 
 ## clonalOverlay 
@@ -592,7 +591,7 @@ DimPlot(screp_example, group.by = "cloneType")
 Using the dimensional reduction graphs as a reference, we can also generate an overlay of the position of clonally expanded cells using `clonalOverlay()`. Select the **reduction** for the visualization, default is "PCA" and the **freq.cutpoint** or lowest clonal frequency or proportion to generate the contour plot. We can modify the contours by selecting the number of **bins** or number of contours drawn. `clonalOverlay()` can be used to look across all cells or faceted by a meta data variable using **facet**. As we facet, the overall dimensional reduction will be maintained, while the contour plots will adjust based on the **facet** variable. Coloring of the dot plot is based on the active identity of the single-cell object. This visualization was authored by Dr. Francesco Mazziotta from Johns Hopkins and inspired by Drs. Carmona and Andreatta and their work with [ProjectTIL](https://github.com/carmonalab/ProjecTILs).
 
 ```{r}
-clonalOverlay(screp_example, 
+clonalOverlay(scRep_example, 
               reduction = "umap", 
               freq.cutpoint = 1, 
               bins = 10, 
@@ -621,7 +620,7 @@ Filtering for clones can be accomplished using 3 methods:
 library(ggraph)
 
 #No Identity filter
-clonalNetwork(screp_example, 
+clonalNetwork(scRep_example, 
               reduction = "umap", 
               identity = "seurat_clusters",
               filter.clones = NULL,
@@ -629,7 +628,7 @@ clonalNetwork(screp_example,
               cloneCall = "aa")
 
 #Examining Cluster 2 only
-clonalNetwork(screp_example, 
+clonalNetwork(scRep_example, 
               reduction = "umap", 
               identity = "ident",
               filter.identity = "C2",
@@ -639,7 +638,7 @@ clonalNetwork(screp_example,
 We can also use **exportClones** to quickly get clones that are shared across multiple identity groups, along with the total number of clones in the data set.
 
 ```{r}
-shared.clones <- clonalNetwork(screp_example, 
+shared.clones <- clonalNetwork(scRep_example, 
                               reduction = "umap", 
                               identity = "ident",
                               cloneCall = "aa", 
@@ -652,12 +651,12 @@ head(shared.clones)
 We can also look at the clonotypes by calling specific sequences in the `highlightClonotypes()` below. In order to highlight the clonotypes, we first need to use the **cloneCall** the type of sequence we will be using and then the specific sequences themselves using **sequence**. Below you can see the steps to highlight the two most prominent sequences *"CAVNGGSQGNLIF_CSAEREDTDTQYF"* with a frequency = 482 and *"NA_CATSATLRVVAEKLFF"* with a frequency = 287. 
 
 ```{r}
-screp_example <- highlightClonotypes(screp_example, 
+scRep_example <- highlightClonotypes(scRep_example, 
                     cloneCall= "aa", 
                     sequence = c("CAVNGGSQGNLIF_CSAEREDTDTQYF", 
                                  "NA_CATSATLRVVAEKLFF"))
 
-Seurat::DimPlot(screp_example, group.by = "highlight")
+Seurat::DimPlot(scRep_example, group.by = "highlight")
 ```
 
 ## occupiedscRepertoire
@@ -668,10 +667,10 @@ We can also look at the count of cells by cluster assigned into specific frequen
 +  **label** will still return absolute number of clonotypes  
 
 ```{r}
-occupiedscRepertoire(screp_example, 
+occupiedscRepertoire(scRep_example, 
                      x.axis = "seurat_clusters")
 
-occupiedscRepertoire(screp_example, 
+occupiedscRepertoire(scRep_example, 
                      x.axis = "ident", 
                      proportion = TRUE, 
                      label = FALSE)
@@ -682,14 +681,14 @@ occupiedscRepertoire(screp_example,
 After the metadata has been modified, we can look at clonotypes across multiple categories using the `alluvialClonotypes()` function. To understand the basic concepts of this graphing method, I'd highly recommend reading [this post](https://cran.r-project.org/web/packages/ggalluvial/vignettes/ggalluvial.html), essentially we are able to use the plots to examine the interchange of categorical variables. Because this function will produce a graph with each clonotype arranged by called stratification, this will take some time depending on the size of your total cells. To expedite, we will actually subset the Seurat object before using `alluvialClonotypes()`.
 
 ```{r}
-alluvialClonotypes(screp_example, 
+alluvialClonotypes(scRep_example, 
                    cloneCall = "aa", 
                    y.axes = c("Patient", "ident", "Type"), 
                    color = "CAVNGGSQGNLIF_CSAEREDTDTQYF") + 
     scale_fill_manual(values = c("grey", colorblind_vector(5)[5]))
 
 
-alluvialClonotypes(screp_example, 
+alluvialClonotypes(scRep_example, 
                    cloneCall = "gene", 
                    y.axes = c("Patient", "ident", "Type"), 
                    color = "seurat_clusters") 
@@ -703,12 +702,12 @@ Like alluvial graphs, we can also visualize the interconnection of clusters usin
 library(circlize)
 library(scales)
 
-circles <- getCirclize(screp_example, 
+circles <- getCirclize(scRep_example, 
                        group.by = "seurat_clusters")
 
 #Just assigning the normal colors to each cluster
-grid.cols <- hue_pal()(length(unique(screp_example$seurat_clusters)))
-names(grid.cols) <- unique(screp_example$seurat_clusters)
+grid.cols <- hue_pal()(length(unique(scRep_example$seurat_clusters)))
+names(grid.cols) <- unique(scRep_example$seurat_clusters)
 
 #Graphing the chord diagram
 chordDiagram(circles, self.link = 1, grid.col = grid.cols)
@@ -717,7 +716,7 @@ chordDiagram(circles, self.link = 1, grid.col = grid.cols)
 This can also be used if we wanted to explore just the tumor-specific T cells by just subsetting the single-cell object.
 
 ```{r}
-subset <- subset(screp_example, Type == "T")
+subset <- subset(scRep_example, Type == "T")
 
 
 circles <- getCirclize(subset, group.by = "ident")
@@ -767,7 +766,7 @@ In order to use the ```StartracDiversity()``` function, you will need to include
 +  tran - State Transition  
 
 ```{r}
-StartracDiversity(screp_example, 
+StartracDiversity(scRep_example, 
                   type = "Type", 
                   sample = "Patient", 
                   by = "overall")
@@ -784,7 +783,7 @@ A new metric proposed by [Massimo et al](https://pubmed.ncbi.nlm.nih.gov/3582969
 * The compartment/variable used for the purpose of the comparison  
 
 ```{r}
-clonotypeBias(screp_example, 
+clonotypeBias(scRep_example, 
               cloneCall = "aa", 
               split.by = "Type", 
               group.by = "seurat_clusters",
@@ -798,7 +797,7 @@ clonotypeBias(screp_example,
 For users that would like greater ability to use the meta data in the Seurat objects to perform the analysis that scRepertoire provides, there is also the option of using the *expression2List()* function that will take the meta data and output the data as a list by cluster.
 
 ```{r}
-combined2 <- expression2List(screp_example, split.by = "seurat_clusters")
+combined2 <- expression2List(scRep_example, split.by = "seurat_clusters")
 combined3 <- expression2List(sce, split.by = "seurat_clusters")
 ```
 

@@ -17,11 +17,11 @@
 #' rep(c("P", "T"), 3))
 #' 
 #' #Getting a sample of a Seurat object
-#' screp_example <- get(data("screp_example"))
-#' screp_example <- combineExpression(combined, screp_example)
+#' scRep_example  <- get(data("scRep_example "))
+#' scRep_example  <- combineExpression(combined, scRep_example )
 #' 
 #' #Using occupiedscRepertoire()
-#' StartracDiversity(screp_example, type = "Type", sample = "Patient", by = "overall")
+#' StartracDiversity(scRep_example , type = "Type", sample = "Patient", by = "overall")
 #' }
 #' 
 #' @param sc The seurat or SCE object to visualize after combineExpression(). 

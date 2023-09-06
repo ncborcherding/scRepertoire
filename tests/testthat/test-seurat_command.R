@@ -1,7 +1,7 @@
 test_that("make_screp_seurat_cmd works", {
-	data("screp_example", "combined_mini_contig_list")
+	data("scRep_example", "mini_contig_list")
 	
-	test_obj <- combineExpression(combined_mini_contig_list, screp_example)
+	test_obj <- combineExpression(mini_contig_list, scRep_example)
 	expect_true(!is.null(test_obj@commands[["combineExpression"]]))
 	
 	test_obj <- test_obj@commands[["combineExpression"]]
@@ -11,7 +11,7 @@ test_that("make_screp_seurat_cmd works", {
 	expect_identical(test_obj@assay.used, "integrated")
 	expect_identical(
 		test_obj@call.string,
-		"combineExpression(combined_mini_contig_list, screp_example)"
+		"combineExpression(mini_contig_list, scRep_example)"
 	)
 	expect_equal(
 		test_obj@params,
