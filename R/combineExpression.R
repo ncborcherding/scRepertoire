@@ -140,7 +140,9 @@ combineExpression <- function(
                 "CTaa", "CTstrict", "Frequency", "cloneType")])
     dup <- PreMeta$barcode[which(duplicated(PreMeta$barcode))]
     PreMeta <- PreMeta[PreMeta$barcode %!in% dup,]
-    rownames(PreMeta) <- PreMeta$barcode
+    barcodes <- PreMeta$barcode
+    PreMeta <- PreMeta[,-1]
+    rownames(PreMeta) <- barcodes
     if (group.by != "none" && addLabel) {
       location <- which(colnames(PreMeta) == "Frequency")
       colnames(PreMeta)[location] <- paste0("Frequency.", group.by)
@@ -176,7 +178,7 @@ combineExpression <- function(
         )
     }
     sc
-} # Qile: I think the barcode column added to the metadata is redundant? Since it matches the row names?
+} 
 
 
 
