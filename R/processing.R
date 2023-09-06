@@ -99,8 +99,9 @@ subsetContig <- function(df, name, variables = NULL) {
 #'
 #' @examples
 #' #Getting the combined contigs
-#' combined <- combineTCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), 
-#' rep(c("P", "T"), 3))
+#' combined <- combineTCR(contig_list, 
+#'                         samples = c("P17B", "P17L", "P18B", "P18L", 
+#'                                     "P19B","P19L", "P20B", "P20L"))
 #' 
 #' #Getting a sample of a Seurat object
 #' scRep_example <- get(data("scRep_example"))
@@ -145,8 +146,9 @@ expression2List <- function(sc, split.by) {
 #' 
 #' @examples
 #' #Getting the combined contigs
-#' combined <- combineTCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), 
-#' rep(c("P", "T"), 3))
+#' combined <- combineTCR(contig_list, 
+#'                         samples = c("P17B", "P17L", "P18B", "P18L", 
+#'                                     "P19B","P19L", "P20B", "P20L"))
 #' 
 #' #Getting a sample of a Seurat object
 #' scRep_example <- get(data("scRep_example"))

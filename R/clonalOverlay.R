@@ -7,18 +7,21 @@
 #'
 #' @examples
 #' #Getting the combined contigs
-#' combined <- combineTCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), 
-#' rep(c("P", "T"), 3))
-#' 
+#' combined <- combineTCR(contig_list, 
+#'                         samples = c("P17B", "P17L", "P18B", "P18L", 
+#'                                     "P19B","P19L", "P20B", "P20L"))
 #' #Getting a sample of a Seurat object
 #' scRep_example <- get(data("scRep_example"))
-#' sce <- suppressMessages(Seurat::UpdateSeuratObject(scRep_example))
 #' 
 #' #Using combineExpresion()
-#' sce <- combineExpression(combined, sce)
+#' scRep_example <- combineExpression(combined, 
+#'                                    scRep_example)
 #' 
 #' #Using clonalOverlay()
-#' clonalOverlay(sce, reduction = "umap", freq.cutpoint = 0.3, bins = 5) 
+#' clonalOverlay(scRep_example, 
+#'               reduction = "umap", 
+#'               freq.cutpoint = 0.3, 
+#'               bins = 5) 
 #' 
 #' @param sc The seurat or SCE object to visualize after combineExpression(). 
 #' @param reduction The dimensional reduction to visualize

@@ -8,9 +8,9 @@
 #'
 #' @examples
 #' #Making combined contig data
-#' x <- contig_list
-#' combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), 
-#' rep(c("P", "T"), 3))
+#' combined <- combineTCR(contig_list, 
+#'                         samples = c("P17B", "P17L", "P18B", "P18L", 
+#'                                     "P19B","P19L", "P20B", "P20L"))
 #' compareClonotypes(combined, numbers = 10, 
 #' samples = c("PX_P", "PX_T"), cloneCall="aa")
 #'
