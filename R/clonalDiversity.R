@@ -85,7 +85,7 @@ clonalDiversity <- function(df,
       } else {
         for (j in seq(seq_len(n.boots))) {
           x <- sample_n(data, min)
-          sample <- diversityCall(x)
+          sample <- .diversityCall(x)
           mat_a <- rbind(mat_a, sample)
         }
         mat_a[is.na(mat_a)] <- 0

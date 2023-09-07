@@ -7,7 +7,7 @@
 clonalOverlap(
   df,
   cloneCall = "strict",
-  method = c("overlap", "morisita", "jaccard", "raw"),
+  method = NULL,
   chain = "both",
   split.by = NULL,
   exportTable = FALSE,

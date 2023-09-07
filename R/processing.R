@@ -32,10 +32,12 @@ stripBarcode <- function(contigs, column = 1, connector = "_", num_connects = 3)
 #' the combined object.
 #'
 #' @examples
-#' x <- contig_list
-#' combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), 
-#' rep(c("P", "T"), 3))
-#' combined <- addVariable(combined, name = "batch", variables = c(1,1,1,1,2,2))
+#' combined <- combineTCR(contig_list, 
+#'                         samples = c("P17B", "P17L", "P18B", "P18L", 
+#'                                     "P19B","P19L", "P20B", "P20L"))
+#' combined <- addVariable(combined, 
+#'                        name = "Type", 
+#'                        variables = rep(c("B", "L"), 4))
 #'
 #' @param df The product of combineTCR() combineBCR() or expression2List().
 #' @param name The column header to add.

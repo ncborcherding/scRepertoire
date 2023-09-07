@@ -79,7 +79,8 @@ abundanceContig <- function(df,
         df[[i]] <- off.the.chain(df[[i]], chain, cloneCall)
       }
       data1 <- parseContigs(df, i, names, cloneCall)
-      Con.df<- rbind.data.frame(Con.df, data1) }
+      Con.df<- rbind.data.frame(Con.df, data1) 
+      }
     Con.df <- data.frame(Con.df)
     if(order) {
       Con.df[,"values"] <- factor(Con.df[,"values"], levels = names(df))
@@ -90,13 +91,13 @@ abundanceContig <- function(df,
     plot <- ggplot(Con.df, aes(Abundance, fill=values)) +
       geom_density(aes(y=after_stat(scaled)), alpha=0.5, lwd=0.25, 
                    color="black", bw=0.5) +
-      scale_fill_manual(values = .colorizer(col)) +
+      scale_fill_manual(values = .colorizer(palette,col)) +
       labs(fill = fill)
     } else { ylab <- "Number of Clonotypes"
     plot <- ggplot(Con.df, aes(x=Abundance, group = values, 
                                color = values)) +
       geom_line(stat="count") +
-      scale_color_manual(values = .colorizer(col)) +
+      scale_color_manual(values = .colorizer(palette,col)) +
       labs(color = fill)} }
   if (exportTable == TRUE) { return(Con.df) }
   plot <- plot + scale_x_log10() + ylab(ylab) + xlab(xlab) +

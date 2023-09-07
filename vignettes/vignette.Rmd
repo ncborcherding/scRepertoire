@@ -150,12 +150,12 @@ The output of `combineTCR()` will be a list of contig data frames that will be r
 
 ## addVariable
 
-What if there are more variables to add than just sample and ID? We can add them by using the `addVariable()` function. All we need is the **name** of the variable you'd like to add and the specific character or numeric values (**variables**). As an example, here we add the batches in which the samples were processed and sequenced. 
+What if there are more variables to add than just sample and ID? We can add them by using the `addVariable()` function. All we need is the **name** of the variable you'd like to add and the specific character or numeric values (**variables**). As an example, here we add the Typees in which the samples were processed and sequenced. 
 
 ```{r}
 combined <- addVariable(combined, 
-                      name = "batch", 
-                      variables = c("b1", "b1", "b1", "b2", "b2", "b2", "b2", "b2"))
+                      name = "Type", 
+                      variables = rep(c("B", "L"), 4))
 
 combined[[1]][1:5,ncol(combined[[1]])] # This is showing the first 5 values of the new column added
 ```
@@ -199,6 +199,13 @@ quantContig(combined,
             cloneCall="strict", 
             chain = "both", 
             scale = TRUE)
+
+#Adjust colors with the palette parameter
+quantContig(combined, 
+            cloneCall="strict", 
+            chain = "both", 
+            scale = TRUE, 
+            palette = "Zissou 1")
 ```
 
 Within each of the general analysis functions, there is the ability to export the data frame used to create the visualization. To get the exported values, use **exportTable** = TRUE. It will return the data frame used to make the graph, instead of the visual output.  
@@ -211,12 +218,12 @@ quantContig_output <- quantContig(combined,
 quantContig_output
 ```
 
-The other option here is to be able to define the visualization by data classes. Here we used the *combineTCR()* to define the **batch** variable as part of the naming structure. We can the **group.by** to specifically use a column in the data set to organize the visualization.
+Another option here is to be able to define the visualization by data classes. Here we used the *combineTCR()* to define the **Type** variable as part of the naming structure. We can the **group.by** to specifically use a column in the data set to organize the visualization.
 
 ```{r}
 quantContig(combined, 
             cloneCall="gene", 
-            group.by = "batch", 
+            group.by = "Type", 
             scale = TRUE)
 ```
 
@@ -235,7 +242,7 @@ Depending on the experiment or sequencing run, a number of NAs can appear in eit
 checkContig(combined, 
             chain = "TRA", 
             examine = "gene",
-            group.by = "batch")
+            group.by = "Type")
 
 checkContig(combined, 
             chain = "TRB", 
@@ -257,7 +264,7 @@ As you can see the peripheral blood sample derived from patient 1 is a relative 
 
 ```{r}
 abundanceContig(combined, 
-                group.by = "ID", 
+                group.by = "Type", 
                 scale = TRUE)
 ```
 
@@ -273,6 +280,7 @@ We can look at the length distribution of the CDR3 sequences by calling the `len
 lengthContig(combined, 
              cloneCall="aa", 
              chain = "both") 
+
 lengthContig(combined, 
              cloneCall="aa", 
              chain = "TRA", 
@@ -428,8 +436,11 @@ By examining the clonal space, we are effectively looking at the relative space 
 * Hyperexpanded = 1  
 
 ```{r}
-clonalHomeostasis(combined, cloneCall = "gene")
-clonalHomeostasis(combined, cloneCall = "aa")
+clonalHomeostasis(combined, 
+                  cloneCall = "gene")
+
+clonalHomeostasis(combined, 
+                  cloneCall = "aa")
 ```
 
 
@@ -448,8 +459,11 @@ The **split** represents ranking of clonotypes by copy or frequency of occurrenc
 * 100000 
 
 ```{r}
-clonalProportion(combined, cloneCall = "gene") 
-clonalProportion(combined, cloneCall = "nt") 
+clonalProportion(combined, 
+                 cloneCall = "gene") 
+
+clonalProportion(combined, 
+                 cloneCall = "nt") 
 ```
 
 
@@ -535,19 +549,18 @@ We can call (cloneCall) the 4 variations of clonotypes: 1) VDJC genes, 2) CDR3 a
 In order to categorize the frequency, we have the variable **proportion** which if TRUE allows for the relative proportion or when FALSE will use absolute frequency to define clonotype groups **cloneTypes**  acts as a bin to place labels. As a default, **cloneTypes** is set to equal cloneTypes=c(Rare = 1e-4, Small = 0.001, Medium = 0.01, Large = 0.1, Hyperexpanded = 1). However, below you can see an example of using total frequency as expansion assignments. 
 
 ```{r}
+sce <- combineExpression(combined, 
+                          sce, 
+                          cloneCall="gene", 
+                          group.by = "sample", 
+                          proportion = TRUE)
+
 scRep_example <- combineExpression(combined, 
                                    scRep_example, 
                                    cloneCall="gene", 
                                    group.by = "sample", 
                                    proportion = FALSE, 
                                    cloneTypes=c(Single=1, Small=5, Medium=20, Large=100, Hyperexpanded=500))
-
-
-sce <- combineExpression(combined, 
-                          sce, 
-                          cloneCall="gene", 
-                          group.by = "sample", 
-                          proportion = TRUE)
 ```
 
 ## Combining both TCR and BCR 
@@ -578,8 +591,9 @@ scRep_example$Type <- substr(scRep_example$orig.ident, 4,4)
 #Adding patient information
 scRep_example$Patient <- substr(scRep_example$orig.ident, 1,3)
 
-DimPlot(scRep_example, group.by = "Type") + NoLegend() +
-    scale_color_manual(values=colorblind_vector[c(1,6)])
+DimPlot(scRep_example, group.by = "Type") + 
+        NoLegend() +
+        scale_color_manual(values=colorblind_vector[c(1,6)])
 
 DimPlot(scRep_example, group.by = "cloneType") +
     scale_color_manual(values=colorblind_vector[c(2,4,6)])

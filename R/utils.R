@@ -19,7 +19,7 @@ off.the.chain <- function(dat, chain, cloneCall) {
   dat[,cloneCall] <- str_split(dat[,cloneCall], "_", simplify = TRUE)[,x]
   return(dat)
 }
-
+#' @importFrom grDevices hcl.colors
 .colorizer <- function(palette = "inferno", 
                         n= NULL) {
   
