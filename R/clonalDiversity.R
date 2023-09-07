@@ -135,7 +135,7 @@ clonalDiversity <- function(df,
       labs(color="Group") +
       ylab("Index Score") +
       scale_color_manual(values = .colorizer(palette,length(unique(melt[,group.by])))) +
-    facet_wrap(~variable, scales = "free", ncol = 5) +
+    facet_wrap(~variable, scales = "free", ncol = length(metrics)) +
       theme_classic() + 
       theme(axis.title.x = element_blank())
     if (x.axis == "x.axis") { 

@@ -6,10 +6,15 @@
 \alias{scRepertoire-package}
 \title{scRepertoire: A toolkit for single-cell immune receptor profiling}
 \description{
-scRepertoire was built to process data derived from the 10x Genomics Chromium Immune Profiling for both T-cell receptor (TCR) and immunoglobulin (Ig) enrichment workflows and subsequently interacts with the popular Seurat and SingleCellExperiment R packages. It also allows for general analysis of single-cell clonotype information without the use of expression information. The package functions as a wrapper for Startrac and powerTCR R packages.
+scRepertoire was built to process data derived from the 10x Genomics Chromium Immune Profiling for both T-cell receptor (TCR) and immunoglobulin (Ig) enrichment workflows and subsequently interacts with the popular Seurat and SingleCellExperiment R packages.
 }
 \author{
 \strong{Maintainer}: Nick Borcherding \email{ncborch@gmail.com}
+
+Authors:
+\itemize{
+  \item Qile Yang \email{qile0317@gmail.com}
+}
 
 }
 \keyword{internal}

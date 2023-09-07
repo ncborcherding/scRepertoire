@@ -15,6 +15,7 @@ clonalNetwork(
   cloneCall = "strict",
   chain = "both",
   exportTable = FALSE,
+  palette = "inferno",
   exportClones = FALSE
 )
 }
@@ -45,6 +46,8 @@ e.g. "both", "TRA", "TRG", "IGH", "IGL"}
 \item{exportTable}{Exports a table of the data into the global 
 environment in addition to the visualization}
 
+\item{palette}{Colors to use in visualization - input any hcl.pals()}
+
 \item{exportClones}{Exports a table of clones that are shared
 across multiple identity groups and ordered by the total number
 of clone copies.}
@@ -61,17 +64,18 @@ plot.
 \examples{
 \dontrun{
 #Getting the combined contigs
-combined <- combineTCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), 
-rep(c("P", "T"), 3))
+combined <- combineTCR(contig_list, 
+                        samples = c("P17B", "P17L", "P18B", "P18L", 
+                                    "P19B","P19L", "P20B", "P20L"))
 
 #Getting a sample of a Seurat object
-screp_example <- get(data("screp_example"))
+scRep_example  <- get(data("scRep_example"))
 
 #Using combineExpresion()
-screp_example <- combineExpression(combined, screp_example)
+scRep_example  <- combineExpression(combined, scRep_example)
 
 #Using clonalNetwork()
-clonalNetwork(screp_example, reduction = "umap",
+clonalNetwork(scRep_example, reduction = "umap",
               identity = "cluster")
 }
               

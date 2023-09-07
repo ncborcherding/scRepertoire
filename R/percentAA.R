@@ -26,9 +26,9 @@ percentAA <- function(df,
                         chain = "TRB", 
                         group.by = NULL, 
                         split.by = NULL,
-                        aa.length = 30,
+                        aa.length = 20,
                         exportTable = FALSE, 
-                        palette = "inferno") 
+                        palette = "inferno")  {
   df <- list.input.return(df, split.by)
   df <- checkBlanks(df, "CTaa")
   for(i in seq_along(df)) {

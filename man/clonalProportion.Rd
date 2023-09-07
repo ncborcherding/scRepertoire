@@ -11,7 +11,8 @@ clonalProportion(
   chain = "both",
   group.by = NULL,
   split.by = NULL,
-  exportTable = FALSE
+  exportTable = FALSE,
+  palette = "inferno"
 )
 }
 \arguments{
@@ -33,6 +34,8 @@ to group the new list. NULL will return clusters.}
 
 \item{exportTable}{Exports a table of the data into the global 
 environment in addition to the visualization}
+
+\item{palette}{Colors to use in visualization - input any hcl.pals()}
 }
 \value{
 ggplot of the space occupied by the specific rank of clonotypes
@@ -47,9 +50,9 @@ preferred, set exportTable = TRUE.
 }
 \examples{
 #Making combined contig data
-x <- contig_list
-combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), 
-rep(c("P", "T"), 3))
+combined <- combineTCR(contig_list, 
+                        samples = c("P17B", "P17L", "P18B", "P18L", 
+                                    "P19B","P19L", "P20B", "P20L"))
 clonalProportion(combined, cloneCall = "gene")
 
 }

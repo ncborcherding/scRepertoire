@@ -153,11 +153,11 @@ The output of `combineTCR()` will be a list of contig data frames that will be r
 What if there are more variables to add than just sample and ID? We can add them by using the `addVariable()` function. All we need is the **name** of the variable you'd like to add and the specific character or numeric values (**variables**). As an example, here we add the batches in which the samples were processed and sequenced. 
 
 ```{r}
-example <- addVariable(combined, 
+combined <- addVariable(combined, 
                       name = "batch", 
-                      variables = c("b1", "b1", "b2", "b2", "b2", "b2"))
+                      variables = c("b1", "b1", "b1", "b2", "b2", "b2", "b2", "b2"))
 
-example[[1]][1:5,ncol(example[[1]])] # This is showing the first 5 values of the new column added
+combined[[1]][1:5,ncol(combined[[1]])] # This is showing the first 5 values of the new column added
 ```
 
 ## subsetContig
@@ -211,12 +211,12 @@ quantContig_output <- quantContig(combined,
 quantContig_output
 ```
 
-The other option here is to be able to define the visualization by data classes. Here we used the *combineTCR()* to define the **ID** variable as part of the naming structure. We can the **group.by** to specifically use a column in the data set to organize the visualization.
+The other option here is to be able to define the visualization by data classes. Here we used the *combineTCR()* to define the **batch** variable as part of the naming structure. We can the **group.by** to specifically use a column in the data set to organize the visualization.
 
 ```{r}
 quantContig(combined, 
             cloneCall="gene", 
-            group.by = "ID", 
+            group.by = "batch", 
             scale = TRUE)
 ```
 
@@ -235,7 +235,7 @@ Depending on the experiment or sequencing run, a number of NAs can appear in eit
 checkContig(combined, 
             chain = "TRA", 
             examine = "gene",
-            group.by = "ID")
+            group.by = "batch")
 
 checkContig(combined, 
             chain = "TRB", 
@@ -250,10 +250,6 @@ We can also examine the relative distribution of clonotypes by abundance. Here `
 ```{r}
 abundanceContig(combined, 
                 cloneCall = "gene", 
-                scale = FALSE)
-abundanceContig(combined, 
-                cloneCall = "gene", 
-                group.by = "ID", 
                 scale = FALSE)
 ```
 
@@ -279,7 +275,8 @@ lengthContig(combined,
              chain = "both") 
 lengthContig(combined, 
              cloneCall="aa", 
-             chain = "TRA") 
+             chain = "TRA", 
+             scale = TRUE) 
 ```
 
 ## compareClonotypes
@@ -321,7 +318,7 @@ compareClonotypes(combined,
 
 ## vizGenes
 
-Last of the basic analysis visualizations is the relative usage of genes of the TCR or BCR, using `vizGenes()`. 
+A visualizations of the relative usage of genes of the TCR or BCR, using `vizGenes()`. 
 
 **gene**  
 +  "V"  
@@ -385,7 +382,7 @@ We can also use `vizGenes()` to look at the usage of genes in a single chain. So
 
 ```{r}
 #Peripheral Blood
-vizGenes(combined[c(1,3,5)], 
+vizGenes(combined[c(1,3,5,7)], 
          gene = "V", 
          chain = "TRB", 
          y.axis = "J", 
@@ -393,8 +390,8 @@ vizGenes(combined[c(1,3,5)],
          scale = TRUE, 
          order = "variance")
 
-#Tumor Infiltrating
-vizGenes(combined[c(2,4,6)], 
+#Lung
+vizGenes(combined[c(2,4,6,8)], 
          gene = "V", 
          chain = "TRB", 
          y.axis = "J", 
@@ -402,6 +399,17 @@ vizGenes(combined[c(2,4,6)],
          scale = TRUE, 
          order = "variance")
 ```
+
+## percentAA
+
+Quantify the proportion of amino acids along the cdr3 sequence with `percentAA()`. By default the function will pad the sequences with NAs up to the maximum of **aa.length**. Sequences longer than **aa.length** will be removed before visualization. 
+
+```{r}
+percentAA(combined, 
+          chain = "TRB", 
+          aa.length = 20)
+```
+
 
 ***
 # More Advanced Clonal Analysis
@@ -471,7 +479,6 @@ Diversity can also be measured for samples or by other variables. Diversity is c
 clonalDiversity(combined, 
                 cloneCall = "gene", 
                 group.by = "sample", 
-                x.axis = "ID", 
                 n.boots = 100)
 ```
 
@@ -491,7 +498,8 @@ A number of users requested a visualization from the work of [Wu, et al 2020, PM
 * "count" for the total count of clonotypes by sample  
 
 ```{r}
-scatterClonotype(combined, cloneCall ="gene", 
+scatterClonotype(combined, 
+                 cloneCall ="gene", 
                  x.axis = "P18B", 
                  y.axis = "P18L",
                  dot.size = "total",
@@ -562,12 +570,19 @@ seurat <- combineExpression(list.receptors,
 We first want to look at the distribution of peripheral versus tumor T cells. We can use the same color scheme as the rest of the scRepertoire package by calling the object **colorblind_vector** using the following hex codes. 
 
 ```{r}
-colorblind_vector <- hcl.pal("inferno", 7)
+colorblind_vector <- hcl.colors(n=7, palette = "inferno", fixup = TRUE)
+
+#Adding blood or lung designation as Type
+scRep_example$Type <- substr(scRep_example$orig.ident, 4,4)
+
+#Adding patient information
+scRep_example$Patient <- substr(scRep_example$orig.ident, 1,3)
 
 DimPlot(scRep_example, group.by = "Type") + NoLegend() +
-    scale_color_manual(values=colorblind_vector[c(1,7)])
+    scale_color_manual(values=colorblind_vector[c(1,6)])
 
-DimPlot(scRep_example, group.by = "cloneType") 
+DimPlot(scRep_example, group.by = "cloneType") +
+    scale_color_manual(values=colorblind_vector[c(2,4,6)])
 ```
 
 ## clonalOverlay 
@@ -637,8 +652,8 @@ We can also look at the clonotypes by calling specific sequences in the `highlig
 ```{r}
 scRep_example <- highlightClonotypes(scRep_example, 
                     cloneCall= "aa", 
-                    sequence = c("CAVNGGSQGNLIF_CSAEREDTDTQYF", 
-                                 "NA_CATSATLRVVAEKLFF"))
+                    sequence = c("CVVSDNTGGFKTIF_CASSVRRERANTGELFF", 
+                                 "NA_CASSVRRERANTGELFF"))
 
 Seurat::DimPlot(scRep_example, group.by = "highlight")
 ```
@@ -668,14 +683,14 @@ After the metadata has been modified, we can look at clonotypes across multiple 
 alluvialClonotypes(scRep_example, 
                    cloneCall = "aa", 
                    y.axes = c("Patient", "ident", "Type"), 
-                   color = "CAVNGGSQGNLIF_CSAEREDTDTQYF") + 
+                   color = "CVVSDNTGGFKTIF_CASSVRRERANTGELFF") + 
     scale_fill_manual(values = c("grey", colorblind_vector[7]))
 
 
 alluvialClonotypes(scRep_example, 
                    cloneCall = "gene", 
                    y.axes = c("Patient", "ident", "Type"), 
-                   color = "seurat_clusters") 
+                   color = "ident") 
 ```
 
 ## getCirclize
@@ -687,7 +702,7 @@ library(circlize)
 library(scales)
 
 circles <- getCirclize(scRep_example, 
-                       group.by = "seurat_clusters")
+                       group.by = "ident")
 
 #Just assigning the normal colors to each cluster
 grid.cols <- hue_pal()(length(unique(scRep_example$seurat_clusters)))
@@ -697,10 +712,10 @@ names(grid.cols) <- unique(scRep_example$seurat_clusters)
 chordDiagram(circles, self.link = 1, grid.col = grid.cols)
 ```
 
-This can also be used if we wanted to explore just the tumor-specific T cells by just subsetting the single-cell object.
+This can also be used if we wanted to explore just the lung-specific T cells by just subsetting the single-cell object.
 
 ```{r}
-subset <- subset(scRep_example, Type == "T")
+subset <- subset(scRep_example, Type == "L")
 
 
 circles <- getCirclize(subset, group.by = "ident")
@@ -769,7 +784,7 @@ A new metric proposed by [Massimo et al](https://pubmed.ncbi.nlm.nih.gov/3582969
 ```{r}
 clonotypeBias(scRep_example, 
               cloneCall = "aa", 
-              split.by = "Type", 
+              split.by = "Patient", 
               group.by = "seurat_clusters",
               n.boots = 20, 
               min.expand =1)
@@ -805,7 +820,7 @@ clonalProportion(combined3, cloneCall = "nt")
 
 ## 4. clonalOverlap  
 ```{r}
-clonalOverlap(combined2, cloneCall="aa", method="overlap")
+clonalOverlap(combined2, cloneCall="aa", method="cosine")
 clonalOverlap(combined3, cloneCall="aa", method="overlap")
 ```
 

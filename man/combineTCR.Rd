@@ -46,8 +46,8 @@ just a single data.frame, the function will add the consolidated information
 columns after the existing raw clonotype data
 }
 \examples{
-combineTCR(contig_list, 
-           samples = rep(c("PX", "PY", "PZ"), each=2), 
-           ID = rep(c("P", "T"), 3))
+combined <- combineTCR(contig_list, 
+                        samples = c("P17B", "P17L", "P18B", "P18L", 
+                                    "P19B","P19L", "P20B", "P20L"))
 
 }

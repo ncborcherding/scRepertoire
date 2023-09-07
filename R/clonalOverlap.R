@@ -34,7 +34,7 @@
 #' @return ggplot of the clonotypic overlap between elements of a list
 clonalOverlap <- function(df, 
                           cloneCall = "strict", 
-                          method = c("overlap", "morisita", "jaccard", "raw"), 
+                          method = NULL, 
                           chain = "both", 
                           split.by = NULL, 
                           exportTable = FALSE,
@@ -61,12 +61,13 @@ clonalOverlap <- function(df,
                      "cosine" = .cosineIndex(df, length, cloneCall, coef_matrix),
                      "jaccard" = .jaccardIndex(df, length, cloneCall, coef_matrix),
                      "morisita" = .morisitaIndex(df, length, cloneCall, coef_matrix),
-                     "overlap" = .overlapIndex(ddf, length, cloneCall, coef_matrix),
+                     "overlap" = .overlapIndex(df, length, cloneCall, coef_matrix),
                      "raw" = .rawIndex(df, length, cloneCall, coef_matrix),
                      "Invalid method specified")
+    coef_matrix <- as.data.frame(coef_matrix)
     coef_matrix$names <- rownames(coef_matrix)
     if (exportTable == TRUE) { return(coef_matrix) }
-    coef_matrix <- suppressMessages(melt(coef_matrix))[,-1]
+    coef_matrix <- suppressMessages(melt(coef_matrix))
     coef_matrix$variable <- factor(coef_matrix$variable, levels = values)
     coef_matrix$names <- factor(coef_matrix$names, levels = values)
     plot <- ggplot(coef_matrix, aes(x=names, y=variable, fill=value)) +
@@ -114,19 +115,19 @@ clonalOverlap <- function(df,
 .jaccardIndex <- function(df, length, cloneCall, coef_matrix) {
   for (i in seq_along(length)){
     df.i <- df[[i]]
-    df.i <- df.i[,c("barcode",cloneCall)]
-    df.i_unique <- df.i[!duplicated(df.i[,cloneCall]),]
+    df.i <- df.i[,cloneCall]
+    df.i_unique <- unique(df.i)
     for (j in seq_along(length)){
       if (i >= j){ next }
       
       df.j <- df[[j]]
-      df.j <- df.j[,c("barcode",cloneCall)]
-      df.j_unique <- df.j[!duplicated(df.j[,cloneCall]),]
-      overlap <- length(intersect(df.i_unique[,cloneCall], 
-                                  df.j_unique[,cloneCall]))
+      df.j <- df.j[,cloneCall]
+      df.j_unique <- unique(df.j)
+      overlap <- length(intersect(df.i_unique, 
+                                  df.j_unique))
       coef_matrix[i,j] <- 
-        overlap/(sum(length(df.i_unique[,cloneCall]), 
-                     length(df.j_unique[,cloneCall]))-overlap)
+        overlap/(sum(length(df.i_unique), 
+                     length(df.j_unique))-overlap)
     }
   }
   return(coef_matrix)
@@ -135,15 +136,15 @@ clonalOverlap <- function(df,
 .rawIndex <- function(df, length, cloneCall, coef_matrix) {
   for (i in seq_along(length)){
     df.i <- df[[i]]
-    df.i <- df.i[,c("barcode",cloneCall)]
-    df.i_unique <- df.i[!duplicated(df.i[,cloneCall]),]
+    df.i <- df.i[,cloneCall]
+    df.i_unique <- unique(df.i)
     for (j in seq_along(length)){
       if (i >= j){ next }
       df.j <- df[[j]]
-      df.j <- df.j[,c("barcode",cloneCall)]
-      df.j_unique <- df.j[!duplicated(df.j[,cloneCall]),]
-      overlap <- length(intersect(df.i_unique[,cloneCall], 
-                                  df.j_unique[,cloneCall]))
+      df.j <- df.j[,cloneCall]
+      df.j_unique <- unique(df.j)
+      overlap <- length(intersect(df.i_unique, 
+                                  df.j_unique))
       coef_matrix[i,j] <- overlap
     }
   }
@@ -156,35 +157,35 @@ clonalOverlap <- function(df,
 .overlapIndex <- function(df, length, cloneCall, coef_matrix) {
   for (i in seq_along(length)){
     df.i <- df[[i]]
-    df.i <- df.i[,c("barcode",cloneCall)]
-    df.i_unique <- df.i[!duplicated(df.i[,cloneCall]),]
+    df.i <- df.i[,c(cloneCall)]
+    df.i_unique <- unique(df.i)
     for (j in seq_along(length)){
       if (i >= j){ next }
       else { df.j <- df[[j]]
-      df.j <- df.j[,c("barcode",cloneCall)]
-      df.j_unique <- df.j[!duplicated(df.j[,cloneCall]),]
-      overlap <- length(intersect(df.i_unique[,cloneCall], 
-                                  df.j_unique[,cloneCall]))
+      df.j <- df.j[,c(cloneCall)]
+      df.j_unique <- unique(df.j)
+      overlap <- length(intersect(df.i_unique, 
+                                  df.j_unique))
       coef_matrix[i,j] <- 
-        overlap/min(length(df.i_unique[,cloneCall]), 
-                    length(df.j_unique[,cloneCall])) } } }
+        overlap/min(length(df.i_unique), 
+                    length(df.j_unique)) } } }
   return(coef_matrix)
 }
 
 .cosineIndex <- function(df, length, cloneCall, coef_matrix) {
   for (i in seq_along(length)){
     df.i <- df[[i]]
-    df.i <- df.i[,c("barcode",cloneCall)]
-    df.i_unique <- df.i[!duplicated(df.i[,cloneCall]),]
+    df.i <- df.i[,cloneCall]
+    df.i_unique <- unique(df.i)
     for (j in seq_along(length)){
       if (i >= j){ next }
       else { 
         df.j <- df[[j]]
-        df.j <- df.j[,c("barcode",cloneCall)]
-        df.j_unique <- df.j[!duplicated(df.j[,cloneCall]),]
-        all_species <- unique(c(df.j_unique[,cloneCall], df.j_unique[,cloneCall]))
-        vector_location1 <- as.integer(all_species %in% df.i_unique[,cloneCall])
-        vector_location2 <- as.integer(all_species %in% df.j_unique[,cloneCall])
+        df.j <- df.j[,cloneCall]
+        df.j_unique <- unique(df.j)
+        all_species <- unique(c(df.j_unique, df.j_unique))
+        vector_location1 <- as.integer(all_species %in% df.i_unique)
+        vector_location2 <- as.integer(all_species %in% df.j_unique)
         
         coef_matrix[i,j] <- 
           sum(vector_location1 * vector_location2) / (sqrt(sum(vector_location1^2)) * sqrt(sum(vector_location2^2)))

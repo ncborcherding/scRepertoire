@@ -52,8 +52,8 @@ combined <- combineTCR(contig_list, rep(c("PX", "PY", "PZ"), each=2),
 rep(c("P", "T"), 3))
 
 #Getting a sample of a Seurat object
-screp_example <- get(data("screp_example"))
-sce <- suppressMessages(Seurat::UpdateSeuratObject(screp_example))
+scRep_example <- get(data("scRep_example"))
+sce <- suppressMessages(Seurat::UpdateSeuratObject(scRep_example))
 
 #Using combineExpresion()
 sce <- combineExpression(combined, sce)

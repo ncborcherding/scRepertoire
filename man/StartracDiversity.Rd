@@ -44,15 +44,16 @@ read and cite the linked manuscript.
 \examples{
 \dontrun{ 
 #Getting the combined contigs
-combined <- combineTCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), 
-rep(c("P", "T"), 3))
+combined <- combineTCR(contig_list, 
+                        samples = c("P17B", "P17L", "P18B", "P18L", 
+                                    "P19B","P19L", "P20B", "P20L"))
 
 #Getting a sample of a Seurat object
-screp_example <- get(data("screp_example"))
-screp_example <- combineExpression(combined, screp_example)
+scRep_example  <- get(data("scRep_example "))
+scRep_example  <- combineExpression(combined, scRep_example )
 
 #Using occupiedscRepertoire()
-StartracDiversity(screp_example, type = "Type", sample = "Patient", by = "overall")
+StartracDiversity(scRep_example , type = "Type", sample = "Patient", by = "overall")
 }
 
 }

@@ -10,7 +10,8 @@ checkContig(
   examine = "gene",
   group.by = NULL,
   split.by = NULL,
-  exportTable = FALSE
+  exportTable = FALSE,
+  palette = "inferno"
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ e.g. "both", "TRA", "TRG", "IGH", "IGL"}
 to group the new list. NULL will return clusters.}
 
 \item{exportTable}{Returns the data frame used for forming the graph}
+
+\item{palette}{Colors to use in visualization - input any hcl.pals()}
 }
 \value{
 ggplot of the percentage of NA values
@@ -41,9 +44,9 @@ and percentage of NAs are preferred, set exportTable = TRUE.
 }
 \examples{
 #Making combined contig data
-x <- contig_list
-combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), 
-rep(c("P", "T"), 3))
+combined <- combineTCR(contig_list, 
+                        samples = c("P17B", "P17L", "P18B", "P18L", 
+                                    "P19B","P19L", "P20B", "P20L"))
 checkContig(combined, chain = "TRA", examine = "chain", group.by = "sample")
 
 }

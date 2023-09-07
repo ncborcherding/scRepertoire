@@ -99,9 +99,9 @@ scatterClonotype <- function(df,
     size <- combined.df[,dot.size]
   } else { size <- combined.df[,"sum"] }
   if (exportTable == TRUE) { return(combined.df) }
-  plot <- ggplot(combined.df, aes(x=x, y = y, color = class)) + 
+  plot <- ggplot(combined.df, aes(x=x, y = y, fill = class)) + 
     theme_classic() + 
-    scale_color_manual(values = .colorizer(palette,length(unique(combined.df$class)))) + 
+    scale_fill_manual(values = .colorizer(palette,length(unique(combined.df$class)))) + 
     xlab(x.axis) + ylab(y.axis) + labs(size = "Total n")
   if (graph == "proportion") {
     plot <- plot + geom_abline(slope = 1, intercept = 0, alpha = 0.4, lty=2)  + 
@@ -109,6 +109,6 @@ scatterClonotype <- function(df,
   } else if (graph == "count") {
     plot <- plot + ylim(0, max(x,y)) + xlim(0, max(x,y)) 
   }
-  plot <- plot + geom_jitter(aes(size = size))
+  plot <- plot + geom_jitter(aes(size = size,), shape = 21, color = "black", stroke = 0.25)
   return(plot)  
 }

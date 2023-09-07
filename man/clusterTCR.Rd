@@ -38,8 +38,9 @@ also underlies the combineBCR() function and therefore not needed for
 B cells. This may take some time to calculate the distances and cluster.
 }
 \examples{
-combined <- combineTCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), 
-rep(c("P", "T"), 3))
+combined <- combineTCR(contig_list, 
+                        samples = c("P17B", "P17L", "P18B", "P18L", 
+                                    "P19B","P19L", "P20B", "P20L"))
 
 sub_combined <- clusterTCR(combined[[2]], chain = "TRA", sequence = "aa")
 
