@@ -23,9 +23,9 @@
 #' @importFrom stringr str_split str_sort 
 #' @importFrom reshape2 melt
 #' @export
-#' @return ggplot of percentage of indicated genes as a heatmap
+#' @return ggplot of percentage of V and J gene pairings as a heatmap
 #' 
-percentGenes <- function(df,
+percentVJ <- function(df,
                          chain = "TRB",
                          group.by = NULL, 
                          split.by = NULL,
@@ -54,6 +54,9 @@ percentGenes <- function(df,
   })
   #Need total unique genes
   gene.dictionary <- unique(unlist(gene_counts))
+  coordinates <- strsplit(gene.dictionary, ";")
+  V_values <- unique(sapply(coordinates, function(coord) coord[1]))
+  J_values <- unique(sapply(coordinates, function(coord) coord[2]))
   
   #Summarizing the gene usage across the list
   summary <- lapply(gene_counts, function(x) {
@@ -65,19 +68,32 @@ percentGenes <- function(df,
                    percentages <- c(percentages, percentages.to.add)
                  }
                  percentages <- percentages[match(str_sort(names(percentages), numeric = TRUE), names(percentages))]
-                 
-  
   })
-  summary <- do.call(rbind,summary)
   if (exportTable == TRUE) { 
-    return(summary) 
+    summary.matrix <- do.call(rbind,summary)
+    return(summary.matrix) 
   }
+  mat <- lapply(summary, function(x) {
+    
+    # Create an empty matrix
+    result_matrix <- matrix(0, nrow = length(V_values), ncol = length(unique(J_values)))
+    rownames(result_matrix) <- V_values
+    colnames(result_matrix) <- J_values
+    
+    for (i in seq_len(length(x))) {
+      coordinates <- unlist(strsplit(names(x)[i], ";"))
+        result_matrix[coordinates[1], coordinates[2]] <- x[i]
+    }
+    result_matrix
+    
+  })
   #Melting matrix and Visualizing
-  mat_melt <- melt(summary)
+  mat_melt <- melt(mat)
   plot <- ggplot(mat_melt, aes(y=Var1, x = Var2, fill=round(value*100,2))) +
     geom_tile(lwd= 0.25, color = "black") +
     scale_fill_gradientn(name = "Percentage", colors = .colorizer(palette,21)) +
     theme_classic() + 
+    facet_wrap(~L1) + 
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1), 
           axis.title = element_blank())
   return(plot)
