@@ -20,6 +20,7 @@
 #' @param exportTable Returns the data frame used for forming the graph
 #' @param palette Colors to use in visualization - input any hcl.pals()
 #' @import ggplot2
+#' @importFrom reshape2 melt
 #' @export
 #' @return ggplot of stacked bar graphs of amino acid proportions
 percentAA <- function(df, 
