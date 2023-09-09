@@ -30,6 +30,7 @@
 #' @param palette Colors to use in visualization - input any hcl.pals()
 #' @importFrom stringr str_sort
 #' @importFrom reshape2 melt
+#' @importFrom stats quantile
 #' @export
 #' @return ggplot of the clonotypic overlap between elements of a list
 clonalOverlap <- function(df, 

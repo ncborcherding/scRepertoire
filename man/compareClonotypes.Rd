@@ -13,7 +13,8 @@ compareClonotypes(
   numbers = NULL,
   split.by = NULL,
   graph = "alluvial",
-  exportTable = FALSE
+  exportTable = FALSE,
+  palette = "inferno"
 )
 }
 \arguments{
@@ -38,6 +39,8 @@ to group the new list. NULL will return clusters.}
 \item{graph}{The type of graph produced, either "alluvial" or "area".}
 
 \item{exportTable}{Returns the data frame used for forming the graph.}
+
+\item{palette}{Colors to use in visualization - input any hcl.pals()}
 }
 \value{
 ggplot of the proportion of total sequencing read of 
@@ -55,7 +58,9 @@ proportion to be visualized.
 combined <- combineTCR(contig_list, 
                         samples = c("P17B", "P17L", "P18B", "P18L", 
                                     "P19B","P19L", "P20B", "P20L"))
-compareClonotypes(combined, numbers = 10, 
-samples = c("PX_P", "PX_T"), cloneCall="aa")
+compareClonotypes(combined, 
+                  numbers = 5, 
+                  samples = c("PX_P", "PX_T"), 
+                  cloneCall="aa")
 
 }

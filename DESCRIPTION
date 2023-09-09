@@ -12,8 +12,7 @@ RoxygenNote: 7.2.3
 biocViews: Software, ImmunoOncology, SingleCell, Classification, Annotation, Sequencing
 Depends: 
 	ggplot2, 
-	R (>= 4.0),
-	Seurat
+	R (>= 4.0)
 Imports: 
     stringdist,
     dplyr,
@@ -32,8 +31,10 @@ Imports:
     igraph,
     ggraph,
     tidygraph,
+    Seurat,
     SeuratObject,
     stats,
+    BiocManager,
     Rcpp
 Suggests: 
     knitr,

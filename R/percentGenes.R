@@ -8,7 +8,7 @@
 #' combined <- combineTCR(contig_list, 
 #'                         samples = c("P17B", "P17L", "P18B", "P18L", 
 #'                                     "P19B","P19L", "P20B", "P20L"))
-#' percentGenes(combined, chain = "TRB", gene = "Vgene)
+#' percentGenes(combined, chain = "TRB", gene = "Vgene")
 
 #' @param df The product of combineTCR(), combineBCR(), 
 #' expression2List(), or combineExpression().

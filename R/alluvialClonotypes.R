@@ -43,15 +43,14 @@ makingLodes <- function(meta2, color, alpha, facet, set.axes) {
 #' 
 #' #Getting a sample of a Seurat object
 #' scRep_example <- get(data("scRep_example"))
-#' sce <- suppressMessages(Seurat::UpdateSeuratObject(scRep_example))
-#' sce <- Seurat::as.SingleCellExperiment(sce)
 #' 
 #' #Using combineExpresion()
-#' sce <- combineExpression(combined, sce)
+#' scRep_example <- combineExpression(combined, scRep_example)
+#' scRep_example$Patient <- substring(scRep_example$orig.ident, 1,3)
 #' 
 #' #Using alluvialClonotypes()
-#' alluvialClonotypes(sce, cloneCall = "gene", 
-#' y.axes = c("Patient", "ident"), color = "ident")
+#' alluvialClonotypes(scRep_example, cloneCall = "gene", 
+#'                    y.axes = c("Patient", "ident"), color = "ident")
 #' 
 #' @param sc The seurat or SCE object to visualize after combineExpression(). 
 #' For SCE objects, the cluster variable must be in the meta data under 

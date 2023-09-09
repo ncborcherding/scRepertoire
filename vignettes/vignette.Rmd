@@ -22,7 +22,7 @@ knitr::opts_chunk$set(error = FALSE, message = FALSE, warning = FALSE)
 if (!require("BiocManager", quietly = TRUE)) {
     install.packages("BiocManager")
 }
-suppressPackageStartupMessages(invisible(base::library(BiocManager)))
+suppressPackageStartupMessages(invisible(library(BiocManager)))
 
 quiet_bioc_load <- function(...) {
     pkgs <- list(...)
@@ -527,14 +527,11 @@ scatterClonotype(combined,
 The data in the scRepertoire package is derived from a [study](https://pubmed.ncbi.nlm.nih.gov/33622974/) of acute respiratory stress disorder in the context of bacterial and COVID-19 infections. For the purposes of the vignette, we have randomly sampled 500 cells from the the fully integrated Seurat object to minimize the size of the package. A full version of the Seurat object is available via [GitHub](https://github.com/ncborcherding/scRepertoire) under the *Getting Data* header. We will use both Seurat and SingleCellExperiment (SCE) with scater to perform the further visualizations in tandem. 
 
 ```{r}
-library(Seurat)
-library(scater)
 scRep_example <- get(data("scRep_example"))
-sce <- suppressMessages(UpdateSeuratObject(scRep_example))
-sce <- as.SingleCellExperiment(scRep_example)
+sce <- Seurat::as.SingleCellExperiment(scRep_example)
 
 #Seurat Format
-DimPlot(scRep_example)
+Seurat::DimPlot(scRep_example)
 
 ##Single Cell Experiment Format
 plotUMAP(sce, colour_by = "seurat_clusters")
@@ -591,11 +588,11 @@ scRep_example$Type <- substr(scRep_example$orig.ident, 4,4)
 #Adding patient information
 scRep_example$Patient <- substr(scRep_example$orig.ident, 1,3)
 
-DimPlot(scRep_example, group.by = "Type") + 
-        NoLegend() +
+Seurat::DimPlot(scRep_example, group.by = "Type") + 
+        Seurat::NoLegend() +
         scale_color_manual(values=colorblind_vector[c(1,6)])
 
-DimPlot(scRep_example, group.by = "cloneType") +
+Seurat::DimPlot(scRep_example, group.by = "cloneType") +
     scale_color_manual(values=colorblind_vector[c(2,4,6)])
 ```
 

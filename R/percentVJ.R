@@ -8,12 +8,11 @@
 #' combined <- combineTCR(contig_list, 
 #'                         samples = c("P17B", "P17L", "P18B", "P18L", 
 #'                                     "P19B","P19L", "P20B", "P20L"))
-#' percentGenes(combined, chain = "TRB", gene = "Vgene)
+#' percentVJ(combined, chain = "TRB")
 
 #' @param df The product of combineTCR(), combineBCR(), 
 #' expression2List(), or combineExpression().
 #' @param chain "TRA", "TRB", "TRG", "TRG", "IGH", "IGL"
-#' @param gene "V", "D" or "J"
 #' @param group.by The column header used for grouping.
 #' @param split.by If using a single-cell object, the column header 
 #' to group the new list. NULL will return clusters.
