@@ -66,15 +66,26 @@ clonalOverlap <- function(df,
                      "Invalid method specified")
     coef_matrix <- as.data.frame(coef_matrix)
     coef_matrix$names <- rownames(coef_matrix)
-    if (exportTable == TRUE) { return(coef_matrix) }
+    if (exportTable == TRUE) { 
+      return(coef_matrix) 
+    }
     coef_matrix <- suppressMessages(melt(coef_matrix))
     coef_matrix$variable <- factor(coef_matrix$variable, levels = values)
     coef_matrix$names <- factor(coef_matrix$names, levels = values)
+    
+    tertile_values <- quantile(na.omit(coef_matrix[,"value"]), probs = c(1/3,2/3))
+    
     plot <- ggplot(coef_matrix, aes(x=names, y=variable, fill=value)) +
-            geom_tile() + labs(fill = method) +
-            geom_text(aes(label = round(value, digits = 3))) +
-            scale_fill_gradientn(colors = rev(.colorizer(palette, 7)), na.value = "white") +
-            theme_classic() + theme(axis.title = element_blank())
+                geom_tile() + 
+                geom_tile(data = coef_matrix[!is.na(coef_matrix[,"value"]),], fill = NA, lwd= 0.25, color = "black") +
+                labs(fill = method) +
+                geom_text(aes(label = round(value, digits = 3), 
+                              color = ifelse(value <= as.vector(tertile_values[1]),
+                                             "white", "black"))) +
+                scale_fill_gradientn(colors = .colorizer(palette, 7), na.value = "white") +
+                scale_color_identity() +
+                theme_classic() + 
+                theme(axis.title = element_blank())
     return(plot) 
 }
 
