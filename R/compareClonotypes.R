@@ -11,8 +11,10 @@
 #' combined <- combineTCR(contig_list, 
 #'                         samples = c("P17B", "P17L", "P18B", "P18L", 
 #'                                     "P19B","P19L", "P20B", "P20L"))
-#' compareClonotypes(combined, numbers = 10, 
-#' samples = c("PX_P", "PX_T"), cloneCall="aa")
+#' compareClonotypes(combined, 
+#'                   numbers = 5, 
+#'                   samples = c("PX_P", "PX_T"), 
+#'                   cloneCall="aa")
 #'
 #' @param df The product of combineTCR(), combineBCR(), expression2List(), or combineExpression().
 #' @param cloneCall How to call the clonotype - VDJC gene (gene), 
@@ -27,6 +29,7 @@
 #' to group the new list. NULL will return clusters.
 #' @param graph The type of graph produced, either "alluvial" or "area".
 #' @param exportTable Returns the data frame used for forming the graph.
+#' @param palette Colors to use in visualization - input any hcl.pals()
 #' @import ggplot2
 #'
 #' @export
@@ -40,7 +43,8 @@ compareClonotypes <- function(df,
                               numbers = NULL, 
                               split.by = NULL, 
                               graph = "alluvial", 
-                              exportTable = FALSE){
+                              exportTable = FALSE, 
+                              palette = "inferno"){
   df <- list.input.return(df, split.by)
   cloneCall <- theCall(cloneCall)
   df <- checkBlanks(df, cloneCall)
@@ -59,14 +63,17 @@ compareClonotypes <- function(df,
     Con.df <- rbind.data.frame(Con.df, tbl)
   }
   if (!is.null(samples)) {
-    Con.df <- Con.df[Con.df$Sample %in% samples,] }
+    Con.df <- Con.df[Con.df$Sample %in% samples,] 
+  }
   if (!is.null(clonotypes)) {
-    Con.df <- Con.df[Con.df$Clonotypes %in% clonotypes,] }
+    Con.df <- Con.df[Con.df$Clonotypes %in% clonotypes,] 
+  }
   if (!is.null(numbers)) {
     top <- Con.df %>%
       group_by(Con.df[,3]) %>%
       slice_max(n = numbers, order_by = Proportion, with_ties = FALSE)
-    Con.df <- Con.df[Con.df$Clonotypes %in% top$Clonotypes,] }
+    Con.df <- Con.df[Con.df$Clonotypes %in% top$Clonotypes,] 
+  }
   if (nrow(Con.df) < length(unique(Con.df$Sample))) {
     stop("Reasses the filtering strategies here, there is not 
             enough clonotypes to examine.") }
@@ -81,6 +88,8 @@ compareClonotypes <- function(df,
     plot <- plot +  geom_stratum() + geom_flow(stat = "alluvium")
   } else if (graph == "area") {
     plot <- plot +
-      geom_area(aes(group = Clonotypes), color = "black") }
+      geom_area(aes(group = Clonotypes), color = "black")
+  }
+  plot <- plot + scale_fill_manual(values = .colorizer(palette, length(unique(Con.df[,"Clonotypes"]))))
   return(plot)
 }
