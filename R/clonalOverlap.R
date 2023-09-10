@@ -13,7 +13,9 @@
 #'                         samples = c("P17B", "P17L", "P18B", "P18L", 
 #'                                     "P19B","P19L", "P20B", "P20L"))
 #' 
-#' clonalOverlap(combined, cloneCall = "gene", method = "overlap")
+#' clonalOverlap(combined, 
+#'               cloneCall = "gene", 
+#'               method = "jaccard")
 #'
 #' @param df The product of combineTCR(), combineBCR(), expression2List(), or combineExpression().
 #' @param cloneCall How to call the clonotype - VDJC gene (gene), 
@@ -40,6 +42,11 @@ clonalOverlap <- function(df,
                           split.by = NULL, 
                           exportTable = FALSE,
                           palette = "inferno"){
+    if(method == "morisita") {
+      return_type = "freq"
+    } else {
+      return_type = "unique"
+    }
     df <- list.input.return(df, split.by)
     cloneCall <- theCall(cloneCall)
     df <- checkBlanks(df, cloneCall)
@@ -48,25 +55,32 @@ clonalOverlap <- function(df,
     df <- df[quiet(dput(values))]
     num_samples <- length(df[])
     names_samples <- names(df)
-    coef_matrix <- data.frame(matrix(NA, num_samples, num_samples))
-    colnames(coef_matrix) <- names_samples
-    rownames(coef_matrix) <- names_samples
     length <- seq_len(num_samples)
+    
     if (chain != "both") {
       for (i in seq_along(df)) {
         df[[i]] <- off.the.chain(df[[i]], chain, cloneCall)
       }
     }
     
-    coef_matrix <- switch(method,
-                     "cosine" = .cosineIndex(df, length, cloneCall, coef_matrix),
-                     "jaccard" = .jaccardIndex(df, length, cloneCall, coef_matrix),
-                     "morisita" = .morisitaIndex(df, length, cloneCall, coef_matrix),
-                     "overlap" = .overlapIndex(df, length, cloneCall, coef_matrix),
-                     "raw" = .rawIndex(df, length, cloneCall, coef_matrix),
-                     "Invalid method specified")
-    coef_matrix <- as.data.frame(coef_matrix)
+    #Selecting Index Function
+    indexFunc <- switch(method,
+                        "morisita" = .morisitaCalc,
+                        "jaccard"  = .jaccardCalc,
+                        "raw"      = .rawCalc,
+                        "overlap"  = .overlapCalc,
+                        "cosine"  = .cosineCalc,
+                        stop("Invalid method provided"))
+    
+    #Calculating Index 
+    coef_matrix <- data.frame(matrix(NA, num_samples, num_samples))
+    coef_matrix <- .calculateIndex(df, length, cloneCall, coef_matrix, indexFunc, return_type)
+    
+    #Data manipulation
+    colnames(coef_matrix) <- names_samples
+    rownames(coef_matrix) <- names_samples
     coef_matrix$names <- rownames(coef_matrix)
+    
     if (exportTable == TRUE) { 
       return(coef_matrix) 
     }
@@ -90,122 +104,67 @@ clonalOverlap <- function(df,
     return(plot) 
 }
 
-#Calculate the Morisita Index for Overlap Analysis
-#' @author Massimo Andreatta, Nick Borcherding
-.morisitaIndex <- function(df, length, cloneCall, coef_matrix) {
-  for (i in seq_along(length)){
-    df.i <- df[[i]]
-    df.i <- data.frame(table(df.i[,cloneCall]))
-    colnames(df.i) <- c(cloneCall, 'Count')
-    df.i[,2] <- as.numeric(df.i[,2])
-    for (j in seq_along(length)){
-      if (i >= j){ next }
-      else { df.j <- df[[j]]
-      df.j <- data.frame(table(df.j[,cloneCall]))
-      colnames(df.j) <- c(cloneCall, 'Count')
-      df.j[,2] <- as.numeric(df.j[,2])
-      merged <- merge(df.i, df.j, by = cloneCall, all = TRUE)
-      merged[is.na(merged)] <- 0
-      X <- sum(merged[,2])
-      Y <- sum(merged[,3])
-      sum.df.i <- sum(df.i[,2]^2)
-      sum.df.j <- sum(df.j[,2]^2)
-      
-      num <- 2 * sum(merged[, 2] * merged[, 3])
-      den <- ((sum.df.i / (X^2) + sum.df.j / (Y^2)) * X * Y)
-      
-      coef.i.j <- num/den
-      coef_matrix[i,j] <- coef.i.j
-      }
+# Helper function to prepare data
+.prepareDataFrame <- function(df, cloneCall, return_type = "unique") {
+  if (return_type == "unique") {
+    return(unique(df[, cloneCall]))
+  } else if (return_type == "freq") {
+    temp_df <- data.frame(table(df[, cloneCall]))
+    colnames(temp_df) <- c(cloneCall, 'Count')
+    temp_df[, 2] <- as.numeric(temp_df[, 2])
+    return(temp_df)
+  }
+}
+
+# Helper function for common loop and conditional structure
+.calculateIndex <- function(df, length, cloneCall, coef_matrix, indexFunc, return_type = "unique") {
+  for (i in seq_along(length)) {
+    df_i <- .prepareDataFrame(df[[i]], cloneCall, return_type)
+    for (j in seq_along(length)) {
+      if (i >= j) { next }
+      df_j <- .prepareDataFrame(df[[j]], cloneCall, return_type)
+      coef_matrix[i, j] <- indexFunc(df_i, df_j)
     }
   }
   return(coef_matrix)
 }
 
-
-#Calculate the Jaccard Similarity Index for Overlap Analysis
-.jaccardIndex <- function(df, length, cloneCall, coef_matrix) {
-  for (i in seq_along(length)){
-    df.i <- df[[i]]
-    df.i <- df.i[,cloneCall]
-    df.i_unique <- unique(df.i)
-    for (j in seq_along(length)){
-      if (i >= j){ next }
-      
-      df.j <- df[[j]]
-      df.j <- df.j[,cloneCall]
-      df.j_unique <- unique(df.j)
-      overlap <- length(intersect(df.i_unique, 
-                                  df.j_unique))
-      coef_matrix[i,j] <- 
-        overlap/(sum(length(df.i_unique), 
-                     length(df.j_unique))-overlap)
-    }
-  }
-  return(coef_matrix)
+# Morisita Index calculation function
+.morisitaCalc <- function(df_i, df_j) {
+  merged <- merge(df_i, df_j, by = names(df_i)[1], all = TRUE)
+  merged[is.na(merged)] <- 0
+  
+  X <- sum(merged[, 2])
+  Y <- sum(merged[, 3])
+  
+  num <- 2 * sum(merged[, 2] * merged[, 3])
+  den <- ((sum(df_i[, 2]^2) / (X^2)) + (sum(df_j[, 2]^2) / (Y^2))) * X * Y
+  
+  return(num / den)
 }
 
-.rawIndex <- function(df, length, cloneCall, coef_matrix) {
-  for (i in seq_along(length)){
-    df.i <- df[[i]]
-    df.i <- df.i[,cloneCall]
-    df.i_unique <- unique(df.i)
-    for (j in seq_along(length)){
-      if (i >= j){ next }
-      df.j <- df[[j]]
-      df.j <- df.j[,cloneCall]
-      df.j_unique <- unique(df.j)
-      overlap <- length(intersect(df.i_unique, 
-                                  df.j_unique))
-      coef_matrix[i,j] <- overlap
-    }
-  }
-  return(coef_matrix)
+# Jaccard Index calculation function
+.jaccardCalc <- function(df_i, df_j) {
+  overlap <- length(intersect(df_i, df_j))
+  return(overlap / (length(df_i) + length(df_j) - overlap))
 }
 
-
-#Calculate the Overlap Coefficient for Overlap Analysis
-#' @author Nick Bormann, Nick Borcherding
-.overlapIndex <- function(df, length, cloneCall, coef_matrix) {
-  for (i in seq_along(length)){
-    df.i <- df[[i]]
-    df.i <- df.i[,c(cloneCall)]
-    df.i_unique <- unique(df.i)
-    for (j in seq_along(length)){
-      if (i >= j){ next }
-      else { df.j <- df[[j]]
-      df.j <- df.j[,c(cloneCall)]
-      df.j_unique <- unique(df.j)
-      overlap <- length(intersect(df.i_unique, 
-                                  df.j_unique))
-      coef_matrix[i,j] <- 
-        overlap/min(length(df.i_unique), 
-                    length(df.j_unique)) } } }
-  return(coef_matrix)
+# Raw Index calculation function
+.rawCalc <- function(df_i, df_j) {
+  return(length(intersect(df_i, df_j)))
 }
 
-.cosineIndex <- function(df, length, cloneCall, coef_matrix) {
-  for (i in seq_along(length)){
-    df.i <- df[[i]]
-    df.i <- df.i[,cloneCall]
-    df.i_unique <- unique(df.i)
-    for (j in seq_along(length)){
-      if (i >= j){ next }
-      else { 
-        df.j <- df[[j]]
-        df.j <- df.j[,cloneCall]
-        df.j_unique <- unique(df.j)
-        all_species <- unique(c(df.j_unique, df.j_unique))
-        vector_location1 <- as.integer(all_species %in% df.i_unique)
-        vector_location2 <- as.integer(all_species %in% df.j_unique)
-        
-        coef_matrix[i,j] <- 
-          sum(vector_location1 * vector_location2) / (sqrt(sum(vector_location1^2)) * sqrt(sum(vector_location2^2)))
-      } 
-    } 
-  }
-  coef_matrix <- as.matrix(coef_matrix)
-  coef_matrix[is.nan(coef_matrix)] <- 0
-  return(coef_matrix)
+# Overlap Index calculation function
+.overlapCalc <- function(df_i, df_j) {
+  overlap <- length(intersect(df_i, df_j))
+  return(overlap / min(length(df_i), length(df_j)))
 }
 
+.cosineCalc <- function(df_i, df_j) {
+  all_species <- unique(c(df_i, df_j))
+  vector_location1 <- as.integer(all_species %in% df_i)
+  vector_location2 <- as.integer(all_species %in% df_j)
+  
+  return(sum(vector_location1 * vector_location2) / 
+           (sqrt(sum(vector_location1^2)) * sqrt(sum(vector_location2^2))))
+}
