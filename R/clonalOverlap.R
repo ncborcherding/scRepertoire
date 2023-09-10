@@ -23,14 +23,15 @@
 #' VDJC gene + CDR3 nucleotide (strict).
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL"
-#' @param method The method to calculate the overlap, either the "overlap" 
-#' coefficient, "morisita", "jaccard" indices, "cosine" similarity or "raw" 
+#' @param method The method to calculate the overlap, 
+#'  "overlap" 
+#   "morisita", "jaccard" indices, "cosine" similarity or "raw" 
 #' for the base numbers.
 #' @param split.by If using a single-cell object, the column header 
 #' to group the new list. NULL will return clusters.
 #' @param exportTable Returns the data frame used for forming the graph
 #' @param palette Colors to use in visualization - input any hcl.pals()
-#' @importFrom stringr str_sort
+#' @importFrom stringr str_sort str_to_title
 #' @importFrom reshape2 melt
 #' @importFrom stats quantile
 #' @export
@@ -39,7 +40,8 @@ clonalOverlap <- function(df,
                           cloneCall = "strict", 
                           method = NULL, 
                           chain = "both", 
-                          split.by = NULL, 
+                          split.by = NULL,
+                          text.color = NULL,
                           exportTable = FALSE,
                           palette = "inferno"){
     if(method == "morisita") {
@@ -79,23 +81,20 @@ clonalOverlap <- function(df,
     #Data manipulation
     colnames(coef_matrix) <- names_samples
     rownames(coef_matrix) <- names_samples
-    coef_matrix$names <- rownames(coef_matrix)
-    
+
     if (exportTable == TRUE) { 
       return(coef_matrix) 
     }
-    coef_matrix <- suppressMessages(melt(coef_matrix))
-    coef_matrix$variable <- factor(coef_matrix$variable, levels = values)
-    coef_matrix$names <- factor(coef_matrix$names, levels = values)
+    mat_melt <- suppressMessages(melt(as.matrix(coef_matrix)))
     
-    tertile_values <- quantile(na.omit(coef_matrix[,"value"]), probs = c(1/3,2/3))
+    mean_value <- mean(na.omit(mat_melt[,"value"]))
     
-    plot <- ggplot(coef_matrix, aes(x=names, y=variable, fill=value)) +
+    plot <- ggplot(mat_melt, aes(x=Var1, y=Var2, fill=value)) +
                 geom_tile() + 
-                geom_tile(data = coef_matrix[!is.na(coef_matrix[,"value"]),], fill = NA, lwd= 0.25, color = "black") +
-                labs(fill = method) +
+                geom_tile(data = mat_melt[!is.na(mat_melt[,"value"]),], fill = NA, lwd= 0.25, color = "black") +
+                labs(fill = str_to_title(method)) +
                 geom_text(aes(label = round(value, digits = 3), 
-                              color = ifelse(value <= as.vector(tertile_values[1]),
+                              color = ifelse(value <= mean_value,
                                              "white", "black"))) +
                 scale_fill_gradientn(colors = .colorizer(palette, 7), na.value = "white") +
                 scale_color_identity() +
@@ -160,6 +159,7 @@ clonalOverlap <- function(df,
   return(overlap / min(length(df_i), length(df_j)))
 }
 
+# Overlap Index calculation function
 .cosineCalc <- function(df_i, df_j) {
   all_species <- unique(c(df_i, df_j))
   vector_location1 <- as.integer(all_species %in% df_i)
