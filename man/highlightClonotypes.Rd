@@ -33,10 +33,10 @@ combined <- combineTCR(contig_list,
                                     "P19B","P19L", "P20B", "P20L"))
 
 #Getting a sample of a Seurat object
-scRep_example  <- get(data("scRep_example "))
+scRep_example  <- get(data("scRep_example"))
 
 #Using combineExpresion()
-scRep_example  <- combineExpression(combined, scRep_example  )
+scRep_example  <- combineExpression(combined, scRep_example)
 
 #Using highlightClonotype()
 scRep_example   <- highlightClonotypes(scRep_example , cloneCall= "aa", 

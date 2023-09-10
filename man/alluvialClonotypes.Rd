@@ -6,12 +6,13 @@
 \usage{
 alluvialClonotypes(
   sc,
-  cloneCall = c("gene", "nt", "aa", "strict"),
+  cloneCall = "strict",
   chain = "both",
   y.axes = NULL,
   color = NULL,
   alpha = NULL,
-  facet = NULL
+  facet = NULL,
+  palette = "inferno"
 )
 }
 \arguments{
@@ -34,6 +35,8 @@ visualizations.}
 \item{alpha}{The column header to have gradated opacity.}
 
 \item{facet}{The column label to separate.}
+
+\item{palette}{Colors to use in visualization - input any hcl.pals()}
 }
 \value{
 Alluvial ggplot comparing clonotype distribution across 
@@ -61,7 +64,9 @@ scRep_example <- combineExpression(combined, scRep_example)
 scRep_example$Patient <- substring(scRep_example$orig.ident, 1,3)
 
 #Using alluvialClonotypes()
-alluvialClonotypes(scRep_example, cloneCall = "gene", 
-                   y.axes = c("Patient", "ident"), color = "ident")
+alluvialClonotypes(scRep_example, 
+                   cloneCall = "gene", 
+                   y.axes = c("Patient", "ident"), 
+                   color = "ident")
 
 }

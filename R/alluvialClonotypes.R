@@ -49,8 +49,10 @@ makingLodes <- function(meta2, color, alpha, facet, set.axes) {
 #' scRep_example$Patient <- substring(scRep_example$orig.ident, 1,3)
 #' 
 #' #Using alluvialClonotypes()
-#' alluvialClonotypes(scRep_example, cloneCall = "gene", 
-#'                    y.axes = c("Patient", "ident"), color = "ident")
+#' alluvialClonotypes(scRep_example, 
+#'                    cloneCall = "gene", 
+#'                    y.axes = c("Patient", "ident"), 
+#'                    color = "ident")
 #' 
 #' @param sc The seurat or SCE object to visualize after combineExpression(). 
 #' For SCE objects, the cluster variable must be in the meta data under 
@@ -65,8 +67,9 @@ makingLodes <- function(meta2, color, alpha, facet, set.axes) {
 #' @param color The column header or clonotype(s) to be highlighted.
 #' @param facet The column label to separate.
 #' @param alpha The column header to have gradated opacity.
-#' @import ggplot2
+#' @param palette Colors to use in visualization - input any hcl.pals()
 #' 
+#' @import ggplot2
 #' @importFrom ggalluvial StatStratum geom_flow geom_stratum to_lodes_form geom_alluvium
 #' @importFrom dplyr %>% mutate
 #' 
@@ -74,16 +77,18 @@ makingLodes <- function(meta2, color, alpha, facet, set.axes) {
 #' @return Alluvial ggplot comparing clonotype distribution across 
 #' selected parameters.
 alluvialClonotypes <- function(sc, 
-                               cloneCall = c("gene", "nt", "aa", "strict"), 
+                               cloneCall = "strict", 
                                chain = "both",
                                y.axes = NULL, 
                                color = NULL, 
                                alpha = NULL, 
-                               facet = NULL) {
+                               facet = NULL, 
+                               palette = "inferno") {
   checkSingleObject(sc)
   cloneCall <- theCall(cloneCall)
   if (length(y.axes) == 0) {
-    stop("Make sure you have selected the variable(s) to visualize") }
+    stop("Make sure you have selected the variable(s) to visualize") 
+  }
   meta <- grabMeta(sc)
   if (chain != "both") {
     meta <- off.the.chain(meta, chain, cloneCall)
@@ -103,24 +108,42 @@ alluvialClonotypes <- function(sc,
   
   lodes <- makingLodes(meta2, color, alpha, facet, set.axes) 
   plot <- ggplot(data = lodes, aes(x = x, stratum = stratum, 
-                                   alluvium = alluvium, label = stratum)) +
-    geom_stratum() + theme_classic() +
-    theme(axis.title.x = element_blank(), axis.ticks.x = element_blank())  
+                                   alluvium = alluvium, 
+                                   label = stratum)) +
+                geom_stratum(width = 0.2) 
+    
   if (is.null(color) & is.null(alpha)) {
-    plot <- plot + geom_alluvium()
+    plot <- plot + geom_alluvium(width=0.2)
   } else if (!is.null(color) & is.null(alpha)) {
-    plot <- plot+geom_flow(aes(fill = lodes[,color]), 
-                           stat = "alluvium", lode.guidance = "forward") + labs(fill = color)
+    plot <- plot + geom_flow(aes(fill = lodes[,color]), 
+                             stat = "alluvium", 
+                             lode.guidance = "forward") + 
+                             labs(fill = color,
+                             width = 0.2)
   } else if (is.null(color) & !is.null(alpha)) {
-    plot <- plot + geom_flow(aes(alpha = lodes[,alpha]), stat = "alluvium",
-                             lode.guidance = "forward") + labs(alpha = alpha)
-  }else {
-    plot <- plot+geom_flow(aes(alpha=lodes[,alpha], fill=lodes[,color]),
-                           stat = "alluvium", lode.guidance = "forward") + 
+    plot <- plot + geom_flow(aes(alpha = lodes[,alpha]), 
+                             stat = "alluvium",
+                             lode.guidance = "forward") + 
+                             labs(alpha = alpha,
+                             width = 0.2)
+  } else {
+    plot <- plot+geom_flow(aes(alpha=lodes[,alpha], 
+                               fill=lodes[,color]),
+                               stat = "alluvium", 
+                               lode.guidance = "forward", 
+                               width = 0.2) + 
       labs(fill = color, alpha = alpha) }
   if (length(facet) == 1 & length(facet) < 2) {
     plot <- plot + facet_wrap(.~lodes[,facet], scales="free_y")
-  } else if (length(facet) == 0) { plot <- plot }
-  plot <- plot + geom_text(stat = ggalluvial::StatStratum, infer.label = FALSE, reverse = TRUE, size = 2)
+  }
+  
+  plot <- plot + 
+            geom_text(stat = ggalluvial::StatStratum, infer.label = FALSE, reverse = TRUE, size = 2) + 
+            scale_fill_manual(values = .colorizer(palette,  length(levels(lodes[,color])))) + 
+           scale_x_discrete(expand = c(0.025,0.025)) + 
+            theme_classic() +
+            theme(axis.title.x = element_blank(), 
+                  axis.ticks.x = element_blank(), 
+                  line = element_blank())  
   return(plot)
 }

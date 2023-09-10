@@ -31,10 +31,8 @@ Imports:
     igraph,
     ggraph,
     tidygraph,
-    Seurat,
     SeuratObject,
     stats,
-    BiocManager,
     Rcpp
 Suggests: 
     knitr,
@@ -43,6 +41,8 @@ Suggests:
     circlize,
     scales,
     scater,
+    BiocManager,
+    Seurat,
     spelling,
     testthat (>= 3.0.0),
     vdiffr
