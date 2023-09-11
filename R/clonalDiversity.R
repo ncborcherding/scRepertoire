@@ -34,7 +34,7 @@
 #' will automatically exportTable = TRUE
 #' @param skip.boots remove downsampling and boot strapping from the calculation
 #' @importFrom stringr str_sort str_split
-#' @importFrom reshape2 melt
+#' @importFrom reshape2 mat_melt
 #' @importFrom dplyr sample_n
 #' @import ggplot2
 #' @export
@@ -119,22 +119,22 @@ clonalDiversity <- function(df,
     }
     rownames(mat) <- names(df)
   
-    melt <- suppressMessages(melt(mat, id.vars = c(group.by, x.axis)))
-    values <- str_sort(as.character(unique(melt[,group.by])), 
+    mat_melt <- suppressMessages(melt(mat, id.vars = c(group.by, x.axis)))
+    values <- str_sort(as.character(unique(mat_melt[,group.by])), 
                        numeric = TRUE)
     values <- quiet(dput(values))
-    melt[,group.by] <- factor(melt[,group.by], levels = values)
+    mat_melt[,group.by] <- factor(mat_melt[,group.by], levels = values)
     if (x.axis == "x.axis") {
-        plot <- ggplot(melt, aes(x=1, y=as.numeric(value)))
+        plot <- ggplot(mat_melt, aes(x=1, y=as.numeric(value)))
     } else {
-      plot <- ggplot(melt, aes(x=melt[,x.axis], y=as.numeric(value)))
+      plot <- ggplot(mat_melt, aes(x=mat_melt[,x.axis], y=as.numeric(value)))
     }
     plot <- plot +
       geom_boxplot(outlier.alpha = 0) +
-      geom_jitter(aes(color = melt[,group.by]), size = 3) + 
-      labs(color="Group") +
+      geom_jitter(aes(fill = mat_melt[,group.by]), size = 3, shape = 21, stroke = 0.25, color = "black") + 
+      labs(fill = "Group") +
       ylab("Index Score") +
-      scale_color_manual(values = .colorizer(palette,length(unique(melt[,group.by])))) +
+      scale_fill_manual(values = .colorizer(palette,length(unique(mat_melt[,group.by])))) +
     facet_wrap(~variable, scales = "free", ncol = length(metrics)) +
       theme_classic() + 
       theme(axis.title.x = element_blank())
