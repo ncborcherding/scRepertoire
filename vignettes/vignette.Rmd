@@ -778,8 +778,7 @@ In order to use the ```StartracDiversity()``` function, you will need to include
 ```{r}
 StartracDiversity(scRep_example, 
                   type = "Type", 
-                  sample = "Patient", 
-                  by = "overall")
+                  group.by = "Patient")
 ```
 
 ## clonotypeBias

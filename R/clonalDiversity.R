@@ -34,7 +34,7 @@
 #' will automatically exportTable = TRUE
 #' @param skip.boots remove downsampling and boot strapping from the calculation
 #' @importFrom stringr str_sort str_split
-#' @importFrom reshape2 mat_melt
+#' @importFrom reshape2 melt
 #' @importFrom dplyr sample_n
 #' @import ggplot2
 #' @export

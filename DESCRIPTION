@@ -23,8 +23,6 @@ Imports:
     SingleCellExperiment,
     SummarizedExperiment,
     plyr,
-    parallel,
-    doParallel,
     methods,
     utils,
     rlang,

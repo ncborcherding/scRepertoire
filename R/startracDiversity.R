@@ -16,13 +16,15 @@
 #'                                     "P19B","P19L", "P20B", "P20L"))
 #' 
 #' #Getting a sample of a Seurat object
-#' scRep_example  <- get(data("scRep_example "))
+#' scRep_example  <- get(data("scRep_example"))
 #' scRep_example  <- combineExpression(combined, scRep_example )
 #' scRep_example$Patient <- substring(scRep_example$orig.ident,1,3)
 #' scRep_example$Type <- substring(scRep_example$orig.ident,4,4) 
 #' 
-#' #Using occupiedscRepertoire()
-#' StartracDiversity(scRep_example , type = "Type", sample = "Patient", by = "overall")
+#' #Using StartracDiversity()
+#' StartracDiversity(scRep_example, 
+#'                   type = "Type", 
+#'                   group.by = "Patient")
 #'
 #' 
 #' @param sc The seurat or SCE object to visualize after combineExpression(). 
@@ -36,6 +38,7 @@
 #' @param type The variable in the meta data that provides tissue type
 #' @param group.by The variable in the meta data to group by, often samples
 #' @param exportTable Returns the data frame used for forming the graph
+#' @param palette Colors to use in visualization - input any hcl.pals()
 #' @importFrom reshape2 melt
 #' @import ggplot2
 #' @export
@@ -117,7 +120,7 @@ StartracDiversity <- function(sc,
 }
 
 
-#' Calculate cluster level indices
+# Calculate cluster level indices
 #' @importFrom plyr llply
 .calIndex <- function(processed){
     clonotype.dist.cluster <- table(processed[,c("clone.id","majorCluster")])
@@ -142,7 +145,7 @@ StartracDiversity <- function(sc,
     return(calIndex.matrix)
 }
 
-#' entropy of each row of the input matrix
+# entropy of each row of the input matrix
 .mrow.entropy <- function(x)
 {
     freqs <- sweep(x,1,rowSums(x),"/")
@@ -150,7 +153,7 @@ StartracDiversity <- function(sc,
     return(H)
 }
 
-#' entropy of each column of the input matrix
+# entropy of each column of the input matrix
 .mcol.entropy <- function(x)
 {
     freqs <- sweep(x,2,colSums(x),"/")

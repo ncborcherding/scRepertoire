@@ -129,6 +129,7 @@ checkSingleObject <- function(sc) {
 #This is to grab the meta data from a seurat or SCE object
 #' @importFrom SingleCellExperiment colData 
 #' @importFrom SeuratObject Idents
+#' @importFrom methods slot
 grabMeta <- function(sc) {
     if (is_seurat_object(sc)) {
         meta <- data.frame(sc[[]], slot(sc, "active.ident"))

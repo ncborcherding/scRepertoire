@@ -10,6 +10,7 @@ clonalOverlap(
   method = NULL,
   chain = "both",
   split.by = NULL,
+  text.color = NULL,
   exportTable = FALSE,
   palette = "inferno"
 )
@@ -21,8 +22,8 @@ clonalOverlap(
 CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
 VDJC gene + CDR3 nucleotide (strict).}
 
-\item{method}{The method to calculate the overlap, either the "overlap" 
-coefficient, "morisita", "jaccard" indices, "cosine" similarity or "raw" 
+\item{method}{The method to calculate the overlap, 
+ "overlap" 
 for the base numbers.}
 
 \item{chain}{indicate if both or a specific chain should be used - 
@@ -52,6 +53,8 @@ combined <- combineTCR(contig_list,
                         samples = c("P17B", "P17L", "P18B", "P18L", 
                                     "P19B","P19L", "P20B", "P20L"))
 
-clonalOverlap(combined, cloneCall = "gene", method = "overlap")
+clonalOverlap(combined, 
+              cloneCall = "gene", 
+              method = "jaccard")
 
 }

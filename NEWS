@@ -1,11 +1,16 @@
 CHANGES IN VERSION 2.0.0
 ------------------------
 
-SIGNIFICANT USER-VISIBLE CHANGES
+NEW FEATURES
 
 * Added percentAA()
 * Added percentGenes()
 * Added percentVJ()
+
+UNDERLYING CHANGES
+
+* startrac diversity metric re-implemented to remove startrac-class object intermediary
+* Universalized underlying function language and intermediate variables
 
 
 DEPRECATED AND DEFUNCT
