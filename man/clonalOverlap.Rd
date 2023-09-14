@@ -10,7 +10,6 @@ clonalOverlap(
   method = NULL,
   chain = "both",
   split.by = NULL,
-  text.color = NULL,
   exportTable = FALSE,
   palette = "inferno"
 )

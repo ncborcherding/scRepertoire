@@ -287,9 +287,9 @@ lengthContig(combined,
              scale = TRUE) 
 ```
 
-## compareClonotypes
+## clonalCompare
 
-We can also look at clonotypes between samples and changes in dynamics by using the `compareClonotypes()` function.
+We can also look at clonotypes between samples and changes in dynamics by using the `clonalCompare()` function.
 
 **samples**  
 * Can be used to isolate specific samples based on the name of the list element
@@ -298,7 +298,7 @@ We can also look at clonotypes between samples and changes in dynamics by using 
 * "alluvial" - graph imaged below  
 * "area" - graph by area of the respective clonotype  
 
-**number**  
+**top.clones**  
 * The top number of clonotypes to graph, this will be calculated based on the frequency of the individual sample. This can also be left blank.  
 
 We can also look at clonotypes between samples and changes in dynamics by using the `compareClonotypes()` function.
@@ -310,15 +310,33 @@ We can also look at clonotypes between samples and changes in dynamics by using 
 * "alluvial" - graph imaged below  
 * "area" - graph by area of the respective clonotype  
 
-**number**  
+**top.clones**  
 * The top number of clonotypes to graph, this will be calculated based on the frequency of the individual sample. This can also be left blank.  
 
 **clonotypes**  
 * Can be used to isolate specific clonotype sequences, ensure the call matches the sequences you would like to visualize.  
 
+**highlight.clones**  
+* Specifically color certain clonotypes, other clones will be greyed out.
+
+**relabel.clones**  
+* Simplify the isolated clonotypes to numerical designations to allow for a tidier visualization
+
 ```{r}
-compareClonotypes(combined, 
-                  numbers = 10, 
+clonalCompare(combined, 
+                  top.clones = 10, 
+                  samples = c("P17B", "P17L"), 
+                  cloneCall="aa", 
+                  graph = "alluvial")
+```
+We can also choose to highlight specific clonotypes, such as in the case of *"CVVSDNTGGFKTIF_CASSVRRERANTGELFF"* and *"NA_CASSVRRERANTGELFF"*: 
+
+
+```{r}
+clonalCompare(combined, 
+                  top.clones = 10,
+                  highlight.clones = c("CVVSDNTGGFKTIF_CASSVRRERANTGELFF", "NA_CASSVRRERANTGELFF"),
+                  relabel.clones = TRUE,
                   samples = c("P17B", "P17L"), 
                   cloneCall="aa", 
                   graph = "alluvial")

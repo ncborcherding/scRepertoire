@@ -6,11 +6,13 @@ NEW FEATURES
 * Added percentAA()
 * Added percentGenes()
 * Added percentVJ()
+* Changed compareClonotypes to clonalCompare
 
 UNDERLYING CHANGES
 
 * startrac diversity metric re-implemented to remove startrac-class object intermediary
 * Universalized underlying function language and intermediate variables
+* Added features to clonalCompare to allow for highlighting sequences, relabeling clonotypes.
 
 
 DEPRECATED AND DEFUNCT

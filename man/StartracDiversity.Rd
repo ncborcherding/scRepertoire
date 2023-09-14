@@ -31,6 +31,8 @@ e.g. "both", "TRA", "TRG", "IGH", "IGL"}
 \item{group.by}{The variable in the meta data to group by, often samples}
 
 \item{exportTable}{Returns the data frame used for forming the graph}
+
+\item{palette}{Colors to use in visualization - input any hcl.pals()}
 }
 \value{
 ggplot object of Startrac diversity metrics
@@ -52,7 +54,7 @@ combined <- combineTCR(contig_list,
                                     "P19B","P19L", "P20B", "P20L"))
 
 #Getting a sample of a Seurat object
-scRep_example  <- get(data("scRep_example "))
+scRep_example  <- get(data("scRep_example"))
 scRep_example  <- combineExpression(combined, scRep_example )
 scRep_example$Patient <- substring(scRep_example$orig.ident,1,3)
 scRep_example$Type <- substring(scRep_example$orig.ident,4,4) 
