@@ -19,7 +19,6 @@ Imports:
     reshape2,
     ggalluvial,
     stringr,
-    powerTCR,
     SingleCellExperiment,
     SummarizedExperiment,
     plyr,
@@ -31,7 +30,12 @@ Imports:
     tidygraph,
     SeuratObject,
     stats,
-    Rcpp
+    Rcpp,
+    evmix,
+    ggdendro, 
+    truncdist,
+    VGAM,
+    cubature
 Suggests: 
     knitr,
     rmarkdown,

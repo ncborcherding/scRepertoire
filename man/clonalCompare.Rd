@@ -20,7 +20,8 @@ clonalCompare(
 )
 }
 \arguments{
-\item{df}{The product of combineTCR(), combineBCR(), expression2List(), or combineExpression().}
+\item{df}{The product of combineTCR(), combineBCR(), expression2List(), 
+or combineExpression().}
 
 \item{cloneCall}{How to call the clonotype - VDJC gene (gene), 
 CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
@@ -64,11 +65,11 @@ proportion to be visualized.
 \examples{
 #Making combined contig data
 combined <- combineTCR(contig_list, 
-                        samples = c("P17B", "P17L", "P18B", "P18L", 
-                                    "P19B","P19L", "P20B", "P20L"))
-compareClonotypes(combined, 
-                  top.clones = 5, 
-                  samples = c("P17B", "P17L"), 
-                  cloneCall="aa")
+                       samples = c("P17B", "P17L", "P18B", "P18L", 
+                                   "P19B","P19L", "P20B", "P20L"))
+clonalCompare(combined, 
+              top.clones = 5, 
+              samples = c("P17B", "P17L"), 
+              cloneCall="aa")
 
 }

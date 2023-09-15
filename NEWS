@@ -7,13 +7,14 @@ NEW FEATURES
 * Added percentGenes()
 * Added percentVJ()
 * Changed compareClonotypes to clonalCompare
+* Changed clonotypeSizeDistribution to clonalSizeDistribution
 
 UNDERLYING CHANGES
 
 * startrac diversity metric re-implemented to remove startrac-class object intermediary
+* implemented powerTCR locally to reduce dependencies and continue support
 * Universalized underlying function language and intermediate variables
 * Added features to clonalCompare to allow for highlighting sequences, relabeling clonotypes.
-
 
 DEPRECATED AND DEFUNCT
 

@@ -495,12 +495,12 @@ clonalOverlap(combined,
               method = "morisita")
 ```
 
-Another addition to scRepertoire is the ability to cluster the samples by the clone size distribution using `clonesizeDistribution()` adapted from the [powerTCR](https://bioconductor.org/packages/release/bioc/html/powerTCR.html) R package. Please read and cite the respective [citation](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1006571) if using this function to analyze the similarities of sample clone size distributions. In this function, method refers to the method for which the hierarchical clustering will be based on. 
+Another addition to scRepertoire is the ability to cluster the samples by the clone size distribution using `clonalSizeDistribution()` adapted from the [powerTCR](https://bioconductor.org/packages/release/bioc/html/powerTCR.html) R package. Please read and cite the respective [citation](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1006571) if using this function to analyze the similarities of sample clone size distributions. In this function, method refers to the method for which the hierarchical clustering will be based on. 
 
 ```{r}
-clonesizeDistribution(combined, 
-                      cloneCall = "strict", 
-                      method="ward.D2")
+clonalSizeDistribution(combined, 
+                       cloneCall = "aa", 
+                       method= "ward.D2")
 ```
 
 ## Diversity Analysis
