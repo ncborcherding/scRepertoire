@@ -536,7 +536,7 @@ pdiscgpd <- function(q, thresh, sigma, xi, phiu){
   lower = min(grid)
   upper = max(grid)
   
-  out <- adaptIntegrate(eval_desponds,
+  out <- adaptIntegrate(.eval_desponds,
                         lowerLimit = lower, upperLimit = upper,
                         Cminp = Cminp, Cminq = Cminq,
                         alphap = alphap, alphaq = alphaq)$integral %>% sqrt
