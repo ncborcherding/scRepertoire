@@ -46,11 +46,10 @@ ggplot of the total or relative abundance of clonotypes
 across quanta
 }
 \description{
-This function takes the output of combineTCR(), combineBCR(), or 
-expression2List() and displays the number of clonotypes at specific 
-frequencies by sample or group. Visualization can either be a line 
-graph using calculated numbers or if scale = TRUE, the output will 
-be a density plot. Multiple sequencing runs can be group together 
+Displays the number of clonotypes at specific requencies by sample 
+or group. Visualization can either be a line graph using
+calculated numbers or if scale = TRUE, the output will be a 
+density plot. Multiple sequencing runs can be group together 
 using the group parameter. If a matrix output for the data is 
 preferred, set exportTable = TRUE.
 }

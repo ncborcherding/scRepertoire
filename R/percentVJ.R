@@ -9,7 +9,6 @@
 #'                         samples = c("P17B", "P17L", "P18B", "P18L", 
 #'                                     "P19B","P19L", "P20B", "P20L"))
 #' percentVJ(combined, chain = "TRB")
-
 #' @param df The product of combineTCR(), combineBCR(), 
 #' expression2List(), or combineExpression().
 #' @param chain "TRA", "TRB", "TRG", "TRG", "IGH", "IGL"
@@ -43,7 +42,6 @@ percentVJ <- function(df,
     positions <- c(1,3)
   }
   
-  
   #Getting indicated genes across list
   gene_counts <- lapply(df, function(x) {
       tmp <- unlist(str_split(x[,"CTgene"], ";"))
@@ -73,7 +71,6 @@ percentVJ <- function(df,
     return(summary.matrix) 
   }
   mat <- lapply(summary, function(x) {
-    
     # Create an empty matrix
     result_matrix <- matrix(0, nrow = length(V_values), ncol = length(unique(J_values)))
     rownames(result_matrix) <- V_values
@@ -84,8 +81,8 @@ percentVJ <- function(df,
         result_matrix[coordinates[1], coordinates[2]] <- x[i]
     }
     result_matrix
-    
   })
+  
   #Melting matrix and Visualizing
   mat_melt <- melt(mat)
   plot <- ggplot(mat_melt, aes(y=Var1, x = Var2, fill=round(value*100,2))) +

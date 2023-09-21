@@ -9,7 +9,7 @@
 #'                         samples = c("P17B", "P17L", "P18B", "P18L", 
 #'                                     "P19B","P19L", "P20B", "P20L"))
 #' percentGenes(combined, chain = "TRB", gene = "Vgene")
-
+#' 
 #' @param df The product of combineTCR(), combineBCR(), 
 #' expression2List(), or combineExpression().
 #' @param chain "TRA", "TRB", "TRG", "TRG", "IGH", "IGL"
@@ -38,7 +38,6 @@ percentGenes <- function(df,
   for(i in seq_along(df)) {
     df[[i]] <- off.the.chain(df[[i]], chain, "CTgene")
   }
-  
   #Parsing gene input
   if (gene %in% c("Vgene", "V", "v", "v.gene")) {
     gene.loci <- paste0(chain, "V")
@@ -51,7 +50,6 @@ percentGenes <- function(df,
       stop(paste0("There is not the D locus for ", gene))
     }
   }
-  
   #Getting indicated genes across list
   gene_counts <- lapply(df, function(x) {
       tmp <- unlist(str_split(x[,"CTgene"], ";"))
@@ -72,14 +70,13 @@ percentGenes <- function(df,
                    percentages <- c(percentages, percentages.to.add)
                  }
                  percentages[match(str_sort(names(percentages), numeric = TRUE), names(percentages))]
-                 
-  
   })
+  
   summary <- do.call(rbind,summary)
   if (exportTable == TRUE) { 
     return(summary) 
   }
-  #Melting matrix and Visualizing
+  #Melting matrix and visualizing
   mat_melt <- melt(summary)
   plot <- ggplot(mat_melt, aes(y=Var1, x = Var2, fill=round(value*100,2))) +
     geom_tile(lwd= 0.25, color = "black") +

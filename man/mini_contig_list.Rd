@@ -11,8 +11,8 @@ An R `list` of `data.frame` objects
 data("mini_contig_list")
 }
 \description{
-A list of 6 dataframes of T cell contigs outputted from the
-`filtered_contig_annotation` files, but subsetted to about 92 valid T cells
+A list of 8 dataframes of T cell contigs outputted from the
+`filtered_contig_annotation` files, but subsetted to  365 valid T cells
 which correspond to the same barcodes found in `scRep_example`
 }
 \seealso{

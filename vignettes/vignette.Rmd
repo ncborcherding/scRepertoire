@@ -493,7 +493,7 @@ clonalSizeDistribution(combined,
                        method= "ward.D2")
 ```
 
-## Diversity Analysis
+## clonalDiversity
 
 Diversity can also be measured for samples or by other variables. Diversity is calculated using five metrics: 1) Shannon, 2) inverse Simpson, 3) Chao1, and 4) Abundance-based Coverage Estimator (ACE), and 5) inverse Pielou. With the former two generally used to estimate baseline diversity and Chao/ACE indices used to estimate the richness of the samples. New implementation of this function include downsampling with 100 boot straps (**n.boots**) using the minimum number of unique clonotypes, as a more robust diversity estimate. To get a table of the bootstrapped values, set **return.boots** = TRUE.
 
@@ -504,9 +504,9 @@ clonalDiversity(combined,
                 n.boots = 100)
 ```
 
-## scatterClonotype
+## clonalScatter
 
-A number of users requested a visualization from the work of [Wu, et al 2020, PMID: 32103181](https://pubmed.ncbi.nlm.nih.gov/32103181/) that allows for the direct comparison of clonotypes between 2 samples. ```scatterClonotype()``` will organize two samples from the combineTCR/BCR product, count the relative clonotypes, and produce a scatter plot comparing the two samples. 
+A number of users requested a visualization from the work of [Wu, et al 2020, PMID: 32103181](https://pubmed.ncbi.nlm.nih.gov/32103181/) that allows for the direct comparison of clonotypes between 2 samples. ```clonalScatter()``` will organize two samples from the combineTCR/BCR product, count the relative clonotypes, and produce a scatter plot comparing the two samples. 
 
 **x.axis** and **y.axis**  
 * Names of the list element to place on the x-axis and y-axis - so for example "P18L" and "P18B"  
@@ -520,12 +520,12 @@ A number of users requested a visualization from the work of [Wu, et al 2020, PM
 * "count" for the total count of clonotypes by sample  
 
 ```{r}
-scatterClonotype(combined, 
-                 cloneCall ="gene", 
-                 x.axis = "P18B", 
-                 y.axis = "P18L",
-                 dot.size = "total",
-                 graph = "proportion")
+clonalScatter(combined, 
+              cloneCall ="gene", 
+              x.axis = "P18B", 
+              y.axis = "P18L",
+              dot.size = "total",
+              graph = "proportion")
 ```
 
 ***
