@@ -73,35 +73,12 @@ contigs <- read.csv(".../outs/filtered_contig_annotations.csv")
 contig.list <- createHTOContigList(contigs, Seurat.Obj, group.by = "HTO_maxID")
 ```
 
-scRepertoire comes with a data set derived from T cells derived from three patients with renal clear cell carcinoma in order to demonstrate the functionality of the R package. More information on the data set can be found at the corresponding [manuscript](https://www.nature.com/articles/s42003-020-01625-6). The samples consist of paired peripheral-blood and tumor-infiltrating runs, effectively creating 6 distinct runs for T cell receptor (TCR) enrichment. We can preview the elements in the list by using the head function and looking at the first contig annotation. 
+scRepertoire comes with a data set derived from T cells derived from four patients with acute respiratory distress in order to demonstrate the functionality of the R package. More information on the data set can be found at the corresponding [manuscript](https://pubmed.ncbi.nlm.nih.gov/33622974/). The samples consist of paired peripheral-blood (B) and bronchoalveolar lavage (L), effectively creating 8 distinct runs for T cell receptor (TCR) enrichment. We can preview the elements in the list by using the head function and looking at the first contig annotation. 
 
 ```{r}
 data("contig_list") #the data built into scRepertoire
 
 head(contig_list[[1]])
-```
-
-Some workflows will have the additional labeling of the standard barcode. Before we proceed, we can use the function `stripBarcode()` in order to avoid any labeling issues down the line. Importantly, `stripBarcode()` is for *removing prefixes* on barcodes that have resulted from other pipelines. 
-
-**No need for stripBarcode function**, if the barcodes look like:  
-* AAACGGGAGATGGCGT-1  
-* AAACGGGAGATGGCGT  
-
-In terms of using `stripBarcode()`, please think about the following parameters. 
-
-**column**  
-* The column in which the barcodes are present  
-
-**connector**  
-* The character that is connecting the barcode with the prefix  
-
-**num_connects**  
-* The levels of barcode prefix, where *X_X_AAACGGGAGATGGCGT-1* == 3, *X_AAACGGGAGATGGCGT-1* = 2.  
-
-```{r eval=FALSE}
-for (i in seq_along(contig_list)) {
-    contig_list[[i]] <- stripBarcode(contig_list[[i]], column = 1, connector = "_", num_connects = 3)
-}
 ```
 
 ## loadContigs
@@ -199,13 +176,26 @@ quantContig(combined,
             cloneCall="strict", 
             chain = "both", 
             scale = TRUE)
+```
+For all visualizations in scRepertoire, there are 2 ways to adjust the color scheme
 
-#Adjust colors with the palette parameter
++ Change the **palette** parameter to desired color scheme. This approach uses the built-in palettes of grDevices and you can access the list of color schemes using ``hcl.pals()``.  
++ Add an additional ggplot layer with new color scheme. 
+
+```{r}
 quantContig(combined, 
             cloneCall="strict", 
             chain = "both", 
             scale = TRUE, 
             palette = "Zissou 1")
+
+quantContig(combined, 
+            cloneCall="strict", 
+            chain = "both", 
+            scale = TRUE) + 
+  scale_color_manual(values = hcl.colors(8,"geyser"))
+
+
 ```
 
 Within each of the general analysis functions, there is the ability to export the data frame used to create the visualization. To get the exported values, use **exportTable** = TRUE. It will return the data frame used to make the graph, instead of the visual output.  
@@ -404,7 +394,7 @@ vizGenes(combined,
          scale = TRUE)
 ```
 
-We can also use `vizGenes()` to look at the usage of genes in a single chain. So for example say we are interesting in the difference in TRB V and J usage between tumor and peripheral blood samples - we can easily take a look at this using the following code:
+We can also use `vizGenes()` to look at the usage of genes in a single chain. So for example say we are interesting in the difference in TRB V and J usage between lung and peripheral blood samples - we can easily take a look at this using the following code:
 
 ```{r}
 #Peripheral Blood
@@ -559,7 +549,7 @@ plotUMAP(sce, colour_by = "seurat_clusters")
 
 Next we can take the clonotypic information and attach it to our Seurat object using the *combineExpression()* function. **Importantly**, the major requirement for the attachment is matching contig cell barcodes and barcodes in the row names of the meta data of the Seurat or SCE object. If these do not match, the attachment will fail. Based on ease, we suggest you make the changes to the Seurat object row names.
 
-We can call (cloneCall) the 4 variations of clonotypes: 1) VDJC genes, 2) CDR3 amino acid sequence, 3) CDR3 nucleotide sequence, or 4) VDJC genes and CDR3 nucleotide sequence. The attaching function will also calculate the frequency of the clonotype based on the **group.by** variable. If blank, **group.by** will calculate frequencies of clonotypes by individual run, but because we have 6 samples of paired peripheral and tumor T cells, we are actually going to use the group.by variable to call "sample" in order to calculate frequencies across both the peripheral blood and tumor T cells of the same patient.
+We can call (cloneCall) the 4 variations of clonotypes: 1) VDJC genes, 2) CDR3 amino acid sequence, 3) CDR3 nucleotide sequence, or 4) VDJC genes and CDR3 nucleotide sequence. The attaching function will also calculate the frequency of the clonotype based on the **group.by** variable. If blank, **group.by** will calculate frequencies of clonotypes by individual run, but because we have 6 samples of paired peripheral blood and lung T cells, we are actually going to use the group.by variable to call "sample" in order to calculate frequencies across both the blood and lung T cells of the same patient.
 
 In order to categorize the frequency, we have the variable **proportion** which if TRUE allows for the relative proportion or when FALSE will use absolute frequency to define clonotype groups **cloneTypes**  acts as a bin to place labels. As a default, **cloneTypes** is set to equal cloneTypes=c(Rare = 1e-4, Small = 0.001, Medium = 0.01, Large = 0.1, Hyperexpanded = 1). However, below you can see an example of using total frequency as expansion assignments. 
 
@@ -595,7 +585,7 @@ seurat <- combineExpression(list.receptors,
                             proportion = TRUE)
 ```
 
-We first want to look at the distribution of peripheral versus tumor T cells. We can use the same color scheme as the rest of the scRepertoire package by calling the object **colorblind_vector** using the following hex codes. 
+We first want to look at the distribution of peripheral blood versus lung T cells. We can use the same color scheme as the rest of the scRepertoire package by calling the object **colorblind_vector** using the following hex codes. 
 
 ```{r}
 colorblind_vector <- hcl.colors(n=7, palette = "inferno", fixup = TRUE)
