@@ -1,10 +1,9 @@
 #' Demonstrate the relative abundance of clonotypes by group or sample.
 #'
-#' This function takes the output of combineTCR(), combineBCR(), or 
-#' expression2List() and displays the number of clonotypes at specific 
-#' frequencies by sample or group. Visualization can either be a line 
-#' graph using calculated numbers or if scale = TRUE, the output will 
-#' be a density plot. Multiple sequencing runs can be group together 
+#' Displays the number of clonotypes at specific requencies by sample 
+#' or group. Visualization can either be a line graph using
+#' calculated numbers or if scale = TRUE, the output will be a 
+#' density plot. Multiple sequencing runs can be group together 
 #' using the group parameter. If a matrix output for the data is 
 #' preferred, set exportTable = TRUE.
 #'
@@ -49,35 +48,38 @@ abundanceContig <- function(df,
   cloneCall <- theCall(cloneCall)
   df <- checkBlanks(df, cloneCall)
   names <- names(df)
+  for (i in seq_along(df)) {
+    if (chain != "both") {
+      df[[i]] <- off.the.chain(df[[i]], chain, cloneCall)
+    }
+  }
+  
   if (!is.null(group.by)) {
     for (i in seq_along(df)) {
-      if (chain != "both") {
-        df[[i]] <- off.the.chain(df[[i]], chain, cloneCall)
-      }
       data1 <- parseContigs(df, i, names, cloneCall)
       label <- df[[i]][1,group.by]
       data1[,paste(group.by)] <- label
       Con.df<- rbind.data.frame(Con.df, data1) }
-    Con.df <- data.frame(Con.df)
-    col <- length(unique(Con.df[,group.by]))
-    fill <- group.by
-    if (scale == TRUE) { ylab <- "Density of Clonotypes"
-    plot <- ggplot(Con.df, aes(x=Abundance, fill=Con.df[,group.by])) +
-      geom_density(aes(y=after_stat(scaled)), alpha=0.5, 
-                   lwd=0.25, color="black", bw=0.5)  +
-      scale_fill_manual(values = .colorizer(palette,col)) +
-      labs(fill = fill)
-    } else { ylab <- "Number of Clonotypes"
-    plot <- ggplot(Con.df, aes(x=Abundance, group.by = values, 
+      Con.df <- data.frame(Con.df)
+      col <- length(unique(Con.df[,group.by]))
+      fill <- group.by
+      if (scale == TRUE) { 
+        ylab <- "Density of Clonotypes"
+        plot <- ggplot(Con.df, aes(x=Abundance, fill=Con.df[,group.by])) +
+                      geom_density(aes(y=after_stat(scaled)), alpha=0.5, 
+                                   lwd=0.25, color="black", bw=0.5)  +
+                      scale_fill_manual(values = .colorizer(palette,col)) +
+                      labs(fill = fill)
+    } else { 
+        ylab <- "Number of Clonotypes"
+        plot <- ggplot(Con.df, aes(x=Abundance, group.by = values, 
                                color = Con.df[,group.by])) +
-      geom_line(stat="count") +
-      scale_color_manual(values = .colorizer(palette,col)) +
-      labs(color = fill)}
+                        geom_line(stat="count") +
+                        scale_color_manual(values = .colorizer(palette,col)) +
+                        labs(color = fill)
+    }
   } else {
     for (i in seq_along(df)) {
-      if (chain != "both") {
-        df[[i]] <- off.the.chain(df[[i]], chain, cloneCall)
-      }
       data1 <- parseContigs(df, i, names, cloneCall)
       Con.df<- rbind.data.frame(Con.df, data1) 
       }
@@ -87,19 +89,24 @@ abundanceContig <- function(df,
     }
     col <- length(unique(Con.df$values))
     fill <- "Samples"
-    if (scale == TRUE) { ylab <- "Density of Clonotypes"
-    plot <- ggplot(Con.df, aes(Abundance, fill=values)) +
-      geom_density(aes(y=after_stat(scaled)), alpha=0.5, lwd=0.25, 
-                   color="black", bw=0.5) +
-      scale_fill_manual(values = .colorizer(palette,col)) +
-      labs(fill = fill)
-    } else { ylab <- "Number of Clonotypes"
-    plot <- ggplot(Con.df, aes(x=Abundance, group = values, 
+    if (scale == TRUE) { 
+      ylab <- "Density of Clonotypes"
+      plot <- ggplot(Con.df, aes(Abundance, fill=values)) +
+                      geom_density(aes(y=after_stat(scaled)), alpha=0.5, lwd=0.25, 
+                                   color="black", bw=0.5) +
+                      scale_fill_manual(values = .colorizer(palette,col)) +
+                      labs(fill = fill)
+    } else { 
+      ylab <- "Number of Clonotypes"
+      plot <- ggplot(Con.df, aes(x=Abundance, group = values, 
                                color = values)) +
-      geom_line(stat="count") +
-      scale_color_manual(values = .colorizer(palette,col)) +
-      labs(color = fill)} }
-  if (exportTable == TRUE) { return(Con.df) }
+                      geom_line(stat="count") +
+                      scale_color_manual(values = .colorizer(palette,col)) +
+                      labs(color = fill)
+  } }
+  if (exportTable == TRUE) { 
+    return(Con.df) 
+  }
   plot <- plot + scale_x_log10() + ylab(ylab) + xlab(xlab) +
     theme_classic()
   return(plot) 
