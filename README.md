@@ -6,7 +6,7 @@
 [![Documentation](https://img.shields.io/badge/docs-stable-blue.svg)](https://www.borch.dev/uploads/vignette/vignette)
 <!-- badges: end -->
 
-#### A toolkit for single-cell immune profiling
+## A toolkit for single-cell immune profiling
 
 <img align="right" src="https://github.com/ncborcherding/scRepertoire/blob/dev/www/screpertoire_hex.png" width="352" height="352">
 
@@ -16,20 +16,16 @@ Single-cell sequencing is an emerging technology in the field of immunology and 
 ### Applying Deep Learning to VDJ data
 scRepertoire is compatible and integrated with the R packages [Trex](https://github.com/ncborcherding/Trex) for deep-learning-based autoencoding of the T cell receptor and [Ibex](https://github.com/ncborcherding/Ibex) for the B cell receptor. 
 
-### Wrapper Functions
-scRepertoire v1.0.2 has the functionality of the [powerTCR](https://github.com/hillarykoch/powerTCR) approach to comparing clone size distribution, [please cite](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1006571) the manuscript if using the ```clonesizeDistribution()``` function. In addition, we recently added the [Startrac](https://github.com/Japrin/STARTRAC) clonotype metrics, if using the ```StartracDiversity()``` please read and cite [the accompanying article](https://www.nature.com/articles/s41586-018-0694-x).
+## Installation
 
-### Installation of Master Branch
+#### Installation of Master Branch
 ```
 devtools::install_github("ncborcherding/scRepertoire")
 ```
 #### Most up-to-date version
-
 ```
 devtools::install_github("ncborcherding/scRepertoire@dev")
 ```
-
-We are working on constantly improving the scRepertoire package - these improvements can be found under the "refine" branch. These changes will be incorporated into the main branch as they are tested more throughly.
 
 #### Bioconductor
 
@@ -42,17 +38,17 @@ if (!requireNamespace("BiocManager", quietly = TRUE))
 BiocManager::install("scRepertoire")
 ```
 
-### Getting Data
+## Getting Data
 
 Unfortunately, Github limits the size of individual files. In order to access the seurat object paired with scRepertoire please download the .rda from [here](https://drive.google.com/file/d/1Iv6t2BScpnLLrFWaWFUGwne3XzRAwMOc/view?usp=share_link).
 
-### Learning To Use scRepertoire
+## Learning To Use scRepertoire
 
 Vignette available [here](https://www.borch.dev/uploads/vignette/vignette), includes almost 13,000 T cells across 3 patients with renal clear cell carcinoma. 
 
-### Please Cite
+## Please Cite
 Feel free to use, edit, modify scRepertoire, but if you do, please cite the [manuscript](https://f1000research.com/articles/9-47/v1).
 
-### Contact
+## Contact
 Questions, comments, suggestions, please feel free to contact Nick Borcherding via this repository, [email](mailto:ncborch@gmail.com), or using [twitter](https://twitter.com/theHumanBorch). 
 
