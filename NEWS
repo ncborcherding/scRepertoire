@@ -8,6 +8,8 @@ NEW FEATURES
 * Added percentVJ()
 * Changed compareClonotypes to clonalCompare
 * Changed clonotypeSizeDistribution to clonalSizeDistribution
+* Changed scatterClonotypes to clonalScatter
+* Changed quantContig to clonalQuant
 
 UNDERLYING CHANGES
 
@@ -15,6 +17,7 @@ UNDERLYING CHANGES
 * implemented powerTCR locally to reduce dependencies and continue support
 * Universalized underlying function language and intermediate variables
 * Added features to clonalCompare to allow for highlighting sequences, relabeling clonotypes.
+* License change to MIT
 
 DEPRECATED AND DEFUNCT
 

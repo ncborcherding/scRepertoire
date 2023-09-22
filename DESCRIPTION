@@ -5,7 +5,7 @@ Authors@R: c(
     person(given = "Nick", family = "Borcherding", role = c("aut", "cre"), email = "ncborch@gmail.com"), 
     person(given = "Qile", family = "Yang", role = c("aut"), email = "qile0317@gmail.com"))
 Description: scRepertoire was built to process data derived from the 10x Genomics Chromium Immune Profiling for both T-cell receptor (TCR) and immunoglobulin (Ig) enrichment workflows and subsequently interacts with the popular Seurat and SingleCellExperiment R packages. 
-License: GPL (>= 2)
+License: MIT
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.2.3

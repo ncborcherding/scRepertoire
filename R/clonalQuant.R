@@ -12,7 +12,7 @@
 #' combined <- combineTCR(contig_list, 
 #'                         samples = c("P17B", "P17L", "P18B", "P18L", 
 #'                                     "P19B","P19L", "P20B", "P20L"))
-#' quantContig(combined, cloneCall="strict", scale = TRUE)
+#' clonalQuant(combined, cloneCall="strict", scale = TRUE)
 #'
 #' @param df The product of combineTCR(), combineBCR(), expression2List(), or combineExpression().
 #' @param cloneCall How to call the clonotype - VDJC gene (gene), 
@@ -30,7 +30,7 @@
 #' @import ggplot2
 #' @export
 #' @return ggplot of the total or relative unique clonotypes
-quantContig <- function(df, 
+clonalQuant <- function(df, 
                         cloneCall = "strict", 
                         chain = "both", 
                         scale=FALSE, 
@@ -51,63 +51,71 @@ quantContig <- function(df,
       df[[i]] <- off.the.chain(df[[i]], chain, cloneCall)
     }
   }
+  
+  #Set up mat to store and selecting graph parameters
   if (!is.null(group.by)) {
     x <- group.by
     labs <- group.by
-    Con.df <- data.frame(matrix(NA, length(df), 4))
-    colnames(Con.df) <- c("contigs","values", "total", group.by)
+    mat <- data.frame(matrix(NA, length(df), 4))
+    colnames(mat) <- c("contigs","values", "total", group.by)
     for (i in seq_along(df)) {
-      Con.df[i,1] <- length(unique(df[[i]][,cloneCall]))
-      Con.df[i,2] <- names(df)[i]
-      Con.df[i,3] <- length(df[[i]][,cloneCall])
+      mat[i,1] <- length(unique(df[[i]][,cloneCall]))
+      mat[i,2] <- names(df)[i]
+      mat[i,3] <- length(df[[i]][,cloneCall])
       location <- which(colnames(df[[i]]) == group.by)
-      Con.df[i,4] <- df[[i]][1,location] }
-    col <- length(unique(Con.df[,group.by]))
+      mat[i,4] <- df[[i]][1,location] }
+    col <- length(unique(mat[,group.by]))
     if (scale) { y <- "scaled"
-    Con.df$scaled <- Con.df$contigs/Con.df$total*100
+    mat$scaled <- mat$contigs/mat$total*100
     ylab <- "Percent of Unique Clonotype"
     
-    } else { y <- "contigs"
-    x <- group.by
-    ylab <- "Unique Clonotypes"}
+    } else { 
+      y <- "contigs"
+      x <- group.by
+      ylab <- "Unique Clonotypes"}
   } else {
     x <- "values"
     labs <- "Samples"
-    Con.df <- data.frame(matrix(NA, length(df), 3))
-    colnames(Con.df) <- c("contigs","values", "total")
+    mat <- data.frame(matrix(NA, length(df), 3))
+    colnames(mat) <- c("contigs","values", "total")
+    
+    #Generating quantification
     for (i in seq_along(df)) {
-      Con.df[i,1] <- length(unique(df[[i]][,cloneCall]))
-      Con.df[i,2] <- names(df)[i]
-      Con.df[i,3] <- length(df[[i]][,cloneCall]) }
-    col <- length(unique(Con.df$values))
-    if (scale == TRUE) { y <- "scaled"
-    Con.df$scaled <- Con.df$contigs/Con.df$total*100
-    ylab <- "Percent of Unique Clonotype"
-    } else { y <- "contigs"
-    ylab <- "Unique Clonotypes" } }
-  
+      mat[i,1] <- length(unique(df[[i]][,cloneCall]))
+      mat[i,2] <- names(df)[i]
+      mat[i,3] <- length(df[[i]][,cloneCall]) 
+    }
+    col <- length(unique(mat$values))
+    if (scale == TRUE) { 
+      y <- "scaled"
+      mat$scaled <- mat$contigs/mat$total*100
+      ylab <- "Percent of Unique Clonotype"
+    } else { 
+      y <- "contigs"
+      ylab <- "Unique Clonotypes" 
+    } 
+  }
   if (exportTable) {
     if (length(df) > 1) {
-      return(Con.df)
+      return(mat)
     }
-    
     # if a single sample, remove the "values" column if NA
-    if (is.na(Con.df[[2]])) {
-      Con.df[[2]] <- NULL
+    if (is.na(mat[[2]])) {
+      mat[[2]] <- NULL
     }
-    return(Con.df)
+    return(mat)
   }
   
   if(order & is.null(group.by)) {
-    Con.df[,x] <- factor(Con.df[,x], levels = Con.df[,x])
+    mat[,x] <- factor(mat[,x], levels = mat[,x])
   }
-  plot <- ggplot(aes(x=Con.df[,x], y=Con.df[,y],
-                     fill=as.factor(Con.df[,x])), data = Con.df) +
-    stat_summary(geom = "errorbar", fun.data = mean_se, 
-                 position = "dodge", width=.5) + labs(fill = labs) +
-    stat_summary(fun=mean, geom="bar", color="black", lwd=0.25)+
-    theme_classic() + xlab("Samples") + ylab(ylab) +
-    scale_fill_manual(values = .colorizer(palette, col))
+  
+  plot <- ggplot(aes(x=mat[,x], y=mat[,y], fill=as.factor(mat[,x])), data = mat) +
+                  stat_summary(geom = "errorbar", fun.data = mean_se, 
+                               position = "dodge", width=.5) + labs(fill = labs) +
+                  stat_summary(fun=mean, geom="bar", color="black", lwd=0.25)+
+                  theme_classic() + xlab("Samples") + ylab(ylab) +
+                  scale_fill_manual(values = .colorizer(palette, col))
   
   # if it is a single run, remove x axis labels if sample name missing
   if ((length(df) == 1) && identical(names(df), NA_character_)) {

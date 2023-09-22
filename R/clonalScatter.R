@@ -65,63 +65,63 @@ clonalScatter <- function(df,
   colnames(x.df)[2] <- x.axis
   y.df <- as.data.frame(table(df[[y.axis]][,cloneCall]))
   colnames(y.df)[2] <- y.axis
-  Con.df <- merge(x.df, y.df, by = "Var1", all = TRUE)
+  mat <- merge(x.df, y.df, by = "Var1", all = TRUE)
   
   if (dot.size != "total") {
-    if (dot.size %!in% colnames(Con.df)) {
+    if (dot.size %!in% colnames(mat)) {
       size.df <- as.data.frame(table(df[[dot.size]][,cloneCall]))
       colnames(size.df)[2] <- dot.size
-      Con.df <- merge(Con.df, size.df, by = "Var1", all = TRUE) }
-    Con.df[is.na(Con.df)] <- 0
-    Con.df[,paste0("size", ".fraction")] <- Con.df[,dot.size]/sum(Con.df[,dot.size])
+      mat <- merge(mat, size.df, by = "Var1", all = TRUE) }
+    mat[is.na(mat)] <- 0
+    mat[,paste0("size", ".fraction")] <- mat[,dot.size]/sum(mat[,dot.size])
     labeling <- unique(c(x.axis, y.axis, dot.size))
   } else {
-    Con.df[is.na(Con.df)] <- 0
+    mat[is.na(mat)] <- 0
     labeling <- unique(c(x.axis, y.axis)) }
   
-  Con.df[,"class"] <- NA
-  Con.df[,"sum"] <- rowSums(Con.df[,labeling])
+  mat[,"class"] <- NA
+  mat[,"sum"] <- rowSums(mat[,labeling])
   
   #Assigning class based on x and y-axis counts
   for (i in seq_along(labeling)) {
     if (length(labeling) > 2) {
-      Con.df[,"class"] <- ifelse(Con.df[,labeling[i]] == 1 & rowSums(Con.df[,labeling[-i]]) == 0, 
+      mat[,"class"] <- ifelse(mat[,labeling[i]] == 1 & rowSums(mat[,labeling[-i]]) == 0, 
                                       paste0(labeling[i], ".singlet"), #if
-                                      Con.df[,"class"]) #else
-      Con.df[,"class"] <- ifelse(Con.df[,labeling[i]] > 1 & rowSums(Con.df[,labeling[-i]]) == 0, 
+                                      mat[,"class"]) #else
+      mat[,"class"] <- ifelse(mat[,labeling[i]] > 1 & rowSums(mat[,labeling[-i]]) == 0, 
                                       paste0(labeling[i], ".expanded"), #if
-                                      Con.df[,"class"]) #else
+                                      mat[,"class"]) #else
     } else if (length(labeling) == 2) {
-      Con.df[,"class"] <- ifelse(Con.df[,labeling[i]] == 1 & Con.df[,labeling[-i]] == 0, 
+      mat[,"class"] <- ifelse(mat[,labeling[i]] == 1 & mat[,labeling[-i]] == 0, 
                                       paste0(labeling[i], ".singlet"), #if
-                                      Con.df[,"class"]) #else
-      Con.df[,"class"] <- ifelse(Con.df[,labeling[i]] > 1 & Con.df[,labeling[-i]] == 0, 
+                                      mat[,"class"]) #else
+      mat[,"class"] <- ifelse(mat[,labeling[i]] > 1 & mat[,labeling[-i]] == 0, 
                                       paste0(labeling[i], ".expanded"), #if
-                                      Con.df[,"class"]) #else
+                                      mat[,"class"]) #else
     }
   }
   #Adding dual-expanded class
-  Con.df[,"class"] <- ifelse(Con.df[,y.axis] >= 1 & Con.df[,x.axis] >= 1, paste0("dual.expanded"), Con.df[,"class"])
+  mat[,"class"] <- ifelse(mat[,y.axis] >= 1 & mat[,x.axis] >= 1, paste0("dual.expanded"), mat[,"class"])
   
   #Calculating relative proportion
-  Con.df[,paste0(x.axis, ".fraction")] <- Con.df[,x.axis]/sum(Con.df[,x.axis])
-  Con.df[,paste0(y.axis, ".fraction")] <- Con.df[,y.axis]/sum(Con.df[,y.axis])
+  mat[,paste0(x.axis, ".fraction")] <- mat[,x.axis]/sum(mat[,x.axis])
+  mat[,paste0(y.axis, ".fraction")] <- mat[,y.axis]/sum(mat[,y.axis])
   
   #Altering the graphing parameters
   if (graph == "proportion") {
-    x <- Con.df[,paste0(x.axis, ".fraction")]
-    y <- Con.df[,paste0(y.axis, ".fraction")]
+    x <- mat[,paste0(x.axis, ".fraction")]
+    y <- mat[,paste0(y.axis, ".fraction")]
   } else if (graph == "count") {
-    x <- Con.df[,x.axis]
-    y <- Con.df[,y.axis] }
+    x <- mat[,x.axis]
+    y <- mat[,y.axis] }
   if (dot.size != "total") {
-    size <- Con.df[,dot.size]
-  } else { size <- Con.df[,"sum"] }
-  if (exportTable == TRUE) { return(Con.df) }
+    size <- mat[,dot.size]
+  } else { size <- mat[,"sum"] }
+  if (exportTable == TRUE) { return(mat) }
   
-  plot <- ggplot(Con.df, aes(x=x, y = y, fill = class)) + 
+  plot <- ggplot(mat, aes(x=x, y = y, fill = class)) + 
                 theme_classic() + 
-                scale_fill_manual(values = .colorizer(palette,length(unique(Con.df$class)))) + 
+                scale_fill_manual(values = .colorizer(palette,length(unique(mat$class)))) + 
                 xlab(x.axis) + 
                 ylab(y.axis) + 
                 labs(size = "Total n")

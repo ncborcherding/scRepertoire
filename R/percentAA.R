@@ -69,7 +69,9 @@ percentAA <- function(df,
   if(length(res.list) > 1) {
     plot <- plot + facet_grid(group~.)
   }
-  if (exportTable == TRUE) { return(mat_melt) }
+  if (exportTable == TRUE) { 
+    return(mat_melt) 
+  }
   return(plot)
 }    
     
