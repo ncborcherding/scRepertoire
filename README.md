@@ -47,7 +47,7 @@ Unfortunately, Github limits the size of individual files. In order to access th
 Vignette available [here](https://www.borch.dev/uploads/vignette/vignette), includes almost 13,000 T cells across 3 patients with renal clear cell carcinoma. 
 
 ## Please Cite
-Feel free to use, edit, modify scRepertoire, but if you do, please cite the [manuscript](https://f1000research.com/articles/9-47/v1).
+Feel free to use, edit, modify scRepertoire, but if you do, please cite the [manuscript](https://f1000research.com/articles/9-47/v1). If you are building your own tool based on scRepertoire, reach out, I am happy to help and make things compatible.
 
 ## Contact
 Questions, comments, suggestions, please feel free to contact Nick Borcherding via this repository, [email](mailto:ncborch@gmail.com), or using [twitter](https://twitter.com/theHumanBorch). 
