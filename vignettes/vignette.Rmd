@@ -402,6 +402,7 @@ percentGenes(combined,
 We can also use the output `percentGenes()` for dimensional reduction to summarise the gene usage by sample. This can be done with a simple principal component analysis (below) or even more complex reductions. 
 
 ```{r}
+
 df.genes <- percentGenes(combined, 
                          chain = "TRB", 
                          gene = "Vgene", 
@@ -411,7 +412,7 @@ df.genes <- percentGenes(combined,
 pc <- prcomp(df.genes)
 
 #Getting data frame to plot from
-df <- cbind(pc$x[,1:2], rownames(df.genes)) %>% as.data.frame()
+df <- as.data.frame(cbind(pc$x[,1:2], rownames(df.genes)))
 df$PC1 <- as.numeric(df$PC1)
 df$PC2 <- as.numeric(df$PC2)
 
@@ -439,7 +440,7 @@ df.genes <- percentVJ(combined,
 pc <- prcomp(df.genes)
 
 #Getting data frame to plot from
-df <- cbind(pc$x[,1:2], rownames(df.genes)) %>% as.data.frame()
+df <- as.data.frame(cbind(pc$x[,1:2], rownames(df.genes))) 
 df$PC1 <- as.numeric(df$PC1)
 df$PC2 <- as.numeric(df$PC2)
 

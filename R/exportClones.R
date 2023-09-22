@@ -4,17 +4,23 @@
 #' by barcodes.
 #' 
 #' @examples
+#' \dontrun{
 #' #Making combined contig data
 #' combined <- combineTCR(contig_list, 
 #'                         samples = c("P17B", "P17L", "P18B", "P18L", 
 #'                                     "P19B","P19L", "P20B", "P20L"))
+#' exportClones(combined)
+#' }
 #'                                    
 #' @param df The product of combineTCR(), combineBCR(), expression2List(), or combineExpression().
 #' @param group.by The column header used for grouping.
 #' @param split.by If using a single-cell object, the column header 
 #' to group the new list. NULL will return clusters.
+#' @param dir directory location to save the csv
+#' @param file.name the cav file name
 #' @importFrom dplyr bind_rows
 #' @importFrom stringr str_split
+#' @importFrom utils write.csv
 #' @export
 #' @return ggplot of percentage of V and J gene pairings as a heatmap
 #' @author Jonathan Noonan, Nick Borcherding
