@@ -1,0 +1,53 @@
+#' Exporting clonotypes
+#'
+#' This function saves a csv file of clonotypes (genes, amino acid, and nucleotide sequences)
+#' by barcodes.
+#' 
+#' @examples
+#' #Making combined contig data
+#' combined <- combineTCR(contig_list, 
+#'                         samples = c("P17B", "P17L", "P18B", "P18L", 
+#'                                     "P19B","P19L", "P20B", "P20L"))
+#'                                    
+#' @param df The product of combineTCR(), combineBCR(), expression2List(), or combineExpression().
+#' @param group.by The column header used for grouping.
+#' @param split.by If using a single-cell object, the column header 
+#' to group the new list. NULL will return clusters.
+#' @importFrom dplyr bind_rows
+#' @importFrom stringr str_split
+#' @export
+#' @return ggplot of percentage of V and J gene pairings as a heatmap
+#' @author Jonathan Noonan, Nick Borcherding
+exportClones <- function(df,
+                         group.by = NULL,
+                         split.by = NULL,
+                         dir = NULL, 
+                         file.name = "clones.csv") {
+  
+  df <- list.input.return(df, split.by)
+  df <- checkBlanks(df, "CTgene")
+
+  df <- bind_rows(df, .id = "group")
+  
+  genes <- str_split(df[,"CTgene"], "_", simplify = TRUE)
+  aa <- str_split(df[,"CTaa"], "_", simplify = TRUE)
+  nt <- str_split(df[,"CTnt"], "_", simplify = TRUE)
+  chain1_gene <- str_split(genes[,1], "[.]", simplify = TRUE)
+  
+  mat <- data.frame(row.names = df[,"barcode"], 
+                    chain1_aa = aa[,1], 
+                    chain1_nt = nt[,1], 
+                    chain1_genes = genes[,1], 
+                    chain2_aa = aa[,2],
+                    chain2_nt = nt[,2], 
+                    chain2_genes = genes[,2],
+                    group = df[,"group"])
+  mat[mat == "NA"] <- NA
+  
+  
+  if(is.null(dir)) {
+    dir <- "./"
+  }
+  filepath <- paste0(dir, file.name)
+  write.csv(mat, file = filepath)
+}
