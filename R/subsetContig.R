@@ -1,19 +1,18 @@
 
-#' Subset the product of combineTCR() combineBCR() or expression2List()
+#' Subset the product of combineTCR() combineBCR()
 #'
-#' This function allows for the subsetting of the product of combineTCR() 
-#' combineBCR() or expression2List() by the name of the individual list 
-#' element. In general the names of are samples + _ + ID, allowing 
-#' for users to subset the product of combineTCR(), combineBCR(), 
-#' or expression2List() across a string or individual name.
+#' This function allows for the subsetting of the product of 
+#' \code{\link{combineTCR}} or \code{\link{combineBCR}} 
+#' by the name of the individual list element. 
 #'
 #' @examples
 #' x <- contig_list
-#' combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), 
-#' rep(c("P", "T"), 3))
-#' subset <- subsetContig(combined, name = "sample", variables = c("PX"))
+#' combined <- combineTCR(contig_list, 
+#'                         samples = c("P17B", "P17L", "P18B", "P18L", 
+#'                                     "P19B","P19L", "P20B", "P20L"))
+#' subset <- subsetContig(combined, name = "sample", variables = c("P17B"))
 #'
-#' @param df The product of combineTCR(), combineBCR(), or expression2List().
+#' @param df The product of \code{\link{combineTCR}} or \code{\link{combineBCR}}.
 #' @param name The column header you'd like to use to subset.
 #' @param variables The values to subset by, must be in the names(df).
 

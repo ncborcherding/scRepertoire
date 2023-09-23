@@ -98,7 +98,7 @@ list.input.return <- function(df, split.by) {
         if(is.null(split.by)){
             split.by <- "cluster"
         }
-        df <- expression2List(df, split.by)
+        df <- .expression2List(df, split.by)
     } 
     df
 }
@@ -460,4 +460,24 @@ is_df_or_list_of_df <- function(x) {
     } else {
         return(FALSE)
     }
+}
+
+.expression2List <- function(sc, split.by) {
+  if (!inherits(x=sc, what ="Seurat") & 
+      !inherits(x=sc, what ="SummarizedExperiment")) {
+    stop("Use a Seurat or SCE object to convert into a list")
+  }
+  meta <- grabMeta(sc)
+  if(is.null(split.by)){
+    split.by <- "cluster"
+  }
+  unique <- str_sort(as.character(unique(meta[,split.by])), numeric = TRUE)
+  df <- NULL
+  for (i in seq_along(unique)) {
+    subset <- subset(meta, meta[,split.by] == unique[i])
+    subset <- subset(subset, !is.na(cloneType))
+    df[[i]] <- subset
+  }
+  names(df) <- unique
+  return(df)
 }

@@ -846,40 +846,6 @@ clonotypeBias(scRep_example,
               min.expand =1)
 ```
 
-
-# Working with clonotypes after clustering  
-
-For users that would like the greater ability to use the meta data in the Seurat objects to perform the analysis that scRepertoire provides, there is also the option of using the *expression2List()* function that will take the meta data and output the data as a list by cluster.
-
-```{r}
-combined2 <- expression2List(scRep_example, split.by = "seurat_clusters")
-combined3 <- expression2List(sce, split.by = "seurat_clusters")
-```
-
-## 1. clonalDiversity  
-```{r}
-clonalDiversity(combined2, cloneCall = "nt")
-clonalDiversity(combined3, cloneCall = "nt")
-```
-
-## 2. clonalHomeostasis  
-```{r}
-clonalHomeostasis(combined2, cloneCall = "nt")
-clonalHomeostasis(combined3, cloneCall = "nt")
-```
-
-## 3. clonalProportion  
-```{r}
-clonalProportion(combined2, cloneCall = "nt")
-clonalProportion(combined3, cloneCall = "nt")
-```
-
-## 4. clonalOverlap  
-```{r}
-clonalOverlap(combined2, cloneCall="aa", method="cosine")
-clonalOverlap(combined3, cloneCall="aa", method="overlap")
-```
-
 ***
 # Conclusion  
 

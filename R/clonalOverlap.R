@@ -1,11 +1,7 @@
 #' Examining the clonal overlap between groups or samples
 #'
-#' This functions allows for the calculation and visualizations of the 
-#' overlap coefficient, morisita, or jaccard index for clonotypes 
-#' using the product of combineTCR(), combineBCR() or expression2list(). 
-#' The overlap coefficient is calculated using the intersection of clonotypes 
-#' divided by the length of the smallest component. 
-#' If a matrix output for the data is preferred, set exportTable = TRUE.
+#' This functions allows for the calculation and visualizations of 
+#' various overlap metrics for clonotypes.
 #'
 #' @examples
 #' #Making combined contig data
@@ -24,9 +20,8 @@
 #' VDJC gene + CDR3 nucleotide (strict).
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL"
-#' @param method The method to calculate the overlap, 
-#'  "overlap" 
-#   "morisita", "jaccard" indices, "cosine" similarity or "raw" 
+#' @param method The method to calculate the "overlap", 
+#  "morisita", "jaccard" indices, "cosine" similarity or "raw" 
 #' for the base numbers.
 #' @param split.by If using a single-cell object, the column header 
 #' to group the new list. NULL will return clusters.

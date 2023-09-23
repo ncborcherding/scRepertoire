@@ -1,14 +1,12 @@
 #' Demonstrate the distribution of lengths filtered contigs.
 #'
-#' This function takes the output of combineTCR(), combineBCR(), or
-#' expression2List() and displays either the nucleotide (nt) or amino 
+#' This function displays either the nucleotide (nt) or amino 
 #' acid (aa) sequence length. The sequence length visualized can be 
 #' selected using the chains parameter, either the combined clonotype 
 #' (both chains) or across all single chains. Visualization can either 
 #' be a histogram or if scale = TRUE, the output will be a density plot. 
 #' Multiple sequencing runs can be group together using the 
-#' group parameter. If a matrix output for the data is preferred, set 
-#' exportTable = TRUE.
+#' group parameter.
 #'
 #' @examples
 #' #Making combined contig data
