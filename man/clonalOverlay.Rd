@@ -13,7 +13,7 @@ clonalOverlay(
 )
 }
 \arguments{
-\item{sc}{The seurat or SCE object to visualize after combineExpression().}
+\item{sc}{The single-cell object after \code{\link{combineExpression}}.}
 
 \item{reduction}{The dimensional reduction to visualize}
 

@@ -54,9 +54,7 @@ makingLodes <- function(meta2, color, alpha, facet, set.axes) {
 #'                    y.axes = c("Patient", "ident"), 
 #'                    color = "ident")
 #' 
-#' @param sc The seurat or SCE object to visualize after combineExpression(). 
-#' For SCE objects, the cluster variable must be in the meta data under 
-#' "cluster".
+#' @param sc The single-cell object to visualize after \code{\link{combineExpression}}. 
 #' @param cloneCall How to call the clonotype - VDJC gene (gene), 
 #' CDR3 nucleotide (nt) or CDR3 amino acid (aa), or 
 #' VDJC gene + CDR3 nucleotide (strict).
@@ -74,8 +72,7 @@ makingLodes <- function(meta2, color, alpha, facet, set.axes) {
 #' @importFrom dplyr %>% mutate
 #' 
 #' @export
-#' @return Alluvial ggplot comparing clonotype distribution across 
-#' selected parameters.
+#' @return Alluvial ggplot comparing clonotype distribution.
 alluvialClonotypes <- function(sc, 
                                cloneCall = "strict", 
                                chain = "both",

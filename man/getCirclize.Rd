@@ -8,7 +8,7 @@ clonotypes as a chord diagram.}
 getCirclize(sc, cloneCall = "strict", group.by = NULL, proportion = FALSE)
 }
 \arguments{
-\item{sc}{object after combineExpression().}
+\item{sc}{The single-cell object after \code{\link{combineExpression}}.}
 
 \item{cloneCall}{How to call the clonotype - VDJC gene (gene), 
 CDR3 nucleotide (nt), CDR3 amino acid (aa), or 

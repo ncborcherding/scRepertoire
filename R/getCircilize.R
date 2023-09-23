@@ -20,7 +20,7 @@
 #' circles <- getCirclize(scRep_example, group.by = "seurat_clusters")
 #' 
 #' 
-#' @param sc object after combineExpression().
+#' @param sc The single-cell object after \code{\link{combineExpression}}.
 #' @param cloneCall How to call the clonotype - VDJC gene (gene), 
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
 #' VDJC gene + CDR3 nucleotide (strict).

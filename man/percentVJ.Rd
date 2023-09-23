@@ -14,8 +14,8 @@ percentVJ(
 )
 }
 \arguments{
-\item{df}{The product of combineTCR(), combineBCR(), 
-expression2List(), or combineExpression().}
+\item{df}{The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
+\code{\link{combineExpression}}.}
 
 \item{chain}{"TRA", "TRB", "TRG", "TRG", "IGH", "IGL"}
 

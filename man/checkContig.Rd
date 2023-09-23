@@ -15,7 +15,8 @@ checkContig(
 )
 }
 \arguments{
-\item{df}{The product of combineTCR(), combineBCR(), expression2List(), or combineExpression().}
+\item{df}{The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
+\code{\link{combineExpression}}.}
 
 \item{chain}{indicate if both or a specific chain should be used - 
 e.g. "both", "TRA", "TRG", "IGH", "IGL"}

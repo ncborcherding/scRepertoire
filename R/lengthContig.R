@@ -17,7 +17,8 @@
 #'                                     "P19B","P19L", "P20B", "P20L"))
 #' lengthContig(combined, cloneCall="aa", chain = "both")
 #'
-#' @param df The product of combineTCR(), combineBCR(), expression2List(), or combineExpression().
+#' @param df The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
+#'  \code{\link{combineExpression}}.
 #' @param cloneCall How to call the clonotype - CDR3 nucleotide (nt), 
 #' CDR3 amino acid (aa).
 #' @param group.by The group header for which you would like to analyze 

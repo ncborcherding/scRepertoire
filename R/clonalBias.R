@@ -26,8 +26,8 @@
 #' n.boots = 20, min.expand = 2)
 #' }
 #' 
-#' @param df The product of combineTCR(), combineBCR(), expression2List(), 
-#' or combineExpression().
+#' @param df The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
+#'  \code{\link{combineExpression}}.
 #' @param cloneCall How to call the clonotype - VDJC gene (gene), 
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
 #' VDJC gene + CDR3 nucleotide (strict).

@@ -12,7 +12,8 @@
 #' exportClones(combined)
 #' }
 #'                                    
-#' @param df The product of combineTCR(), combineBCR(), expression2List(), or combineExpression().
+#' @param df The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
+#'  \code{\link{combineExpression}}.
 #' @param group.by The column header used for grouping.
 #' @param split.by If using a single-cell object, the column header 
 #' to group the new list. NULL will return clusters.

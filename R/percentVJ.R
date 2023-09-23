@@ -10,8 +10,8 @@
 #'                                     "P19B","P19L", "P20B", "P20L"))
 #' percentVJ(combined, chain = "TRB")
 #' 
-#' @param df The product of combineTCR(), combineBCR(), 
-#' expression2List(), or combineExpression().
+#' @param df The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
+#'  \code{\link{combineExpression}}.
 #' @param chain "TRA", "TRB", "TRG", "TRG", "IGH", "IGL"
 #' @param group.by The column header used for grouping.
 #' @param split.by If using a single-cell object, the column header 

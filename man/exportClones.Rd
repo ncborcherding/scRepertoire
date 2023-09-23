@@ -13,12 +13,17 @@ exportClones(
 )
 }
 \arguments{
-\item{df}{The product of combineTCR(), combineBCR(), expression2List(), or combineExpression().}
+\item{df}{The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
+\code{\link{combineExpression}}.}
 
 \item{group.by}{The column header used for grouping.}
 
 \item{split.by}{If using a single-cell object, the column header 
 to group the new list. NULL will return clusters.}
+
+\item{dir}{directory location to save the csv}
+
+\item{file.name}{the cav file name}
 }
 \value{
 ggplot of percentage of V and J gene pairings as a heatmap

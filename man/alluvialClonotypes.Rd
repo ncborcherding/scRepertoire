@@ -16,9 +16,7 @@ alluvialClonotypes(
 )
 }
 \arguments{
-\item{sc}{The seurat or SCE object to visualize after combineExpression(). 
-For SCE objects, the cluster variable must be in the meta data under 
-"cluster".}
+\item{sc}{The single-cell object to visualize after \code{\link{combineExpression}}.}
 
 \item{cloneCall}{How to call the clonotype - VDJC gene (gene), 
 CDR3 nucleotide (nt) or CDR3 amino acid (aa), or 
@@ -39,8 +37,7 @@ visualizations.}
 \item{palette}{Colors to use in visualization - input any hcl.pals()}
 }
 \value{
-Alluvial ggplot comparing clonotype distribution across 
-selected parameters.
+Alluvial ggplot comparing clonotype distribution.
 }
 \description{
 View the proportional contribution of clonotypes by seurat or SCE object 

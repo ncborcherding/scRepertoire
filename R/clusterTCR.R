@@ -17,7 +17,7 @@
 #' 
 #' sub_combined <- clusterTCR(combined[[2]], chain = "TRA", sequence = "aa")
 #' 
-#' @param df The product of combineTCR(), expression2List(), or combineExpression().
+#' @param df The product of \code{\link{combineTCR}} or \code{\link{combineExpression}}.
 #' @param chain The TCR to cluster - TRA, TRB, TRG, TRD
 #' @param sequence Clustering based on either "aa" or "nt"
 #' @param threshold The normalized edit distance to consider. The higher the number the more 

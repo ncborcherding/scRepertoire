@@ -16,7 +16,7 @@ occupiedscRepertoire(
 )
 }
 \arguments{
-\item{sc}{The Seurat or SCE object to visualize after combineExpression().}
+\item{sc}{The single-cell object after \code{\link{combineExpression}}.}
 
 \item{x.axis}{The variable in the meta data to graph along the x.axis}
 

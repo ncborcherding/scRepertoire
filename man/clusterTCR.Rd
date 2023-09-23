@@ -13,7 +13,7 @@ clusterTCR(
 )
 }
 \arguments{
-\item{df}{The product of combineTCR(), expression2List(), or combineExpression().}
+\item{df}{The product of \code{\link{combineTCR}} or \code{\link{combineExpression}}.}
 
 \item{chain}{The TCR to cluster - TRA, TRB, TRG, TRD}
 

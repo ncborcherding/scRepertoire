@@ -13,7 +13,8 @@
 #'                                     "P19B","P19L", "P20B", "P20L"))
 #' checkContig(combined, chain = "TRA", examine = "chain", group.by = "sample")
 #'
-#' @param df The product of combineTCR(), combineBCR(), expression2List(), or combineExpression().
+#' @param df The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
+#'  \code{\link{combineExpression}}.
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL"
 #' @param examine indicate either "chain" for sequence-based NA or 

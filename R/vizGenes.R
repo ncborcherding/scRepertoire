@@ -14,8 +14,8 @@
 #' 
 #' vizGenes(combined, gene = "V", chain = "TRB", plot = "bar", scale = TRUE)
 #'
-#' @param df The product of combineTCR(), combineBCR(), expression2List(), 
-#' or combineExpression().
+#' @param df The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
+#'  \code{\link{combineExpression}}.
 #' @param gene Which part of the immune receptor to visualize - V, D, J, C
 #' @param chain indicate the specific chain should be used - 
 #' e.g. "TRA", "TRG", "IGH", "IGL" (no both option here)

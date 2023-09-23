@@ -23,7 +23,7 @@
 #'               freq.cutpoint = 0.3, 
 #'               bins = 5) 
 #' 
-#' @param sc The seurat or SCE object to visualize after combineExpression(). 
+#' @param sc The single-cell object after \code{\link{combineExpression}}.
 #' @param reduction The dimensional reduction to visualize
 #' @param freq.cutpoint The overlay cutpoint to include, this corresponds to the 
 #' Frequency variable in the single-cell objecter

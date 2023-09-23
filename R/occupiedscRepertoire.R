@@ -24,7 +24,7 @@
 #' occupiedscRepertoire(sce, x.axis = "ident")
 #' table <- occupiedscRepertoire(sce, x.axis = "ident", exportTable = TRUE)
 #' 
-#' @param sc The Seurat or SCE object to visualize after combineExpression(). 
+#' @param sc The single-cell object after \code{\link{combineExpression}}.
 #' @param x.axis The variable in the meta data to graph along the x.axis
 #' @param label Include the number of clonotype in each category by x.axis variable
 #' @param facet.by The column header used for faceting the graph

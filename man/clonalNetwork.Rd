@@ -20,7 +20,7 @@ clonalNetwork(
 )
 }
 \arguments{
-\item{sc}{The Seurat or SingleCellExperiment (SCE) after combineExpression().}
+\item{sc}{The single-cell object after \code{\link{combineExpression}}.}
 
 \item{reduction}{The name of the dimensional reduction of the single-cell object}
 

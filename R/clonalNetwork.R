@@ -24,7 +24,7 @@
 #'               identity = "cluster")
 #' }
 #'               
-#' @param sc The Seurat or SingleCellExperiment (SCE) after combineExpression().
+#' @param sc The single-cell object after \code{\link{combineExpression}}.
 #' @param reduction The name of the dimensional reduction of the single-cell object
 #' @param identity A variable in the meta data to use for the nodes.
 #' @param filter.clones Use to select the top n clones (filter.clones = 2000) or 
