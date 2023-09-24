@@ -147,6 +147,28 @@ subset <- subsetContig(combined,
                        variables = c("P18L", "P18B"))
 ```
 
+
+## exportClones  
+
+After assigning the clonotypes by barcode, we can export the paired clonotypes using `exportClones()` to save for later use or to use in other pipelines. 
+
+**write.file**. 
+* TRUE, save the file. 
+* FALSE, return a data.frame. 
+
+**dir**  
+directory location to save the csv
+
+**file.name**  
+the cav file name
+
+```{r, eval = FALSE}
+exportClones(combined, 
+             write.file = TRUE,
+             dir = "~/Documents/MyExperiment/Sample1/"
+             file.name = "clones.csv"
+```
+ 
 ***
 
 # Visualizing Contigs

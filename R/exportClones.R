@@ -17,8 +17,9 @@
 #' @param group.by The column header used for grouping.
 #' @param split.by If using a single-cell object, the column header 
 #' to group the new list. NULL will return clusters.
+#' @param write.file TRUE, save the file, FALSE, return a data.frame
 #' @param dir directory location to save the csv
-#' @param file.name the cav file name
+#' @param file.name the csv file name
 #' @importFrom dplyr bind_rows
 #' @importFrom stringr str_split
 #' @importFrom utils write.csv
@@ -28,6 +29,7 @@
 exportClones <- function(df,
                          group.by = NULL,
                          split.by = NULL,
+                         write.file = TRUE,
                          dir = NULL, 
                          file.name = "clones.csv") {
   
@@ -50,7 +52,9 @@ exportClones <- function(df,
                     chain2_genes = genes[,2],
                     group = df[,"group"])
   mat[mat == "NA"] <- NA
-  
+  if(!write.file) {
+    return(mat)
+  }
   
   if(is.null(dir)) {
     dir <- "./"
