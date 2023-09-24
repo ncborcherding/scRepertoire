@@ -28,6 +28,7 @@
 #' @param dir The directory in which contigs are located or a list with contig elements
 #' @param format The format of the single-cell contig, currently supporting: 
 #' "10X", "AIRR", "TRUST4", "BD", and "WAT3R"
+#' @importFrom utils read.csv read.delim
 #' @export
 #' @return List of contigs for further processing in scRepertoire
 loadContigs <- function(dir, 
@@ -43,7 +44,7 @@ loadContigs <- function(dir,
         contig.files <- list.files(dir, file.pattern, recursive = TRUE, full.names = TRUE)
         if (format %in% c("10X", "WAT3R")) {
           df <- lapply(contig.files, read.csv) 
-        } else if (format %!in% c("10X", "WAT3R")) {
+        } else {
           df <- lapply(contig.files, read.delim)
         }
   #Already loaded list or data frame

@@ -39,7 +39,7 @@ scRep_example  <- get(data("scRep_example"))
 scRep_example  <- combineExpression(combined, scRep_example)
 
 #Using highlightClonotype()
-scRep_example   <- highlightClonotypes(scRep_example , cloneCall= "aa", 
+scRep_example   <- highlightClones(scRep_example , cloneCall= "aa", 
 sequence = c("CVVSDNTGGFKTIF_CASSVRRERANTGELFF"))
 
 }

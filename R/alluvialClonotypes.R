@@ -81,6 +81,7 @@ alluvialClonotypes <- function(sc,
                                alpha = NULL, 
                                facet = NULL, 
                                palette = "inferno") {
+  x <- alluvium <- stratum <- NULL
   checkSingleObject(sc)
   cloneCall <- theCall(cloneCall)
   if (length(y.axes) == 0) {
@@ -104,7 +105,8 @@ alluvialClonotypes <- function(sc,
   meta2 <- unique(na.omit(meta2[!duplicated(as.list(meta2))]))
   
   lodes <- makingLodes(meta2, color, alpha, facet, set.axes) 
-  plot <- ggplot(data = lodes, aes(x = x, stratum = stratum, 
+  plot <- ggplot(data = lodes, aes(x = x, 
+                                   stratum = stratum, 
                                    alluvium = alluvium, 
                                    label = stratum)) +
                 geom_stratum(width = 0.2) 
@@ -137,7 +139,7 @@ alluvialClonotypes <- function(sc,
   plot <- plot + 
             geom_text(stat = ggalluvial::StatStratum, infer.label = FALSE, reverse = TRUE, size = 2) + 
             scale_fill_manual(values = .colorizer(palette,  length(levels(lodes[,color])))) + 
-           scale_x_discrete(expand = c(0.025,0.025)) + 
+            scale_x_discrete(expand = c(0.025,0.025)) + 
             theme_classic() +
             theme(axis.title.x = element_blank(), 
                   axis.ticks.x = element_blank(), 

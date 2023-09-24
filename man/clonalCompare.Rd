@@ -57,7 +57,7 @@ selecting clonotypes
 }
 \description{
 This function produces an alluvial or area graph of the proportion of 
-the indicated clonotypes for all or selected samples. Clonotypes can be 
+the indicated clonotypes for all or selected samples. clonotypes can be 
 selected using the clonotypes parameter with the specific sequence of 
 interest or using the number parameter with the top n clonotypes by 
 proportion to be visualized.

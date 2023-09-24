@@ -16,7 +16,7 @@
 #' scRep_example  <- combineExpression(combined, scRep_example)
 #' 
 #' #Using highlightClonotype()
-#' scRep_example   <- highlightClonotypes(scRep_example , cloneCall= "aa", 
+#' scRep_example   <- highlightClones(scRep_example , cloneCall= "aa", 
 #' sequence = c("CVVSDNTGGFKTIF_CASSVRRERANTGELFF"))
 #' 
 #' @param sc The Seurat object to attach after \code{\link{combineExpression}}

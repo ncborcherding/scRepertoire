@@ -33,6 +33,7 @@
 #' @importFrom dplyr bind_rows
 #' @importFrom ggdendro dendro_data segment label
 #' @importFrom stats hclust optim pgamma
+#' @importFrom stats as.dist
 #' @export
 #' @return ggplot dendrogram of the clone size distribution
 #' @author Hillary Koch
@@ -46,7 +47,7 @@ clonalSizeDistribution <- function(df,
                                    split.by = NULL, 
                                    exportTable = FALSE, 
                                    palette = "inferno") {
-  xend <- yend <- mpg_div_hp <- NULL
+  x <- xend <- yend <- mpg_div_hp <- NULL
   df <- list.input.return(df, split.by)
   cloneCall <- theCall(cloneCall)
   df <- checkBlanks(df, cloneCall)

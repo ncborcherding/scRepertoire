@@ -51,7 +51,7 @@ StartracDiversity <- function(sc,
                               group.by = NULL, 
                               exportTable = FALSE, 
                               palette = "inferno") {
-    
+    majorCluster <- NULL
     cloneCall <- theCall(cloneCall)
     df <- grabMeta(sc)
     barcodes <- rownames(df)

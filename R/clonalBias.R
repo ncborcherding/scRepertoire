@@ -9,22 +9,26 @@
 #' bias of 0 matches the background subtype distribution. 
 #' 
 #' @examples
-#' \dontrun{
-#' Getting the combined contigs
-#' combined <- combineTCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), 
-#' rep(c("P", "T"), 3))
+#' #Making combined contig data
+#' combined <- combineTCR(contig_list, 
+#'                         samples = c("P17B", "P17L", "P18B", "P18L", 
+#'                                     "P19B","P19L", "P20B", "P20L"))
 #' 
 #' #Getting a sample of a Seurat object
 #' scRep_example <- get(data("scRep_example"))
-#' sce <- suppressMessages(Seurat::UpdateSeuratObject(scRep_example))
 #' 
 #' #Using combineExpresion()
-#' sce <- combineExpression(combined, sce)
+#' scRep_example <- combineExpression(combined, scRep_example)
+#' scRep_example$Patient <- substring(scRep_example$orig.ident,1,3)
 #' 
 #' #Using occupiedscRepertoire()
-#' clonotypeBias(sce, cloneCall = "CTaa", split.by = "Patient", group.by = "seurat_clusters",
-#' n.boots = 20, min.expand = 2)
-#' }
+#' clonotypeBias(scRep_example, 
+#'               cloneCall = "aa", 
+#'               split.by = "Patient", 
+#'               group.by = "seurat_clusters",
+#'               n.boots = 20, 
+#'               min.expand = 2)
+#' 
 #' 
 #' @param df The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
 #'  \code{\link{combineExpression}}.
@@ -142,7 +146,8 @@ get_clono_bias <- function(df,
                     freq_diff=double(),
                     bias=double()) 
   
-  bg <- get_clono_bg(df, split.by=split.by, 
+  bg <- get_clono_bg(df, 
+                     split.by=split.by, 
                      min.expand = min.expand, 
                      group.by = group.by, 
                      cloneCall = cloneCall)

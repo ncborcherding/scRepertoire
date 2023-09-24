@@ -35,7 +35,7 @@ checkContig <- function(df,
                          split.by = NULL, 
                          exportTable = FALSE, 
                          palette = "inferno") {
-  
+  NA.values <- NA
   x.axis <- c(split.by, group.by) #condensing for ploting.
   x.axis <- x.axis[1]
   if(is.null(x.axis)) {

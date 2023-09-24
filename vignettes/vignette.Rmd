@@ -724,12 +724,12 @@ shared.clones <- clonalNetwork(scRep_example,
 head(shared.clones)
 ```
 
-## highlightClonotypes
+## highlightClones
 
 We can also look at the clonotypes by calling specific sequences in the `highlightClonotypes()` below. In order to highlight the clonotypes, we first need to use the **cloneCall**, the type of sequence we will be using, and then the specific sequences themselves using **sequence**. Below, we can see the steps to highlight the two most prominent sequences *"CVVSDNTGGFKTIF_CASSVRRERANTGELFF"* and *"NA_CASSVRRERANTGELFF"*.
 
 ```{r}
-scRep_example <- highlightClonotypes(scRep_example, 
+scRep_example <- highlightClones(scRep_example, 
                     cloneCall= "aa", 
                     sequence = c("CVVSDNTGGFKTIF_CASSVRRERANTGELFF", 
                                  "NA_CASSVRRERANTGELFF"))

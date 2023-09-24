@@ -48,6 +48,7 @@ vizGenes <- function(df,
                      split.by = NULL,
                      exportTable = FALSE,
                      palette = "inferno") {
+  element.names <- NULL
   df <- list.input.return(df, split.by = split.by)
   if(!is.null(group.by)) {
     df <- groupList(df, group.by)

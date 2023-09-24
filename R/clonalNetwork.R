@@ -66,7 +66,7 @@ clonalNetwork <- function(sc,
                           exportTable = FALSE, 
                           palette = "inferno",
                           exportClones = FALSE) {
-    
+    to <- from <- weight <- y <- NULL
     cloneCall <- theCall(cloneCall)
     meta <- grabMeta(sc)  
     coord <- data.frame(get.coord(sc, reduction), identity = meta[,identity])
