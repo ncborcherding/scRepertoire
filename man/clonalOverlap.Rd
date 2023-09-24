@@ -22,8 +22,7 @@ clonalOverlap(
 CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
 VDJC gene + CDR3 nucleotide (strict).}
 
-\item{method}{The method to calculate the overlap, 
- "overlap" 
+\item{method}{The method to calculate the "overlap", 
 for the base numbers.}
 
 \item{chain}{indicate if both or a specific chain should be used - 
@@ -40,12 +39,8 @@ to group the new list. NULL will return clusters.}
 ggplot of the clonotypic overlap between elements of a list
 }
 \description{
-This functions allows for the calculation and visualizations of the 
-overlap coefficient, morisita, or jaccard index for clonotypes 
-using the product of combineTCR(), combineBCR() or expression2list(). 
-The overlap coefficient is calculated using the intersection of clonotypes 
-divided by the length of the smallest component. 
-If a matrix output for the data is preferred, set exportTable = TRUE.
+This functions allows for the calculation and visualizations of 
+various overlap metrics for clonotypes.
 }
 \examples{
 #Making combined contig data

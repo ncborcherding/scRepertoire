@@ -1,10 +1,10 @@
 #' Highlighting specific clonotypes in Seurat
 #'
 #' Use a specific clonotype sequence to highlight on top of the dimensional 
-#' reduction in seurat object.
+#' reduction in Seurat object.
 #'
 #' @examples
-#' #' #Getting the combined contigs
+#' #Getting the combined contigs
 #' combined <- combineTCR(contig_list, 
 #'                         samples = c("P17B", "P17L", "P18B", "P18L", 
 #'                                     "P19B","P19L", "P20B", "P20L"))
@@ -17,9 +17,9 @@
 #' 
 #' #Using highlightClonotype()
 #' scRep_example   <- highlightClonotypes(scRep_example , cloneCall= "aa", 
-#' sequence = c("CAVNGGSQGNLIF_CSAEREDTDTQYF"))
+#' sequence = c("CVVSDNTGGFKTIF_CASSVRRERANTGELFF"))
 #' 
-#' @param sc The Seurat object to attach
+#' @param sc The Seurat object to attach after \code{\link{combineExpression}}
 #' @param cloneCall How to call the clonotype - VDJC gene (gene), 
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
 #' VDJC gene + CDR3 nucleotide (strict).
@@ -27,7 +27,7 @@
 #'
 #' @export
 #' @return Seurat object with new meta data column for indicated clones
-highlightClonotypes <- function(sc, 
+highlightClones <- function(sc, 
                                 cloneCall = c("gene", "nt", "aa", "strict"), 
                                 sequence = NULL){
   if (!inherits(x=sc, what ="Seurat")) {

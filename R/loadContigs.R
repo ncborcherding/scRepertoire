@@ -50,28 +50,22 @@ loadContigs <- function(dir,
   } else if (inherits(x=dir, what ="list") | inherits(x=dir, what ="data.frame")) {
     df <- checkList(dir)
   }
-        
-        if (format %in% c("10X", "WAT3R")) {
-            if (format =="WAT3R") {
-                df <- parseWAT3R(df)
-            } else {
-                df <- parse10x(df)
-            }
-        } else {
-            if (format =="TRUST4") {
-                df <- parseTRUST4(df) 
-            } else if (format == "AIRR") {
-                df <- parseAIRR(df)
-            } else {
-              df <- parseBD(df)
-            }
-        }
-    return(df)
+  
+  loadFunc <- switch(method,
+                      "10X" = .parse10x,
+                      "AIRR" = .parseAIRR,
+                      "TRUST4" = .parseTRUST4,
+                      "BD" = .parseBD,
+                      "WAT3R"  = .parseWAT3R,
+                      stop("Invalid format provided"))
+  
+  df <- loadFunc(df)
+  return(df)
 }
 
 #Formats TRUST4 data
 #' @importFrom stringr str_split
-parseTRUST4 <- function(df) {
+.parseTRUST4 <- function(df) {
     for (i in seq_along(df)) {
         colnames(df[[i]])[1] <- "barcode"
         df[[i]][df[[i]] == "*"] <- NA
@@ -97,13 +91,13 @@ parseTRUST4 <- function(df) {
         data2[data2 == ""] <- NA
         df[[i]] <- data2
     }
-    df <- chain.parser(df)
+    df <- .chain.parser(df)
     return(df)
 }
 
 #Formats wat3r data
 #' @author Kyle Romine, Nick Borcherding
-parseWAT3R <- function(df) {
+.parseWAT3R <- function(df) {
     for (i in seq_along(df)) {
         colnames(df[[i]])[1] <- "barcode"
         df[[i]][df[[i]] == ""] <- NA
@@ -131,7 +125,7 @@ parseWAT3R <- function(df) {
 }
 
 #Formats AIRR data
-parseAIRR <- function(df) {
+.parseAIRR <- function(df) {
     for (i in seq_along(df)) {
         df[[i]] <- df[[i]][,c("cell_id", "locus", "consensus_count", "v_call", "d_call", "j_call", "c_call", "junction", "junction_aa")]
         colnames(df[[i]]) <- c("barcode", "chain", "reads", "v_gene", "d_gene", "j_gene", "c_gene", "cdr3_nt", "cdr3")
@@ -141,7 +135,7 @@ parseAIRR <- function(df) {
 }
 
 #Loads 10x data
-parse10x <- function(df) {
+.parse10x <- function(df) {
     for (i in seq_along(df)) {
         df[[i]] <- subset(df[[i]], chain != "Multi")
         df[[i]] <- subset(df[[i]], productive %in% c(TRUE, "TRUE", "True", "true"))
@@ -156,7 +150,7 @@ parse10x <- function(df) {
     return(df)
 }
 #Loads BD AIRR
-parseBD <- function(df) {
+.parseBD <- function(df) {
   for (i in seq_along(df)) {
     df[[i]] <- df[[i]][,c(1,2,20,25,30, 35, 48,49,4)]
     colnames(df[[i]]) <- c("barcode", "chain", "v_gene", "d_gene", "j_gene", "c_gene", "cdr3_nt", "cdr3", "reads")
@@ -165,7 +159,7 @@ parseBD <- function(df) {
   return(df)
 }
 #Grabs the chain info from v_gene
-chain.parser <- function(df) {
+.chain.parser <- function(df) {
   for (i in seq_along(df)) {
     df[[i]]$chain <- substr(df[[i]][,"v_gene"],1,3)
   }

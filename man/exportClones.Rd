@@ -8,6 +8,7 @@ exportClones(
   df,
   group.by = NULL,
   split.by = NULL,
+  write.file = TRUE,
   dir = NULL,
   file.name = "clones.csv"
 )
@@ -21,9 +22,11 @@ exportClones(
 \item{split.by}{If using a single-cell object, the column header 
 to group the new list. NULL will return clusters.}
 
+\item{write.file}{TRUE, save the file, FALSE, return a data.frame}
+
 \item{dir}{directory location to save the csv}
 
-\item{file.name}{the cav file name}
+\item{file.name}{the csv file name}
 }
 \value{
 ggplot of percentage of V and J gene pairings as a heatmap

@@ -2,7 +2,7 @@
 % Please edit documentation in R/clonalQuant.R
 \name{clonalQuant}
 \alias{clonalQuant}
-\title{Quantify the unique clonotypes in the filtered contigs.}
+\title{Quantify the unique clonotypes}
 \usage{
 clonalQuant(
   df,
@@ -44,12 +44,9 @@ to group the new list. NULL will return clusters.}
 ggplot of the total or relative unique clonotypes
 }
 \description{
-This function takes the output from combineTCR(), combineBCR(), or 
-expression2List() and quantifies unique clonotypes. The unique clonotypes 
+This function quantifies unique clonotypes. The unique clonotypes 
 can be either reported as a raw output or scaled to the total number of 
-clonotypes recovered using the scale parameter. Multiple sequencing 
-runs can be group together using the group parameter. If a matrix output 
-for the data is preferred, set exportTable = TRUE.
+clonotypes recovered using the scale parameter.
 }
 \examples{
 #Making combined contig data

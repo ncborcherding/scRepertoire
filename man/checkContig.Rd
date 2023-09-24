@@ -37,11 +37,10 @@ to group the new list. NULL will return clusters.}
 ggplot of the percentage of NA values
 }
 \description{
-This function takes the output from combineTCR(), combineBCR(), 
-combineExpression() or expression2List() and quantifies the 
-percent of NA values in either the sequence information of 
-the VDJC gene usage. If a data frame output for the raw numbers 
-and percentage of NAs are preferred, set exportTable = TRUE.
+This function quantifies the percent of NA values in either the 
+sequence information of the VDJC gene usage. If a data frame 
+output for the raw numbers and percentage of NAs are preferred, 
+set exportTable = TRUE.
 }
 \examples{
 #Making combined contig data

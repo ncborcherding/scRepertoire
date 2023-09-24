@@ -1,4 +1,4 @@
-#' Quantify the unique clonotypes in the filtered contigs.
+#' Quantify the unique clonotypes
 #'
 #' This function quantifies unique clonotypes. The unique clonotypes 
 #' can be either reported as a raw output or scaled to the total number of 
