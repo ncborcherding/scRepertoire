@@ -12,6 +12,7 @@ NEW FEATURES
 * Changed scatterClonotypes to clonalScatter
 * Changed quantContig to clonalQuant
 * Changed highlightClonotypes to highlightClones
+* Changed lengthContigs to clonalLength
 
 UNDERLYING CHANGES
 

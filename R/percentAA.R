@@ -30,8 +30,7 @@ percentAA <- function(df,
                         aa.length = 20,
                         exportTable = FALSE, 
                         palette = "inferno")  {
-  cloneCall <- theCall(cloneCall)
-  df <- .data.wrangle(df, split.by, cloneCall, chain)
+  df <- .data.wrangle(df, split.by, "CTaa", chain)
   res.list <- list()
   for (i in seq_along(df)) {
     strings <- df[[i]][,"CTaa"]

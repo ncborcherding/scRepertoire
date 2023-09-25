@@ -30,8 +30,7 @@ percentVJ <- function(df,
                          split.by = NULL,
                          exportTable = FALSE, 
                          palette = "inferno") {
-  cloneCall <- theCall(cloneCall)
-  df <- .data.wrangle(df, split.by, cloneCall, chain)
+  df <- .data.wrangle(df, split.by, "CTgene", chain)
   
   if(chain %in% c("TRA", "TRG", "IGL")) {
     positions <- c(1,2)

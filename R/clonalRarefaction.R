@@ -24,7 +24,6 @@
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL"
 #' @param group.by Variable in which to group the diversity calculation
-#' @param x.axis Additional variable in which to split the x.axis
 #' @param split.by If using a single-cell object, the column header 
 #' to group the new list. NULL will return clusters.
 #' @param plot.type sample-size-based rarefaction/extrapolation curve (\code{type = 1}); 
@@ -34,6 +33,7 @@
 #' 
 #' @importFrom iNEXT iNEXT ggiNEXT
 #' @import ggplot2
+#' @export
 clonalRarefaction <- function(df,
                               cloneCall = "strict", 
                               chain = "both", 

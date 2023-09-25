@@ -33,8 +33,7 @@ percentGenes <- function(df,
                          exportTable = FALSE, 
                          palette = "inferno") {
   
-  cloneCall <- theCall(cloneCall)
-  df <- .data.wrangle(df, split.by, cloneCall, chain)
+  df <- .data.wrangle(df, split.by, "CTgene", chain)
   #Parsing gene input
   if (gene %in% c("Vgene", "V", "v", "v.gene")) {
     gene.loci <- paste0(chain, "V")

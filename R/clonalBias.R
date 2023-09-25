@@ -22,7 +22,7 @@
 #' scRep_example$Patient <- substring(scRep_example$orig.ident,1,3)
 #' 
 #' #Using occupiedscRepertoire()
-#' clonotypeBias(scRep_example, 
+#' clonalBias(scRep_example, 
 #'               cloneCall = "aa", 
 #'               split.by = "Patient", 
 #'               group.by = "seurat_clusters",
@@ -45,7 +45,7 @@
 #' @importFrom stringr str_sort
 #' @export
 #' @return Returns ggplot of the clonotype bias
-clonotypeBias <- function(df, 
+clonalBias <- function(df, 
                           cloneCall="strict", 
                           split.by=NULL, 
                           group.by=NULL, 
@@ -103,7 +103,7 @@ get_clono_bg <- function(df,
                          group.by=group.by, 
                          cloneCall=cloneCall, 
                          min.expand=10) {
-  df <- .data.wrangle(df, split.by, cloneCall, chain)
+  df <- .data.wrangle(df, split.by, cloneCall, "both")
   
   bg <- list()
   for (s in seq_along(df)) {
