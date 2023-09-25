@@ -57,10 +57,8 @@ clonalCompare <- function(df,
   if(!is.null(top.clones) & !is.null(clonotypes)) {
     top.clones <- NULL
   }
-  
-  df <- list.input.return(df, split.by)
   cloneCall <- theCall(cloneCall)
-  df <- checkBlanks(df, cloneCall)
+  df <- .data.wrangle(df, split.by, cloneCall, chain)
   Con.df <- NULL
   
   #Loop through the list to get a proportional summary

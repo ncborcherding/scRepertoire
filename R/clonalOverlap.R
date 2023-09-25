@@ -44,9 +44,8 @@ clonalOverlap <- function(df,
     } else {
       return_type = "unique"
     }
-    df <- list.input.return(df, split.by)
     cloneCall <- theCall(cloneCall)
-    df <- checkBlanks(df, cloneCall)
+    df <- .data.wrangle(df, split.by, cloneCall, chain)
     df <- df[order(names(df))]
     values <- str_sort(as.character(unique(names(df))), numeric = TRUE)
     df <- df[quiet(dput(values))]

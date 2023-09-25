@@ -33,11 +33,8 @@ percentGenes <- function(df,
                          exportTable = FALSE, 
                          palette = "inferno") {
   
-  df <- list.input.return(df, split.by)
-  df <- checkBlanks(df, "CTgene")
-  for(i in seq_along(df)) {
-    df[[i]] <- off.the.chain(df[[i]], chain, "CTgene")
-  }
+  cloneCall <- theCall(cloneCall)
+  df <- .data.wrangle(df, split.by, cloneCall, chain)
   #Parsing gene input
   if (gene %in% c("Vgene", "V", "v", "v.gene")) {
     gene.loci <- paste0(chain, "V")

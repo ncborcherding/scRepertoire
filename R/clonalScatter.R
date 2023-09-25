@@ -52,8 +52,8 @@ clonalScatter <- function(df,
   if (!is.null(seed)) {
     set.seed(seed)
   }
-  df <- list.input.return(df, split.by)
   cloneCall <- theCall(cloneCall)
+  df <- .data.wrangle(df, split.by, cloneCall, chain)
   axes <- which(names(df) %in% c(x.axis, y.axis, dot.size))
   if (chain != "both") {
     for (i in axes) {

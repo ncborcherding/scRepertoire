@@ -56,14 +56,8 @@ clonalDiversity <- function(df,
   if(return.boots) {
     exportTable <- TRUE
   }
-  df <- list.input.return(df, split.by)
   cloneCall <- theCall(cloneCall)
-  df <- checkBlanks(df, cloneCall)
-  for (i in seq_along(df)) {
-    if (chain != "both") {
-      df[[i]] <- off.the.chain(df[[i]], chain, cloneCall)
-    }
-  }
+  df <- .data.wrangle(df, split.by, cloneCall, chain)
   mat <- NULL
   sample <- c()
   if (!is.null(group.by) || !is.null(x.axis)) {

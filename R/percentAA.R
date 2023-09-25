@@ -30,11 +30,8 @@ percentAA <- function(df,
                         aa.length = 20,
                         exportTable = FALSE, 
                         palette = "inferno")  {
-  df <- list.input.return(df, split.by)
-  df <- checkBlanks(df, "CTaa")
-  for(i in seq_along(df)) {
-      df[[i]] <- off.the.chain(df[[i]], chain, "CTaa")
-  }
+  cloneCall <- theCall(cloneCall)
+  df <- .data.wrangle(df, split.by, cloneCall, chain)
   res.list <- list()
   for (i in seq_along(df)) {
     strings <- df[[i]][,"CTaa"]

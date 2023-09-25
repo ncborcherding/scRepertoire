@@ -52,6 +52,7 @@ clonotypeBias <- function(df,
                           n.boots = 20,
                           min.expand=10,
                           exportTable = FALSE) {
+  cloneCall <- theCall(cloneCall)
   
   bias <- get_clono_bias(df, 
                          split.by = split.by, 
@@ -102,15 +103,7 @@ get_clono_bg <- function(df,
                          group.by=group.by, 
                          cloneCall=cloneCall, 
                          min.expand=10) {
-  if (!is.null(split.by)) {
-    df <- list.input.return(df, split.by)
-  } else {
-    if (inherits(x=df, what ="Seurat") | inherits(x=df, what ="SummarizedExperiment")) {
-      df <- list("Object" = grabMeta(df))
-    } 
-  }
-  cloneCall <- theCall(cloneCall)
-  df <- checkBlanks(df, cloneCall)
+  df <- .data.wrangle(df, split.by, cloneCall, chain)
   
   bg <- list()
   for (s in seq_along(df)) {

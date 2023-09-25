@@ -33,8 +33,7 @@ exportClones <- function(df,
                          dir = NULL, 
                          file.name = "clones.csv") {
   
-  df <- list.input.return(df, split.by)
-  df <- checkBlanks(df, "CTgene")
+  df <- .data.wrangle(df, split.by, "CTgene", "both")
 
   df <- bind_rows(df, .id = "group")
   

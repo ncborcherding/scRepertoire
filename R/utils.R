@@ -481,3 +481,14 @@ is_df_or_list_of_df <- function(x) {
   names(df) <- unique
   return(df)
 }
+
+.data.wrangle <- function(df, split.by, cloneCall, chain) {
+  df <- list.input.return(df, split.by)
+  df <- checkBlanks(df, cloneCall)
+  for (i in seq_along(df)) {
+    if (chain != "both") {
+      df[[i]] <- off.the.chain(df[[i]], chain, cloneCall)
+    }
+  }
+  return(df)
+}
