@@ -503,9 +503,9 @@ clonalHomeostasis(combined,
 
 Like clonal space homeostasis above, clonal proportion places clones into separate bins. The key difference is that instead of looking at the relative proportion of the clone to the total, the `clonalProportion()` function will rank the clones by total number and place them into bins. 
 
-The **split** represents the ranking of clonotypes by copy or frequency of occurrence, meaning 1:10 are the top 10 clonotypes in each sample. The default bins are under the **split** variable in the function and can be adjusted, but they are as follows at baseline. 
+The **clonal.split** represents the ranking of clonotypes by copy or frequency of occurrence, meaning 1:10 are the top 10 clonotypes in each sample. The default bins are under the **clonal.split** variable in the function and can be adjusted, but they are as follows at baseline. 
  
-**split**  
+**clonal.split**  
 * 10  
 * 100  
 * 1000  
@@ -843,8 +843,8 @@ The nucleotide or amino acid sequences of the chains can be used to cluster clon
 
 Clonotype cluster by distance:  
 
-*  TCRA:LD.1  [chain:] + :LD + [number]
-*  TCRA.123 [chain:] + [number]
+*  TCRA:LD.1  [chain:] + :LD + [number]  
+*  TCRA.123 [chain:] + [number]  
 
 LD denotes if the cluster was called using the normalized Levenshtein distance.
 
@@ -861,7 +861,7 @@ sub_combined <- clusterTCR(combined[[2]],
 
 ## StartracDiversity
 
-From the excellent work by Lei Zhang, et al. in [Lineage tracking reveals dynamic relationships of T cells in colorectal cancer](https://www.nature.com/articles/s41586-018-0694-x), the authors introduce new methods for looking at clonotypes by cellular origins and cluster identification. Their [startrac](https://github.com/Japrin/STARTRAC) software has been incorporated into scRepertoire and please cite their excellent work. 
+From the excellent work by Lei Zhang, et al. in [Lineage tracking reveals dynamic relationships of T cells in colorectal cancer](https://www.nature.com/articles/s41586-018-0694-x), the authors introduce new methods for looking at clonotypes by cellular origins and cluster identification. Their [startrac](https://github.com/Japrin/STARTRAC) software has been adapted to work with scRepertoire and please cite their excellent work. 
 
 In order to use the ```StartracDiversity()``` function, you will need to include the product of the ```combinedExpression()``` function. The second requirement is a column header in the meta data of the Seurat object that has tissue of origin. In the example data,**type** corresponds to the column "Type", which includes the "P" and "T" classifiers. The indices can be subsetted for a specific patient or examined overall using the **by** variable. Importantly, the function uses only the strict definition of a clonotype of the VDJC genes and the CDR3 nucleotide sequence. 
 
@@ -886,13 +886,13 @@ A new metric proposed by [Massimo et al](https://pubmed.ncbi.nlm.nih.gov/3582969
 **group.by**  
 * The compartment/variable used for the purpose of the comparison  
 
-```{r}
-clonotypeBias(scRep_example, 
-              cloneCall = "aa", 
-              split.by = "Patient", 
-              group.by = "seurat_clusters",
-              n.boots = 20, 
-              min.expand =1)
+```{r, message = FALSE}
+clonalBias(scRep_example, 
+           cloneCall = "aa", 
+           split.by = "Patient", 
+           group.by = "seurat_clusters",
+           n.boots = 10, 
+           min.expand =1)
 ```
 
 ***
@@ -900,7 +900,7 @@ clonotypeBias(scRep_example,
 
 This has been a general overview of the capabilities of scRepertoire from the initial processing and visualization to attach to the mRNA expression values in a single-cell object. If you have any questions, comments, or suggestions, please visit the GitHub repository or [email me](mailto:ncborch@gmail.com).
 
-###Session Info
+### Session Info
 
 ```{r}
 sessionInfo()

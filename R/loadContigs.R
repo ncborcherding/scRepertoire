@@ -52,7 +52,7 @@ loadContigs <- function(dir,
     df <- checkList(dir)
   }
   
-  loadFunc <- switch(method,
+  loadFunc <- switch(format,
                       "10X" = .parse10x,
                       "AIRR" = .parseAIRR,
                       "TRUST4" = .parseTRUST4,

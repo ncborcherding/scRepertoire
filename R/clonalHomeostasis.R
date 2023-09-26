@@ -44,22 +44,20 @@ clonalHomeostasis <- function(df,
                               exportTable = FALSE, 
                               palette = "inferno") {
     cloneTypes <- c(None = 0, cloneTypes)
-    df <- list.input.return(df, split.by = split.by)
+    
     cloneCall <- theCall(cloneCall)
-    df <- checkList(df)
-    df <- checkBlanks(df, cloneCall)
+    df <- .data.wrangle(df, split.by, cloneCall, chain)
+    
     if(!is.null(group.by)) {
       df <- groupList(df, group.by)
     }
-
+    
+    #Generating data matrix to store value
     mat <- matrix(0, length(df), length(cloneTypes) - 1, 
                 dimnames = list(names(df), 
                 names(cloneTypes)[-1]))
-    if (chain != "both") {
-      for (x in seq_along(df)) {
-        df[[x]] <- off.the.chain(df[[x]], chain, cloneCall)
-      }
-    }
+
+    #Assigning the clonal grouping
     df <- lapply(df, '[[', cloneCall)
     df <- lapply(df, na.omit)
     fun <- function(x) { table(x)/length(x) }
@@ -70,7 +68,11 @@ clonalHomeostasis <- function(df,
         colnames(mat)[i-1] <- paste0(names(cloneTypes[i]), ' (', 
                                     cloneTypes[i-1], ' < X <= ', 
                                     cloneTypes[i], ')') }
-    if (exportTable == TRUE) { return(mat) }
+    if (exportTable) { 
+      return(mat) 
+    }
+    
+    #Plotting
     mat_melt <- melt(mat)
     col <- length(unique(mat_melt$Var2))
     plot <- ggplot(mat_melt, aes(x=as.factor(Var1), y=value, fill=Var2)) +

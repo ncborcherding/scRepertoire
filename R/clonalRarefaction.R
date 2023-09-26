@@ -30,6 +30,9 @@
 #' sample completeness curve (\code{type = 2}); coverage-based rarefaction/extrapolation curve (\code{type = 3}).   
 #' @param hill.numbers The Hill numbers to be plotted out (0 - species richness, 1 - Shannon, 2 - Simpson)
 #' @param n.boots The number of bootstraps to downsample in order to get mean diversity
+#' @param exportTable Exports a table of the data into the global 
+#' environment in addition to the visualization
+#' @param palette Colors to use in visualization - input any hcl.pals()
 #' 
 #' @importFrom iNEXT iNEXT ggiNEXT
 #' @import ggplot2
