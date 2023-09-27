@@ -30,7 +30,7 @@ off.the.chain <- function(dat, chain, cloneCall) {
 
 
 #Remove list elements that contain all NA values
-checkBlanks <- function(df, cloneCall) {
+.checkBlanks <- function(df, cloneCall) {
   count <- NULL
     for (i in seq_along(df)) {
         if (length(df[[i]][,cloneCall]) == length(which(is.na(df[[i]][,cloneCall]))) | 
@@ -224,8 +224,9 @@ filteringNA <- function(sc) {
 #Organizing list of contigs for visualization
 parseContigs <- function(df, i, names, cloneCall) {
     data <- df[[i]]
-    data1 <- data %>% group_by(data[,cloneCall]) %>%
-        summarise(Abundance=n())
+    data1 <- data %>% 
+              group_by(data[,cloneCall]) %>%
+              summarise(Abundance=n())
     colnames(data1)[1] <- cloneCall
     data1$values <- names[i]
     return(data1)
@@ -238,19 +239,22 @@ quiet <- function(x) {
     invisible(force(x))
 }
 
+
 # This is to help sort the type of clonotype data to use
 theCall <- function(x) {
-    if (x %in% c("CTnt", "CTgene", "CTaa", "CTstrict")) {
-      x <- x
-    }else if (x == "gene" | x == "genes") {
-        x <- "CTgene"
-    } else if(x == "nt" | x == "nucleotide") {
-        x <- "CTnt"
-    } else if (x == "aa" | x == "amino") {
-        x <- "CTaa"
-    } else if (x == "gene+nt" | x == "strict") {
-        x <- "CTstrict"
-    }
+    x <- switch(x,
+                "gene" = "CTgene",
+                "genes" = "CTgene", 
+                "CTgene" = "CTgene",
+                "nt" = "CTnt",
+                "nucleotides" = "CTnt",
+                "CTnt" = "CTnt",
+                "aa" = "CTaa", 
+                "amino" = "CTaa", 
+                "CTaa" = "CTaa", 
+                "strict" = "CTstrict", 
+                "gene+nt" = "CTstrict",
+                "CTstrict" = "CTstrict")
     return(x)
 }
 
@@ -412,7 +416,8 @@ makeGenes <- function(cellType, data2, chain1, chain2) {
     data2
 }
 
-short.check <- function(df, cloneCall) {
+#Getting the minimum repertoire size for diversity boots
+.short.check <- function(df, cloneCall) {
   min <- c()
   for (x in seq_along(df)) {
     min.tmp <- length(which(!is.na(unique(df[[x]][,cloneCall]))))
@@ -422,7 +427,7 @@ short.check <- function(df, cloneCall) {
   return(min)
 }
 
-select.gene <- function(df, chain, gene, label) {
+.select.gene <- function(df, chain, gene, label) {
   if (chain %in% c("TRB", "TRD", "IGH")) {
     gene <- unname(c(V = 1, D = 2, J = 3, C = 4)[gene])
   } else {
@@ -462,6 +467,7 @@ is_df_or_list_of_df <- function(x) {
     }
 }
 
+#Pulling meta data 
 .expression2List <- function(sc, split.by) {
   if (!inherits(x=sc, what ="Seurat") & 
       !inherits(x=sc, what ="SummarizedExperiment")) {
@@ -482,9 +488,10 @@ is_df_or_list_of_df <- function(x) {
   return(df)
 }
 
+#Making lists for single-cell object, check blanks and apply chain filter
 .data.wrangle <- function(df, split.by, cloneCall, chain) {
   df <- list.input.return(df, split.by)
-  df <- checkBlanks(df, cloneCall)
+  df <- .checkBlanks(df, cloneCall)
   for (i in seq_along(df)) {
     if (chain != "both") {
       df[[i]] <- off.the.chain(df[[i]], chain, cloneCall)

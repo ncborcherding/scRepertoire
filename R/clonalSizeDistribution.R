@@ -48,9 +48,9 @@ clonalSizeDistribution <- function(df,
                                    exportTable = FALSE, 
                                    palette = "inferno") {
   x <- xend <- yend <- mpg_div_hp <- NULL
-  df <- list.input.return(df, split.by)
   cloneCall <- theCall(cloneCall)
-  df <- checkBlanks(df, cloneCall)
+  df <- .data.wrangle(df, split.by, cloneCall, chain)
+  
   if(!is.null(group.by)) {
     df <- groupList(df, group.by)
   }

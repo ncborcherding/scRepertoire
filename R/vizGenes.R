@@ -61,11 +61,11 @@ vizGenes <- function(df,
     if (y.axis %!in% c("V", "D", "J", "C")) {
       y.axis <- "element.names"
     } else {
-      df <- select.gene(df, chain, y.axis)
+      df <- .select.gene(df, chain, y.axis)
       colnames(df)[ncol(df)] <- y.axis
     }
   }
-  df <- select.gene(df, chain, gene)
+  df <- .select.gene(df, chain, gene)
   df <- subset(df, !is.na(df[,ncol(df)])) #remove NA values
   df <- subset(df, df[,ncol(df)] != "NA") #remove values that are character "NA"
   df <- subset(df, df[,ncol(df)] != "") #remove rows with non genes

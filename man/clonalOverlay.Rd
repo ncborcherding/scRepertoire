@@ -9,7 +9,7 @@ clonalOverlay(
   reduction = NULL,
   freq.cutpoint = 30,
   bins = 25,
-  facet = NULL
+  facet.by = NULL
 )
 }
 \arguments{
@@ -17,12 +17,12 @@ clonalOverlay(
 
 \item{reduction}{The dimensional reduction to visualize}
 
-\item{freq.cutpoint}{The overlay cutpoint to include, this corresponds to the 
-Frequency variable in the single-cell objecter}
+\item{freq.cutpoint}{The overlay cut point to include, this corresponds to the 
+Frequency variable in the single-cell object}
 
 \item{bins}{The number of contours to the overlay}
 
-\item{facet}{meta data variable to facet the comparison}
+\item{facet.by}{meta data variable to facet the comparison}
 }
 \value{
 ggplot object

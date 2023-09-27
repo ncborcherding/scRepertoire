@@ -47,14 +47,9 @@ abundanceContig <- function(df,
   Con.df <- NULL
   xlab <- "Abundance"
   cloneCall <- theCall(cloneCall)
-  df <- checkBlanks(df, cloneCall)
-  names <- names(df)
-  for (i in seq_along(df)) {
-    if (chain != "both") {
-      df[[i]] <- off.the.chain(df[[i]], chain, cloneCall)
-    }
-  }
+  df <- .data.wrangle(df, split.by, cloneCall, chain)
   
+  names <- names(df)
   if (!is.null(group.by)) {
     for (i in seq_along(df)) {
       data1 <- parseContigs(df, i, names, cloneCall)

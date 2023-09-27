@@ -41,14 +41,9 @@ clonalQuant <- function(df,
   if (length(group.by) > 1) { 
     stop("Only one item in the group.by variable can be listed.")
   }
-  df <- list.input.return(df, split.by)
+ 
   cloneCall <- theCall(cloneCall)
-  df <- checkBlanks(df, cloneCall)
-  if (chain != "both") {
-    for(i in seq_along(df)) {
-      df[[i]] <- off.the.chain(df[[i]], chain, cloneCall)
-    }
-  }
+  df <- .data.wrangle(df, split.by, cloneCall, chain)
   
   #Set up mat to store and selecting graph parameters
   if (!is.null(group.by)) {

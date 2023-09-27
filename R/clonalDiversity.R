@@ -66,7 +66,7 @@ clonalDiversity <- function(df,
     #group.element.uniq <- unique(df$group.element)
     df <- split(df, f = df[,"group.element"])
   }
-  min <- short.check(df, cloneCall)
+  min <- .short.check(df, cloneCall)
   for (i in seq_along(df)) {
       data <- as.data.frame(table(df[[i]][,cloneCall]))
       mat_a <- NULL

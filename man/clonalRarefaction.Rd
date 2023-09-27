@@ -39,6 +39,11 @@ sample completeness curve (\code{type = 2}); coverage-based rarefaction/extrapol
 \item{hill.numbers}{The Hill numbers to be plotted out (0 - species richness, 1 - Shannon, 2 - Simpson)}
 
 \item{n.boots}{The number of bootstraps to downsample in order to get mean diversity}
+
+\item{exportTable}{Exports a table of the data into the global 
+environment in addition to the visualization}
+
+\item{palette}{Colors to use in visualization - input any hcl.pals()}
 }
 \description{
 This functions uses the Hill numbers of order q: species richness (q = 0), 

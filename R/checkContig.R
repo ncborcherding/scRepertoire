@@ -46,12 +46,11 @@ checkContig <- function(df,
   } else {
     genes <- c("v_gene", "d_genes", "j_gene", "c_gene")
   }
-  df <- list.input.return(df,split.by)
-  df <- checkBlanks(df, "CTaa")
+  df <- .data.wrangle(df, split.by, "CTgene", chain)
+  
   for (i in seq_along(df)) {
     df[[i]] <- off.the.chain(df[[i]], chain, "CTaa")
     df[[i]] <- off.the.chain(df[[i]], chain, "CTnt")
-    df[[i]] <- off.the.chain(df[[i]], chain, "CTgene")
     df[[i]][df[[i]] == "NA"] <- NA
   }
   

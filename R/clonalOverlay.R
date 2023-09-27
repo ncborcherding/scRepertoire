@@ -25,10 +25,10 @@
 #' 
 #' @param sc The single-cell object after \code{\link{combineExpression}}.
 #' @param reduction The dimensional reduction to visualize
-#' @param freq.cutpoint The overlay cutpoint to include, this corresponds to the 
-#' Frequency variable in the single-cell objecter
+#' @param freq.cutpoint The overlay cut point to include, this corresponds to the 
+#' Frequency variable in the single-cell object
 #' @param bins The number of contours to the overlay
-#' @param facet meta data variable to facet the comparison
+#' @param facet.by meta data variable to facet the comparison
 #' 
 #' @import ggplot2
 #' @importFrom SeuratObject Embeddings
@@ -41,23 +41,29 @@ clonalOverlay <- function(sc,
                           reduction = NULL, 
                           freq.cutpoint = 30, 
                           bins = 25, 
-                          facet = NULL) {
+                          facet.by = NULL) {
   checkSingleObject(sc)
+
+  #Forming the data frame to plot
   tmp <- data.frame(grabMeta(sc), identity = sc@active.ident, get.coord(sc, reduction))
-  if (!is.null(facet)) {
-    facet <- tmp[,facet]
-    tmp <- data.frame(facet, tmp)
+  #Add facet variable if present
+  if (!is.null(facet.by)) { 
+    facet.by <- tmp[,facet.by]
+    tmp <- data.frame(facet.by, tmp)
   }
   tmp$include <- ifelse(tmp$Frequency >= freq.cutpoint, "Yes", NA)
   tmp2 <- subset(tmp, include == "Yes")
+  
+  #Plotting
   plot <- ggplot(tmp2, mapping = aes(x=tmp2[,(ncol(tmp2)-2)], y = tmp2[,(ncol(tmp2)-1)])) +
     geom_point(tmp, mapping = aes(x=as.numeric(tmp[,(ncol(tmp)-2)]), y = as.numeric(tmp[,(ncol(tmp)-1)]), color = tmp[,"identity"]), size= 0.5) +
     geom_density_2d(color = "black", lwd=0.25, bins = bins) + 
     theme_classic() +
     labs(color = "Active Identity") +
-    xlab("Dimension 1") + ylab("Dimension 2")
-  if (!is.null(facet)) {
-    plot <- plot + facet_wrap(~facet) 
+    xlab("Dimension 1") + 
+    ylab("Dimension 2")
+  if (!is.null(facet.by)) {
+    plot <- plot + facet_wrap(~facet.by) 
   }
-  plot
+  return(plot)
 }

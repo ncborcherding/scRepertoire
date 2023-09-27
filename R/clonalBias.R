@@ -152,7 +152,7 @@ get_clono_bias <- function(df,
     } 
   }
   cloneCall <- theCall(cloneCall)
-  df <- checkBlanks(df, cloneCall)
+  df <- .checkBlanks(df, cloneCall)
   
   for (s in names(bg)) {
     
