@@ -49,8 +49,8 @@ checkContig <- function(df,
   df <- .data.wrangle(df, split.by, "CTgene", chain)
   
   for (i in seq_along(df)) {
-    df[[i]] <- off.the.chain(df[[i]], chain, "CTaa")
-    df[[i]] <- off.the.chain(df[[i]], chain, "CTnt")
+    df[[i]] <- .off.the.chain(df[[i]], chain, "CTaa")
+    df[[i]] <- .off.the.chain(df[[i]], chain, "CTnt")
     df[[i]][df[[i]] == "NA"] <- NA
   }
   

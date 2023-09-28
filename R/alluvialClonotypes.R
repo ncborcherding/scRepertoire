@@ -82,14 +82,14 @@ alluvialClonotypes <- function(sc,
                                facet = NULL, 
                                palette = "inferno") {
   x <- alluvium <- stratum <- NULL
-  checkSingleObject(sc)
-  cloneCall <- theCall(cloneCall)
+  .checkSingleObject(sc)
+  cloneCall <- .theCall(cloneCall)
   if (length(y.axes) == 0) {
     stop("Make sure you have selected the variable(s) to visualize") 
   }
-  meta <- grabMeta(sc)
+  meta <- .grabMeta(sc)
   if (chain != "both") {
-    meta <- off.the.chain(meta, chain, cloneCall)
+    meta <- .off.the.chain(meta, chain, cloneCall)
   }
   meta$barcodes <- rownames(meta)
   check <- colnames(meta) == color

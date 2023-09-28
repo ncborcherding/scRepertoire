@@ -42,10 +42,10 @@ clonalOverlay <- function(sc,
                           freq.cutpoint = 30, 
                           bins = 25, 
                           facet.by = NULL) {
-  checkSingleObject(sc)
+  .checkSingleObject(sc)
 
   #Forming the data frame to plot
-  tmp <- data.frame(grabMeta(sc), identity = sc@active.ident, get.coord(sc, reduction))
+  tmp <- data.frame(.grabMeta(sc), identity = sc@active.ident, .get.coord(sc, reduction))
   #Add facet variable if present
   if (!is.null(facet.by)) { 
     facet.by <- tmp[,facet.by]

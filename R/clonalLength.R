@@ -45,7 +45,7 @@ clonalLength <- function(df,
                          exportTable = FALSE, 
                          palette = "inferno") {
   
-  cloneCall <- theCall(cloneCall)
+  cloneCall <- .theCall(cloneCall)
   df <- list.input.return(df, split.by)
   
   #Sorting out graphing parameters
@@ -69,7 +69,7 @@ clonalLength <- function(df,
   
   #Calculating Length
   Con.df <- NULL
-  Con.df <- lengthDF(df, cloneCall, chain, group.by, c1, c2)
+  Con.df <- .lengthDF(df, cloneCall, chain, group.by, c1, c2)
   
   if(is.null(group.by) & order) {
     Con.df[,"values"] <- factor(Con.df[,"values"], levels = names(df))

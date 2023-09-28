@@ -57,14 +57,14 @@ clonalCompare <- function(df,
   if(!is.null(top.clones) & !is.null(clonotypes)) {
     top.clones <- NULL
   }
-  cloneCall <- theCall(cloneCall)
+  cloneCall <- .theCall(cloneCall)
   df <- .data.wrangle(df, split.by, cloneCall, chain)
   Con.df <- NULL
   
   #Loop through the list to get a proportional summary
   for (i in seq_along(df)) {
     if (chain != "both") {
-      df[[i]] <- off.the.chain(df[[i]], chain, cloneCall)
+      df[[i]] <- .off.the.chain(df[[i]], chain, cloneCall)
     }
     tbl <- as.data.frame(table(df[[i]][,cloneCall]))
     tbl[,2] <- tbl[,2]/sum(tbl[,2])

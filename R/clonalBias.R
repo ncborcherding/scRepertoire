@@ -52,7 +52,7 @@ clonalBias <- function(df,
                           n.boots = 20,
                           min.expand=10,
                           exportTable = FALSE) {
-  cloneCall <- theCall(cloneCall)
+  cloneCall <- .theCall(cloneCall)
   
   bias <- get_clono_bias(df, 
                          split.by = split.by, 
@@ -88,7 +88,7 @@ clonalBias <- function(df,
   
   plot <- ggplot(bias, aes(x=ncells,y=bias)) + 
     geom_point(aes(colour=Top_state)) + 
-    quiet(stat_quantile(data=df_shuffle, quantiles = c(corrected_p), method = "rqss", lambda=3)) + 
+    .quiet(stat_quantile(data=df_shuffle, quantiles = c(corrected_p), method = "rqss", lambda=3)) + 
     theme_classic() + 
     xlab("Clone Size") + 
     ylab("Clonotype Bias")
@@ -148,10 +148,10 @@ get_clono_bias <- function(df,
     df <- list.input.return(df, split.by)
   } else {
     if (inherits(x=df, what ="Seurat") | inherits(x=df, what ="SummarizedExperiment")) {
-      df <- list("Object" = grabMeta(df))
+      df <- list("Object" = .grabMeta(df))
     } 
   }
-  cloneCall <- theCall(cloneCall)
+  cloneCall <- .theCall(cloneCall)
   df <- .checkBlanks(df, cloneCall)
   
   for (s in names(bg)) {

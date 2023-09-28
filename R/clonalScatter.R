@@ -52,14 +52,9 @@ clonalScatter <- function(df,
   if (!is.null(seed)) {
     set.seed(seed)
   }
-  cloneCall <- theCall(cloneCall)
+  cloneCall <- .theCall(cloneCall)
   df <- .data.wrangle(df, split.by, cloneCall, chain)
   axes <- which(names(df) %in% c(x.axis, y.axis, dot.size))
-  if (chain != "both") {
-    for (i in axes) {
-      df[[i]] <- off.the.chain(df[[i]], chain, cloneCall)
-    }
-  }
   
   #Making new data frame and adding variables to graph
   x.df <- as.data.frame(table(df[[x.axis]][,cloneCall]))

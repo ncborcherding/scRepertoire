@@ -577,18 +577,18 @@ We can also use Hill numbers to estimate the rarefaction using the the abundance
 + 1 - Shannon  
 + 2 - Simpson
 
-```{r}
+```{r, message=FALSE}
 clonalRarefaction(combined,
                   plot.type = 1,
-                  n.boots = 1)
+                  n.boots = 2)
 
 clonalRarefaction(combined,
                   plot.type = 2,
-                  n.boots = 1)
+                  n.boots = 2)
 
 clonalRarefaction(combined,
                   plot.type = 3,
-                  n.boots = 1)
+                  n.boots = 2)
 ```
 ## clonalScatter
 

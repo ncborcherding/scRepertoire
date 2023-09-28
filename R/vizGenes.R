@@ -51,10 +51,10 @@ vizGenes <- function(df,
   element.names <- NULL
   df <- list.input.return(df, split.by = split.by)
   if(!is.null(group.by)) {
-    df <- groupList(df, group.by)
+    df <- .groupList(df, group.by)
   }
   for(i in seq_along(df)) {
-    df[[i]] <- off.the.chain(df[[i]], chain, "CTgene")
+    df[[i]] <- .off.the.chain(df[[i]], chain, "CTgene")
   }
   df <- bound.input.return(df)
   if (y.axis %!in% colnames(df) | is.null(y.axis)) {

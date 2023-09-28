@@ -67,13 +67,13 @@ clonalNetwork <- function(sc,
                           palette = "inferno",
                           exportClones = FALSE) {
     to <- from <- weight <- y <- NULL
-    cloneCall <- theCall(cloneCall)
-    meta <- grabMeta(sc)  
-    coord <- data.frame(get.coord(sc, reduction), identity = meta[,identity])
+    cloneCall <- .theCall(cloneCall)
+    meta <- .grabMeta(sc)  
+    coord <- data.frame(.get.coord(sc, reduction), identity = meta[,identity])
     min <- c()
     if (!is.null(filter.clones))  {
       if(filter.clones == "min") {
-        meta <- grabMeta(sc)
+        meta <- .grabMeta(sc)
         id.meta <- split(meta, meta[,identity])
         for (x in seq_along(id.meta)) {
             min.tmp <- length(which(!is.na(unique(id.meta[[x]][,cloneCall]))))
@@ -100,7 +100,7 @@ clonalNetwork <- function(sc,
         clones.to.filter <- table[seq_len(cut),1]
     }  
     } 
-    meta <- grabMeta(sc)    
+    meta <- .grabMeta(sc)    
     if (!is.null(filter.clones)) {
       meta <- meta[meta[,cloneCall] %in% clones.to.filter,]
     }

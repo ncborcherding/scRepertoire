@@ -36,8 +36,8 @@
 #' @author Dillon Corvino, Nick Borcherding
 getCirclize <- function(sc, cloneCall = "strict", 
                         group.by = NULL, proportion = FALSE) {
-  meta <- grabMeta(sc)
-  cloneCall <- theCall(cloneCall)
+  meta <- .grabMeta(sc)
+  cloneCall <- .theCall(cloneCall)
   test <- meta[, c(cloneCall, group.by)]
   test <- test[!is.na(test[,cloneCall]),]
   dTest <- suppressMessages(dcast(test, test[,cloneCall] ~ test[,group.by]))

@@ -47,8 +47,8 @@ occupiedscRepertoire <- function(sc,
                                  na.include = FALSE,
                                  exportTable = FALSE, 
                                  palette = "inferno") {
-  checkSingleObject(sc)
-  meta <- grabMeta(sc)
+  .checkSingleObject(sc)
+  meta <- .grabMeta(sc)
   meta <- melt(table(meta[!is.na(meta$Frequency), 
                           c(x.axis, facet.by, "cloneType")], useNA = "ifany"))
   if (!na.include) {

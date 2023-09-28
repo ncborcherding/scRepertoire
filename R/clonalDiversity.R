@@ -56,7 +56,7 @@ clonalDiversity <- function(df,
   if(return.boots) {
     exportTable <- TRUE
   }
-  cloneCall <- theCall(cloneCall)
+  cloneCall <- .theCall(cloneCall)
   df <- .data.wrangle(df, split.by, cloneCall, chain)
   mat <- NULL
   sample <- c()
@@ -117,7 +117,7 @@ clonalDiversity <- function(df,
     mat_melt <- suppressMessages(melt(mat, id.vars = c(group.by, x.axis)))
     values <- str_sort(as.character(unique(mat_melt[,group.by])), 
                        numeric = TRUE)
-    values <- quiet(dput(values))
+    values <- .quiet(dput(values))
     mat_melt[,group.by] <- factor(mat_melt[,group.by], levels = values)
     if (x.axis == "x.axis") {
         plot <- ggplot(mat_melt, aes(x=1, y=as.numeric(value)))

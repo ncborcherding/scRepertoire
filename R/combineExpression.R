@@ -68,15 +68,15 @@ combineExpression <- function(
   
     options( dplyr.summarise.inform = FALSE )
     cloneTypes <- c(None = 0, cloneTypes)
-    df <- checkList(df)
-    cloneCall <- theCall(cloneCall)
+    df <- .checkList(df)
+    cloneCall <- .theCall(cloneCall)
     Con.df <- NULL
-    meta <- grabMeta(sc)
+    meta <- .grabMeta(sc)
     cell.names <- rownames(meta)
     if (group.by == "none" | !is.null(group.by)) {
         for (i in seq_along(df)) {
             if (chain != "both") {
-                df[[i]] <- off.the.chain(df[[i]], chain, cloneCall)
+                df[[i]] <- .off.the.chain(df[[i]], chain, cloneCall)
             }
             data <- data.frame(df[[i]], stringsAsFactors = FALSE)
             data2 <- unique(data[,c("barcode", cloneCall)])
@@ -170,7 +170,7 @@ combineExpression <- function(
       colData(sc) <- cbind(colData(sc), PreMeta[rownames,])[, union(colnames(colData(sc)),  colnames(PreMeta))]
       rownames(colData(sc)) <- rownames  
     }
-    if (filterNA) { sc <- filteringNA(sc) }
+    if (filterNA) { sc <- .filteringNA(sc) }
     sc$cloneType <- factor(sc$cloneType, levels = rev(names(cloneTypes)))
     
     if(is_seurat_object(sc)) {

@@ -33,8 +33,8 @@ highlightClones <- function(sc,
   if (!inherits(x=sc, what ="Seurat")) {
     stop("Object indicated is not of class 'Seurat', make sure you 
             are using the correct data.") }
-  cloneCall <- theCall(cloneCall)
-  meta <- grabMeta(sc)
+  cloneCall <- .theCall(cloneCall)
+  meta <- .grabMeta(sc)
   meta$highlight <- NA
   for(i in seq_along(sequence)) {
     meta$highlight <-  ifelse(meta[,cloneCall] == sequence[i], 

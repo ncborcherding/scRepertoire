@@ -50,7 +50,7 @@ clusterTCR <- function(df,
       dat[[y]]$cdr3_nt2 <- str_split(dat[[y]]$CTnt, "_", simplify = TRUE)[,2]
     }
   }
-  dat <- checkList(dat)
+  dat <- .checkList(dat)
   if(chain %in% c("TRA", "TRG")) {
     ref <- 1
   } else if(chain %in% c("TRB", "TRD")) {

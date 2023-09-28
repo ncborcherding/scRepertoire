@@ -46,13 +46,13 @@ abundanceContig <- function(df,
   df <- list.input.return(df,split.by)
   Con.df <- NULL
   xlab <- "Abundance"
-  cloneCall <- theCall(cloneCall)
+  cloneCall <- .theCall(cloneCall)
   df <- .data.wrangle(df, split.by, cloneCall, chain)
   
   names <- names(df)
   if (!is.null(group.by)) {
     for (i in seq_along(df)) {
-      data1 <- parseContigs(df, i, names, cloneCall)
+      data1 <- .parseContigs(df, i, names, cloneCall)
       label <- df[[i]][1,group.by]
       data1[,paste(group.by)] <- label
       Con.df<- rbind.data.frame(Con.df, data1) }
@@ -76,7 +76,7 @@ abundanceContig <- function(df,
     }
   } else {
     for (i in seq_along(df)) {
-      data1 <- parseContigs(df, i, names, cloneCall)
+      data1 <- .parseContigs(df, i, names, cloneCall)
       Con.df<- rbind.data.frame(Con.df, data1) 
       }
     Con.df <- data.frame(Con.df)

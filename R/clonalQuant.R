@@ -42,7 +42,7 @@ clonalQuant <- function(df,
     stop("Only one item in the group.by variable can be listed.")
   }
  
-  cloneCall <- theCall(cloneCall)
+  cloneCall <- .theCall(cloneCall)
   df <- .data.wrangle(df, split.by, cloneCall, chain)
   
   #Set up mat to store and selecting graph parameters

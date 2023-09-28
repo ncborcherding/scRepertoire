@@ -45,10 +45,10 @@ clonalProportion <- function(df,
                              exportTable = FALSE, 
                              palette = "inferno") {
     Con.df <- NULL
-    cloneCall <- theCall(cloneCall)
+    cloneCall <- .theCall(cloneCall)
     df <- .data.wrangle(df, split.by, cloneCall, chain)
     if(!is.null(group.by)) {
-      df <- groupList(df, group.by)
+      df <- .groupList(df, group.by)
     }
     
     #Generating data matrix to store value

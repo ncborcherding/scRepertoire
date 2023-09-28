@@ -44,18 +44,18 @@ clonalOverlap <- function(df,
     } else {
       return_type = "unique"
     }
-    cloneCall <- theCall(cloneCall)
+    cloneCall <- .theCall(cloneCall)
     df <- .data.wrangle(df, split.by, cloneCall, chain)
     df <- df[order(names(df))]
     values <- str_sort(as.character(unique(names(df))), numeric = TRUE)
-    df <- df[quiet(dput(values))]
+    df <- df[.quiet(dput(values))]
     num_samples <- length(df[])
     names_samples <- names(df)
     length <- seq_len(num_samples)
     
     if (chain != "both") {
       for (i in seq_along(df)) {
-        df[[i]] <- off.the.chain(df[[i]], chain, cloneCall)
+        df[[i]] <- .off.the.chain(df[[i]], chain, cloneCall)
       }
     }
     

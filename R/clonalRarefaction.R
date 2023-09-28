@@ -47,7 +47,7 @@ clonalRarefaction <- function(df,
                               n.boots = 20,
                               exportTable = FALSE,
                               palette = "inferno") {
-  cloneCall <- theCall(cloneCall)
+  cloneCall <- .theCall(cloneCall)
   df <- .data.wrangle(df, split.by, cloneCall, chain)
   mat.list <- lapply(df, function(x) {
                   table(x[,cloneCall])

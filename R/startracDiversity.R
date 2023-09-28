@@ -52,8 +52,8 @@ StartracDiversity <- function(sc,
                               exportTable = FALSE, 
                               palette = "inferno") {
     majorCluster <- NULL
-    cloneCall <- theCall(cloneCall)
-    df <- grabMeta(sc)
+    cloneCall <- .theCall(cloneCall)
+    df <- .grabMeta(sc)
     barcodes <- rownames(df)
     colnames(df)[ncol(df)] <- "majorCluster"
     
@@ -65,9 +65,9 @@ StartracDiversity <- function(sc,
     }
     group.levels = unique(df[,group.by])
     
-    cloneCall <- theCall(cloneCall)
+    cloneCall <- .theCall(cloneCall)
     if (chain != "both") {
-      df <- off.the.chain(df, chain, cloneCall)
+      df <- .off.the.chain(df, chain, cloneCall)
     }
 
     df <- df %>%
@@ -102,7 +102,7 @@ StartracDiversity <- function(sc,
     
     mat_melt <- melt(mat, id = c("group", "majorCluster"))
     values <- as.character(unique(mat_melt$majorCluster))
-    values <- quiet(dput(values))
+    values <- .quiet(dput(values))
     mat_melt$majorCluster <- factor(mat_melt$majorCluster, levels = values)
     mat_melt$value <- as.numeric(mat_melt$value)
     col <- length(unique(mat_melt[,"majorCluster"]))

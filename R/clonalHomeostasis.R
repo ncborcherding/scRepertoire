@@ -45,11 +45,11 @@ clonalHomeostasis <- function(df,
                               palette = "inferno") {
     cloneTypes <- c(None = 0, cloneTypes)
     
-    cloneCall <- theCall(cloneCall)
+    cloneCall <- .theCall(cloneCall)
     df <- .data.wrangle(df, split.by, cloneCall, chain)
     
     if(!is.null(group.by)) {
-      df <- groupList(df, group.by)
+      df <- .groupList(df, group.by)
     }
     
     #Generating data matrix to store value

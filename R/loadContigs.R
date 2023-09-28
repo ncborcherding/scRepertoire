@@ -49,7 +49,7 @@ loadContigs <- function(dir,
         }
   #Already loaded list or data frame
   } else if (inherits(x=dir, what ="list") | inherits(x=dir, what ="data.frame")) {
-    df <- checkList(dir)
+    df <- .checkList(dir)
   }
   
   loadFunc <- switch(format,

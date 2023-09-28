@@ -56,7 +56,7 @@ combineTCR <- function(df,
                        removeNA = FALSE, 
                        removeMulti = FALSE, 
                        filterMulti = FALSE) {
-    df <- checkList(df)
+    df <- .checkList(df)
     df <- checkContigs(df)
     out <- NULL
     final <- NULL
@@ -70,7 +70,7 @@ combineTCR <- function(df,
         df[[i]]$sample <- samples[i]
         df[[i]]$ID <- ID[i]
         if (filterMulti) { 
-          df[[i]] <- filteringMulti(df[[i]]) 
+          df[[i]] <- .filteringMulti(df[[i]]) 
         }
     }
     #Prevents error caused by list containing elements with 0 rows
@@ -85,19 +85,19 @@ combineTCR <- function(df,
       }
     }
     if (!is.null(samples)) {
-        out <- modifyBarcodes(df, samples, ID)
+        out <- .modifyBarcodes(df, samples, ID)
     } else {
       out <- df
     }
     for (i in seq_along(out)) { # ideally the nested code could be in a function for a better development/testing experience
         data2 <- out[[i]]
-        data2 <- makeGenes(cellType = "T", data2)
+        data2 <- .makeGenes(cellType = "T", data2)
         unique_df <- unique(data2$barcode) # could potentially display % here
         Con.df <- data.frame(matrix(NA, length(unique_df), 7))
         colnames(Con.df) <- c("barcode",tcr1_lines, tcr2_lines)
         Con.df$barcode <- unique_df
-        Con.df <- parseTCR(Con.df, unique_df, data2)
-        Con.df <- assignCT(cellType = "T", Con.df)
+        Con.df <- .parseTCR(Con.df, unique_df, data2)
+        Con.df <- .assignCT(cellType = "T", Con.df)
         Con.df[Con.df == "NA_NA" | Con.df == "NA_NA_NA_NA"] <- NA 
         data3 <- merge(data2[,-which(names(data2) %in% c("TCR1","TCR2"))], 
             Con.df, by = "barcode")
@@ -124,8 +124,8 @@ combineTCR <- function(df,
       final[[i]]<-final[[i]][!duplicated(final[[i]]$barcode),]
       final[[i]]<-final[[i]][rowSums(is.na(final[[i]])) < 10, ]
     }
-    if (removeNA) { final <- removingNA(final)}
-    if (removeMulti) { final <- removingMulti(final) }
+    if (removeNA) { final <- .removingNA(final)}
+    if (removeMulti) { final <- .removingMulti(final) }
     final
 }
 
@@ -173,7 +173,7 @@ combineBCR <- function(df,
                        removeNA = FALSE, 
                        removeMulti = FALSE,
                        filterMulti = TRUE) {
-    df <- checkList(df)
+    df <- .checkList(df)
     df <- checkContigs(df)
     out <- NULL
     final <- list()
@@ -189,26 +189,26 @@ combineBCR <- function(df,
                     df[[i]]$save_chain <- df[[i]]$chain
                     # Collapse IGK and IGL chains
                     df[[i]]$chain <- ifelse(df[[i]]$chain=="IGH","IGH","IGLC")
-                    df[[i]] <- filteringMulti(df[[i]])
+                    df[[i]] <- .filteringMulti(df[[i]])
                     # Get back IGK / IGL distinction
                     df[[i]]$chain <- df[[i]]$save_chain
                     df[[i]]$save_chain <- NULL
         }
     }
     if (!is.null(samples)) {
-        out <- modifyBarcodes(df, samples, ID)
+        out <- .modifyBarcodes(df, samples, ID)
     } else {
         out <- df
     }
     for (i in seq_along(out)) { 
         data2 <- data.frame(out[[i]])
-        data2 <- makeGenes(cellType = "B", data2)
+        data2 <- .makeGenes(cellType = "B", data2)
         unique_df <- unique(data2$barcode)
         Con.df <- data.frame(matrix(NA, length(unique_df), 9))
         colnames(Con.df) <- c("barcode", heavy_lines, light_lines)
         Con.df$barcode <- unique_df
-        Con.df <- parseBCR(Con.df, unique_df, data2)
-        Con.df <- assignCT(cellType = "B", Con.df)
+        Con.df <- .parseBCR(Con.df, unique_df, data2)
+        Con.df <- .assignCT(cellType = "B", Con.df)
         data3<-Con.df %>% mutate(length1 = nchar(cdr3_nt1)) %>%
             mutate(length2 = nchar(cdr3_nt2))
         final[[i]] <- data3 
@@ -253,8 +253,8 @@ combineBCR <- function(df,
     for (i in seq_along(final)) {
         final[[i]] <- final[[i]][!duplicated(final[[i]]$barcode),]
         final[[i]]<-final[[i]][rowSums(is.na(final[[i]])) < 10, ]}
-    if (removeNA) { final <- removingNA(final) }
-    if (removeMulti) { final <- removingMulti(final) }
+    if (removeNA) { final <- .removingNA(final) }
+    if (removeMulti) { final <- .removingMulti(final) }
     return(final) 
 }
 

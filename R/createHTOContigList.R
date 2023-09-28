@@ -33,8 +33,8 @@ createHTOContigList <- function(contig,
                                 group.by = NULL, 
                                 multi.run = NULL){
   contig.list <- NULL
-  checkSingleObject(sc)
-  meta <- grabMeta(sc)
+  .checkSingleObject(sc)
+  meta <- .grabMeta(sc)
   if (length(group.by) > 1) {
     meta["group.by"] <- apply(meta[ , group.by] , 1 , paste , collapse = "." )
   } else {

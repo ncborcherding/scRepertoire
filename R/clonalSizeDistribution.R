@@ -48,11 +48,11 @@ clonalSizeDistribution <- function(df,
                                    exportTable = FALSE, 
                                    palette = "inferno") {
   x <- xend <- yend <- mpg_div_hp <- NULL
-  cloneCall <- theCall(cloneCall)
+  cloneCall <- .theCall(cloneCall)
   df <- .data.wrangle(df, split.by, cloneCall, chain)
   
   if(!is.null(group.by)) {
-    df <- groupList(df, group.by)
+    df <- .groupList(df, group.by)
   }
   data <- bind_rows(df)
   unique_df <- unique(data[,cloneCall])
@@ -60,9 +60,6 @@ clonalSizeDistribution <- function(df,
   Con.df <- data.frame(unique_df, Con.df, stringsAsFactors = FALSE)
   colnames(Con.df)[1] <- "clonotype"
   for (i in seq_along(df)) {
-    if (chain != "both") {
-      df[[i]] <- off.the.chain(df[[i]], chain, cloneCall)
-    }
     data <- df[[i]]
     data <- data.frame(table(data[,cloneCall]), 
                        stringsAsFactors = FALSE)
