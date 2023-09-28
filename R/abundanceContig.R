@@ -43,7 +43,7 @@ abundanceContig <- function(df,
                             order = TRUE,
                             exportTable = FALSE, 
                             palette = "inferno") {
-  df <- list.input.return(df,split.by)
+  df <- .list.input.return(df,split.by)
   Con.df <- NULL
   xlab <- "Abundance"
   cloneCall <- .theCall(cloneCall)

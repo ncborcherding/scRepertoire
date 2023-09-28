@@ -57,7 +57,7 @@ combineTCR <- function(df,
                        removeMulti = FALSE, 
                        filterMulti = FALSE) {
     df <- .checkList(df)
-    df <- checkContigs(df)
+    df <- .checkContigs(df)
     out <- NULL
     final <- NULL
     for (i in seq_along(df)) {
@@ -174,15 +174,13 @@ combineBCR <- function(df,
                        removeMulti = FALSE,
                        filterMulti = TRUE) {
     df <- .checkList(df)
-    df <- checkContigs(df)
+    df <- .checkContigs(df)
     out <- NULL
     final <- list()
     chain1 <- "heavy"
     chain2 <- "light"
     for (i in seq_along(df)) {
         df[[i]] <- subset(df[[i]], chain %in% c("IGH", "IGK", "IGL"))
-        #df[[i]] <- df[[i]] %>% group_by(barcode,chain) %>% slice_max(n=1,order_by=reads, with_ties = FALSE)
-        df[[i]]$sample <- samples[i]
         df[[i]]$ID <- ID[i]
         if (filterMulti) {
                     # Keep IGH / IGK / IGL info in save_chain

@@ -40,7 +40,7 @@ clusterTCR <- function(df,
                        threshold = 0.85, 
                        group.by = NULL) {
   output.list <- list()
-  dat <- list.input.return(df, group.by)
+  dat <- .list.input.return(df, group.by)
   if (inherits(x=df, what ="Seurat") |
       inherits(x=df, what ="SummarizedExperiment")) {
     for(y in seq_along(dat)) {

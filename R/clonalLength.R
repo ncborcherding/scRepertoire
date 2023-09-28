@@ -46,7 +46,7 @@ clonalLength <- function(df,
                          palette = "inferno") {
   
   cloneCall <- .theCall(cloneCall)
-  df <- list.input.return(df, split.by)
+  df <- .list.input.return(df, split.by)
   
   #Sorting out graphing parameters
   xlab <- "Length"

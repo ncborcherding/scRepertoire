@@ -48,6 +48,7 @@ is_seurat_or_se_object <- function(obj) {
     return(df)
 }
 
+#reshuffling df
 .groupList <- function(df, group.by) {
     df <- bind_rows(df)
     df <- split(df, df[,group.by])
@@ -72,7 +73,7 @@ is_seurat_or_se_object <- function(obj) {
     df
 }
 
-checkContigs <- function(df) {
+.checkContigs <- function(df) {
     df <- lapply(seq_len(length(df)), function(x) {
         df[[x]] <- if(!is.data.frame(df[[x]])) as.data.frame(df[[x]]) else df[[x]]
         df[[x]][df[[x]] == ""] <- NA
@@ -82,14 +83,14 @@ checkContigs <- function(df) {
 }
 
 #' @importFrom dplyr bind_rows
-bound.input.return <- function(df) {
+.bound.input.return <- function(df) {
   if (is_seurat_or_se_object(df)) {
     return(.grabMeta(df))
   } 
   bind_rows(df, .id = "element.names")
 }
 
-list.input.return <- function(df, split.by) {
+.list.input.return <- function(df, split.by) {
     if (is_seurat_or_se_object(df)) {
         if(is.null(split.by)){
             split.by <- "cluster"
@@ -213,8 +214,6 @@ list.input.return <- function(df, split.by) {
       return(sc)
     }
 }
-
-
 
 #Organizing list of contigs for visualization
 .parseContigs <- function(df, i, names, cloneCall) {
@@ -422,6 +421,7 @@ list.input.return <- function(df, split.by) {
   return(min)
 }
 
+#Parsing the CTgene
 .select.gene <- function(df, chain, gene, label) {
   if (chain %in% c("TRB", "TRD", "IGH")) {
     gene <- unname(c(V = 1, D = 2, J = 3, C = 4)[gene])
@@ -485,7 +485,7 @@ is_df_or_list_of_df <- function(x) {
 
 #Making lists for single-cell object, check blanks and apply chain filter
 .data.wrangle <- function(df, split.by, cloneCall, chain) {
-  df <- list.input.return(df, split.by)
+  df <- .list.input.return(df, split.by)
   df <- .checkBlanks(df, cloneCall)
   for (i in seq_along(df)) {
     if (chain != "both") {

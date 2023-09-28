@@ -145,7 +145,7 @@ get_clono_bias <- function(df,
                      group.by = group.by, 
                      cloneCall = cloneCall)
   if (!is.null(split.by)) {
-    df <- list.input.return(df, split.by)
+    df <- .list.input.return(df, split.by)
   } else {
     if (inherits(x=df, what ="Seurat") | inherits(x=df, what ="SummarizedExperiment")) {
       df <- list("Object" = .grabMeta(df))
