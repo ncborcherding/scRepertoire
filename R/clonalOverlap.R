@@ -2,6 +2,24 @@
 #'
 #' This functions allows for the calculation and visualizations of 
 #' various overlap metrics for clonotypes.
+#' 
+#' @details
+#' The formulas for the indices are as follows:
+#' 
+#' \deqn{Overlap Coefficient: OC = \frac{\sum \min(a_i, b_i)}{\min(\sum a_i, \sum b_i)}}
+#' 
+#' \deqn{Raw Count Overlap: RCO = \sum \min(a_i, b_i)}
+#' 
+#' \deqn{Morisita Index: MI = \frac{\sum a_i b_i}{(\sum a_i)(\sum b_i)}}
+#' 
+#' \deqn{Jaccard Index: JI = \frac{\sum \min(a_i, b_i)}{\sum a_i + \sum b_i - \sum \min(a_i, b_i)}}
+#' 
+#' \deqn{Cosine Similarity: CS = \frac{\sum a_i b_i}{\sqrt{(\sum a_i^2)(\sum b_i^2)}}}
+#' 
+#' Where:
+#' \itemize{
+#'   \item{ \( a_i \) and \( b_i \) are the abundances of species \( i \) in groups A and B, respectively.}
+#' }
 #'
 #' @examples
 #' #Making combined contig data
