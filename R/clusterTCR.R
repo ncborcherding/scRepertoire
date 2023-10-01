@@ -68,7 +68,7 @@ clusterTCR <- function(df,
   }
   #Defining clusters by edit distance
   output.list <- lapply(bound, function(x) {
-    cluster <- lvCompare(x, gene = paste0("TCR", ref), chain = ref2, threshold = threshold)
+    cluster <- .lvCompare(x, gene = paste0("TCR", ref), chain = ref2, threshold = threshold)
     cluster
   })
   #Reformating output for compatibility

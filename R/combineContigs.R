@@ -18,7 +18,7 @@ utils::globalVariables(c(
     "tcr2_lines", "data1_lines", "data2_lines", "CT_lines"
 ))
 
-#' @title Combining the list of T Cell Receptor contigs
+#' @title Combining the list of T cell receptor contigs into clonotypes
 #'
 #' @description This function consolidates a list of TCR sequencing results to
 #' the level of  the individual cell barcodes. Using the samples and ID
@@ -29,23 +29,19 @@ utils::globalVariables(c(
 #' `filterMulti` are parameters that control how  the function  deals with
 #' barcodes with multiple chains recovered.
 #' 
-#' @details For single-sample TCR sequencing experiments, where the input is
-#' just a single data.frame, the function will add the consolidated information
-#' columns after the existing raw clonotype data
-#' 
 #' @examples
 #' combined <- combineTCR(contig_list, 
 #'                         samples = c("P17B", "P17L", "P18B", "P18L", 
 #'                                     "P19B","P19L", "P20B", "P20L"))
 #' 
-#' @param df List of filtered contig annotations from 10x Genomics.
-#' @param samples The labels of samples (required).
-#' @param ID The additional sample labeling (optional).
+#' @param df List of filtered contig annotations or outputs from \code{\link{loadContig}}
+#' @param samples The labels of samples
+#' @param ID The additional sample labeling
 #' @param removeNA This will remove any chain without values.
 #' @param removeMulti This will remove barcodes with greater than 2 chains.
 #' @param filterMulti This option will allow for the selection of the 2 
 #' corresponding chains with the highest expression for a single barcode. 
-
+#' 
 #' @import dplyr
 #' @export
 #' @return List of clonotypes for individual cell barcodes
@@ -124,36 +120,42 @@ combineTCR <- function(df,
       final[[i]]<-final[[i]][!duplicated(final[[i]]$barcode),]
       final[[i]]<-final[[i]][rowSums(is.na(final[[i]])) < 10, ]
     }
-    if (removeNA) { final <- .removingNA(final)}
-    if (removeMulti) { final <- .removingMulti(final) }
+    if (removeNA) { 
+      final <- .removingNA(final)
+    }
+    if (removeMulti) { 
+      final <- .removingMulti(final)
+    }
     final
 }
 
-#' Combining the list of B Cell Receptor contigs
+#' Combining the list of B cell receptor contigs into clonotypes
 #'
 #' This function consolidates a list of BCR sequencing results to the level 
 #' of the individual cell barcodes. Using the samples and ID parameters, 
 #' the function will add the strings as prefixes to prevent issues with 
 #' repeated barcodes. The resulting new barcodes will need to match the 
-#' seurat or SCE object in order to use, 
-#' \code{\link{combineExpression}}. Unlike combineTCR(), 
-#' combineBCR produces a column CTstrict of an index of nucleotide sequence 
-#' and the corresponding v-gene. This index automatically calculates 
-#' the Levenshtein distance between sequences with the same V gene and will 
-#' index sequences with <= 0.15 normalized Levenshtein distance with the same 
-#' ID. After which, clonotype clusters are called using the
-#' `igraph:: component()` function. Clonotype that are clustered across multiple 
-#' sequences will then be labeled with "LD" in the CTstrict header.
+#' Seurat or SCE object in order to use, \code{\link{combineExpression}}. 
+#' Unlike \code{\link{combineTCR}}, combineBCR produces a column **CTstrict**
+#' of an index of nucleotide sequence and the corresponding V gene. 
+#' This index automatically calculates the Levenshtein distance between 
+#' sequences with the same V gene and will index sequences using a normalized 
+#' Levenshtein distance with the same ID. After which, clonotype clusters 
+#' are called using the \code{\link[igraph]{component}} function. Clonotype
+#' that are clustered across multiple sequences will then be labeled 
+#' with "LD" in the CTstrict header.
 #'
 #' @examples
 #' #Data derived from the 10x Genomics intratumoral NSCLC B cells
 #' BCR <- read.csv("https://www.borch.dev/uploads/contigs/b_contigs.csv")
-#' combined <- combineBCR(BCR, samples = "Patient1", 
-#' ID = "Time1", threshold = 0.85)
+#' combined <- combineBCR(BCR, 
+#'                        samples = "Patient1", 
+#'                        ID = "Time1", 
+#'                        threshold = 0.85)
 #' 
-#' @param df List of filtered contig annotations from 10x Genomics.
-#' @param samples The labels of samples (required).
-#' @param ID The additional sample labeling (optional).
+#' @param df List of filtered contig annotations or outputs from \code{\link{loadContig}}.
+#' @param samples The labels of samples
+#' @param ID The additional sample labeling
 #' @param call.related.clones Use the nucleotide sequence and V gene to call related clones. 
 #' Default is set to TRUE. FALSE will return a CTstrict or strict clonotype as V gene + amino acid sequence
 #' @param threshold The normalized edit distance to consider. The higher the number the more 
@@ -213,8 +215,8 @@ combineBCR <- function(df,
     }
     dictionary <- bind_rows(final)
     if(call.related.clones) {
-      IGH <- lvCompare(dictionary, "IGH", "cdr3_nt1", threshold)
-      IGLC <- lvCompare(dictionary, "IGLC", "cdr3_nt2", threshold)
+      IGH <- .lvCompare(dictionary, "IGH", "cdr3_nt1", threshold)
+      IGLC <- .lvCompare(dictionary, "IGLC", "cdr3_nt2", threshold)
     } 
     for(i in seq_along(final)) {
       if(call.related.clones) {
@@ -250,9 +252,14 @@ combineBCR <- function(df,
     names(final) <- names
     for (i in seq_along(final)) {
         final[[i]] <- final[[i]][!duplicated(final[[i]]$barcode),]
-        final[[i]]<-final[[i]][rowSums(is.na(final[[i]])) < 10, ]}
-    if (removeNA) { final <- .removingNA(final) }
-    if (removeMulti) { final <- .removingMulti(final) }
+        final[[i]]<-final[[i]][rowSums(is.na(final[[i]])) < 10, ]
+    }
+    if (removeNA) { 
+      final <- .removingNA(final) 
+    }
+    if (removeMulti) { 
+      final <- .removingMulti(final) 
+    }
     return(final) 
 }
 
@@ -261,7 +268,7 @@ combineBCR <- function(df,
 #' @importFrom stringdist stringdistmatrix
 #' @importFrom igraph graph_from_data_frame components
 #' @importFrom dplyr bind_rows
-lvCompare <- function(dictionary, gene, chain, threshold) {
+.lvCompare <- function(dictionary, gene, chain, threshold) {
     overlap <- NULL
     out <- NULL
     dictionary[dictionary == "None"] <- NA

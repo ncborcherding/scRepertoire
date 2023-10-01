@@ -2,7 +2,7 @@
 % Please edit documentation in R/combineContigs.R
 \name{combineTCR}
 \alias{combineTCR}
-\title{Combining the list of T Cell Receptor contigs}
+\title{Combining the list of T cell receptor contigs into clonotypes}
 \usage{
 combineTCR(
   df,
@@ -14,11 +14,11 @@ combineTCR(
 )
 }
 \arguments{
-\item{df}{List of filtered contig annotations from 10x Genomics.}
+\item{df}{List of filtered contig annotations or outputs from \code{\link{loadContig}}}
 
-\item{samples}{The labels of samples (required).}
+\item{samples}{The labels of samples}
 
-\item{ID}{The additional sample labeling (optional).}
+\item{ID}{The additional sample labeling}
 
 \item{removeNA}{This will remove any chain without values.}
 
@@ -39,11 +39,6 @@ Seurat or SCE object in order to use, \code{\link{combineExpression}}.
 Several levels of filtering exist - `removeNA`, `removeMulti`, or
 `filterMulti` are parameters that control how  the function  deals with
 barcodes with multiple chains recovered.
-}
-\details{
-For single-sample TCR sequencing experiments, where the input is
-just a single data.frame, the function will add the consolidated information
-columns after the existing raw clonotype data
 }
 \examples{
 combined <- combineTCR(contig_list, 
