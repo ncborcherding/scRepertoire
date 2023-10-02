@@ -535,16 +535,12 @@ With the former two generally used to estimate baseline diversity and Chao/ACE i
 ```{r}
 clonalDiversity(combined, 
                 cloneCall = "gene", 
-                group.by = "sample", 
-                n.boots = 100)
-
-
-clonalDiversity(combined, cloneCall = "gene")
+                n.boots = 50)
 ```
 
 ## clonaRarefaction
 
-We can also use Hill numbers to estimate the rarefaction using the the abundance of clones across groupings. This relies on the [iNEXT](https://cran.r-project.org/web/packages/iNEXT/index.html) with the accompanying [manuscript](http://chao.stat.nthu.edu.tw/wordpress/paper/120_pdf_appendix.pdf). 
+We can also use Hill numbers to estimate the rarefaction using the the abundance of clones across groupings. This relies on the [iNEXT](https://cran.r-project.org/web/packages/iNEXT/index.html) with the accompanying [manuscript](http://chao.stat.nthu.edu.tw/wordpress/paper/120_pdf_appendix.pdf). Like the other wrapping functions in scRepetoire, please cite the original work. 
 
 **plot.type**  
 + 1 - sample-size-based rarefaction/extrapolation  
@@ -666,7 +662,7 @@ Seurat::DimPlot(scRep_example, group.by = "Type") +
         scale_color_manual(values=colorblind_vector[c(1,6)])
 
 Seurat::DimPlot(scRep_example, group.by = "cloneSize") +
-    scale_color_manual(values=colorblind_vector[c(2,4,6)])
+    scale_color_manual(values=rev(colorblind_vector[c(2,4,6)]))
 ```
 
 ## clonalOverlay 
@@ -740,7 +736,7 @@ scRep_example <- highlightClones(scRep_example,
                     sequence = c("CVVSDNTGGFKTIF_CASSVRRERANTGELFF", 
                                  "NA_CASSVRRERANTGELFF"))
 
-Seurat::DimPlot(scRep_example, group.by = "highlight")
+Seurat::DimPlot(scRep_example, group.by = "highlight") 
 ```
 
 ## clonalOccupy
@@ -769,7 +765,7 @@ alluvialClonotypes(scRep_example,
                    cloneCall = "aa", 
                    y.axes = c("Patient", "ident", "Type"), 
                    color = "CVVSDNTGGFKTIF_CASSVRRERANTGELFF") + 
-    scale_fill_manual(values = c("grey", colorblind_vector[7]))
+    scale_fill_manual(values = c("grey", colorblind_vector[3]))
 
 
 alluvialClonotypes(scRep_example, 

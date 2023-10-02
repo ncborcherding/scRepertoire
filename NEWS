@@ -22,6 +22,7 @@ UNDERLYING CHANGES
 * Universalized underlying function language and intermediate variables
 * Added features to clonalCompare to allow for highlighting sequences, relabeling clonotypes.
 * License change to MIT
+* group.by and split.by have been consolidated into single group.by parameter
 
 DEPRECATED AND DEFUNCT
 

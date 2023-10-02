@@ -19,10 +19,7 @@
 #'  \code{\link{combineExpression}}.
 #' @param cloneCall How to call the clonotype - CDR3 nucleotide (nt), 
 #' CDR3 amino acid (aa).
-#' @param group.by The group header for which you would like to analyze 
-#' the data.
-#' @param split.by If using a single-cell object, the column header 
-#' to group the new list. NULL will return clusters.
+#' @param group.by The variable to use for grouping.
 #' @param scale Converts the graphs into density plots in order to show 
 #' relative distributions.
 #' @param order Maintain the order of the list when plotting
@@ -39,14 +36,13 @@ clonalLength <- function(df,
                          cloneCall = "aa", 
                          chain = "both", 
                          group.by = NULL, 
-                         split.by = NULL, 
                          order = TRUE,
                          scale = FALSE, 
                          exportTable = FALSE, 
                          palette = "inferno") {
   
   cloneCall <- .theCall(cloneCall)
-  df <- .list.input.return(df, split.by)
+  df <- .list.input.return(df, group.by)
   
   #Sorting out graphing parameters
   xlab <- "Length"
@@ -61,7 +57,7 @@ clonalLength <- function(df,
   
   #Identifying and assigning chains
   chain.pos <- which(colnames(df[[1]]) == "cdr3_aa1")-1
-  c1 <- na.omit(unique(substr(df[[1]][1:10,chain.pos], 1,3)))
+  c1 <- na.omit(unique(substr(df[[1]][seq_len(10),chain.pos], 1,3)))
   c2 <- switch(c1,
                "TRA" = "TRB",
                "IGH"  = "IGL",

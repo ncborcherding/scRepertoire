@@ -22,10 +22,10 @@ clonalBias(
 CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
 VDJC gene + CDR3 nucleotide (strict).}
 
-\item{split.by}{The column header used for calculating the baseline frequencies.
-For example, "Type" for tumor vs peripheral blood comparison}
+\item{split.by}{The variable to use for calculating the baseline frequencies.
+For example, "Type" for lung vs peripheral blood comparison}
 
-\item{group.by}{The column header used for comparisons of bias.}
+\item{group.by}{The variable to use for calculating bias}
 
 \item{n.boots}{number of bootstraps to downsample}
 

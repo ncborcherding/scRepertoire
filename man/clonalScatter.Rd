@@ -11,11 +11,10 @@ clonalScatter(
   y.axis = NULL,
   chain = "both",
   dot.size = "total",
-  split.by = NULL,
+  group.by = NULL,
   graph = "proportion",
   exportTable = FALSE,
-  palette = "inferno",
-  seed = NULL
+  palette = "inferno"
 )
 }
 \arguments{
@@ -36,16 +35,13 @@ e.g. "both", "TRA", "TRG", "IGH", "IGL"}
 \item{dot.size}{either total or the name of the list element to 
 use for size of dots}
 
-\item{split.by}{If using a single-cell object, the column header 
-to group the new list. NULL will return clusters.}
+\item{group.by}{The variable to use for grouping}
 
 \item{graph}{graph either proportion or raw clonotype count}
 
 \item{exportTable}{Returns the data frame used for forming the graph.}
 
 \item{palette}{Colors to use in visualization - input any hcl.pals()}
-
-\item{seed}{the integer seed to set for the random variation of point coords.}
 }
 \value{
 ggplot of the relative clonotype numbers

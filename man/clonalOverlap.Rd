@@ -9,7 +9,7 @@ clonalOverlap(
   cloneCall = "strict",
   method = NULL,
   chain = "both",
-  split.by = NULL,
+  group.by = NULL,
   exportTable = FALSE,
   palette = "inferno"
 )
@@ -28,8 +28,7 @@ for the base numbers.}
 \item{chain}{indicate if both or a specific chain should be used - 
 e.g. "both", "TRA", "TRG", "IGH", "IGL"}
 
-\item{split.by}{If using a single-cell object, the column header 
-to group the new list. NULL will return clusters.}
+\item{group.by}{The variable to use for grouping}
 
 \item{exportTable}{Returns the data frame used for forming the graph}
 

@@ -59,7 +59,7 @@ is_seurat_or_se_object <- function(obj) {
 .checkList <- function(df) {
   df <- tryCatch(
       {
-          if (is(df)[1] != "list") { 
+          if (!inherits(df, "list")) { 
               df <- list(df)
           }
           df

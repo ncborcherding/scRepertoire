@@ -13,7 +13,7 @@ clonalCompare(
   top.clones = NULL,
   highlight.clones = NULL,
   relabel.clones = FALSE,
-  split.by = NULL,
+  group.by = NULL,
   graph = "alluvial",
   exportTable = FALSE,
   palette = "inferno"
@@ -42,7 +42,7 @@ all other clones returned will be grey.}
 \item{relabel.clones}{Simplify the legend of the graph by returning
 clones that are numerically indexed.}
 
-\item{split.by}{If using a single-cell object, the column header 
+\item{group.by}{If using a single-cell object, the column header 
 to group the new list. NULL will return clusters.}
 
 \item{graph}{The type of graph produced, either "alluvial" or "area".}

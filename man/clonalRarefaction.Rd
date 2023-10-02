@@ -9,7 +9,6 @@ clonalRarefaction(
   cloneCall = "strict",
   chain = "both",
   group.by = NULL,
-  split.by = NULL,
   plot.type = 1,
   hill.numbers = 0,
   n.boots = 20,
@@ -28,10 +27,7 @@ VDJC gene + CDR3 nucleotide (strict).}
 \item{chain}{indicate if both or a specific chain should be used - 
 e.g. "both", "TRA", "TRG", "IGH", "IGL"}
 
-\item{group.by}{Variable in which to group the diversity calculation}
-
-\item{split.by}{If using a single-cell object, the column header 
-to group the new list. NULL will return clusters.}
+\item{group.by}{The variable to use for grouping}
 
 \item{plot.type}{sample-size-based rarefaction/extrapolation curve (\code{type = 1}); 
 sample completeness curve (\code{type = 2}); coverage-based rarefaction/extrapolation curve (\code{type = 3}).}

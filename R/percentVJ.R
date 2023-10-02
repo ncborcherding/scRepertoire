@@ -13,9 +13,7 @@
 #' @param df The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
 #'  \code{\link{combineExpression}}.
 #' @param chain "TRA", "TRB", "TRG", "TRG", "IGH", "IGL"
-#' @param group.by The column header used for grouping.
-#' @param split.by If using a single-cell object, the column header 
-#' to group the new list. NULL will return clusters.
+#' @param group.by The variable to use for grouping.
 #' @param exportTable Returns the data frame used for forming the graph
 #' @param palette Colors to use in visualization - input any hcl.pals()
 #' @import ggplot2
@@ -25,12 +23,16 @@
 #' @return ggplot of percentage of V and J gene pairings as a heatmap
 #' 
 percentVJ <- function(df,
-                         chain = "TRB",
-                         group.by = NULL, 
-                         split.by = NULL,
-                         exportTable = FALSE, 
-                         palette = "inferno") {
-  df <- .data.wrangle(df, split.by, "CTgene", chain)
+                      chain = "TRB",
+                      group.by = NULL, 
+                      exportTable = FALSE, 
+                      palette = "inferno") {
+  
+  sco <- is_seurat_object(df) | is_se_object(df)
+  df <- .data.wrangle(df, group.by, "CTgene", chain)
+  if(!is.null(group.by) & !sco) {
+    df <- .groupList(df, group.by)
+  }
   
   if(chain %in% c("TRA", "TRG", "IGL")) {
     positions <- c(1,2)
@@ -48,8 +50,8 @@ percentVJ <- function(df,
   #Need total unique genes
   gene.dictionary <- unique(unlist(gene_counts))
   coordinates <- strsplit(gene.dictionary, ";")
-  V_values <- unique(sapply(coordinates, function(coord) coord[1]))
-  J_values <- unique(sapply(coordinates, function(coord) coord[2]))
+  V_values <- unique(unlist(lapply(coordinates, function(coord) coord[1])))
+  J_values <- unique(unlist(lapply(coordinates, function(coord) coord[2])))
   
   #Summarizing the gene usage across the list
   summary <- lapply(gene_counts, function(x) {

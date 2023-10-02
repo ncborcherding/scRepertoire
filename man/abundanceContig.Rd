@@ -10,7 +10,6 @@ abundanceContig(
   chain = "both",
   scale = FALSE,
   group.by = NULL,
-  split.by = NULL,
   order = TRUE,
   exportTable = FALSE,
   palette = "inferno"
@@ -30,10 +29,7 @@ e.g. "both", "TRA", "TRG", "IGH", "IGL"}
 \item{scale}{Converts the graphs into density plots in order to show 
 relative distributions.}
 
-\item{group.by}{The column header for which you would like to analyze the data.}
-
-\item{split.by}{If using a single-cell object, the column header 
-to group the new list. NULL will return clusters.}
+\item{group.by}{The variable to use for grouping}
 
 \item{order}{Maintain the order of the list when plotting}
 

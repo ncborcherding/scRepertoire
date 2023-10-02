@@ -13,7 +13,6 @@ vizGenes(
   order = "gene",
   scale = TRUE,
   group.by = NULL,
-  split.by = NULL,
   exportTable = FALSE,
   palette = "inferno"
 )
@@ -37,10 +36,7 @@ gene segments such as V, D, J, or C.}
 \item{scale}{Converts the individual count of genes to proportion using the total 
 respective repertoire size}
 
-\item{group.by}{The column header used for grouping.}
-
-\item{split.by}{If using a single-cell object, the column header 
-to group the new list. NULL will return clusters.}
+\item{group.by}{The variable to use for grouping.}
 
 \item{exportTable}{Returns the data frame used for forming the graph.}
 

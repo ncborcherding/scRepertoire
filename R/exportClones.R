@@ -14,9 +14,7 @@
 #'                                    
 #' @param df The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
 #'  \code{\link{combineExpression}}.
-#' @param group.by The column header used for grouping.
-#' @param split.by If using a single-cell object, the column header 
-#' to group the new list. NULL will return clusters.
+#' @param group.by The variable to use for grouping.
 #' @param write.file TRUE, save the file, FALSE, return a data.frame
 #' @param dir directory location to save the csv
 #' @param file.name the csv file name
@@ -28,12 +26,11 @@
 #' @author Jonathan Noonan, Nick Borcherding
 exportClones <- function(df,
                          group.by = NULL,
-                         split.by = NULL,
                          write.file = TRUE,
                          dir = NULL, 
                          file.name = "clones.csv") {
   
-  df <- .data.wrangle(df, split.by, "CTgene", "both")
+  df <- .data.wrangle(df, group.by, "CTgene", "both")
 
   df <- bind_rows(df, .id = "group")
   

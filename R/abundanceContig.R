@@ -21,9 +21,7 @@
 #' VDJC gene + CDR3 nucleotide (strict).
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL"
-#' @param group.by The column header for which you would like to analyze the data.
-#' @param split.by If using a single-cell object, the column header 
-#' to group the new list. NULL will return clusters.
+#' @param group.by The variable to use for grouping
 #' @param order Maintain the order of the list when plotting
 #' @param scale Converts the graphs into density plots in order to show 
 #' relative distributions.
@@ -39,15 +37,14 @@ abundanceContig <- function(df,
                             chain = "both", 
                             scale=FALSE, 
                             group.by = NULL, 
-                            split.by = NULL, 
                             order = TRUE,
                             exportTable = FALSE, 
                             palette = "inferno") {
-  df <- .list.input.return(df,split.by)
+  df <- .list.input.return(df,group.by)
   Con.df <- NULL
   xlab <- "Abundance"
   cloneCall <- .theCall(cloneCall)
-  df <- .data.wrangle(df, split.by, cloneCall, chain)
+  df <- .data.wrangle(df, group.by, cloneCall, chain)
   
   names <- names(df)
   if (!is.null(group.by)) {

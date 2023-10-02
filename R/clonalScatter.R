@@ -26,12 +26,10 @@
 #' @param y.axis name of the list element to appear on the y.axis
 #' @param dot.size either total or the name of the list element to 
 #' use for size of dots
-#' @param split.by If using a single-cell object, the column header 
-#' to group the new list. NULL will return clusters.
+#' @param group.by The variable to use for grouping
 #' @param graph graph either proportion or raw clonotype count
 #' @param exportTable Returns the data frame used for forming the graph.
 #' @param palette Colors to use in visualization - input any hcl.pals()
-#' @param seed the integer seed to set for the random variation of point coords.
 #' 
 #' @import ggplot2
 #' 
@@ -44,16 +42,12 @@ clonalScatter <- function(df,
                           y.axis = NULL,
                           chain = "both",
                           dot.size = "total", 
-                          split.by = NULL,
+                          group.by = NULL,
                           graph = "proportion", 
                           exportTable = FALSE,
-                          palette = "inferno",
-                          seed = NULL) {
-  if (!is.null(seed)) {
-    set.seed(seed)
-  }
+                          palette = "inferno") {
   cloneCall <- .theCall(cloneCall)
-  df <- .data.wrangle(df, split.by, cloneCall, chain)
+  df <- .data.wrangle(df, group.by, cloneCall, chain)
   axes <- which(names(df) %in% c(x.axis, y.axis, dot.size))
   
   #Making new data frame and adding variables to graph

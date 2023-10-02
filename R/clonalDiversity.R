@@ -46,8 +46,7 @@
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL"
 #' @param group.by Variable in which to group the diversity calculation
 #' @param x.axis Additional variable in which to split the x.axis
-#' @param split.by If using a single-cell object, the column header 
-#' to group the new list. NULL will return clusters.
+#' @param group.by The variable to use for goruping
 #' @param metrics The indices to use in diversity calculations - "shannon", "inv.simpson", 
 #' "norm.entropy", "gini.simpson", "chao1", "ACE"
 #' @param exportTable Exports a table of the data into the global environment 
@@ -69,7 +68,6 @@ clonalDiversity <- function(df,
                             chain = "both",
                             group.by = NULL, 
                             x.axis = NULL, 
-                            split.by = NULL,
                             metrics = c("shannon", "inv.simpson", "norm.entropy", "gini.simpson", "chao1", "ACE"),
                             exportTable = FALSE, 
                             palette = "inferno",
@@ -80,7 +78,7 @@ clonalDiversity <- function(df,
     exportTable <- TRUE
   }
   cloneCall <- .theCall(cloneCall)
-  df <- .data.wrangle(df, split.by, cloneCall, chain)
+  df <- .data.wrangle(df, group.by, cloneCall, chain)
   mat <- NULL
   sample <- c()
   if (!is.null(group.by) || !is.null(x.axis)) {
@@ -228,7 +226,7 @@ clonalDiversity <- function(df,
   
   # Calculate gamma
   gamma <- 0
-  for(i in 1:q) {
+  for(i in seq_len(q)) {
     f_i <- sum(rare_data == i)
     gamma <- gamma + (1 - i / q)^f_i
   }

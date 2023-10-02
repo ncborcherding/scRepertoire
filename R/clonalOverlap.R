@@ -41,8 +41,7 @@
 #' @param method The method to calculate the "overlap", 
 #  "morisita", "jaccard" indices, "cosine" similarity or "raw" 
 #' for the base numbers.
-#' @param split.by If using a single-cell object, the column header 
-#' to group the new list. NULL will return clusters.
+#' @param group.by The variable to use for grouping
 #' @param exportTable Returns the data frame used for forming the graph
 #' @param palette Colors to use in visualization - input any hcl.pals()
 #' @importFrom stringr str_sort str_to_title
@@ -54,7 +53,7 @@ clonalOverlap <- function(df,
                           cloneCall = "strict", 
                           method = NULL, 
                           chain = "both", 
-                          split.by = NULL,
+                          group.by = NULL,
                           exportTable = FALSE,
                           palette = "inferno"){
     if(method == "morisita") {
@@ -63,7 +62,7 @@ clonalOverlap <- function(df,
       return_type = "unique"
     }
     cloneCall <- .theCall(cloneCall)
-    df <- .data.wrangle(df, split.by, cloneCall, chain)
+    df <- .data.wrangle(df, group.by, cloneCall, chain)
     df <- df[order(names(df))]
     values <- str_sort(as.character(unique(names(df))), numeric = TRUE)
     df <- df[.quiet(dput(values))]

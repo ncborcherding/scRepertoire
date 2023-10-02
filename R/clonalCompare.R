@@ -30,7 +30,7 @@
 #' all other clones returned will be grey.
 #' @param relabel.clones Simplify the legend of the graph by returning
 #' clones that are numerically indexed.
-#' @param split.by If using a single-cell object, the column header 
+#' @param group.by If using a single-cell object, the column header 
 #' to group the new list. NULL will return clusters.
 #' @param graph The type of graph produced, either "alluvial" or "area".
 #' @param exportTable Returns the data frame used for forming the graph.
@@ -48,7 +48,7 @@ clonalCompare <- function(df,
                               top.clones = NULL,
                               highlight.clones = NULL,
                               relabel.clones = FALSE,
-                              split.by = NULL, 
+                              group.by = NULL, 
                               graph = "alluvial", 
                               exportTable = FALSE, 
                               palette = "inferno"){
@@ -58,7 +58,7 @@ clonalCompare <- function(df,
     top.clones <- NULL
   }
   cloneCall <- .theCall(cloneCall)
-  df <- .data.wrangle(df, split.by, cloneCall, chain)
+  df <- .data.wrangle(df, group.by, cloneCall, chain)
   Con.df <- NULL
   
   #Loop through the list to get a proportional summary

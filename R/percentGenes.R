@@ -14,9 +14,7 @@
 #'  \code{\link{combineExpression}}.
 #' @param chain "TRA", "TRB", "TRG", "TRG", "IGH", "IGL"
 #' @param gene "V", "D" or "J"
-#' @param group.by The column header used for grouping.
-#' @param split.by If using a single-cell object, the column header 
-#' to group the new list. NULL will return clusters.
+#' @param group.by The variable to use for grouping.
 #' @param exportTable Returns the data frame used for forming the graph
 #' @param palette Colors to use in visualization - input any hcl.pals()
 #' @import ggplot2
@@ -29,11 +27,14 @@ percentGenes <- function(df,
                          chain = "TRB",
                          gene = "Vgene", 
                          group.by = NULL, 
-                         split.by = NULL,
                          exportTable = FALSE, 
                          palette = "inferno") {
   
-  df <- .data.wrangle(df, split.by, "CTgene", chain)
+  sco <- is_seurat_object(df) | is_se_object(df)
+  df <- .data.wrangle(df, group.by, "CTgene", chain)
+  if(!is.null(group.by) & !sco) {
+    df <- .groupList(df, group.by)
+  }
   #Parsing gene input
   if (gene %in% c("Vgene", "V", "v", "v.gene")) {
     gene.loci <- paste0(chain, "V")

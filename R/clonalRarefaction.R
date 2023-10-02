@@ -23,9 +23,7 @@
 #' VDJC gene + CDR3 nucleotide (strict).
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL"
-#' @param group.by Variable in which to group the diversity calculation
-#' @param split.by If using a single-cell object, the column header 
-#' to group the new list. NULL will return clusters.
+#' @param group.by The variable to use for grouping
 #' @param plot.type sample-size-based rarefaction/extrapolation curve (\code{type = 1}); 
 #' sample completeness curve (\code{type = 2}); coverage-based rarefaction/extrapolation curve (\code{type = 3}).   
 #' @param hill.numbers The Hill numbers to be plotted out (0 - species richness, 1 - Shannon, 2 - Simpson)
@@ -41,14 +39,19 @@ clonalRarefaction <- function(df,
                               cloneCall = "strict", 
                               chain = "both", 
                               group.by = NULL, 
-                              split.by = NULL,
                               plot.type = 1,
                               hill.numbers = 0,
                               n.boots = 20,
                               exportTable = FALSE,
                               palette = "inferno") {
   cloneCall <- .theCall(cloneCall)
-  df <- .data.wrangle(df, split.by, cloneCall, chain)
+  
+  sco <- is_seurat_object(df) | is_se_object(df)
+  df <- .data.wrangle(df, group.by, "CTgene", chain)
+  if(!is.null(group.by) & !sco) {
+    df <- .groupList(df, group.by)
+  }
+  
   mat.list <- lapply(df, function(x) {
                   table(x[,cloneCall])
   })

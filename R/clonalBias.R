@@ -35,9 +35,9 @@
 #' @param cloneCall How to call the clonotype - VDJC gene (gene), 
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
 #' VDJC gene + CDR3 nucleotide (strict).
-#' @param group.by The column header used for comparisons of bias.
-#' @param split.by The column header used for calculating the baseline frequencies.
-#' For example, "Type" for tumor vs peripheral blood comparison 
+#' @param group.by The variable to use for calculating bias
+#' @param split.by The variable to use for calculating the baseline frequencies.
+#' For example, "Type" for lung vs peripheral blood comparison 
 #' @param n.boots number of bootstraps to downsample
 #' @param min.expand clonotype frequency cut off for the purpose of comparison
 #' @param exportTable Returns the data frame used for forming the graph
@@ -170,7 +170,6 @@ get_clono_bias <- function(df,
         expanded <- df[[s]][which(df[[s]][,cloneCall] %in% names(clones)), c(group.by, cloneCall)]
         
         if (do.shuffle) {  #reshuffle annotation column
-          set.seed(seed)
           expanded[[group.by]] <- sample(expanded[[group.by]])
         }
         

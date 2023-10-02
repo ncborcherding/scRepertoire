@@ -13,9 +13,7 @@
 #' @param df The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
 #'  \code{\link{combineExpression}}.
 #' @param chain "TRA", "TRB", "TRG", "TRG", "IGH", "IGL"
-#' @param group.by The column header used for grouping.
-#' @param split.by If using a single-cell object, the column header 
-#' to group the new list. NULL will return clusters.
+#' @param group.by The variable to use for grouping.
 #' @param aa.length The maximum length of the cdr3 amino acid sequence 
 #' @param exportTable Returns the data frame used for forming the graph
 #' @param palette Colors to use in visualization - input any hcl.pals()
@@ -26,11 +24,16 @@
 percentAA <- function(df, 
                         chain = "TRB", 
                         group.by = NULL, 
-                        split.by = NULL,
                         aa.length = 20,
                         exportTable = FALSE, 
                         palette = "inferno")  {
-  df <- .data.wrangle(df, split.by, "CTaa", chain)
+  
+  sco <- is_seurat_object(df) | is_se_object(df)
+  df <- .data.wrangle(df, group.by, "CTaa", chain)
+  if(!is.null(group.by) & !sco) {
+    df <- .groupList(df, group.by)
+  }
+  
   res.list <- list()
   for (i in seq_along(df)) {
     strings <- df[[i]][,"CTaa"]

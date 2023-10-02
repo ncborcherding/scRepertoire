@@ -10,7 +10,6 @@ clonalDiversity(
   chain = "both",
   group.by = NULL,
   x.axis = NULL,
-  split.by = NULL,
   metrics = c("shannon", "inv.simpson", "norm.entropy", "gini.simpson", "chao1", "ACE"),
   exportTable = FALSE,
   palette = "inferno",
@@ -30,12 +29,9 @@ VDJC gene + CDR3 nucleotide (strict).}
 \item{chain}{indicate if both or a specific chain should be used - 
 e.g. "both", "TRA", "TRG", "IGH", "IGL"}
 
-\item{group.by}{Variable in which to group the diversity calculation}
+\item{group.by}{The variable to use for goruping}
 
 \item{x.axis}{Additional variable in which to split the x.axis}
-
-\item{split.by}{If using a single-cell object, the column header 
-to group the new list. NULL will return clusters.}
 
 \item{metrics}{The indices to use in diversity calculations - "shannon", "inv.simpson", 
 "norm.entropy", "gini.simpson", "chao1", "ACE"}

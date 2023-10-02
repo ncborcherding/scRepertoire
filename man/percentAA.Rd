@@ -8,7 +8,6 @@ percentAA(
   df,
   chain = "TRB",
   group.by = NULL,
-  split.by = NULL,
   aa.length = 20,
   exportTable = FALSE,
   palette = "inferno"
@@ -20,10 +19,7 @@ percentAA(
 
 \item{chain}{"TRA", "TRB", "TRG", "TRG", "IGH", "IGL"}
 
-\item{group.by}{The column header used for grouping.}
-
-\item{split.by}{If using a single-cell object, the column header 
-to group the new list. NULL will return clusters.}
+\item{group.by}{The variable to use for grouping.}
 
 \item{aa.length}{The maximum length of the cdr3 amino acid sequence}
 

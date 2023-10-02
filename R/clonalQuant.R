@@ -19,8 +19,6 @@
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL"
 #' @param group.by The column header used for grouping.
-#' @param split.by If using a single-cell object, the column header 
-#' to group the new list. NULL will return clusters.
 #' @param order Maintain the order of the list when plotting
 #' @param scale Converts the graphs into percentage of unique clonotypes.
 #' @param exportTable Returns the data frame used for forming the graph.
@@ -33,7 +31,6 @@ clonalQuant <- function(df,
                         chain = "both", 
                         scale=FALSE, 
                         group.by = NULL, 
-                        split.by = NULL,
                         order = TRUE,
                         exportTable = FALSE, 
                         palette = "inferno") {
@@ -43,7 +40,11 @@ clonalQuant <- function(df,
   }
  
   cloneCall <- .theCall(cloneCall)
-  df <- .data.wrangle(df, split.by, cloneCall, chain)
+  sco <- is_seurat_object(df) | is_se_object(df)
+  df <- .data.wrangle(df, group.by, "CTgene", chain)
+  if(!is.null(group.by) & !sco) {
+    df <- .groupList(df, group.by)
+  }
   
   mat.names <- c("contigs","values", "total", group.by)
   #Set up mat to store and selecting graph parameters

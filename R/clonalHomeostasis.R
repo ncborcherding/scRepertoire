@@ -22,9 +22,7 @@
 #' VDJC gene + CDR3 nucleotide (strict).
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL"
-#' @param group.by The column header used for grouping.
-#' @param split.by If using a single-cell object, the column header 
-#' to group the new list. NULL will return clusters.
+#' @param group.by The variable to use for grouping.
 #' @param exportTable Exports a table of the data into the global 
 #' environment in addition to the visualization
 #' @param palette Colors to use in visualization - input any hcl.pals()
@@ -40,15 +38,14 @@ clonalHomeostasis <- function(df,
                               cloneCall = "strict", 
                               chain = "both", 
                               group.by = NULL,
-                              split.by = NULL,
                               exportTable = FALSE, 
                               palette = "inferno") {
     cloneSize <- c(None = 0, cloneSize)
     
     cloneCall <- .theCall(cloneCall)
-    df <- .data.wrangle(df, split.by, cloneCall, chain)
-    
-    if(!is.null(group.by)) {
+    sco <- is_seurat_object(df) | is_se_object(df)
+    df <- .data.wrangle(df, group.by, cloneCall, chain)
+    if(!is.null(group.by) & !sco) {
       df <- .groupList(df, group.by)
     }
     

@@ -24,9 +24,7 @@
 #' @param threshold Numerical vector containing the thresholds 
 #' the grid search was performed over.
 #' @param method The clustering parameter for the dendrogram.
-#' @param group.by The column header used for grouping.
-#' @param split.by If using a single-cell object, the column header 
-#' to group the new list. NULL will return clusters.
+#' @param group.by The variable to use for grouping
 #' @param exportTable Returns the data frame used for forming the graph.
 #' @param palette Colors to use in visualization - input any hcl.pals()
 #' @import ggplot2 
@@ -44,14 +42,13 @@ clonalSizeDistribution <- function(df,
                                    method = "ward.D2", 
                                    threshold = 1, 
                                    group.by = NULL,
-                                   split.by = NULL, 
                                    exportTable = FALSE, 
                                    palette = "inferno") {
   x <- xend <- yend <- mpg_div_hp <- NULL
   cloneCall <- .theCall(cloneCall)
-  df <- .data.wrangle(df, split.by, cloneCall, chain)
-  
-  if(!is.null(group.by)) {
+  sco <- is_seurat_object(df) | is_se_object(df)
+  df <- .data.wrangle(df, group.by, "CTgene", chain)
+  if(!is.null(group.by) & !sco) {
     df <- .groupList(df, group.by)
   }
   data <- bind_rows(df)

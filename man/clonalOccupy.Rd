@@ -54,10 +54,10 @@ combined <- combineTCR(contig_list,
 scRep_example <- get(data("scRep_example"))
 
 #Using combineExpresion()
-sce <- combineExpression(combined, sce)
+scRep_example <- combineExpression(combined, scRep_example)
 
 #Using clonalOccupy
-clonalOccupy(sce, x.axis = "ident")
-table <- clonalOccupy(sce, x.axis = "ident", exportTable = TRUE)
+clonalOccupy(scRep_example, x.axis = "ident")
+table <- clonalOccupy(scRep_example, x.axis = "ident", exportTable = TRUE)
 
 }

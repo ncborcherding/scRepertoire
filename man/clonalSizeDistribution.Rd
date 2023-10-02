@@ -12,7 +12,6 @@ clonalSizeDistribution(
   method = "ward.D2",
   threshold = 1,
   group.by = NULL,
-  split.by = NULL,
   exportTable = FALSE,
   palette = "inferno"
 )
@@ -33,10 +32,7 @@ e.g. "both", "TRA", "TRG", "IGH", "IGL"}
 \item{threshold}{Numerical vector containing the thresholds 
 the grid search was performed over.}
 
-\item{group.by}{The column header used for grouping.}
-
-\item{split.by}{If using a single-cell object, the column header 
-to group the new list. NULL will return clusters.}
+\item{group.by}{The variable to use for grouping}
 
 \item{exportTable}{Returns the data frame used for forming the graph.}
 

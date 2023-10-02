@@ -25,9 +25,7 @@
 #' @param order Categorical variable to organize the x-axis, either "gene" or "variance"
 #' @param scale Converts the individual count of genes to proportion using the total 
 #' respective repertoire size 
-#' @param group.by The column header used for grouping.
-#' @param split.by If using a single-cell object, the column header 
-#' to group the new list. NULL will return clusters.
+#' @param group.by The variable to use for grouping.
 #' @param exportTable Returns the data frame used for forming the graph.
 #' @param palette Colors to use in visualization - input any hcl.pals()
 #' @import ggplot2
@@ -45,12 +43,12 @@ vizGenes <- function(df,
                      order = "gene",
                      scale = TRUE, 
                      group.by = NULL,
-                     split.by = NULL,
                      exportTable = FALSE,
                      palette = "inferno") {
   element.names <- NULL
-  df <- .list.input.return(df, split.by = split.by)
-  if(!is.null(group.by)) {
+  sco <- is_seurat_object(df) | is_se_object(df)
+  df <- .list.input.return(df, split.by = group.by)
+  if(!is.null(group.by) & !sco) {
     df <- .groupList(df, group.by)
   }
   for(i in seq_along(df)) {
