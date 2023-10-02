@@ -45,49 +45,37 @@ clonalQuant <- function(df,
   cloneCall <- .theCall(cloneCall)
   df <- .data.wrangle(df, split.by, cloneCall, chain)
   
+  mat.names <- c("contigs","values", "total", group.by)
   #Set up mat to store and selecting graph parameters
   if (!is.null(group.by)) {
     x <- group.by
     labs <- group.by
-    mat <- data.frame(matrix(NA, length(df), 4))
-    colnames(mat) <- c("contigs","values", "total", group.by)
-    for (i in seq_along(df)) {
-      mat[i,1] <- length(unique(df[[i]][,cloneCall]))
-      mat[i,2] <- names(df)[i]
-      mat[i,3] <- length(df[[i]][,cloneCall])
-      location <- which(colnames(df[[i]]) == group.by)
-      mat[i,4] <- df[[i]][1,location] }
-    col <- length(unique(mat[,group.by]))
-    if (scale) { y <- "scaled"
-    mat$scaled <- mat$contigs/mat$total*100
-    ylab <- "Percent of Unique Clonotype"
-    
-    } else { 
-      y <- "contigs"
-      x <- group.by
-      ylab <- "Unique Clonotypes"}
   } else {
     x <- "values"
     labs <- "Samples"
-    mat <- data.frame(matrix(NA, length(df), 3))
-    colnames(mat) <- c("contigs","values", "total")
-    
-    #Generating quantification
-    for (i in seq_along(df)) {
-      mat[i,1] <- length(unique(df[[i]][,cloneCall]))
+    col <- length(unique(names(df)))
+  }
+  mat <- data.frame(matrix(NA, length(df), length(mat.names)))
+  colnames(mat) <- mat.names
+  for (i in seq_along(df)) {
+      mat[i,1] <- length(na.omit(unique(df[[i]][,cloneCall])))
       mat[i,2] <- names(df)[i]
-      mat[i,3] <- length(df[[i]][,cloneCall]) 
-    }
-    col <- length(unique(mat$values))
-    if (scale == TRUE) { 
+      mat[i,3] <- length(na.omit(df[[i]][,cloneCall]))
+      if (!is.null(group.by)) {
+        location <- which(colnames(df[[i]]) == group.by)
+        mat[i,4] <- df[[i]][1,location]
+      }
+  }
+  if (scale) { 
       y <- "scaled"
       mat$scaled <- mat$contigs/mat$total*100
       ylab <- "Percent of Unique Clonotype"
-    } else { 
+   } else { 
       y <- "contigs"
-      ylab <- "Unique Clonotypes" 
-    } 
-  }
+      x <- group.by
+      ylab <- "Unique Clonotypes"
+   }
+  
   if (exportTable) {
     if (length(df) > 1) {
       return(mat)
@@ -102,12 +90,20 @@ clonalQuant <- function(df,
   if(order & is.null(group.by)) {
     mat[,x] <- factor(mat[,x], levels = mat[,x])
   }
+  if(!is.null(group.by)) {
+    col <- length(unique(mat[,group.by]))
+  }
   
+  #Plotting
   plot <- ggplot(aes(x=mat[,x], y=mat[,y], fill=as.factor(mat[,x])), data = mat) +
-                  stat_summary(geom = "errorbar", fun.data = mean_se, 
-                               position = "dodge", width=.5) + labs(fill = labs) +
+                  stat_summary(geom = "errorbar", 
+                               fun.data = mean_se, 
+                               position = "dodge", 
+                               width=.5) + 
+                  labs(fill = labs) +
+                  ylab(ylab) +
                   stat_summary(fun=mean, geom="bar", color="black", lwd=0.25)+
-                  theme_classic() + xlab("Samples") + ylab(ylab) +
+                  theme_classic() + xlab("Samples") + 
                   scale_fill_manual(values = .colorizer(palette, col))
   
   # if it is a single run, remove x axis labels if sample name missing

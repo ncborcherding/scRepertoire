@@ -58,7 +58,7 @@ scRep_example <- get(data("scRep_example"))
 scRep_example <- combineExpression(combined, scRep_example)
 scRep_example$Patient <- substring(scRep_example$orig.ident,1,3)
 
-#Using occupiedscRepertoire()
+#Using clonalBias()
 clonalBias(scRep_example, 
               cloneCall = "aa", 
               split.by = "Patient", 

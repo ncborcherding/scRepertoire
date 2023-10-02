@@ -238,28 +238,7 @@ clonalQuant(combined,
             scale = TRUE)
 ```
 
-## checkContig
 
-Depending on the experiment or sequencing run, a number of NAs can appear in either the sequence or VDJC gene usage. A quick way to check the percentage of NA values is to use ```checkContigs()```
-
-**chain**  
-+ "TRA", "TRB", "TRD", "TRG", "IGH" or "IGL" 
-
-**examine**  
-+ "gene" - examining the VDJC NA values 
-+ "chain" = examining the sequence-specific NA values
-
-```{r}
-checkContig(combined, 
-            chain = "TRA", 
-            examine = "gene",
-            group.by = "Type")
-
-checkContig(combined, 
-            chain = "TRB", 
-            examine = "chain",
-            group.by = "sample")
-```
 
 ## abundanceContig
 
@@ -481,9 +460,9 @@ After completing the basic processing and summary functions in scRepertoire, we 
 
 ## clonalHomeostasis
 
-By examining the clonal space, we effectively look at the relative space occupied by clones at specific proportions. Another way to think about this would be to think of the total immune receptor sequencing run as a measuring cup. In this cup, we will fill liquids of different viscosity - or different numbers of clonal proportions. Clonal space homeostasis asks what percentage of the cup is filled by clones in distinct proportions (or liquids of different viscosity, to extend the analogy). The proportional cutpoints are set under the **cloneType** variable in the function and can be adjusted.
+By examining the clonal space, we effectively look at the relative space occupied by clones at specific proportions. Another way to think about this would be to think of the total immune receptor sequencing run as a measuring cup. In this cup, we will fill liquids of different viscosity - or different numbers of clonal proportions. Clonal space homeostasis asks what percentage of the cup is filled by clones in distinct proportions (or liquids of different viscosity, to extend the analogy). The proportional cutpoints are set under the **cloneSize** variable in the function and can be adjusted.
 
-**cloneTypes**  
+**cloneSize**  
 * Rare = .0001  
 * Small = .001  
 * Medium = .01  
@@ -637,7 +616,7 @@ Next, we can attach the clonotypic information to our Seurat object using the `c
 
 We can call (cloneCall) the 4 variations of clonotypes: 1) VDJC genes, 2) CDR3 amino acid sequence, 3) CDR3 nucleotide sequence, or 4) VDJC genes and CDR3 nucleotide sequence. The attaching function will also calculate the clonotype frequency based on the **group.by** variable. If blank, **group.by** will calculate frequencies of clonotypes by individual run, but because we have 8 samples of paired peripheral blood and lung T cells, we will use the group.by variable to call "sample" to calculate frequencies across the same patient's blood and lung T cells.
 
-In order to categorize the frequency, we have the variable **proportion**, which if TRUE, allows for the relative proportion or when FALSE, will use absolute frequency to define clonotype groups **cloneTypes**  acts as a bin to place labels. As a default, **cloneTypes** is set to equal cloneTypes=c(Rare = 1e-4, Small = 0.001, Medium = 0.01, Large = 0.1, Hyperexpanded = 1). However, below is an example of using total frequency as expansion assignments. 
+In order to categorize the frequency, we have the variable **proportion**, which if TRUE, allows for the relative proportion or when FALSE, will use absolute frequency to define clonotype groups **cloneSize**  acts as a bin to place labels. As a default, **cloneSize** is set to equal cloneTypes=c(Rare = 1e-4, Small = 0.001, Medium = 0.01, Large = 0.1, Hyperexpanded = 1). However, below is an example of using total frequency as expansion assignments. 
 
 ```{r}
 sce <- combineExpression(combined, 
@@ -651,7 +630,7 @@ scRep_example <- combineExpression(combined,
                                    cloneCall="gene", 
                                    group.by = "sample", 
                                    proportion = FALSE, 
-                                   cloneTypes=c(Single=1, Small=5, Medium=20, Large=100, Hyperexpanded=500))
+                                   cloneSize=c(Single=1, Small=5, Medium=20, Large=100, Hyperexpanded=500))
 ```
 
 ## Combining both TCR and BCR 
@@ -686,7 +665,7 @@ Seurat::DimPlot(scRep_example, group.by = "Type") +
         Seurat::NoLegend() +
         scale_color_manual(values=colorblind_vector[c(1,6)])
 
-Seurat::DimPlot(scRep_example, group.by = "cloneType") +
+Seurat::DimPlot(scRep_example, group.by = "cloneSize") +
     scale_color_manual(values=colorblind_vector[c(2,4,6)])
 ```
 
@@ -764,18 +743,18 @@ scRep_example <- highlightClones(scRep_example,
 Seurat::DimPlot(scRep_example, group.by = "highlight")
 ```
 
-## occupiedscRepertoire
+## clonalOccupy
 
-We can also look at the count of cells by cluster assigned into specific frequency ranges by using the `occupiedscRepertoire()` function and selecting the **x.axis** to display cluster or other variables in the meta data of the single cell object.
+We can also look at the count of cells by cluster assigned into specific frequency ranges by using the `clonalOccupy()` function and selecting the **x.axis** to display cluster or other variables in the meta data of the single cell object.
 
 + **proportion** can be used to look at relative level groupings  
 +  **label** will still return the absolute number of clonotypes  
 
 ```{r}
-occupiedscRepertoire(scRep_example, 
+clonalOccupy(scRep_example, 
                      x.axis = "seurat_clusters")
 
-occupiedscRepertoire(scRep_example, 
+clonalOccupy(scRep_example, 
                      x.axis = "ident", 
                      proportion = TRUE, 
                      label = FALSE)

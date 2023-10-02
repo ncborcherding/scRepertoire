@@ -1,8 +1,8 @@
-#' Visualize the number of single cells with clonotype frequencies by cluster
+#' Visualize the number of single cells with cloneSizes by cluster
 #'
 #' View the count of clonotypes frequency group in seurat or SCE object 
-#' meta data after combineExpression(). The visualization will take the 
-#' new meta data variable "cloneType" and plot the number of cells with
+#' meta data after \code{\link{combineExpression}}. The visualization will take the 
+#' new meta data variable "cloneSize" and plot the number of cells with
 #' each designation using a secondary variable, like cluster. Credit to 
 #' the idea goes to Drs. Carmona and Andreatta and their work with
 #' \href{https://github.com/carmonalab/ProjecTILs}{ProjectTIL}.
@@ -15,14 +15,13 @@
 #' 
 #' #Getting a sample of a Seurat object
 #' scRep_example <- get(data("scRep_example"))
-#' sce <- suppressMessages(Seurat::UpdateSeuratObject(scRep_example))
 #' 
 #' #Using combineExpresion()
-#' sce <- combineExpression(combined, sce)
+#' scRep_example <- combineExpression(combined, scRep_example)
 #' 
-#' #Using occupiedscRepertoire()
-#' occupiedscRepertoire(sce, x.axis = "ident")
-#' table <- occupiedscRepertoire(sce, x.axis = "ident", exportTable = TRUE)
+#' #Using clonalOccupy
+#' clonalOccupy(scRep_example, x.axis = "ident")
+#' table <- clonalOccupy(scRep_example, x.axis = "ident", exportTable = TRUE)
 #' 
 #' @param sc The single-cell object after \code{\link{combineExpression}}.
 #' @param x.axis The variable in the meta data to graph along the x.axis
@@ -39,23 +38,25 @@
 #' @export
 #' @return Stacked bar plot of counts of cells by clonotype frequency group
 
-occupiedscRepertoire <- function(sc, 
-                                 x.axis = "ident", 
-                                 label = TRUE, 
-                                 facet.by = NULL,
-                                 proportion = FALSE, 
-                                 na.include = FALSE,
-                                 exportTable = FALSE, 
-                                 palette = "inferno") {
+clonalOccupy <- function(sc, 
+                         x.axis = "ident", 
+                         label = TRUE, 
+                         facet.by = NULL,
+                         proportion = FALSE, 
+                         na.include = FALSE,
+                         exportTable = FALSE, 
+                         palette = "inferno") {
   .checkSingleObject(sc)
   meta <- .grabMeta(sc)
   meta <- melt(table(meta[!is.na(meta$Frequency), 
-                          c(x.axis, facet.by, "cloneType")], useNA = "ifany"))
+                          c(x.axis, facet.by, "cloneSize")], useNA = "ifany"))
+  #Check for NAs
   if (!na.include) {
     meta <- na.omit(meta)
   }
   meta <- meta[meta$value != 0,]
   
+  #Convert to proportion
   if(proportion) {
     meta <- meta %>%
       group_by(meta[,1]) %>%
@@ -66,15 +67,16 @@ occupiedscRepertoire <- function(sc,
   if (exportTable) {
     return(meta)
   }
-  col <- length(unique(meta$cloneType))
+  #Plotting
+  col <- length(unique(meta[,"cloneSize"]))
   if(proportion) {
-    plot <- ggplot(meta, aes(x = meta[,x.axis], y = prop, fill = cloneType)) + 
-      geom_bar(stat = "identity") 
+    plot <- ggplot(meta, aes(x = meta[,x.axis], y = prop, fill = cloneSize)) + 
+      geom_bar(stat = "identity", color = "black", lwd = 0.25) 
     lab <- "Proportion of Cells"
     
   } else {
-    plot <- ggplot(meta, aes(x = meta[,x.axis], y = value, fill = cloneType)) + 
-      geom_bar(stat = "identity") 
+    plot <- ggplot(meta, aes(x = meta[,x.axis], y = value, fill = cloneSize)) + 
+      geom_bar(stat = "identity", color = "black", lwd = 0.25) 
     lab <- "Single Cells"
     
   } 

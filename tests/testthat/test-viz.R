@@ -3,89 +3,86 @@
 # really work properly for single samples
 
 # testdata: (assumes combineTCR works)
-combined <- combineTCR(
-	contig_list, 
-	samples = c("PY", "PY", "PX", "PX", "PZ","PZ"), 
-	ID = c("P", "T", "P", "T", "P", "T")
-)
+combined <- combineTCR(contig_list, 
+                         samples = c("P17B", "P17L", "P18B", "P18L", 
+                                     "P19B","P19L", "P20B", "P20L"))
 
 single_contig <- combineTCR(contig_list[[1]])
 
 single_contig_with_sample <- combineTCR(
-	contig_list[[1]], samples = "PX", ID = "P"
+	contig_list[[1]], samples = "P17B",
 )
 # TODO test more cases with single_contig
 
-test_that("quantContig works", {
+test_that("clonalQuant works", {
 	expect_doppelganger(
-		"quantContig_scaled_plot", quantContig(combined, scale = TRUE)
+		"clonalQuant_scaled_plot", clonalQuant(combined, scale = TRUE)
 	)
 	expect_equal(
-		quantContig(combined, scale = TRUE, exportTable = TRUE),
+		clonalQuant(combined, scale = TRUE, exportTable = TRUE),
 		data.frame(
-			"contigs" = c(2712L, 1585L, 823L, 918L, 1143L, 768L),
-			"values" = c("PY_P", "PY_T", "PX_P", "PX_T", "PZ_P", "PZ_T"), 
-			"total" = c(3208L, 3119L, 1068L, 1678L, 1434L, 2768L),
+			"contigs" = c(745L, 2117L, 1254L, 1202L, 5544L, 1619L, 6087L,  192L),
+			"values" = c("P17B", "P17L", "P18B", "P18L", "P19B","P19L", "P20B", "P20L"), 
+			"total" = c(2805L, 2893L, 1328L, 1278L, 6942L, 2747L, 8991L,  201L),
 			"scaled" = c(
-				84.5386533665835, 50.8175697338891, 77.059925093633,
-				54.7079856972586, 79.7071129707113, 27.7456647398844
+			  26.55971, 73.17663, 94.42771, 94.05321, 79.86171, 58.93702, 67.70103, 95.52239
 			)
 		)
 	)
 	
 	expect_doppelganger(
-		"quantContig_single_sample_plot", quantContig(single_contig)
+		"clonalQuant_single_sample_plot", clonalQuant(single_contig)
 	)
 	expect_identical(
-		quantContig(single_contig, exportTable = TRUE),
-		data.frame("contigs" = 2712L, "total" = 3208L)
+		clonalQuant(single_contig, exportTable = TRUE),
+		data.frame("contigs" = 745L, "total" = 2805L)
 	)
 })
 
-test_that("abundanceContig works", {
+test_that("clonalAbundance works", {
 	expect_doppelganger(
-		"abundanceContig_scaled_plot", abundanceContig(combined, scale = FALSE)
+		"clonalAbundance_scaled_plot", clonalAbundance(combined, scale = FALSE)
 	)
 })
 
-test_that("lengthContig works", {
+test_that("clonalLength works", {
 	expect_doppelganger(
-		"lengthContig_both_chain_plot", lengthContig(combined, chain = "both") 
+		"clonalLength_both_chain_plot", clonalLength(combined, chain = "both") 
 	)
 })
 
-test_that("compareClonotypes works", {
+test_that("clonalCompare works", {
 	expect_doppelganger(
-		"compareClonotypes_alluvial_plot",
-		compareClonotypes(
+		"clonalCompare_alluvial_plot",
+		clonalCompare(
 			combined, 
 			numbers = 10, 
-			samples = c("PX_P", "PX_T"), 
+			samples = c("P17B", "P17L"), 
 			cloneCall="aa", 
 			graph = "alluvial"
 		)
 	)
 	
 	expect_doppelganger(
-		"compareClonotypes_area_plot",
-		compareClonotypes(
+		"clonalCompare_area_plot",
+		clonalCompare(
 			combined, 
 			numbers = 10, 
-			samples = c("PX_P", "PX_T"), 
+			samples = c("P17B", "P17L"), 
 			cloneCall="aa", 
 			graph = "area"
 		)
 	)
 })
 
-test_that("scatterClonotype works", {
+test_that("clonalScatter works", {
 	expect_doppelganger(
-		"scatterClonotype_vignette_plot",
-		scatterClonotype(
+		"clonalScatter_vignette_plot",
+		clonalScatter(
 			combined, 
 			cloneCall ="gene", 
-			x.axis = "PY_P", 
-			y.axis = "PY_T",
+			x.axis = "P17B", 
+			y.axis = "P17L",
 			dot.size = "total",
 			graph = "proportion",
 			seed = 42
@@ -96,10 +93,10 @@ test_that("scatterClonotype works", {
 })
 
 # something in `clonesizeDistribution` prints "NULL" to the terminal
-test_that("clonesizeDistribution works", {
+test_that("clonalSizeDistribution works", {
 	expect_doppelganger(
-		"clonesizeDistribution_vignette_plot",
-		clonesizeDistribution(combined, cloneCall = "gene+nt", method="ward.D2")
+		"clonalSizeDistribution_vignette_plot",
+		clonalSizeDistribution(combined, cloneCall = "gene+nt", method="ward.D2")
 	)
 })
 

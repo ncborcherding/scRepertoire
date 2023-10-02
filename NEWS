@@ -13,6 +13,7 @@ NEW FEATURES
 * Changed quantContig to clonalQuant
 * Changed highlightClonotypes to highlightClones
 * Changed lengthContigs to clonalLength
+* Changed occupiedscRepertoire to clonalOccupy
 
 UNDERLYING CHANGES
 
@@ -26,6 +27,7 @@ DEPRECATED AND DEFUNCT
 
 * Deprecate stripBarcodes()
 * Deprecate expression2List() (now only an internal function).
+* Deprecate checkContigs()
 
 
 CHANGES IN VERSION 1.11.0

@@ -56,6 +56,8 @@ clonalSizeDistribution <- function(df,
   }
   data <- bind_rows(df)
   unique_df <- unique(data[,cloneCall])
+  
+  #Forming data frame to store values
   Con.df <- data.frame(matrix(NA, length(unique_df), length(df)))
   Con.df <- data.frame(unique_df, Con.df, stringsAsFactors = FALSE)
   colnames(Con.df)[1] <- "clonotype"
@@ -81,6 +83,7 @@ clonalSizeDistribution <- function(df,
   distances <- .get_distances(list, grid, modelType="Spliced")
   mat_melt <- dendro_data(hclust(as.dist(distances), method = method), type = "rectangle")
   
+  #Plotting
   plot <- ggplot() + 
             geom_segment(data = segment(mat_melt), 
                          aes(x = x, y = y, xend = xend, yend = yend)) +
@@ -142,11 +145,6 @@ clonalSizeDistribution <- function(df,
   
   if(!(is.logical(std.err))){
     stop("std.err must be TRUE or FALSE.")
-  }
-  
-  if(!(method %in% c("Nelder-Mead","BFGS",
-                     "CG", "L-BFGS-B", "SANN", "Brent"))){
-    stop("invalid method supplied.")
   }
   
   if(is.null(shift)){

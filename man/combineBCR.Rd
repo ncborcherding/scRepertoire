@@ -16,7 +16,7 @@ combineBCR(
 )
 }
 \arguments{
-\item{df}{List of filtered contig annotations or outputs from \code{\link{loadContig}}.}
+\item{df}{List of filtered contig annotations or outputs from \code{\link{loadContigs}}.}
 
 \item{samples}{The labels of samples}
 
@@ -49,7 +49,7 @@ of an index of nucleotide sequence and the corresponding V gene.
 This index automatically calculates the Levenshtein distance between 
 sequences with the same V gene and will index sequences using a normalized 
 Levenshtein distance with the same ID. After which, clonotype clusters 
-are called using the \code{\link[igraph]{component}} function. Clonotype
+are called using the \code{\link[igraph]{components}} function. Clonotype
 that are clustered across multiple sequences will then be labeled 
 with "LD" in the CTstrict header.
 }

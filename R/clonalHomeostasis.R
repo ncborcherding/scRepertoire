@@ -1,10 +1,10 @@
 #' Examining the clonal homeostasis
 #'
 #' This function calculates the space occupied by clonotype proportions. 
-#' The grouping of these clonotypes is based on the parameter cloneTypes, 
-#' at default, cloneTypes will group the clonotypes into bins of Rare = 0 
+#' The grouping of these clonotypes is based on the parameter cloneSize, 
+#' at default, cloneSize will group the clonotypes into bins of Rare = 0 
 #' to 0.0001, Small = 0.0001 to 0.001, etc. To adjust the proportions, 
-#' change the number or labeling of the cloneTypes paramter. If a matrix 
+#' change the number or labeling of the cloneSize paramter. If a matrix 
 #' output for the data is preferred, set exportTable = TRUE.
 #'
 #' @examples
@@ -16,7 +16,7 @@
 #'
 #' @param df The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
 #'  \code{\link{combineExpression}}.
-#' @param cloneTypes The cutpoints of the proportions.
+#' @param cloneSize The cutpoints of the proportions.
 #' @param cloneCall How to call the clonotype - VDJC gene (gene), 
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
 #' VDJC gene + CDR3 nucleotide (strict).
@@ -35,15 +35,15 @@
 #' @export
 #' @return ggplot of the space occupied by the specific proportion of clonotypes
 clonalHomeostasis <- function(df, 
-                              cloneTypes = c(Rare = .0001, Small = .001, 
-                              Medium = .01, Large = .1, Hyperexpanded = 1),
+                              cloneSize = 
+                                c(Rare = .0001, Small = .001, Medium = .01, Large = .1, Hyperexpanded = 1),
                               cloneCall = "strict", 
                               chain = "both", 
                               group.by = NULL,
                               split.by = NULL,
                               exportTable = FALSE, 
                               palette = "inferno") {
-    cloneTypes <- c(None = 0, cloneTypes)
+    cloneSize <- c(None = 0, cloneSize)
     
     cloneCall <- .theCall(cloneCall)
     df <- .data.wrangle(df, split.by, cloneCall, chain)
@@ -53,21 +53,21 @@ clonalHomeostasis <- function(df,
     }
     
     #Generating data matrix to store value
-    mat <- matrix(0, length(df), length(cloneTypes) - 1, 
+    mat <- matrix(0, length(df), length(cloneSize) - 1, 
                 dimnames = list(names(df), 
-                names(cloneTypes)[-1]))
+                names(cloneSize)[-1]))
 
     #Assigning the clonal grouping
     df <- lapply(df, '[[', cloneCall)
     df <- lapply(df, na.omit)
     fun <- function(x) { table(x)/length(x) }
     df <- lapply(df, fun)
-    for (i in 2:length(cloneTypes)) {
-        mat[,i-1] <- vapply(df, function (x) sum(x[x > cloneTypes[i-1] & x <= 
-                            cloneTypes[i]]), FUN.VALUE = numeric(1))
-        colnames(mat)[i-1] <- paste0(names(cloneTypes[i]), ' (', 
-                                    cloneTypes[i-1], ' < X <= ', 
-                                    cloneTypes[i], ')') }
+    for (i in 2:length(cloneSize)) {
+        mat[,i-1] <- vapply(df, function (x) sum(x[x > cloneSize[i-1] & x <= 
+                            cloneSize[i]]), FUN.VALUE = numeric(1))
+        colnames(mat)[i-1] <- paste0(names(cloneSize[i]), ' (', 
+                                    cloneSize[i-1], ' < X <= ', 
+                                    cloneSize[i], ')') }
     if (exportTable) { 
       return(mat) 
     }

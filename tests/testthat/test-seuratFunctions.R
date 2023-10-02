@@ -2,12 +2,15 @@
 
 test_that("combineExpression works with seurat objects", {
 	data("mini_contig_list", "scRep_example")
-	combined_test <- combineExpression(mini_contig_list, scRep_example)
+  combined <- combineTCR(mini_contig_list, 
+                         samples = c("P17B", "P17L", "P18B", "P18L", 
+                                     "P19B","P19L", "P20B", "P20L"))
+	combined_test <- combineExpression(combined, scRep_example)
 	
-	expect_length(combined_test@meta.data, 15)
-	expect_equal(combined_test@meta.data[, 1:8], scRep_example@meta.data[, 1:8])
+	expect_length(combined_test@meta.data, 12)
+	expect_equal(combined_test@meta.data[, 1:6], scRep_example@meta.data[, 1:6])
 	expect_equal(
-		combined_test@meta.data[, 9:15],
+		combined_test@meta.data[, 7:12],
 		getdata("seuratFunctions", "combineExpression_new_metadata")
 	)
 })

@@ -199,18 +199,18 @@ is_seurat_or_se_object <- function(obj) {
 #' @importFrom SingleCellExperiment colData
 .filteringNA <- function(sc) {
     meta <- .grabMeta(sc)
-    evalNA <- data.frame(meta[,"cloneType"])
+    evalNA <- data.frame(meta[,"cloneSize"])
     colnames(evalNA) <- "indicator"
     evalNA <- evalNA %>%
         transmute(indicator = ifelse(is.na(indicator), 0, 1))
     rownames(evalNA) <- rownames(meta)
     if (inherits(x=sc, what ="cell_data_set")){
       colData(sc)[["evalNA"]]<-evalNA
-      return(sc[, !is.na(sc$cloneType)])
+      return(sc[, !is.na(sc$cloneSize)])
     }else{
       col.name <- names(evalNA) %||% colnames(evalNA)
       sc[[col.name]] <- evalNA
-      sc <- subset(sc, cloneType != 0)
+      sc <- subset(sc, cloneSize != 0)
       return(sc)
     }
 }
@@ -476,7 +476,7 @@ is_df_or_list_of_df <- function(x) {
   df <- NULL
   for (i in seq_along(unique)) {
     subset <- subset(meta, meta[,split.by] == unique[i])
-    subset <- subset(subset, !is.na(cloneType))
+    subset <- subset(subset, !is.na(cloneSize))
     df[[i]] <- subset
   }
   names(df) <- unique

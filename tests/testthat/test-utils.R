@@ -17,9 +17,9 @@ test_that("'%!in%' works", {
 
 test_that("checkList works", {
     data("contig_list")
-    expect_identical(checkList(contig_list), contig_list)
-    expect_identical(checkList(contig_list[[1]]), list(contig_list[[1]]))
-    expect_identical(checkList(contig_list[[1]])[[1]], contig_list[[1]])
+    expect_identical(.checkList(contig_list), contig_list)
+    expect_identical(.checkList(contig_list[[1]]), list(contig_list[[1]]))
+    expect_identical(.checkList(contig_list[[1]])[[1]], contig_list[[1]])
     # no idea what to put to make the stop message happen. perhaps with data.table(contig_list) ? but then it shouldnt fail :P
 })
 
@@ -28,7 +28,7 @@ test_that("checkContigs works", {
         df1 = data.frame(a = c("x", "", "z"), b = c("1", "2", "3")),
         df2 = data.frame(c = c("foo", "bar", ""), d = c("", "spam", "eggs"))
     )
-    expected <- checkContigs(input)
+    expected <- .checkContigs(input)
     expect_true(is.list(expected))
     expect_true(is.data.frame(expected[[1]]))
     expect_equal(expected[[1]]$a, c("x", NA, "z"))
@@ -46,7 +46,7 @@ test_that("checkContigs works", {
 # Test cases
 test_that("Modifying barcodes without ID works correctly", {
     samples <- c("sample1", "sample2")
-    modified_data <- modifyBarcodes(
+    modified_data <- .modifyBarcodes(
         df = getdata("utils", "df_list"), samples = samples, ID = NULL
     )
     
@@ -67,7 +67,7 @@ test_that("Modifying barcodes without ID works correctly", {
 test_that("Modifying barcodes with ID works correctly", {
     samples <- c("sample3", "sample4")
     ID <- c("id1", "id2")
-    modified_data <- modified_data <- modifyBarcodes(
+    modified_data <- modified_data <- .modifyBarcodes(
         df = getdata("utils", "df_list"), samples = samples, ID = ID
     )
     
@@ -90,7 +90,7 @@ test_that("Modifying barcodes with ID works correctly", {
 
 test_that("filteringMulti works", {
     expect_identical(
-        filteringMulti(head(contig_list[[1]])),
+        .filteringMulti(head(contig_list[[1]])),
         getdata("utils", "filteringMulti_expected")
     )
 })
@@ -111,7 +111,7 @@ test_that("filteringMulti works", {
 
 test_that("makeGenes works for cellType T", {
     expect_identical(
-        makeGenes("T", getdata("utils", "makeGenes_T_input")),
+        .makeGenes("T", getdata("utils", "makeGenes_T_input")),
         getdata("utils", "makeGenes_T_expected")
     )
 })

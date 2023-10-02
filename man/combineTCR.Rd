@@ -14,7 +14,7 @@ combineTCR(
 )
 }
 \arguments{
-\item{df}{List of filtered contig annotations or outputs from \code{\link{loadContig}}}
+\item{df}{List of filtered contig annotations or outputs from \code{\link{loadContigs}}}
 
 \item{samples}{The labels of samples}
 

@@ -34,7 +34,7 @@ utils::globalVariables(c(
 #'                         samples = c("P17B", "P17L", "P18B", "P18L", 
 #'                                     "P19B","P19L", "P20B", "P20L"))
 #' 
-#' @param df List of filtered contig annotations or outputs from \code{\link{loadContig}}
+#' @param df List of filtered contig annotations or outputs from \code{\link{loadContigs}}
 #' @param samples The labels of samples
 #' @param ID The additional sample labeling
 #' @param removeNA This will remove any chain without values.
@@ -141,7 +141,7 @@ combineTCR <- function(df,
 #' This index automatically calculates the Levenshtein distance between 
 #' sequences with the same V gene and will index sequences using a normalized 
 #' Levenshtein distance with the same ID. After which, clonotype clusters 
-#' are called using the \code{\link[igraph]{component}} function. Clonotype
+#' are called using the \code{\link[igraph]{components}} function. Clonotype
 #' that are clustered across multiple sequences will then be labeled 
 #' with "LD" in the CTstrict header.
 #'
@@ -153,7 +153,7 @@ combineTCR <- function(df,
 #'                        ID = "Time1", 
 #'                        threshold = 0.85)
 #' 
-#' @param df List of filtered contig annotations or outputs from \code{\link{loadContig}}.
+#' @param df List of filtered contig annotations or outputs from \code{\link{loadContigs}}.
 #' @param samples The labels of samples
 #' @param ID The additional sample labeling
 #' @param call.related.clones Use the nucleotide sequence and V gene to call related clones. 

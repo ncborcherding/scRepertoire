@@ -12,7 +12,7 @@ combineExpression(
   group.by = "none",
   proportion = TRUE,
   filterNA = FALSE,
-  cloneTypes = c(Rare = 1e-04, Small = 0.001, Medium = 0.01, Large = 0.1, Hyperexpanded =
+  cloneSize = c(Rare = 1e-04, Small = 0.001, Medium = 0.01, Large = 0.1, Hyperexpanded =
     1),
   addLabel = FALSE
 )
@@ -40,7 +40,7 @@ proportion (TRUE) of the clonotype based on the group.by variable.}
 \item{filterNA}{Method to subset seurat object of barcodes without 
 clonotype information}
 
-\item{cloneTypes}{The bins for the grouping based on frequency}
+\item{cloneSize}{The bins for the grouping based on frequency}
 
 \item{addLabel}{This will add a label to the frequency header, allowing
 the user to try multiple group.by variables or recalculate frequencies after 

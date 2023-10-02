@@ -38,7 +38,7 @@
 #' while NULL will merge all the contigs into a single data frame. 
 #' @param proportion Whether to use the total frequency (FALSE) or the 
 #' proportion (TRUE) of the clonotype based on the group.by variable.
-#' @param cloneTypes The bins for the grouping based on frequency
+#' @param cloneSize The bins for the grouping based on frequency
 #' @param filterNA Method to subset seurat object of barcodes without 
 #' clonotype information
 #' @param addLabel This will add a label to the frequency header, allowing
@@ -51,23 +51,20 @@
 #' @return seurat or SingleCellExperiment object with attached clonotype 
 #' information
 #' 
-combineExpression <- function(
-    df, 
-    sc, 
-    cloneCall ="strict", 
-    chain = "both", 
-    group.by ="none", 
-    proportion = TRUE, 
-    filterNA = FALSE,
-    cloneTypes = c(
-        Rare = 1e-4,Small = 0.001,Medium = 0.01,Large = 0.1,Hyperexpanded = 1
-    ),
-    addLabel = FALSE
-) {
+combineExpression <- function(df, 
+                              sc, 
+                              cloneCall ="strict", 
+                              chain = "both", 
+                              group.by ="none", 
+                              proportion = TRUE, 
+                              filterNA = FALSE,
+                              cloneSize = c(
+                                Rare = 1e-4,Small = 0.001,Medium = 0.01,Large = 0.1,Hyperexpanded = 1),
+                              addLabel = FALSE) {
     call_time <- Sys.time()
   
     options( dplyr.summarise.inform = FALSE )
-    cloneTypes <- c(None = 0, cloneTypes)
+    cloneSize <- c(None = 0, cloneSize)
     df <- .checkList(df)
     cloneCall <- .theCall(cloneCall)
     Con.df <- NULL
@@ -130,15 +127,15 @@ combineExpression <- function(
         
     }
     
-    Con.df$cloneType <- NA
-    for (x in seq_along(cloneTypes)) { names(cloneTypes)[x] <- 
-        paste0(names(cloneTypes[x]), ' (', cloneTypes[x-1], 
-        ' < X <= ', cloneTypes[x], ')') }
-    for (i in 2:length(cloneTypes)) { Con.df$cloneType <- 
-        ifelse(Con.df$Frequency > cloneTypes[i-1] & Con.df$Frequency 
-        <= cloneTypes[i], names(cloneTypes[i]), Con.df$cloneType) }
+    Con.df$cloneSize <- NA
+    for (x in seq_along(cloneSize)) { names(cloneSize)[x] <- 
+        paste0(names(cloneSize[x]), ' (', cloneSize[x-1], 
+        ' < X <= ', cloneSize[x], ')') }
+    for (i in 2:length(cloneSize)) { Con.df$cloneSize <- 
+        ifelse(Con.df$Frequency > cloneSize[i-1] & Con.df$Frequency 
+        <= cloneSize[i], names(cloneSize[i]), Con.df$cloneSize) }
     PreMeta <- unique(Con.df[,c("barcode", "CTgene", "CTnt", 
-                "CTaa", "CTstrict", "Frequency", "cloneType")])
+                "CTaa", "CTstrict", "Frequency", "cloneSize")])
     dup <- PreMeta$barcode[which(duplicated(PreMeta$barcode))]
     PreMeta <- PreMeta[PreMeta$barcode %!in% dup,]
     barcodes <- PreMeta$barcode
@@ -171,7 +168,7 @@ combineExpression <- function(
       rownames(colData(sc)) <- rownames  
     }
     if (filterNA) { sc <- .filteringNA(sc) }
-    sc$cloneType <- factor(sc$cloneType, levels = rev(names(cloneTypes)))
+    sc$cloneSize <- factor(sc$cloneSize, levels = rev(names(cloneSize)))
     
     if(is_seurat_object(sc)) {
         sc@commands[["combineExpression"]] <- make_screp_seurat_cmd(

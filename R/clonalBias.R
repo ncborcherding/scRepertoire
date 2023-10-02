@@ -21,7 +21,7 @@
 #' scRep_example <- combineExpression(combined, scRep_example)
 #' scRep_example$Patient <- substring(scRep_example$orig.ident,1,3)
 #' 
-#' #Using occupiedscRepertoire()
+#' #Using clonalBias()
 #' clonalBias(scRep_example, 
 #'               cloneCall = "aa", 
 #'               split.by = "Patient", 
@@ -53,13 +53,14 @@ clonalBias <- function(df,
                           min.expand=10,
                           exportTable = FALSE) {
   cloneCall <- .theCall(cloneCall)
-  
+  #Calculating bias
   bias <- get_clono_bias(df, 
                          split.by = split.by, 
                          group.by = group.by , 
                          cloneCall=cloneCall, 
                          min.expand=min.expand)
   df_shuffle.list <- list()
+  #Bootstrapping
   for (ii in seq_len(n.boots)) {
     df_shuffle.list[[ii]] <- get_clono_bias(df, split.by = split.by,
                                             group.by = group.by, 
@@ -70,6 +71,7 @@ clonalBias <- function(df,
   }
   df_shuffle <- Reduce(rbind, df_shuffle.list)
   
+  #Sumarrising boot straps
   stat.summary <- df_shuffle %>%
     group_by(ncells) %>%
     summarise(mean = mean(bias), 
@@ -85,7 +87,7 @@ clonalBias <- function(df,
     z.score <- (bias[i,]$bias - row.pull$mean)/row.pull$std
     bias$Z.score[i] <- z.score
   }
-  
+  #Plotting 
   plot <- ggplot(bias, aes(x=ncells,y=bias)) + 
     geom_point(aes(colour=Top_state)) + 
     .quiet(stat_quantile(data=df_shuffle, quantiles = c(corrected_p), method = "rqss", lambda=3)) + 
