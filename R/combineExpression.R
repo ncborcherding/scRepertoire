@@ -64,98 +64,96 @@ combineExpression <- function(df,
     call_time <- Sys.time()
   
     options( dplyr.summarise.inform = FALSE )
+    if (!proportion & any(cloneSize < 1)) {
+        stop("Adjust the cloneSize parameter - there are groupings < 1")
+    }
     cloneSize <- c(None = 0, cloneSize)
+    if (chain != "both") {
+      df[[i]] <- .off.the.chain(df[[i]], chain, cloneCall)
+    }
     df <- .checkList(df)
     cloneCall <- .theCall(cloneCall)
+    
+    #Getting Summaries of clones from combineTCR() or combineBCR()
     Con.df <- NULL
     meta <- .grabMeta(sc)
     cell.names <- rownames(meta)
     if (group.by == "none" | !is.null(group.by)) {
         for (i in seq_along(df)) {
-            if (chain != "both") {
-                df[[i]] <- .off.the.chain(df[[i]], chain, cloneCall)
-            }
+      
             data <- data.frame(df[[i]], stringsAsFactors = FALSE)
             data2 <- unique(data[,c("barcode", cloneCall)])
             data2 <- na.omit(data2[data2[,"barcode"] %in% cell.names,])
-            if (proportion) {
-                data2 <- data2 %>% group_by(data2[,cloneCall]) %>%
-                    summarise(Frequency = n()/nrow(data2))
-            } else {
-                data2 <- data2 %>% group_by(data2[,cloneCall]) %>%
-                    summarise(Frequency = n())
-            }
+            data2 <- data2 %>% 
+                        group_by(data2[,cloneCall]) %>%
+                        summarise(clonalProportion = n()/nrow(data2), 
+                                  clonalFrequency = n())
             colnames(data2)[1] <- cloneCall
             data <- merge(data, data2, by = cloneCall, all = TRUE)
             data <- data[,c("barcode", "CTgene", "CTnt", 
-                             "CTaa", "CTstrict", "Frequency")]
+                             "CTaa", "CTstrict", "clonalProportion", 
+                             "clonalFrequency")]
             Con.df <- rbind.data.frame(Con.df, data)
         }
-    } else if (group.by != "none" | is.null(group.by)) {
+    } else if (group.by != "none" | !is.null(group.by)) {
         data <- data.frame(bind_rows(df), stringsAsFactors = FALSE)
         data2 <- na.omit(unique(data[,c("barcode", cloneCall, group.by)]))
         data2 <- data2[data2[,"barcode"] %in% cell.names, ]
-        data2 <- as.data.frame(data2 %>% group_by(data2[,cloneCall], 
-                    data2[,group.by]) %>% summarise(Frequency = n()))
-        if(!is.null(group.by)) {
-          colnames(data2)[c(1,2)] <- c(cloneCall, group.by)
-          x <- unique(data[,group.by])
-          for (i in seq_along(x)) {
-              sub1 <- subset(data, data[,group.by] == x[i])
-              sub2 <- subset(data2, data2[,group.by] == x[i])
-              merge <- merge(sub1, sub2, by=cloneCall)
-              if (proportion) {
-                  merge$Frequency <- merge$Frequency/length(merge$Frequency)
-              }
-              Con.df <- rbind.data.frame(Con.df, merge)
-          }
-          nsize <- Con.df %>% group_by(Con.df[,paste0(group.by, ".x")])  %>% summarise(n = n())
-        } else {
-          if (proportion) {
-            data <- data %>%
-              group_by(data[,cloneCall]) %>%
-              mutate(Frequency = n()/nrow(data))
-          } else {
-            data <- data %>% 
-              group_by(data[,cloneCall]) %>%
-              mutate(Frequency = n())
-          }
-          Con.df <- data[,c("barcode", "CTgene", "CTnt", 
-                          "CTaa", "CTstrict", "Frequency")]
-          nsize <- length(Con.df)
-        }
+        data2 <- as.data.frame(data2 %>% 
+                                  group_by(data2[,cloneCall], data2[,group.by]) %>% 
+                                  summarise(clonalProportion = n()/nrow(data2), 
+                                            clonalFrequency = n())
+        )
         
+        colnames(data2)[c(1,2)] <- c(cloneCall, group.by)
+        data <- merge(data, data2, by = cloneCall, all = TRUE)
+        Con.df <- data[,c("barcode", "CTgene", "CTnt", 
+                          "CTaa", "CTstrict", "clonalProportion", 
+                          "clonalFrequency")]
+        }
+    
+    #Creating the bins for cloneSize
+    Con.df$cloneSize <- NA
+    for (x in seq_along(cloneSize)) { 
+      names(cloneSize)[x] <- paste0(names(cloneSize[x]), ' (', cloneSize[x-1], 
+        ' < X <= ', cloneSize[x], ')') 
     }
     
-    Con.df$cloneSize <- NA
-    for (x in seq_along(cloneSize)) { names(cloneSize)[x] <- 
-        paste0(names(cloneSize[x]), ' (', cloneSize[x-1], 
-        ' < X <= ', cloneSize[x], ')') }
-    for (i in 2:length(cloneSize)) { Con.df$cloneSize <- 
-        ifelse(Con.df$Frequency > cloneSize[i-1] & Con.df$Frequency 
-        <= cloneSize[i], names(cloneSize[i]), Con.df$cloneSize) }
+    if(proportion) {
+      c.column <- "clonalProportion"
+    } else {
+      c.column <- "clonalFrequency"
+    }
+    #Assigning cloneSize
+    for (i in 2:length(cloneSize)) { 
+      Con.df$cloneSize <- ifelse(Con.df[,c.column] > cloneSize[i-1] & 
+                                 Con.df[,c.column] <= cloneSize[i], 
+                                 names(cloneSize[i]), 
+                                 Con.df$cloneSize)
+      }
+    
+    #Formating the meta data to add
     PreMeta <- unique(Con.df[,c("barcode", "CTgene", "CTnt", 
-                "CTaa", "CTstrict", "Frequency", "cloneSize")])
+                "CTaa", "CTstrict", "clonalProportion", 
+                "clonalFrequency", "cloneSize")])
     dup <- PreMeta$barcode[which(duplicated(PreMeta$barcode))]
     PreMeta <- PreMeta[PreMeta$barcode %!in% dup,]
     barcodes <- PreMeta$barcode
     PreMeta <- PreMeta[,-1]
     rownames(PreMeta) <- barcodes
     if (group.by != "none" && addLabel) {
-      location <- which(colnames(PreMeta) == "Frequency")
-      colnames(PreMeta)[location] <- paste0("Frequency.", group.by)
+      location <- which(colnames(PreMeta) %in% c("clonalProportion", 
+                          "clonalFrequency"))
+      colnames(PreMeta)[location] <- paste0(c("clonalProportion", 
+                                            "clonalFrequency"), group.by)
     }
     
-    warn_str <- "< 1% of barcodes match: Ensure the barcodes in 
-        the Seurat object match the barcodes in the combined immune receptor
-        list from scRepertoire - most common issue is the addition of the 
-        prefixes corresponding to `samples` and 'ID' in the combineTCR/BCR() 
-        functions"
+
     
     if (is_seurat_object(sc)) { 
         if (length(which(rownames(PreMeta) %in% 
                          rownames(sc[[]])))/length(rownames(sc[[]])) < 0.01) {
-          warning(warn_str)
+          warning(.warn_str)
         }
         col.name <- names(PreMeta) %||% colnames(PreMeta)
         sc[[col.name]] <- PreMeta
@@ -179,7 +177,11 @@ combineExpression <- function(df,
 } 
 
 
-
+.warn_str <- "< 1% of barcodes match: Ensure the barcodes in 
+        the Seurat object match the barcodes in the combined immune receptor
+        list from scRepertoire - most common issue is the addition of the 
+        prefixes corresponding to 'samples' and 'ID' in the combineTCR/BCR() 
+        functions"
 
 
 

@@ -51,7 +51,7 @@ clonalOverlay <- function(sc,
     facet.by <- tmp[,facet.by]
     tmp <- data.frame(facet.by, tmp)
   }
-  tmp$include <- ifelse(tmp$Frequency >= freq.cutpoint, "Yes", NA)
+  tmp$include <- ifelse(tmp[,"clonalFrequency"] >= freq.cutpoint, "Yes", NA)
   tmp2 <- subset(tmp, include == "Yes")
   
   #Plotting
