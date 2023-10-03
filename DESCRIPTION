@@ -37,7 +37,8 @@ Imports:
     VGAM,
     cubature,
     iNEXT,
-    grDevices
+    grDevices,
+    seqinr
 Suggests: 
     knitr,
     rmarkdown,

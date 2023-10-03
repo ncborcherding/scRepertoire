@@ -161,7 +161,7 @@ combineExpression <- function(df,
       rownames <- rownames(colData(sc))
       if (length(which(rownames(PreMeta) %in% 
                        rownames))/length(rownames) < 0.01) {
-        warning(warn_str) }
+        warning(.warn_str) }
       colData(sc) <- cbind(colData(sc), PreMeta[rownames,])[, union(colnames(colData(sc)),  colnames(PreMeta))]
       rownames(colData(sc)) <- rownames  
     }
