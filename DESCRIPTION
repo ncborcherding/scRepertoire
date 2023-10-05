@@ -38,8 +38,7 @@ Imports:
     cubature,
     iNEXT,
     grDevices,
-    seqinr, 
-    MatrixGenerics
+    seqinr
 Suggests: 
     knitr,
     rmarkdown,

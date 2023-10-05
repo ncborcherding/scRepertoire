@@ -23,7 +23,6 @@
 #' @param palette Colors to use in visualization - input any hcl.pals()
 #' @import ggplot2
 #' @importFrom reshape2 melt
-#' @importFrom MatrixGenerics colMads
 #' @export
 #' @return ggplot of stacked bar graphs of amino acid proportions
 
@@ -74,8 +73,7 @@ percentKmer <- function(df,
   
   #Filtering for top.motifs
   if(!is.null(top.motifs)) {
-    mads <- colMads(mat)
-    names(mads) <- colnames(mat)
+    mads <- apply(mat, 2, mad)
     motifs.to.save <- names(sort(mads, decreasing = TRUE))[seq_len(top.motifs)]
     mat <- mat[,colnames(mat) %in% motifs.to.save]
   }
