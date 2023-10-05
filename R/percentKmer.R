@@ -23,8 +23,9 @@
 #' @param palette Colors to use in visualization - input any hcl.pals()
 #' @import ggplot2
 #' @importFrom reshape2 melt
+#' @importFrom stats mad
 #' @export
-#' @return ggplot of stacked bar graphs of amino acid proportions
+#' @return ggplot of percentage of kmers as a heatmap
 
 percentKmer <- function(df, 
                         chain = "TRB", 

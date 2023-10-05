@@ -35,7 +35,7 @@ inferCDR <- function(df,
   
   .sequence.positions[["FR3.F"]] <- c(97:103)
   sco <- is_seurat_object(df) | is_se_object(df)
-  df <- .data.wrangle(df, group.by, "CTgene", chain)
+  df <- .data.wrangle(df, NULL, "CTgene", chain)
   for (x in seq_along(df)) {
     df[[x]] <- .off.the.chain(df[[x]], chain, "CTaa")
     df[[x]] <- .off.the.chain(df[[x]], chain, "CTgene")

@@ -29,7 +29,7 @@ VDJC gene + CDR3 nucleotide (strict).}
 \item{chain}{indicate if both or a specific chain should be used - 
 e.g. "both", "TRA", "TRG", "IGH", "IGL"}
 
-\item{group.by}{The variable to use for goruping}
+\item{group.by}{The variable to use for grouping}
 
 \item{x.axis}{Additional variable in which to split the x.axis}
 

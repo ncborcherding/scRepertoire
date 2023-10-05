@@ -82,7 +82,7 @@ clonalOccupy <- function(sc,
   } 
   plot <- plot + 
     theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
-    scale_fill_manual(values = c(.colorizer(palette,col))) + 
+    scale_fill_manual(values = rev(c(.colorizer(palette,col)))) + 
     ylab(lab) + 
     theme_classic() + 
     theme(axis.title.x = element_blank())

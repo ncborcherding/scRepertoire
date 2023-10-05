@@ -787,24 +787,23 @@ clonalOccupy(scRep_example,
                      label = FALSE)
 ```
 
-## alluvialClonotypes
+## alluvialClones
 
-After the metadata has been modified, we can look at clonotypes across multiple categories using the `alluvialClonotypes()` function. To understand the basic concepts of this graphing method, I'd highly recommend reading [this post](https://cran.r-project.org/web/packages/ggalluvial/vignettes/ggalluvial.html). We are able to use the plots to examine the interchange of categorical variables. Because this function will produce a graph with each clonotype arranged by called stratification, this will take some time depending on the size of your total cells. To expedite, we will subset the Seurat object before using `alluvialClonotypes()`.
+After the metadata has been modified, we can look at clonotypes across multiple categories using the `alluvialClones()` function. To understand the basic concepts of this graphing method, I'd highly recommend reading [this post](https://cran.r-project.org/web/packages/ggalluvial/vignettes/ggalluvial.html). We are able to use the plots to examine the interchange of categorical variables. Because this function will produce a graph with each clonotype arranged by called stratification, this will take some time depending on the size of your total cells. To expedite, we will subset the Seurat object before using `alluvialClones()`.
 
 ```{r}
-alluvialClonotypes(scRep_example, 
-                   cloneCall = "aa", 
-                   y.axes = c("Patient", "ident", "Type"), 
-                   color = "CVVSDNTGGFKTIF_CASSVRRERANTGELFF") + 
+alluvialClones(scRep_example, 
+               cloneCall = "aa", 
+               y.axes = c("Patient", "ident", "Type"), 
+               color = "CVVSDNTGGFKTIF_CASSVRRERANTGELFF") + 
     scale_fill_manual(values = c("grey", colorblind_vector[3]))
 
 
-alluvialClonotypes(scRep_example, 
+alluvialClones(scRep_example, 
                    cloneCall = "gene", 
                    y.axes = c("Patient", "ident", "Type"), 
                    color = "ident") 
 ```
-
 ## getCirclize
 
 Like alluvial graphs, we can also visualize the interconnection of clusters using the chord diagrams from the circlize R package. The first step is getting the data frame output to feed into the `chordDiagram()` function in circlize, which can be done using `getCirclize()`. This will calculate the relative number of clonotypes shared based on the **group.by** variable using the product of `combineExpression()`. It is important to note `getCirclize()` will create a matrix the size of the **group.by** variable and then simplify into instructions to be read by the circlize R package. The output is the total number of unique and shared clones by the **group.by** variable - this will be greater than the number of unique clonotypes due to the shared clone information.

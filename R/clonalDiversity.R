@@ -130,7 +130,7 @@ clonalDiversity <- function(df,
       x.axis <- "x.axis"
       mat[,x.axis] <- 1
     }
-    if (exportTable == TRUE) { 
+    if (exportTable) { 
       return(mat) 
     }
     rownames(mat) <- names(df)

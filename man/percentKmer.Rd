@@ -28,15 +28,15 @@ CDR3 amino acid (aa).}
 
 \item{motif.length}{The length of the kmer to analyze}
 
+\item{top.motifs}{Return the n most variable motifs as a function of 
+median absolute deviation.}
+
 \item{exportTable}{Returns the data frame used for forming the graph}
 
 \item{palette}{Colors to use in visualization - input any hcl.pals()}
-
-\item{top.motif}{Return the n most variable motifs as a function of 
-median absolute deviation.}
 }
 \value{
-ggplot of stacked bar graphs of amino acid proportions
+ggplot of percentage of kmers as a heatmap
 }
 \description{
 This function the of kmer for nucleotide or amino acids 
