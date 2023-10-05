@@ -6,6 +6,7 @@ NEW FEATURES
 * Added percentAA()
 * Added percentGenes()
 * Added percentVJ()
+* Added percentKmer()
 * Added exportClones() to get a csv of paired sequences 
 * Changed compareClonotypes to clonalCompare
 * Changed clonotypeSizeDistribution to clonalSizeDistribution

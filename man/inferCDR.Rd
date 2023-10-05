@@ -4,13 +4,7 @@
 \alias{inferCDR}
 \title{Add portions on the CDR loop based on Vgene usage}
 \usage{
-inferCDR(
-  df,
-  group.by = NULL,
-  chain = "TRB",
-  regions = c("CDR1", "CDR2"),
-  species = "human"
-)
+inferCDR(df, chain = "TRB", regions = c("CDR1", "CDR2"), species = "human")
 }
 \arguments{
 \item{df}{The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or

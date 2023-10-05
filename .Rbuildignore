@@ -4,3 +4,5 @@
 ^\.github$
 ^local_tests\.R$
 ^LICENSE\.md$
+^JOSS$
+^draft-pdf\.yml$
