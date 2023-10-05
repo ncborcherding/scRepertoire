@@ -1,8 +1,8 @@
 #' Examine the clonal diversity of samples
 #'
-#' This function calculates traditional measures of diversity - Shannon, 
-#' inverse Simpson, normalized entropy, Gini-Simpson, Chao1 index, and
-#' abundance-based coverage estimators (ACE) measure of species evenness by sample or group. 
+#' This function calculates traditional measures of diversity - **Shannon**, 
+#' **inverse Simpson**, **normalized entropy**, **Gini-Simpson**, **Chao1 index**, and
+#' **abundance-based coverage estimators (ACE)** measure of species evenness by sample or group. 
 #' The function automatically down samples the diversity metrics using 
 #' 100 boot straps The group parameter can be used to condense the individual 
 #' samples. If a matrix output for the data is preferred, set exportTable = TRUE.
@@ -10,24 +10,30 @@
 #' @details
 #' The formulas for the indices and estimators are as follows:
 #' 
-#' \deqn{Shannon Index: H = - \sum p_i \cdot \log(p_i)}
+#' Shannon Index:
+#' \deqn{H = - \sum p_i \cdot \log(p_i)}
 #' 
-#' \deqn{Inverse Simpson Index: D^{-1} = 1 / \sum p_i^2}
+#' Inverse Simpson Index:
+#' \deqn{ D^{-1} = 1 / \sum p_i^2}
 #' 
-#' \deqn{Normalized Entropy: E^H = H / \log(S)}
+#' Normalized Entropy:
+#' \deqn{E^H = H / \log(S)}
 #' 
-#' \deqn{Gini-Simpson Index: 1 - D = 1 - \sum p_i^2}
+#' Gini-Simpson Index:
+#' \deqn{1 - D = 1 - \sum p_i^2}
 #' 
-#' \deqn{Chao1 Index: \hat{S}_{Chao1} = S + \left( \frac{n_1(n_1 - 1)}{2(n_2 + 1)} \right)}
+#' Chao1 Index:
+#' \deqn{\hat{S}_{Chao1} = S + \left( \frac{n_1(n_1 - 1)}{2(n_2 + 1)} \right)}
 #' 
-#' \deqn{Abundance-based Coverage Estimator (ACE): \hat{S}_{ACE} = S_{abundant} + \frac{S_{rare}}{C_{rare}} + \left( \frac{S_{rare} - 1}{C_{rare}} \right) \cdot F_1}
+#' Abundance-based Coverage Estimator (ACE): 
+#' \deqn{\hat{S}_{ACE} = S_{abundant} + \frac{S_{rare}}{C_{rare}} + \left( \frac{S_{rare} - 1}{C_{rare}} \right) \cdot F_1}
 #' 
 #' Where:
 #' \itemize{
-#'   \item{ \( p_i \) is the proportion of species \( i \) in the dataset.}
-#'   \item{ \( S \) is the total number of species.}
-#'   \item{ \( n_1 \) and \( n_2 \) are the number of singletons and doubletons, respectively.}
-#'   \item{ \( S_{abundant} \), \( S_{rare} \), \( C_{rare} \), and \( F_1 \) are parameters derived from the data.}
+#'   \item{\(p_i\) is the proportion of species \(i\) in the dataset.}
+#'   \item{\(S\) is the total number of species.}
+#'   \item{\(n_1\) and \(n_2\) are the number of singletons and doubletons, respectively.}
+#'   \item{\(S_{abundant}\), \(S_{rare}\), \(C_{rare}\), and \(F_1\) are parameters derived from the data.}
 #' }
 #'
 #' @examples
@@ -43,25 +49,25 @@
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
 #' VDJC gene + CDR3 nucleotide (strict).
 #' @param chain indicate if both or a specific chain should be used - 
-#' e.g. "both", "TRA", "TRG", "IGH", "IGL"
-#' @param group.by Variable in which to group the diversity calculation
-#' @param x.axis Additional variable in which to split the x.axis
-#' @param group.by The variable to use for grouping
+#' e.g. "both", "TRA", "TRG", "IGH", "IGL".
+#' @param group.by Variable in which to group the diversity calculation.
+#' @param x.axis Additional variable in which to split the x.axis.
+#' @param group.by The variable to use for grouping.
 #' @param metrics The indices to use in diversity calculations - "shannon", "inv.simpson", 
-#' "norm.entropy", "gini.simpson", "chao1", "ACE"
+#' "norm.entropy", "gini.simpson", "chao1", "ACE".
 #' @param exportTable Exports a table of the data into the global environment 
-#' in addition to the visualization
-#' @param palette Colors to use in visualization - input any hcl.pals()
+#' in addition to the visualization.
+#' @param palette Colors to use in visualization - input any \link[grDevices]{hcl.pals}.
 #' @param n.boots number of bootstraps to downsample in order to get mean diversity
 #' @param return.boots export boot strapped values calculated - 
-#' will automatically exportTable = TRUE
-#' @param skip.boots remove downsampling and boot strapping from the calculation
+#' will automatically exportTable = TRUE.
+#' @param skip.boots remove downsampling and boot strapping from the calculation.
 #' @importFrom stringr str_sort str_split
 #' @importFrom reshape2 melt
 #' @importFrom dplyr sample_n
 #' @import ggplot2
 #' @export
-#' @return ggplot of the diversity of clonotype sequences across list
+#' @return ggplot of the diversity of clones by group
 #' @author Andrew Malone, Nick Borcherding
 clonalDiversity <- function(df, 
                             cloneCall = "strict", 

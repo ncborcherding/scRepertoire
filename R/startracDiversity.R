@@ -1,11 +1,11 @@
 #' Startrac-based diversity indices for single-cell RNA-seq
 #'
 #' @description This function utilizes the Startrac approach derived from 
-#' \href{https://pubmed.ncbi.nlm.nih.gov/30479382/}{PMID: 30479382}
+#' \href{https://pubmed.ncbi.nlm.nih.gov/30479382/}{PMID: 30479382}.
 #' Required to run the function, the "type" variable needs to include the 
 #' difference in where the cells were derived. The output of this function 
-#' will produce 3 indices: expa (clonal expansion), migra 
-#' (cross-tissue migration), and trans (state transition). In order 
+#' will produce 3 indices: *expa* (clonal expansion), *migra* 
+#' (cross-tissue migration), and *trans* (state transition). In order 
 #' to understand the underlying analyses of the outputs please 
 #' read and cite the linked manuscript. 
 #' 
@@ -34,11 +34,11 @@
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
 #' VDJC gene + CDR3 nucleotide (strict).
 #' @param chain indicate if both or a specific chain should be used - 
-#' e.g. "both", "TRA", "TRG", "IGH", "IGL"
-#' @param type The variable in the meta data that provides tissue type
-#' @param group.by The variable in the meta data to group by, often samples
-#' @param exportTable Returns the data frame used for forming the graph
-#' @param palette Colors to use in visualization - input any hcl.pals()
+#' e.g. "both", "TRA", "TRG", "IGH", "IGL".
+#' @param type The variable in the meta data that provides tissue type.
+#' @param group.by The variable in the meta data to group by, often samples.
+#' @param exportTable Returns the data frame used for forming the graph.
+#' @param palette Colors to use in visualization - input any \link[grDevices]{hcl.pals}.
 #' @importFrom reshape2 melt
 #' @import ggplot2
 #' @export

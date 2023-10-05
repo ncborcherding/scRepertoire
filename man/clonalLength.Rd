@@ -34,7 +34,7 @@ relative distributions.}
 
 \item{exportTable}{Returns the data frame used for forming the graph.}
 
-\item{palette}{Colors to use in visualization - input any hcl.pals()}
+\item{palette}{Colors to use in visualization - input any \link[grDevices]{hcl.pals}.}
 }
 \value{
 ggplot of the discrete or relative length distributions of 

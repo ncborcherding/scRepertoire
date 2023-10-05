@@ -24,26 +24,26 @@ CDR3 nucleotide (nt), CDR3 amino acid (aa), or
 VDJC gene + CDR3 nucleotide (strict).}
 
 \item{chain}{indicate if both or a specific chain should be used - 
-e.g. "both", "TRA", "TRG", "IGH", "IGL"}
+e.g. "both", "TRA", "TRG", "IGH", "IGL".}
 
-\item{type}{The variable in the meta data that provides tissue type}
+\item{type}{The variable in the meta data that provides tissue type.}
 
-\item{group.by}{The variable in the meta data to group by, often samples}
+\item{group.by}{The variable in the meta data to group by, often samples.}
 
-\item{exportTable}{Returns the data frame used for forming the graph}
+\item{exportTable}{Returns the data frame used for forming the graph.}
 
-\item{palette}{Colors to use in visualization - input any hcl.pals()}
+\item{palette}{Colors to use in visualization - input any \link[grDevices]{hcl.pals}.}
 }
 \value{
 ggplot object of Startrac diversity metrics
 }
 \description{
 This function utilizes the Startrac approach derived from 
-\href{https://pubmed.ncbi.nlm.nih.gov/30479382/}{PMID: 30479382}
+\href{https://pubmed.ncbi.nlm.nih.gov/30479382/}{PMID: 30479382}.
 Required to run the function, the "type" variable needs to include the 
 difference in where the cells were derived. The output of this function 
-will produce 3 indices: expa (clonal expansion), migra 
-(cross-tissue migration), and trans (state transition). In order 
+will produce 3 indices: *expa* (clonal expansion), *migra* 
+(cross-tissue migration), and *trans* (state transition). In order 
 to understand the underlying analyses of the outputs please 
 read and cite the linked manuscript.
 }

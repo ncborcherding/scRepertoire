@@ -1,9 +1,8 @@
 #' Scatter plot comparing the expansion of two samples
 #'
 #' This function produces a scatter plot directly comparing the specific clonotypes
-#' between two samples. The clonotypes will be categorized by counts into singlets or multiplets, 
-#' either exclusive or shared between the selected samples. Visualization inspired 
-#' by the work of \href{https://pubmed.ncbi.nlm.nih.gov/32103181/}{Wu, T, et al 2020}. 
+#' between two samples. The clonotypes will be categorized by counts into singlets 
+#' or expanded, either exclusive or shared between the selected samples. 
 #'
 #' @examples
 #' #Making combined contig data
@@ -21,15 +20,15 @@
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
 #' VDJC gene + CDR3 nucleotide (strict).
 #' @param chain indicate if both or a specific chain should be used - 
-#' e.g. "both", "TRA", "TRG", "IGH", "IGL"
-#' @param x.axis name of the list element to appear on the x.axis
-#' @param y.axis name of the list element to appear on the y.axis
+#' e.g. "both", "TRA", "TRG", "IGH", "IGL".
+#' @param x.axis name of the list element to appear on the x.axis.
+#' @param y.axis name of the list element to appear on the y.axis.
 #' @param dot.size either total or the name of the list element to 
-#' use for size of dots
-#' @param group.by The variable to use for grouping
-#' @param graph graph either proportion or raw clonotype count
+#' use for size of dots.
+#' @param group.by The variable to use for grouping.
+#' @param graph graph either proportion or raw clonotype count.
 #' @param exportTable Returns the data frame used for forming the graph.
-#' @param palette Colors to use in visualization - input any hcl.pals()
+#' @param palette Colors to use in visualization - input any \link[grDevices]{hcl.pals}.
 #' 
 #' @import ggplot2
 #' 

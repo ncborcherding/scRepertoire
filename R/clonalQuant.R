@@ -22,7 +22,7 @@
 #' @param order Maintain the order of the list when plotting
 #' @param scale Converts the graphs into percentage of unique clonotypes.
 #' @param exportTable Returns the data frame used for forming the graph.
-#' @param palette Colors to use in visualization - input any hcl.pals()
+#' @param palette Colors to use in visualization - input any \link[grDevices]{hcl.pals}.
 #' @import ggplot2
 #' @export
 #' @return ggplot of the total or relative unique clonotypes

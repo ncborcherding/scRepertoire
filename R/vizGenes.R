@@ -27,7 +27,7 @@
 #' respective repertoire size 
 #' @param group.by The variable to use for grouping.
 #' @param exportTable Returns the data frame used for forming the graph.
-#' @param palette Colors to use in visualization - input any hcl.pals()
+#' @param palette Colors to use in visualization - input any \link[grDevices]{hcl.pals}.
 #' @import ggplot2
 #' @importFrom stringr str_split
 #' @importFrom stats sd

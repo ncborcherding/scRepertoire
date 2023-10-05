@@ -50,15 +50,15 @@
 #' CDR3 nucleotide (nt) or CDR3 amino acid (aa), or 
 #' VDJC gene + CDR3 nucleotide (strict).
 #' @param chain indicate if both or a specific chain should be used - 
-#' e.g. "both", "TRA", "TRG", "IGH", "IGL"
-#' @param y.axes The columns that will separate the proportional 
+#' e.g. "both", "TRA", "TRG", "IGH", "IGL".
+#' @param y.axes The columns that will separate the proportional .
 #' visualizations.
 #' @param color The column header or clonotype(s) to be highlighted.
 #' @param facet The column label to separate.
 #' @param alpha The column header to have gradated opacity.
 #' @param exportTable Exports a table of the data into the global 
-#' environment in addition to the visualization
-#' @param palette Colors to use in visualization - input any hcl.pals()
+#' environment in addition to the visualization.
+#' @param palette Colors to use in visualization - input any \link[grDevices]{hcl.pals}.
 #' 
 #' @import ggplot2
 #' @importFrom ggalluvial StatStratum geom_flow geom_stratum to_lodes_form geom_alluvium

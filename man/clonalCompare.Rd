@@ -28,13 +28,13 @@ CDR3 nucleotide (nt), CDR3 amino acid (aa), or
 VDJC gene + CDR3 nucleotide (strict).}
 
 \item{chain}{indicate if both or a specific chain should be used - 
-e.g. "both", "TRA", "TRG", "IGH", "IGL"}
+e.g. "both", "TRA", "TRG", "IGH", "IGL".}
 
 \item{samples}{The specific samples to isolate for visualization.}
 
 \item{clonotypes}{The specific clonal sequences of interest.}
 
-\item{top.clones}{The top number of clonotype sequences per group}
+\item{top.clones}{The top number of clonotype sequences per group.}
 
 \item{highlight.clones}{Clonal sequences to highlight, if present, 
 all other clones returned will be grey.}
@@ -42,14 +42,14 @@ all other clones returned will be grey.}
 \item{relabel.clones}{Simplify the legend of the graph by returning
 clones that are numerically indexed.}
 
-\item{group.by}{If using a single-cell object, the column header 
+\item{group.by}{If using a single-cell object, the column header .
 to group the new list. NULL will return clusters.}
 
 \item{graph}{The type of graph produced, either "alluvial" or "area".}
 
 \item{exportTable}{Returns the data frame used for forming the graph.}
 
-\item{palette}{Colors to use in visualization - input any hcl.pals()}
+\item{palette}{Colors to use in visualization - input any \link[grDevices]{hcl.pals}.}
 }
 \value{
 ggplot of the proportion of total sequencing read of 

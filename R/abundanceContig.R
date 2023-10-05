@@ -27,7 +27,7 @@
 #' relative distributions.
 #' @param exportTable Returns the data frame used for forming the graph
 #' to the visualization.
-#' @param palette Colors to use in visualization - input any hcl.pals()
+#' @param palette Colors to use in visualization - input any \link[grDevices]{hcl.pals}.
 #' @importFrom ggplot2 ggplot
 #' @export
 #' @return ggplot of the total or relative abundance of clonotypes 

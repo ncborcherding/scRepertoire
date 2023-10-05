@@ -17,15 +17,15 @@ percentGenes(
 \item{df}{The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
 \code{\link{combineExpression}}.}
 
-\item{chain}{"TRA", "TRB", "TRG", "TRG", "IGH", "IGL"}
+\item{chain}{"TRA", "TRB", "TRG", "TRG", "IGH", "IGL".}
 
-\item{gene}{"V", "D" or "J"}
+\item{gene}{"V", "D" or "J".}
 
 \item{group.by}{The variable to use for grouping.}
 
-\item{exportTable}{Returns the data frame used for forming the graph}
+\item{exportTable}{Returns the data frame used for forming the graph.}
 
-\item{palette}{Colors to use in visualization - input any hcl.pals()}
+\item{palette}{Colors to use in visualization - input any \link[grDevices]{hcl.pals}.}
 }
 \value{
 ggplot of percentage of indicated genes as a heatmap

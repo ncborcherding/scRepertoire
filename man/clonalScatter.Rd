@@ -25,32 +25,31 @@ clonalScatter(
 CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
 VDJC gene + CDR3 nucleotide (strict).}
 
-\item{x.axis}{name of the list element to appear on the x.axis}
+\item{x.axis}{name of the list element to appear on the x.axis.}
 
-\item{y.axis}{name of the list element to appear on the y.axis}
+\item{y.axis}{name of the list element to appear on the y.axis.}
 
 \item{chain}{indicate if both or a specific chain should be used - 
-e.g. "both", "TRA", "TRG", "IGH", "IGL"}
+e.g. "both", "TRA", "TRG", "IGH", "IGL".}
 
 \item{dot.size}{either total or the name of the list element to 
-use for size of dots}
+use for size of dots.}
 
-\item{group.by}{The variable to use for grouping}
+\item{group.by}{The variable to use for grouping.}
 
-\item{graph}{graph either proportion or raw clonotype count}
+\item{graph}{graph either proportion or raw clonotype count.}
 
 \item{exportTable}{Returns the data frame used for forming the graph.}
 
-\item{palette}{Colors to use in visualization - input any hcl.pals()}
+\item{palette}{Colors to use in visualization - input any \link[grDevices]{hcl.pals}.}
 }
 \value{
 ggplot of the relative clonotype numbers
 }
 \description{
 This function produces a scatter plot directly comparing the specific clonotypes
-between two samples. The clonotypes will be categorized by counts into singlets or multiplets, 
-either exclusive or shared between the selected samples. Visualization inspired 
-by the work of \href{https://pubmed.ncbi.nlm.nih.gov/32103181/}{Wu, T, et al 2020}.
+between two samples. The clonotypes will be categorized by counts into singlets 
+or expanded, either exclusive or shared between the selected samples.
 }
 \examples{
 #Making combined contig data

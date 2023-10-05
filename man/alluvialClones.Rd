@@ -24,9 +24,9 @@ CDR3 nucleotide (nt) or CDR3 amino acid (aa), or
 VDJC gene + CDR3 nucleotide (strict).}
 
 \item{chain}{indicate if both or a specific chain should be used - 
-e.g. "both", "TRA", "TRG", "IGH", "IGL"}
+e.g. "both", "TRA", "TRG", "IGH", "IGL".}
 
-\item{y.axes}{The columns that will separate the proportional 
+\item{y.axes}{The columns that will separate the proportional .
 visualizations.}
 
 \item{color}{The column header or clonotype(s) to be highlighted.}
@@ -36,9 +36,9 @@ visualizations.}
 \item{facet}{The column label to separate.}
 
 \item{exportTable}{Exports a table of the data into the global 
-environment in addition to the visualization}
+environment in addition to the visualization.}
 
-\item{palette}{Colors to use in visualization - input any hcl.pals()}
+\item{@param}{palette Colors to use in visualization - input any \link[grDevices]{hcl.pals}.}
 }
 \value{
 Alluvial ggplot comparing clonotype distribution.

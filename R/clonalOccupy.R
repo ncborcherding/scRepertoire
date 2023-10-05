@@ -2,7 +2,7 @@
 #'
 #' View the count of clonotypes frequency group in seurat or SCE object 
 #' meta data after \code{\link{combineExpression}}. The visualization will take the 
-#' new meta data variable "cloneSize" and plot the number of cells with
+#' new meta data variable **"cloneSize"** and plot the number of cells with
 #' each designation using a secondary variable, like cluster. Credit to 
 #' the idea goes to Drs. Carmona and Andreatta and their work with
 #' \href{https://github.com/carmonalab/ProjecTILs}{ProjectTIL}.
@@ -24,14 +24,14 @@
 #' table <- clonalOccupy(scRep_example, x.axis = "ident", exportTable = TRUE)
 #' 
 #' @param sc The single-cell object after \code{\link{combineExpression}}.
-#' @param x.axis The variable in the meta data to graph along the x.axis
-#' @param label Include the number of clonotype in each category by x.axis variable
-#' @param facet.by The column header used for faceting the graph
-#' @param proportion Convert the stacked bars into relative proportion
+#' @param x.axis The variable in the meta data to graph along the x.axis.
+#' @param label Include the number of clonotype in each category by x.axis variable.
+#' @param facet.by The column header used for faceting the graph.
+#' @param proportion Convert the stacked bars into relative proportion.
 #' @param na.include Visualize NA values or not.
 #' @param exportTable Exports a table of the data into the global 
-#' environment in addition to the visualization
-#' @param palette Colors to use in visualization - input any hcl.pals()
+#' environment in addition to the visualization.
+#' @param palette Colors to use in visualization - input any \link[grDevices]{hcl.pals}.
 #' @importFrom dplyr %>% group_by mutate
 #' @importFrom reshape2 melt
 #' @import ggplot2

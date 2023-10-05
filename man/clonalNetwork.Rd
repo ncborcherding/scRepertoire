@@ -22,31 +22,31 @@ clonalNetwork(
 \arguments{
 \item{sc}{The single-cell object after \code{\link{combineExpression}}.}
 
-\item{reduction}{The name of the dimensional reduction of the single-cell object}
+\item{reduction}{The name of the dimensional reduction of the single-cell object.}
 
 \item{identity}{A variable in the meta data to use for the nodes.}
 
 \item{filter.clones}{Use to select the top n clones (filter.clones = 2000) or 
 n of clones based on the minimum number of all the comparators (filter.clone = "min").}
 
-\item{filter.identity}{Display the network for a specific level of the indicated identity}
+\item{filter.identity}{Display the network for a specific level of the indicated identity.}
 
-\item{filter.proportion}{Remove clonotypes from the network below a specific proportion}
+\item{filter.proportion}{Remove clonotypes from the network below a specific proportion.}
 
-\item{filter.graph}{Remove the reciprocal edges from the half of the graph, 
-allowing for cleaner visualization}
+\item{filter.graph}{Remove the reciprocal edges from the half of the graph,
+allowing for cleaner visualization.}
 
 \item{cloneCall}{How to call the clonotype - VDJC gene (gene), 
 CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
 VDJC gene + CDR3 nucleotide (strict).}
 
 \item{chain}{indicate if both or a specific chain should be used - 
-e.g. "both", "TRA", "TRG", "IGH", "IGL"}
+e.g. "both", "TRA", "TRG", "IGH", "IGL".}
 
 \item{exportTable}{Exports a table of the data into the global 
-environment in addition to the visualization}
+environment in addition to the visualization.}
 
-\item{palette}{Colors to use in visualization - input any hcl.pals()}
+\item{palette}{Colors to use in visualization - input any \link[grDevices]{hcl.pals}.}
 
 \item{exportClones}{Exports a table of clones that are shared
 across multiple identity groups and ordered by the total number

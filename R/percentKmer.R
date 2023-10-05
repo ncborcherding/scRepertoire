@@ -12,15 +12,15 @@
 
 #' @param df The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
 #'  \code{\link{combineExpression}}.
-#' @param chain "TRA", "TRB", "TRG", "TRG", "IGH", "IGL"
+#' @param chain "TRA", "TRB", "TRG", "TRG", "IGH", "IGL".
 #' @param cloneCall How to call the clonotype - CDR3 nucleotide (nt) or 
 #' CDR3 amino acid (aa).
 #' @param group.by The variable to use for grouping.
-#' @param motif.length The length of the kmer to analyze
+#' @param motif.length The length of the kmer to analyze.
 #' @param top.motifs Return the n most variable motifs as a function of 
 #' median absolute deviation. 
-#' @param exportTable Returns the data frame used for forming the graph
-#' @param palette Colors to use in visualization - input any hcl.pals()
+#' @param exportTable Returns the data frame used for forming the graph.
+#' @param palette Colors to use in visualization - input any \link[grDevices]{hcl.pals}.
 #' @import ggplot2
 #' @importFrom reshape2 melt
 #' @importFrom stats mad

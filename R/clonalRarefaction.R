@@ -1,14 +1,14 @@
 #' Calculate rarefaction based on the abundance of clones
 #' 
-#' This functions uses the Hill numbers of order q: species richness (q = 0), 
-#' Shannon diversity (q = 1, the exponential of Shannon entropy) and Simpson 
-#' diversity (q = 2, the inverse of Simpson concentration) to compute diversity 
+#' This functions uses the Hill numbers of order q: species richness (**q = 0&&), 
+#' Shannon diversity (**q = 1**, the exponential of Shannon entropy) and Simpson 
+#' diversity (**q = 2**, the inverse of Simpson concentration) to compute diversity 
 #' estimates for rarefaction and extrapolation. The function relies on 
-#' \code{\link[iNEXT]{iNEXT}} and read/please cite the 
+#' \code{\link[iNEXT]{iNEXT}}. Please read and cite the 
 #' \href{https://besjournals.onlinelibrary.wiley.com/doi/10.1111/2041-210X.12613}{manuscript} 
 #' if using this function.
 #' 
-#' #' @examples
+#' @examples
 #' #Making combined contig data
 #' combined <- combineTCR(contig_list, 
 #'                         samples = c("P17B", "P17L", "P18B", "P18L", 
@@ -22,15 +22,15 @@
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
 #' VDJC gene + CDR3 nucleotide (strict).
 #' @param chain indicate if both or a specific chain should be used - 
-#' e.g. "both", "TRA", "TRG", "IGH", "IGL"
-#' @param group.by The variable to use for grouping
+#' e.g. "both", "TRA", "TRG", "IGH", "IGL".
+#' @param group.by The variable to use for grouping.
 #' @param plot.type sample-size-based rarefaction/extrapolation curve (\code{type = 1}); 
 #' sample completeness curve (\code{type = 2}); coverage-based rarefaction/extrapolation curve (\code{type = 3}).   
 #' @param hill.numbers The Hill numbers to be plotted out (0 - species richness, 1 - Shannon, 2 - Simpson)
-#' @param n.boots The number of bootstraps to downsample in order to get mean diversity
+#' @param n.boots The number of bootstraps to downsample in order to get mean diversity.
 #' @param exportTable Exports a table of the data into the global 
-#' environment in addition to the visualization
-#' @param palette Colors to use in visualization - input any hcl.pals()
+#' environment in addition to the visualization.
+#' @param palette Colors to use in visualization - input any \link[grDevices]{hcl.pals}.
 #' 
 #' @importFrom iNEXT iNEXT ggiNEXT
 #' @import ggplot2

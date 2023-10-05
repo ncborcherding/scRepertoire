@@ -1,12 +1,13 @@
 #' Examine clonotype bias
 #' 
-#' Clonotype bias method was developed and outlined from a single-cell 
-#' \href{https://pubmed.ncbi.nlm.nih.gov/35829695/}{manuscript} 
-#' characterizing CD4 responses to acute and chronic infection. The metric seeks to 
+#'  The metric seeks to 
 #' quantify how individual clones are skewed towards a specific cellular 
-#' compartment or cluster. A clonotype bias of 1 indicates that a clonotype 
+#' compartment or cluster. A clonotype bias of *1* - indicates that a clonotype 
 #' is composed of cells from a single compartment or cluster, while a clonotype
-#' bias of 0 matches the background subtype distribution. 
+#' bias of *0* - matches the background subtype distribution. Please read and cite 
+#' the following
+#' \href{https://pubmed.ncbi.nlm.nih.gov/35829695/}{manuscript} 
+#' if using \code{\link{clonalBias()}}
 #' 
 #' @examples
 #' #Making combined contig data

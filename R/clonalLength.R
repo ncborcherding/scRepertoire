@@ -26,7 +26,7 @@
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL"
 #' @param exportTable Returns the data frame used for forming the graph.
-#' @param palette Colors to use in visualization - input any hcl.pals()
+#' @param palette Colors to use in visualization - input any \link[grDevices]{hcl.pals}.
 #' @importFrom stringr str_split
 #' @importFrom ggplot2 ggplot
 #' @export

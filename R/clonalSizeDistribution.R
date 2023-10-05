@@ -3,9 +3,8 @@
 #'
 #' This function produces a hierarchical clustering of clonotypes by sample 
 #' using the Jensen-Shannon distance and discrete gamma-GPD spliced threshold 
-#' model in 
-#' \href{https://bioconductor.org/packages/devel/bioc/html/powerTCR.html}{powerTCR R package}.
-#' Please read and cite PMID: 30485278 if using the function for analyses. 
+#' model. If using this model please read and cite 
+#' \href{https://pubmed.ncbi.nlm.nih.gov/30485278/}{PMID: 30485278}.
 #' 
 #' @examples
 #' #Making combined contig data
@@ -20,13 +19,13 @@
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
 #' VDJC gene + CDR3 nucleotide (strict).
 #' @param chain indicate if both or a specific chain should be used - 
-#' e.g. "both", "TRA", "TRG", "IGH", "IGL"
+#' e.g. "both", "TRA", "TRG", "IGH", "IGL".
 #' @param threshold Numerical vector containing the thresholds 
 #' the grid search was performed over.
 #' @param method The clustering parameter for the dendrogram.
-#' @param group.by The variable to use for grouping
+#' @param group.by The variable to use for grouping.
 #' @param exportTable Returns the data frame used for forming the graph.
-#' @param palette Colors to use in visualization - input any hcl.pals()
+#' @param palette Colors to use in visualization - input any \link[grDevices]{hcl.pals}.
 #' @import ggplot2 
 #' @importFrom dplyr bind_rows
 #' @importFrom ggdendro dendro_data segment label

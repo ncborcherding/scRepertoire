@@ -22,19 +22,19 @@
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
 #' VDJC gene + CDR3 nucleotide (strict).
 #' @param chain indicate if both or a specific chain should be used - 
-#' e.g. "both", "TRA", "TRG", "IGH", "IGL"
+#' e.g. "both", "TRA", "TRG", "IGH", "IGL".
 #' @param samples The specific samples to isolate for visualization.
 #' @param clonotypes The specific clonal sequences of interest.
-#' @param top.clones The top number of clonotype sequences per group
+#' @param top.clones The top number of clonotype sequences per group.
 #' @param highlight.clones Clonal sequences to highlight, if present, 
 #' all other clones returned will be grey.
 #' @param relabel.clones Simplify the legend of the graph by returning
 #' clones that are numerically indexed.
-#' @param group.by If using a single-cell object, the column header 
+#' @param group.by If using a single-cell object, the column header .
 #' to group the new list. NULL will return clusters.
 #' @param graph The type of graph produced, either "alluvial" or "area".
 #' @param exportTable Returns the data frame used for forming the graph.
-#' @param palette Colors to use in visualization - input any hcl.pals()
+#' @param palette Colors to use in visualization - input any \link[grDevices]{hcl.pals}.
 #' @import ggplot2
 #'
 #' @export

@@ -11,7 +11,7 @@ highlightClones(
 )
 }
 \arguments{
-\item{sc}{The Seurat object to attach after \code{\link{combineExpression}}}
+\item{sc}{The single-cell object to attach after \code{\link{combineExpression}}}
 
 \item{cloneCall}{How to call the clonotype - VDJC gene (gene), 
 CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
@@ -20,11 +20,11 @@ VDJC gene + CDR3 nucleotide (strict).}
 \item{sequence}{The specific sequence or sequence to highlight}
 }
 \value{
-Seurat object with new meta data column for indicated clones
+Single-cell object object with new meta data column for indicated clones
 }
 \description{
 Use a specific clonotype sequence to highlight on top of the dimensional 
-reduction in Seurat object.
+reduction in single-cell object.
 }
 \examples{
 #Getting the combined contigs

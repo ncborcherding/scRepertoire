@@ -25,36 +25,37 @@ CDR3 nucleotide (nt), CDR3 amino acid (aa), or
 VDJC gene + CDR3 nucleotide (strict).}
 
 \item{chain}{indicate if both or a specific chain should be used - 
-e.g. "both", "TRA", "TRG", "IGH", "IGL"}
+e.g. "both", "TRA", "TRG", "IGH", "IGL".}
 
-\item{group.by}{The variable to use for grouping}
+\item{group.by}{The variable to use for grouping.}
 
 \item{plot.type}{sample-size-based rarefaction/extrapolation curve (\code{type = 1}); 
 sample completeness curve (\code{type = 2}); coverage-based rarefaction/extrapolation curve (\code{type = 3}).}
 
 \item{hill.numbers}{The Hill numbers to be plotted out (0 - species richness, 1 - Shannon, 2 - Simpson)}
 
-\item{n.boots}{The number of bootstraps to downsample in order to get mean diversity}
+\item{n.boots}{The number of bootstraps to downsample in order to get mean diversity.}
 
 \item{exportTable}{Exports a table of the data into the global 
-environment in addition to the visualization}
+environment in addition to the visualization.}
 
-\item{palette}{Colors to use in visualization - input any hcl.pals()}
+\item{palette}{Colors to use in visualization - input any \link[grDevices]{hcl.pals}.}
 }
 \description{
-This functions uses the Hill numbers of order q: species richness (q = 0), 
-Shannon diversity (q = 1, the exponential of Shannon entropy) and Simpson 
-diversity (q = 2, the inverse of Simpson concentration) to compute diversity 
+This functions uses the Hill numbers of order q: species richness (**q = 0&&), 
+Shannon diversity (**q = 1**, the exponential of Shannon entropy) and Simpson 
+diversity (**q = 2**, the inverse of Simpson concentration) to compute diversity 
 estimates for rarefaction and extrapolation. The function relies on 
-\code{\link[iNEXT]{iNEXT}} and read/please cite the 
+\code{\link[iNEXT]{iNEXT}}. Please read and cite the 
 \href{https://besjournals.onlinelibrary.wiley.com/doi/10.1111/2041-210X.12613}{manuscript} 
 if using this function.
 }
-\details{
-#' @examples
+\examples{
 #Making combined contig data
 combined <- combineTCR(contig_list, 
                         samples = c("P17B", "P17L", "P18B", "P18L", 
                                     "P19B","P19L", "P20B", "P20L"))
 clonalRarefaction(combined[c(1,2)], cloneCall = "gene", n.boots = 3)
+
+
 }

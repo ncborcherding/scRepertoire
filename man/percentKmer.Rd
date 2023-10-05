@@ -19,21 +19,21 @@ percentKmer(
 \item{df}{The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
 \code{\link{combineExpression}}.}
 
-\item{chain}{"TRA", "TRB", "TRG", "TRG", "IGH", "IGL"}
+\item{chain}{"TRA", "TRB", "TRG", "TRG", "IGH", "IGL".}
 
 \item{cloneCall}{How to call the clonotype - CDR3 nucleotide (nt) or 
 CDR3 amino acid (aa).}
 
 \item{group.by}{The variable to use for grouping.}
 
-\item{motif.length}{The length of the kmer to analyze}
+\item{motif.length}{The length of the kmer to analyze.}
 
 \item{top.motifs}{Return the n most variable motifs as a function of 
 median absolute deviation.}
 
-\item{exportTable}{Returns the data frame used for forming the graph}
+\item{exportTable}{Returns the data frame used for forming the graph.}
 
-\item{palette}{Colors to use in visualization - input any hcl.pals()}
+\item{palette}{Colors to use in visualization - input any \link[grDevices]{hcl.pals}.}
 }
 \value{
 ggplot of percentage of kmers as a heatmap

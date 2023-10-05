@@ -12,11 +12,11 @@
 #' 
 #' @param df The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
 #'  \code{\link{combineExpression}}.
-#' @param chain "TRA", "TRB", "TRG", "TRG", "IGH", "IGL"
-#' @param gene "V", "D" or "J"
+#' @param chain "TRA", "TRB", "TRG", "TRG", "IGH", "IGL".
+#' @param gene "V", "D" or "J".
 #' @param group.by The variable to use for grouping.
-#' @param exportTable Returns the data frame used for forming the graph
-#' @param palette Colors to use in visualization - input any hcl.pals()
+#' @param exportTable Returns the data frame used for forming the graph.
+#' @param palette Colors to use in visualization - input any \link[grDevices]{hcl.pals}.
 #' @import ggplot2
 #' @importFrom stringr str_split str_sort 
 #' @importFrom reshape2 melt

@@ -28,14 +28,14 @@ for the base numbers.}
 \item{chain}{indicate if both or a specific chain should be used - 
 e.g. "both", "TRA", "TRG", "IGH", "IGL"}
 
-\item{group.by}{The variable to use for grouping}
+\item{group.by}{The variable to use for grouping.}
 
-\item{exportTable}{Returns the data frame used for forming the graph}
+\item{exportTable}{Returns the data frame used for forming the graph.}
 
-\item{palette}{Colors to use in visualization - input any hcl.pals()}
+\item{palette}{Colors to use in visualization - input any \link[grDevices]{hcl.pals}.}
 }
 \value{
-ggplot of the clonotypic overlap between elements of a list
+ggplot of the overlap of clones by group
 }
 \description{
 This functions allows for the calculation and visualizations of 
@@ -44,19 +44,24 @@ various overlap metrics for clonotypes.
 \details{
 The formulas for the indices are as follows:
 
-\deqn{Overlap Coefficient: OC = \frac{\sum \min(a_i, b_i)}{\min(\sum a_i, \sum b_i)}}
+Overlap Coefficient: 
+\deqn{overlap = \frac{\sum \min(a_i, b_i)}{\min(\sum a_i, \sum b_i)}}
 
-\deqn{Raw Count Overlap: RCO = \sum \min(a_i, b_i)}
+Raw Count Overlap:
+\deqn{raw = \sum \min(a_i, b_i)}
 
-\deqn{Morisita Index: MI = \frac{\sum a_i b_i}{(\sum a_i)(\sum b_i)}}
+Morisita Index:
+\deqn{morisita = \frac{\sum a_i b_i}{(\sum a_i)(\sum b_i)}}
 
-\deqn{Jaccard Index: JI = \frac{\sum \min(a_i, b_i)}{\sum a_i + \sum b_i - \sum \min(a_i, b_i)}}
+Jaccard Index:
+\deqn{jaccard = \frac{\sum \min(a_i, b_i)}{\sum a_i + \sum b_i - \sum \min(a_i, b_i)}}
 
-\deqn{Cosine Similarity: CS = \frac{\sum a_i b_i}{\sqrt{(\sum a_i^2)(\sum b_i^2)}}}
+Cosine Similarity:
+\deqn{cosine = \frac{\sum a_i b_i}{\sqrt{(\sum a_i^2)(\sum b_i^2)}}}
 
 Where:
 \itemize{
-  \item{ \( a_i \) and \( b_i \) are the abundances of species \( i \) in groups A and B, respectively.}
+  \item{\(a_i\) and \(b_i\) are the abundances of species \(i\) in groups A and B, respectively.}
 }
 }
 \examples{

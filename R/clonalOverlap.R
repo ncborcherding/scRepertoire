@@ -6,19 +6,24 @@
 #' @details
 #' The formulas for the indices are as follows:
 #' 
-#' \deqn{Overlap Coefficient: OC = \frac{\sum \min(a_i, b_i)}{\min(\sum a_i, \sum b_i)}}
+#' Overlap Coefficient: 
+#' \deqn{overlap = \frac{\sum \min(a_i, b_i)}{\min(\sum a_i, \sum b_i)}}
 #' 
-#' \deqn{Raw Count Overlap: RCO = \sum \min(a_i, b_i)}
+#' Raw Count Overlap:
+#' \deqn{raw = \sum \min(a_i, b_i)}
 #' 
-#' \deqn{Morisita Index: MI = \frac{\sum a_i b_i}{(\sum a_i)(\sum b_i)}}
+#' Morisita Index:
+#' \deqn{morisita = \frac{\sum a_i b_i}{(\sum a_i)(\sum b_i)}}
 #' 
-#' \deqn{Jaccard Index: JI = \frac{\sum \min(a_i, b_i)}{\sum a_i + \sum b_i - \sum \min(a_i, b_i)}}
+#' Jaccard Index:
+#' \deqn{jaccard = \frac{\sum \min(a_i, b_i)}{\sum a_i + \sum b_i - \sum \min(a_i, b_i)}}
 #' 
-#' \deqn{Cosine Similarity: CS = \frac{\sum a_i b_i}{\sqrt{(\sum a_i^2)(\sum b_i^2)}}}
+#' Cosine Similarity:
+#' \deqn{cosine = \frac{\sum a_i b_i}{\sqrt{(\sum a_i^2)(\sum b_i^2)}}}
 #' 
 #' Where:
 #' \itemize{
-#'   \item{ \( a_i \) and \( b_i \) are the abundances of species \( i \) in groups A and B, respectively.}
+#'   \item{\(a_i\) and \(b_i\) are the abundances of species \(i\) in groups A and B, respectively.}
 #' }
 #'
 #' @examples
@@ -39,16 +44,16 @@
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL"
 #' @param method The method to calculate the "overlap", 
-#  "morisita", "jaccard" indices, "cosine" similarity or "raw" 
+#  "morisita", "jaccard", "cosine" indices or "raw" 
 #' for the base numbers.
-#' @param group.by The variable to use for grouping
-#' @param exportTable Returns the data frame used for forming the graph
-#' @param palette Colors to use in visualization - input any hcl.pals()
+#' @param group.by The variable to use for grouping.
+#' @param exportTable Returns the data frame used for forming the graph.
+#' @param palette Colors to use in visualization - input any \link[grDevices]{hcl.pals}.
 #' @importFrom stringr str_sort str_to_title
 #' @importFrom reshape2 melt
 #' @importFrom stats quantile
 #' @export
-#' @return ggplot of the clonotypic overlap between elements of a list
+#' @return ggplot of the overlap of clones by group
 clonalOverlap <- function(df, 
                           cloneCall = "strict", 
                           method = NULL, 
