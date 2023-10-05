@@ -75,7 +75,7 @@ clonalProportion <- function(df,
         geom_bar(stat = "identity", position="fill", 
                     color = "black", lwd= 0.25) +
         scale_fill_manual(name = "Clonal Indices", 
-                        values = .colorizer(palette,col)) +
+                        values = rev(.colorizer(palette,col))) +
         xlab("Samples") +
         ylab("Occupied Repertoire Space") +
         theme_classic()

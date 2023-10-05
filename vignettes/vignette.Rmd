@@ -403,7 +403,6 @@ percentGenes(combined,
 We can also use the output `percentGenes()` for dimensional reduction to summarise the gene usage by sample. This can be done with a simple principal component analysis (below) or even more complex reductions. 
 
 ```{r}
-
 df.genes <- percentGenes(combined, 
                          chain = "TRB", 
                          gene = "Vgene", 
@@ -523,7 +522,6 @@ clonalProportion(combined,
                  cloneCall = "nt") 
 ```
 
-
 ## clonalOverlap
 
 If you are interested in measures of similarity between the samples loaded into scRepertoire, using `clonalOverlap()` can assist in the visualization. Three methods currently can be performed in `clonalOverlap()` 1) overlap coefficient, 2) Morisita index, 3) Jaccard index, 4) Cosine similarity, and 5) raw numbers. 
@@ -546,19 +544,29 @@ clonalSizeDistribution(combined,
 
 ## clonalDiversity
 
-Diversity can also be measured for samples or by other variables. Diversity **metrics** calculated, include:  "shannon" "inv.simpson", "norm.entropy", "gini.simpson", "chao1", and "ACE". 
+Diversity can also be measured for samples or by other variables. Diversity **metrics** calculated, include: "shannon" "inv.simpson", "norm.entropy", "gini.simpson", "chao1", and "ACE". Please see the manual for more information on each metric and the underlying calculations. ```clonalDiversity()``` will automatically downsample to the smallest repertoire size and perform boostapping to return the median diversity estimates. 
 
-#' @param n.boots number of bootstraps to downsample in order to get mean diversity
-#' @param return.boots export boot strapped values calculated - 
-#' will automatically exportTable = TRUE
-#' @param skip.boots remove downsampling and boot strapping from the calculation
+**n.boots**  
+The number of calculations to perform  
 
-With the former two generally used to estimate baseline diversity and Chao/ACE indices used to estimate the richness of the samples. New implementation of this function include downsampling with 100 boot straps (**n.boots**) using the minimum number of unique clonotypes, as a more robust diversity estimate. To get a table of the bootstrapped values, set **return.boots** = TRUE.
+**return.boots**  
+- TRUE: Return all the calculations  
+- FALSE: *Default* - return only the mean values
+
+**skip.boots**  
+Skip the bootstrapping calculations  
+
 
 ```{r}
 clonalDiversity(combined, 
                 cloneCall = "gene", 
-                n.boots = 50)
+                n.boots = 20)
+
+#Return only a subset of metrics
+clonalDiversity(combined, 
+                metrics = c("shannon", "ACE"),
+                cloneCall = "gene", 
+                n.boots = 20)
 ```
 
 ## clonaRarefaction
@@ -567,13 +575,13 @@ We can also use Hill numbers to estimate the rarefaction using the the abundance
 
 **plot.type**  
 + 1 - sample-size-based rarefaction/extrapolation  
-+ 2 - sample completeness curve 
++ 2 - sample completeness curve  
 + 3 - coverage-based rarefaction/extrapolation curve  
 
 **hill.numbers** 
 + 0 - species richness  
 + 1 - Shannon  
-+ 2 - Simpson
++ 2 - Simpson  
 
 ```{r, message=FALSE}
 clonalRarefaction(combined,

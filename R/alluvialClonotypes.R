@@ -29,7 +29,7 @@ makingLodes <- function(meta2, color, alpha, facet, set.axes) {
 #' Exploring interaction of clonotypes by seurat or SCE dynamics
 #'
 #' View the proportional contribution of clonotypes by seurat or SCE object 
-#' meta data after combineExpression(). The visualization is based on the 
+#' meta data after \code{\link{combineExpression}}. The visualization is based on the 
 #' ggalluvial package, which requires the aesthetics to be part of the axes 
 #' that are visualized. Therefore, alpha, facet, and color should be part of 
 #' the the axes you wish to view or will add an additional stratum/column to 

@@ -40,14 +40,17 @@ inferCDR <- function(df,
     df[[x]] <- .off.the.chain(df[[x]], chain, "CTaa")
     df[[x]] <- .off.the.chain(df[[x]], chain, "CTgene")
   }
-  
+  #Get the sequence position for the regions selected
   sequence.pos <- .sequence.positions[grep(paste0(regions, collapse = "|"), names(.sequence.positions))]
   
   dat <- bind_rows(df)
   cdr3.sequences <- dat[,"CTaa"]
   Vgene <- str_split(dat[,"CTgene"], "[.]", simplify = TRUE)[,1]
   
+  #Laoding reference
   protein.reference <- .load.fasta(chain, species)
+  
+  #Matching the tenx Vgene nomenclature with IMGT
   Vgene <- .tenX.V(Vgene, protein.reference)
   
   for (i in seq_len(length(regions)-1)) {
@@ -56,6 +59,7 @@ inferCDR <- function(df,
   
   sequence.pos <- unname(unlist(sequence.pos))
   
+  #Loop through the sequences
   sequence.store <- c()
   for(i in seq_len(length(cdr3.sequences))) {
     if (Vgene[i] %in% names(protein.reference)) {
@@ -74,7 +78,8 @@ inferCDR <- function(df,
   sequence.store[sequence.store == "!-!-NA"] <- NA
   return(sequence.store)
 }
-  
+
+#Positions of specific regions
 .sequence.positions <- list(FR1.A = c(1:15), 
                             FR1.B = c(16:26),
                             CDR1 = c(27:38), 
@@ -111,7 +116,7 @@ inferCDR <- function(df,
   return(Vgene)
 }
 
-
+#Pulling the reference sequences form IMGT
 #' @importFrom seqinr read.fasta translate
 #' @importFrom stringr str_split str_replace_all
 .load.fasta <- function(chain, species) {

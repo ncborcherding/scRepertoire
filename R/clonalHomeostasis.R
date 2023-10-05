@@ -76,7 +76,7 @@ clonalHomeostasis <- function(df,
         geom_bar(stat = "identity", position="fill", 
                     color = "black", lwd= 0.25) +
         scale_fill_manual(name = "Clonotype Group", 
-                    values = rev(.colorizer(palette,col))) +
+                    values = .colorizer(palette,col)) +
         xlab("Samples") +
         ylab("Relative Abundance") +
         theme_classic()

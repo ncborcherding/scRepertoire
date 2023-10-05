@@ -46,7 +46,7 @@
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL"
 #' @param group.by Variable in which to group the diversity calculation
 #' @param x.axis Additional variable in which to split the x.axis
-#' @param group.by The variable to use for goruping
+#' @param group.by The variable to use for grouping
 #' @param metrics The indices to use in diversity calculations - "shannon", "inv.simpson", 
 #' "norm.entropy", "gini.simpson", "chao1", "ACE"
 #' @param exportTable Exports a table of the data into the global environment 
