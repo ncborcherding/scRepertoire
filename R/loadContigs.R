@@ -11,7 +11,9 @@
 #' \itemize{
 #'   \item 10X =  "filtered_contig_annotation.csv"  
 #'   \item AIRR = "airr_rearrangement.tsv" 
+#'   \item JSON = ".json"
 #'   \item BD = "Contigs_AIRR.tsv" 
+#'   \item Omniscope = ".csv" 
 #'   \item TRUST4 = "barcode_report.tsv"
 #'   \item WAT3R = "barcode_results.csv" 
 #' }
@@ -29,8 +31,9 @@
 #' 
 #' @param dir The directory in which contigs are located or a list with contig elements
 #' @param format The format of the single-cell contig, currently supporting: 
-#' "10X", "AIRR", "TRUST4", "BD", and "WAT3R"
+#' "10X", "AIRR", "BD", "JSON", "Omniscope", "TRUST4", and "WAT3R"
 #' @importFrom utils read.csv read.delim
+#' @importFrom rjson fromJSON
 #' @export
 #' @return List of contigs for further processing in scRepertoire
 loadContigs <- function(dir, 
@@ -40,12 +43,19 @@ loadContigs <- function(dir,
     format.list <- list("WAT3R" = "barcode_results.csv", 
                         "10X" =  "filtered_contig_annotation.csv", 
                         "AIRR" = "airr_rearrangement.tsv", 
+                        "JSON" = ".json",
                         "TRUST4" = "barcode_report.tsv", 
-                        "BD" = "Contigs_AIRR.tsv")
+                        "BD" = "Contigs_AIRR.tsv",
+                        "Omniscope" =c("_OSB.csv", "_OST.csv"))
         file.pattern <- format.list[[format]]
-        contig.files <- list.files(dir, file.pattern, recursive = TRUE, full.names = TRUE)
-        if (format %in% c("10X", "WAT3R")) {
+        contig.files <- list.files(dir, paste0(file.pattern, collapse = "|"), recursive = TRUE, full.names = TRUE)
+        
+        if (format %in% c("10X", "WAT3R", "Omniscope")) {
           df <- lapply(contig.files, read.csv) 
+        } else if("json") { 
+          df <- lapply(contig.files, function(x) {
+            tmp <- as.data.frame(fromJSON(x))
+          })
         } else {
           df <- lapply(contig.files, read.delim)
         }
@@ -55,11 +65,14 @@ loadContigs <- function(dir,
   }
   
   loadFunc <- switch(format,
-                      "10X" = .parse10x,
-                      "AIRR" = .parseAIRR,
-                      "TRUST4" = .parseTRUST4,
-                      "BD" = .parseBD,
-                      "WAT3R"  = .parseWAT3R,
+                     "10X" = .parse10x,
+                     "AIRR" = .parseAIRR,
+                     "JSON" = .parseJSON,
+                     "TRUST4" = .parseTRUST4,
+                     "BD" = .parseBD,
+                     "WAT3R"  = .parseWAT3R,
+                     "Omniscope" = .parseOmniscope,
+                     
                       stop("Invalid format provided"))
   
   df <- loadFunc(df)
@@ -169,3 +182,23 @@ loadContigs <- function(dir,
   return(df)
 }
     
+
+.parseOmniscope <- function(df) {
+  for (i in seq_along(df)) {
+    df[[i]] <- df[[i]][,c("contig_id", "locus", "umi_count", "v_call", "d_call", "j_call", "c_call", "cdr3", "cdr3_aa")]
+    colnames(df[[i]]) <- c("barcode", "chain", "reads", "v_gene", "d_gene", "j_gene", "c_gene", "cdr3_nt", "cdr3")
+    df[[i]] <- df[[i]][with(df[[i]], order(reads, chain)),]
+  }
+  return(df)
+}
+
+.parseJSON <- function(df) {
+  for (i in seq_along(df)) {
+    df[[i]] <- do.call(rbind, df[[i]])
+    df[[i]][df[[i]] == ""] <- NA
+    df[[i]] <- as.data.frame(df[[i]])
+    df[[i]] <- df[[i]][,c("cell_id", "locus", "consensus_count", "v_call", "d_call", "j_call", "c_call", "junction", "junction_aa")]
+    colnames(df[[i]]) <- c("barcode", "chain", "reads", "v_gene", "d_gene", "j_gene", "c_gene", "cdr3_nt", "cdr3")
+  }
+  return(df)
+}

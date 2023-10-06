@@ -34,8 +34,9 @@ the grid search was performed over.}
 
 \item{group.by}{The variable to use for grouping.}
 
-\item{exportTable}{Returns the data frame used for forming the graph.
-' @param palette Colors to use in visualization - input any \link[grDevices]{hcl.pals}.}
+\item{exportTable}{Returns the data frame used for forming the graph.}
+
+\item{palette}{Colors to use in visualization - input any \link[grDevices]{hcl.pals}.}
 }
 \value{
 ggplot dendrogram of the clone size distribution

@@ -27,7 +27,7 @@
 #'               cloneCall = "aa", 
 #'               split.by = "Patient", 
 #'               group.by = "seurat_clusters",
-#'               n.boots = 20, 
+#'               n.boots = 5, 
 #'               min.expand = 2)
 #' 
 #' 
@@ -39,23 +39,23 @@
 #' @param group.by The variable to use for calculating bias
 #' @param split.by The variable to use for calculating the baseline frequencies.
 #' For example, "Type" for lung vs peripheral blood comparison 
-#' @param n.boots number of bootstraps to downsample
-#' @param min.expand clonotype frequency cut off for the purpose of comparison
-#' @param exportTable Returns the data frame used for forming the graph
+#' @param n.boots number of bootstraps to downsample.
+#' @param min.expand clonotype frequency cut off for the purpose of comparison.
+#' @param exportTable Returns the data frame used for forming the graph.
 #' @import ggplot2
 #' @importFrom stringr str_sort
 #' @export
 #' @return Returns ggplot of the clonotype bias
 clonalBias <- function(df, 
-                          cloneCall="strict", 
-                          split.by=NULL, 
-                          group.by=NULL, 
-                          n.boots = 20,
-                          min.expand=10,
-                          exportTable = FALSE) {
+                       cloneCall="strict", 
+                       split.by=NULL, 
+                       group.by=NULL, 
+                       n.boots = 20,
+                       min.expand=10,
+                       exportTable = FALSE) {
   cloneCall <- .theCall(cloneCall)
   #Calculating bias
-  bias <- get_clono_bias(df, 
+  bias <- .get_clono_bias(df, 
                          split.by = split.by, 
                          group.by = group.by , 
                          cloneCall=cloneCall, 
@@ -63,7 +63,7 @@ clonalBias <- function(df,
   df_shuffle.list <- list()
   #Bootstrapping
   for (ii in seq_len(n.boots)) {
-    df_shuffle.list[[ii]] <- get_clono_bias(df, split.by = split.by,
+    df_shuffle.list[[ii]] <- .get_clono_bias(df, split.by = split.by,
                                             group.by = group.by, 
                                             cloneCall=cloneCall, 
                                             min.expand=min.expand, 
@@ -81,6 +81,7 @@ clonalBias <- function(df,
   corrected_p <- 1-(0.05/nrow(bias))
   bias$Top_state <- factor(bias$Top_state, str_sort(unique(bias$Top_state), numeric = TRUE))
   
+  #Calculating Bias Z-score
   bias$Z.score <- NA
   for(i in seq_len(nrow(bias))) {
     stat.pos <- bias[i,]$ncells
@@ -101,7 +102,7 @@ clonalBias <- function(df,
   return(plot) 
 }
 
-get_clono_bg <- function(df, 
+.get_clono_bg <- function(df, 
                          split.by=split.by, 
                          group.by=group.by, 
                          cloneCall=cloneCall, 
@@ -125,7 +126,7 @@ get_clono_bg <- function(df,
 }
 
 #Code Derived from 
-get_clono_bias <- function(df, 
+.get_clono_bias <- function(df, 
                            split.by=NULL, 
                            group.by=NULL, 
                            cloneCall=cloneCall, 
@@ -142,7 +143,7 @@ get_clono_bias <- function(df,
                     freq_diff=double(),
                     bias=double()) 
   
-  bg <- get_clono_bg(df, 
+  bg <- .get_clono_bg(df, 
                      split.by=split.by, 
                      min.expand = min.expand, 
                      group.by = group.by, 

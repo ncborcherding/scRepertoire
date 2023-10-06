@@ -27,11 +27,11 @@ For example, "Type" for lung vs peripheral blood comparison}
 
 \item{group.by}{The variable to use for calculating bias}
 
-\item{n.boots}{number of bootstraps to downsample}
+\item{n.boots}{number of bootstraps to downsample.}
 
-\item{min.expand}{clonotype frequency cut off for the purpose of comparison}
+\item{min.expand}{clonotype frequency cut off for the purpose of comparison.}
 
-\item{exportTable}{Returns the data frame used for forming the graph}
+\item{exportTable}{Returns the data frame used for forming the graph.}
 }
 \value{
 Returns ggplot of the clonotype bias
@@ -64,7 +64,7 @@ clonalBias(scRep_example,
               cloneCall = "aa", 
               split.by = "Patient", 
               group.by = "seurat_clusters",
-              n.boots = 20, 
+              n.boots = 5, 
               min.expand = 2)
 
 

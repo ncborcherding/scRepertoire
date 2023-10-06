@@ -38,7 +38,7 @@ visualizations.}
 \item{exportTable}{Exports a table of the data into the global 
 environment in addition to the visualization.}
 
-\item{@param}{palette Colors to use in visualization - input any \link[grDevices]{hcl.pals}.}
+\item{palette}{Colors to use in visualization - input any \link[grDevices]{hcl.pals}.}
 }
 \value{
 Alluvial ggplot comparing clonotype distribution.

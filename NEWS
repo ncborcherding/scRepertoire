@@ -25,6 +25,7 @@ UNDERLYING CHANGES
 * Added features to clonalCompare to allow for highlighting sequences, relabeling clonotypes.
 * License change to MIT
 * group.by and split.by have been consolidated into single group.by parameter
+* Added support for .json and Omniscope formats
 
 DEPRECATED AND DEFUNCT
 
