@@ -1,20 +1,21 @@
 #' Generate a contig list from a multiplexed experiment
 #'
-#' Multiplexing single-cell sequencing runs is an efficient method for quantifying 
-#' multiple samples or conditions simultaneously. Unfortunately, the hashing information
-#' is not stored in the TCR sequence data. In order preprocess and form a contig list
-#' for downstream analysis in scRepertoire, createHTOContigList() take the filtered contig 
+#' This function reprocess and forms a list of contigs for downstream analysis 
+#' in scRepertoire, \code{\link{createHTOContigList} take the filtered contig 
 #' annotation output and the single-cell RNA object to create the list. If using an 
 #' integrated single-cell object, it is recommended to split the object by sequencing run 
-#' and remove extra prefixes and suffixes on the barcode before using createHTOContigList().
-#' Alternatively, the variable multi.run can be used to separate a list of contigs by a meta data
-#' variable. This may have issues with the repeated barcodes.
+#' and remove extra prefixes and suffixes on the barcode before using 
+#' \code{\link{createHTOContigList} . Alternatively, the variable **multi.run** can 
+#' be used to separate a list of contigs by a meta data variable. This may have 
+#' issues with the repeated barcodes.
 #' 
 #' @examples
 #' \dontrun{
 #' filtered.contig <- read.csv(".../Sample/outs/filtered_contig_annotations.csv")
+#' 
 #' contig.list <- createHTOContigList(contig = filtered.contig, 
-#' sc = Seurat.Obj, group.by = "HTO_maxID")
+#'                                    sc = Seurat.Obj, 
+#'                                    group.by = "HTO_maxID")
 #' }
 #' 
 #' @param contig The filtered contig annotation file from multiplexed experiment
@@ -24,8 +25,7 @@
 #' @param multi.run If using integrated single-cell object, the meta data variable
 #' that indicates the sequencing run.
 #' @export
-#' @return Returns a list of contigs corresponding to the multiplexed Seurat 
-#' or Single-Cell Experiment object
+#' @return Returns a list of contigs corresponding to the multiplexed single-cell object
 
 
 createHTOContigList <- function(contig, 

@@ -2,8 +2,7 @@
 % Please edit documentation in R/clonalSizeDistribution.R
 \name{clonalSizeDistribution}
 \alias{clonalSizeDistribution}
-\title{Hierarchical clustering of clonotypes on clonotype size and 
-Jensen-Shannon divergence}
+\title{Hierarchical clustering of clones using Gamma-GPD spliced threshold model}
 \usage{
 clonalSizeDistribution(
   df,
@@ -43,9 +42,35 @@ ggplot dendrogram of the clone size distribution
 }
 \description{
 This function produces a hierarchical clustering of clonotypes by sample 
-using the Jensen-Shannon distance and discrete gamma-GPD spliced threshold 
+using discrete gamma-GPD spliced threshold 
 model. If using this model please read and cite 
 \href{https://pubmed.ncbi.nlm.nih.gov/30485278/}{PMID: 30485278}.
+}
+\details{
+#' @details
+The probability density function (pdf) for the Generalized Pareto Distribution (GPD) is given by:
+\deqn{f(x|\mu, \sigma, \xi) = \frac{1}{\sigma} \left(1 + \xi \left( \frac{x - \mu}{\sigma} \right) \right)^{-\left( \frac{1}{\xi} + 1 \right)}}{
+f(x|mu, sigma, xi) = 1/sigma * (1 + xi * ((x - mu)/sigma))^(-1/xi - 1)
+}
+where:
+\itemize{
+  \item{\(\mu\) is a location parameter,}
+  \item{\(\sigma > 0\) is a scale parameter,}
+  \item{\(\xi\) is a shape parameter, and}
+  \item{\(x \ge \mu\) if \(\xi \ge 0\) and \(\mu \le x \le \mu - \sigma/\xi\) if \(\xi < 0\).}
+}
+
+The probability density function (pdf) for the Gamma Distribution is given by:
+\deqn{f(x|\alpha, \beta) = \frac{x^{\alpha-1} e^{-x/\beta}}{\beta^\alpha \Gamma(\alpha)}}{
+f(x|alpha, beta) = (x^(alpha-1) * exp(-x/beta)) / (beta^alpha * Gamma(alpha))
+}
+where:
+\itemize{
+  \item{\(\alpha > 0\) is the shape parameter,}
+  \item{\(\beta > 0\) is the scale parameter,}
+  \item{\(x \ge 0\),}
+  \item{\(\Gamma(\alpha)\) is the gamma function of \(\alpha\).}
+}
 }
 \examples{
 #Making combined contig data
