@@ -7,7 +7,7 @@
 #' bias of *0* - matches the background subtype distribution. Please read and cite 
 #' the following
 #' \href{https://pubmed.ncbi.nlm.nih.gov/35829695/}{manuscript} 
-#' if using \code{\link{clonalBias()}}
+#' if using \code{\link{clonalBias}}
 #' 
 #' @examples
 #' #Making combined contig data

@@ -17,7 +17,7 @@ VDJC gene + CDR3 nucleotide (strict).}
 \item{group.by}{The group header for which you would like to analyze 
 the data.}
 
-\item{proportion}{Binary will calculate relationship unique 
+\item{proportion}{Boolean will calculate relationship unique 
 clonotypes (proportion = FALSE) or a ratio of the group.by 
 variable (proportion = TRUE)}
 }
@@ -26,9 +26,14 @@ data frame of shared clonotypes between groups
 }
 \description{
 This function will take the meta data from the product of 
-combineExpression()and generate a relational data frame to 
+\code{\link{combineExpression}} and generate a relational data frame to 
 be used for a chord diagram. Each cord will represent the number of 
-clonotype unqiue and shared across the multiple group.by variable.
+clonotype unique and shared across the multiple **group.by** variable. 
+If using the downstream circlize R package, please read and cite the
+following \href{https://pubmed.ncbi.nlm.nih.gov/24930139/}{manuscript}.
+If looking for more advance ways for circular visualizations, there
+is a great \href{https://jokergoo.github.io/circlize_book/book/}{cookbook}
+for the circlize package.
 }
 \examples{
 #Getting the combined contigs
@@ -40,8 +45,9 @@ combined <- combineTCR(contig_list,
 scRep_example <- get(data("scRep_example"))
 scRep_example <- combineExpression(combined, scRep_example)
 
-#Getting data frame output for Circilize
-circles <- getCirclize(scRep_example, group.by = "seurat_clusters")
+#Getting data frame output for Circlize
+circles <- getCirclize(scRep_example, 
+                       group.by = "seurat_clusters")
 
 
 }

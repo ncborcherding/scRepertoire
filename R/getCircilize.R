@@ -2,9 +2,14 @@
 #' clonotypes as a chord diagram. 
 #' 
 #' This function will take the meta data from the product of 
-#' combineExpression()and generate a relational data frame to 
+#' \code{\link{combineExpression}} and generate a relational data frame to 
 #' be used for a chord diagram. Each cord will represent the number of 
-#' clonotype unqiue and shared across the multiple group.by variable.
+#' clonotype unique and shared across the multiple **group.by** variable. 
+#' If using the downstream circlize R package, please read and cite the
+#' following \href{https://pubmed.ncbi.nlm.nih.gov/24930139/}{manuscript}.
+#' If looking for more advance ways for circular visualizations, there
+#' is a great \href{https://jokergoo.github.io/circlize_book/book/}{cookbook}
+#' for the circlize package.
 #' 
 #' @examples
 #' #Getting the combined contigs
@@ -16,8 +21,9 @@
 #' scRep_example <- get(data("scRep_example"))
 #' scRep_example <- combineExpression(combined, scRep_example)
 #' 
-#' #Getting data frame output for Circilize
-#' circles <- getCirclize(scRep_example, group.by = "seurat_clusters")
+#' #Getting data frame output for Circlize
+#' circles <- getCirclize(scRep_example, 
+#'                        group.by = "seurat_clusters")
 #' 
 #' 
 #' @param sc The single-cell object after \code{\link{combineExpression}}.
@@ -26,7 +32,7 @@
 #' VDJC gene + CDR3 nucleotide (strict).
 #' @param group.by The group header for which you would like to analyze 
 #' the data.
-#' @param proportion Binary will calculate relationship unique 
+#' @param proportion Boolean will calculate relationship unique 
 #' clonotypes (proportion = FALSE) or a ratio of the group.by 
 #' variable (proportion = TRUE)
 #' 
@@ -34,23 +40,29 @@
 #' @export
 #' @return data frame of shared clonotypes between groups
 #' @author Dillon Corvino, Nick Borcherding
-getCirclize <- function(sc, cloneCall = "strict", 
-                        group.by = NULL, proportion = FALSE) {
+getCirclize <- function(sc, 
+                        cloneCall = "strict", 
+                        group.by = NULL, 
+                        proportion = FALSE) {
   meta <- .grabMeta(sc)
   cloneCall <- .theCall(cloneCall)
-  test <- meta[, c(cloneCall, group.by)]
-  test <- test[!is.na(test[,cloneCall]),]
-  dTest <- suppressMessages(dcast(test, test[,cloneCall] ~ test[,group.by]))
-  dTest <- dTest[apply(dTest[,-1], 1, function(x) !all(x==0)),]
-  dTest2 <- dTest[-1]
-  dTest2[dTest2 >= 1] <- 1
-  total <- nrow(dTest)
+  
+  #Quantifying clonotypes across group.by variable
+  dat <- meta[, c(cloneCall, group.by)]
+  dat <- dat[!is.na(dat[,cloneCall]),]
+  mat <- suppressMessages(dcast(dat, dat[,cloneCall] ~ dat[,group.by]))
+  mat <- mat[apply(mat[,-1], 1, function(x) !all(x==0)),]
+  mat2<- mat[-1]
+  mat2[mat2 >= 1] <- 1
+  total <- nrow(mat)
   
   list <- list()
-  for (i in seq_len(nrow(dTest2))) {
-    list[[i]] <- which(dTest2[i,] > 0)
+  for (i in seq_len(nrow(mat2))) {
+    list[[i]] <- which(mat2[i,] > 0)
   }
-  matrix_out <- matrix(ncol = ncol(dTest2), nrow = ncol(dTest2), 0)
+  
+  #Making a pairwise matrix that sums the shared clonotypes
+  matrix_out <- matrix(ncol = ncol(mat2), nrow = ncol(mat2), 0)
   for (j in seq_along(list)) {
     matrix_out[list[[j]],list[[j]]] <- matrix_out[list[[j]],list[[j]]] + 1
     if (length(list[[j]]) > 1) {
@@ -58,12 +70,12 @@ getCirclize <- function(sc, cloneCall = "strict",
       diag(matrix_out[list[[j]],list[[j]]]) <-  diag(matrix_out[list[[j]],list[[j]]]) - 1
     }
   }
-  
   matrix_out[lower.tri(matrix_out)] <- NA
   
-  colnames(matrix_out) <- colnames(dTest2)
-  rownames(matrix_out) <- colnames(dTest2)
+  colnames(matrix_out) <- colnames(mat2)
+  rownames(matrix_out) <- colnames(mat2)
   
+  #Converting matrix to data frame to work with criclize
   output <- data.frame(from = rep(rownames(matrix_out), 
                                   times = ncol(matrix_out)),
                        to = rep(colnames(matrix_out), each = nrow(matrix_out)),

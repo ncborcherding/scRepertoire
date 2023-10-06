@@ -47,7 +47,6 @@ model. If using this model please read and cite
 \href{https://pubmed.ncbi.nlm.nih.gov/30485278/}{PMID: 30485278}.
 }
 \details{
-#' @details
 The probability density function (pdf) for the Generalized Pareto Distribution (GPD) is given by:
 \deqn{f(x|\mu, \sigma, \xi) = \frac{1}{\sigma} \left(1 + \xi \left( \frac{x - \mu}{\sigma} \right) \right)^{-\left( \frac{1}{\xi} + 1 \right)}}{
 f(x|mu, sigma, xi) = 1/sigma * (1 + xi * ((x - mu)/sigma))^(-1/xi - 1)
@@ -59,6 +58,8 @@ where:
   \item{\(\xi\) is a shape parameter, and}
   \item{\(x \ge \mu\) if \(\xi \ge 0\) and \(\mu \le x \le \mu - \sigma/\xi\) if \(\xi < 0\).}
 }
+
+
 
 The probability density function (pdf) for the Gamma Distribution is given by:
 \deqn{f(x|\alpha, \beta) = \frac{x^{\alpha-1} e^{-x/\beta}}{\beta^\alpha \Gamma(\alpha)}}{
