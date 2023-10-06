@@ -12,7 +12,7 @@
 #' combined <- combineTCR(contig_list, 
 #'                         samples = c("P17B", "P17L", "P18B", "P18L", 
 #'                                     "P19B","P19L", "P20B", "P20L"))
-#' abundanceContig(combined, cloneCall = "gene", scale = FALSE)
+#' clonalAbundance(combined, cloneCall = "gene", scale = FALSE)
 #'
 #' @param df The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
 #'  \code{\link{combineExpression}}.
@@ -32,7 +32,7 @@
 #' @export
 #' @return ggplot of the total or relative abundance of clonotypes 
 #' across quanta
-abundanceContig <- function(df, 
+clonalAbundance <- function(df, 
                             cloneCall = "strict", 
                             chain = "both", 
                             scale=FALSE, 

@@ -240,16 +240,16 @@ clonalQuant(combined,
 
 
 
-## abundanceContig
+## clonalAbundance
 
-We can also examine the relative distribution of clonotypes by abundance. Here `abundanceContig()` will produce a line graph with a total number of clonotypes by the number of instances within the sample or run. Like above, we can also group.by this by vectors within the contig object using the **group.by** variable in the function.
+We can also examine the relative distribution of clonotypes by abundance. Here `clonalAbundance()` will produce a line graph with a total number of clonotypes by the number of instances within the sample or run. Like above, we can also group.by this by vectors within the contig object using the **group.by** variable in the function.
 
 ```{r}
-abundanceContig(combined, 
+clonalAbundance(combined, 
                 cloneCall = "gene", 
                 scale = FALSE)
 
-abundanceContig(combined, 
+clonalAbundance(combined, 
                 group.by = "Type", 
                 scale = TRUE)
 ```

@@ -15,6 +15,7 @@ NEW FEATURES
 * Changed highlightClonotypes to highlightClones
 * Changed lengthContigs to clonalLength
 * Changed occupiedscRepertoire to clonalOccupy
+* Changed abundanceContig to clonalAbundance
 * Changed alluvialClonotypes to clonalClones
 
 UNDERLYING CHANGES
