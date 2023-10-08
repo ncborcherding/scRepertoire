@@ -11,12 +11,12 @@ clonalBias(
   group.by = NULL,
   n.boots = 20,
   min.expand = 10,
-  exportTable = FALSE
+  exportTable = FALSE,
+  palette = "inferno"
 )
 }
 \arguments{
-\item{df}{The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
-\code{\link{combineExpression}}.}
+\item{df}{The product of \code{\link{combineExpression}}.}
 
 \item{cloneCall}{How to call the clonotype - VDJC gene (gene), 
 CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
@@ -32,19 +32,20 @@ For example, "Type" for lung vs peripheral blood comparison}
 \item{min.expand}{clonotype frequency cut off for the purpose of comparison.}
 
 \item{exportTable}{Returns the data frame used for forming the graph.}
+
+\item{palette}{Colors to use in visualization - input any \link[grDevices]{hcl.pals}.}
 }
 \value{
 Returns ggplot of the clonotype bias
 }
 \description{
-The metric seeks to 
-quantify how individual clones are skewed towards a specific cellular 
-compartment or cluster. A clonotype bias of *1* - indicates that a clonotype 
-is composed of cells from a single compartment or cluster, while a clonotype
-bias of *0* - matches the background subtype distribution. Please read and cite 
-the following
+The metric seeks to quantify how individual clones are skewed towards 
+a specific cellular compartment or cluster. A clonotype bias of *1* - 
+indicates that a clonotype is composed of cells from a single 
+compartment or cluster, while a clonotype bias of *0* - matches the 
+background subtype distribution. Please read and cite the following
 \href{https://pubmed.ncbi.nlm.nih.gov/35829695/}{manuscript} 
-if using \code{\link{clonalBias}}
+if using \code{\link{clonalBias}}.
 }
 \examples{
 #Making combined contig data

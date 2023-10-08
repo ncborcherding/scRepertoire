@@ -1,13 +1,12 @@
 #' Examine clonotype bias
 #' 
-#'  The metric seeks to 
-#' quantify how individual clones are skewed towards a specific cellular 
-#' compartment or cluster. A clonotype bias of *1* - indicates that a clonotype 
-#' is composed of cells from a single compartment or cluster, while a clonotype
-#' bias of *0* - matches the background subtype distribution. Please read and cite 
-#' the following
+#' The metric seeks to quantify how individual clones are skewed towards 
+#' a specific cellular compartment or cluster. A clonotype bias of *1* - 
+#' indicates that a clonotype is composed of cells from a single 
+#' compartment or cluster, while a clonotype bias of *0* - matches the 
+#' background subtype distribution. Please read and cite the following
 #' \href{https://pubmed.ncbi.nlm.nih.gov/35829695/}{manuscript} 
-#' if using \code{\link{clonalBias}}
+#' if using \code{\link{clonalBias}}.
 #' 
 #' @examples
 #' #Making combined contig data
@@ -31,8 +30,7 @@
 #'               min.expand = 2)
 #' 
 #' 
-#' @param df The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
-#'  \code{\link{combineExpression}}.
+#' @param df The product of \code{\link{combineExpression}}.
 #' @param cloneCall How to call the clonotype - VDJC gene (gene), 
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
 #' VDJC gene + CDR3 nucleotide (strict).
@@ -42,6 +40,7 @@
 #' @param n.boots number of bootstraps to downsample.
 #' @param min.expand clonotype frequency cut off for the purpose of comparison.
 #' @param exportTable Returns the data frame used for forming the graph.
+#' @param palette Colors to use in visualization - input any \link[grDevices]{hcl.pals}.
 #' @import ggplot2
 #' @importFrom stringr str_sort
 #' @export
@@ -52,7 +51,9 @@ clonalBias <- function(df,
                        group.by=NULL, 
                        n.boots = 20,
                        min.expand=10,
-                       exportTable = FALSE) {
+                       exportTable = FALSE, 
+                       palette = "inferno") {
+  .checkSingleObject(sc)
   cloneCall <- .theCall(cloneCall)
   #Calculating bias
   bias <- .get_clono_bias(df, 
@@ -89,10 +90,30 @@ clonalBias <- function(df,
     z.score <- (bias[i,]$bias - row.pull$mean)/row.pull$std
     bias$Z.score[i] <- z.score
   }
+  
+  #Attaching the cloneSize of original combineExpression()
+  meta <- .grabMeta(df)
+  meta <- meta[meta[,cloneCall] %in% bias[,"Clone"],]
+  meta <- unique(meta[,c(cloneCall, split.by, "cloneSize")])
+  
+  bias$cloneSize <- NA
+  for(i in seq_len(nrow(meta))) {
+    split <- bias[,1][i]
+    clone <- bias[,3][i]
+    bias$cloneSize[i] <- as.vector(meta[which(meta[,cloneCall] == clone & meta[,split.by] == split),"cloneSize"])
+  }
+  
+  bias$cloneSize <- factor(bias$cloneSize , rev(levels(meta[,"cloneSize"])))
   #Plotting 
   plot <- ggplot(bias, aes(x=ncells,y=bias)) + 
-    geom_point(aes(colour=Top_state)) + 
-    .quiet(stat_quantile(data=df_shuffle, quantiles = c(corrected_p), method = "rqss", lambda=3)) + 
+    geom_point(aes(fill=Top_state, size = cloneSize), shape = 21, stroke = 0.25) + 
+    .quiet(stat_quantile(data=df_shuffle, 
+                         quantiles = c(corrected_p), 
+                         method = "rqss", 
+                         lambda=3, 
+                         color = "black", 
+                         lty = 2)) + 
+    scale_fill_manual(values = .colorizer(palette,  length(unique(bias[,"Top_state"])))) + 
     theme_classic() + 
     xlab("Clone Size") + 
     ylab("Clonotype Bias")
@@ -102,6 +123,7 @@ clonalBias <- function(df,
   return(plot) 
 }
 
+#Background summary of clones
 .get_clono_bg <- function(df, 
                          split.by=split.by, 
                          group.by=group.by, 
@@ -125,7 +147,7 @@ clonalBias <- function(df,
   return(bg)
 }
 
-#Code Derived from 
+#Clone Bias
 .get_clono_bias <- function(df, 
                            split.by=NULL, 
                            group.by=NULL, 
