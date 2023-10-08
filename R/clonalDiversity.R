@@ -30,10 +30,10 @@
 #' 
 #' Where:
 #' \itemize{
-#'   \item{\(p_i\) is the proportion of species \(i\) in the dataset.}
-#'   \item{\(S\) is the total number of species.}
-#'   \item{\(n_1\) and \(n_2\) are the number of singletons and doubletons, respectively.}
-#'   \item{\(S_{abundant}\), \(S_{rare}\), \(C_{rare}\), and \(F_1\) are parameters derived from the data.}
+#'   \item{\eqn{p_i} is the proportion of species \eqn{i} in the dataset.}
+#'   \item{\eqn{S} is the total number of species.}
+#'   \item{\eqn{n_1} and \eqn{n_2} are the number of singletons and doubletons, respectively.}
+#'   \item{\eqn{S_{abundant}}, \eqn{S_{rare}}, \eqn{C_{rare}}, and \eqn{F_1} are parameters derived from the data.}
 #' }
 #'
 #' @examples

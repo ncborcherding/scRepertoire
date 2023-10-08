@@ -10,26 +10,26 @@
 #' \deqn{f(x|\mu, \sigma, \xi) = \frac{1}{\sigma} \left(1 + \xi \left( \frac{x - \mu}{\sigma} \right) \right)^{-\left( \frac{1}{\xi} + 1 \right)}}{
 #' f(x|mu, sigma, xi) = 1/sigma * (1 + xi * ((x - mu)/sigma))^(-1/xi - 1)
 #' }
-#' where:
+#' 
+#' Where:
 #' \itemize{
-#'   \item{\(\mu\) is a location parameter,}
-#'   \item{\(\sigma > 0\) is a scale parameter,}
-#'   \item{\(\xi\) is a shape parameter, and}
-#'   \item{\(x \ge \mu\) if \(\xi \ge 0\) and \(\mu \le x \le \mu - \sigma/\xi\) if \(\xi < 0\).}
+#'   \item{\eqn{\mu} is a location parameter}
+#'   \item{\eqn{\sigma > 0} is a scale parameter}
+#'   \item{\eqn{\xi} is a shape parameter}
+#'   \item{\eqn{x \ge \mu} if \eqn{\xi \ge 0} and \eqn{\mu \le x \le \mu - \sigma/\xi} if \eqn{\xi < 0}}
 #' }
-#' 
-#' 
 #' 
 #' The probability density function (pdf) for the Gamma Distribution is given by:
 #' \deqn{f(x|\alpha, \beta) = \frac{x^{\alpha-1} e^{-x/\beta}}{\beta^\alpha \Gamma(\alpha)}}{
 #' f(x|alpha, beta) = (x^(alpha-1) * exp(-x/beta)) / (beta^alpha * Gamma(alpha))
 #' }
-#' where:
+#' 
+#' Where:
 #' \itemize{
-#'   \item{\(\alpha > 0\) is the shape parameter,}
-#'   \item{\(\beta > 0\) is the scale parameter,}
-#'   \item{\(x \ge 0\),}
-#'   \item{\(\Gamma(\alpha)\) is the gamma function of \(\alpha\).}
+#'   \item{\eqn{\alpha > 0} is the shape parameter}
+#'   \item{\eqn{\beta > 0} is the scale parameter}
+#'   \item{\eqn{x \ge 0}}
+#'   \item{\eqn{\Gamma(\alpha)} is the gamma function of \eqn{\alpha}}
 #' }
 #' 
 #' @examples
@@ -55,8 +55,7 @@
 #' @import ggplot2 
 #' @importFrom dplyr bind_rows
 #' @importFrom ggdendro dendro_data segment label
-#' @importFrom stats hclust optim pgamma
-#' @importFrom stats as.dist
+#' @importFrom stats hclust optim pgamma as.dist
 #' @export
 #' @return ggplot dendrogram of the clone size distribution
 #' @author Hillary Koch

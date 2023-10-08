@@ -23,7 +23,7 @@
 #' 
 #' Where:
 #' \itemize{
-#'   \item{\(a_i\) and \(b_i\) are the abundances of species \(i\) in groups A and B, respectively.}
+#'   \item{\eqn{a_i} and \eqn{b_i} are the abundances of species \eqn{i} in groups A and B, respectively.}
 #' }
 #'
 #' @examples
