@@ -20,13 +20,14 @@
 #' scRep_example  <- combineExpression(combined, scRep_example)
 #' 
 #' #Using clonalNetwork()
-#' clonalNetwork(scRep_example, reduction = "umap",
-#'               identity = "cluster")
+#' clonalNetwork(scRep_example, 
+#'               reduction = "umap",
+#'               group.by = "seurat_clusters")
 #' }
 #'               
 #' @param sc The single-cell object after \code{\link{combineExpression}}.
 #' @param reduction The name of the dimensional reduction of the single-cell object.
-#' @param identity A variable in the meta data to use for the nodes.
+#' @param group.by The variable to use for the nodes. 
 #' @param filter.clones Use to select the top n clones (filter.clones = 2000) or 
 #' n of clones based on the minimum number of all the comparators (filter.clone = "min").
 #' @param filter.identity Display the network for a specific level of the indicated identity.
@@ -40,10 +41,11 @@
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL".
 #' @param exportTable Exports a table of the data into the global 
 #' environment in addition to the visualization.
-#' @param palette Colors to use in visualization - input any \link[grDevices]{hcl.pals}.
 #' @param exportClones Exports a table of clones that are shared
 #' across multiple identity groups and ordered by the total number
 #' of clone copies.
+#' @param palette Colors to use in visualization - input any \link[grDevices]{hcl.pals}.
+
 #' @import ggplot2
 #' @importFrom stringr str_sort
 #' @importFrom igraph graph_from_data_frame V `V<-`
@@ -56,7 +58,7 @@
 #' 
 clonalNetwork <- function(sc, 
                           reduction = "umap",
-                          identity = "ident",
+                          group.by = "ident",
                           filter.clones = NULL,
                           filter.identity = NULL,
                           filter.proportion = NULL,
@@ -64,55 +66,56 @@ clonalNetwork <- function(sc,
                           cloneCall = "strict", 
                           chain = "both", 
                           exportTable = FALSE, 
-                          palette = "inferno",
-                          exportClones = FALSE) {
+                          exportClones = FALSE,
+                          palette = "inferno") {
     to <- from <- weight <- y <- NULL
     cloneCall <- .theCall(cloneCall)
     meta <- .grabMeta(sc)  
-    coord <- data.frame(.get.coord(sc, reduction), identity = meta[,identity])
+    coord <- data.frame(.get.coord(sc, reduction), group.by = meta[,group.by])
     min <- c()
+    meta <- .grabMeta(sc)
     if (!is.null(filter.clones))  {
       if(filter.clones == "min") {
         meta <- .grabMeta(sc)
-        id.meta <- split(meta, meta[,identity])
+        id.meta <- split(meta, meta[,group.by])
         for (x in seq_along(id.meta)) {
             min.tmp <- length(which(!is.na(unique(id.meta[[x]][,cloneCall]))))
             min <- c(min.tmp, min)
         }
-        min <- min(min)
+        #Filtering clones based on the minimum value
+        min_val <- min(min)
         table <- meta %>%
-            group_by(meta[,identity], meta[, cloneCall]) %>%
-            dplyr::count() %>%
-            na.omit() %>%
-            arrange(desc(n)) 
-        runSum <-as.vector(cumsum(table[,3])) 
-        table$cumSum <- as.vector(runSum$n)
-        cut <- which.min(unlist(abs(table[,4] - min)))
-        clones.to.filter <- table[seq_len(cut),1]
-    } else if (is.numeric(filter.clones)) {
-        table <- meta %>%
-          dplyr::count(meta[, cloneCall]) %>%
+          group_by(across(all_of(c(group.by, cloneCall)))) %>%
+          count() %>%
           na.omit() %>%
-          arrange(desc(n)) 
-        runSum <-as.vector(cumsum(table[,2])) 
-        table$cumSum <- as.vector(runSum)
-        cut <- which.min(unlist(abs(table[,3] - filter.clones)))
-        clones.to.filter <- table[seq_len(cut),1]
-    }  
-    } 
-    meta <- .grabMeta(sc)    
-    if (!is.null(filter.clones)) {
+          arrange(desc(n)) %>%
+          mutate(cumSum = cumsum(n))
+        cut <- which.min(abs(table$cumSum - min_val))
+        clones.to.filter <- table$group.by[seq_len(cut)]
+      } else if (is.numeric(filter.clones)) {
+          #Filtering based on a numeric value
+          table <- meta %>%
+            dplyr::count(meta[, cloneCall]) %>%
+            na.omit() %>%
+            arrange(desc(n)) %>%
+            mutate(cumSum = cumsum(n))
+          cut <- which.min(abs(table$cumSum - filter.clones))
+          clones.to.filter <- table[seq_len(cut),1]
+      }
       meta <- meta[meta[,cloneCall] %in% clones.to.filter,]
-    }
+    } 
     clones.duplicated <- na.omit(unique(meta[which(duplicated(meta[,cloneCall])),cloneCall]))
+    
     if(exportClones) {
+      #Summarizing all the clones by group.by
       table <- meta %>%
-        group_by(meta[,identity], meta[, cloneCall]) %>%
+        group_by(meta[,group.by], meta[, cloneCall]) %>%
         dplyr::count() %>%
         na.omit() %>%
         arrange(desc(n))
-      
-      clones.across.identities <- names(table(table[,2])[which(table(table[,2]) > 1)])
+      #Identifying the clones across the group by
+      clones.across.identities <- names(which(table(table[[2]]) > 1))
+      #Getting the clones to output
       subset.table <- as.data.frame(table)
       subset.table <- subset.table[subset.table[,2] %in% clones.across.identities,]
       colnames(subset.table) <- c("id", "clone", "n")
@@ -122,42 +125,41 @@ clonalNetwork <- function(sc,
                       arrange(desc(sum)) 
       return(dupl.clones)
     }
-    id <- as.vector(meta[,identity])
+    
+    id <- as.vector(meta[,group.by])
     id.names <- id
     names(id.names) <- row.names(meta)
     unique.id <- unique(id)
     
+    #Placing the Position of the nodes
     id.positions <- data.frame(coord)
     colnames(id.positions)[1:2] <- c("x", "y")
-    suppressMessages(centers <- id.positions%>% 
-        group_by(identity) %>% 
-        select(x, y) %>% 
-        summarize_all(mean) %>%
-        data.frame())
-    rownames(centers) <- centers[,1]
-    centers <- centers[,-1]
+    centers <- id.positions %>%
+      group_by(group.by) %>%
+      summarise(across(c(x, y), mean, .names = "{col}")) %>%
+      column_to_rownames("group.by")
+
+    #Unique clones per group.by
+    clone.number <- meta %>%
+      select(all_of(c(cloneCall, group.by))) %>%
+      group_by(meta[,group.by]) %>%
+      na.omit() %>%
+      unique() %>%
+      summarise(n = n()) %>%
+      {setNames(.$n, .$`meta[, group.by]`)} 
     
-    clone.number <- meta[,c(cloneCall, identity)] %>%
-        group_by(meta[,identity]) %>% 
-        na.omit() %>%
-        unique() %>%
-        summarise(n = n())
-    names <- clone.number[,1]
-    clone.number <- unlist(clone.number[,2])
-    names(clone.number) <- unlist(names[,1])
-    
-    total.number <- meta[,c(cloneCall, identity)] %>%
-        group_by(meta[,identity]) %>% 
-        na.omit() %>%
-      summarise(n = n())
-    names <- total.number[,1]
-    total.number <- unlist(total.number[,2])
-    names(total.number) <- unlist(names[,1])
+    #Total clones per group.by
+    total.number <- meta %>%
+      select(all_of(c(cloneCall, group.by))) %>%
+      group_by(meta[,group.by]) %>%
+      na.omit() %>%
+      summarise(n = n()) %>%
+      {setNames(.$n, .$`meta[, group.by]`)} 
     
     edge.list <- NULL
     for (i in seq_along(clones.duplicated)) {
        pos <- which(meta[,cloneCall] == clones.duplicated[i])
-       num <- table(meta[pos,identity])
+       num <- table(meta[pos,group.by])
        num <- num[num > 0]
        if(length(num) == 1) {
          next()
@@ -175,15 +177,18 @@ clonalNetwork <- function(sc,
     
     edge.list <- data.frame(edge.list)
     colnames(edge.list)[3] <-"weight"
-   
+    #Filtering based on identity
     if (!is.null(filter.identity)) { 
         col1 <- which(edge.list[,1] == filter.identity)
         col2 <- which(edge.list[,2] == filter.identity)
         edge.list <- edge.list[c(col1,col2),]
-    } else if (filter.graph) {
+    }
+    #Remove reciprocals 
+    if (filter.graph) {
         unique.id <- str_sort(unique.id, numeric = TRUE)
         edge.list <- edge.list[edge.list[,1] %in% unique.id[seq_len(length(unique.id)/2)],]
     }
+    #Removing any clones below proportion threshold
     if(!is.null(filter.proportion)) {
         edge.list <-edge.list[edge.list[,3] > filter.proportion,]
     }
@@ -195,31 +200,31 @@ clonalNetwork <- function(sc,
     V(graph)$size <- unname(clone.number)
     centers <- centers[rownames(centers) %in% names(V(graph)),]
 
-    plot1 <- ggraph(graph, layout = centers[match(names(V(graph)), rownames(centers)),]) + 
-        geom_point(data = coord, aes(x = coord[,1], y = coord[,2], color = identity)) + 
-        geom_edge_bend(aes(edge_color = as.numeric(weight)), alpha = 0.7, width = 1,
-                       arrow = arrow(length = unit(4, 'mm')), 
-                      end_cap = circle(3, 'mm'), 
-                      angle_calc = "across", 
-                      check_overlap = TRUE, 
-                      strength = 0.75) + 
-        geom_node_point(aes(size = size)) + 
-        ylab(paste0(reduction, "_2")) + 
-        xlab(paste0(reduction, "_1")) + 
-        guides(color = "none") + 
-        scale_edge_colour_gradientn(colors  = rev(.colorizer(palette,13)), trans = "log10") + 
-        labs(size = "Unique Clones", edge_color = "Relative Proportion of \nClones of Starting Node") + 
-        theme(
-            panel.background = element_blank(),
-            panel.border = element_blank(), 
-            panel.grid.major = element_blank(),
-            panel.grid.minor = element_blank(), 
-            axis.line = element_line(colour = "black"), 
-            legend.key=element_blank()
-        )
+    plot <- ggraph(graph, layout = centers[match(names(V(graph)), rownames(centers)),]) + 
+                  geom_point(data = coord, aes(x = coord[,1], y = coord[,2], color = group.by)) + 
+                  geom_edge_bend(aes(edge_color = as.numeric(weight)), alpha = 0.7, width = 1,
+                                 arrow = arrow(length = unit(4, 'mm')), 
+                                 end_cap = circle(3, 'mm'), 
+                                 angle_calc = "across", 
+                                 check_overlap = TRUE, 
+                                 strength = 0.75) + 
+                  geom_node_point(aes(size = size)) + 
+                  ylab(paste0(reduction, "_2")) + 
+                  xlab(paste0(reduction, "_1")) + 
+                  guides(color = "none") + 
+                  scale_edge_colour_gradientn(colors  = .colorizer(palette,13), trans = "log10") + 
+                  labs(size = "Unique Clones", edge_color = "Relative Proportion of \nClones of Starting Node") + 
+                  theme(
+                      panel.background = element_blank(),
+                      panel.border = element_blank(), 
+                      panel.grid.major = element_blank(),
+                      panel.grid.minor = element_blank(), 
+                      axis.line = element_line(colour = "black"), 
+                      legend.key=element_blank()
+                  )
     if (exportTable) { 
       return(edge.list1)
     }
-    return(plot1)
+    return(plot)
 }
 

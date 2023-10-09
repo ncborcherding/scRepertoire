@@ -7,7 +7,7 @@
 clonalNetwork(
   sc,
   reduction = "umap",
-  identity = "ident",
+  group.by = "ident",
   filter.clones = NULL,
   filter.identity = NULL,
   filter.proportion = NULL,
@@ -15,8 +15,8 @@ clonalNetwork(
   cloneCall = "strict",
   chain = "both",
   exportTable = FALSE,
-  palette = "inferno",
-  exportClones = FALSE
+  exportClones = FALSE,
+  palette = "inferno"
 )
 }
 \arguments{
@@ -24,7 +24,7 @@ clonalNetwork(
 
 \item{reduction}{The name of the dimensional reduction of the single-cell object.}
 
-\item{identity}{A variable in the meta data to use for the nodes.}
+\item{group.by}{The variable to use for the nodes.}
 
 \item{filter.clones}{Use to select the top n clones (filter.clones = 2000) or 
 n of clones based on the minimum number of all the comparators (filter.clone = "min").}
@@ -46,11 +46,11 @@ e.g. "both", "TRA", "TRG", "IGH", "IGL".}
 \item{exportTable}{Exports a table of the data into the global 
 environment in addition to the visualization.}
 
-\item{palette}{Colors to use in visualization - input any \link[grDevices]{hcl.pals}.}
-
 \item{exportClones}{Exports a table of clones that are shared
 across multiple identity groups and ordered by the total number
 of clone copies.}
+
+\item{palette}{Colors to use in visualization - input any \link[grDevices]{hcl.pals}.}
 }
 \value{
 ggplot object
@@ -75,8 +75,9 @@ scRep_example  <- get(data("scRep_example"))
 scRep_example  <- combineExpression(combined, scRep_example)
 
 #Using clonalNetwork()
-clonalNetwork(scRep_example, reduction = "umap",
-              identity = "cluster")
+clonalNetwork(scRep_example, 
+              reduction = "umap",
+              group.by = "seurat_clusters")
 }
               
 }
