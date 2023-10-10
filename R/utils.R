@@ -421,33 +421,6 @@ is_seurat_or_se_object <- function(obj) {
   return(min)
 }
 
-#Parsing the CTgene
-.select.gene <- function(df, chain, gene, label) {
-  if (chain %in% c("TRB", "TRD", "IGH")) {
-    gene <- unname(c(V = 1, D = 2, J = 3, C = 4)[gene])
-  } else {
-    gene <- unname(c(V = 1, J = 2, C = 3)[gene])
-  }
-  if (ncol(str_split(df[,"CTgene"], "_", simplify = TRUE)) == 1) {
-    C1 <- str_split(df[,"CTgene"], "_", simplify = TRUE)[,1] 
-    C1 <- str_split(C1, "[.]", simplify = TRUE)[,gene] 
-    df$C1 <- C1
-    x <- "C1"
-  } else {
-    C1 <- str_split(df[,"CTgene"], "_", simplify = TRUE)[,1] 
-    C1 <- str_split(C1, "[.]", simplify = TRUE)[,gene] 
-    C2 <- str_split(df[,"CTgene"], "_", simplify = TRUE)[,2] 
-    C2 <- str_split(C2, "[.]", simplify = TRUE)[,gene] 
-    df$C1 <- C1
-    df$C2 <- C2
-    if (chain %in% c("TRA", "TRG", "IGH")) {
-      x <- "C1"}
-    else if (chain %in% c("TRB", "TRD", "IGL")) {
-      x <- "C2"}
-  }
-  return(df)
-}
-
 # check if object is a dataframe or list of dataframes
 is_df_or_list_of_df <- function(x) {
     if (is.data.frame(x)) {

@@ -126,3 +126,66 @@ vizGenes <- function(df,
   if (exportTable == TRUE) { return(df) }
   return(plot)
 }
+
+
+.vizGenes <- function(df, 
+                     x.axis = "TRBV",
+                     y.axis = "TRBJ",
+                     plot = "heatmap",  
+                     order = "gene",
+                     scale = TRUE, 
+                     group.by = NULL,
+                     exportTable = FALSE,
+                     palette = "inferno") {
+  
+  sco <- is_seurat_object(df) | is_se_object(df)
+  df <- .list.input.return(df, split.by = group.by)
+  if(!is.null(group.by) & !sco) {
+    df <- .groupList(df, group.by)
+  }
+  
+  df <- .bound.input.return(df)
+  #Parsing x.axis if gene used
+  if (x.axis %!in% colnames(df)) {
+    if (grepl("TRA|TRB|TRG|TRD|IGH|IGL|IGK", x.axis)) {
+      df <- .select.gene(df, x.axis, x.axis)
+      colnames(df)[ncol(df)] <- x.axis ######## Check if need this
+    }
+  }
+  
+  #Parsing y.axis if gene used
+  if (y.axis %!in% colnames(df) | is.null(y.axis)) {
+    if (grepl("TRA|TRB|TRG|TRD|IGH|IGL|IGK", y.axis)) {
+      df <- .select.gene(df, y.axis, y.axis)
+      colnames(df)[ncol(df)] <- y.axis ######## Check if need this
+    }
+  }
+  
+  #Filtering steps
+  df <- subset(df, !is.na(df[,c("x.axis", "y.axis")])) #remove NA values
+  df <- subset(df, df[,ncol(df)] != "NA") #remove values that are character "NA"
+  df <- subset(df, df[,ncol(df)] != "")
+  
+  
+  ##################
+  #Need to add the summary functions
+  #Need to add the visualization functions
+  
+}
+
+#Parsing the CTgene
+.select.gene <- function(df, position, label) {
+  chains <- c("TRAV" = 1, "TRBV" = 1, "TRGV" = 1, "TRDV" = 1, "IGHV" = 1, "IGLV" = 1, "IGKV" = 1,
+              "TRAJ" = 2, "TRGJ" = 2, "IGKJ" = 2, "IKLJ" = 2,
+              "TRBD" = 2, "TRDD" = 2, "IGHV" = 2, 
+              "TRBJ" = 3, "TRDJ" = 2, "IGHJ" = 3)
+  chain.poisiton <- chains[position]
+  if(substring(position,3,3) %in% c("A", "G", "K", "L")) {
+    chain.gene <- str_split(df[,"CTgene"], "_", simplify = TRUE)[,1]
+  } else {
+    chain.gene <- str_split(df[,"CTgene"], "_", simplify = TRUE)[,2]
+  }
+  genes <- str_split(chain.gene, "[.]", simplify = TRUE)[,chain.poisiton] 
+  df[,label] <- genes
+  return(df)
+}
