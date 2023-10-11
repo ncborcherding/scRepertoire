@@ -70,11 +70,11 @@ vizGenes <- function(df,
   #df <- table(df[,ncol(df)], df[,y.axis])
   
   if (!is.null(y.axis) && y.axis != "element.names") {
-    df <- df %>%
+    mat <- df %>%
       group_by(df[,ncol(df)], df[,y.axis], element.names) %>%
       count() 
   } else {
-    df <- df %>%
+    mat <- df %>%
       group_by(df[,ncol(df)], element.names) %>%
       count() 
   }
@@ -154,22 +154,119 @@ vizGenes <- function(df,
   }
   
   #Parsing y.axis if gene used
-  if (y.axis %!in% colnames(df) | is.null(y.axis)) {
+  if (y.axis %!in% colnames(df) | !is.null(y.axis)) {
     if (grepl("TRA|TRB|TRG|TRD|IGH|IGL|IGK", y.axis)) {
       df <- .select.gene(df, y.axis, y.axis)
       colnames(df)[ncol(df)] <- y.axis ######## Check if need this
+    } else {
+      y.axis <- "element.names"
     }
+  } else {
+    y.axis <- "element.names"
   }
   
   #Filtering steps
-  df <- subset(df, !is.na(df[,c("x.axis", "y.axis")])) #remove NA values
-  df <- subset(df, df[,ncol(df)] != "NA") #remove values that are character "NA"
-  df <- subset(df, df[,ncol(df)] != "")
+  df[df == "NA"] <- NA
+  df[df == ""] <- NA
+  if(!is.null(y.axis) & any(is.na(df[,c(y.axis)]))) {
+    df <- subset(df, !is.na(df[,c(y.axis)]))
+  }
+  if(!is.null(x.axis) & any(is.na(df[,c(x.axis)]))) {
+    df <- subset(df, !is.na(df[,c(x.axis)]))
+  }
+  
+  if (!scale) {
+    col.lab <- "Total n"
+    values <- "count"
+  } else {
+    
+    col.lab <- "Scaled Values"
+    values <- "proportion"
+  }
+  
+  #Calculating the summary values
+  if (!is.null(y.axis) && y.axis != "element.names") {
+    mat <- df %>%
+      group_by(element.names, df[,x.axis], df[,y.axis]) %>%
+      summarise(count = n()) %>%
+      ungroup() %>%
+      group_by(element.names) %>%
+      mutate(total = sum(count), 
+             proportion = count / total) %>%
+      as.data.frame() %>%
+      na.omit()
+      colnames(mat)[2:3] <- c("x.axis", "y.axis")
+      mat$n <- mat[,values]
+      mat <- mat %>%
+        group_by(y.axis, x.axis) %>%
+        mutate(varcount = sum(n), 
+               sd = sd(n, na.rm = TRUE),
+               mean = mean(n)) %>%
+        as.data.frame() 
+    
+  } else {
+    mat <- df %>%
+      group_by(element.names, df[,x.axis]) %>%
+      summarise(count = n()) %>%
+      ungroup() %>%
+      group_by(element.names) %>%
+      mutate(total = sum(count), 
+             proportion = count / total) %>%
+      as.data.frame() %>%
+      na.omit()
+      colnames(mat)[1:2] <- c("y.axis", "x.axis")
+      mat$n <- mat[,values]
+      mat <- mat %>%
+        group_by(y.axis, x.axis) %>%
+        mutate(varcount = sum(n), 
+               sd = sd(n, na.rm = TRUE),
+               mean = mean(n)) %>%
+        as.data.frame() 
+  }
+  
+
   
   
-  ##################
-  #Need to add the summary functions
-  #Need to add the visualization functions
+  
+  if (order == "variance") {
+    varOrder <- unique(mat[order(mat$varcount, decreasing = TRUE),"x.axis"])
+    mat[,"x.axis"] <- factor(mat[,"x.axis"], levels = varOrder)
+  }
+  if (plot == "bar") {
+    mat2 <- unique(mat[,c("Var1", "Var2", "sd", "mean")])
+    plot <- ggplot(mat2, aes(x=Var2, y = mean)) + 
+      geom_bar(stat = "identity") + 
+      geom_errorbar(aes(ymin=mean, ymax=mean+sd), width=.2,
+                    position=position_dodge(.9)) + 
+      theme_classic() + 
+      theme(axis.title.x = element_blank(), #remove titles
+            axis.title.y = element_blank(), 
+            axis.ticks.x = element_blank(), #removes ticks
+            axis.text.x = element_text(angle = 90, 
+                                       vjust = 0.5, hjust=1, size=rel(0.5))) + 
+      facet_grid(Var1~.)
+  } else if (plot == "heatmap") {
+    
+    plot <- ggplot(mat, aes(x=x.axis, y = y.axis)) + 
+      geom_tile(aes(fill = n), color = "black") + 
+      theme_classic() + 
+      labs(fill = col.lab) + 
+      theme(axis.title.x = element_blank(), #remove titles
+            axis.ticks.x = element_blank(), #removes ticks
+            axis.text.x = element_text(angle = 90, 
+                                       vjust = 0.5, hjust=1, size=rel(0.5)), 
+            axis.title.y = element_blank(), 
+            axis.text.y = element_text(size=rel(0.5))) + 
+      scale_fill_gradientn(colors = .colorizer(palette,5))
+  }
+  if (exportTable == TRUE) { 
+    return(mat) 
+  }
+  return(plot)
+  
+  #Need to test:
+  #Different chains - both heatmap and barplot
+  #grouped elements - both heatmap and barplot
   
 }
 
@@ -186,6 +283,7 @@ vizGenes <- function(df,
     chain.gene <- str_split(df[,"CTgene"], "_", simplify = TRUE)[,2]
   }
   genes <- str_split(chain.gene, "[.]", simplify = TRUE)[,chain.poisiton] 
+  df[,label] <- NA
   df[,label] <- genes
   return(df)
 }
