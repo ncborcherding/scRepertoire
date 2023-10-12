@@ -137,8 +137,11 @@ clonalNetwork <- function(sc,
     centers <- id.positions %>%
       group_by(group.by) %>%
       summarise(across(c(x, y), mean, .names = "{col}")) %>%
-      column_to_rownames("group.by")
-
+      as.data.frame()
+    
+    row.names(centers) <- centers$group.by
+    centers$group.by <- NULL
+    
     #Unique clones per group.by
     clone.number <- meta %>%
       select(all_of(c(cloneCall, group.by))) %>%
@@ -202,7 +205,9 @@ clonalNetwork <- function(sc,
 
     plot <- ggraph(graph, layout = centers[match(names(V(graph)), rownames(centers)),]) + 
                   geom_point(data = coord, aes(x = coord[,1], y = coord[,2], color = group.by)) + 
-                  geom_edge_bend(aes(edge_color = as.numeric(weight)), alpha = 0.7, width = 1,
+                  geom_edge_bend(aes(edge_color = as.numeric(weight)), 
+                                 alpha = 0.7, 
+                                 width = 1,
                                  arrow = arrow(length = unit(4, 'mm')), 
                                  end_cap = circle(3, 'mm'), 
                                  angle_calc = "across", 
