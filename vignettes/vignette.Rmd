@@ -318,29 +318,17 @@ clonalCompare(combined,
 
 ## vizGenes
 
-A visualization of the relative usage of genes of the TCR or BCR, using `vizGenes()`. 
+A visualization of the relative usage of genes of the TCR or BCR, using `vizGenes()`. There is some functional crossover between `vizGenes()` and two functions below called  `percentGenes()` and `percentVJ()`. But `vizGenes()` is more adaptable to allow for comparisons across chains, scaling, etc. 
 
-**gene**  
-+  "V"  
-+  "D"  
-+  "J"  
-+  "C"  
-
-**chain**
-+  "TRB"  
-+  "TRA"  
-+  "TRG"  
-+  "TRD" 
-+  "IGH"  
-+  "IGL"  
-
-**plot**  
-+ "bar" for a bar chart  
-+ "heatmap" for a heatmap  
+**x.axis**  
++ Gene segment to separate the x-axis, such as "TRAV", "TRBD", "IGKJ"
 
 **y.axis**  
-Variable to separate the counts along the y-axis. If not specified,
-the default is to separate by the list element names.
++ Gene segment or categorical variable to visualize along the y-axis
+
+**plot**  
++ "barplot" for a bar chart  
++ "heatmap" for a heatmap  
 
 **scale**  
 + TRUE to scale the graph by number of genes per sample  
@@ -352,32 +340,37 @@ the default is to separate by the list element names.
 
 ```{r}
 vizGenes(combined, 
-         gene = "V", 
-         chain = "TRB", 
-         plot = "bar", 
+         x.axis = "TRBV",
+         y.axis = NULL,
+         plot = "barplot",  
          scale = TRUE)
 ```
 
-We can also use `vizGenes()` to look at the usage of genes in a single chain. For example, say we are interested in the difference in TRB V and J usage between lung and peripheral blood samples - we can easily take a look at this using the following code:
+`vizGenes()` can also be used to look at the usage of genes in a single chain. For example, say we are interested in the difference in TRB V and J usage between lung and peripheral blood samples - we can easily take a look at this using the following code:
 
 ```{r}
 #Peripheral Blood
 vizGenes(combined[c(1,3,5,7)], 
-         gene = "V", 
-         chain = "TRB", 
-         y.axis = "J", 
-         plot = "heatmap", 
-         scale = TRUE, 
-         order = "variance")
+         x.axis = "TRBV",
+         y.axis = "TRBJ",
+         plot = "heatmap",  
+         scale = TRUE)
 
 #Lung
 vizGenes(combined[c(2,4,6,8)], 
-         gene = "V", 
-         chain = "TRB", 
-         y.axis = "J", 
+         x.axis = "TRBV",
+         y.axis = "TRBJ",
+         plot = "heatmap",  
+         scale = TRUE)
+```
+For the P17 patient samples, what if we are interested in chain pairings, we can look at TRBV and TRAV at the same time using them as inputs to **x.axis** and **y.axis**. 
+
+```{r}
+vizGenes(combined[c(1,2)], 
+         x.axis = "TRBV",
+         y.axis = "TRAV",
          plot = "heatmap", 
-         scale = TRUE, 
-         order = "variance")
+         scale = FALSE)
 ```
 
 ## percentAA

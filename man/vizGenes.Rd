@@ -6,13 +6,12 @@
 \usage{
 vizGenes(
   df,
-  gene = "V",
-  chain = "TRA",
+  x.axis = "TRBV",
+  y.axis = NULL,
+  group.by = NULL,
   plot = "heatmap",
-  y.axis = "sample",
   order = "gene",
   scale = TRUE,
-  group.by = NULL,
   exportTable = FALSE,
   palette = "inferno"
 )
@@ -21,22 +20,19 @@ vizGenes(
 \item{df}{The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
 \code{\link{combineExpression}}.}
 
-\item{gene}{Which part of the immune receptor to visualize - V, D, J, C}
-
-\item{chain}{indicate the specific chain should be used - 
-e.g. "TRA", "TRG", "IGH", "IGL" (no both option here)}
-
-\item{plot}{The type of plot to return - heatmap or bar}
+\item{x.axis}{Gene segments to separate the x-axis, such as "TRAV", "TRBD", "IGKJ".}
 
 \item{y.axis}{Variable to separate the y-axis, can be both categorical or other gene 
-gene segments such as V, D, J, or C.}
+gene segments, such as "TRAV", "TRBD", "IGKJ".}
+
+\item{group.by}{Variable in which to group the diversity calculation.}
+
+\item{plot}{The type of plot to return - heatmap or barplot}
 
 \item{order}{Categorical variable to organize the x-axis, either "gene" or "variance"}
 
 \item{scale}{Converts the individual count of genes to proportion using the total 
 respective repertoire size}
-
-\item{group.by}{The variable to use for grouping.}
 
 \item{exportTable}{Returns the data frame used for forming the graph.}
 
@@ -58,6 +54,9 @@ combined <- combineTCR(contig_list,
                         samples = c("P17B", "P17L", "P18B", "P18L", 
                                     "P19B","P19L", "P20B", "P20L"))
 
-vizGenes(combined, gene = "V", chain = "TRB", plot = "bar", scale = TRUE)
+vizGenes(combined, 
+         x.axis = "TRBV",
+         y.axis = NULL,
+         plot = "heatmap")
 
 }

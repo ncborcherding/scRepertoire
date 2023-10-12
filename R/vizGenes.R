@@ -12,20 +12,21 @@
 #'                         samples = c("P17B", "P17L", "P18B", "P18L", 
 #'                                     "P19B","P19L", "P20B", "P20L"))
 #' 
-#' vizGenes(combined, gene = "V", chain = "TRB", plot = "bar", scale = TRUE)
+#' vizGenes(combined, 
+#'          x.axis = "TRBV",
+#'          y.axis = NULL,
+#'          plot = "heatmap")
 #'
 #' @param df The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
 #'  \code{\link{combineExpression}}.
-#' @param gene Which part of the immune receptor to visualize - V, D, J, C
-#' @param chain indicate the specific chain should be used - 
-#' e.g. "TRA", "TRG", "IGH", "IGL" (no both option here)
-#' @param plot The type of plot to return - heatmap or bar 
+#' @param plot The type of plot to return - heatmap or barplot 
+#' @param x.axis Gene segments to separate the x-axis, such as "TRAV", "TRBD", "IGKJ".
 #' @param y.axis Variable to separate the y-axis, can be both categorical or other gene 
-#' gene segments such as V, D, J, or C.
+#' gene segments, such as "TRAV", "TRBD", "IGKJ".
+#' @param group.by Variable in which to group the diversity calculation.
 #' @param order Categorical variable to organize the x-axis, either "gene" or "variance"
 #' @param scale Converts the individual count of genes to proportion using the total 
 #' respective repertoire size 
-#' @param group.by The variable to use for grouping.
 #' @param exportTable Returns the data frame used for forming the graph.
 #' @param palette Colors to use in visualization - input any \link[grDevices]{hcl.pals}.
 #' @import ggplot2
@@ -36,109 +37,26 @@
 #' @return ggplot bar diagram or heatmap of gene usage
 
 vizGenes <- function(df, 
-                     gene = "V",
-                     chain = "TRA", 
-                     plot = "heatmap",  
-                     y.axis = "sample", 
-                     order = "gene",
-                     scale = TRUE, 
-                     group.by = NULL,
-                     exportTable = FALSE,
-                     palette = "inferno") {
-  element.names <- NULL
-  sco <- is_seurat_object(df) | is_se_object(df)
-  df <- .list.input.return(df, split.by = group.by)
-  if(!is.null(group.by) & !sco) {
-    df <- .groupList(df, group.by)
-  }
-  for(i in seq_along(df)) {
-    df[[i]] <- .off.the.chain(df[[i]], chain, "CTgene")
-  }
-  df <- .bound.input.return(df)
-  if (y.axis %!in% colnames(df) | is.null(y.axis)) {
-    if (y.axis %!in% c("V", "D", "J", "C")) {
-      y.axis <- "element.names"
-    } else {
-      df <- .select.gene(df, chain, y.axis)
-      colnames(df)[ncol(df)] <- y.axis
-    }
-  }
-  df <- .select.gene(df, chain, gene)
-  df <- subset(df, !is.na(df[,ncol(df)])) #remove NA values
-  df <- subset(df, df[,ncol(df)] != "NA") #remove values that are character "NA"
-  df <- subset(df, df[,ncol(df)] != "") #remove rows with non genes
-  #df <- table(df[,ncol(df)], df[,y.axis])
-  
-  if (!is.null(y.axis) && y.axis != "element.names") {
-    mat <- df %>%
-      group_by(df[,ncol(df)], df[,y.axis], element.names) %>%
-      count() 
-  } else {
-    mat <- df %>%
-      group_by(df[,ncol(df)], element.names) %>%
-      count() 
-  }
-  df <- df %>%
-    group_by(element.names) %>%
-    mutate(sum = sum(n))
-  col.lab <- "Total n"
-  if (scale == TRUE) {
-    df[,"n"] <- df[,"n"]/df[,"sum"]
-    col.lab <- "Scaled Values"
-  } 
-  colnames(df)[1:2] <- c("Var1", "Var2")
-  df <- df %>%
-    group_by(Var1, Var2) %>%
-    mutate(varcount = sum(n), 
-           sd = sd(n, na.rm = TRUE),
-           mean = mean(n))
-  if (order == "variance") {
-    varOrder <- order(df$varcount, decreasing = TRUE)
-    df$Var1 <- factor(df$Var1, levels = unique(df$Var1[varOrder]))
-  }
-  if (plot == "bar") {
-    df2 <- unique(df[,c("Var1", "Var2", "sd", "mean")])
-    plot <- ggplot(df2, aes(x=Var1, y = mean)) + 
-      geom_bar(stat = "identity") + 
-      geom_errorbar(aes(ymin=mean, ymax=mean+sd), width=.2,
-                    position=position_dodge(.9)) + 
-      theme_classic() + 
-      theme(axis.title.x = element_blank(), #remove titles
-            axis.title.y = element_blank(), 
-            axis.ticks.x = element_blank(), #removes ticks
-            axis.text.x = element_text(angle = 90, 
-                                       vjust = 0.5, hjust=1, size=rel(0.5))) + 
-      facet_grid(Var2~.)
-  } else if (plot == "heatmap") {
-    
-    plot <- ggplot(df, aes(x=Var1, y = Var2)) + 
-      geom_tile(aes(fill = n), color = "black") + 
-      theme_classic() + 
-      labs(fill = col.lab) + 
-      theme(axis.title.x = element_blank(), #remove titles
-            axis.ticks.x = element_blank(), #removes ticks
-            axis.text.x = element_text(angle = 90, 
-                                       vjust = 0.5, hjust=1, size=rel(0.5)), 
-            axis.title.y = element_blank(), 
-            axis.text.y = element_text(size=rel(0.5))) + 
-      scale_fill_gradientn(colors = rev(.colorizer(palette,5)))
-  }
-  if (exportTable == TRUE) { return(df) }
-  return(plot)
-}
-
-
-.vizGenes <- function(df, 
                      x.axis = "TRBV",
-                     y.axis = "TRBJ",
+                     y.axis = NULL,
+                     group.by = NULL, 
                      plot = "heatmap",  
                      order = "gene",
                      scale = TRUE, 
-                     group.by = NULL,
                      exportTable = FALSE,
                      palette = "inferno") {
   
   sco <- is_seurat_object(df) | is_se_object(df)
+  
+  #Extracting group.by in case of null
+  if(!grepl("TRA|TRB|TRG|TRD|IGH|IGL|IGK", y.axis) && !is.null(y.axis)) {
+    group.by <- y.axis
+  }
+  #If single-cell object, need group.by
+  if(is.null(group.by) & sco) {
+    group.by <- "ident"
+  }
+  
   df <- .list.input.return(df, split.by = group.by)
   if(!is.null(group.by) & !sco) {
     df <- .groupList(df, group.by)
@@ -154,7 +72,7 @@ vizGenes <- function(df,
   }
   
   #Parsing y.axis if gene used
-  if (y.axis %!in% colnames(df) | !is.null(y.axis)) {
+  if (any(y.axis %!in% colnames(df)) | !is.null(y.axis)) {
     if (grepl("TRA|TRB|TRG|TRD|IGH|IGL|IGK", y.axis)) {
       df <- .select.gene(df, y.axis, y.axis)
       colnames(df)[ncol(df)] <- y.axis ######## Check if need this
@@ -179,7 +97,6 @@ vizGenes <- function(df,
     col.lab <- "Total n"
     values <- "count"
   } else {
-    
     col.lab <- "Scaled Values"
     values <- "proportion"
   }
@@ -224,18 +141,17 @@ vizGenes <- function(df,
         as.data.frame() 
   }
   
-
-  
-  
   
   if (order == "variance") {
     varOrder <- unique(mat[order(mat$varcount, decreasing = TRUE),"x.axis"])
-    mat[,"x.axis"] <- factor(mat[,"x.axis"], levels = varOrder)
+  } else {
+    varOrder <- str_sort(unique(mat$x.axis), numeric = TRUE)
   }
-  if (plot == "bar") {
-    mat2 <- unique(mat[,c("Var1", "Var2", "sd", "mean")])
-    plot <- ggplot(mat2, aes(x=Var2, y = mean)) + 
-      geom_bar(stat = "identity") + 
+    mat[,"x.axis"] <- factor(mat[,"x.axis"], levels = varOrder)
+  if (plot == "barplot") {
+    mat2 <- unique(mat[,c("x.axis", "y.axis", "sd", "mean")])
+    plot <- ggplot(mat2, aes(x=x.axis, y = mean)) + 
+      geom_bar(stat = "identity", color = "black", lwd = 0.25) + 
       geom_errorbar(aes(ymin=mean, ymax=mean+sd), width=.2,
                     position=position_dodge(.9)) + 
       theme_classic() + 
@@ -244,13 +160,13 @@ vizGenes <- function(df,
             axis.ticks.x = element_blank(), #removes ticks
             axis.text.x = element_text(angle = 90, 
                                        vjust = 0.5, hjust=1, size=rel(0.5))) + 
-      facet_grid(Var1~.)
+      facet_grid(y.axis~.)
   } else if (plot == "heatmap") {
     
     plot <- ggplot(mat, aes(x=x.axis, y = y.axis)) + 
-      geom_tile(aes(fill = n), color = "black") + 
+      geom_tile(aes(fill =log(n)), color = "black", lwd = 0.25) + 
       theme_classic() + 
-      labs(fill = col.lab) + 
+      labs(fill = paste0("Log(",col.lab, ")")) + 
       theme(axis.title.x = element_blank(), #remove titles
             axis.ticks.x = element_blank(), #removes ticks
             axis.text.x = element_text(angle = 90, 
