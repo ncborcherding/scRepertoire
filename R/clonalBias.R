@@ -53,7 +53,7 @@ clonalBias <- function(df,
                        min.expand=10,
                        exportTable = FALSE, 
                        palette = "inferno") {
-  .checkSingleObject(sc)
+  .checkSingleObject(df)
   cloneCall <- .theCall(cloneCall)
   #Calculating bias
   bias <- .get_clono_bias(df, 

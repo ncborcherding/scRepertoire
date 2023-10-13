@@ -45,7 +45,7 @@ vizGenes <- function(df,
                      scale = TRUE, 
                      exportTable = FALSE,
                      palette = "inferno") {
-  
+  element.names <- NULL
   sco <- is_seurat_object(df) | is_se_object(df)
   
   #Extracting group.by in case of null

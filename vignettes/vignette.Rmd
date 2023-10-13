@@ -743,10 +743,10 @@ We can also use **exportClones** to quickly get clones that are shared across mu
 
 ```{r}
 shared.clones <- clonalNetwork(scRep_example, 
-                              reduction = "umap", 
-                              identity = "ident",
-                              cloneCall = "aa", 
-                              exportClones = TRUE)
+                               reduction = "umap", 
+                               group.by = "ident",
+                               cloneCall = "aa", 
+                               exportClones = TRUE)
 head(shared.clones)
 ```
 

@@ -52,6 +52,7 @@
 #' @importFrom dplyr %>% group_by select summarize_all count
 #' @importFrom tidygraph as_tbl_graph activate
 #' @importFrom ggraph ggraph geom_edge_bend  geom_node_point scale_edge_colour_gradientn circle guide_edge_colourbar
+#' @importFrom stats setNames
 #' @export
 #' @return ggplot object
 #' 

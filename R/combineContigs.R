@@ -276,40 +276,49 @@ combineBCR <- function(df,
     tmp <- na.omit(unique(dictionary[,c(chain, "v.gene")]))
     #chunking the sequences for distance by v.gene
     unique.v <- na.omit(unique(tmp$v.gene))
-    edge.list <- list()
     
     edge.list <- lapply(unique.v, function(y) {
-    #for(y in unique.v) {
-      secondary.list <- NULL
+      #for(y in unique.v) {
+      secondary.list <- list()
       filtered_df <- tmp %>% filter(v.gene == y)
       filtered_df <- filtered_df[!is.na(filtered_df[,chain]),]
       nucleotides <- unique(filtered_df[,chain])
       if (length(nucleotides) > 1) {
+        chain_col_number <- 1
+        nucleotide_lengths <- nchar(nucleotides)
+        # Pre-allocate list
+        list <- vector("list", length = length(nucleotides))
+        
         for (i in 1:(length(nucleotides) - 1)) {
-          list <- NULL
+          temp_list <- vector("list", length = length(nucleotides) - i)
+          
+          idx_i <- tmp[, chain_col_number] == nucleotides[i]
+          len_i <- nucleotide_lengths[i]
+          
           for (j in (i + 1):length(nucleotides)) {
             distance <- stringdist::stringdist(nucleotides[i], nucleotides[j], method = "lv")
-            distance <- 1-distance/((nchar(nucleotides[i]) + nchar(nucleotides[j]))/2)
+            distance_norm <- 1 - distance / ((len_i + nucleotide_lengths[j]) / 2)
             
-            if (!is.na(distance) & distance > threshold) {
-              if(any(which(tmp[,chain] == nucleotides[j]) %!in% which(tmp[,chain] == nucleotides[i]))) {
-                stored.positions <- which(tmp[,chain] == nucleotides[j])[which(tmp[,chain] == nucleotides[j]) %!in% which(tmp[,chain] == nucleotides[i])]
+            if (!is.na(distance_norm) & distance_norm > threshold) {
+              idx_j <- tmp[, chain_col_number] == nucleotides[j]
+              stored_positions <- idx_j & !idx_i
+              
+              if(any(stored_positions)) {
                 # Store this pair in the edge list that is not the same chain
-                 ex.grid <- expand.grid(which(tmp[,chain] == nucleotides[i]), stored.positions)
-                 colnames(ex.grid) <- c("from", "to")
-                 list[[j]] <- ex.grid
-                 
-                 
+                temp_list[[j - i]] <- data.frame(from = which(idx_i), 
+                                                 to = which(stored_positions))
               }
-            }      
+            }
           }
-          #Remove any NULL or 0 list elements
-          if(length(list) > 0) {
-            list <-  list[-which(unlist(lapply(list, is.null)))]
-            list <-  list[lapply(list,length)>0]
-            list <- bind_rows(list) %>% as.data.frame()
-            secondary.list[[i]] <- list
-          }
+          list[[i]] <- do.call(rbind, temp_list)  # Collapsing all data.frames in temp_list
+        }
+        
+        #Remove any NULL or 0 list elements
+        if(length(list) > 0) {
+          list <-  list[-which(unlist(lapply(list, is.null)))]
+          list <-  list[lapply(list,length)>0]
+          list <- bind_rows(list) %>% as.data.frame()
+          secondary.list[[i]] <- list
         }
         #Remove any NULL or 0 list elements
         if(length(secondary.list) > 0) {
@@ -319,8 +328,6 @@ combineBCR <- function(df,
       }
       secondary.list
     })
-    #Remove NULL elements and make data.frame
-    edge.list = edge.list[-which(sapply(edge.list, is.null))]
     edge.list <- bind_rows(edge.list)
     
     if (nrow(edge.list) > 0) { 
