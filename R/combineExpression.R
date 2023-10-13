@@ -1,15 +1,13 @@
-#' Adding clonotype information to a Seurat or SCE object
+#' Adding clonotype information to a single-cell object
 #'
 #' This function adds the immune receptor information to the Seurat or 
 #' SCE object to the meta data. By default this function also calculates 
-#' the frequencies of the clonotypes by sequencing run (group.by = "none"). 
-#' To change how the frequencies are calculated, select a column header for 
-#' the group.by variable. Importantly, before using combineExpression() 
-#' ensure the barcodes of the seurat or SCE object match the barcodes in the 
-#' output of the combinedContig() call. Check changeNames() to change the 
-#' prefix of the Seurat object. If combining more than one immune receptor 
-#' type, barcodes with both receptors will be removed during the combination 
-#' process.
+#' the frequencies and proportion of the clonotypes by sequencing 
+#' run (**group.by** = "none"). To change how the frequencies/proportions
+#' are calculated, select a column header for the **group.by** variable. 
+#' Importantly, before using \code{\link{combineExpression}} ensure the 
+#' barcodes of the single-cell object object match the barcodes in the output 
+#' of the \code{\link{combineTCR}} or \code{\link{combineBCR}}. 
 #'
 #' @examples
 #' #Getting the combined contigs
@@ -25,20 +23,22 @@
 #' #Using combineExpresion()
 #' sce <- combineExpression(combined, sce)
 #' 
-#' @param df The product of CombineTCR() or CombineBCR() or a list of 
-#' both c(CombineTCR(), combineBCR())
+#' @param df The product of \code{\link{combineTCR}}, \code{\link{combineBCR}} or a list of 
+#' both c(\code{\link{combineTCR}}, c\code{\link{combineBCR}})
 #' @param sc The seurat or SingleCellExperiment (SCE) object to attach
 #' @param cloneCall How to call the clonotype - VDJC gene (gene), 
 #' CDR3 nucleotide (nt) CDR3 amino acid (aa), or 
 #' VDJC gene + CDR3 nucleotide (strict).
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL"
-#' @param group.by The column label in the combined contig object in which 
+#' @param group.by The column label in the combined clones in which 
 #' clonotype frequency will be calculated. "none" will keep the list as is, 
-#' while NULL will merge all the contigs into a single data frame. 
-#' @param proportion Whether to use the total frequency (FALSE) or the 
-#' proportion (TRUE) of the clonotype based on the group.by variable.
-#' @param cloneSize The bins for the grouping based on frequency
+#' while NULL will merge all the clones into a single data frame. 
+#' @param proportion Whether to proportion (**TRUE**) or total frequency (**FALSE**) 
+#' of the clonotype based on the group.by variable. 
+#' @param cloneSize The bins for the grouping based on proportion or frequency. 
+#' If proportion is **FALSE** and the *cloneSizes* are not set high enough based 
+#' on frequency, the upper limit of *cloneSizes* will be automatically amended. 
 #' @param filterNA Method to subset seurat object of barcodes without 
 #' clonotype information
 #' @param addLabel This will add a label to the frequency header, allowing
@@ -58,8 +58,7 @@ combineExpression <- function(df,
                               group.by ="none", 
                               proportion = TRUE, 
                               filterNA = FALSE,
-                              cloneSize = c(
-                                Rare = 1e-4,Small = 0.001,Medium = 0.01,Large = 0.1,Hyperexpanded = 1),
+                              cloneSize = c(Rare = 1e-4,Small = 0.001,Medium = 0.01,Large = 0.1,Hyperexpanded = 1),
                               addLabel = FALSE) {
     call_time <- Sys.time()
   
@@ -111,6 +110,12 @@ combineExpression <- function(df,
                           "CTaa", "CTstrict", "clonalProportion", 
                           "clonalFrequency")]
         }
+    #Detect if largest cloneSize category is too small for experiment and amend
+    #this prevents a ton of NA values in the data
+    if(!proportion && max(na.omit(Con.df[,"clonalFrequency"])) > cloneSize[length(cloneSize)]) {
+      cloneSize[length(cloneSize)] <- max(na.omit(Con.df[,"clonalFrequency"]))
+    }
+    
     
     #Creating the bins for cloneSize
     Con.df$cloneSize <- NA
