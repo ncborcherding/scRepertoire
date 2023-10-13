@@ -1,9 +1,9 @@
-#' Demonstrate the difference in clonal proportion between clonotypes
+#' Demonstrate the difference in clonal proportion between clones
 #'
 #' This function produces an alluvial or area graph of the proportion of 
-#' the indicated clonotypes for all or selected samples. clonotypes can be 
-#' selected using the clonotypes parameter with the specific sequence of 
-#' interest or using the number parameter with the top n clonotypes by 
+#' the indicated clones for all or selected samples. clones can be 
+#' selected using the clones parameter with the specific sequence of 
+#' interest or using the number parameter with the top n clones by 
 #' proportion to be visualized. 
 #'
 #' @examples
@@ -24,7 +24,7 @@
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL".
 #' @param samples The specific samples to isolate for visualization.
-#' @param clonotypes The specific clonal sequences of interest.
+#' @param clones The specific clonal sequences of interest.
 #' @param top.clones The top number of clonotype sequences per group.
 #' @param highlight.clones Clonal sequences to highlight, if present, 
 #' all other clones returned will be grey.
@@ -36,25 +36,26 @@
 #' @param exportTable Returns the data frame used for forming the graph.
 #' @param palette Colors to use in visualization - input any \link[grDevices]{hcl.pals}.
 #' @import ggplot2
+#' @importFrom stringr str_sort
 #'
 #' @export
 #' @return ggplot of the proportion of total sequencing read of 
-#' selecting clonotypes
+#' selecting clones
 clonalCompare <- function(df, 
-                              cloneCall = "strict", 
-                              chain = "both", 
-                              samples = NULL, 
-                              clonotypes = NULL, 
-                              top.clones = NULL,
-                              highlight.clones = NULL,
-                              relabel.clones = FALSE,
-                              group.by = NULL, 
-                              graph = "alluvial", 
-                              exportTable = FALSE, 
-                              palette = "inferno"){
+                          cloneCall = "strict", 
+                          chain = "both", 
+                          samples = NULL, 
+                          clones = NULL, 
+                          top.clones = NULL,
+                          highlight.clones = NULL,
+                          relabel.clones = FALSE,
+                          group.by = NULL, 
+                          graph = "alluvial", 
+                          exportTable = FALSE, 
+                          palette = "inferno"){
   
   #Tie goes to indicated clones over top clones
-  if(!is.null(top.clones) & !is.null(clonotypes)) {
+  if(!is.null(top.clones) & !is.null(clones)) {
     top.clones <- NULL
   }
   cloneCall <- .theCall(cloneCall)
@@ -68,7 +69,7 @@ clonalCompare <- function(df,
     }
     tbl <- as.data.frame(table(df[[i]][,cloneCall]))
     tbl[,2] <- tbl[,2]/sum(tbl[,2])
-    colnames(tbl) <- c("clonotypes", "Proportion")
+    colnames(tbl) <- c("clones", "Proportion")
     tbl$Sample <- names(df[i])
     Con.df <- rbind.data.frame(Con.df, tbl)
   }
@@ -77,20 +78,20 @@ clonalCompare <- function(df,
   if (!is.null(samples)) {
     Con.df <- Con.df[Con.df$Sample %in% samples,] 
   }
-  if (!is.null(clonotypes)) {
-    Con.df <- Con.df[Con.df$clonotypes %in% clonotypes,] 
+  if (!is.null(clones)) {
+    Con.df <- Con.df[Con.df$clones %in% clones,] 
   } else if (!is.null(top.clones)) {
     top <- Con.df %>%
       group_by(Con.df[,3]) %>%
       slice_max(n = top.clones, order_by = Proportion, with_ties = FALSE)
-    Con.df <- Con.df[Con.df$clonotypes %in% top$clonotypes,] 
+    Con.df <- Con.df[Con.df$clones %in% top$clones,] 
   }
   if (nrow(Con.df) < length(unique(Con.df$Sample))) {
-    stop("Reasses the filtering strategies here, there is not 
-            enough clonotypes to examine.") 
+    stop("Reasses the filtering strategies here, there are not 
+            enough clones to examine.") 
   }
-  #Clonotype relabeling
-  clones.returned <- as.vector(unique(Con.df[,"clonotypes"]))
+  #Clones relabeling
+  clones.returned <- as.vector(unique(Con.df[order(Con.df[,"Proportion"], decreasing = TRUE),"clones"]))
   if (relabel.clones) {
     new.clones <- paste0("Clonotype: ", seq_len(length(clones.returned)))
     names(new.clones) <- clones.returned
@@ -98,8 +99,9 @@ clonalCompare <- function(df,
     if(!is.null(highlight.clones)) {
       highlight.clones <- unname(new.clones[which(names(new.clones) %in% highlight.clones)])
     }
-    Con.df[,"clonotypes"] <- new.clones[as.vector(Con.df[,"clonotypes"])]
-    clones.returned <- as.vector(unique(Con.df[,"clonotypes"]))
+    Con.df[,"clones"] <- new.clones[as.vector(Con.df[,"clones"])]
+    Con.df[,"clones"] <- factor(Con.df[,"clones"], levels = str_sort(unique(Con.df[,"clones"]), numeric = TRUE))
+    clones.returned <- as.vector(unique(Con.df[,"clones"]))
   }
   if (exportTable == TRUE) { 
     return(Con.df)
@@ -107,12 +109,12 @@ clonalCompare <- function(df,
   
   #Plotting Functions
   plot <- ggplot(Con.df, aes(x = Sample, 
-                             fill = clonotypes, 
-                             group = clonotypes,
-                             stratum = clonotypes, 
-                             alluvium = clonotypes, 
+                             fill = clones, 
+                             group = clones,
+                             stratum = clones, 
+                             alluvium = clones, 
                              y = Proportion, 
-                             label = clonotypes)) +
+                             label = clones)) +
     theme_classic() +
     theme(axis.title.x = element_blank(), 
           legend.text=element_text(size=rel(0.5)), 
@@ -121,7 +123,7 @@ clonalCompare <- function(df,
     plot <- plot +  geom_stratum() + geom_flow(stat = "alluvium")
   } else if (graph == "area") {
     plot <- plot +
-      geom_area(aes(group = clonotypes), color = "black")
+      geom_area(aes(group = clones), color = "black")
   }
   
   #Highlighting specific clones
@@ -132,7 +134,7 @@ clonalCompare <- function(df,
     names(clone.colors) <- clones.returned
     plot <- plot + scale_fill_manual(values = clone.colors)
   } else {
-    plot <- plot + scale_fill_manual(values = .colorizer(palette, length(unique(Con.df[,"clonotypes"]))))
+    plot <- plot + scale_fill_manual(values = .colorizer(palette, length(unique(Con.df[,"clones"]))))
   }
   return(plot)
 }

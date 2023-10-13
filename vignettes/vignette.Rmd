@@ -308,12 +308,12 @@ We can also choose to highlight specific clonotypes, such as in the case of *"CV
 
 ```{r}
 clonalCompare(combined, 
-                  top.clones = 10,
-                  highlight.clones = c("CVVSDNTGGFKTIF_CASSVRRERANTGELFF", "NA_CASSVRRERANTGELFF"),
-                  relabel.clones = TRUE,
-                  samples = c("P17B", "P17L"), 
-                  cloneCall="aa", 
-                  graph = "alluvial")
+              top.clones = 10,
+              highlight.clones = c("CVVSDNTGGFKTIF_CASSVRRERANTGELFF", "NA_CASSVRRERANTGELFF"),
+              relabel.clones = TRUE,
+              samples = c("P17B", "P17L"), 
+              cloneCall="aa", 
+              graph = "alluvial")
 ```
 
 ## vizGenes
