@@ -2,14 +2,14 @@
 % Please edit documentation in R/clonalCompare.R
 \name{clonalCompare}
 \alias{clonalCompare}
-\title{Demonstrate the difference in clonal proportion between clonotypes}
+\title{Demonstrate the difference in clonal proportion between clones}
 \usage{
 clonalCompare(
   df,
   cloneCall = "strict",
   chain = "both",
   samples = NULL,
-  clonotypes = NULL,
+  clones = NULL,
   top.clones = NULL,
   highlight.clones = NULL,
   relabel.clones = FALSE,
@@ -32,7 +32,7 @@ e.g. "both", "TRA", "TRG", "IGH", "IGL".}
 
 \item{samples}{The specific samples to isolate for visualization.}
 
-\item{clonotypes}{The specific clonal sequences of interest.}
+\item{clones}{The specific clonal sequences of interest.}
 
 \item{top.clones}{The top number of clonotype sequences per group.}
 
@@ -53,13 +53,13 @@ to group the new list. NULL will return clusters.}
 }
 \value{
 ggplot of the proportion of total sequencing read of 
-selecting clonotypes
+selecting clones
 }
 \description{
 This function produces an alluvial or area graph of the proportion of 
-the indicated clonotypes for all or selected samples. clonotypes can be 
-selected using the clonotypes parameter with the specific sequence of 
-interest or using the number parameter with the top n clonotypes by 
+the indicated clones for all or selected samples. clones can be 
+selected using the clones parameter with the specific sequence of 
+interest or using the number parameter with the top n clones by 
 proportion to be visualized.
 }
 \examples{
