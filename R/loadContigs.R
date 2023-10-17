@@ -11,8 +11,9 @@
 #' \itemize{
 #'   \item 10X =  "filtered_contig_annotation.csv"  
 #'   \item AIRR = "airr_rearrangement.tsv" 
-#'   \item JSON = ".json"
 #'   \item BD = "Contigs_AIRR.tsv" 
+#'   \item JSON = ".json"
+#'   \item MiXCR = "clones.txt"
 #'   \item Omniscope = ".csv" 
 #'   \item TRUST4 = "barcode_report.tsv"
 #'   \item WAT3R = "barcode_results.csv" 
@@ -31,7 +32,7 @@
 #' 
 #' @param dir The directory in which contigs are located or a list with contig elements
 #' @param format The format of the single-cell contig, currently supporting: 
-#' "10X", "AIRR", "BD", "JSON", "Omniscope", "TRUST4", and "WAT3R"
+#' "10X", "AIRR", "BD", "JSON", "MiXCR", "Omniscope", "TRUST4", and "WAT3R"
 #' @importFrom utils read.csv read.delim
 #' @importFrom rjson fromJSON
 #' @export
@@ -43,6 +44,7 @@ loadContigs <- function(dir,
     format.list <- list("WAT3R" = "barcode_results.csv", 
                         "10X" =  "filtered_contig_annotation.csv", 
                         "AIRR" = "airr_rearrangement.tsv", 
+                        "MiXCR" = "clones.txt", 
                         "JSON" = ".json",
                         "TRUST4" = "barcode_report.tsv", 
                         "BD" = "Contigs_AIRR.tsv",
@@ -68,6 +70,7 @@ loadContigs <- function(dir,
                      "10X" = .parse10x,
                      "AIRR" = .parseAIRR,
                      "JSON" = .parseJSON,
+                     "MiXCR" = .parseMiXCR,
                      "TRUST4" = .parseTRUST4,
                      "BD" = .parseBD,
                      "WAT3R"  = .parseWAT3R,
@@ -199,6 +202,18 @@ loadContigs <- function(dir,
     df[[i]] <- as.data.frame(df[[i]])
     df[[i]] <- df[[i]][,c("cell_id", "locus", "consensus_count", "v_call", "d_call", "j_call", "c_call", "junction", "junction_aa")]
     colnames(df[[i]]) <- c("barcode", "chain", "reads", "v_gene", "d_gene", "j_gene", "c_gene", "cdr3_nt", "cdr3")
+  }
+  return(df)
+}
+
+.parseMiXCR <- function(df) {
+  for (i in seq_along(df)) {
+    df[[i]] <- do.call(rbind, df[[i]])
+    df[[i]][df[[i]] == ""] <- NA
+    df[[i]] <- as.data.frame(df[[i]])
+    df[[i]] <- df[[i]][,c("tagValueCELL", "readCount", "vGene", "dGene", "jGene", "cGene", "nSeqCDR3", "aaSeqCDR3")]
+    colnames(df[[i]]) <- c("barcode", "reads", "v_gene", "d_gene", "j_gene", "c_gene", "cdr3_nt", "cdr3")
+    df[[i]]$chain <- substring(df[[i]]$v_gene, 1,3)
   }
   return(df)
 }
