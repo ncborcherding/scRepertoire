@@ -10,7 +10,7 @@ loadContigs(dir, format = "10X")
 \item{dir}{The directory in which contigs are located or a list with contig elements}
 
 \item{format}{The format of the single-cell contig, currently supporting: 
-"10X", "AIRR", "BD", "JSON", "Omniscope", "TRUST4", and "WAT3R"}
+"10X", "AIRR", "BD", "JSON", "MiXCR", "Omniscope", "TRUST4", and "WAT3R"}
 }
 \value{
 List of contigs for further processing in scRepertoire
@@ -28,8 +28,9 @@ The files that this function parses includes:
 \itemize{
   \item 10X =  "filtered_contig_annotation.csv"  
   \item AIRR = "airr_rearrangement.tsv" 
-  \item JSON = ".json"
   \item BD = "Contigs_AIRR.tsv" 
+  \item JSON = ".json"
+  \item MiXCR = "clones.txt"
   \item Omniscope = ".csv" 
   \item TRUST4 = "barcode_report.tsv"
   \item WAT3R = "barcode_results.csv" 

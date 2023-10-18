@@ -835,26 +835,53 @@ chordDiagram(circles,
              link.arr.type = "big.arrow")
 ```
 
-## clusterTCR 
+## clonalCluster
 
-The nucleotide or amino acid sequences of the chains can be used to cluster clonotypes by examining the edit distance of the sequences. This approach is underlying the `combineBCR()` function but now can be applied to the T cell receptors. It will add a cluster to the end of each list element by generating a network connected by the similarity in sequence. This network is directed by the threshold variable, where 0.85 is the normalized mean edit distance.
+The nucleotide or amino acid sequences of the chains can be used to cluster clonotypes by examining the edit distance of the sequences. This approach is underlying the `combineBCR()` function but now can be applied to the B or T cell receptors at the level of nucleotides or amino acids. It will add a cluster to the end of each list element by generating a network connected by the similarity in sequence. This network is directed by the threshold variable, where 0.85 is the normalized mean edit distance.
 
 Clonotype cluster by distance:  
 
-*  TCRA:LD.1  [chain:] + :LD + [number]  
+*  TCRA:Cluster.1  [chain:] + :Cluster + [number]  
 *  TCRA.123 [chain:] + [number]  
 
-LD denotes if the cluster was called using the normalized Levenshtein distance.
+Cluster denotes if the cluster was called using the normalized Levenshtein distance, which takes the edit distance calculated between 2 sequences and divides that by the mean of the sequence lengths. 
 
-If performed over the number of samples, such as the list elements, **group.by** can used to calculate only the clusters on the setting of patient sample (group.by = "Patient") or tissue type (group.by = "Type"). This will add the selected group to the beginning of the cluster designation.
+If performed over the number of samples, such as the list elements, **group.by** can used to calculate only the clusters on the setting of patient sample (**group.by** = "Patient") or tissue type (group.by = "Type"). This will add the selected group to the beginning of the cluster designation.
 
 
 ```{r}
-sub_combined <- clusterTCR(combined[[2]], 
-                           chain = "TRA", 
-                           sequence = "aa", 
-                           threshold = 0.85, 
-                           group.by = NULL)
+sub_combined <- clonalCluster(combined[[2]], 
+                              chain = "TRA", 
+                              sequence = "aa", 
+                              threshold = 0.85, 
+                              group.by = NULL)
+```
+
+
+Using ```clonalCluster()```, we can also return an igraph object of all the related sequences using **exportGraph** = TRUE. The returned igraph object contains only the sequences that have at least one conenction with another sequence. The igraph can then be directly visualized (below) or used for downstream analysis (see the igraph [website](https://r.igraph.org/). 
+
+```{r}
+igraph.object <- clonalCluster(combined[c(1,2)],
+                                chain = "TRB",
+                                sequence = "aa",
+                                group.by = "sample",
+                                threshold = 0.85, 
+                                exportGraph = TRUE)
+
+#Setting color scheme
+col_legend <- factor(igraph::V(igraph.object)$group)
+col_samples <- hcl.colors(3,"inferno")[as.numeric(col_legend)]
+color.legend <- factor(unique(igraph::V(igraph.object)$group))
+
+#Plotting
+plot(
+  igraph.object,
+  vertex.size     = sqrt(igraph::V(igraph.object)$size),
+  vertex.label    = NA,
+  edge.arrow.size = .25,
+  vertex.color    = col_samples
+)
+legend("topleft", legend = levels(color.legend), pch = 16, col = unique(col_samples), bty = "n")
 ```
 
 ## StartracDiversity
