@@ -1,0 +1,205 @@
+---
+title: "Basic Clonal Visualizations"
+date: 'Compiled: `r format(Sys.Date(), "%B %d, %Y")`'
+output: rmarkdown::html_vignette
+theme: united
+df_print: kable
+vignette: >
+  %\VignetteIndexEntry{Basic Clonal Visualizations}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+***
+
+<style>
+p.caption {
+  font-size: 0.9em;
+}
+</style>
+ 
+```{r setup, include=FALSE}
+all_times <- list()  # store the time for each chunk
+knitr::knit_hooks$set(time_it = local({
+  now <- NULL
+  function(before, options) {
+    if (before) {
+      now <<- Sys.time()
+    } else {
+      res <- difftime(Sys.time(), now, units = "secs")
+      all_times[[options$label]] <<- res
+    }
+  }
+}))
+knitr::opts_chunk$set(
+  tidy = TRUE,
+  tidy.opts = list(width.cutoff = 95),
+  message = FALSE,
+  warning = FALSE,
+  time_it = TRUE
+)
+
+suppressMessages(library(scRepertoire))
+data("contig_list") 
+combined.TCR <- combineTCR(contig_list, 
+                           samples = c("P17B", "P17L", "P18B", "P18L", 
+                                            "P19B","P19L", "P20B", "P20L"))
+combined.TCR <- addVariable(combined.TCR, 
+                      name = "Type", 
+                      variables = rep(c("B", "L"), 4))
+```
+
+## clonalQuant
+
+The first function to explore the clonotypes is `clonalQuant()` to return the total or relative numbers of unique clonotypes. 
+
+**scale**  
+* TRUE - relative percent of unique clonotypes scaled by the total size of the clonal repertoire  
+* FALSE - Report the total number of unique clonotypes  
+
+**chain**  
++ "both" for combined chain visualization  
++ "TRA", "TRB", "TRD", "TRG", "IGH" or "IGL" to select single chain
+
+```{r}
+clonalQuant(combined.TCR, 
+            cloneCall="strict", 
+            chain = "both", 
+            scale = TRUE)
+```
+
+For all visualizations in scRepertoire, there are 2 ways to adjust the color scheme:
++ Change the **palette** parameter to the desired color scheme. This approach uses the built-in palettes of grDevices and we can access the list of color schemes using ``hcl.pals()``.  
++ Add a ggplot layer with a new color scheme. 
+
+```{r}
+clonalQuant(combined.TCR, 
+            cloneCall="strict", 
+            chain = "both", 
+            scale = TRUE, 
+            palette = "Zissou 1")
+
+clonalQuant(combined.TCR, 
+            cloneCall="strict", 
+            chain = "both", 
+            scale = TRUE) + 
+  scale_fill_manual(values = hcl.colors(8,"geyser"))
+```
+
+Within each of the general analysis functions, there is the ability to export the data frame used to create the visualization. To get the exported values, use **exportTable** = TRUE. It will return the data frame used to make the graph instead of the visual output.  
+
+```{r}
+clonalQuant_output <- clonalQuant(combined.TCR, 
+                                  cloneCall="strict", 
+                                  scale = TRUE, 
+                                  exportTable = TRUE)
+clonalQuant_output
+```
+
+Another option here is to be able to define the visualization by data classes. Here, we used the `combineTCR()` to define the **Type** variable as part of the naming structure. We can use the **group.by** to specifically use a column in the data set to organize the visualization.
+
+```{r}
+clonalQuant(combined.TCR, 
+            cloneCall="gene", 
+            group.by = "Type", 
+            scale = TRUE)
+```
+
+## clonalAbundance
+
+We can also examine the relative distribution of clonotypes by abundance. Here `clonalAbundance()` will produce a line graph with a total number of clonotypes by the number of instances within the sample or run. Like above, we can also group.by this by vectors within the contig object using the **group.by** variable in the function.
+
+```{r}
+clonalAbundance(combined.TCR, 
+                cloneCall = "gene", 
+                scale = FALSE)
+
+clonalAbundance(combined.TCR, 
+                group.by = "Type", 
+                scale = TRUE)
+```
+
+## clonalLength
+
+We can look at the length distribution of the CDR3 sequences by calling the `lengtheContig()` function. Importantly, unlike the other basic visualizations, the **cloneCall** can only be "nt" or "aa". Due to the method of calling clonotypes as outlined above, the length should reveal a multimodal curve, this is a product of using the **NA** for the unreturned chain sequence and multiple chains within a single barcode. 
+
+*chain*  
++ "both" for combined chain visualization  
++ "TRA", "TRB", "TRD", "TRG", "IGH" or "IGL" to select single chain  
+
+```{r}
+clonalLength(combined.TCR, 
+             cloneCall="aa", 
+             chain = "both") 
+
+clonalLength(combined.TCR, 
+             cloneCall="aa", 
+             chain = "TRA", 
+             scale = TRUE) 
+```
+
+## clonalCompare
+
+We can also look at clonotypes between samples and changes in dynamics by using the `clonalCompare()` function.
+
+**samples**  
+* Can be used to isolate specific samples based on the name of the list element
+
+**graph**  
+* "alluvial" - graph imaged below  
+* "area" - graph by area of the respective clonotype  
+
+**top.clones**  
+* The top number of clonotypes to graph, this will be calculated based on the frequency of the individual sample. This can also be left blank.  
+
+**clonotypes**  
+* Can be used to isolate specific clonotype sequences, ensure the call matches the sequences you would like to visualize.  
+
+**highlight.clones**  
+* Specifically color certain clonotypes, other clones will be greyed out.
+
+**relabel.clones**  
+* Simplify the isolated clonotypes to numerical designations to allow for a tidier visualization
+
+```{r}
+clonalCompare(combined.TCR, 
+                  top.clones = 10, 
+                  samples = c("P17B", "P17L"), 
+                  cloneCall="aa", 
+                  graph = "alluvial")
+```
+
+We can also choose to highlight specific clonotypes, such as in the case of *"CVVSDNTGGFKTIF_CASSVRRERANTGELFF"* and *"NA_CASSVRRERANTGELFF"*: 
+
+```{r}
+clonalCompare(combined.TCR, 
+              top.clones = 10,
+              highlight.clones = c("CVVSDNTGGFKTIF_CASSVRRERANTGELFF", "NA_CASSVRRERANTGELFF"),
+              relabel.clones = TRUE,
+              samples = c("P17B", "P17L"), 
+              cloneCall="aa", 
+              graph = "alluvial")
+```
+
+## clonalScatter
+
+```clonalScatter()``` will organize two repertoires, quantify the relative clone sizes, and produce a scatter plot comparing the two samples. 
+
+**x.axis** and **y.axis**  
+* Names of the list element to place on the x-axis and y-axis - so for example *"P18L"* and *"P18B" * 
+
+**dot.size**  
+* "total" to display the total number of clones between the x- and y-axis  
+* Name of the list element to use for size calculation  
+ 
+**graph**  
+* "proportion" for the relative proportion the clonotype represents across all clonotypes  
+* "count" for the total count of clonotypes by sample  
+
+```{r}
+clonalScatter(combined.TCR, 
+              cloneCall ="gene", 
+              x.axis = "P18B", 
+              y.axis = "P18L",
+              dot.size = "total",
+              graph = "proportion")
+```

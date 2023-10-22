@@ -31,6 +31,7 @@
 #' @importFrom reshape2 melt
 #' @importFrom dplyr bind_rows
 #' @export
+#' @concept Visualizing_Clones
 #' @return ggplot of the space occupied by the specific proportion of clonotypes
 clonalHomeostasis <- function(df, 
                               cloneSize = 

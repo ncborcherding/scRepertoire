@@ -39,6 +39,7 @@
 #' @importFrom stringr str_sort
 #'
 #' @export
+#' @concept Visualizing_Clones
 #' @return ggplot of the proportion of total sequencing read of 
 #' selecting clones
 clonalCompare <- function(df, 

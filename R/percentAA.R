@@ -20,6 +20,7 @@
 #' @import ggplot2
 #' @importFrom reshape2 melt
 #' @export
+#' @concept Summarize_Repertoire
 #' @return ggplot of stacked bar graphs of amino acid proportions
 percentAA <- function(df, 
                         chain = "TRB", 

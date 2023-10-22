@@ -44,6 +44,7 @@ utils::globalVariables(c(
 #' 
 #' @import dplyr
 #' @export
+#' @concept Loading_and_Processing_Contigs
 #' @return List of clonotypes for individual cell barcodes
 #' 
 combineTCR <- function(df, 
@@ -165,6 +166,7 @@ combineTCR <- function(df,
 #' chains, if not calling related clones.
 #' @import dplyr
 #' @export
+#' @concept Loading_and_Processing_Contigs
 #' @return List of clonotypes for individual cell barcodes
 combineBCR <- function(df, 
                        samples = NULL, 

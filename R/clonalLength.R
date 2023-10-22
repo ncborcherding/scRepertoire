@@ -30,6 +30,7 @@
 #' @importFrom stringr str_split
 #' @importFrom ggplot2 ggplot
 #' @export
+#' @concept Visualizing_Clones
 #' @return ggplot of the discrete or relative length distributions of 
 #' clonotype sequences
 clonalLength <- function(df, 

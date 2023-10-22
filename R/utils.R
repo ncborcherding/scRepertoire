@@ -7,6 +7,7 @@ is_seurat_or_se_object <- function(obj) {
 }
 
 #Use to shuffle between chains
+#' @keywords internal
 .off.the.chain <- function(dat, chain, cloneCall) {
   chain1 <- toupper(chain) #to just make it easier
   if (chain1 %in% c("TRA", "TRG", "IGH")) {
@@ -22,6 +23,7 @@ is_seurat_or_se_object <- function(obj) {
 
 #Pulling a color palette for visualizations
 #' @importFrom grDevices hcl.colors
+#' @keywords internal
 .colorizer <- function(palette = "inferno", 
                         n= NULL) {
   colors <- hcl.colors(n=n, palette = palette, fixup = TRUE)
@@ -31,6 +33,7 @@ is_seurat_or_se_object <- function(obj) {
 
 
 #Remove list elements that contain all NA values
+#' @keywords internal
 .checkBlanks <- function(df, cloneCall) {
   count <- NULL
     for (i in seq_along(df)) {
@@ -49,6 +52,7 @@ is_seurat_or_se_object <- function(obj) {
 }
 
 #reshuffling df
+#' @keywords internal
 .groupList <- function(df, group.by) {
     df <- bind_rows(df)
     df <- split(df, df[,group.by])
@@ -56,6 +60,7 @@ is_seurat_or_se_object <- function(obj) {
 }
 
 # Ensure df is in list format
+#' @keywords internal
 .checkList <- function(df) {
   df <- tryCatch(
       {
@@ -73,6 +78,7 @@ is_seurat_or_se_object <- function(obj) {
     df
 }
 
+#' @keywords internal
 .checkContigs <- function(df) {
     df <- lapply(seq_len(length(df)), function(x) {
         df[[x]] <- if(!is.data.frame(df[[x]])) as.data.frame(df[[x]]) else df[[x]]
@@ -83,6 +89,7 @@ is_seurat_or_se_object <- function(obj) {
 }
 
 #' @importFrom dplyr bind_rows
+#' @keywords internal
 .bound.input.return <- function(df) {
   if (is_seurat_or_se_object(df)) {
     return(.grabMeta(df))
@@ -90,6 +97,7 @@ is_seurat_or_se_object <- function(obj) {
   bind_rows(df, .id = "element.names")
 }
 
+#' @keywords internal
 .list.input.return <- function(df, split.by) {
     if (is_seurat_or_se_object(df)) {
         if(is.null(split.by)){
@@ -102,6 +110,7 @@ is_seurat_or_se_object <- function(obj) {
 
 #Get UMAP or other coordinates
 #' @importFrom SingleCellExperiment reducedDim
+#' @keywords internal
 .get.coord <- function(sc, reduction) { 
   if (is.null(reduction)) {
     reduction <- "pca"
@@ -115,6 +124,7 @@ is_seurat_or_se_object <- function(obj) {
 }
 
 #This is to check the single-cell expression object
+#' @keywords internal
 .checkSingleObject <- function(sc) {
     if (!is_seurat_or_se_object(sc)){
         stop("Object indicated is not of class 'Seurat' or 
@@ -127,6 +137,7 @@ is_seurat_or_se_object <- function(obj) {
 #' @importFrom SingleCellExperiment colData 
 #' @importFrom SeuratObject Idents
 #' @importFrom methods slot
+#' @keywords internal
 .grabMeta <- function(sc) {
     if (is_seurat_object(sc)) {
         meta <- data.frame(sc[[]], slot(sc, "active.ident"))
@@ -142,6 +153,7 @@ is_seurat_or_se_object <- function(obj) {
 }
 
 #This is to add the sample and ID prefixes for combineBCR()/TCR()
+#' @keywords internal
 .modifyBarcodes <- function(df, samples, ID) {
     out <- NULL
     for (x in seq_along(df)) {
@@ -156,6 +168,7 @@ is_seurat_or_se_object <- function(obj) {
 }
 
 #Removing barcodes with NA recovered
+#' @keywords internal
 .removingNA <- function(final) {
     for(i in seq_along(final)) {
         final[[i]] <- na.omit(final[[i]])}
@@ -163,6 +176,7 @@ is_seurat_or_se_object <- function(obj) {
 }
 
 #Removing barcodes with > 2 clones recovered
+#' @keywords internal
 .removingMulti <- function(final){
     for(i in seq_along(final)) {
         final[[i]] <- filter(final[[i]], !grepl(";",CTnt))}
@@ -171,6 +185,7 @@ is_seurat_or_se_object <- function(obj) {
 
 #Removing extra clonotypes in barcodes with > 2 productive contigs
 #' @import dplyr
+#' @keywords internal
 .filteringMulti <- function(x) {
     x <- x %>%
       group_by(barcode, chain) %>% 
@@ -197,6 +212,7 @@ is_seurat_or_se_object <- function(obj) {
 #Filtering NA contigs out of single-cell expression object
 #' @import dplyr
 #' @importFrom SingleCellExperiment colData
+#' @keywords internal
 .filteringNA <- function(sc) {
     meta <- .grabMeta(sc)
     evalNA <- data.frame(meta[,"cloneSize"])
@@ -216,6 +232,7 @@ is_seurat_or_se_object <- function(obj) {
 }
 
 #Organizing list of contigs for visualization
+#' @keywords internal
 .parseContigs <- function(df, i, names, cloneCall) {
     data <- df[[i]]
     data1 <- data %>% 
@@ -227,6 +244,7 @@ is_seurat_or_se_object <- function(obj) {
 }
 
 # This suppressing outputs for using dput()
+#' @keywords internal
 .quiet <- function(x) {
     sink(tempfile())
     on.exit(sink())
@@ -235,6 +253,7 @@ is_seurat_or_se_object <- function(obj) {
 
 
 # This is to help sort the type of clonotype data to use
+#' @keywords internal
 .theCall <- function(x) {
     x <- switch(x,
                 "gene" = "CTgene",
@@ -254,6 +273,7 @@ is_seurat_or_se_object <- function(obj) {
 
 # Assigning positions for TCR contig data
 #' @author Gloria Kraus, Nick Bormann, Nicky de Vrij, Nick Borcherding
+#' @keywords internal
 .parseTCR <- function(Con.df, unique_df, data2) {
     data2 <- data2 %>% arrange(., chain, cdr3_nt)
     for (y in seq_along(unique_df)){
@@ -291,6 +311,7 @@ is_seurat_or_se_object <- function(obj) {
 #Assigning positions for BCR contig data
 #Now assumes lambda over kappa in the context of only 2 light chains
 #' @author Gloria Kraus, Nick Bormann, Nick Borcherding
+#' @keywords internal
 .parseBCR <- function (Con.df, unique_df, data2) {
   for (y in seq_along(unique_df)) {
     barcode.i <- Con.df$barcode[y]
@@ -330,6 +351,7 @@ is_seurat_or_se_object <- function(obj) {
 
 
 #Producing a data frame to visualize for lengthContig()
+#' @keywords internal
 .lengthDF <- function(df, cloneCall, chain, group, c1, c2){
     Con.df <- NULL
     names <- names(df)
@@ -371,6 +393,7 @@ is_seurat_or_se_object <- function(obj) {
 }
 
 #General combination of nucleotide, aa, and gene sequences for T/B cells
+#' @keywords internal
 .assignCT <- function(cellType, Con.df) {
     if (cellType == "T") {
         Con.df$CTgene <- paste(Con.df$TCR1, Con.df$TCR2, sep="_")
@@ -390,6 +413,7 @@ is_seurat_or_se_object <- function(obj) {
 #Sorting the V/D/J/C gene sequences for T and B cells
 #' @importFrom stringr str_c str_replace_na
 #' @importFrom dplyr bind_rows
+#' @keywords internal
 .makeGenes <- function(cellType, data2, chain1, chain2) {
     if(cellType %in% c("T")) {
         data2 <- data2 %>% 
@@ -411,6 +435,7 @@ is_seurat_or_se_object <- function(obj) {
 }
 
 #Getting the minimum repertoire size for diversity boots
+#' @keywords internal
 .short.check <- function(df, cloneCall) {
   min <- c()
   for (x in seq_along(df)) {
@@ -422,6 +447,7 @@ is_seurat_or_se_object <- function(obj) {
 }
 
 # check if object is a dataframe or list of dataframes
+#' @keywords internal
 is_df_or_list_of_df <- function(x) {
     if (is.data.frame(x)) {
         return(TRUE)
@@ -436,6 +462,7 @@ is_df_or_list_of_df <- function(x) {
 }
 
 #Pulling meta data 
+#' @keywords internal
 .expression2List <- function(sc, split.by) {
   if (!inherits(x=sc, what ="Seurat") & 
       !inherits(x=sc, what ="SummarizedExperiment")) {
@@ -457,6 +484,7 @@ is_df_or_list_of_df <- function(x) {
 }
 
 #Making lists for single-cell object, check blanks and apply chain filter
+#' @keywords internal
 .data.wrangle <- function(df, split.by, cloneCall, chain) {
   df <- .list.input.return(df, split.by)
   df <- .checkBlanks(df, cloneCall)
@@ -473,6 +501,7 @@ is_df_or_list_of_df <- function(x) {
 #' @importFrom stringdist stringdist
 #' @importFrom igraph graph_from_data_frame components graph_from_edgelist
 #' @importFrom dplyr bind_rows
+#' @keywords internal
 .lvCompare <- function(dictionary, gene, chain, threshold, exportGraph = FALSE) {
   overlap <- NULL
   out <- NULL
@@ -483,7 +512,7 @@ is_df_or_list_of_df <- function(x) {
   unique.v <- na.omit(unique(tmp$v.gene))
   
   edge.list <- lapply(unique.v, function(y) {
-    #for(y in unique.v) {
+  #for(y in unique.v) {
     secondary.list <- list()
     filtered_df <- tmp %>% filter(v.gene == y)
     filtered_df <- filtered_df[!is.na(filtered_df[,chain]),]
@@ -497,14 +526,14 @@ is_df_or_list_of_df <- function(x) {
       for (i in 1:(length(nucleotides) - 1)) {
         temp_list <- vector("list", length = length(nucleotides) - i)
         
-        idx_i <- tmp[, chain_col_number] == nucleotides[i]
+        idx_i <- tmp[, chain_col_number] == nucleotides[i] & tmp[,2] == y
         len_i <- nucleotide_lengths[i]
         
         for (j in (i + 1):length(nucleotides)) {
           distance <- stringdist::stringdist(nucleotides[i], nucleotides[j], method = "lv")
           distance_norm <- 1 - distance / ((len_i + nucleotide_lengths[j]) / 2)
           
-          if (!is.na(distance_norm) & distance_norm > threshold) {
+          if (!is.na(distance_norm) & distance_norm >= threshold) {
             idx_j <- tmp[, chain_col_number] == nucleotides[j]
             stored_positions <- idx_j & !idx_i
             

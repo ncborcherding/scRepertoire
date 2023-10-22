@@ -48,6 +48,7 @@
 #' @importFrom  rlang %||%
 #' @importFrom SummarizedExperiment colData<- colData
 #' @export
+#' @concept SC_Functions
 #' @return seurat or SingleCellExperiment object with attached clonotype 
 #' information
 #' 

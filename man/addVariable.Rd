@@ -32,3 +32,4 @@ combined <- addVariable(combined,
                        variables = rep(c("B", "L"), 4))
 
 }
+\concept{Loading_and_Processing_Contigs}

@@ -18,6 +18,7 @@
 #' @param name The column header to add.
 #' @param variables The exact values to add to each element of the list.
 #' @export
+#' @concept Loading_and_Processing_Contigs
 #' @return list of contigs with a new column (name).
 addVariable <- function(df, name = NULL, variables =  NULL) {
   if (length(df) != length(variables)) {

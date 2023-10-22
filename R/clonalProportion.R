@@ -2,7 +2,7 @@
 #'
 #' This function calculates the relative clonal space occupied by the 
 #' clonotypes. The grouping of these clonotypes is based on the parameter 
-#' **clonal.split**, at default, **clonal.split** will group the clonotypes 
+#' **clonalSplit**, at default, **clonalSplit** will group the clonotypes 
 #' into bins of 1:10, 11:100, 101:1001, etc. To adjust the clonotypes 
 #' selected, change the numbers in the variable split. If a matrix output 
 #' for the data is preferred, set exportTable = TRUE.
@@ -16,7 +16,7 @@
 #'
 #' @param df The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
 #'  \code{\link{combineExpression}}.
-#' @param clonal.split The cut points for the specific clonotypes.
+#' @param clonalSplit The cut points for the specific clonotypes.
 #' @param cloneCall How to call the clonotype - VDJC gene (gene), 
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
 #' VDJC gene + CDR3 nucleotide (strict).
@@ -33,9 +33,10 @@
 #' @importFrom dplyr bind_rows
 #'
 #' @export
+#' @concept Visualizing_Clones
 #' @return ggplot of the space occupied by the specific rank of clonotypes
 clonalProportion <- function(df,
-                             clonal.split = c(10, 100, 1000, 10000, 30000, 100000), 
+                             clonalSplit = c(10, 100, 1000, 10000, 30000, 100000), 
                              cloneCall = "strict", 
                              chain = "both", 
                              group.by = NULL,
@@ -50,8 +51,8 @@ clonalProportion <- function(df,
     }
     
     #Generating data matrix to store value
-    mat <- matrix(0, length(df), length(clonal.split), dimnames = list(names(df), 
-            paste0('[', c(1, clonal.split[-length(clonal.split)] + 1), ':', clonal.split, ']')))
+    mat <- matrix(0, length(df), length(clonalSplit), dimnames = list(names(df), 
+            paste0('[', c(1, clonalSplit[-length(clonalSplit)] + 1), ':', clonalSplit, ']')))
     
     #Assigning the clonal grouping
     df <- lapply(df, '[[', cloneCall)
@@ -60,9 +61,9 @@ clonalProportion <- function(df,
     for (i in seq_along(df)) {
         df[[i]] <- rev(sort(as.numeric(df[[i]][,2])))
     }
-    cut <- c(1, clonal.split[-length(clonal.split)] + 1)
-    for (i in seq_along(clonal.split)) {
-        mat[,i] <- vapply(df, function (x) sum(na.omit(x[cut[i]:clonal.split[i]])), 
+    cut <- c(1, clonalSplit[-length(clonalSplit)] + 1)
+    for (i in seq_along(clonalSplit)) {
+        mat[,i] <- vapply(df, function (x) sum(na.omit(x[cut[i]:clonalSplit[i]])), 
                             FUN.VALUE = numeric(1))
     }
     if (exportTable == TRUE) {

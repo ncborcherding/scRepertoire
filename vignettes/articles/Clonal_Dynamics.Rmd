@@ -1,0 +1,93 @@
+---
+title: "Visualizing Clonal Dynamics"
+date: 'Compiled: `r format(Sys.Date(), "%B %d, %Y")`'
+output: rmarkdown::html_vignette
+theme: united
+df_print: kable
+vignette: >
+  %\VignetteIndexEntry{Visualizing Clonal Dynamics}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+***
+
+<style>
+p.caption {
+  font-size: 0.9em;
+}
+</style>
+ 
+```{r setup, include=FALSE}
+all_times <- list()  # store the time for each chunk
+knitr::knit_hooks$set(time_it = local({
+  now <- NULL
+  function(before, options) {
+    if (before) {
+      now <<- Sys.time()
+    } else {
+      res <- difftime(Sys.time(), now, units = "secs")
+      all_times[[options$label]] <<- res
+    }
+  }
+}))
+knitr::opts_chunk$set(
+  tidy = TRUE,
+  tidy.opts = list(width.cutoff = 95),
+  message = FALSE,
+  warning = FALSE,
+  time_it = TRUE
+)
+
+suppressMessages(library(scRepertoire))
+data("contig_list") 
+combined.TCR <- combineTCR(contig_list, 
+                           samples = c("P17B", "P17L", "P18B", "P18L", 
+                                            "P19B","P19L", "P20B", "P20L"))
+```
+
+
+After completing the basic processing and summary functions in scRepertoire, we can explore the clonotypes of the single-cell data in more detail.
+
+## clonalHomeostasis
+
+By examining the clonal space, we effectively look at the relative space occupied by clones at specific proportions. Another way to think about this would be to think of the total immune receptor sequencing run as a measuring cup. In this cup, we will fill liquids of different viscosity - or different numbers of clonal proportions. Clonal space homeostasis asks what percentage of the cup is filled by clones in distinct proportions (or liquids of different viscosity, to extend the analogy). The proportional cut points are set under the **cloneSize** variable in the function and can be adjusted.
+
+**cloneSize**  
+* Rare = 0.0001  
+* Small = 0.001  
+* Medium = 0.01  
+* Large = 0.1  
+* Hyperexpanded = 1  
+
+```{r}
+clonalHomeostasis(combined.TCR, 
+                  cloneCall = "gene")
+
+clonalHomeostasis(combined.TCR, 
+                  cloneCall = "gene",
+                  cloneSize = c(Rare = 0.001, Small = 0.01, Medium = 0.1, Large = 0.3, Hyperexpanded =
+    1))
+```
+
+## clonalProportion
+
+Like clonal space homeostasis above, clonal proportion places clones into separate bins. The key difference is that instead of looking at the relative proportion of the clone to the total, the `clonalProportion()` function will rank the clones by total number and place them into bins. 
+
+The **clonalSplit** represents the ranking of clonotypes by copy or frequency of occurrence, meaning 1:10 are the top 10 clonotypes in each sample. The default bins are under the **clonalSplit** variable in the function and can be adjusted, but they are as follows at baseline. 
+ 
+**clonalSplit**  
+* 10  
+* 100  
+* 1000  
+* 10000 
+* 30000 
+* 100000 
+
+```{r}
+clonalProportion(combined.TCR, 
+                 cloneCall = "gene") 
+
+clonalProportion(combined.TCR, 
+                 cloneCall = "nt",
+                 clonalSplit = c(1, 5, 10, 100, 1000, 10000)) 
+```

@@ -67,6 +67,7 @@
 #' @importFrom dplyr sample_n
 #' @import ggplot2
 #' @export
+#' @concept Visualizing_Clones
 #' @return ggplot of the diversity of clones by group
 #' @author Andrew Malone, Nick Borcherding
 clonalDiversity <- function(df, 

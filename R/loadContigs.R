@@ -3,9 +3,7 @@
 #' This function generates a contig list and formats the data to allow for 
 #' function with  \code{\link{combineTCR}} or \code{\link{combineBCR}}. If 
 #' using data derived from filtered outputs of 10X Genomics, there is no 
-#' need to use this function as the data is already compatible. The function
-#' assumes if listing multiple directories, there are distinct outputs with
-#' unmodified file names in them. 
+#' need to use this function as the data is already compatible. 
 #' 
 #' The files that this function parses includes:  
 #' \itemize{
@@ -13,7 +11,7 @@
 #'   \item AIRR = "airr_rearrangement.tsv" 
 #'   \item BD = "Contigs_AIRR.tsv" 
 #'   \item JSON = ".json"
-#'   \item MiXCR = "clones.txt"
+#'   \item MiXCR = "clones.tsv"
 #'   \item Omniscope = ".csv" 
 #'   \item TRUST4 = "barcode_report.tsv"
 #'   \item WAT3R = "barcode_results.csv" 
@@ -36,6 +34,7 @@
 #' @importFrom utils read.csv read.delim
 #' @importFrom rjson fromJSON
 #' @export
+#' @concept Loading_and_Processing_Contigs
 #' @return List of contigs for further processing in scRepertoire
 loadContigs <- function(dir, 
                         format = "10X") {
@@ -44,7 +43,7 @@ loadContigs <- function(dir,
     format.list <- list("WAT3R" = "barcode_results.csv", 
                         "10X" =  "filtered_contig_annotation.csv", 
                         "AIRR" = "airr_rearrangement.tsv", 
-                        "MiXCR" = "clones.txt", 
+                        "MiXCR" = "clones.tsv", 
                         "JSON" = ".json",
                         "TRUST4" = "barcode_report.tsv", 
                         "BD" = "Contigs_AIRR.tsv",
@@ -211,9 +210,8 @@ loadContigs <- function(dir,
     df[[i]] <- do.call(rbind, df[[i]])
     df[[i]][df[[i]] == ""] <- NA
     df[[i]] <- as.data.frame(df[[i]])
-    df[[i]] <- df[[i]][,c("tagValueCELL", "readCount", "vGene", "dGene", "jGene", "cGene", "nSeqCDR3", "aaSeqCDR3")]
-    colnames(df[[i]]) <- c("barcode", "reads", "v_gene", "d_gene", "j_gene", "c_gene", "cdr3_nt", "cdr3")
-    df[[i]]$chain <- substring(df[[i]]$v_gene, 1,3)
+    df[[i]] <- df[[i]][,c("tagValueCELL", "topChains", "readCount", "vGene", "dGene", "jGene", "cGene", "nSeqCDR3", "aaSeqCDR3")]
+    colnames(df[[i]]) <- c("barcode", "chain", "reads", "v_gene", "d_gene", "j_gene", "c_gene", "cdr3_nt", "cdr3")
   }
   return(df)
 }

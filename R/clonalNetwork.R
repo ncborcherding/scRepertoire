@@ -54,8 +54,8 @@
 #' @importFrom ggraph ggraph geom_edge_bend  geom_node_point scale_edge_colour_gradientn circle guide_edge_colourbar
 #' @importFrom stats setNames
 #' @export
+#' @concept SC_Functions
 #' @return ggplot object
-#' 
 #' 
 clonalNetwork <- function(sc, 
                           reduction = "umap",

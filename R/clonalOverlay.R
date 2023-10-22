@@ -33,6 +33,7 @@
 #' @import ggplot2
 #' @importFrom SeuratObject Embeddings
 #' @export
+#' @concept SC_Functions
 #' @author Francesco Mazziotta, Nick Borcherding
 #' 
 #' @return ggplot object

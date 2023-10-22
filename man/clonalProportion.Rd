@@ -6,7 +6,7 @@
 \usage{
 clonalProportion(
   df,
-  clonal.split = c(10, 100, 1000, 10000, 30000, 1e+05),
+  clonalSplit = c(10, 100, 1000, 10000, 30000, 1e+05),
   cloneCall = "strict",
   chain = "both",
   group.by = NULL,
@@ -18,7 +18,7 @@ clonalProportion(
 \item{df}{The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
 \code{\link{combineExpression}}.}
 
-\item{clonal.split}{The cut points for the specific clonotypes.}
+\item{clonalSplit}{The cut points for the specific clonotypes.}
 
 \item{cloneCall}{How to call the clonotype - VDJC gene (gene), 
 CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
@@ -40,7 +40,7 @@ ggplot of the space occupied by the specific rank of clonotypes
 \description{
 This function calculates the relative clonal space occupied by the 
 clonotypes. The grouping of these clonotypes is based on the parameter 
-**clonal.split**, at default, **clonal.split** will group the clonotypes 
+**clonalSplit**, at default, **clonalSplit** will group the clonotypes 
 into bins of 1:10, 11:100, 101:1001, etc. To adjust the clonotypes 
 selected, change the numbers in the variable split. If a matrix output 
 for the data is preferred, set exportTable = TRUE.
@@ -53,3 +53,4 @@ combined <- combineTCR(contig_list,
 clonalProportion(combined, cloneCall = "gene")
 
 }
+\concept{Visualizing_Clones}

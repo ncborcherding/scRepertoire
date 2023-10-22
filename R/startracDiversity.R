@@ -42,6 +42,7 @@
 #' @importFrom reshape2 melt
 #' @import ggplot2
 #' @export
+#' @concept SC_Functions
 #' @return ggplot object of Startrac diversity metrics
 #' @author Liangtao Zheng
 StartracDiversity <- function(sc,

@@ -33,6 +33,7 @@
 #' @import ggplot2
 #' 
 #' @export
+#' @concept Visualizing_Clones
 #' @return ggplot of the relative clonotype numbers
 
 clonalScatter <- function(df, 

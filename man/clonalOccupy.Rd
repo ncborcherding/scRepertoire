@@ -61,3 +61,4 @@ clonalOccupy(scRep_example, x.axis = "ident")
 table <- clonalOccupy(scRep_example, x.axis = "ident", exportTable = TRUE)
 
 }
+\concept{SC_Functions}

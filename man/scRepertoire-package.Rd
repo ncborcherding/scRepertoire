@@ -8,6 +8,13 @@
 \description{
 scRepertoire was built to process data derived from the 10x Genomics Chromium Immune Profiling for both T-cell receptor (TCR) and immunoglobulin (Ig) enrichment workflows and subsequently interacts with the popular Seurat and SingleCellExperiment R packages.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://ncborcherding.github.io/scRepertoire/}
+}
+
+}
 \author{
 \strong{Maintainer}: Nick Borcherding \email{ncborch@gmail.com}
 

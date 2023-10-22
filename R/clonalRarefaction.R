@@ -35,6 +35,7 @@
 #' @importFrom iNEXT iNEXT ggiNEXT
 #' @import ggplot2
 #' @export
+#' @concept Visualizing_Clones
 clonalRarefaction <- function(df,
                               cloneCall = "strict", 
                               chain = "both", 

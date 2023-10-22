@@ -26,6 +26,7 @@
 #' @param sequence The specific sequence or sequence to highlight
 #' @importFrom S4Vectors DataFrame
 #' @export
+#' @concept SC_Functions
 #' @return Single-cell object object with new meta data column for indicated clones
 highlightClones <- function(sc, 
                             cloneCall = c("gene", "nt", "aa", "strict"), 

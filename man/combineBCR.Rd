@@ -58,7 +58,7 @@ with "LD" in the CTstrict header.
 BCR <- read.csv("https://www.borch.dev/uploads/contigs/b_contigs.csv")
 combined <- combineBCR(BCR, 
                        samples = "Patient1", 
-                       ID = "Time1", 
                        threshold = 0.85)
 
 }
+\concept{Loading_and_Processing_Contigs}

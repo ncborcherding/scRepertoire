@@ -65,6 +65,7 @@
 #' @importFrom dplyr %>% mutate
 #' 
 #' @export
+#' @concept SC_Functions
 #' @return Alluvial ggplot comparing clonotype distribution.
 alluvialClones <- function(sc, 
                            cloneCall = "strict", 

@@ -54,3 +54,4 @@ circles <- getCirclize(scRep_example,
 \author{
 Dillon Corvino, Nick Borcherding
 }
+\concept{SC_Functions}

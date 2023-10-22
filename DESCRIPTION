@@ -30,7 +30,6 @@ Imports:
     rjson,
     rlang,
     S4Vectors,
-    seqinr,
     SeuratObject,
     SingleCellExperiment,
     stats,
@@ -58,3 +57,4 @@ Config/testthat/edition: 3
 Language: en-US
 LinkingTo: 
     Rcpp
+URL: https://ncborcherding.github.io/scRepertoire/

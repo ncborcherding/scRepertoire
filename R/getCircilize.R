@@ -38,6 +38,7 @@
 #' 
 #' @importFrom reshape2 dcast
 #' @export
+#' @concept SC_Functions
 #' @return data frame of shared clonotypes between groups
 #' @author Dillon Corvino, Nick Borcherding
 getCirclize <- function(sc, 

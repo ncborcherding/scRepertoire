@@ -22,6 +22,7 @@
 #' @importFrom stringr str_split
 #' @importFrom utils write.csv
 #' @export
+#' @concept Loading_and_Processing_Contigs
 #' @return ggplot of percentage of V and J gene pairings as a heatmap
 #' @author Jonathan Noonan, Nick Borcherding
 exportClones <- function(df,

@@ -25,6 +25,7 @@
 #' @param multi.run If using integrated single-cell object, the meta data variable
 #' that indicates the sequencing run.
 #' @export
+#' @concept Loading_and_Processing_Contigs
 #' @return Returns a list of contigs corresponding to the multiplexed single-cell object
 
 

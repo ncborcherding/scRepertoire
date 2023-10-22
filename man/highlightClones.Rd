@@ -43,3 +43,4 @@ scRep_example   <- highlightClones(scRep_example , cloneCall= "aa",
 sequence = c("CVVSDNTGGFKTIF_CASSVRRERANTGELFF"))
 
 }
+\concept{SC_Functions}

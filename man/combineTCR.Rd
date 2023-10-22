@@ -46,3 +46,4 @@ combined <- combineTCR(contig_list,
                                     "P19B","P19L", "P20B", "P20L"))
 
 }
+\concept{Loading_and_Processing_Contigs}

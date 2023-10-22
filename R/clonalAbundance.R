@@ -30,6 +30,7 @@
 #' @param palette Colors to use in visualization - input any \link[grDevices]{hcl.pals}.
 #' @importFrom ggplot2 ggplot
 #' @export
+#' @concept Visualizing_Clones
 #' @return ggplot of the total or relative abundance of clonotypes 
 #' across quanta
 clonalAbundance <- function(df, 

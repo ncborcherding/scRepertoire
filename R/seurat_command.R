@@ -3,6 +3,7 @@
 # is modified. 
 
 # function needed for make_screp_seurat_cmd
+#' @keywords internal
 seurat_extractfield <- function(string, field = 1, delim = "_") {
 	fields <- as.numeric(
 		x = unlist(x = strsplit(x = as.character(x = field), split = ","))
@@ -17,6 +18,7 @@ seurat_extractfield <- function(string, field = 1, delim = "_") {
 
 # seurat's command adding but if a param is a dataframe or list of dataframes,
 # completely omits them to save memory. 
+#' @keywords internal
 make_screp_seurat_cmd <- function(call_time, assay) {
 	
 	if (as.character(x = sys.calls()[[1]])[1] == "do.call") {

@@ -76,7 +76,8 @@ contig.list <- createHTOContigList(contigs, Seurat.Obj, group.by = "HTO_maxID")
 scRepertoire comes with a data set from T cells derived from four patients with acute respiratory distress to demonstrate the functionality of the R package. More information on the data set can be found in the corresponding [manuscript](https://pubmed.ncbi.nlm.nih.gov/33622974/). The samples consist of paired peripheral-blood (B) and bronchoalveolar lavage (L), effectively creating 8 distinct runs for T cell receptor (TCR) enrichment. We can preview the elements in the list by using the head function and looking at the first contig annotation. 
 
 ```{r}
-data("contig_list") #the data built into scRepertoire
+#built-in data for scRepertoire
+data("contig_list") 
 
 head(contig_list[[1]])
 ```
@@ -102,7 +103,7 @@ contig.list <- loadContigs(dir = contig.output,
 
 # combineTCR
 
-As the output of CellRanger are quantifications of both the TCRA and TCRB chains, the next step is to create a single list object with the TCR genes (comprised of the VDJC genes) and CDR3 sequences by cell barcode. This is performed using the `combineTCR()`, where the input is the stripped contig_list. There is also the relabeling of the barcodes by sample and ID information to prevent duplicates.
+As the output of Cell Ranger are quantifications of both the TCRA and TCRB chains, the next step is to create a single list object with the TCR genes (comprised of the VDJC genes) and CDR3 sequences by cell barcode. This is performed using the `combineTCR()`, where the input is the stripped contig_list. There is also the relabeling of the barcodes by sample and ID information to prevent duplicates.
 
 **removeNA**  
 * TRUE - this is a stringent filter to remove any cell barcode with an NA value in at least one of the chains  
@@ -137,14 +138,20 @@ combined <- addVariable(combined,
 combined[[1]][1:5,ncol(combined[[1]])] # This is showing the first 5 values of the new column added
 ```
 
-## subsetContig
+## subsetClones
 
-Likewise, we can remove specific list elements after `combineTCR()` using the `subsetContig()` function. In order to subset, we need to identify the vector we would like to use for subsetting (**name**) and the variable values to subset (**variables**). Below, we isolate just the 2 sequencing results from P18L and P18B. 
+Likewise, we can remove specific list elements after `combineTCR()` using the `subsetClones()` function. In order to subset, we need to identify the vector we would like to use for subsetting (**name**) and the variable values to subset (**variables**). Below, we isolate just the 2 sequencing results from P18L and P18B. 
 
 ```{r}
-subset <- subsetContig(combined, 
-                       name = "sample", 
-                       variables = c("P18L", "P18B"))
+subset1 <- subsetClones(combined, 
+                        name = "sample", 
+                        variables = c("P18L", "P18B"))
+
+#Subset using list elements
+subset2 <- combined[c(3,4)]
+
+head(subset1)
+head(subset2)
 ```
 
 
@@ -200,8 +207,7 @@ clonalQuant(combined,
             scale = TRUE)
 ```
 
-For all visualizations in scRepertoire, there are 2 ways to adjust the color scheme/
-
+For all visualizations in scRepertoire, there are 2 ways to adjust the color scheme:  
 + Change the **palette** parameter to the desired color scheme. This approach uses the built-in palettes of grDevices and we can access the list of color schemes using ``hcl.pals()``.  
 + Add a ggplot layer with a new color scheme. 
 
@@ -216,9 +222,8 @@ clonalQuant(combined,
             cloneCall="strict", 
             chain = "both", 
             scale = TRUE) + 
-  scale_color_manual(values = hcl.colors(8,"geyser"))
+  scale_fill_manual(values = hcl.colors(8,"geyser"))
 ```
-
 Within each of the general analysis functions, there is the ability to export the data frame used to create the visualization. To get the exported values, use **exportTable** = TRUE. It will return the data frame used to make the graph instead of the visual output.  
 
 ```{r}
@@ -238,8 +243,6 @@ clonalQuant(combined,
             scale = TRUE)
 ```
 
-
-
 ## clonalAbundance
 
 We can also examine the relative distribution of clonotypes by abundance. Here `clonalAbundance()` will produce a line graph with a total number of clonotypes by the number of instances within the sample or run. Like above, we can also group.by this by vectors within the contig object using the **group.by** variable in the function.
@@ -253,7 +256,6 @@ clonalAbundance(combined,
                 group.by = "Type", 
                 scale = TRUE)
 ```
-
 ## clonalLength
 
 We can look at the length distribution of the CDR3 sequences by calling the `lengtheContig()` function. Importantly, unlike the other basic visualizations, the **cloneCall** can only be "nt" or "aa". Due to the method of calling clonotypes as outlined above, the length should reveal a multimodal curve, this is a product of using the **NA** for the unreturned chain sequence and multiple chains within a single barcode. 
@@ -272,7 +274,6 @@ clonalLength(combined,
              chain = "TRA", 
              scale = TRUE) 
 ```
-
 ## clonalCompare
 
 We can also look at clonotypes between samples and changes in dynamics by using the `clonalCompare()` function.
@@ -419,7 +420,7 @@ ggplot(df, aes(x = PC1, y = PC2)) +
 
 ## percentVJ
 
-Quantify the proportion of V and J gene usage with `percentVJ()`. Like `percentGenes()`, this function will quantify the percentage of V and J paired together across individual repertoires. The output can be visualized using a heatmap or as input for futher dimensional reduction.
+Quantify the proportion of V and J gene usage with `percentVJ()`. Like `percentGenes()`, this function will quantify the percentage of V and J paired together across individual repertoires. The output can be visualized using a heatmap or as input for further dimensional reduction.
 
 ```{r}
 percentVJ(combined, 
@@ -452,7 +453,7 @@ Another quantification of the composition of the CDR3 sequence is to define moti
 Numerical value for the length of the kmer.
 
 **top.motifs**  
-Display the *N* most variable genes determinied by absolute deviation.
+Display the *N* most variable genes determined by absolute deviation.
 
 ```{r}
 percentKmer(combined, 
@@ -492,14 +493,13 @@ clonalHomeostasis(combined,
                   cloneCall = "aa")
 ```
 
-
 ## clonalProportion
 
 Like clonal space homeostasis above, clonal proportion places clones into separate bins. The key difference is that instead of looking at the relative proportion of the clone to the total, the `clonalProportion()` function will rank the clones by total number and place them into bins. 
 
-The **clonal.split** represents the ranking of clonotypes by copy or frequency of occurrence, meaning 1:10 are the top 10 clonotypes in each sample. The default bins are under the **clonal.split** variable in the function and can be adjusted, but they are as follows at baseline. 
+The **clonalSplit** represents the ranking of clonotypes by copy or frequency of occurrence, meaning 1:10 are the top 10 clonotypes in each sample. The default bins are under the **clonalSplit** variable in the function and can be adjusted, but they are as follows at baseline. 
  
-**clonal.split**  
+**clonalSplit**  
 * 10  
 * 100  
 * 1000  
@@ -591,10 +591,10 @@ clonalRarefaction(combined,
 ```
 ## clonalScatter
 
-A number of users requested a visualization from the work of [Wu, et al 2020, PMID: 32103181](https://pubmed.ncbi.nlm.nih.gov/32103181/) that allows for the direct comparison of clonotypes between 2 samples. ```clonalScatter()``` will organize two samples from the combineTCR/BCR product, count the relative clonotypes, and produce a scatter plot comparing the two samples. 
+```clonalScatter()``` will organize two repertoires, quantify the relative clone sizes, and produce a scatter plot comparing the two samples. 
 
 **x.axis** and **y.axis**  
-* Names of the list element to place on the x-axis and y-axis - so for example "P18L" and "P18B"  
+* Names of the list element to place on the x-axis and y-axis - so for example *"P18L"* and *"P18B" * 
 
 **dot.size**  
 * "total" to display the total number of clones between the x- and y-axis  
@@ -603,6 +603,7 @@ A number of users requested a visualization from the work of [Wu, et al 2020, PM
 **graph**  
 * "proportion" for the relative proportion the clonotype represents across all clonotypes  
 * "count" for the total count of clonotypes by sample  
+
 
 ```{r}
 clonalScatter(combined, 
@@ -858,7 +859,7 @@ sub_combined <- clonalCluster(combined[[2]],
 ```
 
 
-Using ```clonalCluster()```, we can also return an igraph object of all the related sequences using **exportGraph** = TRUE. The returned igraph object contains only the sequences that have at least one conenction with another sequence. The igraph can then be directly visualized (below) or used for downstream analysis (see the igraph [website](https://r.igraph.org/). 
+Using ```clonalCluster()```, we can also return an igraph object of all the related sequences using **exportGraph** = TRUE. The returned igraph object contains only the sequences that have at least one connection with another sequence. The igraph can then be directly visualized (below) or used for downstream analysis (see the igraph [website](https://r.igraph.org/). 
 
 ```{r}
 igraph.object <- clonalCluster(combined[c(1,2)],
@@ -901,7 +902,7 @@ StartracDiversity(scRep_example,
                   group.by = "Patient")
 ```
 
-## clonotypeBias
+## clonalBias
 
 A new metric proposed by [Massimo et al](https://pubmed.ncbi.nlm.nih.gov/35829695/), clonal bias, like Startrac is a clonal metric that seeks to quantify how individual clones are skewed towards a  specific cellular compartment or cluster. With the minimal example present in the in-built vignette, this will not be as enlightening as when we use a full single-cell object.
 

@@ -1,0 +1,123 @@
+---
+title: "Comparing Clonal Diversity"
+date: 'Compiled: `r format(Sys.Date(), "%B %d, %Y")`'
+output: rmarkdown::html_vignette
+theme: united
+df_print: kable
+vignette: >
+  %\VignetteIndexEntry{Comparing Clonal Diversity}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+***
+
+<style>
+p.caption {
+  font-size: 0.9em;
+}
+</style>
+ 
+```{r setup, include=FALSE}
+all_times <- list()  # store the time for each chunk
+knitr::knit_hooks$set(time_it = local({
+  now <- NULL
+  function(before, options) {
+    if (before) {
+      now <<- Sys.time()
+    } else {
+      res <- difftime(Sys.time(), now, units = "secs")
+      all_times[[options$label]] <<- res
+    }
+  }
+}))
+knitr::opts_chunk$set(
+  tidy = TRUE,
+  tidy.opts = list(width.cutoff = 95),
+  message = FALSE,
+  warning = FALSE,
+  time_it = TRUE
+)
+
+suppressMessages(library(scRepertoire))
+data("contig_list") 
+combined.TCR <- combineTCR(contig_list, 
+                           samples = c("P17B", "P17L", "P18B", "P18L", 
+                                            "P19B","P19L", "P20B", "P20L"))
+```
+
+## clonalDiversity
+
+Diversity can also be measured for samples or by other variables. Diversity **metrics** calculated, include: **"shannon"**, **"inv.simpson"**, **"norm.entropy"**, **"gini.simpson"**, **"chao1"**, and **"ACE"**. Please see the manual for more information on each metric and the underlying calculations. 
+
+Inherent in diversity calculations is a bias increasing diversity with increasing repertoire size. ```clonalDiversity()``` will automatically downsample to the smallest repertoire size and perform boostapping to return the mean diversity estimates. If the output of diversity values are strange or minimally variable, it is likely due to a sample with small repertoire size.
+
+**n.boots**  
+The number of calculations to perform **(default = 100)**.  
+
+**return.boots**  
+- TRUE: Return all the calculations.  
+- FALSE: Return only the mean values **(default)**.  
+
+**skip.boots**  
+Skip the bootstrapping calculations.
+
+
+```{r}
+clonalDiversity(combined.TCR, 
+                cloneCall = "gene", 
+                n.boots = 20)
+
+#Return only a subset of metrics
+clonalDiversity(combined.TCR, 
+                metrics = c("shannon", "ACE"),
+                cloneCall = "gene", 
+                n.boots = 20)
+```
+
+## clonalSizeDistribution
+
+Another method for modeling the repertoire distribution is a discrete gamma-GPD spliced threshold model, proposed by [Koch et al.](https://pubmed.ncbi.nlm.nih.gov/30485278/) The spliced model models the repertoire and allows for the application of a power law distribution for larger clonal-expanded sequences and a Poisson distribution for smaller clones. After fitting the models, repertoires can be compared using Euclidean distance. 
+
+If using this function, please read/cite [Koch et al.](https://pubmed.ncbi.nlm.nih.gov/30485278/) and check out the [powerTCR](https://bioconductor.org/packages/release/bioc/html/powerTCR.html) R package.
+
+```{r}
+clonalSizeDistribution(combined.TCR, 
+                       cloneCall = "aa", 
+                       method= "ward.D2")
+```
+
+## clonalOverlap
+
+If you are interested in measures of similarity between the samples loaded into scRepertoire, using `clonalOverlap()` can assist in the visualization. 
+
+The methods for calculating overlap are described below:
+
+Overlap Coefficient: 
+\deqn{overlap = \frac{\sum \min(a_i, b_i)}{\min(\sum a_i, \sum b_i)}}
+
+Raw Count Overlap:
+\deqn{raw = \sum \min(a_i, b_i)}
+
+Morisita Index:
+\deqn{morisita = \frac{\sum a_i b_i}{(\sum a_i)(\sum b_i)}}
+
+Jaccard Index:
+\deqn{jaccard = \frac{\sum \min(a_i, b_i)}{\sum a_i + \sum b_i - \sum \min(a_i, b_i)}}
+
+Cosine Similarity:
+\deqn{cosine = \frac{\sum a_i b_i}{\sqrt{(\sum a_i^2)(\sum b_i^2)}}}
+
+Where:
+\itemize{
+\item{\eqn{a_i} and \eqn{b_i} are the abundances of species \eqn{i} in groups A and B, respectively.}
+}
+
+```{r}
+clonalOverlap(combined.TCR, 
+              cloneCall = "strict", 
+              method = "morisita")
+
+clonalOverlap(combined.TCR, 
+              cloneCall = "strict", 
+              method = "raw")
+```

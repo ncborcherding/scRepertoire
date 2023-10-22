@@ -40,3 +40,4 @@ contig.list <- createHTOContigList(contig = filtered.contig,
 }
 
 }
+\concept{Loading_and_Processing_Contigs}

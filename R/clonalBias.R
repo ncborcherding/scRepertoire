@@ -44,6 +44,7 @@
 #' @import ggplot2
 #' @importFrom stringr str_sort
 #' @export
+#' @concept SC_Functions
 #' @return Returns ggplot of the clonotype bias
 clonalBias <- function(df, 
                        cloneCall="strict", 
@@ -97,10 +98,10 @@ clonalBias <- function(df,
   meta <- unique(meta[,c(cloneCall, split.by, "cloneSize")])
   
   bias$cloneSize <- NA
-  for(i in seq_len(nrow(meta))) {
+  for(i in seq_len(nrow(bias))) {
     split <- bias[,1][i]
     clone <- bias[,3][i]
-    bias$cloneSize[i] <- as.vector(meta[which(meta[,cloneCall] == clone & meta[,split.by] == split),"cloneSize"])
+    bias$cloneSize[i] <- as.vector(meta[which(meta[,cloneCall] == clone & meta[,split.by] == split),"cloneSize"])[1]
   }
   
   bias$cloneSize <- factor(bias$cloneSize , rev(levels(meta[,"cloneSize"])))

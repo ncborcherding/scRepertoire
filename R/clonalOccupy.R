@@ -36,6 +36,7 @@
 #' @importFrom reshape2 melt
 #' @import ggplot2
 #' @export
+#' @concept SC_Functions
 #' @return Stacked bar plot of counts of cells by clonotype frequency group
 
 clonalOccupy <- function(sc, 

@@ -53,6 +53,7 @@
 #' @importFrom reshape2 melt
 #' @importFrom stats quantile
 #' @export
+#' @concept Visualizing_Clones
 #' @return ggplot of the overlap of clones by group
 clonalOverlap <- function(df, 
                           cloneCall = "strict", 

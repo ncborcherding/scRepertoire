@@ -34,6 +34,7 @@
 #' @importFrom stats sd
 #' @importFrom dplyr bind_rows
 #' @export
+#' @concept Visualizing_Clones
 #' @return ggplot bar diagram or heatmap of gene usage
 
 vizGenes <- function(df, 

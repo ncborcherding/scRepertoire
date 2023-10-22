@@ -1,0 +1,80 @@
+---
+title: "Frequently Asked Questions"
+date: 'Compiled: `r format(Sys.Date(), "%B %d, %Y")`'
+output: rmarkdown::html_vignette
+theme: united
+df_print: kable
+vignette: >
+  %\VignetteIndexEntry{Frequently Asked Questions}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+***
+
+<style>
+p.caption {
+  font-size: 0.9em;
+}
+</style>
+ 
+```{r setup, include=FALSE}
+all_times <- list()  # store the time for each chunk
+knitr::knit_hooks$set(time_it = local({
+  now <- NULL
+  function(before, options) {
+    if (before) {
+      now <<- Sys.time()
+    } else {
+      res <- difftime(Sys.time(), now, units = "secs")
+      all_times[[options$label]] <<- res
+    }
+  }
+}))
+knitr::opts_chunk$set(
+  tidy = TRUE,
+  tidy.opts = list(width.cutoff = 95),
+  message = FALSE,
+  warning = FALSE,
+  time_it = TRUE
+)
+```
+
+### Barcode Mismatch
+
+Depending on the pipeline used to generate the single-cell object, there may be inherent mismatches in the barcodes in the single-cell object and the output of ```combineBCR()``` or ```combineTCR()```. In particular, by default, Seurat will amend the suffix of the barcodes with _X, so the barcodes change like:
+
+```
+original: ACGTACGTACGTACGT-1
+seurat-modified: ACGTACGTACGTACGT-1_1
+```
+
+scReprtoire uses the samples in combineTCR() to add a prefix to the barcodes:
+
+```
+original: ACGTACGTACGTACGT-1
+scRepertoire-modified: Sample1_ACGTACGTACGTACGT-1
+```
+
+The easiest way to make these compatible is to rename the cell barcodes in the Seurat object by using the RenameCells().
+
+```{r, eval=FALSE}
+cell.barcodes <- rownames(seuratObj[[]])
+cell.barcodes <- stringr::str_split(cell.barcodes, "_", simplify = TRUE)[,1] #This is removing the _1 at the end of the barcodes)
+cell.barcodes <- paste0(seuratObj$orig.ident, "_", cell.barcodes) #This is adding the prefix of the orig.ident to the barcodes, assuming that is the sample ids
+seuratObj <- RenameCells(seuratObj, new.names = cell.barcodes)
+```
+
+###  Citing scRepertoire
+
+***Borcherding, N. & Wang, Q. scRepertoire v2: Expanded toolkit for single-cell immune repertoire analysis***
+
+### Bug Reports/New Features
+
+##### [GitHub issue](https://github.com/ncborcherding/scRepertoire/issues) 
+
+If possible please include a [reproducible example](https://reprex.tidyverse.org/). 
+Alternatively, an example with the internal **scRep_example** and **contig_list** would 
+be extremely helpful.
+
+### Features or Enhancements Requests 
+Feature request can also be submitted as [GitHub issues](https://github.com/ncborcherding/scRepertoire/issues).

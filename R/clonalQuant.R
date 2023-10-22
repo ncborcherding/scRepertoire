@@ -25,6 +25,7 @@
 #' @param palette Colors to use in visualization - input any \link[grDevices]{hcl.pals}.
 #' @import ggplot2
 #' @export
+#' @concept Visualizing_Clones
 #' @return ggplot of the total or relative unique clonotypes
 clonalQuant <- function(df, 
                         cloneCall = "strict", 

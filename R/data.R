@@ -1,6 +1,7 @@
 #' A data set of T cell contigs as a list outputed from the 
 #' filter_contig_annotation files.
 #' @docType data
+#' @concept Data
 #' @name contig_list
 #' 
 NULL
@@ -12,6 +13,7 @@ NULL
 #' sequencing data can be added with `combineExpression`.
 #' 
 #' @name scRep_example
+#' @concept Data
 #' @docType data
 #'
 NULL
@@ -25,6 +27,8 @@ NULL
 #' @usage data("mini_contig_list")
 #'
 #' @format An R `list` of `data.frame` objects
+#' 
+#' @concept Data
 #' 
 #' @docType data
 #'

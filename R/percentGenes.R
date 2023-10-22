@@ -21,6 +21,7 @@
 #' @importFrom stringr str_split str_sort 
 #' @importFrom reshape2 melt
 #' @export
+#' @concept Summarize_Repertoire
 #' @return ggplot of percentage of indicated genes as a heatmap
 #' 
 percentGenes <- function(df,

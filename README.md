@@ -44,11 +44,26 @@ Unfortunately, Github limits the size of individual files. In order to access th
 
 ## Learning To Use scRepertoire
 
-Vignette available [here](https://www.borch.dev/uploads/vignette/vignette), includes almost 13,000 T cells across 3 patients with renal clear cell carcinoma. 
+Vignette available [here](https://www.borch.dev/uploads/vignette/scRepertoire), includes almost 13,000 T cells across 4 patients with acute respiratory distress syndrome. 
 
 ## Please Cite
 Feel free to use, edit, modify scRepertoire, but if you do, please cite the [manuscript](https://f1000research.com/articles/9-47/v1). If you are building your own tool based on scRepertoire, reach out, I am happy to help and make things compatible.
 
+## Bug Reports/New Features
+
+#### If you run into any issues or bugs please submit a [GitHub issue](https://github.com/ncborcherding/scRepertoire/issues) with details of the issue.
+
+- If possible please include a [reproducible example](https://reprex.tidyverse.org/). 
+Alternatively, an example with the internal **scRep_example** and **contig_list** would 
+be extremely helpful.
+
+#### Any requests for new features or enhancements can also be submitted as [GitHub issues](https://github.com/ncborcherding/scRepertoire/issues).
+
+#### [Pull Requests](https://github.com/ncborcherding/scRepertoire/pulls) are welcome for bug fixes, new features, or enhancements.
+
+- Please set PR to merge with “dev” branch and provide description of what the PR 
+contains (referencing existing issue(s) if appropriate).
+  
 ## Contact
 Questions, comments, suggestions, please feel free to contact Nick Borcherding via this repository, [email](mailto:ncborch@gmail.com), or using [twitter](https://twitter.com/theHumanBorch). 
 

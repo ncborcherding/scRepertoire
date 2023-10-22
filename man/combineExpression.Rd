@@ -77,3 +77,4 @@ sce <- Seurat::as.SingleCellExperiment(sce)
 sce <- combineExpression(combined, sce)
 
 }
+\concept{SC_Functions}

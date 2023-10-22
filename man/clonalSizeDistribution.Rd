@@ -59,7 +59,7 @@ Where:
   \item{\eqn{\xi} is a shape parameter}
   \item{\eqn{x \ge \mu} if \eqn{\xi \ge 0} and \eqn{\mu \le x \le \mu - \sigma/\xi} if \eqn{\xi < 0}}
 }
-
+              
 The probability density function (pdf) for the Gamma Distribution is given by:
 \deqn{f(x|\alpha, \beta) = \frac{x^{\alpha-1} e^{-x/\beta}}{\beta^\alpha \Gamma(\alpha)}}{
 f(x|alpha, beta) = (x^(alpha-1) * exp(-x/beta)) / (beta^alpha * Gamma(alpha))
@@ -84,3 +84,4 @@ clonalSizeDistribution(combined, cloneCall = "strict", method="ward.D2")
 \author{
 Hillary Koch
 }
+\concept{Visualizing_Clones}

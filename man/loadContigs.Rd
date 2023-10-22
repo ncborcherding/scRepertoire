@@ -19,9 +19,7 @@ List of contigs for further processing in scRepertoire
 This function generates a contig list and formats the data to allow for 
 function with  \code{\link{combineTCR}} or \code{\link{combineBCR}}. If 
 using data derived from filtered outputs of 10X Genomics, there is no 
-need to use this function as the data is already compatible. The function
-assumes if listing multiple directories, there are distinct outputs with
-unmodified file names in them.
+need to use this function as the data is already compatible.
 }
 \details{
 The files that this function parses includes:  
@@ -30,7 +28,7 @@ The files that this function parses includes:
   \item AIRR = "airr_rearrangement.tsv" 
   \item BD = "Contigs_AIRR.tsv" 
   \item JSON = ".json"
-  \item MiXCR = "clones.txt"
+  \item MiXCR = "clones.tsv"
   \item Omniscope = ".csv" 
   \item TRUST4 = "barcode_report.tsv"
   \item WAT3R = "barcode_results.csv" 
@@ -48,3 +46,4 @@ WAT3R <- read.csv("https://www.borch.dev/uploads/contigs/WAT3R_contigs.csv")
 contig.list <- loadContigs(WAT3R, format = "WAT3R")
 
 }
+\concept{Loading_and_Processing_Contigs}

@@ -18,4 +18,5 @@ which correspond to the same barcodes found in `scRep_example`
 \seealso{
 \code{\link{contig_list}}
 }
+\concept{Data}
 \keyword{datasets}

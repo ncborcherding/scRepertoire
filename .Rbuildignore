@@ -6,3 +6,7 @@
 ^LICENSE\.md$
 ^JOSS$
 ^draft-pdf\.yml$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^index\.md$

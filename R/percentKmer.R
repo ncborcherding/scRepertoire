@@ -25,6 +25,7 @@
 #' @importFrom reshape2 melt
 #' @importFrom stats mad
 #' @export
+#' @concept Summarize_Repertoire
 #' @return ggplot of percentage of kmers as a heatmap
 
 percentKmer <- function(df, 
