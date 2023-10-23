@@ -1,63 +1,65 @@
 url: https://ncborcherding.github.io/scRepertoire/
 Template:
   params:
-      bootswatch: flatly
-
+    bootswatch: flatly
 home:
   sidebar:
-    structure: [links, license, custom, authors, dev]
+    structure:
+    - links
+    - license
+    - custom
+    - authors
+    - dev
     components:
       custom:
         title: Citation
-        text: "[Citing scRepertoire](https://f1000research.com/articles/9-47)"
-
+        text: '[Citing scRepertoire](https://f1000research.com/articles/9-47)'
 navbar:
   left:
-    - text: "Getting Started"
-      href: index.html
-    - text: "Install"
-      href: articles/Installation.html
-    - text: "Vignettes"
-      menu:
-      - text: "Loading Data"
-        href: articles/Loading.html
-      - text: "Combining Contigs into Clones"
-        href: articles/Combining_Contigs.html
-      - text: "Additional Processing"
-        href: articles/Processing.html
-      - text: -------
-      - text: "Basic Clonal Analysis"
-        href: articles/Clonal_Visualizations.html
-      - text: "Visualizing Clonal Dynamics"
-        href: articles/Clonal_Dynamics.html
-      - text: "Summarizing Repertoires"
-        href: articles/Repertoire_Summary.html
-      - text: "Clonal Diversity and Overlap"
-        href: articles/Clonal_Diversity.html
-      - text: "Clustering Sequences by Edit Distance"
-        href: articles/Clonal_Cluster.html
-      - text: -------
-      - text: "Combining Clones and Single-Cell Objects"
-        href: articles/Attaching_SC.html
-      - text: "Visualizations for Single-Cell Objects"
-        href: articles/SC_Visualizations.html
-      - text: "Clonal Bias"
-        href: articles/Clonal_Bias.html
-      - text: -------
-      - text: "Combining Deep Learning and TCRs with Trex"
-        href: articles/Trex.html
-      - text: "Combining Deep Learning and BCRs with Ibex"
-        href: articles/Ibex.html
-    - text: "News/Changelog"
-      href: news/index.html
-    - text: "Reference"
-      href: reference/index.html
-    - text: "FAQ"
-      href: articles/FAQ.html
-      
+  - text: Getting Started
+    href: index.html
+  - text: Install
+    href: articles/Installation.html
+  - text: Vignettes
+    menu:
+    - text: Loading Data
+      href: articles/Loading.html
+    - text: Combining Contigs into Clones
+      href: articles/Combining_Contigs.html
+    - text: Additional Processing
+      href: articles/Processing.html
+    - text: '-------'
+    - text: Basic Clonal Analysis
+      href: articles/Clonal_Visualizations.html
+    - text: Visualizing Clonal Dynamics
+      href: articles/Clonal_Dynamics.html
+    - text: Summarizing Repertoires
+      href: articles/Repertoire_Summary.html
+    - text: Clonal Diversity and Overlap
+      href: articles/Clonal_Diversity.html
+    - text: Clustering Sequences by Edit Distance
+      href: articles/Clonal_Cluster.html
+    - text: '-------'
+    - text: Combining Clones and Single-Cell Objects
+      href: articles/Attaching_SC.html
+    - text: Visualizations for Single-Cell Objects
+      href: articles/SC_Visualizations.html
+    - text: Clonal Bias
+      href: articles/Clonal_Bias.html
+    - text: '-------'
+    - text: Combining Deep Learning and TCRs with Trex
+      href: articles/Trex.html
+    - text: Combining Deep Learning and BCRs with Ibex
+      href: articles/Ibex.html
+  - text: News/Changelog
+    href: news/index.html
+  - text: Reference
+    href: reference/index.html
+  - text: FAQ
+    href: articles/FAQ.html
 reference:
-- title: "Loading and Processing Contigs"
-  desc: "Functions that load, combine, and process the single-cell contig information."
+- title: Loading and Processing Contigs
+  desc: Functions that load, combine, and process the single-cell contig information.
 - contents:
   - addVariable
   - combineBCR
@@ -66,13 +68,12 @@ reference:
   - exportClones
   - loadContigs
   - subsetClones
-
-- title: "Visualizing Clones"
-  desc: "Functions plotting clonal data."
+- title: Visualizing Clones
+  desc: Functions plotting clonal data.
 - contents:
   - clonalAbundance
   - clonalCluster
-  - clonalCompare 
+  - clonalCompare
   - clonalDiversity
   - clonalHomeostasis
   - clonalLength
@@ -83,17 +84,15 @@ reference:
   - clonalScatter
   - clonalSizeDistribution
   - vizGenes
-
-- title: "Summarizing Repertoire"
-  desc: "Functions to summarize clonal sequences across the repertoire"
+- title: Summarizing Repertoire
+  desc: Functions to summarize clonal sequences across the repertoire
 - contents:
   - percentAA
   - percentGenes
   - percentKmer
   - percentVJ
-  
-- title: "Single-Cell Object Processing and Visualizations"
-  desc: "Functions to add or visualize clonal information along a single-cell object"
+- title: Single-Cell Object Processing and Visualizations
+  desc: Functions to add or visualize clonal information along a single-cell object
 - contents:
   - alluvialClones
   - clonalBias
@@ -104,13 +103,12 @@ reference:
   - getCirclize
   - highlightClones
   - StartracDiversity
-  
-- title: "Data"
-  desc: "Reference data for package functions."
+- title: Data
+  desc: Reference data for package functions.
 - contents:
   - contig_list
   - mini_contig_list
   - scRep_example
-
 deploy:
-  install_metadata: true
+  install_metadata: yes
+
