@@ -1,11 +1,11 @@
 ---
-title: "Using Ibex for BCRs"
+title: "Combining Deep Learning and BCRs with Ibex"
 date: 'Compiled: `r format(Sys.Date(), "%B %d, %Y")`'
 output: rmarkdown::html_vignette
 theme: united
 df_print: kable
 vignette: >
-  %\VignetteIndexEntry{Using Ibex for BCRs}
+  %\VignetteIndexEntry{Combining Deep Learning and BCRs with Ibex}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -47,7 +47,7 @@ suppressMessages(library(dplyr))
 ```
 
 
-The idea behind Ibex is to combine BCR cdr3 amino acid information with phenotypic RNA/protein data to direct the use of single-cell sequencing towards antigen-specific discoveries.  This is a growing field - specifically [TESSA](https://github.com/jcao89757/TESSA) uses amino acid characteristics and autoencoder as a means to get a dimensional reduction. Another option is [CoNGA](https://github.com/phbradley/conga), which produces an embedding using BCR and RNA. Ibex was designed to make a customizable approach to this combined approach using R.
+The idea behind Ibex is to combine BCR CDR3 amino acid information with phenotypic RNA/protein data to direct the use of single-cell sequencing towards antigen-specific discoveries.  This is a growing field - specifically [TESSA](https://github.com/jcao89757/TESSA) uses amino acid characteristics and autoencoder as a means to get a dimensional reduction. Another option is [CoNGA](https://github.com/phbradley/conga), which produces an embedding using BCR and RNA. Ibex was designed to make a customizable approach to this combined approach using R.
 
 More infromation is available at the [Ibex GitHub Repo](https://github.com/ncborcherding/Ibex).
 

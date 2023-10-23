@@ -44,9 +44,9 @@ navbar:
       - text: "Clonal Bias"
         href: articles/Clonal_Bias.html
       - text: -------
-      - text: "Using Trex for TCRs"
+      - text: "Combining Deep Learning and TCRs with Trex"
         href: articles/Trex.html
-      - text: "Using Ibex for BCRs"
+      - text: "Combining Deep Learning and BCRs with Ibex"
         href: articles/Ibex.html
     - text: "News/Changelog"
       href: news/index.html
