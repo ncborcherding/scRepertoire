@@ -8,13 +8,17 @@
 
 ## A toolkit for single-cell immune profiling
 
-<img align="right" src="https://github.com/ncborcherding/scRepertoire/blob/dev/www/screpertoire_hex.png" width="352" height="352">
+<img align="right" src="https://www.borch.dev/uploads/screpertoire/reference/figures/screpertoire_hex.png" width="352" height="352">
 
 ### Introduction
 Single-cell sequencing is an emerging technology in the field of immunology and oncology that allows researchers to couple RNA quantification and other modalities, like immune cell receptor profiling at the level of an individual cell. A number of workflows and software packages have been created to process and analyze single-cell transcriptomic data. These packages allow users to take the vast dimensionality of the data generated in single-cell-based experiments and distill the data into novel insights. Unlike the transcriptomic field, there is a lack of options for software that allow for single-cell immune receptor profiling. Enabling users to easily combine RNA and immune profiling, scRepertoire was built to process data derived from the 10x Genomics Chromium Immune Profiling for both T-cell receptor (TCR) and immunoglobulin (Ig) enrichment workflows and subsequently interacts with the popular Seurat R package. 
 
 ### Applying Deep Learning to VDJ data
 scRepertoire is compatible and integrated with the R packages [Trex](https://github.com/ncborcherding/Trex) for deep-learning-based autoencoding of the T cell receptor and [Ibex](https://github.com/ncborcherding/Ibex) for the B cell receptor. 
+
+## Working with scRepertoire
+
+scRepertoire has a comprehensive [website](https://www.borch.dev/uploads/screpertoire/) for detialed tutorials and function information.
 
 ## Installation
 
@@ -41,10 +45,6 @@ BiocManager::install("scRepertoire")
 ## Getting Data
 
 Unfortunately, Github limits the size of individual files. In order to access the seurat object paired with scRepertoire please download the .rda from [here](https://drive.google.com/file/d/1Iv6t2BScpnLLrFWaWFUGwne3XzRAwMOc/view?usp=share_link).
-
-## Learning To Use scRepertoire
-
-Vignette available [here](https://www.borch.dev/uploads/vignette/scRepertoire), includes almost 13,000 T cells across 4 patients with acute respiratory distress syndrome. 
 
 ## Please Cite
 Feel free to use, edit, modify scRepertoire, but if you do, please cite the [manuscript](https://f1000research.com/articles/9-47/v1). If you are building your own tool based on scRepertoire, reach out, I am happy to help and make things compatible.
