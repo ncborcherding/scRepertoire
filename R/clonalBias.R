@@ -1,9 +1,9 @@
 #' Examine clonotype bias
 #' 
 #' The metric seeks to quantify how individual clones are skewed towards 
-#' a specific cellular compartment or cluster. A clonotype bias of *1* - 
+#' a specific cellular compartment or cluster. A clonotype bias of \emph{1}* - 
 #' indicates that a clonotype is composed of cells from a single 
-#' compartment or cluster, while a clonotype bias of *0* - matches the 
+#' compartment or cluster, while a clonotype bias of \emph{0} - matches the 
 #' background subtype distribution. Please read and cite the following
 #' \href{https://pubmed.ncbi.nlm.nih.gov/35829695/}{manuscript} 
 #' if using \code{\link{clonalBias}}.
@@ -30,10 +30,10 @@
 #'               min.expand = 2)
 #' 
 #' 
-#' @param df The product of \code{\link{combineExpression}}.
+#' @param sc.data The single-cell object after \code{\link{combineExpression}}.
 #' @param cloneCall How to call the clonotype - VDJC gene (gene), 
-#' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
-#' VDJC gene + CDR3 nucleotide (strict).
+#' CDR3 nucleotide (nt), CDR3 amino acid (aa),
+#' VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data. 
 #' @param group.by The variable to use for calculating bias
 #' @param split.by The variable to use for calculating the baseline frequencies.
 #' For example, "Type" for lung vs peripheral blood comparison 
@@ -45,8 +45,8 @@
 #' @importFrom stringr str_sort
 #' @export
 #' @concept SC_Functions
-#' @return Returns ggplot of the clonotype bias
-clonalBias <- function(df, 
+#' @return ggplot scatter plot with clonotype bias
+clonalBias <- function(sc.data, 
                        cloneCall="strict", 
                        split.by=NULL, 
                        group.by=NULL, 
@@ -54,10 +54,10 @@ clonalBias <- function(df,
                        min.expand=10,
                        exportTable = FALSE, 
                        palette = "inferno") {
-  .checkSingleObject(df)
-  cloneCall <- .theCall(cloneCall)
+  .checkSingleObject(sc.data)
+  cloneCall <- .theCall(.grabMeta(sc.data), cloneCall)
   #Calculating bias
-  bias <- .get_clono_bias(df, 
+  bias <- .get_clono_bias(sc.data, 
                          split.by = split.by, 
                          group.by = group.by , 
                          cloneCall=cloneCall, 
@@ -65,7 +65,7 @@ clonalBias <- function(df,
   df_shuffle.list <- list()
   #Bootstrapping
   for (ii in seq_len(n.boots)) {
-    df_shuffle.list[[ii]] <- .get_clono_bias(df, split.by = split.by,
+    df_shuffle.list[[ii]] <- .get_clono_bias(sc.data, split.by = split.by,
                                             group.by = group.by, 
                                             cloneCall=cloneCall, 
                                             min.expand=min.expand, 
@@ -93,7 +93,7 @@ clonalBias <- function(df,
   }
   
   #Attaching the cloneSize of original combineExpression()
-  meta <- .grabMeta(df)
+  meta <- .grabMeta(sc.data)
   meta <- meta[meta[,cloneCall] %in% bias[,"Clone"],]
   meta <- unique(meta[,c(cloneCall, split.by, "cloneSize")])
   
@@ -178,7 +178,7 @@ clonalBias <- function(df,
       df <- list("Object" = .grabMeta(df))
     } 
   }
-  cloneCall <- .theCall(cloneCall)
+  cloneCall <- .theCall(df, cloneCall)
   df <- .checkBlanks(df, cloneCall)
   
   for (s in names(bg)) {

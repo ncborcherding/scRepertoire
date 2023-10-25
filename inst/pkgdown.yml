@@ -7,7 +7,6 @@ articles:
   Clonal_Cluster: Clonal_Cluster.html
   Clonal_Diversity: Clonal_Diversity.html
   Clonal_Dynamics: Clonal_Dynamics.html
-  Clonal_Rarefaction: Clonal_Rarefaction.html
   Clonal_Visualizations: Clonal_Visualizations.html
   Combining_Contigs: Combining_Contigs.html
   FAQ: FAQ.html
@@ -18,9 +17,8 @@ articles:
   Repertoire_Summary: Repertoire_Summary.html
   SC_Visualizations: SC_Visualizations.html
   Trex: Trex.html
-  vignette: vignette.html
-last_built: 2023-10-23T17:39Z
+last_built: 2023-10-25T23:29Z
 urls:
-  reference: https://ncborcherding.github.io/scRepertoire/reference
-  article: https://ncborcherding.github.io/scRepertoire/articles
+  reference: https://www.borch.dev/uploads/scRepertoire/reference
+  article: https://www.borch.dev/uploads/scRepertoire/articles
 

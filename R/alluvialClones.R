@@ -45,10 +45,10 @@
 #'                    y.axes = c("Patient", "ident"), 
 #'                    color = "ident")
 #' 
-#' @param sc The single-cell object to visualize after \code{\link{combineExpression}}. 
+#' @param sc.data The single-cell object to visualize after \code{\link{combineExpression}}. 
 #' @param cloneCall How to call the clonotype - VDJC gene (gene), 
-#' CDR3 nucleotide (nt) or CDR3 amino acid (aa), or 
-#' VDJC gene + CDR3 nucleotide (strict).
+#' CDR3 nucleotide (nt), CDR3 amino acid (aa),
+#' VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data. 
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL".
 #' @param y.axes The columns that will separate the proportional .
@@ -67,7 +67,7 @@
 #' @export
 #' @concept SC_Functions
 #' @return Alluvial ggplot comparing clonotype distribution.
-alluvialClones <- function(sc, 
+alluvialClones <- function(sc.data, 
                            cloneCall = "strict", 
                            chain = "both",
                            y.axes = NULL, 
@@ -78,12 +78,12 @@ alluvialClones <- function(sc,
                            palette = "inferno") {
   
   x <- alluvium <- stratum <- NULL
-  .checkSingleObject(sc)
-  cloneCall <- .theCall(cloneCall)
+  .checkSingleObject(sc.data)
+  cloneCall <- .theCall(.grabMeta(sc.data), cloneCall)
   if (length(y.axes) == 0) {
     stop("Make sure you have selected the variable(s) to visualize") 
   }
-  meta <- .grabMeta(sc)
+  meta <- .grabMeta(sc.data)
   if (chain != "both") {
     meta <- .off.the.chain(meta, chain, cloneCall)
   }

@@ -37,6 +37,12 @@ knitr::opts_chunk$set(
   warning = FALSE,
   time_it = TRUE
 )
+
+suppressMessages(library(scRepertoire))
+data("contig_list") 
+combined.TCR <- combineTCR(contig_list, 
+                           samples = c("P17B", "P17L", "P18B", "P18L", 
+                                            "P19B","P19L", "P20B", "P20L"))
 ```
 
 ### Barcode Mismatch
@@ -64,16 +70,45 @@ cell.barcodes <- paste0(seuratObj$orig.ident, "_", cell.barcodes) #This is addin
 seuratObj <- RenameCells(seuratObj, new.names = cell.barcodes)
 ```
 
+### Adjusting Color Palettes
+
+For all visualizations in scRepertoire, there are 2 ways to adjust the color scheme:
++ Change the **palette** parameter to the desired color scheme. This approach uses the built-in palettes of grDevices and we can access the list of color schemes using ``hcl.pals()``.  
++ Add a ggplot layer with a new color scheme. 
+
+```{r}
+clonalQuant(combined.TCR, 
+            cloneCall="strict", 
+            chain = "both", 
+            scale = TRUE, 
+            palette = "Zissou 1")
+
+clonalQuant(combined.TCR, 
+            cloneCall="strict", 
+            chain = "both", 
+            scale = TRUE) + 
+  scale_fill_manual(values = hcl.colors(8,"geyser"))
+```
+
+### Getting Data Used in Plots
+
+Within each of the general analysis functions, there is the ability to export the data frame used to create the visualization. To get the exported values, use **exportTable** = TRUE. It will return the data frame used to make the graph instead of the visual output.  
+
+```{r}
+clonalQuant_output <- clonalQuant(combined.TCR, 
+                                  cloneCall="strict", 
+                                  scale = TRUE, 
+                                  exportTable = TRUE)
+clonalQuant_output
+```
+
 ###  Citing scRepertoire
 
 ***Borcherding, N. & Wang, Q. scRepertoire v2: Expanded toolkit for single-cell immune repertoire analysis***
 
 ### Bug Reports/New Features
 
-##### [GitHub issue](https://github.com/ncborcherding/scRepertoire/issues) 
-
-If possible please include a [reproducible example](https://reprex.tidyverse.org/). 
-Alternatively, an example with the internal **scRep_example** and **contig_list** would 
+Submit a [GitHub issue](https://github.com/ncborcherding/scRepertoire/issues) - if possible please include a [reproducible example](https://reprex.tidyverse.org/). Alternatively, an example with the internal **scRep_example** and **contig_list** would 
 be extremely helpful.
 
 ### Features or Enhancements Requests 

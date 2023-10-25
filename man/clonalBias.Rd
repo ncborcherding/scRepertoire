@@ -5,7 +5,7 @@
 \title{Examine clonotype bias}
 \usage{
 clonalBias(
-  df,
+  sc.data,
   cloneCall = "strict",
   split.by = NULL,
   group.by = NULL,
@@ -16,11 +16,11 @@ clonalBias(
 )
 }
 \arguments{
-\item{df}{The product of \code{\link{combineExpression}}.}
+\item{sc.data}{The single-cell object after \code{\link{combineExpression}}.}
 
 \item{cloneCall}{How to call the clonotype - VDJC gene (gene), 
-CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
-VDJC gene + CDR3 nucleotide (strict).}
+CDR3 nucleotide (nt), CDR3 amino acid (aa),
+VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data.}
 
 \item{split.by}{The variable to use for calculating the baseline frequencies.
 For example, "Type" for lung vs peripheral blood comparison}
@@ -36,13 +36,13 @@ For example, "Type" for lung vs peripheral blood comparison}
 \item{palette}{Colors to use in visualization - input any \link[grDevices]{hcl.pals}.}
 }
 \value{
-Returns ggplot of the clonotype bias
+ggplot scatter plot with clonotype bias
 }
 \description{
 The metric seeks to quantify how individual clones are skewed towards 
-a specific cellular compartment or cluster. A clonotype bias of *1* - 
+a specific cellular compartment or cluster. A clonotype bias of \emph{1}* - 
 indicates that a clonotype is composed of cells from a single 
-compartment or cluster, while a clonotype bias of *0* - matches the 
+compartment or cluster, while a clonotype bias of \emph{0} - matches the 
 background subtype distribution. Please read and cite the following
 \href{https://pubmed.ncbi.nlm.nih.gov/35829695/}{manuscript} 
 if using \code{\link{clonalBias}}.

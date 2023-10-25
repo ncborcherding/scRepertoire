@@ -44,8 +44,8 @@ combined.TCR <- combineTCR(contig_list,
                            samples = c("P17B", "P17L", "P18B", "P18L", 
                                             "P19B","P19L", "P20B", "P20L"))
 combined.TCR <- addVariable(combined.TCR, 
-                      name = "Type", 
-                      variables = rep(c("B", "L"), 4))
+                            variable.name = "Type", 
+                            variables = rep(c("B", "L"), 4))
 ```
 
 ## clonalQuant
@@ -67,35 +67,7 @@ clonalQuant(combined.TCR,
             scale = TRUE)
 ```
 
-For all visualizations in scRepertoire, there are 2 ways to adjust the color scheme:
-+ Change the **palette** parameter to the desired color scheme. This approach uses the built-in palettes of grDevices and we can access the list of color schemes using ``hcl.pals()``.  
-+ Add a ggplot layer with a new color scheme. 
-
-```{r}
-clonalQuant(combined.TCR, 
-            cloneCall="strict", 
-            chain = "both", 
-            scale = TRUE, 
-            palette = "Zissou 1")
-
-clonalQuant(combined.TCR, 
-            cloneCall="strict", 
-            chain = "both", 
-            scale = TRUE) + 
-  scale_fill_manual(values = hcl.colors(8,"geyser"))
-```
-
-Within each of the general analysis functions, there is the ability to export the data frame used to create the visualization. To get the exported values, use **exportTable** = TRUE. It will return the data frame used to make the graph instead of the visual output.  
-
-```{r}
-clonalQuant_output <- clonalQuant(combined.TCR, 
-                                  cloneCall="strict", 
-                                  scale = TRUE, 
-                                  exportTable = TRUE)
-clonalQuant_output
-```
-
-Another option here is to be able to define the visualization by data classes. Here, we used the `combineTCR()` to define the **Type** variable as part of the naming structure. We can use the **group.by** to specifically use a column in the data set to organize the visualization.
+Another option here is to be able to define the visualization by data classes. Here, we used the `combineTCR()` list to define the **Type** variable as part of the naming structure. We can use the **group.by** to specifically use a column in the data set to organize the visualization.
 
 ```{r}
 clonalQuant(combined.TCR, 

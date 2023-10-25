@@ -5,7 +5,7 @@
 \title{Examining the relative amino acid composition by position}
 \usage{
 percentAA(
-  df,
+  input.data,
   chain = "TRB",
   group.by = NULL,
   aa.length = 20,
@@ -14,7 +14,7 @@ percentAA(
 )
 }
 \arguments{
-\item{df}{The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
+\item{input.data}{The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
 \code{\link{combineExpression}}.}
 
 \item{chain}{"TRA", "TRB", "TRG", "TRG", "IGH", "IGL".}
@@ -32,13 +32,15 @@ ggplot of stacked bar graphs of amino acid proportions
 }
 \description{
 This function the proportion of amino acids along the residues 
-of the cdr3 amino acid sequence.
+of the CDR3 amino acid sequence.
 }
 \examples{
 #Making combined contig data
 combined <- combineTCR(contig_list, 
                         samples = c("P17B", "P17L", "P18B", "P18L", 
                                     "P19B","P19L", "P20B", "P20L"))
-percentAA(combined, chain = "TRB", aa.length = 20)
+percentAA(combined, 
+          chain = "TRB", 
+          aa.length = 20)
 }
 \concept{Summarize_Repertoire}

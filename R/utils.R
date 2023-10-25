@@ -8,6 +8,7 @@ is_seurat_or_se_object <- function(obj) {
 
 #Use to shuffle between chains
 #' @keywords internal
+#' @author Ye-Lin Son Nick Borcherding
 .off.the.chain <- function(dat, chain, cloneCall) {
   chain1 <- toupper(chain) #to just make it easier
   if (chain1 %in% c("TRA", "TRG", "IGH")) {
@@ -18,6 +19,8 @@ is_seurat_or_se_object <- function(obj) {
     warning("It looks like ", chain, " does not match the available options for `chain = `")
   }
   dat[,cloneCall] <- str_split(dat[,cloneCall], "_", simplify = TRUE)[,x]
+  dat[,cloneCall][dat[,cloneCall] == "NA"] <- NA
+  dat[,cloneCall][dat[,cloneCall] == "NA;NA"] <- NA
   return(dat)
 }
 
@@ -254,7 +257,7 @@ is_seurat_or_se_object <- function(obj) {
 
 # This is to help sort the type of clonotype data to use
 #' @keywords internal
-.theCall <- function(x) {
+.theCall <- function(df, x, check.df = TRUE) {
     x <- switch(x,
                 "gene" = "CTgene",
                 "genes" = "CTgene", 
@@ -268,6 +271,13 @@ is_seurat_or_se_object <- function(obj) {
                 "strict" = "CTstrict", 
                 "gene+nt" = "CTstrict",
                 "CTstrict" = "CTstrict")
+    if(check.df) {
+      if(inherits(df, "list") & !any(colnames(df[[1]]) %in% x)) {
+        stop("Check the clonal variabe (cloneCall) being used in the function, it does not appear in the data provided.")
+      } else if (inherits(df, "data.frame") & !any(colnames(df) %in% x)) {
+        stop("Check the clonal variabe (cloneCall) being used in the function, it does not appear in the data provided.")
+      }
+    }
     return(x)
 }
 
@@ -399,8 +409,8 @@ is_seurat_or_se_object <- function(obj) {
         Con.df$CTgene <- paste(Con.df$TCR1, Con.df$TCR2, sep="_")
         Con.df$CTnt <- paste(Con.df$cdr3_nt1, Con.df$cdr3_nt2, sep="_")
         Con.df$CTaa <- paste(Con.df$cdr3_aa1, Con.df$cdr3_aa2, sep="_")
-        Con.df$CTstrict <- paste(Con.df$TCR1, Con.df$cdr3_nt1, 
-            Con.df$TCR2, Con.df$cdr3_nt2, sep="_")
+        Con.df$CTstrict <- paste0(Con.df$TCR1, ";", Con.df$cdr3_nt1, "_",
+            Con.df$TCR2, ";", Con.df$cdr3_nt2)
     } else { # assume cellType = B
         Con.df$CTgene <- paste(Con.df$IGH, Con.df$IGLC, sep="_")
         Con.df$CTnt <- paste(Con.df$cdr3_nt1, Con.df$cdr3_nt2, sep="_")

@@ -5,7 +5,7 @@
 \title{Demonstrate the distribution of lengths filtered clones}
 \usage{
 clonalLength(
-  df,
+  input.data,
   cloneCall = "aa",
   chain = "both",
   group.by = NULL,
@@ -16,7 +16,7 @@ clonalLength(
 )
 }
 \arguments{
-\item{df}{The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
+\item{input.data}{The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
 \code{\link{combineExpression}}.}
 
 \item{cloneCall}{How to call the clonotype - CDR3 nucleotide (nt), 
@@ -45,7 +45,7 @@ This function displays either the nucleotide (nt) or amino
 acid (aa) sequence length. The sequence length visualized can be 
 selected using the chains parameter, either the combined clonotype 
 (both chains) or across all single chains. Visualization can either 
-be a histogram or if scale = TRUE, the output will be a density plot. 
+be a histogram or if \strong{scale} = TRUE, the output will be a density plot. 
 Multiple sequencing runs can be group together using the 
 group parameter.
 }

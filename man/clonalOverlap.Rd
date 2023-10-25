@@ -5,7 +5,7 @@
 \title{Examining the clonal overlap between groups or samples}
 \usage{
 clonalOverlap(
-  df,
+  input.data,
   cloneCall = "strict",
   method = NULL,
   chain = "both",
@@ -15,15 +15,15 @@ clonalOverlap(
 )
 }
 \arguments{
-\item{df}{The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
+\item{input.data}{The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
 \code{\link{combineExpression}}.}
 
 \item{cloneCall}{How to call the clonotype - VDJC gene (gene), 
-CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
-VDJC gene + CDR3 nucleotide (strict).}
+CDR3 nucleotide (nt), CDR3 amino acid (aa),
+VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data.}
 
-\item{method}{The method to calculate the "overlap", 
-for the base numbers.}
+\item{method}{The method to calculate the "overlap", "morisita", 
+"jaccard", "cosine" indices or "raw" for the base numbers.}
 
 \item{chain}{indicate if both or a specific chain should be used - 
 e.g. "both", "TRA", "TRG", "IGH", "IGL"}
@@ -44,19 +44,19 @@ various overlap metrics for clonotypes.
 \details{
 The formulas for the indices are as follows:
 
-Overlap Coefficient: 
+\strong{Overlap Coefficient:}
 \deqn{overlap = \frac{\sum \min(a_i, b_i)}{\min(\sum a_i, \sum b_i)}}
 
-Raw Count Overlap:
+\strong{Raw Count Overlap:}
 \deqn{raw = \sum \min(a_i, b_i)}
 
-Morisita Index:
+\strong{Morisita Index:}
 \deqn{morisita = \frac{\sum a_i b_i}{(\sum a_i)(\sum b_i)}}
 
-Jaccard Index:
+\strong{Jaccard Index:}
 \deqn{jaccard = \frac{\sum \min(a_i, b_i)}{\sum a_i + \sum b_i - \sum \min(a_i, b_i)}}
 
-Cosine Similarity:
+\strong{Cosine Similarity:}
 \deqn{cosine = \frac{\sum a_i b_i}{\sqrt{(\sum a_i^2)(\sum b_i^2)}}}
 
 Where:
@@ -71,7 +71,7 @@ combined <- combineTCR(contig_list,
                                     "P19B","P19L", "P20B", "P20L"))
 
 clonalOverlap(combined, 
-              cloneCall = "gene", 
+              cloneCall = "aa", 
               method = "jaccard")
 
 }

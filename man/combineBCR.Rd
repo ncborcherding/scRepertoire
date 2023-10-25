@@ -5,7 +5,7 @@
 \title{Combining the list of B cell receptor contigs into clonotypes}
 \usage{
 combineBCR(
-  df,
+  input.data,
   samples = NULL,
   ID = NULL,
   call.related.clones = TRUE,
@@ -16,7 +16,7 @@ combineBCR(
 )
 }
 \arguments{
-\item{df}{List of filtered contig annotations or outputs from \code{\link{loadContigs}}.}
+\item{input.data}{List of filtered contig annotations or outputs from \code{\link{loadContigs}}.}
 
 \item{samples}{The labels of samples}
 
@@ -44,14 +44,14 @@ of the individual cell barcodes. Using the samples and ID parameters,
 the function will add the strings as prefixes to prevent issues with 
 repeated barcodes. The resulting new barcodes will need to match the 
 Seurat or SCE object in order to use, \code{\link{combineExpression}}. 
-Unlike \code{\link{combineTCR}}, combineBCR produces a column **CTstrict**
+Unlike \code{\link{combineTCR}}, combineBCR produces a column \strong{CTstrict}
 of an index of nucleotide sequence and the corresponding V gene. 
 This index automatically calculates the Levenshtein distance between 
 sequences with the same V gene and will index sequences using a normalized 
 Levenshtein distance with the same ID. After which, clonotype clusters 
-are called using the \code{\link[igraph]{components}} function. Clonotype
+are called using the \code{\link[igraph]{components}} function. Clones
 that are clustered across multiple sequences will then be labeled 
-with "LD" in the CTstrict header.
+with "Cluster" in the CTstrict header.
 }
 \examples{
 #Data derived from the 10x Genomics intratumoral NSCLC B cells

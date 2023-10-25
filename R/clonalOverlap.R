@@ -6,19 +6,19 @@
 #' @details
 #' The formulas for the indices are as follows:
 #' 
-#' Overlap Coefficient: 
+#' \strong{Overlap Coefficient:}
 #' \deqn{overlap = \frac{\sum \min(a_i, b_i)}{\min(\sum a_i, \sum b_i)}}
 #' 
-#' Raw Count Overlap:
+#' \strong{Raw Count Overlap:}
 #' \deqn{raw = \sum \min(a_i, b_i)}
 #' 
-#' Morisita Index:
+#' \strong{Morisita Index:}
 #' \deqn{morisita = \frac{\sum a_i b_i}{(\sum a_i)(\sum b_i)}}
 #' 
-#' Jaccard Index:
+#' \strong{Jaccard Index:}
 #' \deqn{jaccard = \frac{\sum \min(a_i, b_i)}{\sum a_i + \sum b_i - \sum \min(a_i, b_i)}}
 #' 
-#' Cosine Similarity:
+#' \strong{Cosine Similarity:}
 #' \deqn{cosine = \frac{\sum a_i b_i}{\sqrt{(\sum a_i^2)(\sum b_i^2)}}}
 #' 
 #' Where:
@@ -33,19 +33,18 @@
 #'                                     "P19B","P19L", "P20B", "P20L"))
 #' 
 #' clonalOverlap(combined, 
-#'               cloneCall = "gene", 
+#'               cloneCall = "aa", 
 #'               method = "jaccard")
 #'
-#' @param df The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
+#' @param input.data The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
 #'  \code{\link{combineExpression}}.
 #' @param cloneCall How to call the clonotype - VDJC gene (gene), 
-#' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
-#' VDJC gene + CDR3 nucleotide (strict).
+#' CDR3 nucleotide (nt), CDR3 amino acid (aa),
+#' VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data. 
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL"
-#' @param method The method to calculate the "overlap", 
-#  "morisita", "jaccard", "cosine" indices or "raw" 
-#' for the base numbers.
+#' @param method The method to calculate the "overlap", "morisita", 
+#' "jaccard", "cosine" indices or "raw" for the base numbers.
 #' @param group.by The variable to use for grouping.
 #' @param exportTable Returns the data frame used for forming the graph.
 #' @param palette Colors to use in visualization - input any \link[grDevices]{hcl.pals}.
@@ -55,7 +54,7 @@
 #' @export
 #' @concept Visualizing_Clones
 #' @return ggplot of the overlap of clones by group
-clonalOverlap <- function(df, 
+clonalOverlap <- function(input.data, 
                           cloneCall = "strict", 
                           method = NULL, 
                           chain = "both", 
@@ -67,18 +66,22 @@ clonalOverlap <- function(df,
     } else {
       return_type = "unique"
     }
-    cloneCall <- .theCall(cloneCall)
-    df <- .data.wrangle(df, group.by, cloneCall, chain)
-    df <- df[order(names(df))]
-    values <- str_sort(as.character(unique(names(df))), numeric = TRUE)
-    df <- df[.quiet(dput(values))]
-    num_samples <- length(df[])
-    names_samples <- names(df)
+  input.data <- .data.wrangle(input.data, 
+                              group.by, 
+                              .theCall(input.data, cloneCall, check.df = FALSE), 
+                              chain)
+  cloneCall <- .theCall(input.data, cloneCall)
+    
+    input.data <- input.data[order(names(input.data))]
+    values <- str_sort(as.character(unique(names(input.data))), numeric = TRUE)
+    input.data <- input.data[.quiet(dput(values))]
+    num_samples <- length(input.data[])
+    names_samples <- names(input.data)
     length <- seq_len(num_samples)
     
     if (chain != "both") {
-      for (i in seq_along(df)) {
-        df[[i]] <- .off.the.chain(df[[i]], chain, cloneCall)
+      for (i in seq_along(input.data)) {
+        input.data[[i]] <- .off.the.chain(input.data[[i]], chain, cloneCall)
       }
     }
     
@@ -93,7 +96,7 @@ clonalOverlap <- function(df,
     
     #Calculating Index 
     coef_matrix <- data.frame(matrix(NA, num_samples, num_samples))
-    coef_matrix <- .calculateIndex(df, length, cloneCall, coef_matrix, indexFunc, return_type)
+    coef_matrix <- .calculateIndex(input.data, length, cloneCall, coef_matrix, indexFunc, return_type)
     
     #Data manipulation
     colnames(coef_matrix) <- names_samples

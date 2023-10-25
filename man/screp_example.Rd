@@ -3,10 +3,13 @@
 \docType{data}
 \name{scRep_example}
 \alias{scRep_example}
-\title{A seurat object of 500 single T cells derived
-from 4 patients with acute respiratory distress (ARDS).}
+\title{A Seurat object of 500 single T cells,}
 \description{
 The object is compatible with `contig_list` and the TCR
-sequencing data can be added with `combineExpression`.
+sequencing data can be added with `combineExpression`.  The data is 
+from 4 patients with acute respiratory distress, with samples taken
+from both the lung and peripheral blood. More information on the 
+data can be found in the following
+ \href{https://pubmed.ncbi.nlm.nih.gov/33622974/}{manuscript}.
 }
 \concept{Data}

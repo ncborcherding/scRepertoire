@@ -8,9 +8,11 @@
 #' combined <- combineTCR(contig_list, 
 #'                         samples = c("P17B", "P17L", "P18B", "P18L", 
 #'                                     "P19B","P19L", "P20B", "P20L"))
-#' percentKmer(combined, chain = "TRB", motif.length = 3)
+#' percentKmer(combined, 
+#'             chain = "TRB", 
+#'             motif.length = 3)
 
-#' @param df The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
+#' @param input.data The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
 #'  \code{\link{combineExpression}}.
 #' @param chain "TRA", "TRB", "TRG", "TRG", "IGH", "IGL".
 #' @param cloneCall How to call the clonotype - CDR3 nucleotide (nt) or 
@@ -28,7 +30,7 @@
 #' @concept Summarize_Repertoire
 #' @return ggplot of percentage of kmers as a heatmap
 
-percentKmer <- function(df, 
+percentKmer <- function(input.data, 
                         chain = "TRB", 
                         cloneCall = "aa",
                         group.by = NULL, 
@@ -36,12 +38,19 @@ percentKmer <- function(df,
                         top.motifs = 30,
                         exportTable = FALSE, 
                         palette = "inferno") {
+  
+  if(cloneCall %!in% c("aa", "nt")) {
+    stop("Please select either nucleotide (nt) or amino acid (aa) sequences for cloneCall")
+  }
   motifs.to.save <- NULL
-  cloneCall <- .theCall(cloneCall)
-  sco <- is_seurat_object(df) | is_se_object(df)
-  df <- .data.wrangle(df, group.by, cloneCall, chain)
+  sco <- is_seurat_object(input.data) | is_se_object(input.data)
+  input.data <- .data.wrangle(input.data, 
+                              group.by, 
+                              .theCall(input.data, cloneCall, check.df = FALSE), 
+                              chain)
+  cloneCall <- .theCall(input.data, cloneCall)
   if(!is.null(group.by) & !sco) {
-    df <- .groupList(df, group.by)
+    input.data <- .groupList(input.data, group.by)
   }
   #Determining the function to generate motifs
   kmerFunc <- switch(cloneCall,
@@ -50,15 +59,15 @@ percentKmer <- function(df,
                            stop("Please select 'nt' or 'aa' for the cloneCall"))
   #Getting motifs and matrix to place the counts
   unique.motifs <- kmerFunc(motif.length)
-  mat <- matrix(NA, ncol = length(unique.motifs), nrow = length(df))
+  mat <- matrix(NA, ncol = length(unique.motifs), nrow = length(input.data))
   colnames(mat) <- unique.motifs
-  rownames(mat) <- names(df)
+  rownames(mat) <- names(input.data)
   
   #Looping through the counts of motifs
-  for(i in seq_along(df)) {
-    df[[i]][,cloneCall][which(df[[i]][,cloneCall] == "NA")] <- NA
-    df[[i]] <- df[[i]][!is.na(df[[i]][,cloneCall]),]
-    motifs <- .tokenize_multiple_sequences(df[[i]][,cloneCall], motif.length)
+  for(i in seq_along(input.data)) {
+    input.data[[i]][,cloneCall][which(input.data[[i]][,cloneCall] == "NA")] <- NA
+    input.data[[i]] <- input.data[[i]][!is.na(input.data[[i]][,cloneCall]),]
+    motifs <- .tokenize_multiple_sequences(input.data[[i]][,cloneCall], motif.length)
     motif.table <- table(unlist(motifs))
     if(any(grepl("\\;", names(motif.table)))) {
       motif.table <- motif.table[!grepl("\\;", names(motif.table))]
@@ -68,8 +77,8 @@ percentKmer <- function(df,
     mat[i,] <- mat[i,]/sum(na.omit(mat[i,]))
   }
   #Removing any column that is all NAs
-  if(any(colSums(is.na(mat)) == length(df))) {
-    mat <- mat[,-which(colSums(is.na(mat)) == length(df))]
+  if(any(colSums(is.na(mat)) == length(input.data))) {
+    mat <- mat[,-which(colSums(is.na(mat)) == length(input.data))]
   }
   mat[is.na(mat)] <- 0
   

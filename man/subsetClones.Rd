@@ -4,14 +4,14 @@
 \alias{subsetClones}
 \title{Subset the product of combineTCR() or combineBCR()}
 \usage{
-subsetClones(df, name, variables = NULL)
+subsetClones(input.data, name, variables = NULL)
 }
 \arguments{
-\item{df}{The product of \code{\link{combineTCR}} or \code{\link{combineBCR}}.}
+\item{input.data}{The product of \code{\link{combineTCR}} or \code{\link{combineBCR}}.}
 
 \item{name}{The column header you'd like to use to subset.}
 
-\item{variables}{The values to subset by, must be in the names(df).}
+\item{variables}{The values to subset by, must be in the names(input.data).}
 }
 \value{
 list of contigs that have been filtered for the name parameter
@@ -22,7 +22,6 @@ This function allows for the subsetting of the product of
 by the name of the individual list element.
 }
 \examples{
-x <- contig_list
 combined <- combineTCR(contig_list, 
                         samples = c("P17B", "P17L", "P18B", "P18L", 
                                     "P19B","P19L", "P20B", "P20L"))

@@ -5,7 +5,7 @@
 #' at default, cloneSize will group the clonotypes into bins of Rare = 0 
 #' to 0.0001, Small = 0.0001 to 0.001, etc. To adjust the proportions, 
 #' change the number or labeling of the cloneSize paramter. If a matrix 
-#' output for the data is preferred, set exportTable = TRUE.
+#' output for the data is preferred, set \strong{exportTable} = TRUE.
 #'
 #' @examples
 #' #Making combined contig data
@@ -14,12 +14,12 @@
 #'                                     "P19B","P19L", "P20B", "P20L"))
 #' clonalHomeostasis(combined, cloneCall = "gene")
 #'
-#' @param df The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
+#' @param input.data The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
 #'  \code{\link{combineExpression}}.
 #' @param cloneSize The cutpoints of the proportions.
 #' @param cloneCall How to call the clonotype - VDJC gene (gene), 
-#' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
-#' VDJC gene + CDR3 nucleotide (strict).
+#' CDR3 nucleotide (nt), CDR3 amino acid (aa),
+#' VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data. 
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL"
 #' @param group.by The variable to use for grouping.
@@ -33,7 +33,7 @@
 #' @export
 #' @concept Visualizing_Clones
 #' @return ggplot of the space occupied by the specific proportion of clonotypes
-clonalHomeostasis <- function(df, 
+clonalHomeostasis <- function(input.data, 
                               cloneSize = 
                                 c(Rare = .0001, Small = .001, Medium = .01, Large = .1, Hyperexpanded = 1),
                               cloneCall = "strict", 
@@ -42,26 +42,28 @@ clonalHomeostasis <- function(df,
                               exportTable = FALSE, 
                               palette = "inferno") {
     cloneSize <- c(None = 0, cloneSize)
-    
-    cloneCall <- .theCall(cloneCall)
-    sco <- is_seurat_object(df) | is_se_object(df)
-    df <- .data.wrangle(df, group.by, cloneCall, chain)
+    input.data <- .data.wrangle(input.data, 
+                                group.by, 
+                                .theCall(input.data, cloneCall, check.df = FALSE), 
+                                chain)
+    cloneCall <- .theCall(input.data, cloneCall)
+    sco <- is_seurat_object(input.data) | is_se_object(input.data)
     if(!is.null(group.by) & !sco) {
-      df <- .groupList(df, group.by)
+      input.data <- .groupList(input.data, group.by)
     }
     
     #Generating data matrix to store value
-    mat <- matrix(0, length(df), length(cloneSize) - 1, 
-                dimnames = list(names(df), 
+    mat <- matrix(0, length(input.data), length(cloneSize) - 1, 
+                dimnames = list(names(input.data), 
                 names(cloneSize)[-1]))
 
     #Assigning the clonal grouping
-    df <- lapply(df, '[[', cloneCall)
-    df <- lapply(df, na.omit)
+    input.data <- lapply(input.data, '[[', cloneCall)
+    input.data <- lapply(input.data, na.omit)
     fun <- function(x) { table(x)/length(x) }
-    df <- lapply(df, fun)
+    input.data <- lapply(input.data, fun)
     for (i in 2:length(cloneSize)) {
-        mat[,i-1] <- vapply(df, function (x) sum(x[x > cloneSize[i-1] & x <= 
+        mat[,i-1] <- vapply(input.data, function (x) sum(x[x > cloneSize[i-1] & x <= 
                             cloneSize[i]]), FUN.VALUE = numeric(1))
         colnames(mat)[i-1] <- paste0(names(cloneSize[i]), ' (', 
                                     cloneSize[i-1], ' < X <= ', 

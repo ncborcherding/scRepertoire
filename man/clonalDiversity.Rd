@@ -5,7 +5,7 @@
 \title{Examine the clonal diversity of samples}
 \usage{
 clonalDiversity(
-  df,
+  input.data,
   cloneCall = "strict",
   chain = "both",
   group.by = NULL,
@@ -19,12 +19,12 @@ clonalDiversity(
 )
 }
 \arguments{
-\item{df}{The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
+\item{input.data}{The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
 \code{\link{combineExpression}}.}
 
 \item{cloneCall}{How to call the clonotype - VDJC gene (gene), 
-CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
-VDJC gene + CDR3 nucleotide (strict).}
+CDR3 nucleotide (nt), CDR3 amino acid (aa),
+VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data.}
 
 \item{chain}{indicate if both or a specific chain should be used - 
 e.g. "both", "TRA", "TRG", "IGH", "IGL".}
@@ -52,9 +52,9 @@ will automatically exportTable = TRUE.}
 ggplot of the diversity of clones by group
 }
 \description{
-This function calculates traditional measures of diversity - **Shannon**, 
-**inverse Simpson**, **normalized entropy**, **Gini-Simpson**, **Chao1 index**, and
-**abundance-based coverage estimators (ACE)** measure of species evenness by sample or group. 
+This function calculates traditional measures of diversity - \strong{Shannon}, 
+\strong{inverse Simpson}, \strong{normalized entropy}, \strong{Gini-Simpson}, \strong{Chao1 index}, and
+\strong{abundance-based coverage estimators (ACE)} measure of species evenness by sample or group. 
 The function automatically down samples the diversity metrics using 
 100 boot straps The group parameter can be used to condense the individual 
 samples. If a matrix output for the data is preferred, set exportTable = TRUE.
@@ -62,22 +62,22 @@ samples. If a matrix output for the data is preferred, set exportTable = TRUE.
 \details{
 The formulas for the indices and estimators are as follows:
 
-Shannon Index:
+\strong{Shannon Index:}
 \deqn{H = - \sum p_i \cdot \log(p_i)}
 
-Inverse Simpson Index:
+\strong{Inverse Simpson Index:}
 \deqn{ D^{-1} = 1 / \sum p_i^2}
 
-Normalized Entropy:
+\strong{Normalized Entropy:}
 \deqn{E^H = H / \log(S)}
 
-Gini-Simpson Index:
+\strong{Gini-Simpson Index:}
 \deqn{1 - D = 1 - \sum p_i^2}
 
-Chao1 Index:
+\strong{Chao1 Index:}
 \deqn{\hat{S}_{Chao1} = S + \left( \frac{n_1(n_1 - 1)}{2(n_2 + 1)} \right)}
 
-Abundance-based Coverage Estimator (ACE): 
+\strong{Abundance-based Coverage Estimator (ACE):}
 \deqn{\hat{S}_{ACE} = S_{abundant} + \frac{S_{rare}}{C_{rare}} + \left( \frac{S_{rare} - 1}{C_{rare}} \right) \cdot F_1}
 
 Where:

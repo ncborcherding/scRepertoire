@@ -1,8 +1,8 @@
 #' Examine the clonal diversity of samples
 #'
-#' This function calculates traditional measures of diversity - **Shannon**, 
-#' **inverse Simpson**, **normalized entropy**, **Gini-Simpson**, **Chao1 index**, and
-#' **abundance-based coverage estimators (ACE)** measure of species evenness by sample or group. 
+#' This function calculates traditional measures of diversity - \strong{Shannon}, 
+#' \strong{inverse Simpson}, \strong{normalized entropy}, \strong{Gini-Simpson}, \strong{Chao1 index}, and
+#' \strong{abundance-based coverage estimators (ACE)} measure of species evenness by sample or group. 
 #' The function automatically down samples the diversity metrics using 
 #' 100 boot straps The group parameter can be used to condense the individual 
 #' samples. If a matrix output for the data is preferred, set exportTable = TRUE.
@@ -10,22 +10,22 @@
 #' @details
 #' The formulas for the indices and estimators are as follows:
 #' 
-#' Shannon Index:
+#' \strong{Shannon Index:}
 #' \deqn{H = - \sum p_i \cdot \log(p_i)}
 #' 
-#' Inverse Simpson Index:
+#' \strong{Inverse Simpson Index:}
 #' \deqn{ D^{-1} = 1 / \sum p_i^2}
 #' 
-#' Normalized Entropy:
+#' \strong{Normalized Entropy:}
 #' \deqn{E^H = H / \log(S)}
 #' 
-#' Gini-Simpson Index:
+#' \strong{Gini-Simpson Index:}
 #' \deqn{1 - D = 1 - \sum p_i^2}
 #' 
-#' Chao1 Index:
+#' \strong{Chao1 Index:}
 #' \deqn{\hat{S}_{Chao1} = S + \left( \frac{n_1(n_1 - 1)}{2(n_2 + 1)} \right)}
 #' 
-#' Abundance-based Coverage Estimator (ACE): 
+#' \strong{Abundance-based Coverage Estimator (ACE):}
 #' \deqn{\hat{S}_{ACE} = S_{abundant} + \frac{S_{rare}}{C_{rare}} + \left( \frac{S_{rare} - 1}{C_{rare}} \right) \cdot F_1}
 #' 
 #' Where:
@@ -43,11 +43,11 @@
 #'                                     "P19B","P19L", "P20B", "P20L"))
 #' clonalDiversity(combined, cloneCall = "gene")
 #'
-#' @param df The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
+#' @param input.data The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
 #'  \code{\link{combineExpression}}.
 #' @param cloneCall How to call the clonotype - VDJC gene (gene), 
-#' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
-#' VDJC gene + CDR3 nucleotide (strict).
+#' CDR3 nucleotide (nt), CDR3 amino acid (aa),
+#' VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data. 
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL".
 #' @param group.by Variable in which to group the diversity calculation.
@@ -70,7 +70,7 @@
 #' @concept Visualizing_Clones
 #' @return ggplot of the diversity of clones by group
 #' @author Andrew Malone, Nick Borcherding
-clonalDiversity <- function(df, 
+clonalDiversity <- function(input.data, 
                             cloneCall = "strict", 
                             chain = "both",
                             group.by = NULL, 
@@ -84,19 +84,23 @@ clonalDiversity <- function(df,
   if(return.boots) {
     exportTable <- TRUE
   }
-  cloneCall <- .theCall(cloneCall)
-  df <- .data.wrangle(df, group.by, cloneCall, chain)
+  input.data <- .data.wrangle(input.data, 
+                              group.by, 
+                              .theCall(input.data, cloneCall, check.df = FALSE), 
+                              chain)
+  cloneCall <- .theCall(input.data, cloneCall)
+
   mat <- NULL
   sample <- c()
   if (!is.null(group.by) || !is.null(x.axis)) {
-    df <- bind_rows(df, .id = "element.names")
-    df$group.element <- paste0(df[,group.by], ".", df[,x.axis])
-    #group.element.uniq <- unique(df$group.element)
-    df <- split(df, f = df[,"group.element"])
+    input.data <- bind_rows(input.data, .id = "element.names")
+    input.data$group.element <- paste0(input.data[,group.by], ".", input.data[,x.axis])
+    #group.element.uniq <- unique(input.data$group.element)
+    input.data <- split(input.data, f = input.data[,"group.element"])
   }
-  min <- .short.check(df, cloneCall)
-  for (i in seq_along(df)) {
-      data <- as.data.frame(table(df[[i]][,cloneCall]))
+  min <- .short.check(input.data, cloneCall)
+  for (i in seq_along(input.data)) {
+      data <- as.data.frame(table(input.data[[i]][,cloneCall]))
       mat_a <- NULL
       sample <- c()
       if(skip.boots == TRUE) {
@@ -114,7 +118,7 @@ clonalDiversity <- function(df,
         mat_a[is.na(mat_a)] <- 0
         if(return.boots) {
           mat_a <- as.data.frame(mat_a)
-          mat_a$sample <- names(df)[i]
+          mat_a$sample <- names(input.data)[i]
           mat <- rbind(mat, mat_a)
         } else {
           mat_b<- colMeans(mat_a)
@@ -126,13 +130,13 @@ clonalDiversity <- function(df,
     colnames(mat) <- c("shannon", "inv.simpson", "norm.entropy", "gini.simpson", "chao1", "ACE")
     mat <- mat[,colnames(mat) %in% metrics]
     if (!is.null(group.by)) {
-      mat[,group.by] <- str_split(names(df), "[.]", simplify = TRUE)[,1]
+      mat[,group.by] <- str_split(names(input.data), "[.]", simplify = TRUE)[,1]
     } else {
       group.by <- "Group"
-      mat[,group.by] <- names(df)
+      mat[,group.by] <- names(input.data)
     }
     if (!is.null(x.axis)) {
-      mat[,x.axis] <- str_split(names(df), "[.]", simplify = TRUE)[,2]
+      mat[,x.axis] <- str_split(names(input.data), "[.]", simplify = TRUE)[,2]
     } else {
       x.axis <- "x.axis"
       mat[,x.axis] <- 1
@@ -140,7 +144,7 @@ clonalDiversity <- function(df,
     if (exportTable) { 
       return(mat) 
     }
-    rownames(mat) <- names(df)
+    rownames(mat) <- names(input.data)
   
     mat_melt <- suppressMessages(melt(mat, id.vars = c(group.by, x.axis)))
     values <- str_sort(as.character(unique(mat_melt[,group.by])), 

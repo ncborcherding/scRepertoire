@@ -11,11 +11,11 @@
 #'                                     "P19B","P19L", "P20B", "P20L"))
 #' clonalQuant(combined, cloneCall="strict", scale = TRUE)
 #'
-#' @param df The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
+#' @param input.data The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
 #'  \code{\link{combineExpression}}.
 #' @param cloneCall How to call the clonotype - VDJC gene (gene), 
-#' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
-#' VDJC gene + CDR3 nucleotide (strict).
+#' CDR3 nucleotide (nt), CDR3 amino acid (aa),
+#' VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data. 
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL"
 #' @param group.by The column header used for grouping.
@@ -27,7 +27,7 @@
 #' @export
 #' @concept Visualizing_Clones
 #' @return ggplot of the total or relative unique clonotypes
-clonalQuant <- function(df, 
+clonalQuant <- function(input.data, 
                         cloneCall = "strict", 
                         chain = "both", 
                         scale=FALSE, 
@@ -39,12 +39,15 @@ clonalQuant <- function(df,
   if (length(group.by) > 1) { 
     stop("Only one item in the group.by variable can be listed.")
   }
- 
-  cloneCall <- .theCall(cloneCall)
-  sco <- is_seurat_object(df) | is_se_object(df)
-  df <- .data.wrangle(df, group.by, "CTgene", chain)
+  input.data <- .data.wrangle(input.data, 
+                              group.by, 
+                              .theCall(input.data, cloneCall, check.df = FALSE), 
+                              chain)
+  cloneCall <- .theCall(input.data, cloneCall)
+  sco <- is_seurat_object(input.data) | is_se_object(input.data)
+
   if(!is.null(group.by) & !sco) {
-    df <- .groupList(df, group.by)
+    input.data <- .groupList(input.data, group.by)
   }
   
   mat.names <- c("contigs","values", "total", group.by)
@@ -55,17 +58,17 @@ clonalQuant <- function(df,
   } else {
     x <- "values"
     labs <- "Samples"
-    col <- length(unique(names(df)))
+    col <- length(unique(names(input.data)))
   }
-  mat <- data.frame(matrix(NA, length(df), length(mat.names)))
+  mat <- data.frame(matrix(NA, length(input.data), length(mat.names)))
   colnames(mat) <- mat.names
-  for (i in seq_along(df)) {
-      mat[i,1] <- length(na.omit(unique(df[[i]][,cloneCall])))
-      mat[i,2] <- names(df)[i]
-      mat[i,3] <- length(na.omit(df[[i]][,cloneCall]))
+  for (i in seq_along(input.data)) {
+      mat[i,1] <- length(na.omit(unique(input.data[[i]][,cloneCall])))
+      mat[i,2] <- names(input.data)[i]
+      mat[i,3] <- length(na.omit(input.data[[i]][,cloneCall]))
       if (!is.null(group.by)) {
-        location <- which(colnames(df[[i]]) == group.by)
-        mat[i,4] <- df[[i]][1,location]
+        location <- which(colnames(input.data[[i]]) == group.by)
+        mat[i,4] <- input.data[[i]][1,location]
       }
   }
   if (scale) { 
@@ -79,7 +82,7 @@ clonalQuant <- function(df,
    }
   
   if (exportTable) {
-    if (length(df) > 1) {
+    if (length(input.data) > 1) {
       return(mat)
     }
     # if a single sample, remove the "values" column if NA
@@ -109,7 +112,7 @@ clonalQuant <- function(df,
                   scale_fill_manual(values = .colorizer(palette, col))
   
   # if it is a single run, remove x axis labels if sample name missing
-  if ((length(df) == 1) && identical(names(df), NA_character_)) {
+  if ((length(input.data) == 1) && identical(names(input.data), NA_character_)) {
     plot <- plot +
       ggplot2::theme(
         axis.title.x = element_blank(),

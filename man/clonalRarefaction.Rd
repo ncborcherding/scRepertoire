@@ -5,7 +5,7 @@
 \title{Calculate rarefaction based on the abundance of clones}
 \usage{
 clonalRarefaction(
-  df,
+  input.data,
   cloneCall = "strict",
   chain = "both",
   group.by = NULL,
@@ -17,12 +17,12 @@ clonalRarefaction(
 )
 }
 \arguments{
-\item{df}{The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
+\item{input.data}{The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
 \code{\link{combineExpression}}.}
 
 \item{cloneCall}{How to call the clonotype - VDJC gene (gene), 
-CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
-VDJC gene + CDR3 nucleotide (strict).}
+CDR3 nucleotide (nt), CDR3 amino acid (aa),
+VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data.}
 
 \item{chain}{indicate if both or a specific chain should be used - 
 e.g. "both", "TRA", "TRG", "IGH", "IGL".}
@@ -42,11 +42,11 @@ environment in addition to the visualization.}
 \item{palette}{Colors to use in visualization - input any \link[grDevices]{hcl.pals}.}
 }
 \description{
-This functions uses the Hill numbers of order q: species richness (**q = 0&&), 
-Shannon diversity (**q = 1**, the exponential of Shannon entropy) and Simpson 
-diversity (**q = 2**, the inverse of Simpson concentration) to compute diversity 
-estimates for rarefaction and extrapolation. The function relies on 
-\code{\link[iNEXT]{iNEXT}}. Please read and cite the 
+This functions uses the Hill numbers of order q: species richness (\strong{q = 0}), 
+Shannon diversity (\strong{q = 1}), the exponential of Shannon entropy and Simpson 
+diversity (\strong{q = 2}, the inverse of Simpson concentration) to compute diversity 
+estimates for rarefaction and extrapolation. The function relies on the
+\code{\link[iNEXT]{iNEXT}} R package. Please read and cite the 
 \href{https://besjournals.onlinelibrary.wiley.com/doi/10.1111/2041-210X.12613}{manuscript} 
 if using this function.
 }

@@ -11,9 +11,11 @@ An R `list` of `data.frame` objects
 data("mini_contig_list")
 }
 \description{
-A list of 8 dataframes of T cell contigs outputted from the
+A list of 8 data frames of T cell contigs outputted from the
 `filtered_contig_annotation` files, but subsetted to  365 valid T cells
-which correspond to the same barcodes found in `scRep_example`
+which correspond to the same barcodes found in `scRep_example`. The
+data is originally derived from the following
+ \href{https://pubmed.ncbi.nlm.nih.gov/33622974/}{manuscript}.
 }
 \seealso{
 \code{\link{contig_list}}

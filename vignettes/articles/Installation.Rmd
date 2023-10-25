@@ -39,9 +39,9 @@ knitr::opts_chunk$set(
 )
 ```
 
-sscRepertoire requires [R](https://www.r-project.org/) version 4.0 or greater. Highly recommend installing [R Studio](https://posit.co/downloads/).
+scRepertoire requires [R](https://www.r-project.org/) version 4.0 or greater. Highly recommend installing [R Studio](https://posit.co/downloads/).
 
-## Install from CRAN  
+## Install from Bioconductor 
 scRepertoire can be installed from [Bioconductor](https://www.bioconductor.org/packages/release/bioc/html/scRepertoire.html) for all platforms using standard installation methods:
 ```
 if (!require("BiocManager", quietly = TRUE))
@@ -51,11 +51,11 @@ BiocManager::install("scRepertoire")
 ```
 
 ## Release Notes  
-A full copy of the changes in each version can be found in the [NEWS/ChangeLog](https://ncborcherding.github.io/scRepertoire/news/index.html).
+A full copy of the changes in each version can be found in the [NEWS/ChangeLog](https://borch.dev/uploads/scRepertoire/news/index.html).
 
 
 ## GitHub Branches
-scRepertoire is an active project, that recieves a number of changes based on user feedback, the most up-to-date versions are available via the GitHub repositories. These versions can be installed using ```devtools::install_github()``` or ```remotes::install_github()```. The **dev** version is the active development branch and might be less stable than the main branch or bioconductor versions. 
+scRepertoire is an active project, that receives a number of changes based on user feedback, the most up-to-date versions are available via the GitHub repositories. These versions can be installed using ```devtools::install_github()``` or ```remotes::install_github()```. The **dev** version is the active development branch and might be less stable than the main branch or bioconductor versions. 
 
 ```
 devtools::install_github(repo = "ncborcherding/scRepertoire")

@@ -5,7 +5,7 @@
 \title{Visualize distribution of clonal frequency overlaid on dimensional reduction plots}
 \usage{
 clonalOverlay(
-  sc,
+  sc.data,
   reduction = NULL,
   freq.cutpoint = 30,
   bins = 25,
@@ -13,7 +13,7 @@ clonalOverlay(
 )
 }
 \arguments{
-\item{sc}{The single-cell object after \code{\link{combineExpression}}.}
+\item{sc.data}{The single-cell object after \code{\link{combineExpression}}.}
 
 \item{reduction}{The dimensional reduction to visualize}
 

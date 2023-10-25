@@ -1,16 +1,24 @@
-#' A data set of T cell contigs as a list outputed from the 
-#' filter_contig_annotation files.
+#' A list of 8 single-cell T cell receptor sequences runs.
+#' 
+#' @description A list of 8 filtered_contig_annotation.csv files
+#' outputted from 10X Cell Ranger. More information on the 
+#' data can be found in the following
+#'  \href{https://pubmed.ncbi.nlm.nih.gov/33622974/}{manuscript}.
+#'  
 #' @docType data
 #' @concept Data
 #' @name contig_list
 #' 
 NULL
 
-#' A seurat object of 500 single T cells derived
-#' from 4 patients with acute respiratory distress (ARDS).
+#' A Seurat object of 500 single T cells,
 #' 
 #' @description The object is compatible with `contig_list` and the TCR
-#' sequencing data can be added with `combineExpression`.
+#' sequencing data can be added with `combineExpression`.  The data is 
+#' from 4 patients with acute respiratory distress, with samples taken
+#' from both the lung and peripheral blood. More information on the 
+#' data can be found in the following
+#'  \href{https://pubmed.ncbi.nlm.nih.gov/33622974/}{manuscript}.
 #' 
 #' @name scRep_example
 #' @concept Data
@@ -20,9 +28,11 @@ NULL
 
 #' Processed subset of `contig_list`
 #' 
-#' @description A list of 8 dataframes of T cell contigs outputted from the
+#' @description A list of 8 data frames of T cell contigs outputted from the
 #' `filtered_contig_annotation` files, but subsetted to  365 valid T cells
-#' which correspond to the same barcodes found in `scRep_example`
+#' which correspond to the same barcodes found in `scRep_example`. The
+#' data is originally derived from the following
+#'  \href{https://pubmed.ncbi.nlm.nih.gov/33622974/}{manuscript}.
 #'
 #' @usage data("mini_contig_list")
 #'

@@ -4,12 +4,12 @@
 \alias{createHTOContigList}
 \title{Generate a contig list from a multiplexed experiment}
 \usage{
-createHTOContigList(contig, sc, group.by = NULL, multi.run = NULL)
+createHTOContigList(contig, sc.data, group.by = NULL, multi.run = NULL)
 }
 \arguments{
 \item{contig}{The filtered contig annotation file from multiplexed experiment}
 
-\item{sc}{The Seurat or SCE object.}
+\item{sc.data}{The Seurat or Single-Cell Experiment object.}
 
 \item{group.by}{One or more meta data headers to create the contig list based on. 
 If more than one header listed, the function combines them into a single variable.}
@@ -18,7 +18,7 @@ If more than one header listed, the function combines them into a single variabl
 that indicates the sequencing run.}
 }
 \value{
-Returns a list of contigs corresponding to the multiplexed single-cell object
+Returns a list of contigs as input for \code{\link{combineBCR}} or \code{\link{combineTCR}}
 }
 \description{
 This function reprocess and forms a list of contigs for downstream analysis 
@@ -26,7 +26,7 @@ in scRepertoire, \code{\link{createHTOContigList}} take the filtered contig
 annotation output and the single-cell RNA object to create the list. If using an 
 integrated single-cell object, it is recommended to split the object by sequencing run 
 and remove extra prefixes and suffixes on the barcode before using 
-\code{\link{createHTOContigList}}. Alternatively, the variable **multi.run** can 
+\code{\link{createHTOContigList}}. Alternatively, the variable \strong{multi.run} can 
 be used to separate a list of contigs by a meta data variable. This may have 
 issues with the repeated barcodes.
 }
@@ -35,7 +35,7 @@ issues with the repeated barcodes.
 filtered.contig <- read.csv(".../Sample/outs/filtered_contig_annotations.csv")
 
 contig.list <- createHTOContigList(contig = filtered.contig, 
-                                   sc = Seurat.Obj, 
+                                   sc.data = Seurat.Obj, 
                                    group.by = "HTO_maxID")
 }
 

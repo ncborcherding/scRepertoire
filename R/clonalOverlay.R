@@ -23,7 +23,7 @@
 #'               freq.cutpoint = 0.3, 
 #'               bins = 5) 
 #' 
-#' @param sc The single-cell object after \code{\link{combineExpression}}.
+#' @param sc.data The single-cell object after \code{\link{combineExpression}}.
 #' @param reduction The dimensional reduction to visualize
 #' @param freq.cutpoint The overlay cut point to include, this corresponds to the 
 #' Frequency variable in the single-cell object
@@ -38,15 +38,15 @@
 #' 
 #' @return ggplot object
 
-clonalOverlay <- function(sc, 
+clonalOverlay <- function(sc.data, 
                           reduction = NULL, 
                           freq.cutpoint = 30, 
                           bins = 25, 
                           facet.by = NULL) {
-  .checkSingleObject(sc)
+  .checkSingleObject(sc.data)
 
   #Forming the data frame to plot
-  tmp <- data.frame(.grabMeta(sc), identity = sc@active.ident, .get.coord(sc, reduction))
+  tmp <- data.frame(.grabMeta(sc.data), .get.coord(sc.data, reduction))
   #Add facet variable if present
   if (!is.null(facet.by)) { 
     facet.by <- tmp[,facet.by]
@@ -57,7 +57,7 @@ clonalOverlay <- function(sc,
   
   #Plotting
   plot <- ggplot(tmp2, mapping = aes(x=tmp2[,(ncol(tmp2)-2)], y = tmp2[,(ncol(tmp2)-1)])) +
-    geom_point(tmp, mapping = aes(x=as.numeric(tmp[,(ncol(tmp)-2)]), y = as.numeric(tmp[,(ncol(tmp)-1)]), color = tmp[,"identity"]), size= 0.5) +
+    geom_point(tmp, mapping = aes(x=as.numeric(tmp[,(ncol(tmp)-2)]), y = as.numeric(tmp[,(ncol(tmp)-1)]), color = tmp[,"ident"]), size= 0.5) +
     geom_density_2d(color = "black", lwd=0.25, bins = bins) + 
     theme_classic() +
     labs(color = "Active Identity") +

@@ -14,11 +14,11 @@
 #'               y.axis = "P17L",
 #'               graph = "proportion")
 #' 
-#' @param df The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
+#' @param input.data The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
 #'  \code{\link{combineExpression}}.
 #' @param cloneCall How to call the clonotype - VDJC gene (gene), 
-#' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
-#' VDJC gene + CDR3 nucleotide (strict).
+#' CDR3 nucleotide (nt), CDR3 amino acid (aa),
+#' VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data. 
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL".
 #' @param x.axis name of the list element to appear on the x.axis.
@@ -34,9 +34,9 @@
 #' 
 #' @export
 #' @concept Visualizing_Clones
-#' @return ggplot of the relative clonotype numbers
+#' @return ggplot of the relative clonotype numbers between two sequencing runs
 
-clonalScatter <- function(df, 
+clonalScatter <- function(input.data, 
                           cloneCall ="strict", 
                           x.axis = NULL, 
                           y.axis = NULL,
@@ -46,20 +46,23 @@ clonalScatter <- function(df,
                           graph = "proportion", 
                           exportTable = FALSE,
                           palette = "inferno") {
-  cloneCall <- .theCall(cloneCall)
-  df <- .data.wrangle(df, group.by, cloneCall, chain)
-  axes <- which(names(df) %in% c(x.axis, y.axis, dot.size))
+  input.data <- .data.wrangle(input.data, 
+                              group.by, 
+                              .theCall(input.data, cloneCall, check.df = FALSE), 
+                              chain)
+  cloneCall <- .theCall(input.data, cloneCall)
+  axes <- which(names(input.data) %in% c(x.axis, y.axis, dot.size))
   
   #Making new data frame and adding variables to graph
-  x.df <- as.data.frame(table(df[[x.axis]][,cloneCall]))
+  x.df <- as.data.frame(table(input.data[[x.axis]][,cloneCall]))
   colnames(x.df)[2] <- x.axis
-  y.df <- as.data.frame(table(df[[y.axis]][,cloneCall]))
+  y.df <- as.data.frame(table(input.data[[y.axis]][,cloneCall]))
   colnames(y.df)[2] <- y.axis
   mat <- merge(x.df, y.df, by = "Var1", all = TRUE)
   
   if (dot.size != "total") {
     if (dot.size %!in% colnames(mat)) {
-      size.df <- as.data.frame(table(df[[dot.size]][,cloneCall]))
+      size.df <- as.data.frame(table(input.data[[dot.size]][,cloneCall]))
       colnames(size.df)[2] <- dot.size
       mat <- merge(mat, size.df, by = "Var1", all = TRUE) }
     mat[is.na(mat)] <- 0

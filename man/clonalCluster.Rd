@@ -5,7 +5,7 @@
 \title{Clustering adaptive receptor sequences}
 \usage{
 clonalCluster(
-  df,
+  input.data,
   chain = "TRB",
   sequence = "aa",
   samples = NULL,
@@ -15,7 +15,7 @@ clonalCluster(
 )
 }
 \arguments{
-\item{df}{The product of \code{\link{combineTCR}}, \code{\link{combineBCR}} 
+\item{input.data}{The product of \code{\link{combineTCR}}, \code{\link{combineBCR}} 
 or \code{\link{combineExpression}}.}
 
 \item{chain}{Indicate if both or a specific chain should be used - 
@@ -42,7 +42,7 @@ This function uses edit distances of either the nucleotide or amino acid
 sequences of the CDR3 and V genes to cluster similar TCR/BCRs together. 
 As a default, the function takes the input from \code{\link{combineTCR}}, 
 \code{\link{combineBCR}} or \code{\link{combineExpression}} and amends a 
-cluster to the data frame or meta data. If **exportGraph** is set to TRUE, 
+cluster to the data frame or meta data. If \strong{exportGraph} is set to TRUE, 
 the function returns an igraph object of the connected sequences.
 }
 \examples{

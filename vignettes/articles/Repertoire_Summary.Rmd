@@ -1,11 +1,11 @@
 ---
-title: "Basic Clonal Visualizations"
+title: "Summarizing Repertoires"
 date: 'Compiled: `r format(Sys.Date(), "%B %d, %Y")`'
 output: rmarkdown::html_vignette
 theme: united
 df_print: kable
 vignette: >
-  %\VignetteIndexEntry{Basic Clonal Visualizations}
+  %\VignetteIndexEntry{Summarizing Repertoires}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

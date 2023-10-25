@@ -1,8 +1,8 @@
 #' Visualize the number of single cells with cloneSizes by cluster
 #'
-#' View the count of clonotypes frequency group in seurat or SCE object 
+#' View the count of clonotypes frequency group in Seurat or SCE object 
 #' meta data after \code{\link{combineExpression}}. The visualization will take the 
-#' new meta data variable **"cloneSize"** and plot the number of cells with
+#' new meta data variable \strong{"cloneSize"} and plot the number of cells with
 #' each designation using a secondary variable, like cluster. Credit to 
 #' the idea goes to Drs. Carmona and Andreatta and their work with
 #' \href{https://github.com/carmonalab/ProjecTILs}{ProjectTIL}.
@@ -23,7 +23,7 @@
 #' clonalOccupy(scRep_example, x.axis = "ident")
 #' table <- clonalOccupy(scRep_example, x.axis = "ident", exportTable = TRUE)
 #' 
-#' @param sc The single-cell object after \code{\link{combineExpression}}.
+#' @param sc.data The single-cell object after \code{\link{combineExpression}}.
 #' @param x.axis The variable in the meta data to graph along the x.axis.
 #' @param label Include the number of clonotype in each category by x.axis variable.
 #' @param facet.by The column header used for faceting the graph.
@@ -39,7 +39,7 @@
 #' @concept SC_Functions
 #' @return Stacked bar plot of counts of cells by clonotype frequency group
 
-clonalOccupy <- function(sc, 
+clonalOccupy <- function(sc.data, 
                          x.axis = "ident", 
                          label = TRUE, 
                          facet.by = NULL,
@@ -47,8 +47,8 @@ clonalOccupy <- function(sc,
                          na.include = FALSE,
                          exportTable = FALSE, 
                          palette = "inferno") {
-  .checkSingleObject(sc)
-  meta <- .grabMeta(sc)
+  .checkSingleObject(sc.data)
+  meta <- .grabMeta(sc.data)
   meta <- melt(table(meta[!is.na(meta[,"clonalFrequency"]), 
                           c(x.axis, facet.by, "cloneSize")], useNA = "ifany"))
   #Check for NAs

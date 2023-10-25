@@ -76,10 +76,10 @@ We can check the default cloneSize groupings using the Single-Cell Experiment ob
 
 ```{r}
 sce <- combineExpression(combined.TCR, 
-                          sce, 
-                          cloneCall="gene", 
-                          group.by = "sample", 
-                          proportion = TRUE)
+                         sce, 
+                         cloneCall="gene", 
+                         group.by = "sample", 
+                         proportion = TRUE)
 
 #Define color palette 
 colorblind_vector <- hcl.colors(n=7, palette = "inferno", fixup = TRUE)

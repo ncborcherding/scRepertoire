@@ -3,8 +3,8 @@
 #' This function adds the immune receptor information to the Seurat or 
 #' SCE object to the meta data. By default this function also calculates 
 #' the frequencies and proportion of the clonotypes by sequencing 
-#' run (**group.by** = "none"). To change how the frequencies/proportions
-#' are calculated, select a column header for the **group.by** variable. 
+#' run (\strong{group.by} = NULL). To change how the frequencies/proportions
+#' are calculated, select a column header for the \strong{group.by} variable. 
 #' Importantly, before using \code{\link{combineExpression}} ensure the 
 #' barcodes of the single-cell object object match the barcodes in the output 
 #' of the \code{\link{combineTCR}} or \code{\link{combineBCR}}. 
@@ -17,18 +17,16 @@
 #' 
 #' #Getting a sample of a Seurat object
 #' scRep_example <- get(data("scRep_example"))
-#' sce <- suppressMessages(Seurat::UpdateSeuratObject(scRep_example))
-#' sce <- Seurat::as.SingleCellExperiment(sce)
 #' 
 #' #Using combineExpresion()
-#' sce <- combineExpression(combined, sce)
+#' scRep_example <- combineExpression(combined, scRep_example)
 #' 
-#' @param df The product of \code{\link{combineTCR}}, \code{\link{combineBCR}} or a list of 
-#' both c(\code{\link{combineTCR}}, c\code{\link{combineBCR}})
-#' @param sc The seurat or SingleCellExperiment (SCE) object to attach
+#' @param input.data The product of \code{\link{combineTCR}}, \code{\link{combineBCR}} or a list of 
+#' both c(\code{\link{combineTCR}}, \code{\link{combineBCR}}).
+#' @param sc.data The Seurat or Single-Cell Experiment (SCE) object to attach
 #' @param cloneCall How to call the clonotype - VDJC gene (gene), 
-#' CDR3 nucleotide (nt) CDR3 amino acid (aa), or 
-#' VDJC gene + CDR3 nucleotide (strict).
+#' CDR3 nucleotide (nt), CDR3 amino acid (aa),
+#' VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data. 
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL"
 #' @param group.by The column label in the combined clones in which 
@@ -49,14 +47,14 @@
 #' @importFrom SummarizedExperiment colData<- colData
 #' @export
 #' @concept SC_Functions
-#' @return seurat or SingleCellExperiment object with attached clonotype 
+#' @return Single-cell object with clonotype information added to meta data
 #' information
 #' 
-combineExpression <- function(df, 
-                              sc, 
+combineExpression <- function(input.data, 
+                              sc.data, 
                               cloneCall ="strict", 
                               chain = "both", 
-                              group.by ="none", 
+                              group.by = NULL, 
                               proportion = TRUE, 
                               filterNA = FALSE,
                               cloneSize = c(Rare = 1e-4,Small = 0.001,Medium = 0.01,Large = 0.1,Hyperexpanded = 1),
@@ -69,19 +67,19 @@ combineExpression <- function(df,
     }
     cloneSize <- c(None = 0, cloneSize)
     if (chain != "both") {
-      df[[i]] <- .off.the.chain(df[[i]], chain, cloneCall)
+      input.data[[i]] <- .off.the.chain(input.data[[i]], chain, cloneCall)
     }
-    df <- .checkList(df)
-    cloneCall <- .theCall(cloneCall)
+    input.data <- .checkList(input.data)
+    cloneCall <- .theCall(input.data, cloneCall)
     
     #Getting Summaries of clones from combineTCR() or combineBCR()
     Con.df <- NULL
-    meta <- .grabMeta(sc)
+    meta <- .grabMeta(sc.data)
     cell.names <- rownames(meta)
-    if (group.by == "none" | !is.null(group.by)) {
-        for (i in seq_along(df)) {
+    if (group.by == "none" || is.null(group.by)) {
+        for (i in seq_along(input.data)) {
       
-            data <- data.frame(df[[i]], stringsAsFactors = FALSE)
+            data <- data.frame(input.data[[i]], stringsAsFactors = FALSE)
             data2 <- unique(data[,c("barcode", cloneCall)])
             data2 <- na.omit(data2[data2[,"barcode"] %in% cell.names,])
             data2 <- data2 %>% 
@@ -96,7 +94,7 @@ combineExpression <- function(df,
             Con.df <- rbind.data.frame(Con.df, data)
         }
     } else if (group.by != "none" | !is.null(group.by)) {
-        data <- data.frame(bind_rows(df), stringsAsFactors = FALSE)
+        data <- data.frame(bind_rows(input.data), stringsAsFactors = FALSE)
         data2 <- na.omit(unique(data[,c("barcode", cloneCall, group.by)]))
         data2 <- data2[data2[,"barcode"] %in% cell.names, ]
         data2 <- as.data.frame(data2 %>% 
@@ -156,38 +154,35 @@ combineExpression <- function(df,
     
 
     
-    if (is_seurat_object(sc)) { 
+    if (is_seurat_object(sc.data)) { 
         if (length(which(rownames(PreMeta) %in% 
-                         rownames(sc[[]])))/length(rownames(sc[[]])) < 0.01) {
+                         rownames(sc.data[[]])))/length(rownames(sc.data[[]])) < 0.01) {
           warning(.warn_str)
         }
         col.name <- names(PreMeta) %||% colnames(PreMeta)
-        sc[[col.name]] <- PreMeta
+        sc.data[[col.name]] <- PreMeta
     } else {
-      rownames <- rownames(colData(sc))
+      rownames <- rownames(colData(sc.data))
       if (length(which(rownames(PreMeta) %in% 
                        rownames))/length(rownames) < 0.01) {
         warning(.warn_str) }
-      colData(sc) <- cbind(colData(sc), PreMeta[rownames,])[, union(colnames(colData(sc)),  colnames(PreMeta))]
-      rownames(colData(sc)) <- rownames  
+      colData(sc.data) <- cbind(colData(sc.data), PreMeta[rownames,])[, union(colnames(colData(sc.data)),  colnames(PreMeta))]
+      rownames(colData(sc.data)) <- rownames  
     }
-    if (filterNA) { sc <- .filteringNA(sc) }
-    sc$cloneSize <- factor(sc$cloneSize, levels = rev(names(cloneSize)))
+    if (filterNA) { sc.data <- .filteringNA(sc.data) }
+    sc.data$cloneSize <- factor(sc.data$cloneSize, levels = rev(names(cloneSize)))
     
-    if(is_seurat_object(sc)) {
-        sc@commands[["combineExpression"]] <- make_screp_seurat_cmd(
-            call_time, sc@active.assay
+    if(is_seurat_object(sc.data)) {
+        sc.data@commands[["combineExpression"]] <- make_screp_seurat_cmd(
+            call_time, sc.data@active.assay
         )
     }
-    sc
+    return(sc.data)
 } 
 
 
-.warn_str <- "< 1% of barcodes match: Ensure the barcodes in 
-        the Seurat object match the barcodes in the combined immune receptor
-        list from scRepertoire - most common issue is the addition of the 
-        prefixes corresponding to 'samples' and 'ID' in the combineTCR/BCR() 
-        functions"
+.warn_str <- "< 1% of barcodes match: Ensure the barcodes in the single-cell object match the barcodes in the combined immune receptor output from scRepertoire. If getting this error, please check https://www.borch.dev/uploads/screpertoire/articles/faq."
+
 
 
 
