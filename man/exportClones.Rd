@@ -6,6 +6,7 @@
 \usage{
 exportClones(
   input.data,
+  format = "paired",
   group.by = NULL,
   write.file = TRUE,
   dir = NULL,
@@ -15,6 +16,8 @@ exportClones(
 \arguments{
 \item{input.data}{The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
 \code{\link{combineExpression}}.}
+
+\item{format}{The format to export the clones - "paired", "airr", or "TCRMatch".}
 
 \item{group.by}{The variable to use for grouping.}
 
@@ -29,7 +32,10 @@ CSV file of the paired sequences.
 }
 \description{
 This function saves a csv file of clonotypes (genes, amino acid, and nucleotide sequences)
-by barcodes.
+by barcodes. \strong{format} determines the structure of the csv file - \emph{paired} will
+export sequences by barcodes and include multiple chians, \emph{airr} will export a data 
+frame that is consistent with the AIRR format, and \emph{TCRMatch} will 
+export a data frame that has the TRB chain with count information.
 }
 \examples{
 \dontrun{
@@ -37,7 +43,8 @@ by barcodes.
 combined <- combineTCR(contig_list, 
                         samples = c("P17B", "P17L", "P18B", "P18L", 
                                     "P19B","P19L", "P20B", "P20L"))
-exportClones(combined)
+exportClones(combined, 
+             format = "paired")
 }
                                    
 }

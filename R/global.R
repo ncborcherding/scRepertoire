@@ -39,5 +39,8 @@
     utils::globalVariables ("Var2")
     utils::globalVariables ("variable")
     utils::globalVariables ("weights")
+    utils::globalVariables ("group.by")
+    utils::globalVariables ("group")
+    utils::globalVariables ("chain2_aa")
     invisible ()
 }

@@ -23,6 +23,10 @@ both c(\code{\link{combineTCR}}, \code{\link{combineBCR}}).}
 
 \item{sc.data}{The Seurat or Single-Cell Experiment (SCE) object to attach}
 
+\item{cloneCall}{How to call the clonotype - VDJC gene (gene), 
+CDR3 nucleotide (nt), CDR3 amino acid (aa),
+VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data.}
+
 \item{chain}{indicate if both or a specific chain should be used - 
 e.g. "both", "TRA", "TRG", "IGH", "IGL"}
 
@@ -43,10 +47,6 @@ on frequency, the upper limit of *cloneSizes* will be automatically amended.}
 \item{addLabel}{This will add a label to the frequency header, allowing
 the user to try multiple group.by variables or recalculate frequencies after 
 subsetting the data.}
-
-\item{cloneCallHow}{to call the clonotype - VDJC gene (gene), 
-CDR3 nucleotide (nt), CDR3 amino acid (aa),
-VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data.}
 }
 \value{
 Single-cell object with clonotype information added to meta data
