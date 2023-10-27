@@ -583,7 +583,7 @@ is_df_or_list_of_df <- function(x) {
   if (nrow(edge.list) > 0) { 
     edge.list <- unique(edge.list)
     g <- graph_from_data_frame(edge.list)
-    components <- components(g, mode = c("weak"))
+    components <- igraph::components(g, mode = c("weak"))
     out <- data.frame("cluster" = components$membership, 
                       "filtered" = names(components$membership))
     filter <- which(table(out$cluster) > 1)

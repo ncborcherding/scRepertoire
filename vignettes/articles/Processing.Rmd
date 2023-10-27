@@ -51,8 +51,8 @@ What if there are more variables to add than just sample and ID? We can add them
 
 ```{r}
 combined.TCR <- addVariable(combined.TCR, 
-                        variable.name = "Type", 
-                        variables = rep(c("B", "L"), 4))
+                            variable.name = "Type", 
+                            variables = rep(c("B", "L"), 4))
 
 head(combined.TCR[[1]])
 ```
