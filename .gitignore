@@ -6,3 +6,4 @@ local_tests.R
 .RData
 docs
 vignettes/articles/scRep_example_full.rds
+.vscode

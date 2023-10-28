@@ -40,7 +40,7 @@ percentKmer <- function(df,
   cloneCall <- .theCall(cloneCall)
   sco <- is_seurat_object(df) | is_se_object(df)
   df <- .data.wrangle(df, group.by, cloneCall, chain)
-  if(!is.null(group.by) & !sco) {
+  if(!is.null(group.by) && !sco) {
     df <- .groupList(df, group.by)
   }
   #Determining the function to generate motifs
@@ -55,18 +55,25 @@ percentKmer <- function(df,
   rownames(mat) <- names(df)
   
   #Looping through the counts of motifs
-  for(i in seq_along(df)) {
-    df[[i]][,cloneCall][which(df[[i]][,cloneCall] == "NA")] <- NA
-    df[[i]] <- df[[i]][!is.na(df[[i]][,cloneCall]),]
+  for (i in seq_along(df)) {
+    df[[i]][,cloneCall][which(df[[i]][, cloneCall] == "NA")] <- NA
+    df[[i]] <- df[[i]][!is.na(df[[i]][, cloneCall]),]
+
+    # if (identical(cloneCall, "CTnt")) {
+    #   mat[i, ] <- rcppGetNtKmerPercent(df[[i]][, cloneCall], motif.length)
+    #   next
+    # }
+
     motifs <- .tokenize_multiple_sequences(df[[i]][,cloneCall], motif.length)
     motif.table <- table(unlist(motifs))
     if(any(grepl("\\;", names(motif.table)))) {
       motif.table <- motif.table[!grepl("\\;", names(motif.table))]
     }
     mat.pos <- match(names(motif.table), colnames(mat))
-    mat[i,mat.pos] <- as.vector(motif.table)
-    mat[i,] <- mat[i,]/sum(na.omit(mat[i,]))
+    mat[i, mat.pos] <- as.vector(motif.table)
+    mat[i, ] <- mat[i, ] / sum(na.omit(mat[i, ]))
   }
+
   #Removing any column that is all NAs
   if(any(colSums(is.na(mat)) == length(df))) {
     mat <- mat[,-which(colSums(is.na(mat)) == length(df))]
@@ -77,28 +84,28 @@ percentKmer <- function(df,
   if(!is.null(top.motifs)) {
     mads <- apply(mat, 2, mad)
     motifs.to.save <- names(sort(mads, decreasing = TRUE))[seq_len(top.motifs)]
-    mat <- mat[,colnames(mat) %in% motifs.to.save]
+    mat <- mat[, colnames(mat) %in% motifs.to.save]
   }
+
   #Getting mat into a ggplot-compliant form
   mat_melt <- melt(mat)
   if (!is.null(motifs.to.save)) {
     mat_melt$Var2 <- factor(mat_melt$Var2, levels = rev(motifs.to.save))
   }
   
-  #Plotting
-  plot <- ggplot(mat_melt, aes(x=Var2, y = Var1, fill=value)) +
-            geom_tile(lwd= 0.1, color = "black") +
-            scale_fill_gradientn(name = "Percentage", colors = .colorizer(palette,21)) +
-            theme_classic() + 
-            coord_flip() + 
-            theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1), 
-                  axis.title = element_blank())
-  if (exportTable == TRUE) { 
-    return(mat) 
+  if (exportTable) {
+    return(mat)
   }
-  return(plot)
-}
 
+  #Plotting
+  ggplot(mat_melt, aes(x=Var2, y = Var1, fill=value)) +
+    geom_tile(lwd= 0.1, color = "black") + 
+    scale_fill_gradientn(name = "Percentage", colors = .colorizer(palette,21)) +
+    theme_classic() + 
+    coord_flip() + 
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
+          axis.title = element_blank())
+}
 
 .generate_unique_aa_motifs <- function(motif_length) {
   amino_acids <- c("A", "C", "D", "E", "F", "G", "H", "I", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "V", "W", "Y")
@@ -108,10 +115,7 @@ percentKmer <- function(df,
 }
 
 .generate_unique_nt_motifs <- function(motif_length) {
-  nt <- c("A", "T", "C", "G")
-  all_motifs <- expand.grid(replicate(motif_length, nt, simplify = FALSE))
-  unique_motifs <- unique(apply(all_motifs, 1, paste, collapse = ""))
-  return(unique_motifs)
+  rcppGenerateUniqueNtMotifs(motif_length)
 }
 
 .tokenize_sequence <- function(sequence, motif_length) {
@@ -127,6 +131,5 @@ percentKmer <- function(df,
 }
 
 .tokenize_multiple_sequences <- function(sequences, motif_length) {
-  tokenized_sequences <- sapply(sequences, .tokenize_sequence, motif_length = motif_length)
-  return(tokenized_sequences)
+  sapply(sequences, .tokenize_sequence, motif_length = motif_length)
 }
