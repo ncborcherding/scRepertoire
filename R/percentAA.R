@@ -1,16 +1,18 @@
 #' Examining the relative amino acid composition by position
 #'
 #' This function the proportion of amino acids along the residues 
-#' of the cdr3 amino acid sequence.
+#' of the CDR3 amino acid sequence.
 #'
 #' @examples
 #' #Making combined contig data
 #' combined <- combineTCR(contig_list, 
 #'                         samples = c("P17B", "P17L", "P18B", "P18L", 
 #'                                     "P19B","P19L", "P20B", "P20L"))
-#' percentAA(combined, chain = "TRB", aa.length = 20)
+#' percentAA(combined, 
+#'           chain = "TRB", 
+#'           aa.length = 20)
   
-#' @param df The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
+#' @param input.data The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
 #'  \code{\link{combineExpression}}.
 #' @param chain "TRA", "TRB", "TRG", "TRG", "IGH", "IGL".
 #' @param group.by The variable to use for grouping.
@@ -22,22 +24,22 @@
 #' @export
 #' @concept Summarize_Repertoire
 #' @return ggplot of stacked bar graphs of amino acid proportions
-percentAA <- function(df, 
-                        chain = "TRB", 
-                        group.by = NULL, 
-                        aa.length = 20,
-                        exportTable = FALSE, 
-                        palette = "inferno")  {
+percentAA <- function(input.data, 
+                      chain = "TRB", 
+                      group.by = NULL, 
+                      aa.length = 20,
+                      exportTable = FALSE, 
+                      palette = "inferno")  {
   
-  sco <- is_seurat_object(df) | is_se_object(df)
-  df <- .data.wrangle(df, group.by, "CTaa", chain)
+  sco <- is_seurat_object(input.data) | is_se_object(input.data)
+  input.data <- .data.wrangle(input.data, group.by, "CTaa", chain)
   if(!is.null(group.by) & !sco) {
-    df <- .groupList(df, group.by)
+    input.data <- .groupList(input.data, group.by)
   }
   
   res.list <- list()
-  for (i in seq_along(df)) {
-    strings <- df[[i]][,"CTaa"]
+  for (i in seq_along(input.data)) {
+    strings <- input.data[[i]][,"CTaa"]
     strings <- do.call(c,str_split(strings, ";"))
     strings <- strings[strings != "NA"]
     strings <- strings[nchar(strings) < aa.length]
@@ -54,7 +56,7 @@ percentAA <- function(df,
     colnames(res) <- c("AA", paste0("pos.", seq_len(aa.length)))
     res[1:20,][is.na(res[1:20,])] <- 0
     melt.res <- suppressMessages(melt(res))
-    melt.res$group <- names(df)[i]
+    melt.res$group <- names(input.data)[i]
     res.list[[i]] <- melt.res
   }
   mat_melt <- do.call(rbind, res.list)

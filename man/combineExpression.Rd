@@ -5,11 +5,11 @@
 \title{Adding clonotype information to a single-cell object}
 \usage{
 combineExpression(
-  df,
-  sc,
+  input.data,
+  sc.data,
   cloneCall = "strict",
   chain = "both",
-  group.by = "none",
+  group.by = NULL,
   proportion = TRUE,
   filterNA = FALSE,
   cloneSize = c(Rare = 1e-04, Small = 0.001, Medium = 0.01, Large = 0.1, Hyperexpanded =
@@ -18,14 +18,10 @@ combineExpression(
 )
 }
 \arguments{
-\item{df}{The product of \code{\link{combineTCR}}, \code{\link{combineBCR}} or a list of 
-both c(\code{\link{combineTCR}}, c\code{\link{combineBCR}})}
+\item{input.data}{The product of \code{\link{combineTCR}}, \code{\link{combineBCR}} or a list of 
+both c(\code{\link{combineTCR}}, \code{\link{combineBCR}}).}
 
-\item{sc}{The seurat or SingleCellExperiment (SCE) object to attach}
-
-\item{cloneCall}{How to call the clonotype - VDJC gene (gene), 
-CDR3 nucleotide (nt) CDR3 amino acid (aa), or 
-VDJC gene + CDR3 nucleotide (strict).}
+\item{sc.data}{The Seurat or Single-Cell Experiment (SCE) object to attach}
 
 \item{chain}{indicate if both or a specific chain should be used - 
 e.g. "both", "TRA", "TRG", "IGH", "IGL"}
@@ -47,17 +43,21 @@ on frequency, the upper limit of *cloneSizes* will be automatically amended.}
 \item{addLabel}{This will add a label to the frequency header, allowing
 the user to try multiple group.by variables or recalculate frequencies after 
 subsetting the data.}
+
+\item{cloneCallHow}{to call the clonotype - VDJC gene (gene), 
+CDR3 nucleotide (nt), CDR3 amino acid (aa),
+VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data.}
 }
 \value{
-seurat or SingleCellExperiment object with attached clonotype 
+Single-cell object with clonotype information added to meta data
 information
 }
 \description{
 This function adds the immune receptor information to the Seurat or 
 SCE object to the meta data. By default this function also calculates 
 the frequencies and proportion of the clonotypes by sequencing 
-run (**group.by** = "none"). To change how the frequencies/proportions
-are calculated, select a column header for the **group.by** variable. 
+run (\strong{group.by} = NULL). To change how the frequencies/proportions
+are calculated, select a column header for the \strong{group.by} variable. 
 Importantly, before using \code{\link{combineExpression}} ensure the 
 barcodes of the single-cell object object match the barcodes in the output 
 of the \code{\link{combineTCR}} or \code{\link{combineBCR}}.
@@ -70,11 +70,9 @@ combined <- combineTCR(contig_list,
 
 #Getting a sample of a Seurat object
 scRep_example <- get(data("scRep_example"))
-sce <- suppressMessages(Seurat::UpdateSeuratObject(scRep_example))
-sce <- Seurat::as.SingleCellExperiment(sce)
 
 #Using combineExpresion()
-sce <- combineExpression(combined, sce)
+scRep_example <- combineExpression(combined, scRep_example)
 
 }
 \concept{SC_Functions}

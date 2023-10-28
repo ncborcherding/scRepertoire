@@ -8,24 +8,26 @@
 #'
 #' @examples
 #' combined <- combineTCR(contig_list, 
-#'                         samples = c("P17B", "P17L", "P18B", "P18L", 
+#'                        samples = c("P17B", "P17L", "P18B", "P18L", 
 #'                                     "P19B","P19L", "P20B", "P20L"))
 #' combined <- addVariable(combined, 
-#'                        name = "Type", 
-#'                        variables = rep(c("B", "L"), 4))
+#'                         variable.name = "Type", 
+#'                         variables = rep(c("B", "L"), 4))
 #'
-#' @param df The product of \code{\link{combineTCR}} or \code{\link{combineBCR}}.
-#' @param name The column header to add.
+#' @param input.data The product of \code{\link{combineTCR}} or \code{\link{combineBCR}}.
+#' @param variable.name The column header to add.
 #' @param variables The exact values to add to each element of the list.
 #' @export
 #' @concept Loading_and_Processing_Contigs
-#' @return list of contigs with a new column (name).
-addVariable <- function(df, name = NULL, variables =  NULL) {
-  if (length(df) != length(variables)) {
+#' @return input.data list with the variable column added to each element.
+addVariable <- function(input.data, 
+                        variable.name = NULL, 
+                        variables =  NULL) {
+  if (length(input.data) != length(variables)) {
     stop("Make sure the variables match the length of the contig list")
   }
-  for (i in seq_along(df)) {
-    df[[i]][,name] <- variables[i]
+  for (i in seq_along(input.data)) {
+    input.data[[i]][,variable.name] <- variables[i]
   }
-  return(df)
+  return(input.data)
 }

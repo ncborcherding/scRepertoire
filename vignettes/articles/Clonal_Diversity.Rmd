@@ -1,11 +1,11 @@
 ---
-title: "Comparing Clonal Diversity"
+title: "Comparing Clonal Diversity and Overlap"
 date: 'Compiled: `r format(Sys.Date(), "%B %d, %Y")`'
 output: rmarkdown::html_vignette
 theme: united
 df_print: kable
 vignette: >
-  %\VignetteIndexEntry{Comparing Clonal Diversity}
+  %\VignetteIndexEntry{Comparing Clonal Diversity and Overlap}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -73,6 +73,59 @@ clonalDiversity(combined.TCR,
                 cloneCall = "gene", 
                 n.boots = 20)
 ```
+## clonaRarefaction
+
+We can also use Hill numbers to estimate the rarefaction, or estimating species richness, using the the abundance of clones across groupings. Underlying the rarefaction calculation is the use of observed receptor of abundance to compute diversity. 
+
+**hill.numbers** 
++ 0 - species-richness  
++ 1 - Shannon  
++ 2 - Simpson  
+
+**plot.type**  
++ 1 - sample-size-based rarefaction/extrapolation  
++ 2 - sample completeness curve  
++ 3 - coverage-based rarefaction/extrapolation curve  
+
+This relies on the [iNEXT](https://cran.r-project.org/web/packages/iNEXT/index.html) with the accompanying [manuscript](http://chao.stat.nthu.edu.tw/wordpress/paper/120_pdf_appendix.pdf). Like the other wrapping functions in scRepetoire, please cite the original work. 
+
+### Rarefaction using Shannon Diversity (q = 0)
+
+```{r, message=FALSE}
+clonalRarefaction(combined.TCR,
+                  plot.type = 1,
+                  hill.numbers = 0,
+                  n.boots = 2)
+
+clonalRarefaction(combined.TCR,
+                  plot.type = 2,
+                  hill.numbers = 0,
+                  n.boots = 2)
+
+clonalRarefaction(combined.TCR,
+                  plot.type = 3,
+                  hill.numbers = 0,
+                  n.boots = 2)
+```
+
+### Rarefaction using Shannon Diversity (q = 1)
+
+```{r}
+clonalRarefaction(combined.TCR,
+                  plot.type = 1,
+                  hill.numbers = 1,
+                  n.boots = 2)
+
+clonalRarefaction(combined.TCR,
+                  plot.type = 2,
+                  hill.numbers = 1,
+                  n.boots = 2)
+
+clonalRarefaction(combined.TCR,
+                  plot.type = 3,
+                  hill.numbers = 1,
+                  n.boots = 2)
+```
 
 ## clonalSizeDistribution
 
@@ -89,28 +142,6 @@ clonalSizeDistribution(combined.TCR,
 ## clonalOverlap
 
 If you are interested in measures of similarity between the samples loaded into scRepertoire, using `clonalOverlap()` can assist in the visualization. 
-
-The methods for calculating overlap are described below:
-
-Overlap Coefficient: 
-\deqn{overlap = \frac{\sum \min(a_i, b_i)}{\min(\sum a_i, \sum b_i)}}
-
-Raw Count Overlap:
-\deqn{raw = \sum \min(a_i, b_i)}
-
-Morisita Index:
-\deqn{morisita = \frac{\sum a_i b_i}{(\sum a_i)(\sum b_i)}}
-
-Jaccard Index:
-\deqn{jaccard = \frac{\sum \min(a_i, b_i)}{\sum a_i + \sum b_i - \sum \min(a_i, b_i)}}
-
-Cosine Similarity:
-\deqn{cosine = \frac{\sum a_i b_i}{\sqrt{(\sum a_i^2)(\sum b_i^2)}}}
-
-Where:
-\itemize{
-\item{\eqn{a_i} and \eqn{b_i} are the abundances of species \eqn{i} in groups A and B, respectively.}
-}
 
 ```{r}
 clonalOverlap(combined.TCR, 

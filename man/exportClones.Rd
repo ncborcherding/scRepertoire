@@ -5,7 +5,7 @@
 \title{Exporting clonotypes}
 \usage{
 exportClones(
-  df,
+  input.data,
   group.by = NULL,
   write.file = TRUE,
   dir = NULL,
@@ -13,19 +13,19 @@ exportClones(
 )
 }
 \arguments{
-\item{df}{The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
+\item{input.data}{The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
 \code{\link{combineExpression}}.}
 
 \item{group.by}{The variable to use for grouping.}
 
-\item{write.file}{TRUE, save the file, FALSE, return a data.frame}
+\item{write.file}{\strong{TRUE}, save the file or \strong{FALSE}, return a data.frame}
 
 \item{dir}{directory location to save the csv}
 
 \item{file.name}{the csv file name}
 }
 \value{
-ggplot of percentage of V and J gene pairings as a heatmap
+CSV file of the paired sequences.
 }
 \description{
 This function saves a csv file of clonotypes (genes, amino acid, and nucleotide sequences)

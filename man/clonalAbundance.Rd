@@ -5,7 +5,7 @@
 \title{Demonstrate the relative abundance of clonotypes by group or sample.}
 \usage{
 clonalAbundance(
-  df,
+  input.data,
   cloneCall = "strict",
   chain = "both",
   scale = FALSE,
@@ -16,12 +16,12 @@ clonalAbundance(
 )
 }
 \arguments{
-\item{df}{The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
+\item{input.data}{The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
 \code{\link{combineExpression}}.}
 
 \item{cloneCall}{How to call the clonotype - VDJC gene (gene), 
-CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
-VDJC gene + CDR3 nucleotide (strict).}
+CDR3 nucleotide (nt), CDR3 amino acid (aa),
+VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data.}
 
 \item{chain}{indicate if both or a specific chain should be used - 
 e.g. "both", "TRA", "TRG", "IGH", "IGL"}
@@ -43,19 +43,21 @@ ggplot of the total or relative abundance of clonotypes
 across quanta
 }
 \description{
-Displays the number of clonotypes at specific requencies by sample 
+Displays the number of clonotypes at specific Frequencies by sample 
 or group. Visualization can either be a line graph using
-calculated numbers or if scale = TRUE, the output will be a 
+calculated numbers or if \strong{scale} = TRUE, the output will be a 
 density plot. Multiple sequencing runs can be group together 
 using the group parameter. If a matrix output for the data is 
-preferred, set exportTable = TRUE.
+preferred, set \strong{exportTable} = TRUE.
 }
 \examples{
 #Making combined contig data
 combined <- combineTCR(contig_list, 
                         samples = c("P17B", "P17L", "P18B", "P18L", 
                                     "P19B","P19L", "P20B", "P20L"))
-clonalAbundance(combined, cloneCall = "gene", scale = FALSE)
+clonalAbundance(combined, 
+                cloneCall = "gene", 
+                scale = FALSE)
 
 }
 \concept{Visualizing_Clones}

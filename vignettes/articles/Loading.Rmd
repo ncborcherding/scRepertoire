@@ -74,7 +74,7 @@ Beyond the default 10x Genomic Cell Ranger pipeline outputs, scRepertoire suppor
 ```{r, eval=FALSE}
 #Directory example
 contig.output <- c("~/Documents/MyExperiment")
-contig.list <- loadContigs(dir = contig.output, 
+contig.list <- loadContigs(input = contig.output, 
                            format = "TRUST4")
 
 #List of data frames example
@@ -84,7 +84,7 @@ S3 <- read.csv("~/Documents/MyExperiment/Sample3/outs/barcode_results.csv")
 S4 <- read.csv("~/Documents/MyExperiment/Sample4/outs/barcode_results.csv")
 
 contig_list <- list(S1, S2, S3, S4)
-contig.list <- loadContigs(dir = contig.output, 
+contig.list <- loadContigs(input = contig.output, 
                            format = "WAT3R")
 ```
 
@@ -97,7 +97,9 @@ This function depends on the match of barcodes between the single-cell object an
 ```{r, eval = F}
 contigs <- read.csv(".../outs/filtered_contig_annotations.csv")
 
-contig.list <- createHTOContigList(contigs, Seurat.Obj, group.by = "HTO_maxID")
+contig.list <- createHTOContigList(contigs, 
+                                   Seurat.Obj, 
+                                   group.by = "HTO_maxID")
 ```
 
 ## Example Data in scRepertoire

@@ -5,7 +5,7 @@
 \title{Combining the list of T cell receptor contigs into clonotypes}
 \usage{
 combineTCR(
-  df,
+  input.data,
   samples = NULL,
   ID = NULL,
   removeNA = FALSE,
@@ -14,7 +14,7 @@ combineTCR(
 )
 }
 \arguments{
-\item{df}{List of filtered contig annotations or outputs from \code{\link{loadContigs}}}
+\item{input.data}{List of filtered contig annotations or outputs from \code{\link{loadContigs}}}
 
 \item{samples}{The labels of samples}
 
@@ -36,8 +36,8 @@ the level of  the individual cell barcodes. Using the samples and ID
 parameters, the function will add the strings as prefixes to prevent issues
 with repeated  barcodes. The resulting new barcodes will need to match the
 Seurat or SCE object in order to use, \code{\link{combineExpression}}.
-Several levels of filtering exist - `removeNA`, `removeMulti`, or
-`filterMulti` are parameters that control how  the function  deals with
+Several levels of filtering exist - \emph{removeNA}, \emph{removeMulti}, or
+\emph{filterMulti} are parameters that control how the function deals with
 barcodes with multiple chains recovered.
 }
 \examples{

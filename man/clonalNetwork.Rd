@@ -5,7 +5,7 @@
 \title{Visualize clonal network along reduced dimensions}
 \usage{
 clonalNetwork(
-  sc,
+  sc.data,
   reduction = "umap",
   group.by = "ident",
   filter.clones = NULL,
@@ -20,7 +20,7 @@ clonalNetwork(
 )
 }
 \arguments{
-\item{sc}{The single-cell object after \code{\link{combineExpression}}.}
+\item{sc.data}{The single-cell object after \code{\link{combineExpression}}.}
 
 \item{reduction}{The name of the dimensional reduction of the single-cell object.}
 
@@ -37,8 +37,8 @@ n of clones based on the minimum number of all the comparators (filter.clone = "
 allowing for cleaner visualization.}
 
 \item{cloneCall}{How to call the clonotype - VDJC gene (gene), 
-CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
-VDJC gene + CDR3 nucleotide (strict).}
+CDR3 nucleotide (nt), CDR3 amino acid (aa),
+VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data.}
 
 \item{chain}{indicate if both or a specific chain should be used - 
 e.g. "both", "TRA", "TRG", "IGH", "IGL".}

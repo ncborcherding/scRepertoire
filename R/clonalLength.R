@@ -4,7 +4,7 @@
 #' acid (aa) sequence length. The sequence length visualized can be 
 #' selected using the chains parameter, either the combined clonotype 
 #' (both chains) or across all single chains. Visualization can either 
-#' be a histogram or if scale = TRUE, the output will be a density plot. 
+#' be a histogram or if \strong{scale} = TRUE, the output will be a density plot. 
 #' Multiple sequencing runs can be group together using the 
 #' group parameter.
 #'
@@ -15,7 +15,7 @@
 #'                                     "P19B","P19L", "P20B", "P20L"))
 #' clonalLength(combined, cloneCall="aa", chain = "both")
 #'
-#' @param df The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
+#' @param input.data The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
 #'  \code{\link{combineExpression}}.
 #' @param cloneCall How to call the clonotype - CDR3 nucleotide (nt), 
 #' CDR3 amino acid (aa).
@@ -33,7 +33,7 @@
 #' @concept Visualizing_Clones
 #' @return ggplot of the discrete or relative length distributions of 
 #' clonotype sequences
-clonalLength <- function(df, 
+clonalLength <- function(input.data, 
                          cloneCall = "aa", 
                          chain = "both", 
                          group.by = NULL, 
@@ -42,23 +42,28 @@ clonalLength <- function(df,
                          exportTable = FALSE, 
                          palette = "inferno") {
   
-  cloneCall <- .theCall(cloneCall)
-  df <- .list.input.return(df, group.by)
+
+  
+  input.data <- .data.wrangle(input.data, 
+                              group.by, 
+                              .theCall(input.data, cloneCall, check.df = FALSE), 
+                              chain)
+  cloneCall <- .theCall(input.data, cloneCall)
   
   #Sorting out graphing parameters
   xlab <- "Length"
   if(cloneCall == "CTnt") { 
-      ylab <- "CDR3 (NT)"
+    ylab <- "CDR3 (NT)"
   } else if (cloneCall == "CTaa") { 
-      ylab <- "CDR3 (AA)"
+    ylab <- "CDR3 (AA)"
   } else { 
     stop("Please make a selection of the type of
           CDR3 sequence to analyze by using `cloneCall`")
   }
   
   #Identifying and assigning chains
-  chain.pos <- which(colnames(df[[1]]) == "cdr3_aa1")-1
-  c1 <- na.omit(unique(substr(df[[1]][seq_len(10),chain.pos], 1,3)))
+  chain.pos <- which(colnames(input.data[[1]]) == "cdr3_aa1")-1
+  c1 <- na.omit(unique(substr(input.data[[1]][seq_len(10),chain.pos], 1,3)))
   c2 <- switch(c1,
                "TRA" = "TRB",
                "IGH"  = "IGL",
@@ -66,12 +71,12 @@ clonalLength <- function(df,
   
   #Calculating Length
   Con.df <- NULL
-  Con.df <- .lengthDF(df, cloneCall, chain, group.by, c1, c2)
+  Con.df <- .lengthDF(input.data, cloneCall, chain, group.by, c1, c2)
   
   if(is.null(group.by) & order) {
-    Con.df[,"values"] <- factor(Con.df[,"values"], levels = names(df))
+    Con.df[,"values"] <- factor(Con.df[,"values"], levels = names(input.data))
   }
-  names <- names(df)
+  names <- names(input.data)
   
   #Skip plotting if want to export table
   if (exportTable == TRUE) { 
@@ -101,7 +106,7 @@ clonalLength <- function(df,
       fill <- "Samples"
       col <- length(unique(Con.df$values))
       if (scale == TRUE) { 
-        yplus <- "Percent of "
+        yplus <- "Density of "
         plot <- ggplot(Con.df, aes(x = length, 
                                    y = (after_stat(count))/sum(after_stat(count))*100, 
                                    fill=values)) + 

@@ -5,7 +5,7 @@
 \title{Examining the V or J gene usage across groupings}
 \usage{
 percentVJ(
-  df,
+  input.data,
   chain = "TRB",
   group.by = NULL,
   exportTable = FALSE,
@@ -13,7 +13,7 @@ percentVJ(
 )
 }
 \arguments{
-\item{df}{The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
+\item{input.data}{The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
 \code{\link{combineExpression}}.}
 
 \item{chain}{"TRA", "TRB", "TRG", "TRG", "IGH", "IGL"}

@@ -5,7 +5,7 @@
 \title{Hierarchical clustering of clones using Gamma-GPD spliced threshold model}
 \usage{
 clonalSizeDistribution(
-  df,
+  input.data,
   cloneCall = "strict",
   chain = "both",
   method = "ward.D2",
@@ -16,7 +16,7 @@ clonalSizeDistribution(
 )
 }
 \arguments{
-\item{df}{The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
+\item{input.data}{The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
 \code{\link{combineExpression}}.}
 
 \item{cloneCall}{How to call the clonotype - VDJC gene (gene),
@@ -47,7 +47,7 @@ model. If using this model please read and cite
 \href{https://pubmed.ncbi.nlm.nih.gov/30485278/}{PMID: 30485278}.
 }
 \details{
-The probability density function (pdf) for the Generalized Pareto Distribution (GPD) is given by:
+The probability density function (pdf) for the \strong{Generalized Pareto Distribution (GPD)} is given by:
 \deqn{f(x|\mu, \sigma, \xi) = \frac{1}{\sigma} \left(1 + \xi \left( \frac{x - \mu}{\sigma} \right) \right)^{-\left( \frac{1}{\xi} + 1 \right)}}{
 f(x|mu, sigma, xi) = 1/sigma * (1 + xi * ((x - mu)/sigma))^(-1/xi - 1)
 }
@@ -60,7 +60,7 @@ Where:
   \item{\eqn{x \ge \mu} if \eqn{\xi \ge 0} and \eqn{\mu \le x \le \mu - \sigma/\xi} if \eqn{\xi < 0}}
 }
               
-The probability density function (pdf) for the Gamma Distribution is given by:
+The probability density function (pdf) for the \strong{Gamma Distribution} is given by:
 \deqn{f(x|\alpha, \beta) = \frac{x^{\alpha-1} e^{-x/\beta}}{\beta^\alpha \Gamma(\alpha)}}{
 f(x|alpha, beta) = (x^(alpha-1) * exp(-x/beta)) / (beta^alpha * Gamma(alpha))
 }

@@ -5,7 +5,7 @@
 \title{Startrac-based diversity indices for single-cell RNA-seq}
 \usage{
 StartracDiversity(
-  sc,
+  sc.data,
   cloneCall = "strict",
   chain = "both",
   type = NULL,
@@ -15,13 +15,13 @@ StartracDiversity(
 )
 }
 \arguments{
-\item{sc}{The seurat or SCE object to visualize after combineExpression(). 
+\item{sc.data}{The single-cell object after \code{\link{combineExpression}}.
 For SCE objects, the cluster variable must be in the meta data under 
 "cluster".}
 
 \item{cloneCall}{How to call the clonotype - VDJC gene (gene), 
-CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
-VDJC gene + CDR3 nucleotide (strict).}
+CDR3 nucleotide (nt), CDR3 amino acid (aa),
+VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data.}
 
 \item{chain}{indicate if both or a specific chain should be used - 
 e.g. "both", "TRA", "TRG", "IGH", "IGL".}
@@ -55,7 +55,7 @@ combined <- combineTCR(contig_list,
 
 #Getting a sample of a Seurat object
 scRep_example  <- get(data("scRep_example"))
-scRep_example  <- combineExpression(combined, scRep_example )
+scRep_example  <- combineExpression(combined, scRep_example)
 scRep_example$Patient <- substring(scRep_example$orig.ident,1,3)
 scRep_example$Type <- substring(scRep_example$orig.ident,4,4) 
 
@@ -63,7 +63,6 @@ scRep_example$Type <- substring(scRep_example$orig.ident,4,4)
 StartracDiversity(scRep_example, 
                   type = "Type", 
                   group.by = "Patient")
-
 
 }
 \author{

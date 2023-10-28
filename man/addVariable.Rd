@@ -4,17 +4,17 @@
 \alias{addVariable}
 \title{Adding variables after the combination of clonotypes.}
 \usage{
-addVariable(df, name = NULL, variables = NULL)
+addVariable(input.data, variable.name = NULL, variables = NULL)
 }
 \arguments{
-\item{df}{The product of \code{\link{combineTCR}} or \code{\link{combineBCR}}.}
+\item{input.data}{The product of \code{\link{combineTCR}} or \code{\link{combineBCR}}.}
 
-\item{name}{The column header to add.}
+\item{variable.name}{The column header to add.}
 
 \item{variables}{The exact values to add to each element of the list.}
 }
 \value{
-list of contigs with a new column (name).
+input.data list with the variable column added to each element.
 }
 \description{
 This function adds variables to the product of \code{\link{combineTCR}}, 
@@ -25,11 +25,11 @@ the length of the combined object.
 }
 \examples{
 combined <- combineTCR(contig_list, 
-                        samples = c("P17B", "P17L", "P18B", "P18L", 
+                       samples = c("P17B", "P17L", "P18B", "P18L", 
                                     "P19B","P19L", "P20B", "P20L"))
 combined <- addVariable(combined, 
-                       name = "Type", 
-                       variables = rep(c("B", "L"), 4))
+                        variable.name = "Type", 
+                        variables = rep(c("B", "L"), 4))
 
 }
 \concept{Loading_and_Processing_Contigs}

@@ -5,7 +5,7 @@
 \title{Examining the clonal space occupied by specific clonotypes}
 \usage{
 clonalProportion(
-  df,
+  input.data,
   clonalSplit = c(10, 100, 1000, 10000, 30000, 1e+05),
   cloneCall = "strict",
   chain = "both",
@@ -15,14 +15,14 @@ clonalProportion(
 )
 }
 \arguments{
-\item{df}{The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
+\item{input.data}{The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
 \code{\link{combineExpression}}.}
 
 \item{clonalSplit}{The cut points for the specific clonotypes.}
 
 \item{cloneCall}{How to call the clonotype - VDJC gene (gene), 
-CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
-VDJC gene + CDR3 nucleotide (strict).}
+CDR3 nucleotide (nt), CDR3 amino acid (aa),
+VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data.}
 
 \item{chain}{indicate if both or a specific chain should be used - 
 e.g. "both", "TRA", "TRG", "IGH", "IGL".}
@@ -40,7 +40,7 @@ ggplot of the space occupied by the specific rank of clonotypes
 \description{
 This function calculates the relative clonal space occupied by the 
 clonotypes. The grouping of these clonotypes is based on the parameter 
-**clonalSplit**, at default, **clonalSplit** will group the clonotypes 
+\strong{clonalSplit}, at default, \strong{clonalSplit} will group the clonotypes 
 into bins of 1:10, 11:100, 101:1001, etc. To adjust the clonotypes 
 selected, change the numbers in the variable split. If a matrix output 
 for the data is preferred, set exportTable = TRUE.

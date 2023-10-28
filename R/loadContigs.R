@@ -18,7 +18,6 @@
 #' }
 #' 
 #' @examples
-#' 
 #' TRUST4 <- read.csv("https://www.borch.dev/uploads/contigs/TRUST4_contigs.csv")
 #' contig.list <- loadContigs(TRUST4, format = "TRUST4")
 #' 
@@ -28,18 +27,18 @@
 #' WAT3R <- read.csv("https://www.borch.dev/uploads/contigs/WAT3R_contigs.csv")
 #' contig.list <- loadContigs(WAT3R, format = "WAT3R")
 #' 
-#' @param dir The directory in which contigs are located or a list with contig elements
+#' @param input The directory in which contigs are located or a list with contig elements
 #' @param format The format of the single-cell contig, currently supporting: 
 #' "10X", "AIRR", "BD", "JSON", "MiXCR", "Omniscope", "TRUST4", and "WAT3R"
 #' @importFrom utils read.csv read.delim
 #' @importFrom rjson fromJSON
 #' @export
 #' @concept Loading_and_Processing_Contigs
-#' @return List of contigs for further processing in scRepertoire
-loadContigs <- function(dir, 
+#' @return List of contigs for compatibility  with \code{\link{combineTCR}} or \code{\link{combineBCR}}
+loadContigs <- function(input, 
                         format = "10X") {
   #Loading from directory, recursively
-  if (inherits(x=dir, what ="character")) {
+  if (inherits(x=input, what ="character")) {
     format.list <- list("WAT3R" = "barcode_results.csv", 
                         "10X" =  "filtered_contig_annotation.csv", 
                         "AIRR" = "airr_rearrangement.tsv", 
@@ -49,7 +48,7 @@ loadContigs <- function(dir,
                         "BD" = "Contigs_AIRR.tsv",
                         "Omniscope" =c("_OSB.csv", "_OST.csv"))
         file.pattern <- format.list[[format]]
-        contig.files <- list.files(dir, paste0(file.pattern, collapse = "|"), recursive = TRUE, full.names = TRUE)
+        contig.files <- list.files(input, paste0(file.pattern, collapse = "|"), recursive = TRUE, full.names = TRUE)
         
         if (format %in% c("10X", "WAT3R", "Omniscope")) {
           df <- lapply(contig.files, read.csv) 
@@ -61,8 +60,8 @@ loadContigs <- function(dir,
           df <- lapply(contig.files, read.delim)
         }
   #Already loaded list or data frame
-  } else if (inherits(x=dir, what ="list") | inherits(x=dir, what ="data.frame")) {
-    df <- .checkList(dir)
+  } else if (inherits(x=input, what ="list") | inherits(x=input, what ="data.frame")) {
+    df <- .checkList(input)
   }
   
   loadFunc <- switch(format,

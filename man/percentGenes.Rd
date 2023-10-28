@@ -5,7 +5,7 @@
 \title{Examining the V or J gene usage across groupings}
 \usage{
 percentGenes(
-  df,
+  input.data,
   chain = "TRB",
   gene = "Vgene",
   group.by = NULL,
@@ -14,7 +14,7 @@ percentGenes(
 )
 }
 \arguments{
-\item{df}{The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
+\item{input.data}{The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
 \code{\link{combineExpression}}.}
 
 \item{chain}{"TRA", "TRB", "TRG", "TRG", "IGH", "IGL".}
@@ -39,7 +39,9 @@ grouping variables
 combined <- combineTCR(contig_list, 
                         samples = c("P17B", "P17L", "P18B", "P18L", 
                                     "P19B","P19L", "P20B", "P20L"))
-percentGenes(combined, chain = "TRB", gene = "Vgene")
+percentGenes(combined, 
+             chain = "TRB", 
+             gene = "Vgene")
 
 }
 \concept{Summarize_Repertoire}

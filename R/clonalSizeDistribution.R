@@ -6,7 +6,7 @@
 #' \href{https://pubmed.ncbi.nlm.nih.gov/30485278/}{PMID: 30485278}.
 #' 
 #' @details
-#' The probability density function (pdf) for the Generalized Pareto Distribution (GPD) is given by:
+#' The probability density function (pdf) for the \strong{Generalized Pareto Distribution (GPD)} is given by:
 #' \deqn{f(x|\mu, \sigma, \xi) = \frac{1}{\sigma} \left(1 + \xi \left( \frac{x - \mu}{\sigma} \right) \right)^{-\left( \frac{1}{\xi} + 1 \right)}}{
 #' f(x|mu, sigma, xi) = 1/sigma * (1 + xi * ((x - mu)/sigma))^(-1/xi - 1)
 #' }
@@ -19,7 +19,7 @@
 #'   \item{\eqn{x \ge \mu} if \eqn{\xi \ge 0} and \eqn{\mu \le x \le \mu - \sigma/\xi} if \eqn{\xi < 0}}
 #' }
 #'               
-#' The probability density function (pdf) for the Gamma Distribution is given by:
+#' The probability density function (pdf) for the \strong{Gamma Distribution} is given by:
 #' \deqn{f(x|\alpha, \beta) = \frac{x^{\alpha-1} e^{-x/\beta}}{\beta^\alpha \Gamma(\alpha)}}{
 #' f(x|alpha, beta) = (x^(alpha-1) * exp(-x/beta)) / (beta^alpha * Gamma(alpha))
 #' }
@@ -39,7 +39,7 @@
 #'                                     "P19B","P19L", "P20B", "P20L"))
 #' clonalSizeDistribution(combined, cloneCall = "strict", method="ward.D2")
 #'
-#' @param df The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
+#' @param input.data The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
 #'  \code{\link{combineExpression}}.
 #' @param cloneCall How to call the clonotype - VDJC gene (gene),
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
@@ -61,7 +61,7 @@
 #' @return ggplot dendrogram of the clone size distribution
 #' @author Hillary Koch
 
-clonalSizeDistribution <- function(df,
+clonalSizeDistribution <- function(input.data,
                                    cloneCall ="strict", 
                                    chain = "both", 
                                    method = "ward.D2", 
@@ -70,21 +70,24 @@ clonalSizeDistribution <- function(df,
                                    exportTable = FALSE, 
                                    palette = "inferno") {
   x <- xend <- yend <- mpg_div_hp <- NULL
-  cloneCall <- .theCall(cloneCall)
-  sco <- is_seurat_object(df) | is_se_object(df)
-  df <- .data.wrangle(df, group.by, "CTgene", chain)
+  input.data <- .data.wrangle(input.data, 
+                              group.by, 
+                              .theCall(input.data, cloneCall, check.df = FALSE), 
+                              chain)
+  cloneCall <- .theCall(input.data, cloneCall)
+  sco <- is_seurat_object(input.data) | is_se_object(input.data)
   if(!is.null(group.by) & !sco) {
-    df <- .groupList(df, group.by)
+    input.data <- .groupList(input.data, group.by)
   }
-  data <- bind_rows(df)
-  unique_df <- unique(data[,cloneCall])
+  data <- bind_rows(input.data)
+  unique_df<- unique(data[,cloneCall])
   
   #Forming data frame to store values
-  Con.df <- data.frame(matrix(NA, length(unique_df), length(df)))
+  Con.df <- data.frame(matrix(NA, length(unique_df), length(input.data)))
   Con.df <- data.frame(unique_df, Con.df, stringsAsFactors = FALSE)
   colnames(Con.df)[1] <- "clonotype"
-  for (i in seq_along(df)) {
-    data <- df[[i]]
+  for (i in seq_along(input.data)) {
+    data <- input.data[[i]]
     data <- data.frame(table(data[,cloneCall]), 
                        stringsAsFactors = FALSE)
     colnames(data) <- c(cloneCall, "Freq")
@@ -94,13 +97,13 @@ clonalSizeDistribution <- function(df,
       Con.df[y,i+1] <- data[location.y[1],"Freq"]
     }
   }
-  colnames(Con.df)[2:(length(df)+1)] <- names(df)
+  colnames(Con.df)[2:(length(input.data)+1)] <- names(input.data)
   Con.df[is.na(Con.df)] <- 0
   list <- list()
-  for (i in seq_along(df)) {
+  for (i in seq_along(input.data)) {
     list[[i]] <- suppressWarnings(.fdiscgammagpd(Con.df[,i+1], useq = threshold))
   }
-  names(list) <- names(df)
+  names(list) <- names(input.data)
   grid <- 0:10000
   distances <- .get_distances(list, grid, modelType="Spliced")
   mat_melt <- dendro_data(hclust(as.dist(distances), method = method), type = "rectangle")

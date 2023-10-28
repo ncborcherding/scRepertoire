@@ -1,4 +1,4 @@
-url: https://ncborcherding.github.io/scRepertoire/
+url: https://www.borch.dev/uploads/scRepertoire/
 Template:
   params:
     bootswatch: flatly
@@ -35,7 +35,7 @@ navbar:
       href: articles/Clonal_Dynamics.html
     - text: Summarizing Repertoires
       href: articles/Repertoire_Summary.html
-    - text: Clonal Diversity and Overlap
+    - text: Clonal Diversity, Rarefaction, and Overlap
       href: articles/Clonal_Diversity.html
     - text: Clustering Sequences by Edit Distance
       href: articles/Clonal_Cluster.html
@@ -85,14 +85,14 @@ reference:
   - clonalSizeDistribution
   - vizGenes
 - title: Summarizing Repertoire
-  desc: Functions to summarize clonal sequences across the repertoire
+  desc: Functions to summarize clonal sequences across the repertoire.
 - contents:
   - percentAA
   - percentGenes
   - percentKmer
   - percentVJ
 - title: Single-Cell Object Processing and Visualizations
-  desc: Functions to add or visualize clonal information along a single-cell object
+  desc: Functions to add or visualize clonal information along a single-cell object.
 - contents:
   - alluvialClones
   - clonalBias

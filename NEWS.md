@@ -21,13 +21,16 @@
 
 ## UNDERLYING CHANGES
 
+* .theCall now allows for a custom header/variable and checks the colnames. 
+* Replaced data arguments to be more descriptive: *df* is now *input.data*, *dir* is now *input*, and *sc* is now *sc.data*
+* Deep clean on the documentation for each function for increased consistency and explainability
 * startrac diversity metric re-implemented to remove startrac-class object intermediary
 * implemented powerTCR locally to reduce dependencies and continue support
 * Universalized underlying function language and intermediate variables
 * License change to MIT
 * group.by and split.by have been consolidated into single group.by parameter
 * Added support for .json, Omniscope, and MiXCR formats for ```loadContigs()```
-* Made GitHub.io webstie for support/vignettes/FAQ
+* Made GitHub.io website for support/vignettes/FAQ
 * Restructured NEWS Tracking
 
 ## DEPRECATED AND DEFUNCT

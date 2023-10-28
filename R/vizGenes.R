@@ -17,7 +17,7 @@
 #'          y.axis = NULL,
 #'          plot = "heatmap")
 #'
-#' @param df The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
+#' @param input.data The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
 #'  \code{\link{combineExpression}}.
 #' @param plot The type of plot to return - heatmap or barplot 
 #' @param x.axis Gene segments to separate the x-axis, such as "TRAV", "TRBD", "IGKJ".
@@ -37,7 +37,7 @@
 #' @concept Visualizing_Clones
 #' @return ggplot bar diagram or heatmap of gene usage
 
-vizGenes <- function(df, 
+vizGenes <- function(input.data, 
                      x.axis = "TRBV",
                      y.axis = NULL,
                      group.by = NULL, 
@@ -47,7 +47,7 @@ vizGenes <- function(df,
                      exportTable = FALSE,
                      palette = "inferno") {
   element.names <- NULL
-  sco <- is_seurat_object(df) | is_se_object(df)
+  sco <- is_seurat_object(input.data) | is_se_object(input.data)
   
   #Extracting group.by in case of null
   if(!grepl("TRA|TRB|TRG|TRD|IGH|IGL|IGK", y.axis) && !is.null(y.axis)) {
@@ -58,25 +58,25 @@ vizGenes <- function(df,
     group.by <- "ident"
   }
   
-  df <- .list.input.return(df, split.by = group.by)
+  input.data <- .list.input.return(input.data, split.by = group.by)
   if(!is.null(group.by) & !sco) {
-    df <- .groupList(df, group.by)
+    input.data <- .groupList(input.data, group.by)
   }
   
-  df <- .bound.input.return(df)
+  input.data <- .bound.input.return(input.data)
   #Parsing x.axis if gene used
-  if (x.axis %!in% colnames(df)) {
+  if (x.axis %!in% colnames(input.data)) {
     if (grepl("TRA|TRB|TRG|TRD|IGH|IGL|IGK", x.axis)) {
-      df <- .select.gene(df, x.axis, x.axis)
-      colnames(df)[ncol(df)] <- x.axis ######## Check if need this
+      input.data <- .select.gene(input.data, x.axis, x.axis)
+      colnames(input.data)[ncol(input.data)] <- x.axis ######## Check if need this
     }
   }
   
   #Parsing y.axis if gene used
-  if (any(y.axis %!in% colnames(df)) | !is.null(y.axis)) {
+  if (any(y.axis %!in% colnames(input.data)) | !is.null(y.axis)) {
     if (grepl("TRA|TRB|TRG|TRD|IGH|IGL|IGK", y.axis)) {
-      df <- .select.gene(df, y.axis, y.axis)
-      colnames(df)[ncol(df)] <- y.axis ######## Check if need this
+      input.data <- .select.gene(input.data, y.axis, y.axis)
+      colnames(input.data)[ncol(input.data)] <- y.axis ######## Check if need this
     } else {
       y.axis <- "element.names"
     }
@@ -85,13 +85,13 @@ vizGenes <- function(df,
   }
   
   #Filtering steps
-  df[df == "NA"] <- NA
-  df[df == ""] <- NA
-  if(!is.null(y.axis) & any(is.na(df[,c(y.axis)]))) {
-    df <- subset(df, !is.na(df[,c(y.axis)]))
+  input.data[input.data == "NA"] <- NA
+  input.data[input.data == ""] <- NA
+  if(!is.null(y.axis) & any(is.na(input.data[,c(y.axis)]))) {
+    input.data <- subset(input.data, !is.na(input.data[,c(y.axis)]))
   }
-  if(!is.null(x.axis) & any(is.na(df[,c(x.axis)]))) {
-    df <- subset(df, !is.na(df[,c(x.axis)]))
+  if(!is.null(x.axis) & any(is.na(input.data[,c(x.axis)]))) {
+    input.data <- subset(input.data, !is.na(input.data[,c(x.axis)]))
   }
   
   if (!scale) {
@@ -104,8 +104,8 @@ vizGenes <- function(df,
   
   #Calculating the summary values
   if (!is.null(y.axis) && y.axis != "element.names") {
-    mat <- df %>%
-      group_by(element.names, df[,x.axis], df[,y.axis]) %>%
+    mat <- input.data %>%
+      group_by(element.names, input.data[,x.axis], input.data[,y.axis]) %>%
       summarise(count = n()) %>%
       ungroup() %>%
       group_by(element.names) %>%
@@ -123,8 +123,8 @@ vizGenes <- function(df,
         as.data.frame() 
     
   } else {
-    mat <- df %>%
-      group_by(element.names, df[,x.axis]) %>%
+    mat <- input.data %>%
+      group_by(element.names, input.data[,x.axis]) %>%
       summarise(count = n()) %>%
       ungroup() %>%
       group_by(element.names) %>%
@@ -180,11 +180,6 @@ vizGenes <- function(df,
     return(mat) 
   }
   return(plot)
-  
-  #Need to test:
-  #Different chains - both heatmap and barplot
-  #grouped elements - both heatmap and barplot
-  
 }
 
 #Parsing the CTgene

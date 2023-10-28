@@ -5,7 +5,7 @@
 \title{Examining the relative composition of kmer motifs}
 \usage{
 percentKmer(
-  df,
+  input.data,
   chain = "TRB",
   cloneCall = "aa",
   group.by = NULL,
@@ -16,7 +16,7 @@ percentKmer(
 )
 }
 \arguments{
-\item{df}{The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
+\item{input.data}{The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
 \code{\link{combineExpression}}.}
 
 \item{chain}{"TRA", "TRB", "TRG", "TRG", "IGH", "IGL".}
@@ -47,6 +47,8 @@ in the CDR3 sequence.
 combined <- combineTCR(contig_list, 
                         samples = c("P17B", "P17L", "P18B", "P18L", 
                                     "P19B","P19L", "P20B", "P20L"))
-percentKmer(combined, chain = "TRB", motif.length = 3)
+percentKmer(combined, 
+            chain = "TRB", 
+            motif.length = 3)
 }
 \concept{Summarize_Repertoire}

@@ -4,7 +4,7 @@
 #' sequences of the CDR3 and V genes to cluster similar TCR/BCRs together. 
 #' As a default, the function takes the input from \code{\link{combineTCR}}, 
 #' \code{\link{combineBCR}} or \code{\link{combineExpression}} and amends a 
-#' cluster to the data frame or meta data. If **exportGraph** is set to TRUE, 
+#' cluster to the data frame or meta data. If \strong{exportGraph} is set to TRUE, 
 #' the function returns an igraph object of the connected sequences. 
 #' 
 #' @examples
@@ -15,7 +15,7 @@
 #' 
 #' sub_combined <- clonalCluster(combined[[2]], chain = "TRA", sequence = "aa")
 #' 
-#' @param df The product of \code{\link{combineTCR}}, \code{\link{combineBCR}} 
+#' @param input.data The product of \code{\link{combineTCR}}, \code{\link{combineBCR}} 
 #' or \code{\link{combineExpression}}.
 #' @param chain Indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL".
@@ -39,7 +39,7 @@
 #' @return Either amended input with edit-distanced clusters added 
 #' or igraph object of connect sequences
 
-clonalCluster <- function(df, 
+clonalCluster <- function(input.data, 
                           chain = "TRB", 
                           sequence = "aa",
                           samples = NULL,
@@ -51,16 +51,16 @@ clonalCluster <- function(df,
     stop("Please select an individual chain for clustering")
   }
   #Prepping any single-cell object
-  is.list <- inherits(df, "list")
-  if (inherits(x = df, what = c("Seurat", "SummarizedExperiment"))) {
-    dat <- .grabMeta(df)
+  is.list <- inherits(input.data, "list")
+  if (inherits(x = input.data, what = c("Seurat", "SummarizedExperiment"))) {
+    dat <- .grabMeta(input.data)
   } else {
-    dat <- df
+    dat <- input.data
   }
   dat <- .checkList(dat)
   dat <- .data.wrangle(dat, group.by, "CTgene", chain)
   
-  if (inherits(x = df, what = c("Seurat", "SummarizedExperiment"))) {
+  if (inherits(x = input.data, what = c("Seurat", "SummarizedExperiment"))) {
     for (y in seq_along(dat)) {
       cdr3_aa <- str_split(dat[[y]]$CTaa, "_", simplify = TRUE)
       cdr3_nt <- str_split(dat[[y]]$CTnt, "_", simplify = TRUE)
@@ -97,14 +97,14 @@ clonalCluster <- function(df,
     
     graph.variables <- bound %>%
                           group_by(bound[,ref2]) %>%
-                          summarize(sample_count = n(),
+                          dplyr::summarize(sample_count = n(),
                                     unique_samples = paste0(unique(group.by), collapse = ","))
     
   } else {
     bound <- bind_rows(dat)
     graph.variables <- bound %>%
         group_by(bound[,ref2]) %>%
-        summarize(sample_count = n())
+        dplyr::summarize(sample_count = n())
   }
 
   #Generating Connected Component
@@ -137,23 +137,23 @@ clonalCluster <- function(df,
   bound <-  suppressMessages(join(tmp,  output2, match = "first"))
   
   #Adding to potential single-cell object
-  if(inherits(x=df, what ="Seurat") | inherits(x=df, what ="SummarizedExperiment")) {
+  if(inherits(x=input.data, what ="Seurat") | inherits(x=input.data, what ="SummarizedExperiment")) {
     PreMeta <- bound
     x <- colnames(PreMeta)[ncol(PreMeta)]
     PreMeta <- as.data.frame(PreMeta[,x], row.names = rownames(bound))
     colnames(PreMeta) <- x
-    if (inherits(x=df, what ="Seurat")) { 
+    if (inherits(x=input.data, what ="Seurat")) { 
       col.name <- names(PreMeta) %||% colnames(PreMeta)
-      df[[col.name]] <- PreMeta
+      input.data[[col.name]] <- PreMeta
     } else {
-      rownames <- rownames(colData(df))
-      colData(df) <- cbind(colData(df), PreMeta[rownames,])[, union(colnames(colData(df)),  colnames(PreMeta))]
-      rownames(colData(df)) <- rownames 
+      rownames <- rownames(colData(input.data))
+      colData(input.data) <- cbind(colData(input.data), PreMeta[rownames,])[, union(colnames(colData(input.data)),  colnames(PreMeta))]
+      rownames(colData(input.data)) <- rownames 
     }
   } else {
-    df <- bound
+    input.data <- bound
   }
-  return(df)
+  return(input.data)
 }  
 
 

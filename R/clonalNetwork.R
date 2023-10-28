@@ -25,7 +25,7 @@
 #'               group.by = "seurat_clusters")
 #' }
 #'               
-#' @param sc The single-cell object after \code{\link{combineExpression}}.
+#' @param sc.data The single-cell object after \code{\link{combineExpression}}.
 #' @param reduction The name of the dimensional reduction of the single-cell object.
 #' @param group.by The variable to use for the nodes. 
 #' @param filter.clones Use to select the top n clones (filter.clones = 2000) or 
@@ -35,8 +35,8 @@
 #' @param filter.graph Remove the reciprocal edges from the half of the graph,
 #' allowing for cleaner visualization.
 #' @param cloneCall How to call the clonotype - VDJC gene (gene), 
-#' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
-#' VDJC gene + CDR3 nucleotide (strict).
+#' CDR3 nucleotide (nt), CDR3 amino acid (aa),
+#' VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data. 
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL".
 #' @param exportTable Exports a table of the data into the global 
@@ -57,7 +57,7 @@
 #' @concept SC_Functions
 #' @return ggplot object
 #' 
-clonalNetwork <- function(sc, 
+clonalNetwork <- function(sc.data, 
                           reduction = "umap",
                           group.by = "ident",
                           filter.clones = NULL,
@@ -70,14 +70,14 @@ clonalNetwork <- function(sc,
                           exportClones = FALSE,
                           palette = "inferno") {
     to <- from <- weight <- y <- NULL
-    cloneCall <- .theCall(cloneCall)
-    meta <- .grabMeta(sc)  
-    coord <- data.frame(.get.coord(sc, reduction), group.by = meta[,group.by])
+    meta <- .grabMeta(sc.data)
+    cloneCall <- .theCall(meta, cloneCall)
+    coord <- data.frame(.get.coord(sc.data, reduction), group.by = meta[,group.by])
     min <- c()
-    meta <- .grabMeta(sc)
+    meta <- .grabMeta(sc.data)
     if (!is.null(filter.clones))  {
       if(filter.clones == "min") {
-        meta <- .grabMeta(sc)
+        meta <- .grabMeta(sc.data)
         id.meta <- split(meta, meta[,group.by])
         for (x in seq_along(id.meta)) {
             min.tmp <- length(which(!is.na(unique(id.meta[[x]][,cloneCall]))))

@@ -25,8 +25,8 @@ utils::globalVariables(c(
 #' parameters, the function will add the strings as prefixes to prevent issues
 #' with repeated  barcodes. The resulting new barcodes will need to match the
 #' Seurat or SCE object in order to use, \code{\link{combineExpression}}.
-#' Several levels of filtering exist - `removeNA`, `removeMulti`, or
-#' `filterMulti` are parameters that control how  the function  deals with
+#' Several levels of filtering exist - \emph{removeNA}, \emph{removeMulti}, or
+#' \emph{filterMulti} are parameters that control how the function deals with
 #' barcodes with multiple chains recovered.
 #' 
 #' @examples
@@ -34,7 +34,7 @@ utils::globalVariables(c(
 #'                         samples = c("P17B", "P17L", "P18B", "P18L", 
 #'                                     "P19B","P19L", "P20B", "P20L"))
 #' 
-#' @param df List of filtered contig annotations or outputs from \code{\link{loadContigs}}
+#' @param input.data List of filtered contig annotations or outputs from \code{\link{loadContigs}}
 #' @param samples The labels of samples
 #' @param ID The additional sample labeling
 #' @param removeNA This will remove any chain without values.
@@ -47,33 +47,33 @@ utils::globalVariables(c(
 #' @concept Loading_and_Processing_Contigs
 #' @return List of clonotypes for individual cell barcodes
 #' 
-combineTCR <- function(df, 
+combineTCR <- function(input.data, 
                        samples = NULL, 
                        ID = NULL, 
                        removeNA = FALSE, 
                        removeMulti = FALSE, 
                        filterMulti = FALSE) {
-    df <- .checkList(df)
-    df <- .checkContigs(df)
+    input.data <- .checkList(input.data)
+    input.data <- .checkContigs(input.data)
     out <- NULL
     final <- NULL
-    for (i in seq_along(df)) {
-        if(c("chain") %in% colnames(df[[i]])) {
-          df[[i]] <- subset(df[[i]], chain != "Multi")
+    for (i in seq_along(input.data)) {
+        if(c("chain") %in% colnames(input.data[[i]])) {
+          input.data[[i]] <- subset(input.data[[i]], chain != "Multi")
         }
-        if(c("productive") %in% colnames(df[[i]])) {
-          df[[i]] <- subset(df[[i]], productive %in% c(TRUE, "TRUE", "True", "true"))
+        if(c("productive") %in% colnames(input.data[[i]])) {
+          input.data[[i]] <- subset(input.data[[i]], productive %in% c(TRUE, "TRUE", "True", "true"))
         }
-        df[[i]]$sample <- samples[i]
-        df[[i]]$ID <- ID[i]
+        input.data[[i]]$sample <- samples[i]
+        input.data[[i]]$ID <- ID[i]
         if (filterMulti) { 
-          df[[i]] <- .filteringMulti(df[[i]]) 
+          input.data[[i]] <- .filteringMulti(input.data[[i]]) 
         }
     }
     #Prevents error caused by list containing elements with 0 rows
-    blank.rows <- which(unlist(lapply(df, nrow)) == 0)
+    blank.rows <- which(unlist(lapply(input.data, nrow)) == 0)
     if(length(blank.rows) > 0) {
-      df <- df[-blank.rows]
+      input.data <- input.data[-blank.rows]
       if(!is.null(samples)) {
         samples <- samples[-blank.rows]
       }
@@ -82,9 +82,9 @@ combineTCR <- function(df,
       }
     }
     if (!is.null(samples)) {
-        out <- .modifyBarcodes(df, samples, ID)
+        out <- .modifyBarcodes(input.data, samples, ID)
     } else {
-      out <- df
+      out <- input.data
     }
     for (i in seq_along(out)) { # ideally the nested code could be in a function for a better development/testing experience
         data2 <- out[[i]]
@@ -95,7 +95,7 @@ combineTCR <- function(df,
         Con.df$barcode <- unique_df
         Con.df <- .parseTCR(Con.df, unique_df, data2)
         Con.df <- .assignCT(cellType = "T", Con.df)
-        Con.df[Con.df == "NA_NA" | Con.df == "NA_NA_NA_NA"] <- NA 
+        Con.df[Con.df == "NA_NA" | Con.df == "NA;NA_NA;NA"] <- NA 
         data3 <- merge(data2[,-which(names(data2) %in% c("TCR1","TCR2"))], 
             Con.df, by = "barcode")
         if (!is.null(samples) & !is.null(ID)) {
@@ -137,14 +137,14 @@ combineTCR <- function(df,
 #' the function will add the strings as prefixes to prevent issues with 
 #' repeated barcodes. The resulting new barcodes will need to match the 
 #' Seurat or SCE object in order to use, \code{\link{combineExpression}}. 
-#' Unlike \code{\link{combineTCR}}, combineBCR produces a column **CTstrict**
+#' Unlike \code{\link{combineTCR}}, combineBCR produces a column \strong{CTstrict}
 #' of an index of nucleotide sequence and the corresponding V gene. 
 #' This index automatically calculates the Levenshtein distance between 
 #' sequences with the same V gene and will index sequences using a normalized 
 #' Levenshtein distance with the same ID. After which, clonotype clusters 
-#' are called using the \code{\link[igraph]{components}} function. Clonotype
+#' are called using the \code{\link[igraph]{components}} function. Clones
 #' that are clustered across multiple sequences will then be labeled 
-#' with "LD" in the CTstrict header.
+#' with "Cluster" in the CTstrict header.
 #'
 #' @examples
 #' #Data derived from the 10x Genomics intratumoral NSCLC B cells
@@ -153,7 +153,7 @@ combineTCR <- function(df,
 #'                        samples = "Patient1", 
 #'                        threshold = 0.85)
 #' 
-#' @param df List of filtered contig annotations or outputs from \code{\link{loadContigs}}.
+#' @param input.data List of filtered contig annotations or outputs from \code{\link{loadContigs}}.
 #' @param samples The labels of samples
 #' @param ID The additional sample labeling
 #' @param call.related.clones Use the nucleotide sequence and V gene to call related clones. 
@@ -168,7 +168,7 @@ combineTCR <- function(df,
 #' @export
 #' @concept Loading_and_Processing_Contigs
 #' @return List of clonotypes for individual cell barcodes
-combineBCR <- function(df, 
+combineBCR <- function(input.data, 
                        samples = NULL, 
                        ID = NULL, 
                        call.related.clones = TRUE,
@@ -176,30 +176,30 @@ combineBCR <- function(df,
                        removeNA = FALSE, 
                        removeMulti = FALSE,
                        filterMulti = TRUE) {
-    df <- .checkList(df)
-    df <- .checkContigs(df)
+    input.data <- .checkList(input.data)
+    input.data <- .checkContigs(input.data)
     out <- NULL
     final <- list()
     chain1 <- "heavy"
     chain2 <- "light"
-    for (i in seq_along(df)) {
-        df[[i]] <- subset(df[[i]], chain %in% c("IGH", "IGK", "IGL"))
-        df[[i]]$ID <- ID[i]
+    for (i in seq_along(input.data)) {
+        input.data[[i]] <- subset(input.data[[i]], chain %in% c("IGH", "IGK", "IGL"))
+        input.data[[i]]$ID <- ID[i]
         if (filterMulti) {
                     # Keep IGH / IGK / IGL info in save_chain
-                    df[[i]]$save_chain <- df[[i]]$chain
+                    input.data[[i]]$save_chain <- input.data[[i]]$chain
                     # Collapse IGK and IGL chains
-                    df[[i]]$chain <- ifelse(df[[i]]$chain=="IGH","IGH","IGLC")
-                    df[[i]] <- .filteringMulti(df[[i]])
+                    input.data[[i]]$chain <- ifelse(input.data[[i]]$chain=="IGH","IGH","IGLC")
+                    input.data[[i]] <- .filteringMulti(input.data[[i]])
                     # Get back IGK / IGL distinction
-                    df[[i]]$chain <- df[[i]]$save_chain
-                    df[[i]]$save_chain <- NULL
+                    input.data[[i]]$chain <- input.data[[i]]$save_chain
+                    input.data[[i]]$save_chain <- NULL
         }
     }
     if (!is.null(samples)) {
-        out <- .modifyBarcodes(df, samples, ID)
+        out <- .modifyBarcodes(input.data, samples, ID)
     } else {
-        out <- df
+        out <- input.data
     }
     for (i in seq_along(out)) { 
         data2 <- data.frame(out[[i]])
@@ -231,7 +231,7 @@ combineBCR <- function(df,
       }
         final[[i]]$sample <- samples[i]
         final[[i]]$ID <- ID[i]
-        final[[i]][final[[i]] == "NA_NA" | final[[i]] == "NA_NA_NA_NA"] <- NA 
+        final[[i]][final[[i]] == "NA_NA" | final[[i]] == "NA;NA_NA;NA" | ] <- NA 
         if (!is.null(sample) & !is.null(ID)) {
           final[[i]]<- final[[i]][, c("barcode", "sample", "ID", 
               heavy_lines[c(1,2,3)], light_lines[c(1,2,3)], CT_lines)]

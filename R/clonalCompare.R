@@ -16,11 +16,11 @@
 #'               samples = c("P17B", "P17L"), 
 #'               cloneCall="aa")
 #'
-#' @param df The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
+#' @param input.data The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
 #'  \code{\link{combineExpression}}.
 #' @param cloneCall How to call the clonotype - VDJC gene (gene), 
-#' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
-#' VDJC gene + CDR3 nucleotide (strict).
+#' CDR3 nucleotide (nt), CDR3 amino acid (aa),
+#' VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data. 
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL".
 #' @param samples The specific samples to isolate for visualization.
@@ -42,7 +42,7 @@
 #' @concept Visualizing_Clones
 #' @return ggplot of the proportion of total sequencing read of 
 #' selecting clones
-clonalCompare <- function(df, 
+clonalCompare <- function(input.data, 
                           cloneCall = "strict", 
                           chain = "both", 
                           samples = NULL, 
@@ -59,19 +59,23 @@ clonalCompare <- function(df,
   if(!is.null(top.clones) & !is.null(clones)) {
     top.clones <- NULL
   }
-  cloneCall <- .theCall(cloneCall)
-  df <- .data.wrangle(df, group.by, cloneCall, chain)
+  input.data <- .data.wrangle(input.data, 
+                              group.by, 
+                              .theCall(input.data, cloneCall, check.df = FALSE), 
+                              chain)
+  cloneCall <- .theCall(input.data, cloneCall)
+  
   Con.df <- NULL
   
   #Loop through the list to get a proportional summary
-  for (i in seq_along(df)) {
+  for (i in seq_along(input.data)) {
     if (chain != "both") {
-      df[[i]] <- .off.the.chain(df[[i]], chain, cloneCall)
+      input.data[[i]] <- .off.the.chain(input.data[[i]], chain, cloneCall)
     }
-    tbl <- as.data.frame(table(df[[i]][,cloneCall]))
+    tbl <- as.data.frame(table(input.data[[i]][,cloneCall]))
     tbl[,2] <- tbl[,2]/sum(tbl[,2])
     colnames(tbl) <- c("clones", "Proportion")
-    tbl$Sample <- names(df[i])
+    tbl$Sample <- names(input.data[i])
     Con.df <- rbind.data.frame(Con.df, tbl)
   }
   

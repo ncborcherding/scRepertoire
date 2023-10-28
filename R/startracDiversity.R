@@ -17,7 +17,7 @@
 #' 
 #' #Getting a sample of a Seurat object
 #' scRep_example  <- get(data("scRep_example"))
-#' scRep_example  <- combineExpression(combined, scRep_example )
+#' scRep_example  <- combineExpression(combined, scRep_example)
 #' scRep_example$Patient <- substring(scRep_example$orig.ident,1,3)
 #' scRep_example$Type <- substring(scRep_example$orig.ident,4,4) 
 #' 
@@ -26,13 +26,12 @@
 #'                   type = "Type", 
 #'                   group.by = "Patient")
 #'
-#' 
-#' @param sc The seurat or SCE object to visualize after combineExpression(). 
+#' @param sc.data The single-cell object after \code{\link{combineExpression}}.
 #' For SCE objects, the cluster variable must be in the meta data under 
 #' "cluster".
 #' @param cloneCall How to call the clonotype - VDJC gene (gene), 
-#' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
-#' VDJC gene + CDR3 nucleotide (strict).
+#' CDR3 nucleotide (nt), CDR3 amino acid (aa),
+#' VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data. 
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL".
 #' @param type The variable in the meta data that provides tissue type.
@@ -45,7 +44,7 @@
 #' @concept SC_Functions
 #' @return ggplot object of Startrac diversity metrics
 #' @author Liangtao Zheng
-StartracDiversity <- function(sc,
+StartracDiversity <- function(sc.data,
                               cloneCall = "strict", 
                               chain = "both",
                               type = NULL,
@@ -53,8 +52,8 @@ StartracDiversity <- function(sc,
                               exportTable = FALSE, 
                               palette = "inferno") {
     majorCluster <- NULL
-    cloneCall <- .theCall(cloneCall)
-    df <- .grabMeta(sc)
+    df <- .grabMeta(sc.data)
+    cloneCall <- .theCall(df, cloneCall)
     barcodes <- rownames(df)
     colnames(df)[ncol(df)] <- "majorCluster"
     
@@ -66,7 +65,6 @@ StartracDiversity <- function(sc,
     }
     group.levels = unique(df[,group.by])
     
-    cloneCall <- .theCall(cloneCall)
     if (chain != "both") {
       df <- .off.the.chain(df, chain, cloneCall)
     }

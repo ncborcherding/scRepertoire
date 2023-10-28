@@ -5,7 +5,7 @@
 \title{Visualizing the distribution of gene usage}
 \usage{
 vizGenes(
-  df,
+  input.data,
   x.axis = "TRBV",
   y.axis = NULL,
   group.by = NULL,
@@ -17,7 +17,7 @@ vizGenes(
 )
 }
 \arguments{
-\item{df}{The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
+\item{input.data}{The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
 \code{\link{combineExpression}}.}
 
 \item{x.axis}{Gene segments to separate the x-axis, such as "TRAV", "TRBD", "IGKJ".}

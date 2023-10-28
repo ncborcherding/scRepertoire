@@ -110,11 +110,11 @@ Using ```clonalCluster()```, we can also return an igraph object of all the rela
 ```{r}
 #Clustering Patient 19 samples
 igraph.object <- clonalCluster(combined.TCR[c(5,6)],
-                                chain = "TRB",
-                                sequence = "aa",
-                                group.by = "sample",
-                                threshold = 0.85, 
-                                exportGraph = TRUE)
+                               chain = "TRB",
+                               sequence = "aa",
+                               group.by = "sample",
+                               threshold = 0.85, 
+                               exportGraph = TRUE)
 
 #Setting color scheme
 col_legend <- factor(igraph::V(igraph.object)$group)

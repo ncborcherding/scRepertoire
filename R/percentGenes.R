@@ -8,9 +8,11 @@
 #' combined <- combineTCR(contig_list, 
 #'                         samples = c("P17B", "P17L", "P18B", "P18L", 
 #'                                     "P19B","P19L", "P20B", "P20L"))
-#' percentGenes(combined, chain = "TRB", gene = "Vgene")
+#' percentGenes(combined, 
+#'              chain = "TRB", 
+#'              gene = "Vgene")
 #' 
-#' @param df The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
+#' @param input.data The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
 #'  \code{\link{combineExpression}}.
 #' @param chain "TRA", "TRB", "TRG", "TRG", "IGH", "IGL".
 #' @param gene "V", "D" or "J".
@@ -24,17 +26,17 @@
 #' @concept Summarize_Repertoire
 #' @return ggplot of percentage of indicated genes as a heatmap
 #' 
-percentGenes <- function(df,
+percentGenes <- function(input.data,
                          chain = "TRB",
                          gene = "Vgene", 
                          group.by = NULL, 
                          exportTable = FALSE, 
                          palette = "inferno") {
   
-  sco <- is_seurat_object(df) | is_se_object(df)
-  df <- .data.wrangle(df, group.by, "CTgene", chain)
+  sco <- is_seurat_object(input.data) | is_se_object(input.data)
+  input.data <- .data.wrangle(input.data, group.by, "CTgene", chain)
   if(!is.null(group.by) & !sco) {
-    df <- .groupList(df, group.by)
+    input.data <- .groupList(input.data, group.by)
   }
   #Parsing gene input
   if (gene %in% c("Vgene", "V", "v", "v.gene")) {
@@ -49,7 +51,7 @@ percentGenes <- function(df,
     }
   }
   #Getting indicated genes across list
-  gene_counts <- lapply(df, function(x) {
+  gene_counts <- lapply(input.data, function(x) {
       tmp <- unlist(str_split(x[,"CTgene"], ";"))
       tmp <- str_split(tmp, "[.]", simplify = TRUE)
       

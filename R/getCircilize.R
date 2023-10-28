@@ -4,7 +4,7 @@
 #' This function will take the meta data from the product of 
 #' \code{\link{combineExpression}} and generate a relational data frame to 
 #' be used for a chord diagram. Each cord will represent the number of 
-#' clonotype unique and shared across the multiple **group.by** variable. 
+#' clonotype unique and shared across the multiple \strong{group.by} variable. 
 #' If using the downstream circlize R package, please read and cite the
 #' following \href{https://pubmed.ncbi.nlm.nih.gov/24930139/}{manuscript}.
 #' If looking for more advance ways for circular visualizations, there
@@ -19,14 +19,15 @@
 #' 
 #' #Getting a sample of a Seurat object
 #' scRep_example <- get(data("scRep_example"))
-#' scRep_example <- combineExpression(combined, scRep_example)
+#' scRep_example <- combineExpression(combined, 
+#'                                    scRep_example)
 #' 
 #' #Getting data frame output for Circlize
 #' circles <- getCirclize(scRep_example, 
 #'                        group.by = "seurat_clusters")
 #' 
 #' 
-#' @param sc The single-cell object after \code{\link{combineExpression}}.
+#' @param sc.data The single-cell object after \code{\link{combineExpression}}.
 #' @param cloneCall How to call the clonotype - VDJC gene (gene), 
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
 #' VDJC gene + CDR3 nucleotide (strict).
@@ -41,12 +42,12 @@
 #' @concept SC_Functions
 #' @return data frame of shared clonotypes between groups
 #' @author Dillon Corvino, Nick Borcherding
-getCirclize <- function(sc, 
+getCirclize <- function(sc.data, 
                         cloneCall = "strict", 
                         group.by = NULL, 
                         proportion = FALSE) {
-  meta <- .grabMeta(sc)
-  cloneCall <- .theCall(cloneCall)
+  meta <- .grabMeta(sc.data)
+  cloneCall <- .theCall(meta, cloneCall)
   
   #Quantifying clonotypes across group.by variable
   dat <- meta[, c(cloneCall, group.by)]

@@ -42,13 +42,13 @@ suppressMessages(library(scRepertoire))
 data("contig_list") 
 ```
 
-There are varying definitions of clones or clonotypes in the literature. For the purposes of scRepertoire, we will use **clone** and define this as the cells with shared/trackable complementarity-determining region 3 (CDR3) sequences. Within this definition, one might use amino acid (**aa**) sequences of one or both chains to define a clone. Alternatively, we could use nucleotide (**nt**) or the V(D)JC genes (**genes**) to define a clone. The latter **genes** would be a more permissive definition of *"clones"*, as multiple amino acid or nucleotide sequences can results from the same gene combination. Another option to define clone is use of the V(D)JC and nucleotide sequence (**strict**). scRepertoire allows for the use of all these definitions of clones and allows for users to select both or individual chains to examine. 
+There are varying definitions of clones or clonotypes in the literature. For the purposes of scRepertoire, we will use **clone** and define this as the cells with shared/trackable complementarity-determining region 3 (CDR3) sequences. Within this definition, one might use amino acid (**aa**) sequences of one or both chains to define a clone. Alternatively, we could use nucleotide (**nt**) or the V(D)JC genes (**genes**) to define a clone. The latter **genes** would be a more permissive definition of *"clones"*, as multiple amino acid or nucleotide sequences can result from the same gene combination. Another option to define clone is the use of the V(D)JC and nucleotide sequence (**strict**). scRepertoire allows for the use of all these definitions of clones and allows for users to select both or individual chains to examine. 
 
 The first step in getting clones is to use the single-cell barcodes to organize cells into paired sequences. This is accomplished using `combineTCR()` and `combineBCR()`.
 
 ## combineTCR
 
-**df**  
+**input.data**  
 * List of *filtered_contig_annotations.csv* data frames from the 10x Cell Ranger.  
 * List of data processed using `loadContigs()`.  
 

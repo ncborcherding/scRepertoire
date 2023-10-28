@@ -5,7 +5,7 @@
 \title{Scatter plot comparing the expansion of two samples}
 \usage{
 clonalScatter(
-  df,
+  input.data,
   cloneCall = "strict",
   x.axis = NULL,
   y.axis = NULL,
@@ -18,12 +18,12 @@ clonalScatter(
 )
 }
 \arguments{
-\item{df}{The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
+\item{input.data}{The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
 \code{\link{combineExpression}}.}
 
 \item{cloneCall}{How to call the clonotype - VDJC gene (gene), 
-CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
-VDJC gene + CDR3 nucleotide (strict).}
+CDR3 nucleotide (nt), CDR3 amino acid (aa),
+VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data.}
 
 \item{x.axis}{name of the list element to appear on the x.axis.}
 
@@ -44,7 +44,7 @@ use for size of dots.}
 \item{palette}{Colors to use in visualization - input any \link[grDevices]{hcl.pals}.}
 }
 \value{
-ggplot of the relative clonotype numbers
+ggplot of the relative clonotype numbers between two sequencing runs
 }
 \description{
 This function produces a scatter plot directly comparing the specific clonotypes

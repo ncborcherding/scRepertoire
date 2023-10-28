@@ -5,7 +5,7 @@
 \title{Exploring interaction of clonotypes by single-cell object dynamics}
 \usage{
 alluvialClones(
-  sc,
+  sc.data,
   cloneCall = "strict",
   chain = "both",
   y.axes = NULL,
@@ -17,11 +17,11 @@ alluvialClones(
 )
 }
 \arguments{
-\item{sc}{The single-cell object to visualize after \code{\link{combineExpression}}.}
+\item{sc.data}{The single-cell object to visualize after \code{\link{combineExpression}}.}
 
 \item{cloneCall}{How to call the clonotype - VDJC gene (gene), 
-CDR3 nucleotide (nt) or CDR3 amino acid (aa), or 
-VDJC gene + CDR3 nucleotide (strict).}
+CDR3 nucleotide (nt), CDR3 amino acid (aa),
+VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data.}
 
 \item{chain}{indicate if both or a specific chain should be used - 
 e.g. "both", "TRA", "TRG", "IGH", "IGL".}

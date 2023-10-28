@@ -1,24 +1,26 @@
 #' Demonstrate the relative abundance of clonotypes by group or sample.
 #'
-#' Displays the number of clonotypes at specific requencies by sample 
+#' Displays the number of clonotypes at specific Frequencies by sample 
 #' or group. Visualization can either be a line graph using
-#' calculated numbers or if scale = TRUE, the output will be a 
+#' calculated numbers or if \strong{scale} = TRUE, the output will be a 
 #' density plot. Multiple sequencing runs can be group together 
 #' using the group parameter. If a matrix output for the data is 
-#' preferred, set exportTable = TRUE.
+#' preferred, set \strong{exportTable} = TRUE.
 #'
 #' @examples
 #' #Making combined contig data
 #' combined <- combineTCR(contig_list, 
 #'                         samples = c("P17B", "P17L", "P18B", "P18L", 
 #'                                     "P19B","P19L", "P20B", "P20L"))
-#' clonalAbundance(combined, cloneCall = "gene", scale = FALSE)
+#' clonalAbundance(combined, 
+#'                 cloneCall = "gene", 
+#'                 scale = FALSE)
 #'
-#' @param df The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
+#' @param input.data The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
 #'  \code{\link{combineExpression}}.
 #' @param cloneCall How to call the clonotype - VDJC gene (gene), 
-#' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
-#' VDJC gene + CDR3 nucleotide (strict).
+#' CDR3 nucleotide (nt), CDR3 amino acid (aa),
+#' VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data. 
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL"
 #' @param group.by The variable to use for grouping
@@ -33,7 +35,7 @@
 #' @concept Visualizing_Clones
 #' @return ggplot of the total or relative abundance of clonotypes 
 #' across quanta
-clonalAbundance <- function(df, 
+clonalAbundance <- function(input.data, 
                             cloneCall = "strict", 
                             chain = "both", 
                             scale=FALSE, 
@@ -41,17 +43,19 @@ clonalAbundance <- function(df,
                             order = TRUE,
                             exportTable = FALSE, 
                             palette = "inferno") {
-  df <- .list.input.return(df,group.by)
   Con.df <- NULL
   xlab <- "Abundance"
-  cloneCall <- .theCall(cloneCall)
-  df <- .data.wrangle(df, group.by, cloneCall, chain)
+  input.data <- .data.wrangle(input.data, 
+                              group.by, 
+                              .theCall(input.data, cloneCall, check.df = FALSE), 
+                              chain)
+  cloneCall <- .theCall(input.data, cloneCall)
   
-  names <- names(df)
+  names <- names(input.data)
   if (!is.null(group.by)) {
-    for (i in seq_along(df)) {
-      data1 <- .parseContigs(df, i, names, cloneCall)
-      label <- df[[i]][1,group.by]
+    for (i in seq_along(input.data)) {
+      data1 <- .parseContigs(input.data, i, names, cloneCall)
+      label <- input.data[[i]][1,group.by]
       data1[,paste(group.by)] <- label
       Con.df<- rbind.data.frame(Con.df, data1) }
       Con.df <- data.frame(Con.df)
@@ -73,13 +77,13 @@ clonalAbundance <- function(df,
                         labs(color = fill)
     }
   } else {
-    for (i in seq_along(df)) {
-      data1 <- .parseContigs(df, i, names, cloneCall)
+    for (i in seq_along(input.data)) {
+      data1 <- .parseContigs(input.data, i, names, cloneCall)
       Con.df<- rbind.data.frame(Con.df, data1) 
-      }
+    }
     Con.df <- data.frame(Con.df)
     if(order) {
-      Con.df[,"values"] <- factor(Con.df[,"values"], levels = names(df))
+      Con.df[,"values"] <- factor(Con.df[,"values"], levels = names(input.data))
     }
     col <- length(unique(Con.df$values))
     fill <- "Samples"

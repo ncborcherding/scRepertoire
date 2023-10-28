@@ -2,7 +2,7 @@
 #'
 #' This function calculates the relative clonal space occupied by the 
 #' clonotypes. The grouping of these clonotypes is based on the parameter 
-#' **clonalSplit**, at default, **clonalSplit** will group the clonotypes 
+#' \strong{clonalSplit}, at default, \strong{clonalSplit} will group the clonotypes 
 #' into bins of 1:10, 11:100, 101:1001, etc. To adjust the clonotypes 
 #' selected, change the numbers in the variable split. If a matrix output 
 #' for the data is preferred, set exportTable = TRUE.
@@ -14,12 +14,12 @@
 #'                                     "P19B","P19L", "P20B", "P20L"))
 #' clonalProportion(combined, cloneCall = "gene")
 #'
-#' @param df The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
+#' @param input.data The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
 #'  \code{\link{combineExpression}}.
 #' @param clonalSplit The cut points for the specific clonotypes.
 #' @param cloneCall How to call the clonotype - VDJC gene (gene), 
-#' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
-#' VDJC gene + CDR3 nucleotide (strict).
+#' CDR3 nucleotide (nt), CDR3 amino acid (aa),
+#' VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data. 
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL".
 #' @param group.by The variable to use for grouping.
@@ -35,7 +35,7 @@
 #' @export
 #' @concept Visualizing_Clones
 #' @return ggplot of the space occupied by the specific rank of clonotypes
-clonalProportion <- function(df,
+clonalProportion <- function(input.data,
                              clonalSplit = c(10, 100, 1000, 10000, 30000, 100000), 
                              cloneCall = "strict", 
                              chain = "both", 
@@ -43,27 +43,31 @@ clonalProportion <- function(df,
                              exportTable = FALSE, 
                              palette = "inferno") {
     Con.df <- NULL
-    cloneCall <- .theCall(cloneCall)
-    sco <- is_seurat_object(df) | is_se_object(df)
-    df <- .data.wrangle(df, group.by, cloneCall, chain)
+    input.data <- .data.wrangle(input.data, 
+                                group.by, 
+                                .theCall(input.data, cloneCall, check.df = FALSE), 
+                                chain)
+    cloneCall <- .theCall(input.data, cloneCall)
+    sco <- is_seurat_object(input.data) | is_se_object(input.data)
+    
     if(!is.null(group.by) & !sco) {
-      df <- .groupList(df, group.by)
+      input.data <- .groupList(input.data, group.by)
     }
     
     #Generating data matrix to store value
-    mat <- matrix(0, length(df), length(clonalSplit), dimnames = list(names(df), 
+    mat <- matrix(0, length(input.data), length(clonalSplit), dimnames = list(names(input.data), 
             paste0('[', c(1, clonalSplit[-length(clonalSplit)] + 1), ':', clonalSplit, ']')))
     
     #Assigning the clonal grouping
-    df <- lapply(df, '[[', cloneCall)
-    df <- lapply(df, na.omit)
-    df <- lapply(df, as.data.frame(table))
-    for (i in seq_along(df)) {
-        df[[i]] <- rev(sort(as.numeric(df[[i]][,2])))
+    input.data <- lapply(input.data, '[[', cloneCall)
+    input.data <- lapply(input.data, na.omit)
+    input.data <- lapply(input.data, as.data.frame(table))
+    for (i in seq_along(input.data)) {
+        input.data[[i]] <- rev(sort(as.numeric(input.data[[i]][,2])))
     }
     cut <- c(1, clonalSplit[-length(clonalSplit)] + 1)
     for (i in seq_along(clonalSplit)) {
-        mat[,i] <- vapply(df, function (x) sum(na.omit(x[cut[i]:clonalSplit[i]])), 
+        mat[,i] <- vapply(input.data, function (x) sum(na.omit(x[cut[i]:clonalSplit[i]])), 
                             FUN.VALUE = numeric(1))
     }
     if (exportTable == TRUE) {

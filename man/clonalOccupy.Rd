@@ -5,7 +5,7 @@
 \title{Visualize the number of single cells with cloneSizes by cluster}
 \usage{
 clonalOccupy(
-  sc,
+  sc.data,
   x.axis = "ident",
   label = TRUE,
   facet.by = NULL,
@@ -16,7 +16,7 @@ clonalOccupy(
 )
 }
 \arguments{
-\item{sc}{The single-cell object after \code{\link{combineExpression}}.}
+\item{sc.data}{The single-cell object after \code{\link{combineExpression}}.}
 
 \item{x.axis}{The variable in the meta data to graph along the x.axis.}
 
@@ -37,9 +37,9 @@ environment in addition to the visualization.}
 Stacked bar plot of counts of cells by clonotype frequency group
 }
 \description{
-View the count of clonotypes frequency group in seurat or SCE object 
+View the count of clonotypes frequency group in Seurat or SCE object 
 meta data after \code{\link{combineExpression}}. The visualization will take the 
-new meta data variable **"cloneSize"** and plot the number of cells with
+new meta data variable \strong{"cloneSize"} and plot the number of cells with
 each designation using a secondary variable, like cluster. Credit to 
 the idea goes to Drs. Carmona and Andreatta and their work with
 \href{https://github.com/carmonalab/ProjecTILs}{ProjectTIL}.
