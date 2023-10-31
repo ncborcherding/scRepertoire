@@ -49,7 +49,7 @@ Rcpp::CharacterVector rcppGenerateUniqueNtMotifs(int k) {
     return motifs;
 }
 
-inline void kmerCount(std::vector<long double>& bins, const unsigned int& mask, const std::string& seq, const int k) {
+inline void kmerCount(std::vector<long double>& bins, const unsigned int mask, const std::string& seq, int k) {
     unsigned int kmer = 0;
     for (int i = 0; i < k - 1; i++) {
         kmer = (kmer << 2) | toIndex(seq[i]);
@@ -68,16 +68,8 @@ const long double sum(std::vector<long double>& v) {
     return n;
 }
 
-Rcpp::NumericVector convertToNumericVector(std::vector<long double>& v, int n) {
-    Rcpp::NumericVector converted (n);
-    for (int i = 0; i < n; i++) {
-        converted[i] = v[i];
-    }
-    return converted;
-}
-
 // [[Rcpp::export]]
-const Rcpp::NumericVector rcppGetNtKmerPercent(const std::vector<std::string>& seqs, const int k) {
+std::vector<long double> rcppGetNtKmerPercent(const std::vector<std::string>& seqs, const int k) {
     const unsigned int mask = (1 << (k + k)) - 1;
     int numKmers = mask + 1;
     std::vector<long double> bins (numKmers);
@@ -88,7 +80,7 @@ const Rcpp::NumericVector rcppGetNtKmerPercent(const std::vector<std::string>& s
 
     long double sumOfNonZeroTerms = sum(bins);
     if (sumOfNonZeroTerms < 0.0001) { // == 0
-        return Rcpp::NumericVector (numKmers, R_NaReal);
+        return bins;
     }
     
     const double scaleFactor = 1 / sumOfNonZeroTerms;
@@ -96,5 +88,5 @@ const Rcpp::NumericVector rcppGetNtKmerPercent(const std::vector<std::string>& s
         bins[i] *= scaleFactor;
     }
 
-    return convertToNumericVector(bins, numKmers);
+    return bins;
 }
