@@ -537,7 +537,7 @@ clonalSizeDistribution(combined,
 
 ## clonalDiversity
 
-Diversity can also be measured for samples or by other variables. Diversity **metrics** calculated, include: "shannon" "inv.simpson", "norm.entropy", "gini.simpson", "chao1", and "ACE". Please see the manual for more information on each metric and the underlying calculations. ```clonalDiversity()``` will automatically downsample to the smallest repertoire size and perform boostapping to return the median diversity estimates. 
+Diversity can also be measured for samples or by other variables. Diversity **metrics** calculated, include: "shannon" "inv.simpson", "norm.entropy", "gini.simpson", "chao1", and "ACE". Please see the manual for more information on each metric and the underlying calculations. ```clonalDiversity()``` will automatically downsample to the smallest repertoire size and perform bootstrapping to return the median diversity estimates. 
 
 **n.boots**  
 The number of calculations to perform  
@@ -637,7 +637,7 @@ Next, we can attach the clonotypic information to our Seurat object using the `c
 
 We can call (cloneCall) the 4 variations of clonotypes: 1) VDJC genes, 2) CDR3 amino acid sequence, 3) CDR3 nucleotide sequence, or 4) VDJC genes and CDR3 nucleotide sequence. The attaching function will also calculate the clonotype frequency based on the **group.by** variable. If blank, **group.by** will calculate frequencies of clonotypes by individual run, but because we have 8 samples of paired peripheral blood and lung T cells, we will use the group.by variable to call "sample" to calculate frequencies across the same patient's blood and lung T cells.
 
-In order to categorize the frequency, we have the variable **proportion**, which if TRUE, allows for the relative proportion or when FALSE, will use absolute frequency to define clonotype groups **cloneSize**  acts as a bin to place labels. As a default, **cloneSize** is set to equal cloneTypes=c(Rare = 1e-4, Small = 0.001, Medium = 0.01, Large = 0.1, Hyperexpanded = 1). However, below is an example of using total frequency as expansion assignments. 
+In order to categorize the frequency, we have the variable **proportion**, which if TRUE, allows for the relative proportion or when FALSE, will use absolute frequency to define clonotype groups **cloneSize**  acts as a bin to place labels. As a default, **cloneSize** is set to equal: Rare = 1e-4, Small = 0.001, Medium = 0.01, Large = 0.1, and Hyperexpanded = 1. However, below is an example of using total frequency as expansion assignments. 
 
 ```{r}
 sce <- combineExpression(combined, 
@@ -838,16 +838,10 @@ chordDiagram(circles,
 
 ## clonalCluster
 
-The nucleotide or amino acid sequences of the chains can be used to cluster clonotypes by examining the edit distance of the sequences. This approach is underlying the `combineBCR()` function but now can be applied to the B or T cell receptors at the level of nucleotides or amino acids. It will add a cluster to the end of each list element by generating a network connected by the similarity in sequence. This network is directed by the threshold variable, where 0.85 is the normalized mean edit distance.
+The nucleotide or amino acid sequences of the chains can be used to cluster clonotypes by examining the edit distance of the sequences. This approach is underlying the `combineBCR()` function but now can be applied to the B or T cell receptors at the level of nucleotides (**sequence** = "nt) or amino acids (**sequence** = "aa). It will add a cluster to the end of each list element by generating a network connected by the similarity in sequence. This network is directed by the threshold variable, where 0.85 is the normalized mean edit distance.
 
-Clonotype cluster by distance:  
-
-*  TCRA:Cluster.1  [chain:] + :Cluster + [number]  
-*  TCRA.123 [chain:] + [number]  
-
-Cluster denotes if the cluster was called using the normalized Levenshtein distance, which takes the edit distance calculated between 2 sequences and divides that by the mean of the sequence lengths. 
-
-If performed over the number of samples, such as the list elements, **group.by** can used to calculate only the clusters on the setting of patient sample (**group.by** = "Patient") or tissue type (group.by = "Type"). This will add the selected group to the beginning of the cluster designation.
+Edit-distance based clusters will have the following format:   
+* [chain:] + :Cluster + [number]  [e.g., TRA:Cluster.1]
 
 
 ```{r}

@@ -43,7 +43,7 @@ This function calculates the space occupied by clonotype proportions.
 The grouping of these clonotypes is based on the parameter cloneSize, 
 at default, cloneSize will group the clonotypes into bins of Rare = 0 
 to 0.0001, Small = 0.0001 to 0.001, etc. To adjust the proportions, 
-change the number or labeling of the cloneSize paramter. If a matrix 
+change the number or labeling of the cloneSize parameter. If a matrix 
 output for the data is preferred, set \strong{exportTable} = TRUE.
 }
 \examples{

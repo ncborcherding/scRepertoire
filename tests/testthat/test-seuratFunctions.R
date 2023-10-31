@@ -7,10 +7,10 @@ test_that("combineExpression works with seurat objects", {
                                      "P19B","P19L", "P20B", "P20L"))
 	combined_test <- combineExpression(combined, scRep_example)
 	
-	expect_length(combined_test@meta.data, 12)
+	expect_length(combined_test@meta.data, 13)
 	expect_equal(combined_test@meta.data[, 1:6], scRep_example@meta.data[, 1:6])
 	expect_equal(
-		combined_test@meta.data[, 7:12],
+		combined_test@meta.data[, 7:13],
 		getdata("seuratFunctions", "combineExpression_new_metadata")
 	)
 })

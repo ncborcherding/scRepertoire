@@ -49,7 +49,7 @@ combined.TCR <- combineTCR(contig_list,
 
 Diversity can also be measured for samples or by other variables. Diversity **metrics** calculated, include: **"shannon"**, **"inv.simpson"**, **"norm.entropy"**, **"gini.simpson"**, **"chao1"**, and **"ACE"**. Please see the manual for more information on each metric and the underlying calculations. 
 
-Inherent in diversity calculations is a bias increasing diversity with increasing repertoire size. ```clonalDiversity()``` will automatically downsample to the smallest repertoire size and perform boostapping to return the mean diversity estimates. If the output of diversity values are strange or minimally variable, it is likely due to a sample with small repertoire size.
+Inherent in diversity calculations is a bias increasing diversity with increasing repertoire size. ```clonalDiversity()``` will automatically downsample to the smallest repertoire size and perform bootstrapping to return the mean diversity estimates. If the output of diversity values are strange or minimally variable, it is likely due to a sample with small repertoire size.
 
 **n.boots**  
 The number of calculations to perform **(default = 100)**.  

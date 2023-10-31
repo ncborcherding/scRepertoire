@@ -50,7 +50,7 @@ use_condaenv(condaenv = "r-reticulate", required = TRUE)
 
 The idea behind Trex is to combine TCR CDR3 amino acid information with phenotypic RNA/protein data to direct the use of single-cell sequencing towards antigen-specific discoveries. This is a growing field - specifically [TESSA](https://github.com/jcao89757/TESSA) uses amino acid characteristics and autoencoder as a means to get a dimensional reduction. Another option is [CoNGA](https://github.com/phbradley/conga), which produces an embedding using TCR and RNA with python. Trex was designed to make a customizable approach to this combined approach using R.
 
-More infromation is available at the [Trex GitHub Repo](https://github.com/ncborcherding/Trex).
+More information is available at the [Trex GitHub Repo](https://github.com/ncborcherding/Trex).
 
 ## Installation
 
@@ -142,7 +142,8 @@ plot1 <- DimPlot(SeuratObj,
 plot2 <- DimPlot(SeuratObj, 
                  group.by = "CTaa", 
                  reduction = "Trex.umap") + 
-          scale_color_viridis(discrete = TRUE, option = "B") + 
+          scale_color_viridis(discrete = TRUE, option = "B")  + 
+          theme(plot.title = element_blank()) +
           NoLegend()
 
 plot1 + plot2
@@ -173,7 +174,8 @@ plot3 <- DimPlot(SeuratObj,
 plot4 <- DimPlot(SeuratObj, 
                  reduction = "wnn.umap", 
                  group.by = "CTaa") + 
-          scale_color_viridis(discrete = TRUE, option = "B") + 
+          scale_color_viridis(discrete = TRUE, option = "B")  + 
+          theme(plot.title = element_blank()) +
           NoLegend()
 
 plot3 + plot4
@@ -254,11 +256,13 @@ CoNGA.seurat <- annotateDB(CoNGA.seurat,
 
 DimPlot(CoNGA.seurat, 
         reduction = "Trex.umap", 
-        group.by = "TRB_Epitope.species")
+        group.by = "TRB_Epitope.species") + 
+  theme(plot.title = element_blank())
 
 DimPlot(CoNGA.seurat, 
         reduction = "Trex.umap", 
-        group.by = "TRB_Epitope.sequence")
+        group.by = "TRB_Epitope.sequence") + 
+  theme(plot.title = element_blank())
 ```
 
 Or ```annotateDB()``` can be used on the full single-cell object and examine the sequence information along the RNA-based UMAP. An added feature to the function allows the annotations to be extended to CDR3 sequences that are within defined edit distances from the reference using **edit.distance**.
@@ -270,7 +274,8 @@ SeuratObj <- annotateDB(SeuratObj,
 
 DimPlot(SeuratObj, 
         reduction = "rna.umap", 
-        group.by = "TRB_Epitope.species")
+        group.by = "TRB_Epitope.species") + 
+  theme(plot.title = element_blank())
 ```
 
 

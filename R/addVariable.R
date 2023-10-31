@@ -3,7 +3,7 @@
 #' This function adds variables to the product of \code{\link{combineTCR}}, 
 #' or \code{\link{combineBCR}} to be used in later visualizations. 
 #' For each element, the function will add a column (labeled by name) 
-#' with the variable. The length of the variable paramater needs to match
+#' with the variable. The length of the variable parameter needs to match
 #' the length of the combined object.
 #'
 #' @examples

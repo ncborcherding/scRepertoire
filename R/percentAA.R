@@ -43,6 +43,7 @@ percentAA <- function(input.data,
     strings <- do.call(c,str_split(strings, ";"))
     strings <- strings[strings != "NA"]
     strings <- strings[nchar(strings) < aa.length]
+    strings <- na.omit(strings)
     strings <- .padded_strings(strings, aa.length)
     strings <- do.call(rbind, strings)
     
@@ -77,8 +78,7 @@ percentAA <- function(input.data,
   return(plot)
 }    
     
-.padded_strings <- function(strings, max.length) {
-      max_length <- max.length
+.padded_strings <- function(strings, max_length) {
       
       x <- lapply(strings, function(str) {
         str_len <- nchar(str)

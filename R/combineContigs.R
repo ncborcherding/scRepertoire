@@ -231,7 +231,7 @@ combineBCR <- function(input.data,
       }
         final[[i]]$sample <- samples[i]
         final[[i]]$ID <- ID[i]
-        final[[i]][final[[i]] == "NA_NA" | final[[i]] == "NA;NA_NA;NA" | ] <- NA 
+        final[[i]][final[[i]] == "NA_NA" | final[[i]] == "NA;NA_NA;NA"] <- NA 
         if (!is.null(sample) & !is.null(ID)) {
           final[[i]]<- final[[i]][, c("barcode", "sample", "ID", 
               heavy_lines[c(1,2,3)], light_lines[c(1,2,3)], CT_lines)]

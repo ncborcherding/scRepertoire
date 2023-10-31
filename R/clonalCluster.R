@@ -13,7 +13,7 @@
 #'                         samples = c("P17B", "P17L", "P18B", "P18L", 
 #'                                     "P19B","P19L", "P20B", "P20L"))
 #' 
-#' sub_combined <- clonalCluster(combined[[2]], chain = "TRA", sequence = "aa")
+#' sub_combined <- clonalCluster(combined[c(1,2)], chain = "TRA", sequence = "aa")
 #' 
 #' @param input.data The product of \code{\link{combineTCR}}, \code{\link{combineBCR}} 
 #' or \code{\link{combineExpression}}.
@@ -46,19 +46,15 @@ clonalCluster <- function(input.data,
                           threshold = 0.85, 
                           group.by = NULL, 
                           exportGraph = FALSE) {
-  output.list <- list()
   if(chain == "both") {
     stop("Please select an individual chain for clustering")
   }
   #Prepping any single-cell object
   is.list <- inherits(input.data, "list")
-  if (inherits(x = input.data, what = c("Seurat", "SummarizedExperiment"))) {
-    dat <- .grabMeta(input.data)
-  } else {
-    dat <- input.data
+  if(!is.list && !inherits(x = input.data, what = c("Seurat", "SummarizedExperiment"))) {
+    input.data <- .checkList(input.data)
   }
-  dat <- .checkList(dat)
-  dat <- .data.wrangle(dat, group.by, "CTgene", chain)
+  dat <- .data.wrangle(input.data, group.by, "CTgene", chain)
   
   if (inherits(x = input.data, what = c("Seurat", "SummarizedExperiment"))) {
     for (y in seq_along(dat)) {
@@ -74,7 +70,6 @@ clonalCluster <- function(input.data,
   if (!is.null(samples)) {
     dat <- dat[which(names(dat) %in% samples)]
   }
-  dat <- .checkList(dat)
   
   #Getting column labels to pull from
   if (grepl("TRA|TRG", chain)) {
@@ -94,27 +89,33 @@ clonalCluster <- function(input.data,
   
   if (!is.null(group.by)) {
     bound <- bind_rows(dat, .id = "group.by")
-    
     graph.variables <- bound %>%
                           group_by(bound[,ref2]) %>%
                           dplyr::summarize(sample_count = n(),
                                     unique_samples = paste0(unique(group.by), collapse = ","))
-    
+    dictionary <- list(bound)
   } else {
     bound <- bind_rows(dat)
-    graph.variables <- bound %>%
-        group_by(bound[,ref2]) %>%
-        dplyr::summarize(sample_count = n())
+    graph.variables <- bind_rows(dat) %>%
+                          group_by(bound[,ref2]) %>%
+                          dplyr::summarize(sample_count = n())
+    dictionary <- dat
   }
-
   #Generating Connected Component
-  cluster <- .lvCompare(bound, 
-                        gene = "CTgene", 
-                        chain = ref2, 
-                        threshold = threshold, 
-                        exportGraph = exportGraph)
+  output.list <- lapply(dictionary, function(x) {
+    cluster <- .lvCompare(x, 
+                          gene = "CTgene", 
+                          chain = ref2, 
+                          threshold = threshold,  
+                          exportGraph = exportGraph)
+    cluster
+  })
+  #Grabbing column order for later return
+  column.order <- colnames(bound)
   
+  #Returning the igraph object if eexportGraph = TRUE
   if(exportGraph) {
+    cluster <- output.list[[1]]
     vertex <- names(V(cluster))
     data_df <- unique(data.frame(
       id = V(cluster)$name
@@ -127,14 +128,25 @@ clonalCluster <- function(input.data,
     return(cluster)
   }
   
-  cluster[,1] <-  str_replace_all(cluster[,1], "CTgene", chain)
-  colnames(cluster) <- c(paste0(chain, "_cluster"), ref2)
+  cluster.list <- lapply(seq_len(length(output.list)), function(x) {
+                        output.list[[x]][,1] <- str_replace_all(output.list[[x]][,1], "CTgene", chain)
+                        if(!is.null(group.by)) {
+                          output.list[[x]][,1] <- paste0(names(dat)[x], ":", output.list[[x]][,1])
+                        }
+                        colnames(output.list[[x]]) <- c(paste0(chain, "_cluster"), ref2)
+                        output.list[[x]]
+                        
+  })
+  cluster <- bind_rows(cluster.list)
   
   #Merging with contig info
   tmp <- bound
   tmp[,ref2] <- str_split(tmp[,ref2], ";", simplify = TRUE)[,1]
   output2 <- cluster[cluster[,2] %in% tmp[,ref2],]
   bound <-  suppressMessages(join(tmp,  output2, match = "first"))
+  
+  #Removing unconnected calls
+  bound[!grepl(".Cluster", bound[,colnames(cluster)[1]]), colnames(cluster)[1]] <- NA
   
   #Adding to potential single-cell object
   if(inherits(x=input.data, what ="Seurat") | inherits(x=input.data, what ="SummarizedExperiment")) {
@@ -151,6 +163,16 @@ clonalCluster <- function(input.data,
       rownames(colData(input.data)) <- rownames 
     }
   } else {
+    #Reorder columns
+    bound <- bound[,c(column.order, colnames(cluster)[1])]
+    #Split back into list
+    if(is.list) {
+      if(!is.null(group.by)) {
+        bound <- split(bound, bound[,group.by])
+      } else {
+        bound <- split(bound, bound[,"sample"])
+      }
+    }
     input.data <- bound
   }
   return(input.data)

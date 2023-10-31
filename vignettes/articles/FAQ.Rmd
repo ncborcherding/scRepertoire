@@ -54,7 +54,7 @@ original: ACGTACGTACGTACGT-1
 seurat-modified: ACGTACGTACGTACGT-1_1
 ```
 
-scReprtoire uses the samples in combineTCR() to add a prefix to the barcodes:
+scRepertoire uses the samples in combineTCR() to add a prefix to the barcodes:
 
 ```
 original: ACGTACGTACGTACGT-1

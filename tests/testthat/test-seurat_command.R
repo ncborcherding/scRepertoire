@@ -18,8 +18,10 @@ test_that("make_screp_seurat_cmd works", {
 	expect_equal(
 		test_obj@params,
 		list(
-			cloneCall = "CTstrict", chain = "both", group.by = "none",  
-			proportion = TRUE, filterNA = FALSE,
+			cloneCall = "CTstrict", 
+			chain = "both", 
+			proportion = TRUE, 
+			filterNA = FALSE,
 			cloneSize = c(
 				`None ( < X <= 0)` = 0, `Rare (0 < X <= 1e-04)` = 1e-04,
 				`Small (1e-04 < X <= 0.001)` = 0.001,

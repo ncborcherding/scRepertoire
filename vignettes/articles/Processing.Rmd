@@ -51,8 +51,8 @@ What if there are more variables to add than just sample and ID? We can add them
 
 ```{r}
 combined.TCR <- addVariable(combined.TCR, 
-                        variable.name = "Type", 
-                        variables = rep(c("B", "L"), 4))
+                            variable.name = "Type", 
+                            variables = rep(c("B", "L"), 4))
 
 head(combined.TCR[[1]])
 ```
@@ -78,7 +78,7 @@ head(subset2[[1]])
 
 ## exportClones  
 
-After assigning the cloneby barcode, we can export the paired clonotypes using `exportClones()` to save for later use or to use in other pipelines. 
+After assigning the clone by barcode, we can export the paired clonotypes using `exportClones()` to save for later use or to use in other pipelines. 
 
 **write.file**   
 * TRUE, save the file. 

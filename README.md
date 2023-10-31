@@ -18,7 +18,7 @@ scRepertoire is compatible and integrated with the R packages [Trex](https://git
 
 ## Working with scRepertoire
 
-scRepertoire has a comprehensive [website](https://www.borch.dev/uploads/screpertoire/) for detialed tutorials and function information.
+scRepertoire has a comprehensive [website](https://www.borch.dev/uploads/screpertoire/) for detailed tutorials and function information.
 
 ## Installation
 
