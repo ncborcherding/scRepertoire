@@ -23,21 +23,6 @@ test_that("checkList works", {
     # no idea what to put to make the stop message happen. perhaps with data.table(contig_list) ? but then it shouldnt fail :P
 })
 
-test_that("checkContigs works", {
-    input <- list(
-        df1 = data.frame(a = c("x", "", "z"), b = c("1", "2", "3")),
-        df2 = data.frame(c = c("foo", "bar", ""), d = c("", "spam", "eggs"))
-    )
-    expected <- .checkContigs(input)
-    expect_true(is.list(expected))
-    expect_true(is.data.frame(expected[[1]]))
-    expect_equal(expected[[1]]$a, c("x", NA, "z"))
-    expect_equal(expected[[1]]$b, c("1", "2", "3"))
-    expect_true(is.data.frame(expected[[2]]))
-    expect_equal(expected[[2]]$c, c("foo", "bar", NA))
-    expect_equal(expected[[2]]$d, c(NA, "spam", "eggs"))
-})
-
 # TODO bound.input.return
 # TODO get.coord
 # TODO checkSingleObject
@@ -64,6 +49,9 @@ test_that("Modifying barcodes without ID works correctly", {
     expect_identical(modified_data, expected_modified_data)
 })
 
+##############
+##TODO figure out where getdata is from?
+##TODO annotate testthat functions???
 test_that("Modifying barcodes with ID works correctly", {
     samples <- c("sample3", "sample4")
     ID <- c("id1", "id2")

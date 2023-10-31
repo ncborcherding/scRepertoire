@@ -78,7 +78,7 @@ head(subset2[[1]])
 
 ## exportClones  
 
-After assigning the cloneby barcode, we can export the paired clonotypes using `exportClones()` to save for later use or to use in other pipelines. 
+After assigning the clone by barcode, we can export the paired clonotypes using `exportClones()` to save for later use or to use in other pipelines. 
 
 **write.file**   
 * TRUE, save the file. 

@@ -49,7 +49,7 @@ suppressMessages(library(dplyr))
 
 The idea behind Ibex is to combine BCR CDR3 amino acid information with phenotypic RNA/protein data to direct the use of single-cell sequencing towards antigen-specific discoveries.  This is a growing field - specifically [TESSA](https://github.com/jcao89757/TESSA) uses amino acid characteristics and autoencoder as a means to get a dimensional reduction. Another option is [CoNGA](https://github.com/phbradley/conga), which produces an embedding using BCR and RNA. Ibex was designed to make a customizable approach to this combined approach using R.
 
-More infromation is available at the [Ibex GitHub Repo](https://github.com/ncborcherding/Ibex).
+More information is available at the [Ibex GitHub Repo](https://github.com/ncborcherding/Ibex).
 
 ## Installation
 
@@ -128,6 +128,7 @@ SeuratObj <- RunUMAP(SeuratObj,
 plot1 <- DimPlot(SeuratObj, reduction = "ibex.umap") + NoLegend()
 plot2 <- DimPlot(SeuratObj, group.by = "CTaa", reduction = "ibex.umap") + 
   scale_color_viridis(discrete = TRUE, option = "B") + 
+  theme(plot.title = element_blank()) +
   NoLegend()
 
 plot1 + plot2
@@ -155,6 +156,7 @@ SeuratObj <- FindClusters(SeuratObj,
 plot3 <- DimPlot(SeuratObj, reduction = "wnn.umap")
 plot4 <- DimPlot(SeuratObj, reduction = "wnn.umap", group.by = "CTaa") + 
   scale_color_viridis(discrete = TRUE, option = "B") + 
+  theme(plot.title = element_blank()) +
   NoLegend()
 
 plot3 + plot4

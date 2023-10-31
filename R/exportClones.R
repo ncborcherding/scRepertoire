@@ -2,7 +2,7 @@
 #'
 #' This function saves a csv file of clonotypes (genes, amino acid, and nucleotide sequences)
 #' by barcodes. \strong{format} determines the structure of the csv file - \emph{paired} will
-#' export sequences by barcodes and include multiple chians, \emph{airr} will export a data 
+#' export sequences by barcodes and include multiple chains, \emph{airr} will export a data 
 #' frame that is consistent with the AIRR format, and \emph{TCRMatch} will 
 #' export a data frame that has the TRB chain with count information.
 #' 
