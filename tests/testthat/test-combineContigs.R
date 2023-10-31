@@ -4,9 +4,10 @@ test_that("combineTCR works", {
 	data("contig_list")
 	
 	trial1 <- combineTCR(
-		df = lapply(contig_list[1:3], head),
+		input.data  = lapply(contig_list[1:3], head),
 		samples = c("P17B", "P17L", "P18B")
 	)
+	
 	expected1 <- readRDS("testdata/combineContigs/combineTCR_list_expected.rds")
 	
 	expect_identical(trial1, expected1)

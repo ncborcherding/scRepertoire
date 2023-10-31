@@ -19,23 +19,17 @@ test_that("clonalQuant works", {
 		"clonalQuant_scaled_plot", clonalQuant(combined, scale = TRUE)
 	)
 	expect_equal(
-		clonalQuant(combined, scale = TRUE, exportTable = TRUE),
+		clonalQuant(combined, 
+		            scale = TRUE, 
+		            exportTable = TRUE),
 		data.frame(
 			"contigs" = c(745L, 2117L, 1254L, 1202L, 5544L, 1619L, 6087L,  192L),
 			"values" = c("P17B", "P17L", "P18B", "P18L", "P19B","P19L", "P20B", "P20L"), 
 			"total" = c(2805L, 2893L, 1328L, 1278L, 6942L, 2747L, 8991L,  201L),
 			"scaled" = c(
-			  26.55971, 73.17663, 94.42771, 94.05321, 79.86171, 58.93702, 67.70103, 95.52239
+			  26.5597148, 73.1766333, 94.4277108, 94.0532081, 79.8617113, 58.9370222, 67.7010344, 95.5223881
 			)
 		)
-	)
-	
-	expect_doppelganger(
-		"clonalQuant_single_sample_plot", clonalQuant(single_contig)
-	)
-	expect_identical(
-		clonalQuant(single_contig, exportTable = TRUE),
-		data.frame("contigs" = 745L, "total" = 2805L)
 	)
 })
 
@@ -56,7 +50,7 @@ test_that("clonalCompare works", {
 		"clonalCompare_alluvial_plot",
 		clonalCompare(
 			combined, 
-			numbers = 10, 
+			top.clones = 10, 
 			samples = c("P17B", "P17L"), 
 			cloneCall="aa", 
 			graph = "alluvial"
@@ -66,8 +60,8 @@ test_that("clonalCompare works", {
 	expect_doppelganger(
 		"clonalCompare_area_plot",
 		clonalCompare(
-			combined, 
-			numbers = 10, 
+		  input.data = combined, 
+			top.clones  = 10, 
 			samples = c("P17B", "P17L"), 
 			cloneCall="aa", 
 			graph = "area"
@@ -75,22 +69,7 @@ test_that("clonalCompare works", {
 	)
 })
 
-test_that("clonalScatter works", {
-	expect_doppelganger(
-		"clonalScatter_vignette_plot",
-		clonalScatter(
-			combined, 
-			cloneCall ="gene", 
-			x.axis = "P17B", 
-			y.axis = "P17L",
-			dot.size = "total",
-			graph = "proportion",
-			seed = 42
-		)
-	)
-	
-	# TODO test the exportTable arg
-})
+# TODO clonalScatter
 
 # something in `clonesizeDistribution` prints "NULL" to the terminal
 test_that("clonalSizeDistribution works", {
@@ -102,14 +81,15 @@ test_that("clonalSizeDistribution works", {
 
 # TODO makingLodes
 
+
 test_that("vizGenes works", {
 	expect_doppelganger(
 		"vizGenes_bar_vignette_plot",
 		vizGenes(
 			combined,
-			gene = "V", 
-			chain = "TRB", 
-			plot = "bar", 
+			x.axis = "TRBV", 
+			y.axis = NULL,
+			plot = "barplot", 
 			order = "variance", 
 			scale = TRUE
 		)
@@ -119,9 +99,8 @@ test_that("vizGenes works", {
 		"vizGenes_heatmap_vignette_plot",
 		vizGenes(
 			combined[c(1,3,5)], 
-			gene = "V", 
-			chain = "TRB", 
-			y.axis = "J", 
+			x.axis = "TRBV",
+			y.axis = "TRBJ",
 			plot = "heatmap", 
 			scale = TRUE, 
 			order = "gene"

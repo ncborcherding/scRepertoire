@@ -20,7 +20,6 @@ test_that("make_screp_seurat_cmd works", {
 		list(
 			cloneCall = "CTstrict", 
 			chain = "both", 
-			group.by = NULL,  
 			proportion = TRUE, 
 			filterNA = FALSE,
 			cloneSize = c(
