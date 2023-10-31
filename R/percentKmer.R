@@ -11,7 +11,7 @@
 #' percentKmer(combined, 
 #'             chain = "TRB", 
 #'             motif.length = 3)
-
+#' 
 #' @param input.data The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
 #'  \code{\link{combineExpression}}.
 #' @param chain "TRA", "TRB", "TRG", "TRG", "IGH", "IGL".
@@ -67,6 +67,12 @@ percentKmer <- function(input.data,
   for(i in seq_along(input.data)) {
     input.data[[i]][,cloneCall][which(input.data[[i]][,cloneCall] == "NA")] <- NA
     input.data[[i]] <- input.data[[i]][!is.na(input.data[[i]][,cloneCall]),]
+
+    if (identical(cloneCall, "CTnt") && motif.length > 1) {
+      mat[i, ] <- rcppGetNtKmerPercent(input.data[[i]][,cloneCall], motif.length)
+      next
+    }
+
     motifs <- .tokenize_multiple_sequences(input.data[[i]][,cloneCall], motif.length)
     motif.table <- table(unlist(motifs))
     if(any(grepl("\\;", names(motif.table)))) {

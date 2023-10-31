@@ -50,5 +50,6 @@ combined <- combineTCR(contig_list,
 percentKmer(combined, 
             chain = "TRB", 
             motif.length = 3)
+
 }
 \concept{Summarize_Repertoire}
