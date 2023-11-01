@@ -60,12 +60,11 @@ test_that("clonalCompare works", {
 	expect_doppelganger(
 		"clonalCompare_area_plot",
 		clonalCompare(
-		  input.data = combined, 
+		  combined, 
 			top.clones  = 10, 
 			samples = c("P17B", "P17L"), 
 			cloneCall="aa", 
-			graph = "area"
-		)
+			graph = "area")
 	)
 })
 
