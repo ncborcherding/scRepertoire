@@ -20,7 +20,7 @@ test_that("checkList works", {
     expect_identical(.checkList(contig_list), contig_list)
     expect_identical(.checkList(contig_list[[1]]), list(contig_list[[1]]))
     expect_identical(.checkList(contig_list[[1]])[[1]], contig_list[[1]])
-    # no idea what to put to make the stop message happen. perhaps with data.table(contig_list) ? but then it shouldnt fail :P
+    # no idea what to put to make the stop message happen. 
 })
 
 # TODO bound.input.return
@@ -50,7 +50,7 @@ test_that("Modifying barcodes without ID works correctly", {
 })
 
 ##############
-##TODO figure out where getdata is from?
+## resolved TODO: getdata is from tests/testthat/helper-testing_functions.R
 ##TODO annotate testthat functions???
 test_that("Modifying barcodes with ID works correctly", {
     samples <- c("sample3", "sample4")
@@ -91,9 +91,20 @@ test_that("filteringMulti works", {
 # TODO rawIndex
 # TODO overlapIndex
 # TODO quiet
-# TODO theCall
-# TODO parseTCR
-# TODO parseBCR
+# TODO .theCall
+
+test_that(".parseTCR works", {
+    Con.df <- getdata("utils", "Con.df")
+    data2 <- getdata("utils", "data2")
+    unique_df <- Con.df[[1]]
+
+    expect_equal(
+        .parseTCR(Con.df, unique_df, data2),
+        getdata("utils", "parseTCR_result")
+    )
+})
+
+# TODO .parseBCR
 # TODO lengthDF
 # TODO assignCT
 

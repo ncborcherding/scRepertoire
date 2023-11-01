@@ -7,3 +7,4 @@ local_tests.R
 docs
 vignettes/articles/scRep_example_full.rds
 .vscode
+dev.R

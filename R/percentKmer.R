@@ -68,7 +68,7 @@ percentKmer <- function(input.data,
     input.data[[i]][,cloneCall][which(input.data[[i]][,cloneCall] == "NA")] <- NA
     input.data[[i]] <- input.data[[i]][!is.na(input.data[[i]][,cloneCall]),]
 
-    if (identical(cloneCall, "CTnt") && motif.length > 1) {
+    if (identical(cloneCall, "CTnt") && motif.length > 1L && motif.length <= 32L) {
       mat[i, ] <- rcppGetNtKmerPercent(input.data[[i]][,cloneCall], motif.length)
       next
     }
@@ -108,7 +108,7 @@ percentKmer <- function(input.data,
 
   #Plotting
   ggplot(mat_melt, aes(x=Var2, y = Var1, fill=value)) +
-    geom_tile(lwd= 0.1, color = "black") + 
+    geom_tile(lwd = 0.1, color = "black") + 
     scale_fill_gradientn(name = "Percentage", colors = .colorizer(palette,21)) +
     theme_classic() + 
     coord_flip() + 

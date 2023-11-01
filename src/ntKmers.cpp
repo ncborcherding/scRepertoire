@@ -1,11 +1,13 @@
-// bit-based nucleotide kmer counting
+// 2-bit-based nucleotide kmer counting
+// by Qile Yang
 
 #include <Rcpp.h>
 #include <vector>
 #include <string>
+#include "screpUtils.h"
 
-inline const unsigned short int toIndex(const char x) {
-    switch(x) {
+inline unsigned short int toNtIndex(const char nt) {
+    switch(nt) {
         case 'A': return 0;
         case 'C': return 1;
         case 'G': return 2;
@@ -13,7 +15,7 @@ inline const unsigned short int toIndex(const char x) {
     }
 }
 
-inline const char lastNt(unsigned int index) {
+inline char lastNt(unsigned int index) {
     switch(index & 3) {
         case 0: return 'A';
         case 1: return 'C';
@@ -22,7 +24,7 @@ inline const char lastNt(unsigned int index) {
     }
 }
 
-inline const std::string toKmer(unsigned int index, int k) {
+inline std::string toNtKmer(unsigned long int index, int k) {
     std::string kmer = "";
     for (int i = 0; i < k; i++) {
         kmer = lastNt(index) + kmer;
@@ -40,10 +42,10 @@ inline bool isNt(char c) {
 
 // [[Rcpp::export]]
 Rcpp::CharacterVector rcppGenerateUniqueNtMotifs(int k) {
-    unsigned int numKmers = 1 << (k + k);
+    long int numKmers = 1 << (k + k);
     Rcpp::CharacterVector motifs (numKmers);
-    for (unsigned int i = 0; i < numKmers; i++) {
-        motifs[i] = toKmer(i, k);
+    for (unsigned long int i = 0; i < numKmers; i++) {
+        motifs[i] = toNtKmer(i, k);
     }
     return motifs;
 }
@@ -56,40 +58,21 @@ inline void updateSkip(int& skip, char c, int k) {
     }
 }
 
-// doesnt handle _NA_ for k = 1
+// actual kmer counter - doesnt handle _NA_ for k = 1
 inline void kmerCount(std::vector<long double>& bins, const unsigned int mask, const std::string& seq, int k) {
     int skip = 0;
-    unsigned int kmer = 0;
+    unsigned long int kmer = 0;
 
     for (int i = 0; i < k - 1; i++) {
-        kmer = (kmer << 2) | toIndex(seq[i]);
+        kmer = (kmer << 2) | toNtIndex(seq[i]);
         updateSkip(skip, seq[i], k);
     }
 
     for (int i = k - 1; i < (int) seq.size(); i++) {
-        kmer = ((kmer << 2) & mask) | toIndex(seq[i]);
-
+        kmer = ((kmer << 2) & mask) | toNtIndex(seq[i]);
         updateSkip(skip, seq[i], k);
         if (skip == 0) {bins[kmer]++;}
     }
-}
-
-const long double sum(std::vector<long double>& v) {
-    long double n = 0;
-    for (long double num : v) {
-        n += num;
-    }
-    return n;
-}
-
-Rcpp::NumericVector convertZerosToNA(std::vector<long double>& v, int numKmers) {
-    Rcpp::NumericVector converted (numKmers, R_NaReal);
-    for (int i = 0; i < numKmers; i++) {
-        if (v[i] > 0) {
-            converted[i] = v[i];
-        }
-    }
-    return converted;
 }
 
 // [[Rcpp::export]]
