@@ -148,7 +148,7 @@ alluvialClones <- function(sc.data,
   
   plot <- plot + 
             geom_text(stat = ggalluvial::StatStratum, infer.label = FALSE, reverse = TRUE, size = 2) + 
-            scale_fill_manual(values = .colorizer(palette,  length(levels(lodes[,color])))) + 
+            scale_fill_manual(values = .colorizer(palette,  length(unique(lodes[,color])))) + 
             scale_x_discrete(expand = c(0.025,0.025)) + 
             theme_classic() +
             theme(axis.title.x = element_blank(), 

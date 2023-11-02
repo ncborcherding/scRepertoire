@@ -1,4 +1,4 @@
-# test script for vizGenes.R - testcases are NOT comprehensive!
+# test script for highlightClones.R - testcases are NOT comprehensive!
 
 # testdata: (assumes combineTCR works)
 combined <- combineTCR(contig_list, 

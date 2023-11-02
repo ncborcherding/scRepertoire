@@ -80,9 +80,9 @@ head(subset2[[1]])
 
 After assigning the clone by barcode, we can export the paired clonotypes using `exportClones()` to save for later use or to use in other pipelines. 
 
-**write.file**   
-* TRUE, save the file. 
-* FALSE, return a data.frame. 
+**write.file**    
+* TRUE, save the file.  
+* FALSE, return a data.frame.  
 
 **dir**  
 directory location to save the csv  

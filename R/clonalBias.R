@@ -108,12 +108,12 @@ clonalBias <- function(sc.data,
   #Plotting 
   plot <- ggplot(bias, aes(x=ncells,y=bias)) + 
     geom_point(aes(fill=Top_state, size = cloneSize), shape = 21, stroke = 0.25) + 
-    .quiet(stat_quantile(data=df_shuffle, 
+    stat_quantile(data=df_shuffle, 
                          quantiles = c(corrected_p), 
                          method = "rqss", 
                          lambda=3, 
                          color = "black", 
-                         lty = 2)) + 
+                         lty = 2) + 
     scale_fill_manual(values = .colorizer(palette,  length(unique(bias[,"Top_state"])))) + 
     theme_classic() + 
     xlab("Clone Size") + 
