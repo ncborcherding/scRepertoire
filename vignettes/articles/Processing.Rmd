@@ -49,7 +49,7 @@ combined.TCR <- combineTCR(contig_list,
 
 What if there are more variables to add than just sample and ID? We can add them by using the `addVariable()` function. All we need is the **variable.name** of the variable you'd like to add and the specific character or numeric values (**variables**). As an example, here we add the **Type** in which the samples were processed and sequenced. 
 
-```{r}
+```{r tidy = FALSE}
 combined.TCR <- addVariable(combined.TCR, 
                             variable.name = "Type", 
                             variables = rep(c("B", "L"), 4))
@@ -63,7 +63,7 @@ Likewise, we can remove specific list elements after `combineTCR()` using the `s
 
 Alternatively, we can also just select the list elements after `combineTCR()` or `combineBCR()`.
 
-```{r}
+```{r, tidy = FALSE}
 subset1 <- subsetClones(combined.TCR, 
                         name = "sample", 
                         variables = c("P18L", "P18B"))
@@ -90,7 +90,7 @@ directory location to save the csv
 **file.name**  
 the csv file name  
 
-```{r, eval = FALSE}
+```{r, eval = FALSE, tidy = FALSE}
 exportClones(combined, 
              write.file = TRUE,
              dir = "~/Documents/MyExperiment/Sample1/"

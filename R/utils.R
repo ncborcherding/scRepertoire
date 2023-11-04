@@ -246,14 +246,6 @@ is_seurat_or_se_object <- function(obj) {
     return(data1)
 }
 
-# This suppressing outputs for using dput()
-#' @keywords internal
-.quiet <- function(x) {
-    sink(tempfile())
-    on.exit(sink())
-    invisible(force(x))
-}
-
 
 # This is to help sort the type of clonotype data to use
 #' @keywords internal

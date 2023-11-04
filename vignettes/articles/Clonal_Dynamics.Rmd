@@ -59,7 +59,7 @@ By examining the clonal space, we effectively look at the relative space occupie
 * Large = 0.1  
 * Hyperexpanded = 1  
 
-```{r}
+```{r tidy = FALSE}
 clonalHomeostasis(combined.TCR, 
                   cloneCall = "gene")
 
@@ -83,7 +83,7 @@ The **clonalSplit** represents the ranking of clonotypes by copy or frequency of
 * 30000 
 * 100000 
 
-```{r}
+```{r tidy = FALSE}
 clonalProportion(combined.TCR, 
                  cloneCall = "gene") 
 

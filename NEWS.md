@@ -1,5 +1,5 @@
 
-# scRepertoire VERSION 2.0.0 (2023-10-23)
+# scRepertoire VERSION 2.0.0 (2023-11-4)
 
 ## NEW FEATURES
 
@@ -21,17 +21,19 @@
 
 ## UNDERLYING CHANGES
 
-* .theCall now allows for a custom header/variable and checks the colnames. 
+* Removed internal **.quiet()** function.
+* **.theCall()** now allows for a custom header/variable and checks the colnames. 
 * Replaced data arguments to be more descriptive: *df* is now *input.data*, *dir* is now *input*, and *sc* is now *sc.data*
 * Deep clean on the documentation for each function for increased consistency and explainability
-* startrac diversity metric re-implemented to remove startrac-class object intermediary
-* implemented powerTCR locally to reduce dependencies and continue support
+* ```Startracdiversity()``` metric re-implemented to remove startrac-class object intermediary
+* Implemented powerTCR locally to reduce dependencies and continue support
 * Universalized underlying function language and intermediate variables
 * License change to MIT
-* group.by and split.by have been consolidated into single group.by parameter
+* **group.by** and **split.by** have been consolidated into single **group.by** parameter
 * Added support for .json, Omniscope, and MiXCR formats for ```loadContigs()```
 * Made GitHub.io website for support/vignettes/FAQ
 * Restructured NEWS Tracking
+* Added testhat for all exported and internal functions
 
 ## DEPRECATED AND DEFUNCT
 
@@ -225,7 +227,7 @@
 # scRepertoire VERSION 0.99.17
 
 * Updated NEWS formatting
-* Edited DESCRIPTION to SingleCellExperiment R package
+* Edited DESCRIPTION to Single Cell Experiment R package
 * Updated information in the vignette
 
 

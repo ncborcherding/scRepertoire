@@ -60,7 +60,7 @@ The first function to explore the clonotypes is `clonalQuant()` to return the to
 + "both" for combined chain visualization  
 + "TRA", "TRB", "TRD", "TRG", "IGH" or "IGL" to select single chain
 
-```{r}
+```{r tidy = FALSE}
 clonalQuant(combined.TCR, 
             cloneCall="strict", 
             chain = "both", 
@@ -80,7 +80,7 @@ clonalQuant(combined.TCR,
 
 We can also examine the relative distribution of clonotypes by abundance. Here `clonalAbundance()` will produce a line graph with a total number of clonotypes by the number of instances within the sample or run. Like above, we can also group.by this by vectors within the contig object using the **group.by** variable in the function.
 
-```{r}
+```{r tidy = FALSE}
 clonalAbundance(combined.TCR, 
                 cloneCall = "gene", 
                 scale = FALSE)
@@ -98,7 +98,7 @@ We can look at the length distribution of the CDR3 sequences by calling the `len
 + "both" for combined chain visualization  
 + "TRA", "TRB", "TRD", "TRG", "IGH" or "IGL" to select single chain  
 
-```{r}
+```{r tidy = FALSE}
 clonalLength(combined.TCR, 
              cloneCall="aa", 
              chain = "both") 
@@ -132,7 +132,7 @@ We can also look at clonotypes between samples and changes in dynamics by using 
 **relabel.clones**  
 * Simplify the isolated clonotypes to numerical designations to allow for a tidier visualization
 
-```{r}
+```{r tidy = FALSE}
 clonalCompare(combined.TCR, 
                   top.clones = 10, 
                   samples = c("P17B", "P17L"), 
@@ -142,7 +142,7 @@ clonalCompare(combined.TCR,
 
 We can also choose to highlight specific clonotypes, such as in the case of *"CVVSDNTGGFKTIF_CASSVRRERANTGELFF"* and *"NA_CASSVRRERANTGELFF"*: 
 
-```{r}
+```{r tidy = FALSE}
 clonalCompare(combined.TCR, 
               top.clones = 10,
               highlight.clones = c("CVVSDNTGGFKTIF_CASSVRRERANTGELFF", "NA_CASSVRRERANTGELFF"),
@@ -167,7 +167,7 @@ clonalCompare(combined.TCR,
 * "proportion" for the relative proportion the clonotype represents across all clonotypes  
 * "count" for the total count of clonotypes by sample  
 
-```{r}
+```{r tidy = FALSE}
 clonalScatter(combined.TCR, 
               cloneCall ="gene", 
               x.axis = "P18B", 

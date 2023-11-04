@@ -76,7 +76,7 @@ For all visualizations in scRepertoire, there are 2 ways to adjust the color sch
 + Change the **palette** parameter to the desired color scheme. This approach uses the built-in palettes of grDevices and we can access the list of color schemes using ``hcl.pals()``.  
 + Add a ggplot layer with a new color scheme. 
 
-```{r}
+```{r tidy = FALSE}
 clonalQuant(combined.TCR, 
             cloneCall="strict", 
             chain = "both", 
@@ -94,7 +94,7 @@ clonalQuant(combined.TCR,
 
 Within each of the general analysis functions, there is the ability to export the data frame used to create the visualization. To get the exported values, use **exportTable** = TRUE. It will return the data frame used to make the graph instead of the visual output.  
 
-```{r}
+```{r tidy = FALSE}
 clonalQuant_output <- clonalQuant(combined.TCR, 
                                   cloneCall="strict", 
                                   scale = TRUE, 

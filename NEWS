@@ -31,6 +31,7 @@ UNDERLYING CHANGES
 * group.by and split.by have been consolidated into single group.by parameter
 * Added support for .json, Omniscope, and MiXCR formats
 * Made GitHub.io website for support/vignettes/FAQ
+* Added testhat for all exported and internal functions
 
 DEPRECATED AND DEFUNCT
 

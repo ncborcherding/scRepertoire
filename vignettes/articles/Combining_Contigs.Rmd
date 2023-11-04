@@ -70,7 +70,7 @@ prevent issues with duplicate barcodes **(optional)**.
 
 The output of `combineTCR()` will be a list of contig data frames that will be reduced to the reads associated with a single cell barcode. It will also combine the multiple reads into clonotype calls by either the nucleotide sequence (**CTnt**), amino acid sequence (**CTaa**), the VDJC gene sequence (**CTgene**), or the combination of the nucleotide and gene sequence (**CTstrict**).
 
-```{r}
+```{r tidy = FALSE}
 combined.TCR <- combineTCR(contig_list, 
                            samples = c("P17B", "P17L", "P18B", "P18L", 
                                             "P19B","P19L", "P20B", "P20L"),
@@ -96,7 +96,7 @@ The level of similarity in sequences to group together. **Default** is 0.85.
 Calculate the normalized edit distance (**TRUE**) or skip the calculation (**FALSE**). Skipping the edit distance calculation may save time, especially in the context of large data sets, but is not recommended. 
 
 
-```{r}
+```{r tidy = FALSE}
 BCR.contigs <- read.csv("https://www.borch.dev/uploads/contigs/b_contigs.csv")
 combined.BCR <- combineBCR(BCR.contigs, 
                            samples = "P1", 

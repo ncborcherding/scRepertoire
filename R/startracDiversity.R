@@ -100,8 +100,7 @@ StartracDiversity <- function(sc.data,
     } 
     
     mat_melt <- melt(mat, id = c("group", "majorCluster"))
-    values <- as.character(unique(mat_melt$majorCluster))
-    values <- .quiet(dput(values))
+    values <-  str_sort(unique(mat_melt$majorCluster), numeric = TRUE)
     mat_melt$majorCluster <- factor(mat_melt$majorCluster, levels = values)
     mat_melt$value <- as.numeric(mat_melt$value)
     col <- length(unique(mat_melt[,"majorCluster"]))

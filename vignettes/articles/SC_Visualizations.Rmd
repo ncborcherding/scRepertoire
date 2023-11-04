@@ -71,7 +71,7 @@ We can modify the contours by selecting the number of **bins** or the number of 
 
 This visualization was authored by Dr. Francesco Mazziotta from Johns Hopkins and inspired by Drs. Carmona and Andreatta and their work with [ProjectTIL](https://github.com/carmonalab/ProjecTILs), which is a great pipeline to annotated T cell subtypes.
 
-```{r}
+```{r tidy = FALSE}
 clonalOverlay(scRep_example, 
               reduction = "umap", 
               freq.cutpoint = 1, 
@@ -97,7 +97,7 @@ Filtering for clones can be accomplished using 3 methods:
 * Remove clones that comprise less than a certain proportion of clones in groups.
                           
 
-```{r}
+```{r tidy = FALSE}
 #ggraph needs to be loaded due to issues with ggplot
 library(ggraph)
 
@@ -119,7 +119,7 @@ clonalNetwork(scRep_example,
 
 We can also use **exportClones** to quickly get clones that are shared across multiple identity groups, along with the total number of clones in the data set.
 
-```{r}
+```{r tidy = FALSE}
 shared.clones <- clonalNetwork(scRep_example, 
                                reduction = "umap", 
                                group.by = "seurat_clusters",
@@ -132,7 +132,7 @@ head(shared.clones)
 
 We can also look at the clonotypes by calling specific sequences in the `highlightClonotypes()` below. In order to highlight the clonotypes, we first need to use the **cloneCall**, the type of sequence we will be using, and then the specific sequences themselves using **sequence**. Below, we can see the steps to highlight the two most prominent sequences *"CVVSDNTGGFKTIF_CASSVRRERANTGELFF"* and *"NA_CASSVRRERANTGELFF"*.
 
-```{r}
+```{r tidy = FALSE}
 scRep_example <- highlightClones(scRep_example, 
                     cloneCall= "aa", 
                     sequence = c("CVVSDNTGGFKTIF_CASSVRRERANTGELFF", 
@@ -146,9 +146,9 @@ Seurat::DimPlot(scRep_example, group.by = "highlight")
 We can also look at the count of cells by cluster assigned into specific frequency ranges by using the `clonalOccupy()` function and selecting the **x.axis** to display cluster or other variables in the meta data of the single cell object.
 
 + **proportion** can be used to look at relative level groupings  
-+  **label** will still return the absolute number of clonotypes  
++ **label** will still return the absolute number of clonotypes  
 
-```{r}
+```{r tidy = FALSE}
 clonalOccupy(scRep_example, 
                      x.axis = "seurat_clusters")
 
@@ -164,7 +164,7 @@ After the metadata has been modified, we can look at clones across multiple cate
 
 To understand the basic concepts of this graphing method, I'd highly recommend reading [this post](https://cran.r-project.org/web/packages/ggalluvial/vignettes/ggalluvial.html).  
 
-```{r}
+```{r tidy = FALSE}
 alluvialClones(scRep_example, 
                cloneCall = "aa", 
                y.axes = c("Patient", "ident", "Type"), 
@@ -186,7 +186,7 @@ The first step is getting the data frame output to feed into the `chordDiagram()
 
 This will calculate the relative number of clonotypes shared based on the **group.by** variable using the product of `combineExpression()`. It is important to note `getCirclize()` will create a matrix the size of the **group.by** variable and then simplify into instructions to be read by the circlize R package. The output is the total number of unique and shared clones by the **group.by** variable. 
 
-```{r}
+```{r tidy = FALSE}
 library(circlize)
 library(scales)
 

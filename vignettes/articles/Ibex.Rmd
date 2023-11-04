@@ -53,7 +53,7 @@ More information is available at the [Ibex GitHub Repo](https://github.com/ncbor
 
 ## Installation
 
-```{r, eval = FALSE}
+```{r, eval = FALSE, tidy = FALSE}
 devtools::install_github("ncborcherding/Ibex")
 ```
 
@@ -61,7 +61,7 @@ devtools::install_github("ncborcherding/Ibex")
 
 To show the multiple options of Ibex, the example data is derived from [this manuscript](https://pubmed.ncbi.nlm.nih.gov/33891889/) - multimodal single-cell characterization of COVID19-associated multisystem inflammatory syndrome in children. The data example built into the package (ibex_example) is derived from randomly sampling cells from Patient 1.
 
-```{r}
+```{r tidy = FALSE}
 SeuratObj <- readRDS(url("https://www.borch.dev/uploads/data/Ibex_FullExample.rds"))
 ```
 
@@ -92,7 +92,7 @@ Ibex has 2 major functions - the first being ```Ibex.matrix()```, which is the b
 If choosing the geometric transformation, what value of theta to use (default is pi)
 
 
-```{r}
+```{r tidy = FALSE}
 ibex_vectors <- Ibex.matrix(SeuratObj, 
                             chains = "Light",
                             encoder.input = "OHE")
@@ -104,7 +104,7 @@ qplot(data = as.data.frame(ibex_vectors), Ibex_2, Ibex_3) + theme_classic()
 
 Additionally, ```runIbex()``` can be used to append the Seurat or Single-cell Experiment object with the Ibex vectors and allow for further analysis. Importantly, ```runIbex()``` will remove single cells that do not have recovered BCR data in the metadata of the object. 
                     
-```{r}
+```{r tidy = FALSE}
 SeuratObj <- runIbex(SeuratObj, 
                      chains = "Heavy",
                      encoder.input = "KF", 
@@ -116,7 +116,7 @@ SeuratObj <- runIbex(SeuratObj,
 
 After ```runIbex()```, we have the encoded values stored under **"Ibex..."**. Using the Ibex reduction stored in Seurat, we can calculate the nearest neighbor and shared nearest neighbor indexes and generate a UMAP.
 
-```{r}
+```{r tidy = FALSE}
 #Generating UMAP from ibex Neighbors
 SeuratObj <- RunUMAP(SeuratObj, 
                      reduction = "ibex.KF",
@@ -136,7 +136,7 @@ plot1 + plot2
 
 We now can use this in a similar way as other single-cell modalities and calculate weighted nearest neighbor (WNN). To check out more on WNN, please read the Satija's group [paper](https://pubmed.ncbi.nlm.nih.gov/34062119/). We will use the RNA, ADT protein levels, and ibex vectors for the WNN calculations. 
 
-```{r}
+```{r tidy = FALSE}
 SeuratObj <- FindMultiModalNeighbors(
                     SeuratObj, 
                     reduction.list = list("pca", "apca", "ibex.KF"), 
@@ -166,7 +166,7 @@ plot3 + plot4
 
 We can also look at the differences in the UMAP generated from RNA, ADT, or Ibex as individual components. Remember, the clusters that we are displaying in UMAP are based on clusters defined by the weighted nearest neighbors calculated above. 
 
-```{r}
+```{r tidy = FALSE}
 SeuratObj <- RunUMAP(SeuratObj, 
                      reduction = 'pca', 
                      dims = 1:30, 
@@ -194,7 +194,7 @@ Recent [work](https://pubmed.ncbi.nlm.nih.gov/34426704/) has proposed using repr
 
 In order to generate a single-cell object based on the CoNGA approach, Ibex offers the function ```CoNGAfy()```. For **method**, select either "mean" or "dist" as described above. After performing ```CoNGAfy()```, the user can use any of the above reduction strategies. 
 
-```{r}
+```{r tidy = FALSE}
 CoNGA.seurat <- CoNGAfy(SeuratObj, 
                          method = "dist")
 

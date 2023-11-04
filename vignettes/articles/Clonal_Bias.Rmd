@@ -74,7 +74,7 @@ In order to use the ```StartracDiversity()``` function, you will need to include
 +  migr - Cross-tissue Migration  
 +  tran - State Transition  
 
-```{r}
+```{r tidy = FALSE}
 StartracDiversity(scRep_example, 
                   type = "Type", 
                   group.by = "Patient")
@@ -90,7 +90,7 @@ A new metric proposed by [Massimo et al](https://pubmed.ncbi.nlm.nih.gov/3582969
 **group.by**  
 * The compartment/variable used for the purpose of the comparison  
 
-```{r, message = FALSE}
+```{r, message = FALSE, tidy = FALSE}
 clonalBias(scRep_example, 
            cloneCall = "aa", 
            split.by = "Patient", 

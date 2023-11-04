@@ -62,7 +62,7 @@ devtools::install_github("ncborcherding/Trex")
 
 To show the multiple options of Trex, the example data is derived from [GSE167118](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE167118) - a cohort of CITE-seq data derived from severe COVID-19 patients. The [corresponding manuscript](https://pubmed.ncbi.nlm.nih.gov/33622974/) is excellent. The data example built into the package (trex_example) is derived from randomly sampling the single-cells from patient 17. 
 
-```{r}
+```{r tidy = FALSE}
 SeuratObj <- readRDS(url("https://www.borch.dev/uploads/data/Trex_FullExample.rds"))
 ```
 
@@ -91,7 +91,7 @@ Trex has 2 major functions - the first being ```maTrex()```, which is the backbo
 **theta**  
 If choosing the geometric transformation, what value of theta to use (default is pi)
 
-```{r}
+```{r tidy = FALSE}
 Trex_vectors <- maTrex(SeuratObj, 
                        chains = "TRA",
                        encoder.model = "VAE", 
@@ -115,7 +115,7 @@ ggplot(as.data.frame(Trex_vectors2), aes(x = Trex_1, y = Trex_2)) +
 
 Additionally, ```runTrex()``` can be used to append the Seurat or Single-cell Experiment object with the Trex vectors and allow for further analysis. Importantly, ```runTrex()``` will remove single cells that do not have recovered TCR data in the metadata of the object. 
 
-```{r}
+```{r tidy = FALSE}
 SeuratObj <- runTrex(SeuratObj, 
                     chains = "TRB",
                     encoder.model = "VAE", 
@@ -127,7 +127,7 @@ SeuratObj <- runTrex(SeuratObj,
 
 After ```runTrex()``` we have the encoded values stored under **"Trex..."**. Using the Trex reduction stored in Seurat, we can calculate the nearest neighbor and shared nearest neighbor indexes and generate a UMAP.
 
-```{r}
+```{r tidy = FALSE}
 #Generating UMAP from Trex Neighbors
 SeuratObj <- RunUMAP(SeuratObj, 
                      reduction = "Trex.KF",
@@ -151,7 +151,7 @@ plot1 + plot2
 
 We now can use this in a similar way as other single-cell modalities and calculate weighted nearest neighbor (WNN). To check out more on WNN, please read the Satija's group [paper](https://pubmed.ncbi.nlm.nih.gov/34062119/). We will use the RNA, ADT protein levels, and Trex vectors for the WNN calculations. 
 
-```{r}
+```{r tidy = FALSE}
 SeuratObj <- FindMultiModalNeighbors(
                     SeuratObj, 
                     reduction.list = list("pca", "apca", "Trex.KF"), 
@@ -185,7 +185,7 @@ plot3 + plot4
 
 We can also look at the differences in the UMAP generated from RNA, ADT, or Trex as individual components. Remember, the clusters that we are displaying in UMAP are based on clusters defined by the weighted nearest neighbors calculated above. 
 
-```{r}
+```{r tidy = FALSE}
 SeuratObj <- RunUMAP(SeuratObj, 
                      reduction = 'pca', 
                      dims = 1:30, 
@@ -213,7 +213,7 @@ Recent [work](https://pubmed.ncbi.nlm.nih.gov/34426704/) has proposed using repr
 
 In order to generate a single-cell object based on the CoNGA approach, Trex offers the function ```CoNGAfy()```. For **method**, select either "mean" or "dist" as described above. After performing ```CoNGAfy()```, the user can use any of the above reduction strategies. 
 
-```{r}
+```{r tidy = FALSE}
 library(dplyr, include.only = c("%>%"))
 
 CoNGA.seurat <- CoNGAfy(SeuratObj, 
@@ -250,7 +250,7 @@ The database is collated from multiple sources and represents a great deal of ef
 4. [TBA](https://db.cngb.org/pird/home/) (now called PIRD) - [citation](https://pubmed.ncbi.nlm.nih.gov/31373607/)
 
 
-```{r}
+```{r tidy = FALSE}
 CoNGA.seurat <- annotateDB(CoNGA.seurat, 
                            chains = "TRB")
 
@@ -267,7 +267,7 @@ DimPlot(CoNGA.seurat,
 
 Or ```annotateDB()``` can be used on the full single-cell object and examine the sequence information along the RNA-based UMAP. An added feature to the function allows the annotations to be extended to CDR3 sequences that are within defined edit distances from the reference using **edit.distance**.
 
-```{r}
+```{r tidy = FALSE}
 SeuratObj <- annotateDB(SeuratObj,
                         chains = "TRB", 
                         edit.distance = 2)

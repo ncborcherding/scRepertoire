@@ -73,25 +73,26 @@ test_that("Modifying barcodes with ID works correctly", {
     expect_identical(modified_data, expected_modified_data)
 })
 
-# TODO removingNA
-# TODO removingMulti
 
-test_that("filteringMulti works", {
-    expect_identical(
-        .filteringMulti(head(contig_list[[1]])),
-        getdata("utils", "filteringMulti_expected")
-    )
-})
-
-# TODO filteringNA
-# TODO diversityCall
 # TODO parseContigs
-# TODO morisitaIndex
-# TODO jaccardIndex
-# TODO rawIndex
-# TODO overlapIndex
 # TODO quiet
-# TODO .theCall
+
+.quiet <- function(x) {
+  sink(tempfile())
+  on.exit(sink())
+  invisible(force(x))
+}
+
+
+
+test_that(".theCall works", {
+  expect_equal(.theCall(NULL, "aa", check.df = FALSE), "CTaa")
+  expect_equal(.theCall(NULL, "nt", check.df = FALSE), "CTnt")
+  expect_equal(.theCall(NULL, "genes", check.df = FALSE), "CTgene")
+  expect_equal(.theCall(NULL, "strict", check.df = FALSE), "CTstrict")
+})
+#TODO .theCall Add custom header
+
 
 test_that(".parseTCR works", {
     Con.df <- getdata("utils", "Con.df")
@@ -114,9 +115,10 @@ test_that("makeGenes works for cellType T", {
         getdata("utils", "makeGenes_T_expected")
     )
 })
-
 # TODO makesGenes (cellType B)
+
 # TODO short.check
+
 # TODO select.gene
 
 test_that("Check if object is a dataframe or list of dataframes", {

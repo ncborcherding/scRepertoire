@@ -71,7 +71,7 @@ Beyond the default 10x Genomic Cell Ranger pipeline outputs, scRepertoire suppor
 ```loadContigs()``` can be given a directory where the sequencing experiments are located and it will recursively load and process the contig data based on the file names. Alternatively, ```loadContigs()``` can be given a list of data frames and process the contig data
 
 
-```{r, eval=FALSE}
+```{r, eval=FALSE, tidy = FALSE}
 #Directory example
 contig.output <- c("~/Documents/MyExperiment")
 contig.list <- loadContigs(input = contig.output, 
@@ -94,7 +94,7 @@ It is now easy to create the contig list from a multiplexed experiment by first 
 
 This function depends on the match of barcodes between the single-cell object and contigs. If there is a prefix or different suffix added to the barcode, this will result in no contigs recovered. Currently, it is recommended you do this step before the integration, as integration workflows commonly alter the barcodes. There is a **multi.run** variable that can be used on the integrated object. However, it assumes you have modified the barcodes with the Seurat pipeline (automatic addition of _# to end), and your contig list is in the same order.
 
-```{r, eval = F}
+```{r, eval = F, tidy = FALSE}
 contigs <- read.csv(".../outs/filtered_contig_annotations.csv")
 
 contig.list <- createHTOContigList(contigs, 
@@ -108,7 +108,7 @@ scRepertoire comes with a data set from T cells derived from four patients with 
 
 The built-in example data is derived from the 10x Cell Ranger pipeline, so it is ready to go for downstream processing and analysis. 
 
-```{r}
+```{r tidy = FALSE}
 data("contig_list") #the data built into scRepertoire
 
 head(contig_list[[1]])

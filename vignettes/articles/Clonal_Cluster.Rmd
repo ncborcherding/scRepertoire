@@ -66,7 +66,7 @@ Edit-distance based clusters will have the following format:
 
 ### Basic use: 
 
-```{r}
+```{r tidy = FALSE}
 sub_combined <- clonalCluster(combined.TCR[[2]], 
                               chain = "TRA", 
                               sequence = "aa", 
@@ -80,7 +80,7 @@ If performed over the number of samples, such as the list elements, **group.by**
 
 ### Clustering with attached data: 
 
-```{r}
+```{r tidy = FALSE}
 #Adding patient information
 scRep_example$Patient <- substr(scRep_example$orig.ident, 1,3)
 
@@ -105,7 +105,7 @@ Using ```clonalCluster()```, we can also return an igraph object of all the rela
 
 ### Returning an igraph object:
 
-```{r}
+```{r tidy = FALSE}
 #Clustering Patient 19 samples
 igraph.object <- clonalCluster(combined.TCR[c(5,6)],
                                chain = "TRB",
