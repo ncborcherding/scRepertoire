@@ -285,6 +285,8 @@ is_seurat_or_se_object <- function(obj) {
 #' @author Gloria Kraus, Nick Bormann, Nicky de Vrij, Nick Borcherding
 #' @keywords internal
 .parseTCR <- function(Con.df, unique_df, data2) {
+    tcr1_index <- 2
+    tcr2_index <- 5
     data2 <- data2 %>% arrange(., chain, cdr3_nt)
     for (y in seq_along(unique_df)){
         barcode.i <- Con.df$barcode[y]
@@ -292,9 +294,9 @@ is_seurat_or_se_object <- function(obj) {
         for (z in seq_along(location.i)) {
             where.chain <- data2[location.i[z],"chain"]
   
-            if (where.chain == "TRA" | where.chain == "TRG") {
-                if (is.na(Con.df[y,"TCR1"])) {
-                    Con.df[y,tcr1_lines] <- data2[location.i[z],data1_lines]
+            if (where.chain == "TRA" || where.chain == "TRG") {
+                if (is.na(Con.df[y, tcr1_index])) {
+                    Con.df[y,tcr1_lines] <- data2[location.i[z], data1_lines]
                 } else {
                     Con.df[y,tcr1_lines] <- paste(
                         Con.df[y, tcr1_lines],
@@ -302,9 +304,9 @@ is_seurat_or_se_object <- function(obj) {
                         sep=";"
                     ) 
                 }
-            } else if (where.chain == "TRB" | where.chain == "TRD") {
-                if (is.na(Con.df[y,"TCR2"])) {
-                    Con.df[y,tcr2_lines] <- data2[location.i[z],data2_lines]
+            } else if (where.chain == "TRB" || where.chain == "TRD") {
+                if (is.na(Con.df[y, tcr2_index])) {
+                    Con.df[y,tcr2_lines] <- data2[location.i[z], data2_lines] 
                 } else {
                     Con.df[y,tcr2_lines] <- paste(
                         Con.df[y, tcr2_lines],

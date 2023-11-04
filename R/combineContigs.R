@@ -86,14 +86,14 @@ combineTCR <- function(input.data,
     } else {
       out <- input.data
     }
-    for (i in seq_along(out)) { # ideally the nested code could be in a function for a better development/testing experience
+    for (i in seq_along(out)) {
         data2 <- out[[i]]
         data2 <- .makeGenes(cellType = "T", data2)
         unique_df <- unique(data2$barcode) # could potentially display % here
         Con.df <- data.frame(matrix(NA, length(unique_df), 7))
         colnames(Con.df) <- c("barcode",tcr1_lines, tcr2_lines)
         Con.df$barcode <- unique_df
-        Con.df <- .parseTCR(Con.df, unique_df, data2)
+        Con.df <- .parseTCR(Con.df, unique_df, data2) # from profvis, this takes the most runtime
         Con.df <- .assignCT(cellType = "T", Con.df)
         Con.df[Con.df == "NA_NA" | Con.df == "NA;NA_NA;NA"] <- NA 
         data3 <- merge(data2[,-which(names(data2) %in% c("TCR1","TCR2"))], 
@@ -121,10 +121,10 @@ combineTCR <- function(input.data,
       final[[i]]<-final[[i]][!duplicated(final[[i]]$barcode),]
       final[[i]]<-final[[i]][rowSums(is.na(final[[i]])) < 10, ]
     }
-    if (removeNA) { 
+    if (removeNA) {
       final <- .removingNA(final)
     }
-    if (removeMulti) { 
+    if (removeMulti) {
       final <- .removingMulti(final)
     }
     final

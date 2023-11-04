@@ -11,7 +11,7 @@
 #' percentKmer(combined, 
 #'             chain = "TRB", 
 #'             motif.length = 3)
-
+#' 
 #' @param input.data The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
 #'  \code{\link{combineExpression}}.
 #' @param chain "TRA", "TRB", "TRG", "TRG", "IGH", "IGL".
@@ -49,7 +49,7 @@ percentKmer <- function(input.data,
                               .theCall(input.data, cloneCall, check.df = FALSE), 
                               chain)
   cloneCall <- .theCall(input.data, cloneCall)
-  if(!is.null(group.by) & !sco) {
+  if(!is.null(group.by) && !sco) {
     input.data <- .groupList(input.data, group.by)
   }
   #Determining the function to generate motifs
@@ -67,15 +67,22 @@ percentKmer <- function(input.data,
   for(i in seq_along(input.data)) {
     input.data[[i]][,cloneCall][which(input.data[[i]][,cloneCall] == "NA")] <- NA
     input.data[[i]] <- input.data[[i]][!is.na(input.data[[i]][,cloneCall]),]
+
+    if (identical(cloneCall, "CTnt") && motif.length > 1L && motif.length <= 32L) {
+      mat[i, ] <- rcppGetNtKmerPercent(input.data[[i]][,cloneCall], motif.length)
+      next
+    }
+
     motifs <- .tokenize_multiple_sequences(input.data[[i]][,cloneCall], motif.length)
     motif.table <- table(unlist(motifs))
     if(any(grepl("\\;", names(motif.table)))) {
       motif.table <- motif.table[!grepl("\\;", names(motif.table))]
     }
     mat.pos <- match(names(motif.table), colnames(mat))
-    mat[i,mat.pos] <- as.vector(motif.table)
-    mat[i,] <- mat[i,]/sum(na.omit(mat[i,]))
+    mat[i, mat.pos] <- as.vector(motif.table)
+    mat[i, ] <- mat[i, ] / sum(na.omit(mat[i, ]))
   }
+
   #Removing any column that is all NAs
   if(any(colSums(is.na(mat)) == length(input.data))) {
     mat <- mat[,-which(colSums(is.na(mat)) == length(input.data))]
@@ -86,28 +93,28 @@ percentKmer <- function(input.data,
   if(!is.null(top.motifs)) {
     mads <- apply(mat, 2, mad)
     motifs.to.save <- names(sort(mads, decreasing = TRUE))[seq_len(top.motifs)]
-    mat <- mat[,colnames(mat) %in% motifs.to.save]
+    mat <- mat[, colnames(mat) %in% motifs.to.save]
   }
+
   #Getting mat into a ggplot-compliant form
   mat_melt <- melt(mat)
   if (!is.null(motifs.to.save)) {
     mat_melt$Var2 <- factor(mat_melt$Var2, levels = rev(motifs.to.save))
   }
   
-  #Plotting
-  plot <- ggplot(mat_melt, aes(x=Var2, y = Var1, fill=value)) +
-            geom_tile(lwd= 0.1, color = "black") +
-            scale_fill_gradientn(name = "Percentage", colors = .colorizer(palette,21)) +
-            theme_classic() + 
-            coord_flip() + 
-            theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1), 
-                  axis.title = element_blank())
-  if (exportTable == TRUE) { 
-    return(mat) 
+  if (exportTable) {
+    return(mat)
   }
-  return(plot)
-}
 
+  #Plotting
+  ggplot(mat_melt, aes(x=Var2, y = Var1, fill=value)) +
+    geom_tile(lwd = 0.1, color = "black") + 
+    scale_fill_gradientn(name = "Percentage", colors = .colorizer(palette,21)) +
+    theme_classic() + 
+    coord_flip() + 
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
+          axis.title = element_blank())
+}
 
 .generate_unique_aa_motifs <- function(motif_length) {
   amino_acids <- c("A", "C", "D", "E", "F", "G", "H", "I", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "V", "W", "Y")
@@ -117,10 +124,7 @@ percentKmer <- function(input.data,
 }
 
 .generate_unique_nt_motifs <- function(motif_length) {
-  nt <- c("A", "T", "C", "G")
-  all_motifs <- expand.grid(replicate(motif_length, nt, simplify = FALSE))
-  unique_motifs <- unique(apply(all_motifs, 1, paste, collapse = ""))
-  return(unique_motifs)
+  rcppGenerateUniqueNtMotifs(motif_length)
 }
 
 .tokenize_sequence <- function(sequence, motif_length) {
@@ -136,6 +140,5 @@ percentKmer <- function(input.data,
 }
 
 .tokenize_multiple_sequences <- function(sequences, motif_length) {
-  tokenized_sequences <- sapply(sequences, .tokenize_sequence, motif_length = motif_length)
-  return(tokenized_sequences)
+  sapply(sequences, .tokenize_sequence, motif_length = motif_length)
 }

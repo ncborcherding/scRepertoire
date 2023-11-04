@@ -8,7 +8,7 @@ test_that("combineTCR works", {
 		samples = c("P17B", "P17L", "P18B")
 	)
 	
-	expected1 <- readRDS("testdata/combineContigs/combineTCR_list_expected.rds")
+	expected1 <- getdata("combineContigs", "combineTCR_list_expected")
 	
 	expect_identical(trial1, expected1)
 	
