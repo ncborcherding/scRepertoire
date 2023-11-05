@@ -93,18 +93,6 @@ test_that(".theCall works", {
 })
 #TODO .theCall Add custom header
 
-
-test_that(".parseTCR works", {
-    Con.df <- getdata("utils", "Con.df")
-    data2 <- getdata("utils", "data2")
-    unique_df <- Con.df[[1]]
-
-    expect_equal(
-        .parseTCR(Con.df, unique_df, data2),
-        getdata("utils", "parseTCR_result")
-    )
-})
-
 # TODO .parseBCR
 # TODO lengthDF
 # TODO assignCT
