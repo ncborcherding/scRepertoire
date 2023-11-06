@@ -1,12 +1,10 @@
 # test script for clonalOverlap.R - testcases are NOT comprehensive!
 
-combined <- combineTCR(contig_list, 
-                       samples = c("P17B", "P17L", "P18B", "P18L", 
-                                   "P19B","P19L", "P20B", "P20L"))
-
-
 test_that("clonalOverlap works", {
-  expect_doppelganger(
+
+  combined <- getCombined()
+
+  expect_doppelganger( # warning from testthat: Removed 36 rows containing missing values (`geom_text()`).
     "clonalOverlap_raw_plot",
     clonalOverlap(
       combined, 

@@ -8,8 +8,7 @@ test_that("combineTCR works", {
 		samples = c("P17B", "P17L", "P18B")
 	)
 	
-	expected1 <- readRDS("testdata/combineContigs/combineTCR_list_expected.rds")
-	
+	expected1 <- getdata("combineContigs", "combineTCR_list_expected")
 	expect_identical(trial1, expected1)
 	
 	trial2 <- combineTCR(
@@ -24,8 +23,8 @@ test_that("combineTCR works", {
 	  samples = c("P17B", "P17L", "P18B"),
 	  filterMulti = TRUE
 	)
-	expected3 <- readRDS("testdata/combineContigs/combineTCR_list_filterMulti.rds")
-	
+
+	expected3 <- getdata("combineContigs", "combineTCR_list_filterMulti")	
 	expect_identical(trial3, expected3)
 	
 	trial4 <- combineTCR(
@@ -33,10 +32,8 @@ test_that("combineTCR works", {
 	  samples = c("P17B", "P17L", "P18B"),
 	  removeNA = TRUE
 	)
-	expected4 <- readRDS("testdata/combineContigs/combineTCR_list_removeNA.rds")
-	
+	expected4 <- getdata("combineContigs", "combineTCR_list_removeNA")
 	expect_identical(trial4, expected4)
-	
 }) 
 
 # TODO combineTCR (need more edge cases, different args, errors, etc.)

@@ -1,9 +1,8 @@
 test_that("make_screp_seurat_cmd works", {
-	data("scRep_example", "mini_contig_list")
-  	combined <- combineTCR(mini_contig_list,
-                           samples = c("P17B", "P17L", "P18B", "P18L",
-                                       "P19B","P19L", "P20B", "P20L"))
-	test_obj <- combineExpression(combined, scRep_example)
+	
+	data("scRep_example")
+  	test_obj <- combineExpression(getCombined(), scRep_example)
+
 	expect_true(!is.null(test_obj@commands[["combineExpression"]]))
 	
 	test_obj <- test_obj@commands[["combineExpression"]]

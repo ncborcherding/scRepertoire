@@ -44,13 +44,13 @@ inline bool isNt(char c) {
 Rcpp::CharacterVector rcppGenerateUniqueNtMotifs(int k) {
     long int numKmers = 1 << (k + k);
     Rcpp::CharacterVector motifs (numKmers);
-    for (unsigned long int i = 0; i < numKmers; i++) {
+    for (long int i = 0; i < numKmers; i++) {
         motifs[i] = toNtKmer(i, k);
     }
     return motifs;
 }
 
-inline void updateSkip(int& skip, char c, int k) {
+inline void updateSkip(int& skip, const char c, const int k) {
     if (!isNt(c)) {
         skip = k;
     } else if (skip > 0) {
@@ -59,11 +59,11 @@ inline void updateSkip(int& skip, char c, int k) {
 }
 
 // actual kmer counter - doesnt handle _NA_ for k = 1
-inline void kmerCount(std::vector<long double>& bins, const unsigned int mask, const std::string& seq, int k) {
+inline void kmerCount(std::vector<long double>& bins, const unsigned int mask, const std::string& seq, const int k) {
     int skip = 0;
     unsigned long int kmer = 0;
 
-    for (int i = 0; i < k - 1; i++) {
+    for (int i = 0; i < (k - 1); i++) { // this segment can be deleted if skip = k i think
         kmer = (kmer << 2) | toNtIndex(seq[i]);
         updateSkip(skip, seq[i], k);
     }
