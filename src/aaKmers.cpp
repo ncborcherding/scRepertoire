@@ -7,8 +7,8 @@
 #include <unordered_map>
 #include "scRepHelper.h"
 
-std::unordered_map<char, int> allAaMap() {
-    std::unordered_map<char, int> map;
+std::unordered_map<char, unsigned long int> allAaMap() {
+    std::unordered_map<char, unsigned long int> map;
     map['A'] = 0;
     map['C'] = 1;
     map['D'] = 2;
@@ -37,17 +37,16 @@ public:
     // ideally these are all constants except bins
     std::unordered_map<unsigned long int, int> aaUIntKmerMap;
     int k;
-    unsigned int mask;
-    int numKmers;
-    std::unordered_map<char, int> aaIndexMap;
+    unsigned long int mask;
+    std::unordered_map<char, unsigned long int> aaIndexMap;
 
     std::vector<long double> bins;
 
+    // constructor
     AaKmerCounter(const std::vector<std::string>& motifs, const int _k) {
         aaIndexMap = allAaMap();
         k = _k;
-        mask = (1 << (_k * 5)) - 1;
-        numKmers = mask + 1;
+        mask = (unsigned long int) ((1 << (_k * 5)) - 1);
         aaUIntKmerMap = toAaUIntKmerMap(motifs);
         bins = std::vector<long double> (motifs.size(), 0.0);
     }
@@ -56,15 +55,15 @@ public:
         std::unordered_map<unsigned long int, int> map;
         for (int i = 0; i < (int) motifs.size(); i++) {
             unsigned long int kmer = 0;
-            for (int j = 0; j < (int) motifs[i].size(); j++) {
-                kmer = (kmer << 5) | toAaIndex(motifs[i][j]);
+            for (char aa : motifs[i]) {
+                kmer = (kmer << 5) | toAaIndex(aa);
             }
             map[kmer] = i;
         }
         return map;
     }
 
-    inline unsigned short int toAaIndex(const char aa) {
+    inline unsigned long int toAaIndex(const char aa) {
         if (aaIndexMap.find(aa) == aaIndexMap.end()) {
             return 20;
         }
@@ -81,6 +80,10 @@ public:
 
     void countKmers(const std::vector<std::string>& seqs) {
         for (std::string seq : seqs) {
+            if ((int) seq.size() < k) {
+                continue;
+            }
+
             int skip = 0;
             unsigned long int kmer = 0;
 
@@ -115,13 +118,13 @@ Rcpp::NumericVector rcppGetAaKmerPercent(
 
     long double binSum = scRepHelper::sum(bins);
     if (binSum == 0.0) { // pretty sure this can only happen if there arent valid seqs?
-        return Rcpp::NumericVector (counter.numKmers, R_NaReal);
+        return Rcpp::NumericVector (motifs.size(), R_NaReal);
     }
     
     double scaleFactor = 1 / binSum;
-    for (int i = 0; i < counter.numKmers; i++) {
+    for (int i = 0; i < (int) motifs.size(); i++) {
         bins[i] *= scaleFactor;
     }
 
-    return scRepHelper::convertZerosToNA(bins, counter.numKmers);
+    return scRepHelper::convertZerosToNA(bins, motifs.size());
 }

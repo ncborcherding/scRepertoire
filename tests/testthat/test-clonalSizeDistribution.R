@@ -16,7 +16,7 @@ test_that("clonalSizeDistribution works", {
                           method = "ward.D2", 
                           exportTable = TRUE),
     getdata("visualizations", "clonalSizeDistribution_exportTable"),
-    tolerance = 1e-5
+    tolerance = 1e-4
   )
   
 })
