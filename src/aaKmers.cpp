@@ -1,73 +1,127 @@
-// // naive implementation of hashmap-based AA counting
-// // By Qile Yang
+// naive implementation of hashmap-based AA counting, with a 5-bit AA representation.
+// By Qile Yang
 
-// #include <Rcpp.h>
-// #include <vector>
-// #include <string>
-// #include "screpUtils.h"
+#include <Rcpp.h>
+#include <vector>
+#include <string>
+#include <unordered_map>
+#include "scRepHelper.h"
 
-// // // the following could be used if a 5-bit based AA kmer counting is needed
-// // inline unsigned short int toAAIndex(const char aa) {
-// //     switch(aa) {
-// //         case 'A': return 0;
-// //         case 'C': return 1;
-// //         case 'D': return 2;
-// //         case 'E': return 3;
-// //         case 'F': return 4;
-// //         case 'G': return 5;
-// //         case 'H': return 6;
-// //         case 'I': return 7;
-// //         case 'K': return 8;
-// //         case 'L': return 9;
-// //         case 'M': return 10;
-// //         case 'N': return 11;
-// //         case 'P': return 12;
-// //         case 'Q': return 13;
-// //         case 'R': return 14;
-// //         case 'S': return 15;
-// //         case 'T': return 16;
-// //         case 'V': return 17;
-// //         case 'W': return 18;
-// //         default: return 19; // case 'Y'
-// //     }
-// // }
+std::unordered_map<char, int> allAaMap() {
+    std::unordered_map<char, int> map;
+    map['A'] = 0;
+    map['C'] = 1;
+    map['D'] = 2;
+    map['E'] = 3;
+    map['F'] = 4;
+    map['G'] = 5;
+    map['H'] = 6;
+    map['I'] = 7;
+    map['K'] = 8;
+    map['L'] = 9;
+    map['M'] = 10;
+    map['N'] = 11;
+    map['P'] = 12;
+    map['Q'] = 13;
+    map['R'] = 14;
+    map['S'] = 15;
+    map['T'] = 16;
+    map['V'] = 17;
+    map['W'] = 18;
+    map['Y'] = 19;
+    return map;
+}
 
-// inline bool isAA(const char aa) {
-//     switch(aa) {
-//         case 'A': case 'C': case 'D': case 'E': case 'F': case 'G': case 'H': case 'I':
-//         case 'K': case 'L': case 'M': case 'N': case 'P': case 'Q': case 'R': case 'S':
-//         case 'T': case 'V': case 'W': case 'Y': return true;
-//         default: return false;
-//     } // may be better to input a set of aa's :P hopefully the compiler doesnt reconstruct the hashmap every time this function is called
-// }
+class AaKmerCounter {
+public:
+    // ideally these are all constants except bins
+    std::unordered_map<unsigned long int, int> aaUIntKmerMap;
+    int k;
+    unsigned int mask;
+    int numKmers;
+    std::unordered_map<char, int> aaIndexMap;
 
-// inline void updateSkip(int& skip, const char c, const int k) {
-//     if (!isAA(c)) {
-//         skip = k;
-//     } else if (skip > 0) {
-//         skip--;
-//     }
-// }
+    std::vector<long double> bins;
 
-// // [[Rcpp::export]]
-// Rcpp::NumericVector rcppGetAAKmerPercent(
-//     const std::vector<std::string>& seqs, const std::vector<std::string>& motifs, const int k
-// ) {
-//     std::unordered_map<std::string, int> map = toUnorderedMap(motifs);
-//     std::vector<long double> counts (motifs.size(), 0);
-//     int skip = k;
+    AaKmerCounter(const std::vector<std::string>& motifs, const int _k) {
+        aaIndexMap = allAaMap();
+        k = _k;
+        mask = (1 << (_k * 5)) - 1;
+        numKmers = mask + 1;
+        aaUIntKmerMap = toAaUIntKmerMap(motifs);
+        bins = std::vector<long double> (motifs.size(), 0.0);
+    }
 
-//     for (std::string seq : seqs) {
-//         for (int i = 0; i < (int) seq.size(); i++) {
-//             updateSkip(skip, seq[i], k);
-//             if (skip > 0) {
-//                 continue;
-//             }
-//             std::string kmer = seq.substr(i - k + 1, k);
-//             if (map.find(kmer) != map.end()) {
-//                 counts[map[kmer]]++;
-//             }
-//         }
-//     }
-//     return convertZerosToNA(counts, motifs.size());
-// }
+    std::unordered_map<unsigned long int, int> toAaUIntKmerMap(const std::vector<std::string>& motifs) {
+        std::unordered_map<unsigned long int, int> map;
+        for (int i = 0; i < (int) motifs.size(); i++) {
+            unsigned long int kmer = 0;
+            for (int j = 0; j < (int) motifs[i].size(); j++) {
+                kmer = (kmer << 5) | toAaIndex(motifs[i][j]);
+            }
+            map[kmer] = i;
+        }
+        return map;
+    }
+
+    inline unsigned short int toAaIndex(const char aa) {
+        if (aaIndexMap.find(aa) == aaIndexMap.end()) {
+            return 20;
+        }
+        return aaIndexMap[aa];
+    }
+
+    inline void updateSkip(int& skip, const char c) {
+        if (aaIndexMap.find(c) == aaIndexMap.end()) {
+            skip = k;
+        } else if (skip > 0) {
+            skip--;
+        }  
+    }
+
+    void countKmers(const std::vector<std::string>& seqs) {
+        for (std::string seq : seqs) {
+            int skip = 0;
+            unsigned long int kmer = 0;
+
+            for (int i = 0; i < (k - 1); i++) { // this segment to initialize the kmer should be deletable if skip is adjusted?
+                kmer = (kmer << 5) | toAaIndex(seq[i]);
+                updateSkip(skip, seq[i]);
+            }
+
+            for (int i = (k - 1); i < (int) seq.size(); i++) {
+                kmer = ((kmer << 5) & mask) | toAaIndex(seq[i]);
+                updateSkip(skip, seq[i]);
+                if (skip == 0) {
+                    bins[aaUIntKmerMap[kmer]]++;
+                }
+            }
+        }
+    }
+
+    std::vector<long double> getCounts() {
+        return bins;
+    }
+};
+
+// [[Rcpp::export]]
+Rcpp::NumericVector rcppGetAaKmerPercent(
+    const std::vector<std::string>& seqs, const std::vector<std::string>& motifs, const int k
+) {
+
+    AaKmerCounter counter = AaKmerCounter(motifs, k);
+    counter.countKmers(seqs);
+    std::vector<long double> bins = counter.getCounts();
+
+    long double binSum = scRepHelper::sum(bins);
+    if (binSum == 0.0) { // pretty sure this can only happen if there arent valid seqs?
+        return Rcpp::NumericVector (counter.numKmers, R_NaReal);
+    }
+    
+    double scaleFactor = 1 / binSum;
+    for (int i = 0; i < counter.numKmers; i++) {
+        bins[i] *= scaleFactor;
+    }
+
+    return scRepHelper::convertZerosToNA(bins, counter.numKmers);
+}

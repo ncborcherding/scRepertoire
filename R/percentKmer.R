@@ -73,6 +73,15 @@ percentKmer <- function(input.data,
       next
     }
 
+    if (identical(cloneCall, "CTaa") && motif.length > 1L && motif.length <= 12L) {
+      mat[i, ] <- rcppGetAaKmerPercent(input.data[[i]][,cloneCall], unique.motifs, motif.length)
+      next
+    }
+
+    # this point could only be reached if motif.length is extremely long or is one.
+    # which wouldn't really be practical. Maybe the following should just be deleted
+    # and a cap could be put on motif.length?
+
     motifs <- .tokenize_multiple_sequences(input.data[[i]][,cloneCall], motif.length)
     motif.table <- table(unlist(motifs))
     if(any(grepl("\\;", names(motif.table)))) {

@@ -4,7 +4,7 @@
 #include <Rcpp.h>
 #include <vector>
 #include <string>
-#include "screpUtils.h"
+#include "scRepHelper.h"
 
 inline unsigned short int toNtIndex(const char nt) {
     switch(nt) {
@@ -63,7 +63,7 @@ inline void kmerCount(std::vector<long double>& bins, const unsigned int mask, c
     int skip = 0;
     unsigned long int kmer = 0;
 
-    for (int i = 0; i < (k - 1); i++) { // this segment can be deleted if skip = k i think
+    for (int i = 0; i < (k - 1); i++) { // this segment to initialize the kmer should be deletable if skip is adjusted?
         kmer = (kmer << 2) | toNtIndex(seq[i]);
         updateSkip(skip, seq[i], k);
     }
@@ -71,7 +71,9 @@ inline void kmerCount(std::vector<long double>& bins, const unsigned int mask, c
     for (int i = k - 1; i < (int) seq.size(); i++) {
         kmer = ((kmer << 2) & mask) | toNtIndex(seq[i]);
         updateSkip(skip, seq[i], k);
-        if (skip == 0) {bins[kmer]++;}
+        if (skip == 0) {
+            bins[kmer]++;
+        }
     }
 }
 
@@ -85,15 +87,15 @@ Rcpp::NumericVector rcppGetNtKmerPercent(const std::vector<std::string>& seqs, c
         kmerCount(bins, mask, seq, k);
     }
 
-    long double binSum = sum(bins);
+    long double binSum = scRepHelper::sum(bins);
     if (binSum == 0.0) { // pretty sure this can only happen if there arent valid seqs?
         return Rcpp::NumericVector (numKmers, R_NaReal);
     }
     
-    const double scaleFactor = 1 / binSum;
+    double scaleFactor = 1 / binSum;
     for (int i = 0; i < numKmers; i++) {
         bins[i] *= scaleFactor;
     }
 
-    return convertZerosToNA(bins, numKmers);
+    return scRepHelper::convertZerosToNA(bins, numKmers);
 }

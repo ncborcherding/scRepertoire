@@ -10,6 +10,19 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
+// rcppGetAaKmerPercent
+Rcpp::NumericVector rcppGetAaKmerPercent(const std::vector<std::string>& seqs, const std::vector<std::string>& motifs, const int k);
+RcppExport SEXP _scRepertoire_rcppGetAaKmerPercent(SEXP seqsSEXP, SEXP motifsSEXP, SEXP kSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const std::vector<std::string>& >::type seqs(seqsSEXP);
+    Rcpp::traits::input_parameter< const std::vector<std::string>& >::type motifs(motifsSEXP);
+    Rcpp::traits::input_parameter< const int >::type k(kSEXP);
+    rcpp_result_gen = Rcpp::wrap(rcppGetAaKmerPercent(seqs, motifs, k));
+    return rcpp_result_gen;
+END_RCPP
+}
 // rcppGenerateUniqueNtMotifs
 Rcpp::CharacterVector rcppGenerateUniqueNtMotifs(int k);
 RcppExport SEXP _scRepertoire_rcppGenerateUniqueNtMotifs(SEXP kSEXP) {
@@ -35,6 +48,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_scRepertoire_rcppGetAaKmerPercent", (DL_FUNC) &_scRepertoire_rcppGetAaKmerPercent, 3},
     {"_scRepertoire_rcppGenerateUniqueNtMotifs", (DL_FUNC) &_scRepertoire_rcppGenerateUniqueNtMotifs, 1},
     {"_scRepertoire_rcppGetNtKmerPercent", (DL_FUNC) &_scRepertoire_rcppGetNtKmerPercent, 2},
     {NULL, NULL, 0}
