@@ -14,13 +14,13 @@ BarcodeIndciesMap stringToIndiciesMap(std::vector<std::string>& v) {
         if (map.find(v[i]) == map.end()) {
             map[v[i]] = {};
         }
-        map[v[i]].push_back(i + 1); // + 1 for R indexing, otherwise i for C++ indexing
+        map[v[i]].push_back(i + 1); // i + 1 for R indexing
     }
     return map;
 }
 
 // [[Rcpp::export]]
-std::vector<std::vector<int>> constructBarcodeIndex(
+std::vector<std::vector<int>> rcppConstructBarcodeIndex(
     std::vector<std::string>& conDfBarcodes, std::vector<std::string>& data2Barcodes
 ) {
     std::vector<std::vector<int>> outputBarcodeIndex (conDfBarcodes.size());
@@ -36,6 +36,7 @@ std::vector<std::vector<int>> constructBarcodeIndex(
     return outputBarcodeIndex;
 }
 
+// this is an upcoming function to *maybe* replace the R .parseTCR function.
 // // [[Rcpp::export]]
 // Rcpp::Dataframe rcppParseTcr(Rcpp::Dataframe& conDf, Rcpp::Dataframe& data2) {
 //     Rcpp::CharacterVector conDfBarcodes = conDf[0]; // this is a reference and is equivalent to unique_df
@@ -54,10 +55,7 @@ std::vector<std::vector<int>> constructBarcodeIndex(
 //         }
 
 //         // for (int x = 0; x < (int) conDf.size(); x++) {
-//         //     conDf[x][y] = data2[x][indicies[0]];
-//         //     for (int i = 1; i < (int) index.size(); i++) {
-//         //         conDf[x][y] += "," + data2[x][index[i]];
-//         //     }
+//         //     // unfinished
 //         // }
 //     }
 

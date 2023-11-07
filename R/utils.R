@@ -278,7 +278,7 @@ is_seurat_or_se_object <- function(obj) {
 }
 
 # Assigning positions for TCR contig data
-#' @author Gloria Kraus, Nick Bormann, Nicky de Vrij, Nick Borcherding
+#' @author Gloria Kraus, Nick Bormann, Nicky de Vrij, Nick Borcherding, Qile Yang
 #' @keywords internal
 .parseTCR <- function(Con.df, unique_df, data2) {
 
@@ -287,7 +287,7 @@ is_seurat_or_se_object <- function(obj) {
     data2_chain_index <- 6
 
     data2 <- data2 %>% arrange(., chain, cdr3_nt)
-    barcodeIndex <- constructBarcodeIndex(Con.df[, 1], data2[[1]])
+    barcodeIndex <- rcppConstructBarcodeIndex(Con.df[, 1], data2[[1]])
 
     for (y in seq_along(unique_df)){
         location.i <- barcodeIndex[[y]]

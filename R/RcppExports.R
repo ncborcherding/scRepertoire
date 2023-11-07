@@ -13,7 +13,7 @@ rcppGetNtKmerPercent <- function(seqs, k) {
     .Call(`_scRepertoire_rcppGetNtKmerPercent`, seqs, k)
 }
 
-constructBarcodeIndex <- function(conDfBarcodes, data2Barcodes) {
-    .Call(`_scRepertoire_constructBarcodeIndex`, conDfBarcodes, data2Barcodes)
+rcppConstructBarcodeIndex <- function(conDfBarcodes, data2Barcodes) {
+    .Call(`_scRepertoire_rcppConstructBarcodeIndex`, conDfBarcodes, data2Barcodes)
 }
 
