@@ -1,18 +1,14 @@
 # test script for clonalBias.R - testcases are NOT comprehensive!
 
-# testdata: (assumes combineTCR works)
-combined <- combineTCR(contig_list, 
-                         samples = c("P17B", "P17L", "P18B", "P18L", 
-                                     "P19B","P19L", "P20B", "P20L"))
-test_obj <- combineExpression(combined, scRep_example)
-test_obj$Patient <- substr(test_obj$orig.ident,1,3)
-test_obj$Type <- substr(test_obj$orig.ident,4,4)
-
-
 test_that("clonalBias works", {
+
+  data("scRep_example")
+  test_obj <- combineExpression(getCombined(), scRep_example)
+  test_obj$Patient <- substr(test_obj$orig.ident,1,3)
+  test_obj$Type <- substr(test_obj$orig.ident,4,4)
   
   set.seed(42)
-  expect_doppelganger(
+  expect_doppelganger( # Warning: Smoothing formula not specified. Using: y ~ qss(x, lambda = 3); Using size for a discrete variable is not advised.
     "clonalBias_plot",
     clonalBias(test_obj, 
                cloneCall = "aa", 

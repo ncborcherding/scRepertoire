@@ -109,7 +109,7 @@ test_that("makeGenes works for cellType T", {
 
 # TODO select.gene
 
-test_that("Check if object is a dataframe or list of dataframes", {
+test_that("is_df_or_list_of_df works", {
     df <- data.frame(x = 1:5, y = letters[1:5])
     list_of_dfs <- list(
         data.frame(a = 1:3, b = letters[1:3]),

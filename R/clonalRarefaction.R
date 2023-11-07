@@ -61,11 +61,11 @@ clonalRarefaction <- function(input.data,
   })
   col <- length(input.data)
   mat <- iNEXT(mat.list, q=hill.numbers, datatype="abundance",nboot = n.boots) 
-  plot <- ggiNEXT(mat, type=plot.type)  + 
+  plot <- suppressMessages(ggiNEXT(mat, type=plot.type) + 
             scale_shape_manual(values = rep(16,col)) + 
             scale_fill_manual(values = rep("white", col)) + 
             scale_color_manual(values = c(.colorizer(palette,col)))  + 
-            theme_classic()
+            theme_classic())
   if (exportTable == TRUE) { 
     return(plot["data"]) 
   } else {

@@ -1,0 +1,84 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' class='svglite' data-engine-version='2.0' width='720.00pt' height='576.00pt' viewBox='0 0 720.00 576.00'>
+<defs>
+  <style type='text/css'><![CDATA[
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+  ]]></style>
+</defs>
+<rect width='100%' height='100%' style='stroke: none; fill: #FFFFFF;'/>
+<defs>
+  <clipPath id='cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA='>
+    <rect x='0.00' y='0.00' width='720.00' height='576.00' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'>
+<rect x='0.00' y='0.00' width='720.00' height='576.00' style='stroke-width: 1.07; stroke: #FFFFFF; fill: #FFFFFF;' />
+</g>
+<defs>
+  <clipPath id='cpMzUuMjR8NTUxLjE5fDIyLjc4fDU0NS4xMQ=='>
+    <rect x='35.24' y='22.78' width='515.95' height='522.33' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpMzUuMjR8NTUxLjE5fDIyLjc4fDU0NS4xMQ==)'>
+<rect x='35.24' y='22.78' width='515.95' height='522.33' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
+<circle cx='527.73' cy='289.29' r='6.58' style='stroke-width: 0.35; fill: #611163;' />
+<circle cx='110.81' cy='46.53' r='2.31' style='stroke-width: 0.35; fill: #611163;' />
+<circle cx='58.69' cy='360.52' r='2.31' style='stroke-width: 0.35; fill: #F69422;' />
+<circle cx='58.69' cy='360.52' r='2.31' style='stroke-width: 0.35; fill: #C53270;' />
+<circle cx='58.69' cy='46.53' r='2.31' style='stroke-width: 0.35; fill: #FFFE9E;' />
+<circle cx='58.69' cy='491.69' r='2.31' style='stroke-width: 0.35; fill: #040404;' />
+<circle cx='58.69' cy='402.66' r='2.31' style='stroke-width: 0.35; fill: #C53270;' />
+<circle cx='110.81' cy='521.37' r='2.31' style='stroke-width: 0.35; fill: #040404;' />
+<circle cx='110.81' cy='478.04' r='2.31' style='stroke-width: 0.35; fill: #611163;' />
+<circle cx='58.69' cy='46.53' r='2.31' style='stroke-width: 0.35; fill: #C53270;' />
+<circle cx='58.69' cy='402.66' r='2.31' style='stroke-width: 0.35; fill: #F69422;' />
+<circle cx='58.69' cy='402.66' r='2.31' style='stroke-width: 0.35; fill: #040404;' />
+</g>
+<g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'>
+<polyline points='35.24,545.11 35.24,22.78 ' style='stroke-width: 1.07; stroke-linecap: butt;' />
+<text x='30.31' y='524.40' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='12.23px' lengthAdjust='spacingAndGlyphs'>0.2</text>
+<text x='30.31' y='405.69' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='12.23px' lengthAdjust='spacingAndGlyphs'>0.4</text>
+<text x='30.31' y='286.98' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='12.23px' lengthAdjust='spacingAndGlyphs'>0.6</text>
+<text x='30.31' y='168.26' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='12.23px' lengthAdjust='spacingAndGlyphs'>0.8</text>
+<text x='30.31' y='49.55' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='12.23px' lengthAdjust='spacingAndGlyphs'>1.0</text>
+<polyline points='32.50,521.37 35.24,521.37 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='32.50,402.66 35.24,402.66 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='32.50,283.95 35.24,283.95 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='32.50,165.24 35.24,165.24 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='32.50,46.53 35.24,46.53 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='35.24,545.11 551.19,545.11 ' style='stroke-width: 1.07; stroke-linecap: butt;' />
+<polyline points='110.81,547.85 110.81,545.11 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='267.15,547.85 267.15,545.11 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='423.50,547.85 423.50,545.11 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
+<text x='110.81' y='556.10' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='4.89px' lengthAdjust='spacingAndGlyphs'>3</text>
+<text x='267.15' y='556.10' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='4.89px' lengthAdjust='spacingAndGlyphs'>6</text>
+<text x='423.50' y='556.10' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='4.89px' lengthAdjust='spacingAndGlyphs'>9</text>
+<text x='293.21' y='568.24' text-anchor='middle' style='font-size: 11.00px; font-family: sans;' textLength='53.20px' lengthAdjust='spacingAndGlyphs'>Clone Size</text>
+<text transform='translate(13.05,283.95) rotate(-90)' text-anchor='middle' style='font-size: 11.00px; font-family: sans;' textLength='74.00px' lengthAdjust='spacingAndGlyphs'>Clonotype Bias</text>
+<rect x='562.14' y='191.70' width='152.38' height='60.85' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
+<text x='567.62' y='205.89' style='font-size: 11.00px; font-family: sans;' textLength='47.70px' lengthAdjust='spacingAndGlyphs'>cloneSize</text>
+<circle cx='576.26' cy='221.15' r='2.31' style='stroke-width: 0.35;' />
+<circle cx='576.26' cy='238.43' r='6.58' style='stroke-width: 0.35;' />
+<text x='590.38' y='224.18' style='font-size: 8.80px; font-family: sans;' textLength='91.25px' lengthAdjust='spacingAndGlyphs'>Large (0.01 &lt; X &lt;= 0.1)</text>
+<text x='590.38' y='241.46' style='font-size: 8.80px; font-family: sans;' textLength='118.66px' lengthAdjust='spacingAndGlyphs'>Hyperexpanded (0.1 &lt; X &lt;= 1)</text>
+<rect x='562.14' y='263.51' width='59.88' height='112.69' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
+<text x='567.62' y='277.70' style='font-size: 11.00px; font-family: sans;' textLength='48.93px' lengthAdjust='spacingAndGlyphs'>Top_state</text>
+<circle cx='576.26' cy='292.96' r='1.78' style='stroke-width: 0.35; fill: #040404;' />
+<circle cx='576.26' cy='310.24' r='1.78' style='stroke-width: 0.35; fill: #611163;' />
+<circle cx='576.26' cy='327.52' r='1.78' style='stroke-width: 0.35; fill: #C53270;' />
+<circle cx='576.26' cy='344.80' r='1.78' style='stroke-width: 0.35; fill: #F69422;' />
+<circle cx='576.26' cy='362.08' r='1.78' style='stroke-width: 0.35; fill: #FFFE9E;' />
+<text x='590.38' y='295.99' style='font-size: 8.80px; font-family: sans;' textLength='4.89px' lengthAdjust='spacingAndGlyphs'>3</text>
+<text x='590.38' y='313.27' style='font-size: 8.80px; font-family: sans;' textLength='4.89px' lengthAdjust='spacingAndGlyphs'>4</text>
+<text x='590.38' y='330.55' style='font-size: 8.80px; font-family: sans;' textLength='4.89px' lengthAdjust='spacingAndGlyphs'>5</text>
+<text x='590.38' y='347.83' style='font-size: 8.80px; font-family: sans;' textLength='4.89px' lengthAdjust='spacingAndGlyphs'>9</text>
+<text x='590.38' y='365.11' style='font-size: 8.80px; font-family: sans;' textLength='9.79px' lengthAdjust='spacingAndGlyphs'>13</text>
+<text x='35.24' y='14.56' style='font-size: 13.20px; font-family: sans;' textLength='88.80px' lengthAdjust='spacingAndGlyphs'>clonalBias_plot</text>
+</g>
+</svg>

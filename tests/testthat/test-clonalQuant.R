@@ -1,15 +1,13 @@
 # test script for clonalQuant.R - testcases are NOT comprehensive!
 
-# testdata: (assumes combineTCR works)
-combined <- combineTCR(contig_list, 
-                         samples = c("P17B", "P17L", "P18B", "P18L", 
-                                     "P19B","P19L", "P20B", "P20L"))
-
-
 test_that("clonalQuant works", {
+
+	combined <- getCombined()
+
 	expect_doppelganger(
 		"clonalQuant_scaled_plot", clonalQuant(combined, scale = TRUE)
 	)
+
 	expect_equal(
 		clonalQuant(combined, 
 		            scale = TRUE, 

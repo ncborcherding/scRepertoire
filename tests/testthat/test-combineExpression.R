@@ -1,11 +1,9 @@
 # test script for combineExpression.R - testcases are NOT comprehensive!
 
 test_that("combineExpression works with seurat objects", {
-	data("mini_contig_list", "scRep_example")
-  combined <- combineTCR(mini_contig_list, 
-                         samples = c("P17B", "P17L", "P18B", "P18L", 
-                                     "P19B","P19L", "P20B", "P20L"))
-	combined_test <- combineExpression(combined, scRep_example)
+	data("scRep_example")
+	combined <- getCombined()
+  	combined_test <- combineExpression(combined, scRep_example)
 	
 	#Seurat object test
 	expect_length(combined_test@meta.data, 13)

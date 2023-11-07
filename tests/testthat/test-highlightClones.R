@@ -1,13 +1,10 @@
 # test script for highlightClones.R - testcases are NOT comprehensive!
 
-# testdata: (assumes combineTCR works)
-combined <- combineTCR(contig_list, 
-                         samples = c("P17B", "P17L", "P18B", "P18L", 
-                                     "P19B","P19L", "P20B", "P20L"))
-test_obj <- combineExpression(combined, scRep_example)
-
-
 test_that("highlightClones works", {
+
+  data("scRep_example")
+  test_obj <- combineExpression(getCombined(), scRep_example)
+
   test_obj <- highlightClones(test_obj, 
                               cloneCall = "aa",
                               sequence = "CVVSDNTGGFKTIF_CASSVRRERANTGELFF")

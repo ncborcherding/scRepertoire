@@ -1,18 +1,14 @@
 # test script for clonalNetwork.R - testcases are NOT comprehensive!
 
-# testdata: (assumes combineTCR works)
-library(ggraph)
-combined <- combineTCR(contig_list, 
-                         samples = c("P17B", "P17L", "P18B", "P18L", 
-                                     "P19B","P19L", "P20B", "P20L"))
-test_obj <- combineExpression(combined, scRep_example)
-
-
+# library(ggraph) # Qile: I believe libraries shouldn't need to be loaded in scripts? Correct me if im wrong.
 
 test_that("clonalNetwork works", {
+
+  data("scRep_example")
+  test_obj <- combineExpression(getCombined(), scRep_example)
   
   set.seed(42)
-  expect_doppelganger(
+  expect_doppelganger( # warning from testthat: Using the `size` aesthetic in this geom was deprecated in ggplot2 3.4.0. Please use `linewidth` in the `default_aes` field and elsewhere instead.
     "clonalNetwork_plot",
     clonalNetwork(test_obj, 
                   reduction = "umap", 
