@@ -9,47 +9,22 @@
 
 std::unordered_map<char, unsigned long int> allAaMap() {
     std::unordered_map<char, unsigned long int> map;
-    map['A'] = 0;
-    map['C'] = 1;
-    map['D'] = 2;
-    map['E'] = 3;
-    map['F'] = 4;
-    map['G'] = 5;
-    map['H'] = 6;
-    map['I'] = 7;
-    map['K'] = 8;
-    map['L'] = 9;
-    map['M'] = 10;
-    map['N'] = 11;
-    map['P'] = 12;
-    map['Q'] = 13;
-    map['R'] = 14;
-    map['S'] = 15;
-    map['T'] = 16;
-    map['V'] = 17;
-    map['W'] = 18;
-    map['Y'] = 19;
+    map['A'] = 0; map['C'] = 1; map['D'] = 2; map['E'] = 3;
+    map['F'] = 4; map['G'] = 5; map['H'] = 6; map['I'] = 7;
+    map['K'] = 8; map['L'] = 9; map['M'] = 10; map['N'] = 11;
+    map['P'] = 12; map['Q'] = 13; map['R'] = 14; map['S'] = 15;
+    map['T'] = 16; map['V'] = 17; map['W'] = 18; map['Y'] = 19;
     return map;
 }
 
 class AaKmerCounter {
-public:
+private:
     // ideally these are all constants except bins
     std::unordered_map<unsigned long int, int> aaUIntKmerMap;
     int k;
     unsigned long int mask;
     std::unordered_map<char, unsigned long int> aaIndexMap;
-
     std::vector<long double> bins;
-
-    // constructor
-    AaKmerCounter(const std::vector<std::string>& motifs, const int _k) {
-        aaIndexMap = allAaMap();
-        k = _k;
-        mask = (unsigned long int) ((1 << (_k * 5)) - 1);
-        aaUIntKmerMap = toAaUIntKmerMap(motifs);
-        bins = std::vector<long double> (motifs.size(), 0.0);
-    }
 
     std::unordered_map<unsigned long int, int> toAaUIntKmerMap(const std::vector<std::string>& motifs) {
         std::unordered_map<unsigned long int, int> map;
@@ -76,6 +51,15 @@ public:
         } else if (skip > 0) {
             skip--;
         }  
+    }
+
+public:
+    AaKmerCounter(const std::vector<std::string>& motifs, const int _k) {
+        aaIndexMap = allAaMap();
+        k = _k;
+        mask = (unsigned long int) ((1 << (_k * 5)) - 1);
+        aaUIntKmerMap = toAaUIntKmerMap(motifs);
+        bins = std::vector<long double> (motifs.size(), 0.0);
     }
 
     void countKmers(const std::vector<std::string>& seqs) {
