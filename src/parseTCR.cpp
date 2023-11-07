@@ -11,9 +11,6 @@
 BarcodeIndciesMap stringToIndiciesMap(std::vector<std::string>& v) {
     BarcodeIndciesMap map;
     for (int i = 0; i < (int) v.size(); i++) {
-        if (map.find(v[i]) == map.end()) {
-            map[v[i]] = {};
-        }
         map[v[i]].push_back(i + 1); // i + 1 for R indexing
     }
     return map;
