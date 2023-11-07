@@ -204,6 +204,10 @@ clonalNetwork <- function(sc.data,
     V(graph)$size <- unname(clone.number)
     centers <- centers[rownames(centers) %in% names(V(graph)),]
 
+    if (exportTable) {
+      return(edge.list1)
+    }
+
     plot <- ggraph(graph, layout = centers[match(names(V(graph)), rownames(centers)),]) + 
                   geom_point(data = coord, aes(x = coord[,1], y = coord[,2], color = group.by)) + 
                   geom_edge_bend(aes(edge_color = as.numeric(weight)), 
@@ -228,9 +232,6 @@ clonalNetwork <- function(sc.data,
                       axis.line = element_line(colour = "black"), 
                       legend.key=element_blank()
                   )
-    if (exportTable) { 
-      return(edge.list1)
-    }
     return(plot)
 }
 

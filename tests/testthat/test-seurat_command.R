@@ -1,7 +1,8 @@
 test_that("make_screp_seurat_cmd works", {
 	
 	data("scRep_example")
-  	test_obj <- combineExpression(getCombined(), scRep_example)
+	combined <- getCombined()
+  	test_obj <- combineExpression(combined, scRep_example)
 
 	expect_true(!is.null(test_obj@commands[["combineExpression"]]))
 	

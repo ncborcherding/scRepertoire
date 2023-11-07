@@ -19,7 +19,7 @@ std::unordered_map<char, unsigned long int> allAaMap() {
 
 class AaKmerCounter {
 private:
-    // ideally these are all constants except bins
+    // ideally these are all constants except bins but this works :/
     std::unordered_map<unsigned long int, int> aaUIntKmerMap;
     int k;
     unsigned long int mask;

@@ -104,9 +104,14 @@ clonalBias <- function(sc.data,
     bias$cloneSize[i] <- as.vector(meta[which(meta[,cloneCall] == clone & meta[,split.by] == split),"cloneSize"])[1]
   }
   
-  bias$cloneSize <- factor(bias$cloneSize , rev(levels(meta[,"cloneSize"])))
-  #Plotting 
-  plot <- ggplot(bias, aes(x=ncells,y=bias)) + 
+  bias$cloneSize <- factor(bias$cloneSize , rev(levels(meta[, "cloneSize"])))
+
+  if (exportTable) {
+    return(bias)
+  }
+
+  #else, return the plot 
+  ggplot(bias, aes(x=ncells,y=bias)) + 
     geom_point(aes(fill=Top_state, size = cloneSize), shape = 21, stroke = 0.25) + 
     stat_quantile(data=df_shuffle, 
                          quantiles = c(corrected_p), 
@@ -115,13 +120,9 @@ clonalBias <- function(sc.data,
                          color = "black", 
                          lty = 2) + 
     scale_fill_manual(values = .colorizer(palette,  length(unique(bias[,"Top_state"])))) + 
-    theme_classic() + 
-    xlab("Clone Size") + 
+    theme_classic() +
+    xlab("Clone Size") +
     ylab("Clonotype Bias")
-  if (exportTable == TRUE) { 
-    return(bias) 
-  }
-  return(plot) 
 }
 
 #Background summary of clones
