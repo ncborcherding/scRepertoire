@@ -84,7 +84,7 @@ Rcpp::NumericVector rcppGetNtKmerPercent(const std::vector<std::string>& seqs, c
     std::vector<long double> bins (numKmers, 0);
 
     for (std::string seq : seqs) {
-        if (seq.size() < k) {
+        if ((int) seq.size() < k) {
             continue;
         }
         kmerCount(bins, mask, seq, k);

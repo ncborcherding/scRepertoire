@@ -151,6 +151,10 @@ is_seurat_or_se_object <- function(obj) {
         rownames(meta) <- sc@colData@rownames
         clu <- which(colnames(meta) == "ident")
         colnames(meta)[clu] <- "ident"
+    } else {
+        stop("Object indicated is not of class 'Seurat' or 
+            'SummarizedExperiment', make sure you are using
+            the correct data.")
     }
     return(meta)
 }
@@ -277,14 +281,18 @@ is_seurat_or_se_object <- function(obj) {
 #' @author Gloria Kraus, Nick Bormann, Nicky de Vrij, Nick Borcherding
 #' @keywords internal
 .parseTCR <- function(Con.df, unique_df, data2) {
+
     tcr1_index <- 2
     tcr2_index <- 5
+    data2_chain_index <- 6
+
     data2 <- data2 %>% arrange(., chain, cdr3_nt)
+    barcodeIndex <- constructBarcodeIndex(Con.df[, 1], data2[[1]])
+
     for (y in seq_along(unique_df)){
-        barcode.i <- Con.df$barcode[y]
-        location.i <- which(barcode.i == data2$barcode)
+        location.i <- barcodeIndex[[y]]
         for (z in seq_along(location.i)) {
-            where.chain <- data2[location.i[z],"chain"]
+            where.chain <- data2[location.i[z], data2_chain_index]
   
             if (where.chain == "TRA" || where.chain == "TRG") {
                 if (is.na(Con.df[y, tcr1_index])) {

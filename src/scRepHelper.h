@@ -3,7 +3,7 @@
 
 class scRepHelper {
 public: 
-    static const long double sum(std::vector<long double>& v) {
+    static long double sum(std::vector<long double>& v) {
         long double n = 0;
         for (long double num : v) {
             n += num;
