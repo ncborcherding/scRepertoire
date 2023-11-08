@@ -115,7 +115,8 @@ clonalOverlap <- function(input.data,
                 labs(fill = str_to_title(method)) +
                 geom_text(aes(label = round(value, digits = 3), 
                               color = ifelse(value <= mean_value,
-                                             "white", "black"))) +
+                                             "white", "black")), 
+                          na.rm = TRUE) +
                 scale_fill_gradientn(colors = .colorizer(palette, 7), na.value = "white") +
                 scale_color_identity() +
                 theme_classic() + 

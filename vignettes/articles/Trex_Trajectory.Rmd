@@ -89,10 +89,34 @@ library(slingshot)
 
 [Trex](https://github.com/ncborcherding/Trex) takes the CDR3 amino acid sequence and embeds them into latent dimensional space using convolutional neural networks. An introduction to Trex and the models available can be found in the [scRepertoire website](https://www.borch.dev/uploads/screpertoire/articles/trex). Below we will use variational autoencoders (VAE) using the the Kidera factors.
 
-```{r}
-SeuratObj <- subset(scRep_example, Patient == "P18")
+For the purpose of this vignette, we will use Patent 17 samples and look specifically at CD4+ cells. Low expression of CD4 mRNA is commonly seen in single-cell RNA sequencing, so we will use the absence of *CD8A* and *CD8B* as a proxy for CD8 cells. 
 
+```{r tidy=FALSE}
+#Subsetting Patient Samples
+SeuratObj <- subset(scRep_example, Patient == "P17")
 
+#Subsetting CD4 Cells
+"%!in%" <- Negate("%in%")
+CD8A.pos <- rownames(SeuratObj[[]])[which(SeuratObj@assays$RNA@counts["CD8A",] > 1)]
+CD8B.pos <- rownames(SeuratObj[[]])[which(SeuratObj@assays$RNA@counts["CD8B",] > 1)]
+CD8.cells <- unique(CD8A.pos, CD8B.pos)
+CD4.cells <- rownames(SeuratObj[[]])[rownames(SeuratObj[[]]) %!in% CD8.cells]
+SeuratObj <- subset(SeuratObj, cells = CD4.cells)
+
+######################
+#Getting RNA Reductions
+#######################
+
+SeuratObj <- SeuratObj %>%
+              NormalizeData(verbose = FALSE) %>%
+              FindVariableFeatures(verbose = FALSE) %>%
+              quietTCRgenes() %>%
+              ScaleData(verbose = FALSE) %>%
+              RunPCA(verbose = FALSE)
+
+######################
+#Getting TCR Reductions
+#######################
 
 SeuratObj <- runTrex(SeuratObj, 
                      chains = "TRA",
@@ -122,22 +146,55 @@ plot1 + plot2
 ```
 
 
+## Creating RNA/TCR Clusters and UMAPs
 
 
-```{r}
-SeuratObj <- SeuratObj %>%
-              NormalizeData(verbose = FALSE) %>%
-              FindVariableFeatures(verbose = FALSE) %>%
-              quietTCRgenes() %>%
-              ScaleData(verbose = FALSE) %>%
-              RunPCA(verbose = FALSE)
-
-
-rescaled.output <- rescaleByNeighbors(
+```{r tidy=FALSE}
+rescaled.values <- rescaleByNeighbors(
                             list(RNA = SeuratObj@reductions$pca@cell.embeddings,
-                                 TRA = SeuratObj@reductions$Trex.TRA.KF@cell.embeddings, 
-                                 TRB = SeuratObj@reductions$Trex.TRB.KF@cell.embeddings)
-                    )
+                                 TRA = SeuratObj@reductions$Trex.TRA.KF@cell.embeddings[,1:3], 
+                                 TRB = SeuratObj@reductions$Trex.TRB.KF@cell.embeddings[,1:3]))
+
+y <- DiffusionMap(rescaled.values)
+plot(y)
+
+phate.coord <- phate(rescaled.values)
+
+ggplot(phate.coord) +
+  geom_point(aes(PHATE1, PHATE2, color = SeuratObj$CTaa)) + 
+  guides(color = "none")
+
+
+mds <- as.data.frame(calculateMDS(t(rescaled.values)))
+ggplot(mds) +
+  geom_point(aes(mds[,1], mds[,2], color = SeuratObj$CTaa)) + 
+  guides(color = "none")
+
+umap <- as.data.frame(calculateUMAP(t(rescaled.values)))
+ggplot(umap) +
+  geom_point(aes(umap[,1], umap[,2], color = SeuratObj$CTaa)) + 
+  guides(color = "none")
+
+umap.trimodal <- calculateMultiUMAP(
+                            list(RNA = SeuratObj@reductions$pca@cell.embeddings,
+                                 TRA = SeuratObj@reductions$Trex.TRA.KF@cell.embeddings[,1:3], 
+                                 TRB = SeuratObj@reductions$Trex.TRB.KF@cell.embeddings[,1:3]), 
+                           # metric = "cosine",
+                            n_component = 25)
+SeuratObj[["triUMAP"]] <- CreateDimReducObject(embeddings = umap.trimodal,
+                                               key = "triUMAP")
+
+SeuratObj <- SeuratObj %>%
+              FindNeighbors(reduction = "triUMAP", 
+                            dims = 1:20) %>%
+              FindClusters(algorithm = 4, 
+                           resolution = 0.1)
+
+DimPlot(SeuratObj, reduction = "triUMAP")
+DimPlot(SeuratObj, group.by = "CTaa", reduction = "triUMAP") + 
+  theme(plot.title = element_blank()) + 
+  scale_color_viridis(option = "B", discrete = TRUE) + 
+  NoLegend()
 ```
 
 

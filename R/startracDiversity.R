@@ -106,7 +106,7 @@ StartracDiversity <- function(sc.data,
     col <- length(unique(mat_melt[,"majorCluster"]))
         
     plot <- ggplot(mat_melt, aes(x=majorCluster, y=value)) +
-                geom_boxplot(aes(fill = majorCluster), outlier.alpha = 0) +
+                geom_boxplot(aes(fill = majorCluster), outlier.alpha = 0, na.rm = TRUE) +
                 facet_grid(variable ~.) +
                 theme_classic() +
                 ylab("Index Score") +

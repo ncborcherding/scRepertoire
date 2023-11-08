@@ -104,25 +104,29 @@ clonalBias <- function(sc.data,
     bias$cloneSize[i] <- as.vector(meta[which(meta[,cloneCall] == clone & meta[,split.by] == split),"cloneSize"])[1]
   }
   
-  bias$cloneSize <- factor(bias$cloneSize , rev(levels(meta[, "cloneSize"])))
+  bias$cloneSize <- factor(bias$cloneSize, rev(levels(meta[, "cloneSize"])))
 
   if (exportTable) {
     return(bias)
   }
-
+  bias$dotSize <- as.numeric(bias$cloneSize)
+  
   #else, return the plot 
   ggplot(bias, aes(x=ncells,y=bias)) + 
-    geom_point(aes(fill=Top_state, size = cloneSize), shape = 21, stroke = 0.25) + 
+    geom_point(aes(fill=Top_state, size = dotSize), shape = 21, stroke = 0.25) + 
     stat_quantile(data=df_shuffle, 
                          quantiles = c(corrected_p), 
                          method = "rqss", 
-                         lambda=3, 
+                         lambda = 3, 
                          color = "black", 
                          lty = 2) + 
+    #This is ridiculous way to get around the internal ggplot "style"-based warnings
+    scale_size_continuous(breaks = as.vector(unique(bias$dotSize)), labels = as.vector(unique(bias$cloneSize))) + 
     scale_fill_manual(values = .colorizer(palette,  length(unique(bias[,"Top_state"])))) + 
     theme_classic() +
-    xlab("Clone Size") +
-    ylab("Clonotype Bias")
+    labs(size = "cloneSize", fill = "Group") + 
+    xlab("Clonal Size") +
+    ylab("Clonal Bias")
 }
 
 #Background summary of clones

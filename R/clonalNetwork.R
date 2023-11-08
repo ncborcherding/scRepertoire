@@ -176,7 +176,7 @@ clonalNetwork <- function(sc.data,
        }
     }
     if(is.null(edge.list)) {
-      stop("No shared clonotypes between the indicated identity")
+      stop("No shared clones between the indicated identity")
     }
     
     edge.list <- data.frame(edge.list)
@@ -207,7 +207,8 @@ clonalNetwork <- function(sc.data,
     if (exportTable) {
       return(edge.list1)
     }
-
+    #Warning from this is produced by geom_edge_bend and there is nothng that can be done
+    #until the authors of the package update it.
     plot <- ggraph(graph, layout = centers[match(names(V(graph)), rownames(centers)),]) + 
                   geom_point(data = coord, aes(x = coord[,1], y = coord[,2], color = group.by)) + 
                   geom_edge_bend(aes(edge_color = as.numeric(weight)), 
