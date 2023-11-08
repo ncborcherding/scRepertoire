@@ -3,7 +3,7 @@
 # library(ggraph) # Qile: I believe libraries shouldn't need to be loaded in scripts? Correct me if im wrong.
 
 test_that("clonalNetwork works", {
-
+  library(ggraph)
   data("scRep_example")
   test_obj <- combineExpression(getCombined(), scRep_example)
   

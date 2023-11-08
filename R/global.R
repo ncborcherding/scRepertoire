@@ -42,5 +42,6 @@
     utils::globalVariables ("group.by")
     utils::globalVariables ("group")
     utils::globalVariables ("chain2_aa")
+    utils::globalVariables ("dotSize")
     invisible ()
 }

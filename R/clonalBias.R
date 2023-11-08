@@ -42,7 +42,7 @@
 #' @param exportTable Returns the data frame used for forming the graph.
 #' @param palette Colors to use in visualization - input any \link[grDevices]{hcl.pals}.
 #' @import ggplot2
-#' @importClassesFrom quantreg rqss
+#' @importFrom quantreg rqss
 #' @importFrom stringr str_sort
 #' @export
 #' @concept SC_Functions
