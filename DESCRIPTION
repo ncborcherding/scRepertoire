@@ -29,7 +29,7 @@ Imports:
     reshape2,
     rjson,
     rlang,
-    Russ,
+    rqss,
     S4Vectors,
     SeuratObject,
     SingleCellExperiment,
