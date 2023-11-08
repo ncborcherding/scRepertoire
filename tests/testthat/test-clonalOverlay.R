@@ -13,7 +13,8 @@ test_that("clonalOverlay works", {
                  reduction = "umap",
                  freq.cutpoint = 1, 
                  bins = 10, 
-                 facet.by = "Patient")
+                 facet.by = "Patient") + 
+      guides(color = "none")
   )
   
 })

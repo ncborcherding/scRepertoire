@@ -11,7 +11,8 @@ test_that("clonalRarefaction works", {
     clonalRarefaction(combined[1:2],
                       plot.type = 1,
                       hill.numbers = 0,
-                      n.boots = 1)
+                      n.boots = 1) + 
+      guides(color = "none", shape = "none", linetype = "none")
   )
   
   trial1 <- clonalRarefaction(combined[1:2],
@@ -30,7 +31,8 @@ test_that("clonalRarefaction works", {
     clonalRarefaction(combined[3:4],
                       plot.type = 2,
                       hill.numbers = 1,
-                      n.boots = 1)
+                      n.boots = 1) + 
+      guides(color = "none", shape = "none", linetype = "none")
   )
   
   trial2 <- clonalRarefaction(combined[3:4],
@@ -49,7 +51,8 @@ test_that("clonalRarefaction works", {
     clonalRarefaction(combined[5:6],
                       plot.type = 3,
                       hill.numbers = 2,
-                      n.boots = 1)
+                      n.boots = 1) + 
+      guides(color = "none", shape = "none", linetype = "none")
   )
   
   

@@ -3,7 +3,7 @@
 test_that("clonalSizeDistribution works", {
 
   combined <- getCombined()
-
+  set.seed(42)
   expect_doppelganger(
     "clonalSizeDistribution_plot",
     clonalSizeDistribution(combined, 

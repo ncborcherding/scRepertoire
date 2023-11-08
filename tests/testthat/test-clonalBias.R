@@ -15,7 +15,8 @@ test_that("clonalBias works", {
                split.by = "Patient", 
                group.by = "seurat_clusters",
                n.boots = 1, 
-               min.expand = 2)
+               min.expand = 2) + 
+      guides(fill = "none", size = "none")
   )
   set.seed(42)
   expect_equal(
