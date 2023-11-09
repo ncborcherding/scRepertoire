@@ -93,10 +93,17 @@ test_that(".theCall works", {
 })
 #TODO .theCall Add custom header
 
-# TODO .constructConDfAndParseTCR !!!! Need to use testing data from the old version
-
 test_that(".constructConDfAndParseTCR works", {
-    # TODO create testdata with the original .parseTCR and test here. also do edgecases
+  expect_identical(
+    .constructConDfAndParseTCR(
+      getdata("utils", "constructConDfAndParseTCRInput")
+    ),
+    getdata("utils", "expected_con_df")
+  )
+
+# TODO: add more cases! This is not comprehensive.
+# there was a case in the past where this passed but
+# the function caused a segmentation fault.
 })
 
 # TODO .parseBCR

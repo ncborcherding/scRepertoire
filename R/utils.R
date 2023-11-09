@@ -283,7 +283,7 @@ is_seurat_or_se_object <- function(obj) {
 .constructConDfAndParseTCR <- function(data2) {
   rcppConstructConDfAndParseTCR(
     data2 %>% arrange(., chain, cdr3_nt),
-    unique(data2$barcode)
+    unique(data2[[1]])
   )
 }
 
@@ -400,8 +400,7 @@ is_seurat_or_se_object <- function(obj) {
                   str_c(str_replace_na(v_gene),  str_replace_na(j_gene), str_replace_na(c_gene), sep = "."), NA)) %>%
             mutate(TCR2 = ifelse(chain %in% c("TRB", "TRD"), 
                   str_c(str_replace_na(v_gene), str_replace_na(d_gene),  str_replace_na(j_gene),  str_replace_na(c_gene), sep = "."), NA))
-    }
-    else { # assume BCR (`c("B")`)
+    } else if (cellType %in% c("B")) {
         heavy <- data2[data2$chain == "IGH",] %>% 
           mutate(IGHct = str_c(str_replace_na(v_gene), str_replace_na(d_gene),  str_replace_na(j_gene),  str_replace_na(c_gene), sep = "."))
         kappa <- data2[data2$chain == "IGK",] %>% 
