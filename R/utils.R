@@ -277,43 +277,6 @@ is_seurat_or_se_object <- function(obj) {
     return(x)
 }
 
-# to be removed
-.parseTCR <- function(Con.df, unique_df, data2) {
-    tcr1_index <- 2
-    tcr2_index <- 5
-    data2 <- data2 %>% arrange(., chain, cdr3_nt)
-    for (y in seq_along(unique_df)){
-        barcode.i <- Con.df$barcode[y]
-        location.i <- which(barcode.i == data2$barcode)
-        for (z in seq_along(location.i)) {
-            where.chain <- data2[location.i[z],"chain"]
-  
-            if (where.chain == "TRA" || where.chain == "TRG") {
-                if (is.na(Con.df[y, tcr1_index])) {
-                    Con.df[y,tcr1_lines] <- data2[location.i[z], data1_lines]
-                } else {
-                    Con.df[y,tcr1_lines] <- paste(
-                        Con.df[y, tcr1_lines],
-                        data2[location.i[z],data1_lines],
-                        sep=";"
-                    ) 
-                }
-            } else if (where.chain == "TRB" || where.chain == "TRD") {
-                if (is.na(Con.df[y, tcr2_index])) {
-                    Con.df[y,tcr2_lines] <- data2[location.i[z], data2_lines] 
-                } else {
-                    Con.df[y,tcr2_lines] <- paste(
-                        Con.df[y, tcr2_lines],
-                        data2[location.i[z],data2_lines],
-                        sep=";"
-                    ) 
-                }
-            }
-        }
-    }
-    Con.df
-}
-
 # Assigning positions for TCR contig data, returning Con.df with the parsed TCR data
 #' @author Gloria Kraus, Nick Bormann, Nicky de Vrij, Nick Borcherding, Qile Yang
 #' @keywords internal

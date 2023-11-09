@@ -8,7 +8,6 @@
 #include "scRepHelper.h"
 
 #define BarcodeIndciesMap std::unordered_map<std::string, std::vector<int>>
-#define StringMatrix std::vector<std::vector<std::string>>
 
 std::vector<std::vector<int>> constructBarcodeIndex(
     std::vector<std::string>& conDfBarcodes, std::vector<std::string> data2Barcodes
@@ -28,10 +27,9 @@ std::vector<std::vector<int>> constructBarcodeIndex(
 class TcrParser {
 public:
     // variable for the eventual output conDf
-    StringMatrix conDf;
+    std::vector<std::vector<std::string>> conDf;
 
     // variables for *references* to columns on data2
-    Rcpp::CharacterVector data2Barcodes;
     Rcpp::CharacterVector data2ChainTypes;
     Rcpp::CharacterVector data2Tcr1;
     Rcpp::CharacterVector data2Tcr2;
@@ -41,7 +39,6 @@ public:
     // variable for helper barcode index
     std::vector<std::vector<int>> barcodeIndex;
 
-    // constructor
     TcrParser(
         Rcpp::DataFrame& data2, std::vector<std::string>& uniqueData2Barcodes
     ) {
@@ -52,7 +49,6 @@ public:
         conDf[0] = uniqueData2Barcodes;
 
         // set references to data2 columns
-        data2Barcodes = data2[0];
         data2ChainTypes = data2[5];
         data2Tcr1 = data2[19];
         data2Tcr2 = data2[20];
@@ -61,23 +57,15 @@ public:
 
         // barcodeIndex
         barcodeIndex = constructBarcodeIndex(
-            uniqueData2Barcodes, Rcpp::as<std::vector<std::string>>(data2Barcodes)
+            uniqueData2Barcodes, Rcpp::as<std::vector<std::string>>(data2[0])
         );
     }
 
-    // .parseTCR() equivalent
     void parseTCR() {
         for (int y = 0; y < (int) conDf[0].size(); y++) {
-
-            std::vector<int>& indicies = barcodeIndex[y];
-            if (indicies.size() == 0) {
-                continue;
-            }
-
-            for (int index : indicies) {
+            for (int index : barcodeIndex[y]) {
                 std::string chainType = std::string(data2ChainTypes[index]);
-                //Rcpp::Rcout << "data2ChainTypes[" << index << "] = " << chainType << "\n";
-                if (chainType == "TRA" || chainType == "TRB") {
+                if (chainType == "TRA" || chainType == "TRG") {
                     handleTcr1(y, index);
                 } else if (chainType == "TRB" || chainType == "TRD") {
                     handleTcr2(y, index);
@@ -96,17 +84,17 @@ public:
     }
 
     void handleTcr(
-        int y, int data2index, Rcpp::CharacterVector data2tcr, int tcr, int cdr3aa, int cdr3nt
+        int y, int data2index, Rcpp::CharacterVector& data2tcr, int tcr, int cdr3aa, int cdr3nt
     ) {
         if (conDf[tcr][y] == "NA") { 
             conDf[tcr][y] = data2tcr[data2index];
             conDf[cdr3aa][y] = data2Cdr3[data2index];
             conDf[cdr3nt][y] = data2Cdr3Nt[data2index];
-            return;
+        } else {
+            conDf[tcr][y] += ";" + data2tcr[data2index];
+            conDf[cdr3aa][y] += ";" + data2Cdr3[data2index];
+            conDf[cdr3nt][y] += ";" + data2Cdr3Nt[data2index];
         }
-        conDf[tcr][y] += ";" + data2tcr[data2index];
-        conDf[cdr3aa][y] += ";" + data2Cdr3[data2index];
-        conDf[cdr3nt][y] += ";" + data2Cdr3Nt[data2index];
     }
 
     // return Con.df after TCR parsing
