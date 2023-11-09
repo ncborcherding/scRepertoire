@@ -277,7 +277,9 @@ is_seurat_or_se_object <- function(obj) {
     return(x)
 }
 
-# Assigning positions for TCR contig data, returning Con.df with the parsed TCR data
+# Assigning positions for TCR contig data
+# Used to be .parseTCR(Con.df, unique_df, data2)
+# but now also constructs Con.df and runs the parseTCR algorithm on it, all in Rcpp
 #' @author Gloria Kraus, Nick Bormann, Nicky de Vrij, Nick Borcherding, Qile Yang
 #' @keywords internal
 .constructConDfAndParseTCR <- function(data2) {
@@ -292,9 +294,9 @@ is_seurat_or_se_object <- function(obj) {
 #' @author Gloria Kraus, Nick Bormann, Nick Borcherding
 #' @keywords internal
 .parseBCR <- function (Con.df, unique_df, data2) {
+  barcodeIndex <- rcppConstructBarcodeIndex(unique_df, data2$barcode)
   for (y in seq_along(unique_df)) {
-    barcode.i <- Con.df$barcode[y]
-    location.i <- which(barcode.i == data2$barcode) # TODO: test, then use rcppConstructBarcodeIndex
+    location.i <- barcodeIndex[[y]] # *may* be wrong but should be fine. Test on old version first
     
     for (z in seq_along(location.i)) {
       where.chain <- data2[location.i[z],"chain"]
