@@ -55,7 +55,7 @@ test_that("Modifying barcodes without ID works correctly", {
 test_that("Modifying barcodes with ID works correctly", {
     samples <- c("sample3", "sample4")
     ID <- c("id1", "id2")
-    modified_data <- modified_data <- .modifyBarcodes(
+    modified_data <- .modifyBarcodes(
         df = getdata("utils", "df_list"), samples = samples, ID = ID
     )
     
@@ -92,6 +92,12 @@ test_that(".theCall works", {
   expect_equal(.theCall(NULL, "strict", check.df = FALSE), "CTstrict")
 })
 #TODO .theCall Add custom header
+
+# TODO .constructConDfAndParseTCR !!!! Need to use testing data from the old version
+
+test_that(".constructConDfAndParseTCR works", {
+    # TODO create testdata with the original .parseTCR and test here. also do edgecases
+})
 
 # TODO .parseBCR
 # TODO lengthDF

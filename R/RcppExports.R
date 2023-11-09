@@ -5,15 +5,15 @@ rcppGetAaKmerPercent <- function(seqs, motifs, k) {
     .Call(`_scRepertoire_rcppGetAaKmerPercent`, seqs, motifs, k)
 }
 
+rcppConstructConDfAndParseTCR <- function(data2, uniqueData2Barcodes) {
+    .Call(`_scRepertoire_rcppConstructConDfAndParseTCR`, data2, uniqueData2Barcodes)
+}
+
 rcppGenerateUniqueNtMotifs <- function(k) {
     .Call(`_scRepertoire_rcppGenerateUniqueNtMotifs`, k)
 }
 
 rcppGetNtKmerPercent <- function(seqs, k) {
     .Call(`_scRepertoire_rcppGetNtKmerPercent`, seqs, k)
-}
-
-rcppConstructBarcodeIndex <- function(conDfBarcodes, data2Barcodes) {
-    .Call(`_scRepertoire_rcppConstructBarcodeIndex`, conDfBarcodes, data2Barcodes)
 }
 

@@ -277,22 +277,16 @@ is_seurat_or_se_object <- function(obj) {
     return(x)
 }
 
-# Assigning positions for TCR contig data
-#' @author Gloria Kraus, Nick Bormann, Nicky de Vrij, Nick Borcherding, Qile Yang
-#' @keywords internal
+# to be removed
 .parseTCR <- function(Con.df, unique_df, data2) {
-
     tcr1_index <- 2
     tcr2_index <- 5
-    data2_chain_index <- 6
-
     data2 <- data2 %>% arrange(., chain, cdr3_nt)
-    barcodeIndex <- rcppConstructBarcodeIndex(Con.df[, 1], data2[[1]])
-
     for (y in seq_along(unique_df)){
-        location.i <- barcodeIndex[[y]]
+        barcode.i <- Con.df$barcode[y]
+        location.i <- which(barcode.i == data2$barcode)
         for (z in seq_along(location.i)) {
-            where.chain <- data2[location.i[z], data2_chain_index]
+            where.chain <- data2[location.i[z],"chain"]
   
             if (where.chain == "TRA" || where.chain == "TRG") {
                 if (is.na(Con.df[y, tcr1_index])) {
@@ -320,6 +314,16 @@ is_seurat_or_se_object <- function(obj) {
     Con.df
 }
 
+# Assigning positions for TCR contig data, returning Con.df with the parsed TCR data
+#' @author Gloria Kraus, Nick Bormann, Nicky de Vrij, Nick Borcherding, Qile Yang
+#' @keywords internal
+.constructConDfAndParseTCR <- function(data2) {
+  rcppConstructConDfAndParseTCR(
+    data2 %>% arrange(., chain, cdr3_nt),
+    unique(data2$barcode)
+  )
+}
+
 #Assigning positions for BCR contig data
 #Now assumes lambda over kappa in the context of only 2 light chains
 #' @author Gloria Kraus, Nick Bormann, Nick Borcherding
@@ -327,7 +331,7 @@ is_seurat_or_se_object <- function(obj) {
 .parseBCR <- function (Con.df, unique_df, data2) {
   for (y in seq_along(unique_df)) {
     barcode.i <- Con.df$barcode[y]
-    location.i <- which(barcode.i == data2$barcode)
+    location.i <- which(barcode.i == data2$barcode) # TODO: test, then use rcppConstructBarcodeIndex
     
     for (z in seq_along(location.i)) {
       where.chain <- data2[location.i[z],"chain"]
