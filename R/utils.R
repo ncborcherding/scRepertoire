@@ -151,6 +151,10 @@ is_seurat_or_se_object <- function(obj) {
         rownames(meta) <- sc@colData@rownames
         clu <- which(colnames(meta) == "ident")
         colnames(meta)[clu] <- "ident"
+    } else {
+        stop("Object indicated is not of class 'Seurat' or 
+            'SummarizedExperiment', make sure you are using
+            the correct data.")
     }
     return(meta)
 }
@@ -274,42 +278,15 @@ is_seurat_or_se_object <- function(obj) {
 }
 
 # Assigning positions for TCR contig data
-#' @author Gloria Kraus, Nick Bormann, Nicky de Vrij, Nick Borcherding
+# Used to be .parseTCR(Con.df, unique_df, data2)
+# but now also constructs Con.df and runs the parseTCR algorithm on it, all in Rcpp
+#' @author Gloria Kraus, Nick Bormann, Nicky de Vrij, Nick Borcherding, Qile Yang
 #' @keywords internal
-.parseTCR <- function(Con.df, unique_df, data2) {
-    tcr1_index <- 2
-    tcr2_index <- 5
-    data2 <- data2 %>% arrange(., chain, cdr3_nt)
-    for (y in seq_along(unique_df)){
-        barcode.i <- Con.df$barcode[y]
-        location.i <- which(barcode.i == data2$barcode)
-        for (z in seq_along(location.i)) {
-            where.chain <- data2[location.i[z],"chain"]
-  
-            if (where.chain == "TRA" || where.chain == "TRG") {
-                if (is.na(Con.df[y, tcr1_index])) {
-                    Con.df[y,tcr1_lines] <- data2[location.i[z], data1_lines]
-                } else {
-                    Con.df[y,tcr1_lines] <- paste(
-                        Con.df[y, tcr1_lines],
-                        data2[location.i[z],data1_lines],
-                        sep=";"
-                    ) 
-                }
-            } else if (where.chain == "TRB" || where.chain == "TRD") {
-                if (is.na(Con.df[y, tcr2_index])) {
-                    Con.df[y,tcr2_lines] <- data2[location.i[z], data2_lines] 
-                } else {
-                    Con.df[y,tcr2_lines] <- paste(
-                        Con.df[y, tcr2_lines],
-                        data2[location.i[z],data2_lines],
-                        sep=";"
-                    ) 
-                }
-            }
-        }
-    }
-    Con.df
+.constructConDfAndParseTCR <- function(data2) {
+  rcppConstructConDfAndParseTCR(
+    data2 %>% arrange(., chain, cdr3_nt),
+    unique(data2[[1]])
+  )
 }
 
 #Assigning positions for BCR contig data
@@ -317,9 +294,9 @@ is_seurat_or_se_object <- function(obj) {
 #' @author Gloria Kraus, Nick Bormann, Nick Borcherding
 #' @keywords internal
 .parseBCR <- function (Con.df, unique_df, data2) {
+  barcodeIndex <- rcppConstructBarcodeIndex(unique_df, data2$barcode)
   for (y in seq_along(unique_df)) {
-    barcode.i <- Con.df$barcode[y]
-    location.i <- which(barcode.i == data2$barcode)
+    location.i <- barcodeIndex[[y]] # *may* be wrong but should be fine. Test on old version first
     
     for (z in seq_along(location.i)) {
       where.chain <- data2[location.i[z],"chain"]
@@ -425,8 +402,7 @@ is_seurat_or_se_object <- function(obj) {
                   str_c(str_replace_na(v_gene),  str_replace_na(j_gene), str_replace_na(c_gene), sep = "."), NA)) %>%
             mutate(TCR2 = ifelse(chain %in% c("TRB", "TRD"), 
                   str_c(str_replace_na(v_gene), str_replace_na(d_gene),  str_replace_na(j_gene),  str_replace_na(c_gene), sep = "."), NA))
-    }
-    else { # assume BCR (`c("B")`)
+    } else if (cellType %in% c("B")) {
         heavy <- data2[data2$chain == "IGH",] %>% 
           mutate(IGHct = str_c(str_replace_na(v_gene), str_replace_na(d_gene),  str_replace_na(j_gene),  str_replace_na(c_gene), sep = "."))
         kappa <- data2[data2$chain == "IGK",] %>% 

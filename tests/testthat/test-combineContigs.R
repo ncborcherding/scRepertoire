@@ -24,16 +24,15 @@ test_that("combineTCR works", {
 	  filterMulti = TRUE
 	)
 
-	expected3 <- getdata("combineContigs", "combineTCR_list_filterMulti")	
-	expect_identical(trial3, expected3)
+	expect_identical(trial3, getdata("combineContigs", "combineTCR_list_filterMulti"))
 	
 	trial4 <- combineTCR(
 	  input.data  = lapply(contig_list[1:3], head),
 	  samples = c("P17B", "P17L", "P18B"),
 	  removeNA = TRUE
 	)
-	expected4 <- getdata("combineContigs", "combineTCR_list_removeNA")
-	expect_identical(trial4, expected4)
+	
+	expect_identical(trial4, getdata("combineContigs", "combineTCR_list_removeNA"))
 }) 
 
 # TODO combineTCR (need more edge cases, different args, errors, etc.)

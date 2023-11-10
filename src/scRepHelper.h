@@ -1,9 +1,11 @@
 #include <Rcpp.h>
 #include <vector>
+#include <string>
+#include <unordered_map>
 
 class scRepHelper {
 public: 
-    static const long double sum(std::vector<long double>& v) {
+    static long double sum(std::vector<long double>& v) {
         long double n = 0;
         for (long double num : v) {
             n += num;
@@ -19,5 +21,35 @@ public:
             }
         }
         return converted;
+    }
+
+    static std::unordered_map<std::string, std::vector<int>> stringToIndiciesMap(
+        std::vector<std::string>& v
+    ) {
+        std::unordered_map<std::string, std::vector<int>> map;
+        for (int i = 0; i < (int) v.size(); i++) {
+            map[v[i]].push_back(i);
+        }
+        return map;
+    }
+
+    // remove when constructConDfAndParseBCR is done
+    static std::unordered_map<std::string, std::vector<int>> stringToRIndiciesMap(
+        std::vector<std::string>& v
+    ) {
+        std::unordered_map<std::string, std::vector<int>> map;
+        for (int i = 0; i < (int) v.size(); i++) {
+            map[v[i]].push_back(i + 1);
+        }
+        return map;
+    }
+
+    static std::vector<std::vector<std::string>> initStringMatrix(
+        int x, int y, std::string initVal
+    ) {
+        std::vector<std::vector<std::string>> stringMatrix (
+            x, std::vector<std::string> (y, initVal)
+        );
+        return stringMatrix;
     }
 };

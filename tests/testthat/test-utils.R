@@ -55,7 +55,7 @@ test_that("Modifying barcodes without ID works correctly", {
 test_that("Modifying barcodes with ID works correctly", {
     samples <- c("sample3", "sample4")
     ID <- c("id1", "id2")
-    modified_data <- modified_data <- .modifyBarcodes(
+    modified_data <- .modifyBarcodes(
         df = getdata("utils", "df_list"), samples = samples, ID = ID
     )
     
@@ -92,6 +92,19 @@ test_that(".theCall works", {
   expect_equal(.theCall(NULL, "strict", check.df = FALSE), "CTstrict")
 })
 #TODO .theCall Add custom header
+
+test_that(".constructConDfAndParseTCR works", {
+  expect_identical(
+    .constructConDfAndParseTCR(
+      getdata("utils", "constructConDfAndParseTCRInput")
+    ),
+    getdata("utils", "expected_con_df")
+  )
+
+# TODO: add more cases! This is not comprehensive.
+# there was a case in the past where this passed but
+# the function caused a segmentation fault.
+})
 
 # TODO .parseBCR
 # TODO lengthDF
