@@ -27,6 +27,7 @@ The files that this function parses includes:
   \item 10X =  "filtered_contig_annotation.csv"  
   \item AIRR = "airr_rearrangement.tsv" 
   \item BD = "Contigs_AIRR.tsv" 
+  \item Immcantation = "data.tsv" 
   \item JSON = ".json"
   \item MiXCR = "clones.tsv"
   \item Omniscope = ".csv" 

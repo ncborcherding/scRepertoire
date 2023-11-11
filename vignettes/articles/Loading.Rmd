@@ -61,6 +61,7 @@ Beyond the default 10x Genomic Cell Ranger pipeline outputs, scRepertoire suppor
 
 * AIRR  
 * BD Rhapsody Multiomic Immune Profiling  
+* [Immcantation](https://immcantation.readthedocs.io/en/stable/index.html)  
 * JSON-formatted contig data  
 * [MiXCR](https://pubmed.ncbi.nlm.nih.gov/25924071/)  
 * [Omniscope](https://www.omniscope.ai/)  
