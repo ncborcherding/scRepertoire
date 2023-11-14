@@ -59,7 +59,7 @@ inline void updateSkip(int& skip, const char c, const int k) {
 }
 
 // actual kmer counter - doesnt handle _NA_ for k = 1
-inline void kmerCount(std::vector<long double>& bins, const unsigned int mask, const std::string& seq, const int k) {
+inline void kmerCount(std::vector<double>& bins, const unsigned int mask, const std::string& seq, const int k) {
     int skip = 0;
     unsigned long int kmer = 0;
 
@@ -81,7 +81,7 @@ inline void kmerCount(std::vector<long double>& bins, const unsigned int mask, c
 Rcpp::NumericVector rcppGetNtKmerPercent(const std::vector<std::string>& seqs, const int k) {
     const unsigned int mask = (1 << (k + k)) - 1;
     int numKmers = mask + 1;
-    std::vector<long double> bins (numKmers, 0);
+    std::vector<double> bins (numKmers, 0);
 
     for (std::string seq : seqs) {
         if ((int) seq.size() < k) {

@@ -5,7 +5,7 @@
 
 class scRepHelper {
 public: 
-    static long double sum(std::vector<long double>& v) {
+    static long double sum(std::vector<double>& v) {
         long double n = 0;
         for (long double num : v) {
             n += num;
@@ -13,7 +13,7 @@ public:
         return n;
     }
 
-    static Rcpp::NumericVector convertZerosToNA(std::vector<long double>& v, int len) {
+    static Rcpp::NumericVector convertZerosToNA(std::vector<double>& v, int len) {
         Rcpp::NumericVector converted (len, R_NaReal);
         for (int i = 0; i < len; i++) {
             if (v[i] > 0) {

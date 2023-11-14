@@ -291,7 +291,7 @@ is_seurat_or_se_object <- function(obj) {
 
 #Assigning positions for BCR contig data
 #Now assumes lambda over kappa in the context of only 2 light chains
-#' @author Gloria Kraus, Nick Bormann, Nick Borcherding
+#' @author Gloria Kraus, Nick Bormann, Nick Borcherding, Qile Yang
 #' @keywords internal
 .parseBCR <- function (Con.df, unique_df, data2) {
   barcodeIndex <- rcppConstructBarcodeIndex(unique_df, data2$barcode)

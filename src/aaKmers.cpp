@@ -24,7 +24,7 @@ private:
     int k;
     unsigned long int mask;
     std::unordered_map<char, unsigned long int> aaIndexMap;
-    std::vector<long double> bins;
+    std::vector<double> bins;
 
     std::unordered_map<unsigned long int, int> toAaUIntKmerMap(const std::vector<std::string>& motifs) {
         std::unordered_map<unsigned long int, int> map;
@@ -59,7 +59,7 @@ public:
         k = _k;
         mask = (unsigned long int) ((1 << (_k * 5)) - 1);
         aaUIntKmerMap = toAaUIntKmerMap(motifs);
-        bins = std::vector<long double> (motifs.size(), 0.0);
+        bins = std::vector<double> (motifs.size(), 0.0);
     }
 
     void countKmers(const std::vector<std::string>& seqs) {
@@ -86,7 +86,7 @@ public:
         }
     }
 
-    std::vector<long double> getCounts() {
+    std::vector<double> getCounts() {
         return bins;
     }
 };
@@ -98,7 +98,7 @@ Rcpp::NumericVector rcppGetAaKmerPercent(
 
     AaKmerCounter counter = AaKmerCounter(motifs, k);
     counter.countKmers(seqs);
-    std::vector<long double> bins = counter.getCounts();
+    std::vector<double> bins = counter.getCounts();
 
     long double binSum = scRepHelper::sum(bins);
     if (binSum == 0.0) { // pretty sure this can only happen if there arent valid seqs?

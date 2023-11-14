@@ -111,7 +111,7 @@ exportClones <- function(input.data,
     
     mat <- list()
     
-    # Define a function for processing each row
+    # Define a function for processing each row - main speed bottleneck
     .process_row <- function(row) {
       # Split gene, amino acid, and nucleotide columns
       genes <- str_split(row$CTgene, "_", simplify = TRUE)
@@ -150,7 +150,7 @@ exportClones <- function(input.data,
       chain1_gene <- .sort_gene_calls(chain1_gene)
       chain2_gene <- .sort_gene_calls(chain2_gene)
       
-      # Create the formatted data frame
+      # Create the formatted data frame - smaller speed bottleneck of ~10 sec
       tmp.out <- data.frame(
         cell_id = row$barcode,
         locus = c(locus1, locus2),
@@ -176,7 +176,7 @@ exportClones <- function(input.data,
     
     # Process each row and store the results in the list
     for (i in seq_len(nrow(input.data))) {
-      mat[[i]] <- .process_row(input.data[i, ])
+      mat[[i]] <- .process_row(input.data[i, ]) # main speed bottleneck (see above)
     }
   mat <- do.call(rbind, mat)
   return(mat)

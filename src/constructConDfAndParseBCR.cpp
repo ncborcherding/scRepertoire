@@ -4,6 +4,7 @@
 #include <Rcpp.h>
 #include <string>
 #include <vector>
+#include <unordered_map>
 #include "scRepHelper.h"
 
 #define BarcodeIndciesMap std::unordered_map<std::string, std::vector<int>>
