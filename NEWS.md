@@ -30,7 +30,7 @@
 * Universalized underlying function language and intermediate variables
 * License change to MIT
 * **group.by** and **split.by** have been consolidated into single **group.by** parameter
-* Added support for .json, Omniscope, and MiXCR formats for ```loadContigs()```
+* Added support for Immcantation pipeline, .json, Omniscope, and MiXCR formats for ```loadContigs()```
 * Made GitHub.io website for support/vignettes/FAQ
 * Restructured NEWS Tracking
 * Added testhat for all exported and internal functions
