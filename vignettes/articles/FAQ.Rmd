@@ -1,0 +1,114 @@
+---
+title: "Frequently Asked Questions"
+date: 'Compiled: `r format(Sys.Date(), "%B %d, %Y")`'
+output: rmarkdown::html_vignette
+theme: united
+df_print: kable
+vignette: >
+  %\VignetteIndexEntry{Frequently Asked Questions}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+<style>
+p.caption {
+  font-size: 0.9em;
+}
+</style>
+ 
+```{r setup, include=FALSE}
+all_times <- list()  # store the time for each chunk
+knitr::knit_hooks$set(time_it = local({
+  now <- NULL
+  function(before, options) {
+    if (before) {
+      now <<- Sys.time()
+    } else {
+      res <- difftime(Sys.time(), now, units = "secs")
+      all_times[[options$label]] <<- res
+    }
+  }
+}))
+knitr::opts_chunk$set(
+  tidy = TRUE,
+  tidy.opts = list(width.cutoff = 95),
+  message = FALSE,
+  warning = FALSE,
+  time_it = TRUE
+)
+
+suppressMessages(library(scRepertoire))
+data("contig_list") 
+combined.TCR <- combineTCR(contig_list, 
+                           samples = c("P17B", "P17L", "P18B", "P18L", 
+                                            "P19B","P19L", "P20B", "P20L"))
+```
+
+### Barcode Mismatch
+
+Depending on the pipeline used to generate the single-cell object, there may be inherent mismatches in the barcodes in the single-cell object and the output of ```combineBCR()``` or ```combineTCR()```. In particular, by default, Seurat will amend the suffix of the barcodes with _X, so the barcodes change like:
+
+```
+original: ACGTACGTACGTACGT-1
+seurat-modified: ACGTACGTACGTACGT-1_1
+```
+
+scRepertoire uses the samples in combineTCR() to add a prefix to the barcodes:
+
+```
+original: ACGTACGTACGTACGT-1
+scRepertoire-modified: Sample1_ACGTACGTACGTACGT-1
+```
+
+The easiest way to make these compatible is to rename the cell barcodes in the Seurat object by using the RenameCells().
+
+```{r, eval=FALSE}
+cell.barcodes <- rownames(seuratObj[[]])
+cell.barcodes <- stringr::str_split(cell.barcodes, "_", simplify = TRUE)[,1] #This is removing the _1 at the end of the barcodes)
+cell.barcodes <- paste0(seuratObj$orig.ident, "_", cell.barcodes) #This is adding the prefix of the orig.ident to the barcodes, assuming that is the sample ids
+seuratObj <- RenameCells(seuratObj, new.names = cell.barcodes)
+```
+
+### Adjusting Color Palettes
+
+For all visualizations in scRepertoire, there are 2 ways to adjust the color scheme:
++ Change the **palette** parameter to the desired color scheme. This approach uses the built-in palettes of grDevices and we can access the list of color schemes using ``hcl.pals()``.  
++ Add a ggplot layer with a new color scheme. 
+
+```{r tidy = FALSE}
+clonalQuant(combined.TCR, 
+            cloneCall="strict", 
+            chain = "both", 
+            scale = TRUE, 
+            palette = "Zissou 1")
+
+clonalQuant(combined.TCR, 
+            cloneCall="strict", 
+            chain = "both", 
+            scale = TRUE) + 
+  scale_fill_manual(values = hcl.colors(8,"geyser"))
+```
+
+### Getting Data Used in Plots
+
+Within each of the general analysis functions, there is the ability to export the data frame used to create the visualization. To get the exported values, use **exportTable** = TRUE. It will return the data frame used to make the graph instead of the visual output.  
+
+```{r tidy = FALSE}
+clonalQuant_output <- clonalQuant(combined.TCR, 
+                                  cloneCall="strict", 
+                                  scale = TRUE, 
+                                  exportTable = TRUE)
+clonalQuant_output
+```
+
+###  Citing scRepertoire
+
+***Borcherding, N. & Wang, Q. scRepertoire v2: Expanded toolkit for single-cell immune repertoire analysis***
+
+### Bug Reports/New Features
+
+Submit a [GitHub issue](https://github.com/ncborcherding/scRepertoire/issues) - if possible please include a [reproducible example](https://reprex.tidyverse.org/). Alternatively, an example with the internal **scRep_example** and **contig_list** would 
+be extremely helpful.
+
+### Features or Enhancements Requests 
+Feature request can also be submitted as [GitHub issues](https://github.com/ncborcherding/scRepertoire/issues).

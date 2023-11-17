@@ -1,10 +1,11 @@
 Package: scRepertoire
 Title: A toolkit for single-cell immune receptor profiling
-Version: 1.11.0
+Version: 2.0.0
 Authors@R: c(
-    person(given = "Nick", family = "Borcherding", role = c("aut", "cre"), email = "ncborch@gmail.com"))
-Description: scRepertoire was built to process data derived from the 10x Genomics Chromium Immune Profiling for both T-cell receptor (TCR) and immunoglobulin (Ig) enrichment workflows and subsequently interacts with the popular Seurat and SingleCellExperiment R packages. It also allows for general analysis of single-cell clonotype information without the use of expression information. The package functions as a wrapper for Startrac and powerTCR R packages.
-License: GPL-2
+    person(given = "Nick", family = "Borcherding", role = c("aut", "cre"), email = "ncborch@gmail.com"), 
+    person(given = "Qile", family = "Yang", role = c("aut"), email = "qile0317@gmail.com"))
+Description: scRepertoire was built to process data derived from the 10x Genomics Chromium Immune Profiling for both T-cell receptor (TCR) and immunoglobulin (Ig) enrichment workflows and subsequently interacts with the popular Seurat and SingleCellExperiment R packages. 
+License: MIT + file LICENSE 
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.2.3
@@ -13,32 +14,48 @@ Depends:
 	ggplot2, 
 	R (>= 4.0)
 Imports: 
-	stringdist,
-	dplyr,
-	reshape2,  
-	ggalluvial,
-	stringr, 
-	vegan, 
-	powerTCR, 
-	SingleCellExperiment,
-	SummarizedExperiment,
-	plyr,
-	parallel,
-	doParallel,
-	methods,
-	utils, 
-	rlang,
-	igraph,
-	ggraph,
-	tidygraph,
-	SeuratObject,
-	stats
+    cubature,
+    dplyr,
+    evmix,
+    ggalluvial,
+    ggdendro,
+    ggraph,
+    grDevices,
+    igraph,
+    iNEXT,
+    methods,
+    plyr,
+    quantreg,
+    Rcpp,
+    reshape2,
+    rjson,
+    rlang,
+    S4Vectors,
+    SeuratObject,
+    SingleCellExperiment,
+    stats,
+    stringr,
+    stringdist,
+    SummarizedExperiment,
+    tidygraph,
+    truncdist,
+    utils,
+    VGAM
 Suggests: 
-	knitr, 
-	rmarkdown, 
-	BiocStyle,  
-	circlize, 
-	scales, 
-	Seurat,
-	scater
+    BiocManager,
+    BiocStyle,
+    circlize,
+    knitr,
+    rmarkdown,
+    scales,
+    scater,
+    Seurat,
+    spelling,
+    testthat (>= 3.0.0),
+    vdiffr
 VignetteBuilder: knitr
+Config/testthat/edition: 3
+Language: en-US
+LinkingTo: 
+    Rcpp
+URL: https://ncborcherding.github.io/scRepertoire/

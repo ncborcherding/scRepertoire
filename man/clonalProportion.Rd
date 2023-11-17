@@ -5,34 +5,34 @@
 \title{Examining the clonal space occupied by specific clonotypes}
 \usage{
 clonalProportion(
-  df,
-  split = c(10, 100, 1000, 10000, 30000, 1e+05),
+  input.data,
+  clonalSplit = c(10, 100, 1000, 10000, 30000, 1e+05),
   cloneCall = "strict",
   chain = "both",
   group.by = NULL,
-  split.by = NULL,
-  exportTable = FALSE
+  exportTable = FALSE,
+  palette = "inferno"
 )
 }
 \arguments{
-\item{df}{The product of combineTCR(), combineBCR(), expression2List(), or combineExpression().}
+\item{input.data}{The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
+\code{\link{combineExpression}}.}
 
-\item{split}{The cutpoints for the specific clonotypes.}
+\item{clonalSplit}{The cut points for the specific clonotypes.}
 
 \item{cloneCall}{How to call the clonotype - VDJC gene (gene), 
-CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
-VDJC gene + CDR3 nucleotide (strict).}
+CDR3 nucleotide (nt), CDR3 amino acid (aa),
+VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data.}
 
 \item{chain}{indicate if both or a specific chain should be used - 
-e.g. "both", "TRA", "TRG", "IGH", "IGL"}
+e.g. "both", "TRA", "TRG", "IGH", "IGL".}
 
-\item{group.by}{The column header used for grouping.}
+\item{group.by}{The variable to use for grouping.}
 
-\item{split.by}{If using a single-cell object, the column header 
-to group the new list. NULL will return clusters.}
+\item{exportTable}{Exports a table of the data into the global.
+environment in addition to the visualization.}
 
-\item{exportTable}{Exports a table of the data into the global 
-environment in addition to the visualization}
+\item{palette}{Colors to use in visualization - input any \link[grDevices]{hcl.pals}.}
 }
 \value{
 ggplot of the space occupied by the specific rank of clonotypes
@@ -40,16 +40,17 @@ ggplot of the space occupied by the specific rank of clonotypes
 \description{
 This function calculates the relative clonal space occupied by the 
 clonotypes. The grouping of these clonotypes is based on the parameter 
-split, at default, split will group the clonotypes into bins of 1:10, 
-11:100, 101:1001, etc. To adjust the clonotypes selected, change the 
-numbers in the variable split. If a matrix output for the data is
-preferred, set exportTable = TRUE.
+\strong{clonalSplit}, at default, \strong{clonalSplit} will group the clonotypes 
+into bins of 1:10, 11:100, 101:1001, etc. To adjust the clonotypes 
+selected, change the numbers in the variable split. If a matrix output 
+for the data is preferred, set exportTable = TRUE.
 }
 \examples{
 #Making combined contig data
-x <- contig_list
-combined <- combineTCR(x, rep(c("PX", "PY", "PZ"), each=2), 
-rep(c("P", "T"), 3))
+combined <- combineTCR(contig_list, 
+                        samples = c("P17B", "P17L", "P18B", "P18L", 
+                                    "P19B","P19L", "P20B", "P20L"))
 clonalProportion(combined, cloneCall = "gene")
 
 }
+\concept{Visualizing_Clones}

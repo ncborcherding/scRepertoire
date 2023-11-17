@@ -1,0 +1,26 @@
+pandoc: 3.1.1
+pkgdown: 2.0.7
+pkgdown_sha: ~
+articles:
+  Attaching_SC: Attaching_SC.html
+  Clonal_Bias: Clonal_Bias.html
+  Clonal_Cluster: Clonal_Cluster.html
+  Clonal_Diversity: Clonal_Diversity.html
+  Clonal_Dynamics: Clonal_Dynamics.html
+  Clonal_Visualizations: Clonal_Visualizations.html
+  Combining_Contigs: Combining_Contigs.html
+  FAQ: FAQ.html
+  Ibex: Ibex.html
+  Installation: Installation.html
+  Loading: Loading.html
+  Processing: Processing.html
+  Repertoire_Summary: Repertoire_Summary.html
+  SC_Visualizations: SC_Visualizations.html
+  Trex: Trex.html
+  Trex_Trajectory: Trex_Trajectory.html
+  vignette: vignette.html
+last_built: 2023-11-04T11:34Z
+urls:
+  reference: https://www.borch.dev/uploads/scRepertoire/reference
+  article: https://www.borch.dev/uploads/scRepertoire/articles
+

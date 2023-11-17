@@ -2,10 +2,10 @@
 % Please edit documentation in R/combineContigs.R
 \name{combineBCR}
 \alias{combineBCR}
-\title{Combining the list of B Cell Receptor contigs}
+\title{Combining the list of B cell receptor contigs into clonotypes}
 \usage{
 combineBCR(
-  df,
+  input.data,
   samples = NULL,
   ID = NULL,
   call.related.clones = TRUE,
@@ -16,11 +16,11 @@ combineBCR(
 )
 }
 \arguments{
-\item{df}{List of filtered contig annotations from 10x Genomics.}
+\item{input.data}{List of filtered contig annotations or outputs from \code{\link{loadContigs}}.}
 
-\item{samples}{The labels of samples (required).}
+\item{samples}{The labels of samples}
 
-\item{ID}{The additional sample labeling (optional).}
+\item{ID}{The additional sample labeling}
 
 \item{call.related.clones}{Use the nucleotide sequence and V gene to call related clones. 
 Default is set to TRUE. FALSE will return a CTstrict or strict clonotype as V gene + amino acid sequence}
@@ -43,20 +43,22 @@ This function consolidates a list of BCR sequencing results to the level
 of the individual cell barcodes. Using the samples and ID parameters, 
 the function will add the strings as prefixes to prevent issues with 
 repeated barcodes. The resulting new barcodes will need to match the 
-seurat or SCE object in order to use, 
-\code{\link{combineExpression}}. Unlike combineTCR(), 
-combineBCR produces a column CTstrict of an index of nucleotide sequence 
-and the corresponding v-gene. This index automatically calculates 
-the Levenshtein distance between sequences with the same V gene and will 
-index sequences with <= 0.15 normalized Levenshtein distance with the same 
-ID. After which, clonotype clusters are called using the igraph 
-component() function. Clonotype that are clustered across multiple 
-sequences will then be labeled with "LD" in the CTstrict header.
+Seurat or SCE object in order to use, \code{\link{combineExpression}}. 
+Unlike \code{\link{combineTCR}}, combineBCR produces a column \strong{CTstrict}
+of an index of nucleotide sequence and the corresponding V gene. 
+This index automatically calculates the Levenshtein distance between 
+sequences with the same V gene and will index sequences using a normalized 
+Levenshtein distance with the same ID. After which, clonotype clusters 
+are called using the \code{\link[igraph]{components}} function. Clones
+that are clustered across multiple sequences will then be labeled 
+with "Cluster" in the CTstrict header.
 }
 \examples{
 #Data derived from the 10x Genomics intratumoral NSCLC B cells
 BCR <- read.csv("https://www.borch.dev/uploads/contigs/b_contigs.csv")
-combined <- combineBCR(BCR, samples = "Patient1", 
-ID = "Time1", threshold = 0.85)
+combined <- combineBCR(BCR, 
+                       samples = "Patient1", 
+                       threshold = 0.85)
 
 }
+\concept{Loading_and_Processing_Contigs}
