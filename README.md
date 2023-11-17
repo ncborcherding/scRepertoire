@@ -61,8 +61,8 @@ be extremely helpful.
 
 #### [Pull Requests](https://github.com/ncborcherding/scRepertoire/pulls) are welcome for bug fixes, new features, or enhancements.
 
-- Please set PR to merge with “dev” branch and provide description of what the PR 
-contains (referencing existing issue(s) if appropriate).
+### Please Cite
+Feel free to use, edit, modify scRepertoire, but if you do, please cite the [manuscript](https://f1000research.com/articles/9-47/v1). If you are building your own tool based on scRepertoire, reach out, I am happy to help and make things compatible.
   
 ## Contact
 Questions, comments, suggestions, please feel free to contact Nick Borcherding via this repository, [email](mailto:ncborch@gmail.com), or using [twitter](https://twitter.com/theHumanBorch). 
