@@ -18,6 +18,7 @@ scRepertoire is compatible and integrated with the R packages [Trex](https://git
 ```
 devtools::install_github("ncborcherding/scRepertoire")
 ```
+
 #### Most up-to-date version
 ```
 devtools::install_github("ncborcherding/scRepertoire@dev")
