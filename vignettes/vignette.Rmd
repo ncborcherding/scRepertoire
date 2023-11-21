@@ -16,13 +16,13 @@ vignette: >
 ---
 
 ```{r, echo=FALSE, results="hide", message=FALSE}
-knitr::opts_chunk$set(error = FALSE, message = FALSE, warning = FALSE)
-quiet_bioc_load("BiocStyle", "scater")
+knitr::opts_chunk$set(error=FALSE, message=FALSE, warning=FALSE)
+library(BiocStyle)
 ```
 
 # Introduction
 
-scRepertoire is designed to take filter contig outputs from the 10x Genomics Cell Ranger pipeline, process that data to assign clonotype based on two TCR or Ig chains and analyze the clonotype dynamics. The latter can be separated into 1) clonotype-only analysis functions, such as unique clonotypes or clonal space quantification, and 2) interaction with mRNA expression data using Seurat, SingleCellExperiment or Monocle packages. 
+scRepertoire is designed to take filter contig outputs from the 10x Genomics Cell Ranger pipeline, process that data to assign clonotype based on two TCR or Ig chains and analyze the clonotype dynamics. The latter can be separated into 1) clonotype-only analysis functions, such as unique clonotypes or clonal space quantification, and 2) interaction with mRNA expression data using Seurat or SingleCellExperiment packages.
 
 ## Loading Libraries
 
