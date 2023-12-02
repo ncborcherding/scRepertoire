@@ -5,9 +5,9 @@
 
 class scRepHelper {
 public: 
-    static long double sum(std::vector<double>& v) {
-        long double n = 0;
-        for (long double num : v) {
+    static double sum(std::vector<double>& v) {
+        double n = 0;
+        for (double num : v) {
             n += num;
         }
         return n;

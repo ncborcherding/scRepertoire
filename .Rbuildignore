@@ -2,7 +2,6 @@
 ^\.Rproj\.user$
 ^www$
 ^\.github$
-^local_tests\.R$
 ^LICENSE\.md$
 ^JOSS$
 ^draft-pdf\.yml$
@@ -10,4 +9,4 @@
 ^docs$
 ^pkgdown$
 ^index\.md$
-^dev\.R$
+^qile$
