@@ -4,7 +4,7 @@ author:
   name: Nick Borcherding
   email: ncborch@gmail.com
   affiliation: Washington University in St. Louis, School of Medicine, St. Louis, MO, USA
-date: "September 6th, 2023"
+date: "November 17th, 2023"
 output:
   BiocStyle::html_document:
     toc_float: true
@@ -16,29 +16,14 @@ vignette: >
 ---
 
 ```{r, echo=FALSE, results="hide", message=FALSE}
-knitr::opts_chunk$set(error = FALSE, message = FALSE, warning = FALSE)
-
-# to pass R CMD check, packages can be installed in the knitted environment
-if (!require("BiocManager", quietly = TRUE)) {
-    install.packages("BiocManager")
-}
-suppressPackageStartupMessages(invisible(library(BiocManager)))
-
-quiet_bioc_load <- function(...) {
-    pkgs <- list(...)
-    for (pkg in pkgs) {
-        if (base::require(pkg, character.only = TRUE, quietly = TRUE)) {next}
-        BiocManager::install(pkg)
-        suppressPackageStartupMessages(invisible(base::library(pkg, character.only = TRUE)))
-    }
-}
-
-quiet_bioc_load("BiocStyle", "scater")
+knitr::opts_chunk$set(error=FALSE, message=FALSE, warning=FALSE)
+library(BiocStyle)
+library(scater)
 ```
 
 # Introduction
 
-scRepertoire is designed to take filter contig outputs from the 10x Genomics Cell Ranger pipeline, process that data to assign clonotype based on two TCR or Ig chains and analyze the clonotype dynamics. The latter can be separated into 1) clonotype-only analysis functions, such as unique clonotypes or clonal space quantification, and 2) interaction with mRNA expression data using Seurat, SingleCellExperiment or Monocle packages. 
+scRepertoire is designed to take filter contig outputs from the 10x Genomics Cell Ranger pipeline, process that data to assign clonotype based on two TCR or Ig chains and analyze the clonotype dynamics. The latter can be separated into 1) clonotype-only analysis functions, such as unique clonotypes or clonal space quantification, and 2) interaction with mRNA expression data using Seurat or SingleCellExperiment packages.
 
 ## Loading Libraries
 

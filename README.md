@@ -31,20 +31,15 @@ devtools::install_github("ncborcherding/scRepertoire")
 devtools::install_github("ncborcherding/scRepertoire@dev")
 ```
 
-#### Bioconductor
-
-[scRepertoire](https://www.bioconductor.org/packages/release/bioc/html/scRepertoire.html) is now on Bioconductor. Use the link to find out more information. scRepertoire (for R v4 or greater) can be installed from Bioconductor with:
-
+#### Legacy Version 1
+If you are looking for version 1 of scRepertoire - there is a static version available below:
 ```
-if (!requireNamespace("BiocManager", quietly = TRUE))
-    install.packages("BiocManager")
-
-BiocManager::install("scRepertoire")
+devtools::install_github("ncborcherding/scRepertoire@v1")
 ```
 
 ## Getting Data
 
-Unfortunately, Github limits the size of individual files. In order to access the seurat object paired with scRepertoire please download the .rda from [here](https://drive.google.com/file/d/1Iv6t2BScpnLLrFWaWFUGwne3XzRAwMOc/view?usp=share_link).
+Unfortunately, Github limits the size of individual files. In order to access the seurat object paired with scRepertoire please download the .rda from [here](https://drive.google.com/file/d/1_YuRraDyg8UgF3oasjF0-jgPnwox-B24/view?usp=share_link).
 
 ## Please Cite
 Feel free to use, edit, modify scRepertoire, but if you do, please cite the [manuscript](https://f1000research.com/articles/9-47/v1). If you are building your own tool based on scRepertoire, reach out, I am happy to help and make things compatible.
@@ -61,8 +56,8 @@ be extremely helpful.
 
 #### [Pull Requests](https://github.com/ncborcherding/scRepertoire/pulls) are welcome for bug fixes, new features, or enhancements.
 
-- Please set PR to merge with “dev” branch and provide description of what the PR 
-contains (referencing existing issue(s) if appropriate).
+### Please Cite
+Feel free to use, edit, modify scRepertoire, but if you do, please cite the [manuscript](https://f1000research.com/articles/9-47/v1). If you are building your own tool based on scRepertoire, reach out, I am happy to help and make things compatible.
   
 ## Contact
 Questions, comments, suggestions, please feel free to contact Nick Borcherding via this repository, [email](mailto:ncborch@gmail.com), or using [twitter](https://twitter.com/theHumanBorch). 
