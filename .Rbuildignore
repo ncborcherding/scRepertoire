@@ -9,4 +9,4 @@
 ^docs$
 ^pkgdown$
 ^index\.md$
-^dev\.R$
+^qile$

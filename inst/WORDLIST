@@ -30,7 +30,6 @@ Contig
 Contigs
 Corvino
 Drs
-Embeddings
 FilteringMulti
 Francesco
 GSE
@@ -41,6 +40,7 @@ IGH
 IGKJ
 IGL
 Ig
+Immcantation
 Inv
 JC
 JSON
@@ -107,11 +107,9 @@ alluvialClones
 alluvialClonotype
 alluvialClonotypes
 autoencoder
-autoencoders
 autoencoding
 barcode
 barcodes
-bioc
 bioconductor
 bronchoalveolar
 cav
@@ -142,7 +140,6 @@ cloneCall
 cloneSize
 cloneSizes
 cloneType
-cloneTypes
 clonesizeDistribution
 clonotype
 clonotypeBias
@@ -205,7 +202,6 @@ hammingCompare
 hcl
 highlightClones
 highlightClonotypes
-https
 hypermutation
 iNEXT
 iedb
@@ -233,14 +229,12 @@ migr
 migra
 morisita
 multisystem
-mumosa
 na
 nt
 nucleotides
 occupiedClonotype
 occupiedRepertoire
 occupiedscRepertoire
-paramater
 parseAIRR
 parseBCR
 parseTCR
@@ -248,9 +242,7 @@ percentAA
 percentGenes
 percentKmer
 percentVJ
-phateR
 powerTCR
-pseudotime
 quantContig
 quantifications
 rda
@@ -260,7 +252,6 @@ relevel
 removeMulti
 removeNA
 repo
-rescaling
 runIbex
 runTrex
 sc
@@ -280,6 +271,7 @@ subsetClones
 subtype
 subtypes
 summarise
+testthat
 theCall
 trackable
 tran

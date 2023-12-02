@@ -5,15 +5,15 @@
 
 class scRepHelper {
 public: 
-    static long double sum(std::vector<long double>& v) {
-        long double n = 0;
-        for (long double num : v) {
+    static double sum(std::vector<double>& v) {
+        double n = 0;
+        for (double num : v) {
             n += num;
         }
         return n;
     }
 
-    static Rcpp::NumericVector convertZerosToNA(std::vector<long double>& v, int len) {
+    static Rcpp::NumericVector convertZerosToNA(std::vector<double>& v, int len) {
         Rcpp::NumericVector converted (len, R_NaReal);
         for (int i = 0; i < len; i++) {
             if (v[i] > 0) {
@@ -21,6 +21,10 @@ public:
             }
         }
         return converted;
+    }
+
+    static Rcpp::NumericVector convertZerosToNA(std::vector<double>& v) {
+        return convertZerosToNA(v, (int) v.size());
     }
 
     static std::unordered_map<std::string, std::vector<int>> stringToIndiciesMap(
