@@ -23,6 +23,10 @@ public:
         return converted;
     }
 
+    static Rcpp::NumericVector convertZerosToNA(std::vector<double>& v) {
+        return convertZerosToNA(v, (int) v.size());
+    }
+
     static std::unordered_map<std::string, std::vector<int>> stringToIndiciesMap(
         std::vector<std::string>& v
     ) {
