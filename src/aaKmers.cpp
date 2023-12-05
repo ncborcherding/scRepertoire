@@ -24,7 +24,7 @@ private:
     int k;
     unsigned long int mask;
     std::unordered_map<char, unsigned long int> aaIndexMap;
-    std::vector<long double> bins;
+    std::vector<double> bins;
 
     std::unordered_map<unsigned long int, int> toAaUIntKmerMap(const std::vector<std::string>& motifs) {
         std::unordered_map<unsigned long int, int> map;
@@ -59,12 +59,13 @@ public:
         k = _k;
         mask = (unsigned long int) ((1 << (_k * 5)) - 1);
         aaUIntKmerMap = toAaUIntKmerMap(motifs);
-        bins = std::vector<long double> (motifs.size(), 0.0);
+        bins = std::vector<double> (motifs.size(), 0.0);
     }
 
     void countKmers(const std::vector<std::string>& seqs) {
         for (std::string seq : seqs) {
-            if ((int) seq.size() < k) {
+            int n = (int) seq.size();
+            if (n < k) {
                 continue;
             }
 
@@ -76,7 +77,7 @@ public:
                 updateSkip(skip, seq[i]);
             }
 
-            for (int i = (k - 1); i < (int) seq.size(); i++) {
+            for (int i = (k - 1); i < n; i++) {
                 kmer = ((kmer << 5) & mask) | toAaIndex(seq[i]);
                 updateSkip(skip, seq[i]);
                 if (skip == 0) {
@@ -86,7 +87,7 @@ public:
         }
     }
 
-    std::vector<long double> getCounts() {
+    std::vector<double> getCounts() {
         return bins;
     }
 };
@@ -95,20 +96,21 @@ public:
 Rcpp::NumericVector rcppGetAaKmerPercent(
     const std::vector<std::string>& seqs, const std::vector<std::string>& motifs, const int k
 ) {
+    int numKmers = (int) motifs.size();
 
     AaKmerCounter counter = AaKmerCounter(motifs, k);
     counter.countKmers(seqs);
-    std::vector<long double> bins = counter.getCounts();
+    std::vector<double> bins = counter.getCounts();
 
-    long double binSum = scRepHelper::sum(bins);
+    double binSum = scRepHelper::sum(bins);
     if (binSum == 0.0) { // pretty sure this can only happen if there arent valid seqs?
-        return Rcpp::NumericVector (motifs.size(), R_NaReal);
+        return Rcpp::NumericVector (numKmers, R_NaReal);
     }
     
     double scaleFactor = 1 / binSum;
-    for (int i = 0; i < (int) motifs.size(); i++) {
+    for (int i = 0; i < numKmers; i++) {
         bins[i] *= scaleFactor;
     }
 
-    return scRepHelper::convertZerosToNA(bins, motifs.size());
+    return scRepHelper::convertZerosToNA(bins, numKmers);
 }
