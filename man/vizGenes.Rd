@@ -13,7 +13,10 @@ vizGenes(
   order = "gene",
   scale = TRUE,
   exportTable = FALSE,
-  palette = "inferno"
+  palette = "inferno",
+  pcoa.group.by = NULL,
+  dist.method = "manhattan",
+  point.size = 3
 )
 }
 \arguments{
@@ -37,6 +40,12 @@ respective repertoire size}
 \item{exportTable}{Returns the data frame used for forming the graph.}
 
 \item{palette}{Colors to use in visualization - input any \link[grDevices]{hcl.pals}.}
+
+\item{pcoa.group.by}{grouping variable in PCoA plot, default to NULL.}
+
+\item{dist.method}{distance calculation method to use in dist().}
+
+\item{point.size}{point size in PCoA plot.}
 }
 \value{
 ggplot bar diagram or heatmap of gene usage

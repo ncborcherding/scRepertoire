@@ -48,9 +48,13 @@
 #' @param group.by The variable to use for grouping.
 #' @param exportTable Returns the data frame used for forming the graph.
 #' @param palette Colors to use in visualization - input any \link[grDevices]{hcl.pals}.
+#' @param pcoa Plot PCoA plot instead of a heatmap.
+#' @param pcoa.group.by grouping variable in PCoA plot, default to NULL.
+#' @param point.size point size in PCoA plot.
 #' @importFrom stringr str_sort str_to_title
 #' @importFrom reshape2 melt
 #' @importFrom stats quantile
+#' @importFrom ape pcoa
 #' @export
 #' @concept Visualizing_Clones
 #' @return ggplot of the overlap of clones by group
@@ -60,7 +64,10 @@ clonalOverlap <- function(input.data,
                           chain = "both", 
                           group.by = NULL,
                           exportTable = FALSE,
-                          palette = "inferno"){
+                          palette = "inferno",
+                          pcoa = FALSE,
+                          pcoa.group.by = NULL,
+                          point.size = 3){
     if(method == "morisita") {
       return_type = "freq"
     } else {
@@ -105,6 +112,23 @@ clonalOverlap <- function(input.data,
     if (exportTable == TRUE) { 
       return(coef_matrix) 
     }
+
+    if (pcoa) {
+        if (!is.null(pcoa.group.by)) {
+            group <- unlist(lapply(input.data,
+                function(x) unique(x[[pcoa.group.by]])))
+        } else {
+            group <- NULL
+        }
+        m <- as.matrix(coef_matrix)
+        m[lower.tri(m)] <- t(m)[lower.tri(m)]
+        m <- as.dist(1-m, upper=TRUE)
+        res_pcoa <- ape::pcoa(m, correction="lingoes")
+        plot <- .returnPcoa(res_pcoa, group=group, palette=palette,
+            point.size=point.size, pcoa.group.by=pcoa.group.by)
+        return(plot)
+    }
+
     mat_melt <- suppressMessages(melt(as.matrix(coef_matrix)))
     
     mean_value <- mean(na.omit(mat_melt[,"value"]))

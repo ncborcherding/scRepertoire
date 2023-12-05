@@ -40,7 +40,9 @@ Imports:
     tidygraph,
     truncdist,
     utils,
-    VGAM
+    VGAM,
+    ape,
+    tidyr
 Suggests: 
     BiocManager,
     BiocStyle,

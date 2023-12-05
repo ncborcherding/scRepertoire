@@ -16,9 +16,14 @@
 #' @param group.by The variable to use for grouping.
 #' @param exportTable Returns the data frame used for forming the graph
 #' @param palette Colors to use in visualization - input any \link[grDevices]{hcl.pals}.
+#' @param pcoa Plot PCoA plot instead of a heatmap.
+#' @param pcoa.group.by grouping variable in PCoA plot, default to NULL.
+#' @param dist.method distance calculation method to use in dist().
+#' @param point.size point size in PCoA plot.
 #' @import ggplot2
 #' @importFrom stringr str_split str_sort 
 #' @importFrom reshape2 melt
+#' @importFrom stats dist
 #' @export
 #' @concept Summarize_Repertoire
 #' @return ggplot of percentage of V and J gene pairings as a heatmap
@@ -27,7 +32,11 @@ percentVJ <- function(input.data,
                       chain = "TRB",
                       group.by = NULL, 
                       exportTable = FALSE, 
-                      palette = "inferno") {
+                      palette = "inferno",
+                      pcoa = FALSE,
+                      pcoa.group.by = NULL,
+                      dist.method = "manhattan",
+                      point.size = 3) {
   
   sco <- is_seurat_object(input.data) | is_se_object(input.data)
   input.data <- .data.wrangle(input.data, group.by, "CTgene", chain)
@@ -68,6 +77,20 @@ percentVJ <- function(input.data,
   if (exportTable == TRUE) { 
     summary.matrix <- do.call(rbind,summary)
     return(summary.matrix) 
+  }
+  if (pcoa) {
+    if (!is.null(pcoa.group.by)) {
+        group <- unlist(lapply(input.data,
+            function(x) unique(x[[pcoa.group.by]])))
+    } else {
+        group <- NULL
+    }
+    summary.matrix <- do.call(rbind,summary)
+    distMat <- dist(summary.matrix, method=dist.method, upper=TRUE, diag=TRUE)
+    res_pcoa <- ape::pcoa(distMat, correction="lingoes")
+    plot <- .returnPcoa(res_pcoa, group=group, palette=palette,
+        point.size=point.size, pcoa.group.by=pcoa.group.by)
+    return(plot)
   }
   mat <- lapply(summary, function(x) {
     # Create an empty matrix

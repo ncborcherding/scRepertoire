@@ -11,7 +11,10 @@ clonalOverlap(
   chain = "both",
   group.by = NULL,
   exportTable = FALSE,
-  palette = "inferno"
+  palette = "inferno",
+  pcoa = FALSE,
+  pcoa.group.by = NULL,
+  point.size = 3
 )
 }
 \arguments{
@@ -33,6 +36,12 @@ e.g. "both", "TRA", "TRG", "IGH", "IGL"}
 \item{exportTable}{Returns the data frame used for forming the graph.}
 
 \item{palette}{Colors to use in visualization - input any \link[grDevices]{hcl.pals}.}
+
+\item{pcoa}{Plot PCoA plot instead of a heatmap.}
+
+\item{pcoa.group.by}{grouping variable in PCoA plot, default to NULL.}
+
+\item{point.size}{point size in PCoA plot.}
 }
 \value{
 ggplot of the overlap of clones by group

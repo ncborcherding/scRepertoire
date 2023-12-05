@@ -575,3 +575,38 @@ is_df_or_list_of_df <- function(x) {
   return(output)
 }
 
+# return pcoa plot
+.returnPcoa <- function(res_pcoa, group=NULL, palette="inferno",
+    point.size=3, ellipse=FALSE, pcoa.group.by=NULL) {
+    group_len <- length(unique(group))
+    if ("Rel_corr_eig" %in% colnames(res_pcoa$values)) {
+        expv <- round(res_pcoa$values[,"Rel_corr_eig"] * 100, 2)        
+    } else {
+        expv <- round(res_pcoa$values[,"Relative_eig"] * 100, 2)
+    }
+    plot <- res_pcoa$vectors %>%
+        data.frame() %>%
+        .[,c(1,2)] %>%
+        `colnames<-`(c("PC1","PC2")) %>%
+        mutate(sample=row.names(.)) %>%
+        mutate(group=group[sample]) %>%
+        ggplot(aes(x=.data$PC1, y=.data$PC2, fill=group))+
+        geom_point(shape=21, size=point.size)
+    if (ellipse) {
+        plot <- plot +
+            stat_ellipse(aes(group=group, color=group),
+                alpha=1, linetype=2)+
+            scale_color_manual(values=.colorizer(palette, group_len),
+                na.value = "white",
+                name=pcoa.group.by)
+    }
+    plot <- plot +
+        scale_fill_manual(values=.colorizer(palette, group_len),
+            na.value = "white",
+            name=pcoa.group.by)+
+        xlab(paste0("PC1 (",expv[1]," %)"))+
+        ylab(paste0("PC2 (",expv[2]," %)"))+
+        theme_classic()
+
+    return(plot)
+}

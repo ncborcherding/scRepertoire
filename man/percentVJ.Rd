@@ -9,7 +9,11 @@ percentVJ(
   chain = "TRB",
   group.by = NULL,
   exportTable = FALSE,
-  palette = "inferno"
+  palette = "inferno",
+  pcoa = FALSE,
+  pcoa.group.by = NULL,
+  dist.method = "manhattan",
+  point.size = 3
 )
 }
 \arguments{
@@ -23,6 +27,14 @@ percentVJ(
 \item{exportTable}{Returns the data frame used for forming the graph}
 
 \item{palette}{Colors to use in visualization - input any \link[grDevices]{hcl.pals}.}
+
+\item{pcoa}{Plot PCoA plot instead of a heatmap.}
+
+\item{pcoa.group.by}{grouping variable in PCoA plot, default to NULL.}
+
+\item{dist.method}{distance calculation method to use in dist().}
+
+\item{point.size}{point size in PCoA plot.}
 }
 \value{
 ggplot of percentage of V and J gene pairings as a heatmap
