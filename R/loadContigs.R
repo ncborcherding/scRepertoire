@@ -139,6 +139,7 @@ loadContigs <- function(input,
         data2[data2 == ""] <- NA
         df[[i]] <- data2
         df[[i]] <- df[[i]][with(df[[i]], order(reads, chain)),]
+        
     }
     return(df)
 }

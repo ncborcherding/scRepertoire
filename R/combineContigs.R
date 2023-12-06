@@ -122,6 +122,10 @@ combineTCR <- function(input.data,
     if (removeMulti) {
       final <- .removingMulti(final)
     }
+    #Adding list element names to output if samples NULL
+    if(is.null(samples)) {
+      names(final) <- paste0("S", seq_len(length(final)))
+    }
     final
 }
 
@@ -255,6 +259,10 @@ combineBCR <- function(input.data,
     }
     if (removeMulti) { 
       final <- .removingMulti(final) 
+    }
+    #Adding list element names to output if samples NULL
+    if(is.null(samples)) {
+      names(final) <- paste0("S", seq_len(length(final)))
     }
     return(final) 
 }

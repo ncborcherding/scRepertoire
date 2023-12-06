@@ -351,7 +351,6 @@ is_seurat_or_se_object <- function(obj) {
                     Con.df<- rbind.data.frame(Con.df, data) }}
     } else {
             for (x in seq_along(df)) {
-                df[[x]] <- .off.the.chain(df[[x]], chain, cloneCall)
                 strings <- df[[x]][,cloneCall]
                 val1 <- strings
                 for (i in seq_along(val1)) {
