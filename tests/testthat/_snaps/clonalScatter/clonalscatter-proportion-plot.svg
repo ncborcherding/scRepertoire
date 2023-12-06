@@ -2510,6 +2510,6 @@
 <text x='646.40' y='339.19' style='font-size: 8.80px; font-family: sans;' textLength='61.67px' lengthAdjust='spacingAndGlyphs'>P17L.expanded</text>
 <text x='646.40' y='356.47' style='font-size: 8.80px; font-family: sans;' textLength='48.44px' lengthAdjust='spacingAndGlyphs'>P17L.singlet</text>
 <text x='646.40' y='373.75' style='font-size: 8.80px; font-family: sans;' textLength='57.75px' lengthAdjust='spacingAndGlyphs'>dual.expanded</text>
-<text x='35.24' y='14.56' style='font-size: 13.20px; font-family: sans;' textLength='104.94px' lengthAdjust='spacingAndGlyphs'>clonalScatter_plot</text>
+<text x='35.24' y='14.56' style='font-size: 13.20px; font-family: sans;' textLength='171.72px' lengthAdjust='spacingAndGlyphs'>clonalScatter_proportion_plot</text>
 </g>
 </svg>

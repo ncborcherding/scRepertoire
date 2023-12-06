@@ -34,5 +34,13 @@ test_that("clonalNetwork works", {
     getdata("seuratFunctions", "clonalNetwork_exportClones")
   )
   
+  expect_doppelganger( # warning from testthat: Using the `size` aesthetic in this geom was deprecated in ggplot2 3.4.0. Please use `linewidth` in the `default_aes` field and elsewhere instead.
+    "clonalNetwork_filterclones.1_plot",
+    clonalNetwork(test_obj, 
+                  reduction = "umap", 
+                  group.by = "seurat_clusters", 
+                  filter.clones = 3,
+                  cloneCall = "aa")
+  )
   
 })

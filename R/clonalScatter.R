@@ -26,7 +26,7 @@
 #' @param dot.size either total or the name of the list element to 
 #' use for size of dots.
 #' @param group.by The variable to use for grouping.
-#' @param graph graph either proportion or raw clonotype count.
+#' @param graph graph either the clonal "proportion" or "count".
 #' @param exportTable Returns the data frame used for forming the graph.
 #' @param palette Colors to use in visualization - input any \link[grDevices]{hcl.pals}.
 #' 

@@ -15,6 +15,24 @@ test_that("alluvialClones works", {
                    color = "Type")
   )
   
+  expect_doppelganger(
+    "alluvialClones_nocolor_plot",
+    alluvialClones(test_obj, 
+                   cloneCall = "aa", 
+                   y.axes = c("Patient", "ident"), 
+                   color = NULL)
+  )
+  
+  expect_doppelganger(
+    "alluvialClones_facet_plot",
+    alluvialClones(test_obj, 
+                   cloneCall = "aa", 
+                   y.axes = c("Patient", "ident"), 
+                   color = "ident", 
+                   facet = "Type")
+  )
+  
+  
   expect_equal(
     alluvialClones(test_obj, 
                    cloneCall = "aa", 

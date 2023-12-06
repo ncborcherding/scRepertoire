@@ -37,7 +37,7 @@ use for size of dots.}
 
 \item{group.by}{The variable to use for grouping.}
 
-\item{graph}{graph either proportion or raw clonotype count.}
+\item{graph}{graph either the clonal "proportion" or "count".}
 
 \item{exportTable}{Returns the data frame used for forming the graph.}
 
