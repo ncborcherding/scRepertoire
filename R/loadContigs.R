@@ -209,10 +209,9 @@ loadContigs <- function(input,
 
 .parseMiXCR <- function(df) {
   for (i in seq_along(df)) {
-    df[[i]] <- do.call(rbind, df[[i]])
     df[[i]][df[[i]] == ""] <- NA
     df[[i]] <- as.data.frame(df[[i]])
-    df[[i]] <- df[[i]][,c("tagValueCELL", "topChains", "readCount", "vGene", "dGene", "jGene", "cGene", "nSeqCDR3", "aaSeqCDR3")]
+    df[[i]] <- df[[i]][,c("tagValueCELL", "topChains", "readCount", "allVHitsWithScore",   "allDHitsWithScore",   "allJHitsWithScore",  "allCHitsWithScore", "nSeqCDR3", "aaSeqCDR3")]
     colnames(df[[i]]) <- c("barcode", "chain", "reads", "v_gene", "d_gene", "j_gene", "c_gene", "cdr3_nt", "cdr3")
   }
   return(df)
@@ -221,12 +220,11 @@ loadContigs <- function(input,
 #' @importFrom stringr str_split
 .parseImmcantation<- function(df) {
   for (i in seq_along(df)) {
-    df[[i]] <- do.call(rbind, df[[i]])
     df[[i]][df[[i]] == ""] <- NA
     df[[i]] <- as.data.frame(df[[i]])
-    df[[i]] <- df[[i]][,c("sequence_id", "locus", "consensus_count",  "v_call", "d_call", "j_call", "c_call", "cdr3", "cdr3_aa")]
+    df[[i]] <- df[[i]][,c("sequence_id", "locus", "consensus_count",  "v_call", "d_call", "j_call", "c_gene", "cdr3", "cdr3_aa")]
     colnames(df[[i]]) <- c("barcode", "chain", "reads", "v_gene", "d_gene", "j_gene", "c_gene", "cdr3_nt", "cdr3")
-    df[[i]] <- str_split(df[[i]], "_", simplify = TRUE)[,1]
+    df[[i]] <- str_split(df[[i]][,"barcode"], "_", simplify = TRUE)[,1]
   }
   return(df)
 }
