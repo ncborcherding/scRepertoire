@@ -40,7 +40,8 @@ Imports:
     tidygraph,
     truncdist,
     utils,
-    VGAM
+    VGAM,
+    hash
 Suggests: 
     BiocManager,
     BiocStyle,

@@ -37,13 +37,12 @@ test_that("combineTCR works", {
 
 # TODO combineTCR & combineBCR (need more edge cases, different args, errors, etc.)
 
-
 test_that("combineBCR works", {
-  
+
   BCR <- read.csv("https://www.borch.dev/uploads/contigs/b_contigs.csv")
   trial1 <- combineBCR(BCR, 
                     samples = "Patient1")
-  
+
   expect_identical(trial1, getdata("combineContigs", "combineBCR_list_expected"))
-  
+
 })

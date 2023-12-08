@@ -1,4 +1,5 @@
-// 2-bit-based nucleotide kmer counting
+// 2-bit-based nucleotide kmer counting - unoptimized
+// could use a kmercounter class with an uint_fast64_t[128] for toNtIndex instead of the switch statement
 // by Qile Yang
 
 #include <Rcpp.h>
@@ -15,13 +16,10 @@ inline unsigned short int toNtIndex(const char nt) {
     }
 }
 
+constexpr char Nts[4] = {'A', 'C', 'G', 'T'};
+
 inline char lastNt(unsigned int index) {
-    switch(index & 3) {
-        case 0: return 'A';
-        case 1: return 'C';
-        case 2: return 'G';
-        default: return 'T';
-    }
+    return Nts[index & 3];
 }
 
 inline std::string toNtKmer(unsigned long int index, int k) {
@@ -58,6 +56,11 @@ inline void updateSkip(int& skip, const char c, const int k) {
     }
 }
 
+inline bool updateSkipAndReturnIfShouldntSkip(int& skip, const char c, const int k) {
+    updateSkip(skip, c, k);
+    return skip == 0;
+}
+
 // actual kmer counter - doesnt handle _NA_ for k = 1
 inline void kmerCount(std::vector<double>& bins, const unsigned int mask, const std::string& seq, const int k) {
     
@@ -76,8 +79,7 @@ inline void kmerCount(std::vector<double>& bins, const unsigned int mask, const 
 
     for (int i = k - 1; i < n; i++) {
         kmer = ((kmer << 2) & mask) | toNtIndex(seq[i]);
-        updateSkip(skip, seq[i], k);
-        if (skip == 0) {
+        if (updateSkipAndReturnIfShouldntSkip(skip, seq[i], k)) {
             bins[kmer]++;
         }
     }

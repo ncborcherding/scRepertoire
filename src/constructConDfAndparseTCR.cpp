@@ -43,7 +43,7 @@ public:
     TcrParser(
         Rcpp::DataFrame& data2, std::vector<std::string>& uniqueData2Barcodes
     ) {
-        // construct conDf
+        // construct conDf, initializaing the matrix to "NA" *strings*
         conDf = scRepHelper::initStringMatrix(
             7, uniqueData2Barcodes.size(), "NA"
         );

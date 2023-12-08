@@ -6,7 +6,7 @@ is_seurat_or_se_object <- function(obj) {
     is_seurat_object(obj) || is_se_object(obj)
 }
 
-#Use to shuffle between chains
+#Use to shuffle between chains Qile: the NA handling here *might* be related to the unnamed combineTCR bugs from the new rcpp con.df construction
 #' @keywords internal
 #' @author Ye-Lin Son Nick Borcherding
 .off.the.chain <- function(dat, chain, cloneCall) {
@@ -250,23 +250,10 @@ is_seurat_or_se_object <- function(obj) {
     return(data1)
 }
 
-
 # This is to help sort the type of clonotype data to use
 #' @keywords internal
 .theCall <- function(df, x, check.df = TRUE) {
-    x <- switch(x,
-                "gene" = "CTgene",
-                "genes" = "CTgene", 
-                "CTgene" = "CTgene",
-                "nt" = "CTnt",
-                "nucleotides" = "CTnt",
-                "CTnt" = "CTnt",
-                "aa" = "CTaa", 
-                "amino" = "CTaa", 
-                "CTaa" = "CTaa", 
-                "strict" = "CTstrict", 
-                "gene+nt" = "CTstrict",
-                "CTstrict" = "CTstrict")
+    x <- .convertClonecall(x)
     if(check.df) {
       if(inherits(df, "list") & !any(colnames(df[[1]]) %in% x)) {
         stop("Check the clonal variabe (cloneCall) being used in the function, it does not appear in the data provided.")
@@ -277,15 +264,70 @@ is_seurat_or_se_object <- function(obj) {
     return(x)
 }
 
+# helper for .theCall
+.convertClonecall <- function(x) {
+
+  clonecall_dictionary <- hash::hash(
+    "gene" = "CTgene",
+		"genes" = "CTgene",
+		"ctgene" = "CTgene",
+		"ctstrict" = "CTstrict",
+		"nt" = "CTnt",
+		"nucleotide" = "CTnt",
+		"nucleotides" = "CTnt",
+		"ctnt" = "CTnt",
+		"aa" = "CTaa",
+		"amino" = "CTaa",
+		"ctaa" = "CTaa",
+		"gene+nt" = "CTstrict",
+		"strict" = "CTstrict",
+		"ctstrict" = "CTstrict"
+	)
+
+	x <- tolower(x)
+
+	if (!is.null(clonecall_dictionary[[x]])) {
+		return(clonecall_dictionary[[x]])
+	}
+
+	stop(paste(
+		"invalid input cloneCall, did you mean: '",
+		closest_word(
+			x,
+			c(names(clonecall_dictionary),
+			  unname(hash::values(clonecall_dictionary)))
+		),
+		"'?",
+		sep = ""
+	))
+}
+
+# helper for .convertClonecall
+closest_word <- function(s, strset) {
+    strset_lowercase <- tolower(strset)
+    s <- tolower(s)
+
+    closest_w <- strset_lowercase[1]
+    closest_dist <- utils::adist(s, closest_w)
+    for(i in 2:length(strset_lowercase)) {
+        curr_dist <- utils::adist(s, strset_lowercase[i])
+        if (curr_dist < closest_dist) {
+            closest_w <- strset[i]
+            closest_dist <- curr_dist
+        }
+    }
+    closest_w
+}
+
 # Assigning positions for TCR contig data
-# Used to be .parseTCR(Con.df, unique_df, data2)
+# Used to be .parseTCR(Con.df, unique_df, data2) in v1
 # but now also constructs Con.df and runs the parseTCR algorithm on it, all in Rcpp
 #' @author Gloria Kraus, Nick Bormann, Nicky de Vrij, Nick Borcherding, Qile Yang
 #' @keywords internal
 .constructConDfAndParseTCR <- function(data2) {
   rcppConstructConDfAndParseTCR(
     data2 %>% arrange(., chain, cdr3_nt),
-    unique(data2[[1]])
+    unique(data2[[1]]) # 1 is the index of the barcode column
   )
 }
 

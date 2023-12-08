@@ -62,7 +62,7 @@ combineExpression <- function(input.data,
     call_time <- Sys.time()
   
     options( dplyr.summarise.inform = FALSE )
-    if (!proportion & any(cloneSize < 1)) {
+    if (!proportion && any(cloneSize < 1)) {
         stop("Adjust the cloneSize parameter - there are groupings < 1")
     }
     cloneSize <- c(None = 0, cloneSize)
@@ -93,7 +93,7 @@ combineExpression <- function(input.data,
                              "clonalFrequency")]
             Con.df <- rbind.data.frame(Con.df, data)
         }
-    } else if (group.by != "none" | !is.null(group.by)) {
+    } else if (group.by != "none" || !is.null(group.by)) {
         data <- data.frame(bind_rows(input.data), stringsAsFactors = FALSE)
         data2 <- na.omit(unique(data[,c("barcode", cloneCall, group.by)]))
         data2 <- data2[data2[,"barcode"] %in% cell.names, ]
