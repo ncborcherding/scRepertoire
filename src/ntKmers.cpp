@@ -1,4 +1,4 @@
-// 2-bit-based nucleotide kmer counting
+// 2-bit-based nucleotide kmer counting - unoptimized
 // by Qile Yang
 
 #include <Rcpp.h>
@@ -50,12 +50,13 @@ Rcpp::CharacterVector rcppGenerateUniqueNtMotifs(int k) {
     return motifs;
 }
 
-inline void updateSkip(int& skip, const char c, const int k) {
+inline bool updateSkipAndReturnIfShouldSkip(int& skip, const char c, const int k) {
     if (!isNt(c)) {
         skip = k;
     } else if (skip > 0) {
         skip--;
     }
+    return skip == 0;
 }
 
 // actual kmer counter - doesnt handle _NA_ for k = 1
@@ -71,13 +72,12 @@ inline void kmerCount(std::vector<double>& bins, const unsigned int mask, const 
 
     for (int i = 0; i < (k - 1); i++) { // this segment to initialize the kmer should be deletable if skip is adjusted?
         kmer = (kmer << 2) | toNtIndex(seq[i]);
-        updateSkip(skip, seq[i], k);
+        updateSkipAndReturnIfShouldSkip(skip, seq[i], k);
     }
 
     for (int i = k - 1; i < n; i++) {
         kmer = ((kmer << 2) & mask) | toNtIndex(seq[i]);
-        updateSkip(skip, seq[i], k);
-        if (skip == 0) {
+        if (updateSkipAndReturnIfShouldSkip(skip, seq[i], k)) {
             bins[kmer]++;
         }
     }

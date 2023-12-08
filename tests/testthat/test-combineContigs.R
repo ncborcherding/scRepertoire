@@ -36,4 +36,5 @@ test_that("combineTCR works", {
 }) 
 
 # TODO combineTCR (need more edge cases, different args, errors, etc.)
+# TODO test combineTCR with the output of loadContigs
 # TODO combineBCR
