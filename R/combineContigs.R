@@ -93,7 +93,7 @@ combineTCR <- function(input.data,
         Con.df[Con.df == "NA_NA" | Con.df == "NA;NA_NA;NA"] <- NA 
         data3 <- merge(data2[,-which(names(data2) %in% c("TCR1","TCR2"))], 
             Con.df, by = "barcode")
-        if (!is.null(samples) & !is.null(ID)) {
+        if (!is.null(samples) && !is.null(ID)) {
             data3 <- data3[, c("barcode", "sample", "ID", tcr1_lines, tcr2_lines,
                 CT_lines)] }
         else if (!is.null(samples) & is.null(ID)) {
@@ -104,7 +104,7 @@ combineTCR <- function(input.data,
     }
     name_vector <- character(length(samples))
     for (i in seq_along(samples)) { 
-        if (!is.null(samples) & !is.null(ID)) {
+        if (!is.null(samples) && !is.null(ID)) {
             curr <- paste(samples[i], "_", ID[i], sep="")
         } else if (!is.null(samples) & is.null(ID)) {
             curr <- paste(samples[i], sep="")

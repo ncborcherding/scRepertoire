@@ -6,7 +6,7 @@ is_seurat_or_se_object <- function(obj) {
     is_seurat_object(obj) || is_se_object(obj)
 }
 
-#Use to shuffle between chains
+#Use to shuffle between chains Qile: the NA handling here *might* be related to the unnamed combineTCR bugs from the new rcpp con.df construction
 #' @keywords internal
 #' @author Ye-Lin Son Nick Borcherding
 .off.the.chain <- function(dat, chain, cloneCall) {
