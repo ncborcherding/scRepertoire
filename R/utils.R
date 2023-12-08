@@ -278,14 +278,14 @@ is_seurat_or_se_object <- function(obj) {
 }
 
 # Assigning positions for TCR contig data
-# Used to be .parseTCR(Con.df, unique_df, data2)
+# Used to be .parseTCR(Con.df, unique_df, data2) in v1
 # but now also constructs Con.df and runs the parseTCR algorithm on it, all in Rcpp
 #' @author Gloria Kraus, Nick Bormann, Nicky de Vrij, Nick Borcherding, Qile Yang
 #' @keywords internal
 .constructConDfAndParseTCR <- function(data2) {
   rcppConstructConDfAndParseTCR(
     data2 %>% arrange(., chain, cdr3_nt),
-    unique(data2[[1]])
+    unique(data2[[1]]) # 1 is the index of the barcode column
   )
 }
 
