@@ -12,11 +12,25 @@ test_that("'%!in%' works", {
 })
 
 # TODO off.the.chain
-# TODO groupList
 # TODO checkSingleObject
 # TODO .parseBCR
 # TODO lengthDF
 
+test_that(".removingMulti works", {
+  combined <- getCombined()
+  expect_equal(.removingMulti(combined[1:2]),
+               getdata("utils", "removingMulti_data"))
+  
+})
+
+test_that(".filteringNA works", {
+  data("scRep_example")
+  test_obj <- combineExpression(getCombined(), scRep_example)
+  test_obj <- .filteringNA(test_obj)
+  expect_equal(test_obj@meta.data[, 7:13],
+               getdata("utils", "filteringNA_metadata"))
+  
+})
 
 
 test_that(".list.input.return works", {

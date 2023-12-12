@@ -44,7 +44,7 @@ use for size of dots.}
 \item{palette}{Colors to use in visualization - input any \link[grDevices]{hcl.pals}.}
 }
 \value{
-ggplot of the relative clonotype numbers between two sequencing runs
+ggplot of the relative clone numbers between two sequencing runs or groups
 }
 \description{
 This function produces a scatter plot directly comparing the specific clonotypes

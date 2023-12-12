@@ -231,9 +231,8 @@ is_seurat_or_se_object <- function(obj) {
       colData(sc)[["evalNA"]]<-evalNA
       return(sc[, !is.na(sc$cloneSize)])
     }else{
-      col.name <- names(evalNA) %||% colnames(evalNA)
-      sc[[col.name]] <- evalNA
-      sc <- subset(sc, cloneSize != 0)
+      pos <- which(evalNA[,"indicator"] != 0)
+      sc <- subset(sc, cells = rownames(evalNA)[pos])
       return(sc)
     }
 }

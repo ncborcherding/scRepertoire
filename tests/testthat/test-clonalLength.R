@@ -12,6 +12,18 @@ test_that("clonalLength works", {
                  scale = TRUE) 
   )
   
+  expect_doppelganger(
+    "clonalLength_TRB_plot", 
+    clonalLength(getCombined(), 
+                 chain = "TRB") 
+  )
+  
+  expect_doppelganger(
+    "clonalLength_TRA_plot", 
+    clonalLength(getCombined(), 
+                 chain = "TRA") 
+  )
+  
   combined <- addVariable(getCombined(), 
                           variable.name = "Type", 
                           variables = rep(c("B", "L"), 4))

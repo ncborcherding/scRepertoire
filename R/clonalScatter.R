@@ -34,7 +34,7 @@
 #' 
 #' @export
 #' @concept Visualizing_Clones
-#' @return ggplot of the relative clonotype numbers between two sequencing runs
+#' @return ggplot of the relative clone numbers between two sequencing runs or groups
 
 clonalScatter <- function(input.data, 
                           cloneCall ="strict", 
@@ -109,8 +109,12 @@ clonalScatter <- function(input.data,
     y <- mat[,y.axis] }
   if (dot.size != "total") {
     size <- mat[,dot.size]
-  } else { size <- mat[,"sum"] }
-  if (exportTable == TRUE) { return(mat) }
+  } else { 
+    mat[,"size"] <- mat[,"sum"] 
+  }
+  if (exportTable == TRUE) { 
+    return(mat) 
+  }
   
   plot <- ggplot(mat, aes(x=x, y = y, fill = class)) + 
                 theme_classic() + 
@@ -129,7 +133,7 @@ clonalScatter <- function(input.data,
             xlim(0, max(x,y)) 
   }
   plot <- plot + 
-          geom_jitter(aes(size = size,), shape = 21, color = "black", stroke = 0.25)
+          geom_point(aes(size = size), shape = 21, color = "black", stroke = 0.25)
   
   return(plot)  
 }

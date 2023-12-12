@@ -16,12 +16,39 @@ test_that("alluvialClones works", {
   )
   
   expect_doppelganger(
+    "alluvialClones_TRB_plot",
+    alluvialClones(test_obj, 
+                   cloneCall = "aa", 
+                   chain = "TRB",
+                   y.axes = c("Patient", "ident"), 
+                   color = "Type")
+  )
+  
+  expect_doppelganger(
     "alluvialClones_nocolor_plot",
     alluvialClones(test_obj, 
                    cloneCall = "aa", 
                    y.axes = c("Patient", "ident"), 
                    color = NULL)
   )
+  
+  expect_doppelganger(
+    "alluvialClones_alpha_plot",
+    alluvialClones(test_obj, 
+                   cloneCall = "aa", 
+                   y.axes = c("Type", "ident"), 
+                   alpha = "Patient")
+  )
+  
+  expect_doppelganger(
+    "alluvialClones_alphapluscolor_plot",
+    alluvialClones(test_obj, 
+                   cloneCall = "aa", 
+                   y.axes = c("Type", "ident"), 
+                   alpha = "Patient", 
+                   color = "Type")
+  )
+
   
   expect_doppelganger(
     "alluvialClones_facet_plot",

@@ -16,6 +16,13 @@ test_that("clonalCluster works", {
     getdata("clustering", "clonalCluster_TRBaa_data")
   )
   
+  set.seed(42)
+  expect_equal(
+  clonalCluster(combined[1:2], 
+                chain = "TRB", 
+                sequence = "aa"),
+  getdata("clustering", "clonalCluster_2sample_data")
+  )
   
   set.seed(42)
   test_obj <- clonalCluster(test_obj, 
@@ -26,5 +33,17 @@ test_that("clonalCluster works", {
     test_obj@meta.data[, 7:16],
     getdata("clustering", "clonalCluster_TRBaa_metadata")
   )
+  
+  
+  BCR <- read.csv("https://www.borch.dev/uploads/contigs/b_contigs.csv")
+  combined.BCR <- combineBCR(BCR, 
+                             samples = "S1")
+  expect_equal(
+      clonalCluster(combined.BCR, 
+                    chain = "IGH", 
+                    sequence = "aa"),
+      getdata("clustering", "clonalCluster_IGHaa_data")
+  )
+  
 })
 #TODO Add exportgraph test
