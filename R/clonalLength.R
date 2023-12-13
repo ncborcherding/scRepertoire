@@ -64,7 +64,12 @@ clonalLength <- function(input.data,
   #Identifying and assigning chains
   chain.pos <- which(colnames(input.data[[1]]) == "cdr3_aa1")-1
   c1 <- na.omit(unique(substr(input.data[[1]][seq_len(10),chain.pos], 1,3)))
-  c1 <- c1[c1 != "NA."]
+  if(any(grepl("NA.", c1))) {
+    c1 <- c1[c1 != "NA."]
+  }
+  if(any(grepl("NA", c1))) {
+    c1 <- c1[c1 != "NA"]
+  }
   c2 <- switch(c1,
                "TRA" = "TRB",
                "IGH"  = "IGL",
