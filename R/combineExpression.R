@@ -104,7 +104,7 @@ combineExpression <- function(input.data,
         )
         
         colnames(data2)[c(1,2)] <- c(cloneCall, group.by)
-        data <- merge(data, data2, by = cloneCall, all = TRUE)
+        data <- merge(data, data2, by = c(cloneCall, group.by), all = TRUE)
         Con.df <- data[,c("barcode", "CTgene", "CTnt", 
                           "CTaa", "CTstrict", "clonalProportion", 
                           "clonalFrequency")]
