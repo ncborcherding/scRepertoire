@@ -115,6 +115,7 @@ combineTCR <- function(input.data,
     for (i in seq_along(final)){
       final[[i]]<-final[[i]][!duplicated(final[[i]]$barcode),]
       final[[i]]<-final[[i]][rowSums(is.na(final[[i]])) < 10, ]
+      final[[i]][final[[i]] == "NA"] <- NA
     }
     if (removeNA) {
       final <- .removingNA(final)
@@ -253,6 +254,7 @@ combineBCR <- function(input.data,
     for (i in seq_along(final)) {
         final[[i]] <- final[[i]][!duplicated(final[[i]]$barcode),]
         final[[i]]<-final[[i]][rowSums(is.na(final[[i]])) < 10, ]
+        final[[i]][final[[i]] == "NA"] <- NA
     }
     if (removeNA) { 
       final <- .removingNA(final) 
