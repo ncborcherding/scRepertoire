@@ -38,7 +38,7 @@ Unfortunately, Github limits the size of individual files. In order to access th
 
 We are working on submitting the scRepertoire as a peer review article, for now: 
 
-***Borcherding, N. & Wang, Q. 2023. scRepertoire v2: Expanded toolkit for single-cell immune repertoire analysis***
+***Borcherding, N. & Yang, Q. 2023. scRepertoire v2: Expanded toolkit for single-cell immune repertoire analysis***
 
 ## Bug Reports/New Features
 

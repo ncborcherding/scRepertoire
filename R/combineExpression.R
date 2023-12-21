@@ -76,7 +76,7 @@ combineExpression <- function(input.data,
     Con.df <- NULL
     meta <- .grabMeta(sc.data)
     cell.names <- rownames(meta)
-    if (group.by == "none" || is.null(group.by)) {
+    if (is.null(group.by) || group.by == "none") {
         for (i in seq_along(input.data)) {
       
             data <- data.frame(input.data[[i]], stringsAsFactors = FALSE)
@@ -104,7 +104,7 @@ combineExpression <- function(input.data,
         )
         
         colnames(data2)[c(1,2)] <- c(cloneCall, group.by)
-        data <- merge(data, data2, by = cloneCall, all = TRUE)
+        data <- merge(data, data2, by = c(cloneCall, group.by), all = TRUE)
         Con.df <- data[,c("barcode", "CTgene", "CTnt", 
                           "CTaa", "CTstrict", "clonalProportion", 
                           "clonalFrequency")]
