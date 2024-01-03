@@ -255,9 +255,9 @@ is_seurat_or_se_object <- function(obj) {
     x <- .convertClonecall(x)
     if(check.df) {
       if(inherits(df, "list") & !any(colnames(df[[1]]) %in% x)) {
-        stop("Check the clonal variabe (cloneCall) being used in the function, it does not appear in the data provided.")
+        stop("Check the clonal variable (cloneCall) being used in the function, it does not appear in the data provided.")
       } else if (inherits(df, "data.frame") & !any(colnames(df) %in% x)) {
-        stop("Check the clonal variabe (cloneCall) being used in the function, it does not appear in the data provided.")
+        stop("Check the clonal variable (cloneCall) being used in the function, it does not appear in the data provided.")
       }
     }
     return(x)
@@ -288,35 +288,12 @@ is_seurat_or_se_object <- function(obj) {
 	if (!is.null(clonecall_dictionary[[x]])) {
 		return(clonecall_dictionary[[x]])
 	}
-
-	stop(paste(
-		"invalid input cloneCall, did you mean: '",
-		closest_word(
-			x,
-			c(names(clonecall_dictionary),
-			  unname(hash::values(clonecall_dictionary)))
-		),
-		"'?",
-		sep = ""
-	))
+	else {
+		warning("A custom variable ", x, " will be used to call clones")
+		return(x)
+	}
 }
 
-# helper for .convertClonecall
-closest_word <- function(s, strset) {
-    strset_lowercase <- tolower(strset)
-    s <- tolower(s)
-
-    closest_w <- strset_lowercase[1]
-    closest_dist <- utils::adist(s, closest_w)
-    for(i in 2:length(strset_lowercase)) {
-        curr_dist <- utils::adist(s, strset_lowercase[i])
-        if (curr_dist < closest_dist) {
-            closest_w <- strset[i]
-            closest_dist <- curr_dist
-        }
-    }
-    closest_w
-}
 
 # Assigning positions for TCR contig data
 # Used to be .parseTCR(Con.df, unique_df, data2) in v1
