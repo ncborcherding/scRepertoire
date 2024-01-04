@@ -91,10 +91,10 @@ clonalSizeDistribution <- function(input.data,
     data <- data.frame(table(data[,cloneCall]), 
                        stringsAsFactors = FALSE)
     colnames(data) <- c(cloneCall, "Freq")
-    for (y in seq_along(unique_df)){
+    for (y in seq_along(unique_df)){ # here is the first speed bottleneck that has speedup potential
       clonotype.y <- Con.df$clonotype[y]
-      location.y <- which(clonotype.y == data[,cloneCall])
-      Con.df[y,i+1] <- data[location.y[1],"Freq"]
+      location.y <- which(clonotype.y == data[,cloneCall]) # some pre-indexing likely possible here to shave ~5s
+      Con.df[y,i+1] <- data[location.y[1],"Freq"] # assignment likely could be sped up by constant factor to shave ~8s
     }
   }
   colnames(Con.df)[2:(length(input.data)+1)] <- names(input.data)

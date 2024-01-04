@@ -33,7 +33,7 @@
 * Added support for Immcantation pipeline, .json, Omniscope, and MiXCR formats for ```loadContigs()```
 * Made GitHub.io website for support/vignettes/FAQ
 * Restructured NEWS Tracking
-* Added testhat for all exported and internal functions
+* Added testthat for all exported and internal functions
 
 ## DEPRECATED AND DEFUNCT
 
@@ -58,6 +58,7 @@
 * exportClones to clonalNetwork() to isolate clones shared across identities.
 
 ## UNDERLYING CHANGES
+
 * Fix issue with clonalDiversity() and skipping boots
 * Fixing underlying assumptions with clonalBias()
 * Adding reads variable to parseAIRR
@@ -233,7 +234,7 @@
 
 # scRepertoire VERSION 0.99.16
 
-* Added getCirclize() 
+* Added ```getCirclize()```
 
 
 # scRepertoire VERSION 0.99.15
@@ -245,7 +246,7 @@
 
 * Removed bracket from indexing function
 
-#scRepertoire VERSION 0.99.13
+# scRepertoire VERSION 0.99.13
 
 * Added exportTable to remaining viz functions
 * Modified morisita index to correct error
@@ -264,7 +265,7 @@
 
 # scRepertoire VERSION 0.99.9
 
-* Bioconductor had no love - changed the Seurat package to imports instead of required, see if that will address the compiling issue that results in a killed: 9 error. 
+* Bioconductor had no love - changed the Seurat package to imports instead of required, see if that will address the compiling issue that results in a killed: 9 error.
 
 # scRepertoire VERSION 0.99.8
 
@@ -328,7 +329,7 @@ DEPRECATED AND DEFUNCT
 
 SIGNIFICANT USER-VISIBLE CHANGES
 
-* Added support for SingleCellExperiement format.
+* Added support for ```SingleCellExperiment``` format.
 
 
 DEPRECATED AND DEFUNCT

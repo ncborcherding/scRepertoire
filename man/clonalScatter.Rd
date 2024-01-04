@@ -37,14 +37,14 @@ use for size of dots.}
 
 \item{group.by}{The variable to use for grouping.}
 
-\item{graph}{graph either proportion or raw clonotype count.}
+\item{graph}{graph either the clonal "proportion" or "count".}
 
 \item{exportTable}{Returns the data frame used for forming the graph.}
 
 \item{palette}{Colors to use in visualization - input any \link[grDevices]{hcl.pals}.}
 }
 \value{
-ggplot of the relative clonotype numbers between two sequencing runs
+ggplot of the relative clone numbers between two sequencing runs or groups
 }
 \description{
 This function produces a scatter plot directly comparing the specific clonotypes

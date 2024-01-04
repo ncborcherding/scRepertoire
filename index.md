@@ -18,31 +18,27 @@ scRepertoire is compatible and integrated with the R packages [Trex](https://git
 ```
 devtools::install_github("ncborcherding/scRepertoire")
 ```
+
 #### Most up-to-date version
 ```
 devtools::install_github("ncborcherding/scRepertoire@dev")
 ```
 
-#### Bioconductor
-
-[scRepertoire](https://www.bioconductor.org/packages/release/bioc/html/scRepertoire.html) is on Bioconductor. 
-
+#### Legacy Version 1
+If you are looking for version 1 of scRepertoire - there is a static version available below:
 ```
-if (!requireNamespace("BiocManager", quietly = TRUE))
-    install.packages("BiocManager")
-
-BiocManager::install("scRepertoire")
+devtools::install_github("ncborcherding/scRepertoire@v1")
 ```
 
 ## Getting Data
 
-Unfortunately, Github limits the size of individual files. In order to access the Seurat object paired with scRepertoire please download the .rda from [here]("https://drive.google.com/file/d/1_YuRraDyg8UgF3oasjF0-jgPnwox-B24/view?usp=share_link).
+Unfortunately, Github limits the size of individual files. In order to access the seurat object paired with scRepertoire please download the .rda from [here](https://drive.google.com/file/d/1_YuRraDyg8UgF3oasjF0-jgPnwox-B24/view?usp=share_link).
 
 ## Please Cite
 
 We are working on submitting the scRepertoire as a peer review article, for now: 
 
-***Borcherding, N. & Wang, Q. 2023. scRepertoire v2: Expanded toolkit for single-cell immune repertoire analysis***
+***Borcherding, N. & Yang, Q. 2023. scRepertoire v2: Expanded toolkit for single-cell immune repertoire analysis***
 
 ## Bug Reports/New Features
 

@@ -1,4 +1,5 @@
-// 2-bit-based nucleotide kmer counting
+// 2-bit-based nucleotide kmer counting - unoptimized
+// could use a kmercounter class with an uint_fast64_t[128] for toNtIndex instead of the switch statement
 // by Qile Yang
 
 #include <Rcpp.h>
@@ -15,13 +16,10 @@ inline unsigned short int toNtIndex(const char nt) {
     }
 }
 
+constexpr char Nts[4] = {'A', 'C', 'G', 'T'};
+
 inline char lastNt(unsigned int index) {
-    switch(index & 3) {
-        case 0: return 'A';
-        case 1: return 'C';
-        case 2: return 'G';
-        default: return 'T';
-    }
+    return Nts[index & 3];
 }
 
 inline std::string toNtKmer(unsigned long int index, int k) {
@@ -58,8 +56,19 @@ inline void updateSkip(int& skip, const char c, const int k) {
     }
 }
 
+inline bool updateSkipAndReturnIfShouldntSkip(int& skip, const char c, const int k) {
+    updateSkip(skip, c, k);
+    return skip == 0;
+}
+
 // actual kmer counter - doesnt handle _NA_ for k = 1
-inline void kmerCount(std::vector<long double>& bins, const unsigned int mask, const std::string& seq, const int k) {
+inline void kmerCount(std::vector<double>& bins, const unsigned int mask, const std::string& seq, const int k) {
+    
+    int n = (int) seq.size();
+    if (n < k) {
+        return;
+    }
+
     int skip = 0;
     unsigned long int kmer = 0;
 
@@ -68,10 +77,9 @@ inline void kmerCount(std::vector<long double>& bins, const unsigned int mask, c
         updateSkip(skip, seq[i], k);
     }
 
-    for (int i = k - 1; i < (int) seq.size(); i++) {
+    for (int i = k - 1; i < n; i++) {
         kmer = ((kmer << 2) & mask) | toNtIndex(seq[i]);
-        updateSkip(skip, seq[i], k);
-        if (skip == 0) {
+        if (updateSkipAndReturnIfShouldntSkip(skip, seq[i], k)) {
             bins[kmer]++;
         }
     }
@@ -81,12 +89,9 @@ inline void kmerCount(std::vector<long double>& bins, const unsigned int mask, c
 Rcpp::NumericVector rcppGetNtKmerPercent(const std::vector<std::string>& seqs, const int k) {
     const unsigned int mask = (1 << (k + k)) - 1;
     int numKmers = mask + 1;
-    std::vector<long double> bins (numKmers, 0);
+    std::vector<double> bins (numKmers, 0);
 
     for (std::string seq : seqs) {
-        if ((int) seq.size() < k) {
-            continue;
-        }
         kmerCount(bins, mask, seq, k);
     }
 

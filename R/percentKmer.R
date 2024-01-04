@@ -116,13 +116,14 @@ percentKmer <- function(input.data,
   }
 
   #Plotting
-  ggplot(mat_melt, aes(x=Var2, y = Var1, fill=value)) +
-    geom_tile(lwd = 0.1, color = "black") + 
-    scale_fill_gradientn(name = "Percentage", colors = .colorizer(palette,21)) +
-    theme_classic() + 
-    coord_flip() + 
-    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
-          axis.title = element_blank())
+  plot <- ggplot(mat_melt, aes(x=Var2, y = Var1, fill=value)) +
+            geom_tile(lwd = 0.1, color = "black") + 
+            scale_fill_gradientn(name = "Percentage", colors = .colorizer(palette,21)) +
+            theme_classic() + 
+            coord_flip() + 
+            theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
+                  axis.title = element_blank())
+  return(plot)
 }
 
 .generate_unique_aa_motifs <- function(motif_length) {

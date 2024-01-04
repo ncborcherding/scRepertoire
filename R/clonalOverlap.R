@@ -79,12 +79,6 @@ clonalOverlap <- function(input.data,
     names_samples <- names(input.data)
     length <- seq_len(num_samples)
     
-    if (chain != "both") {
-      for (i in seq_along(input.data)) {
-        input.data[[i]] <- .off.the.chain(input.data[[i]], chain, cloneCall)
-      }
-    }
-    
     #Selecting Index Function
     indexFunc <- switch(method,
                         "morisita" = .morisitaCalc,

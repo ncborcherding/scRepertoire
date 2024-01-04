@@ -39,29 +39,28 @@ public:
     // variable for helper barcode index
     std::vector<std::vector<int>> barcodeIndex;
 
-    // constructor: in the future if more columns are ever added its probably a much
-    // more general algo would be to just find the indicies of the dataframe by looking at the colnames
+    // constructor
     TcrParser(
         Rcpp::DataFrame& data2, std::vector<std::string>& uniqueData2Barcodes
     ) {
-        // construct conDf
+        // construct conDf, initializaing the matrix to "NA" *strings*
         conDf = scRepHelper::initStringMatrix(
             7, uniqueData2Barcodes.size(), "NA"
         );
         conDf[0] = uniqueData2Barcodes;
 
         // set references to fixed data2 columns
-        data2ChainTypes = data2[5];
-        data2Cdr3 = data2[12];
-        data2Cdr3Nt = data2[13];
+        data2ChainTypes = data2[data2.findName("chain")];
+        data2Cdr3 = data2[data2.findName("cdr3")];
+        data2Cdr3Nt = data2[data2.findName("cdr3_nt")];
 
         // setting reference to the TCR columns assuming all extra columns come before
-        data2Tcr1 = data2[data2.size() - 2];
-        data2Tcr2 = data2[data2.size() - 1]; 
+        data2Tcr1 = data2[data2.findName("TCR1")];
+        data2Tcr2 = data2[data2.findName("TCR2")];
 
         // construct barcodeIndex
         barcodeIndex = constructBarcodeIndex(
-            uniqueData2Barcodes, Rcpp::as<std::vector<std::string>>(data2[0])
+            uniqueData2Barcodes, Rcpp::as<std::vector<std::string>>(data2[data2.findName("barcode")])
         );
     }
 
@@ -80,6 +79,7 @@ public:
     }
 
     // parseTCR() helpers
+
     void handleTcr1(int y, int data2index) {
         handleTcr(y, data2index, data2Tcr1, 1, 2, 3);
     }

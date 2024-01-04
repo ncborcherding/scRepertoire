@@ -129,15 +129,16 @@ head(shared.clones)
 
 ## highlightClones
 
-We can also look at the clonotypes by calling specific sequences in the `highlightClonotypes()` below. In order to highlight the clonotypes, we first need to use the **cloneCall**, the type of sequence we will be using, and then the specific sequences themselves using **sequence**. Below, we can see the steps to highlight the two most prominent sequences *"CVVSDNTGGFKTIF_CASSVRRERANTGELFF"* and *"NA_CASSVRRERANTGELFF"*.
+We can also look at the clonotypes by calling specific sequences in the `highlightClonotypes()` below. In order to highlight the clonotypes, we first need to use the **cloneCall**, the type of sequence we will be using, and then the specific sequences themselves using **sequence**. Below, we can see the steps to highlight the most prominent sequences *CAERGSGGSYIPTF_CASSDPSGRQGPRWDTQYF*, and *CARKVRDSSYKLIF_CASSDSGYNEQFF*.
 
 ```{r tidy = FALSE}
 scRep_example <- highlightClones(scRep_example, 
                     cloneCall= "aa", 
-                    sequence = c("CVVSDNTGGFKTIF_CASSVRRERANTGELFF", 
-                                 "NA_CASSVRRERANTGELFF"))
+                    sequence = c("CAERGSGGSYIPTF_CASSDPSGRQGPRWDTQYF", 
+                                 "CARKVRDSSYKLIF_CASSDSGYNEQFF"))
 
-Seurat::DimPlot(scRep_example, group.by = "highlight") 
+Seurat::DimPlot(scRep_example, group.by = "highlight") + 
+  ggplot2::theme(plot.title = element_blank())
 ```
 
 ## clonalOccupy

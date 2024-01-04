@@ -48,8 +48,11 @@ getCirclize <- function(sc.data,
                         proportion = FALSE) {
   meta <- .grabMeta(sc.data)
   cloneCall <- .theCall(meta, cloneCall)
+  if(is.null(group.by)) {
+    group.by <- "ident"
+  }
   
-  #Quantifying clonotypes across group.by variable
+  #Quantifying clones across group.by variable
   dat <- meta[, c(cloneCall, group.by)]
   dat <- dat[!is.na(dat[,cloneCall]),]
   mat <- suppressMessages(dcast(dat, dat[,cloneCall] ~ dat[,group.by]))

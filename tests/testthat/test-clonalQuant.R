@@ -3,9 +3,21 @@
 test_that("clonalQuant works", {
 
 	combined <- getCombined()
+	combined <- addVariable(combined, 
+	                        variable.name = "Type", 
+	                        variables = rep(c("B", "L"), 4))
 
 	expect_doppelganger(
-		"clonalQuant_scaled_plot", clonalQuant(combined, scale = TRUE)
+		"clonalQuant_scaled_plot", 
+		clonalQuant(combined, 
+		            scale = TRUE)
+	)
+	
+	expect_doppelganger(
+	  "clonalQuant_unscaled_plot",
+  	clonalQuant(combined, 
+  	            group.by = "Type",
+  	            scale = FALSE)
 	)
 
 	expect_equal(

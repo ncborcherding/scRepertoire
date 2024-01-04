@@ -93,7 +93,7 @@ combineTCR <- function(input.data,
         Con.df[Con.df == "NA_NA" | Con.df == "NA;NA_NA;NA"] <- NA 
         data3 <- merge(data2[,-which(names(data2) %in% c("TCR1","TCR2"))], 
             Con.df, by = "barcode")
-        if (!is.null(samples) & !is.null(ID)) {
+        if (!is.null(samples) && !is.null(ID)) {
             data3 <- data3[, c("barcode", "sample", "ID", tcr1_lines, tcr2_lines,
                 CT_lines)] }
         else if (!is.null(samples) & is.null(ID)) {
@@ -104,7 +104,7 @@ combineTCR <- function(input.data,
     }
     name_vector <- character(length(samples))
     for (i in seq_along(samples)) { 
-        if (!is.null(samples) & !is.null(ID)) {
+        if (!is.null(samples) && !is.null(ID)) {
             curr <- paste(samples[i], "_", ID[i], sep="")
         } else if (!is.null(samples) & is.null(ID)) {
             curr <- paste(samples[i], sep="")
@@ -115,12 +115,17 @@ combineTCR <- function(input.data,
     for (i in seq_along(final)){
       final[[i]]<-final[[i]][!duplicated(final[[i]]$barcode),]
       final[[i]]<-final[[i]][rowSums(is.na(final[[i]])) < 10, ]
+      final[[i]][final[[i]] == "NA"] <- NA
     }
     if (removeNA) {
       final <- .removingNA(final)
     }
     if (removeMulti) {
       final <- .removingMulti(final)
+    }
+    #Adding list element names to output if samples NULL
+    if(is.null(samples)) {
+      names(final) <- paste0("S", seq_len(length(final)))
     }
     final
 }
@@ -249,12 +254,17 @@ combineBCR <- function(input.data,
     for (i in seq_along(final)) {
         final[[i]] <- final[[i]][!duplicated(final[[i]]$barcode),]
         final[[i]]<-final[[i]][rowSums(is.na(final[[i]])) < 10, ]
+        final[[i]][final[[i]] == "NA"] <- NA
     }
     if (removeNA) { 
       final <- .removingNA(final) 
     }
     if (removeMulti) { 
       final <- .removingMulti(final) 
+    }
+    #Adding list element names to output if samples NULL
+    if(is.null(samples)) {
+      names(final) <- paste0("S", seq_len(length(final)))
     }
     return(final) 
 }
