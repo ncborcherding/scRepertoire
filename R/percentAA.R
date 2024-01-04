@@ -55,7 +55,7 @@ percentAA <- function(input.data,
     #Forming a matrix of % across each position and formatting
     res <- suppressWarnings(Reduce(function(...) merge(..., all = TRUE, by="x"), aa.output))
     colnames(res) <- c("AA", paste0("pos.", seq_len(aa.length)))
-    res[1:20,][is.na(res[1:20,])] <- 0
+    res[seq_len(20),][is.na(res[seq_len(20),])] <- 0
     melt.res <- suppressMessages(melt(res))
     melt.res$group <- names(input.data)[i]
     res.list[[i]] <- melt.res

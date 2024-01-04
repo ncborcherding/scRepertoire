@@ -39,8 +39,8 @@
 #'                                     "P19B","P19L", "P20B", "P20L"))
 #' clonalSizeDistribution(combined, cloneCall = "strict", method="ward.D2")
 #'
-#' @param input.data The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
-#'  \code{\link{combineExpression}}.
+#' @param input.data The product of \code{\link{combineTCR}}, 
+#' \code{\link{combineBCR}}, or \code{\link{combineExpression}}.
 #' @param cloneCall How to call the clonotype - VDJC gene (gene),
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
 #' VDJC gene + CDR3 nucleotide (strict).
@@ -51,7 +51,8 @@
 #' @param method The clustering parameter for the dendrogram.
 #' @param group.by The variable to use for grouping.
 #' @param exportTable Returns the data frame used for forming the graph.
-#' @param palette Colors to use in visualization - input any \link[grDevices]{hcl.pals}.
+#' @param palette Colors to use in visualization - input any 
+#' \link[grDevices]{hcl.pals}.
 #' @import ggplot2 
 #' @importFrom dplyr bind_rows
 #' @importFrom ggdendro dendro_data segment label
@@ -106,16 +107,26 @@ clonalSizeDistribution <- function(input.data,
   names(list) <- names(input.data)
   grid <- 0:10000
   distances <- .get_distances(list, grid, modelType="Spliced")
-  mat_melt <- dendro_data(hclust(as.dist(distances), method = method), type = "rectangle")
+  mat_melt <- dendro_data(hclust(as.dist(distances), method = method), 
+                          type = "rectangle")
   
   #Plotting
   plot <- ggplot() + 
             geom_segment(data = segment(mat_melt), 
-                         aes(x = x, y = y, xend = xend, yend = yend)) +
+                         aes(x = x, 
+                             y = y, 
+                             xend = xend, 
+                             yend = yend)) +
             geom_text(data = label(mat_melt), 
-                              aes(x = x, y = -0.02, label = label, hjust = 0), size = 4) +
+                              aes(x = x, y = -0.02, 
+                                  label = label, 
+                                  hjust = 0), 
+                      size = 4) +
             geom_point(data = label(mat_melt), 
-                              aes(x = x, y = -0.01, color = as.factor(label)), size = 2) + 
+                              aes(x = x, 
+                                  y = -0.01, 
+                                  color = as.factor(label)), 
+                       size = 2) + 
             coord_flip() +
             scale_y_reverse(expand = c(0.2, 0)) + 
             scale_color_manual(values = .colorizer(palette, nrow(label(mat_melt)))) + 
@@ -325,10 +336,10 @@ pdiscgpd <- function(q, thresh, sigma, xi, phiu){
 }
 
 
-##----------------------------------------------------------------------------------
+##-----------------------------------------------------------
 ## negative log likelihood and parameter estimation functions
 ## for discrete truncated gamma and discrete gpd
-##----------------------------------------------------------------------------------
+##----------------------------------------------------------
 
 .discgammanll <- function(param, dat, thresh, phiu, shift=0){
   shape <- exp(param[1])
@@ -554,8 +565,8 @@ pdiscgpd <- function(q, thresh, sigma, xi, phiu){
     stop("alphap and alphaq must be greater than 0.")
   }
   
-  lower = min(grid)
-  upper = max(grid)
+  lower <- min(grid)
+  upper <- max(grid)
   
   out <- adaptIntegrate(.eval_desponds,
                         lowerLimit = lower, upperLimit = upper,

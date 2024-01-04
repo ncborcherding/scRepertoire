@@ -43,9 +43,9 @@
 #'                                     "P19B","P19L", "P20B", "P20L"))
 #' clonalDiversity(combined, cloneCall = "gene")
 #'
-#' @param input.data The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
-#'  \code{\link{combineExpression}}.
-#' @param cloneCall How to call the clonotype - VDJC gene (gene), 
+#' @param input.data The product of \code{\link{combineTCR}}, 
+#' \code{\link{combineBCR}}, or \code{\link{combineExpression}}.
+#' @param cloneCall How to call the clone - VDJC gene (gene), 
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa),
 #' VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data. 
 #' @param chain indicate if both or a specific chain should be used - 
@@ -53,12 +53,14 @@
 #' @param group.by Variable in which to group the diversity calculation.
 #' @param x.axis Additional variable in which to split the x.axis.
 #' @param group.by The variable to use for grouping.
-#' @param metrics The indices to use in diversity calculations - "shannon", "inv.simpson", 
-#' "norm.entropy", "gini.simpson", "chao1", "ACE".
+#' @param metrics The indices to use in diversity calculations - 
+#' "shannon", "inv.simpson", "norm.entropy", "gini.simpson", "chao1", "ACE".
 #' @param exportTable Exports a table of the data into the global environment 
 #' in addition to the visualization.
-#' @param palette Colors to use in visualization - input any \link[grDevices]{hcl.pals}.
-#' @param n.boots number of bootstraps to downsample in order to get mean diversity
+#' @param palette Colors to use in visualization - input any 
+#' \link[grDevices]{hcl.pals}.
+#' @param n.boots number of bootstraps to downsample in order to 
+#' get mean diversity
 #' @param return.boots export boot strapped values calculated - 
 #' will automatically exportTable = TRUE.
 #' @param skip.boots remove downsampling and boot strapping from the calculation.
@@ -157,11 +159,15 @@ clonalDiversity <- function(input.data,
     }
     plot <- plot +
       geom_boxplot(outlier.alpha = 0) +
-      geom_jitter(aes(fill = mat_melt[,group.by]), size = 3, shape = 21, stroke = 0.25, color = "black") + 
+      geom_jitter(aes(fill = mat_melt[,group.by]), 
+                  size = 3, 
+                  shape = 21, 
+                  stroke = 0.25, 
+                  color = "black") + 
       labs(fill = "Group") +
       ylab("Index Score") +
       scale_fill_manual(values = .colorizer(palette,length(unique(mat_melt[,group.by])))) +
-    facet_wrap(~variable, scales = "free", ncol = length(metrics)) +
+      facet_wrap(~variable, scales = "free", ncol = length(metrics)) +
       theme_classic() + 
       theme(axis.title.x = element_blank())
     if (x.axis == "x.axis") { 
@@ -225,7 +231,7 @@ clonalDiversity <- function(input.data,
 }
 
 .ACE <- function(p) {
-  q = 10
+  q <- 10
   S_abund <- sum(p > q)
   rare_data <- p[p <= q]
   S_rare <- length(rare_data)

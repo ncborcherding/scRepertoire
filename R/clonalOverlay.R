@@ -56,8 +56,12 @@ clonalOverlay <- function(sc.data,
   tmp2 <- subset(tmp, include == "Yes")
   
   #Plotting
-  plot <- ggplot(tmp2, mapping = aes(x=tmp2[,(ncol(tmp2)-2)], y = tmp2[,(ncol(tmp2)-1)])) +
-    geom_point(tmp, mapping = aes(x=as.numeric(tmp[,(ncol(tmp)-2)]), y = as.numeric(tmp[,(ncol(tmp)-1)]), color = tmp[,"ident"]), size= 0.5) +
+  plot <- ggplot(tmp2, mapping = aes(x = tmp2[,(ncol(tmp2)-2)], 
+                                     y = tmp2[,(ncol(tmp2)-1)])) +
+    geom_point(tmp, mapping = aes(x = as.numeric(tmp[,(ncol(tmp)-2)]), 
+                                  y = as.numeric(tmp[,(ncol(tmp)-1)]), 
+                                  color = tmp[,"ident"]), 
+               size= 0.5) +
     geom_density_2d(color = "black", lwd=0.25, bins = bins) + 
     theme_classic() +
     labs(color = "Active Identity") +

@@ -4,8 +4,8 @@
 #' sequences of the CDR3 and V genes to cluster similar TCR/BCRs together. 
 #' As a default, the function takes the input from \code{\link{combineTCR}}, 
 #' \code{\link{combineBCR}} or \code{\link{combineExpression}} and amends a 
-#' cluster to the data frame or meta data. If \strong{exportGraph} is set to TRUE, 
-#' the function returns an igraph object of the connected sequences. 
+#' cluster to the data frame or meta data. If \strong{exportGraph} is set 
+#' to TRUE, the function returns an igraph object of the connected sequences. 
 #' 
 #' @examples
 #' # Getting the combined contigs
@@ -13,19 +13,23 @@
 #'                         samples = c("P17B", "P17L", "P18B", "P18L", 
 #'                                     "P19B","P19L", "P20B", "P20L"))
 #' 
-#' sub_combined <- clonalCluster(combined[c(1,2)], chain = "TRA", sequence = "aa")
+#' sub_combined <- clonalCluster(combined[c(1,2)], 
+#'                               chain = "TRA", 
+#'                               sequence = "aa")
 #' 
-#' @param input.data The product of \code{\link{combineTCR}}, \code{\link{combineBCR}} 
-#' or \code{\link{combineExpression}}.
+#' @param input.data The product of \code{\link{combineTCR}}, 
+#' \code{\link{combineBCR}} or \code{\link{combineExpression}}.
 #' @param chain Indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL".
 #' @param sequence Clustering based on either "aa" or "nt".
 #' @param samples The specific samples to isolate for visualization.
-#' @param threshold The normalized edit distance to consider. The higher the number the more 
-#' similarity of sequence will be used for clustering.
+#' @param threshold The normalized edit distance to consider. 
+#' The higher the number the more similarity of sequence will be 
+#' used for clustering.
 #' @param group.by The column header used for to group contigs.
-#' @param exportGraph Return an igraph object of connected sequences (TRUE) or the amended
-#' input with a new cluster-based variable (FALSE)
+#' @param exportGraph Return an igraph object of connected 
+#' sequences (TRUE) or the amendedinput with a new cluster-based 
+#' variable (FALSE)
 #' @importFrom stringdist stringdist
 #' @importFrom igraph set_vertex_attr V
 #' @importFrom plyr join
@@ -121,9 +125,15 @@ clonalCluster <- function(input.data,
       id = V(cluster)$name
     ))
     data_df <- merge(data_df, graph.variables, by = 1)
-    cluster <- set_vertex_attr(cluster, name = "size", index = data_df$id, value = data_df[,2])
+    cluster <- set_vertex_attr(cluster, 
+                               name = "size", 
+                               index = data_df$id, 
+                               value = data_df[,2])
     if(ncol(data_df) == 3) { #add grouping variable
-      cluster <- set_vertex_attr(cluster, name = "group", index = data_df$id, value = data_df[,3])
+      cluster <- set_vertex_attr(cluster, 
+                                 name = "group", 
+                                 index = data_df$id, 
+                                 value = data_df[,3])
     }
     return(cluster)
   }
@@ -159,7 +169,8 @@ clonalCluster <- function(input.data,
       input.data[[col.name]] <- PreMeta
     } else {
       rownames <- rownames(colData(input.data))
-      colData(input.data) <- cbind(colData(input.data), PreMeta[rownames,])[, union(colnames(colData(input.data)),  colnames(PreMeta))]
+      colData(input.data) <- cbind(colData(input.data), 
+                                   PreMeta[rownames,])[, union(colnames(colData(input.data)),  colnames(PreMeta))]
       rownames(colData(input.data)) <- rownames 
     }
   } else {

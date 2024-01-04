@@ -2,11 +2,11 @@
 #'
 #' This function displays either the nucleotide (nt) or amino 
 #' acid (aa) sequence length. The sequence length visualized can be 
-#' selected using the chains parameter, either the combined clonotype 
+#' selected using the chains parameter, either the combined clone 
 #' (both chains) or across all single chains. Visualization can either 
-#' be a histogram or if \strong{scale} = TRUE, the output will be a density plot. 
-#' Multiple sequencing runs can be group together using the 
-#' group parameter.
+#' be a histogram or if \strong{scale} = TRUE, the output will 
+#' be a density plot. Multiple sequencing runs can be group together 
+#' using the group.by parameter.
 #'
 #' @examples
 #' #Making combined contig data
@@ -15,9 +15,9 @@
 #'                                     "P19B","P19L", "P20B", "P20L"))
 #' clonalLength(combined, cloneCall="aa", chain = "both")
 #'
-#' @param input.data The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
-#'  \code{\link{combineExpression}}.
-#' @param cloneCall How to call the clonotype - CDR3 nucleotide (nt), 
+#' @param input.data The product of \code{\link{combineTCR}}, 
+#' \code{\link{combineBCR}}, or \code{\link{combineExpression}}.
+#' @param cloneCall How to call the clone - CDR3 nucleotide (nt), 
 #' CDR3 amino acid (aa).
 #' @param group.by The variable to use for grouping.
 #' @param scale Converts the graphs into density plots in order to show 
@@ -32,7 +32,7 @@
 #' @export
 #' @concept Visualizing_Clones
 #' @return ggplot of the discrete or relative length distributions of 
-#' clonotype sequences
+#' clone sequences
 clonalLength <- function(input.data, 
                          cloneCall = "aa", 
                          chain = "both", 

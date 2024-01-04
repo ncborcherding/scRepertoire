@@ -1,4 +1,4 @@
-#' Adding variables after the combination of clonotypes.
+#' Adding variables after the combination of clones.
 #'
 #' This function adds variables to the product of \code{\link{combineTCR}}, 
 #' or \code{\link{combineBCR}} to be used in later visualizations. 
@@ -14,7 +14,8 @@
 #'                         variable.name = "Type", 
 #'                         variables = rep(c("B", "L"), 4))
 #'
-#' @param input.data The product of \code{\link{combineTCR}} or \code{\link{combineBCR}}.
+#' @param input.data The product of \code{\link{combineTCR}} or 
+#' \code{\link{combineBCR}}.
 #' @param variable.name The column header to add.
 #' @param variables The exact values to add to each element of the list.
 #' @export

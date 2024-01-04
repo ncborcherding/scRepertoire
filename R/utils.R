@@ -1,15 +1,7 @@
-# readability functions
 "%!in%" <- Negate("%in%")
-is_seurat_object <- function(obj) inherits(obj, "Seurat")
-is_se_object <- function(obj) inherits(obj, "SummarizedExperiment")
-is_seurat_or_se_object <- function(obj) {
-    is_seurat_object(obj) || is_se_object(obj)
-}
 
-#Use to shuffle between chains Qile: the NA handling here *might* be related to the unnamed combineTCR bugs from the new rcpp con.df construction
-#' @keywords internal
-#' @author Ye-Lin Son Nick Borcherding
-.off.the.chain <- function(dat, chain, cloneCall) {
+#Use to shuffle between chains
+off.the.chain <- function(dat, chain, cloneCall) {
   chain1 <- toupper(chain) #to just make it easier
   if (chain1 %in% c("TRA", "TRG", "IGH")) {
     x <- 1
@@ -19,25 +11,12 @@ is_seurat_or_se_object <- function(obj) {
     warning("It looks like ", chain, " does not match the available options for `chain = `")
   }
   dat[,cloneCall] <- str_split(dat[,cloneCall], "_", simplify = TRUE)[,x]
-  dat[,cloneCall][dat[,cloneCall] == "NA"] <- NA
-  dat[,cloneCall][dat[,cloneCall] == "NA;NA"] <- NA
   return(dat)
 }
 
-#Pulling a color palette for visualizations
-#' @importFrom grDevices hcl.colors
-#' @keywords internal
-.colorizer <- function(palette = "inferno", 
-                        n= NULL) {
-  colors <- hcl.colors(n=n, palette = palette, fixup = TRUE)
-  return(colors)
-}
-
-
 
 #Remove list elements that contain all NA values
-#' @keywords internal
-.checkBlanks <- function(df, cloneCall) {
+checkBlanks <- function(df, cloneCall) {
   count <- NULL
     for (i in seq_along(df)) {
         if (length(df[[i]][,cloneCall]) == length(which(is.na(df[[i]][,cloneCall]))) | 
@@ -54,114 +33,87 @@ is_seurat_or_se_object <- function(obj) {
     return(df)
 }
 
-#reshuffling df
-#' @keywords internal
-.groupList <- function(df, group.by) {
+groupList <- function(df, group.by) {
     df <- bind_rows(df)
     df <- split(df, df[,group.by])
     return(df)
 }
 
-# Ensure df is in list format
-#' @keywords internal
-.checkList <- function(df) {
-  df <- tryCatch(
-      {
-          if (!inherits(df, "list")) { 
-              df <- list(df)
-          }
-          df
-      },
-      error = function(e) {
-          stop(
-              "Please ensure that the input consists of at least one dataframe"
-          )
-      }
-    )
-    df
+#Ensure df is in list format
+checkList <- function(df) {
+    df <- if(is(df)[1] != "list") list(df) else df
+    return(df)
 }
 
-#' @keywords internal
-.checkContigs <- function(df) {
-    df <- lapply(seq_len(length(df)), function(x) {
-        df[[x]] <- if(!is.data.frame(df[[x]])) as.data.frame(df[[x]]) else df[[x]]
-        df[[x]][df[[x]] == ""] <- NA
-        df[[x]]
-    })
-    df
+checkContigs <- function(df) {
+  df <- lapply(seq_len(length(df)), function(x) {
+    df[[x]] <- if(is(df[[x]])[1] != "data.frame") as.data.frame(df[[x]]) else df[[x]]
+    df[[x]][df[[x]] == ""] <- NA
+    df[[x]]
+  })
 }
 
 #' @importFrom dplyr bind_rows
-#' @keywords internal
-.bound.input.return <- function(df) {
-  if (is_seurat_or_se_object(df)) {
-    return(.grabMeta(df))
-  } 
-  bind_rows(df, .id = "element.names")
+bound.input.return <- function(df) {
+  if (inherits(x=df, what ="Seurat") | inherits(x=df, what ="SummarizedExperiment")) {
+    df <- grabMeta(df)
+  } else {
+    df <- bind_rows(df, .id = "element.names")
+  }
+  return(df)
 }
 
-#' @keywords internal
-.list.input.return <- function(df, split.by) {
-    if (is_seurat_or_se_object(df)) {
-        if(is.null(split.by)){
-            split.by <- "ident"
-        }
-        df <- .expression2List(df, split.by)
-    } 
-    df
+list.input.return <- function(df, split.by) {
+  if (inherits(x=df, what ="Seurat") | inherits(x=df, what ="SummarizedExperiment")) {
+    if(is.null(split.by)){
+      split.by <- "cluster"
+    }
+    df <- expression2List(df, split.by)
+  } 
+  return(df)
 }
 
 #Get UMAP or other coordinates
 #' @importFrom SingleCellExperiment reducedDim
-#' @keywords internal
-.get.coord <- function(sc, reduction) { 
+get.coord <- function(sc, reduction) { 
   if (is.null(reduction)) {
     reduction <- "pca"
   }
-  if (is_seurat_object(sc)) {
+  if (inherits(x=sc, what ="Seurat")) {
     coord <- sc@reductions[[reduction]]@cell.embeddings
-  } else if (is_se_object(sc)) {
+  } else if (inherits(x=sc, what ="SummarizedExperiment")) {
     coord <- reducedDim(sc, reduction)
   }
   return(coord)
 }
 
 #This is to check the single-cell expression object
-#' @keywords internal
-.checkSingleObject <- function(sc) {
-    if (!is_seurat_or_se_object(sc)){
+checkSingleObject <- function(sc) {
+    if (!inherits(x=sc, what ="Seurat") &&
+        !inherits(x=sc, what ="SummarizedExperiment")){
         stop("Object indicated is not of class 'Seurat' or 
             'SummarizedExperiment', make sure you are using
-            the correct data.") 
+            the correct data.") }
     }
-}
 
 #This is to grab the meta data from a seurat or SCE object
 #' @importFrom SingleCellExperiment colData 
 #' @importFrom SeuratObject Idents
-#' @importFrom methods slot
-#' @keywords internal
-.grabMeta <- function(sc) {
-    if (is_seurat_object(sc)) {
+grabMeta <- function(sc) {
+    if (inherits(x=sc, what ="Seurat")) {
         meta <- data.frame(sc[[]], slot(sc, "active.ident"))
         colnames(meta)[length(meta)] <- "ident"
-        
-    } else if (is_se_object(sc)){
+    } else if (inherits(x=sc, what ="SummarizedExperiment")){
         meta <- data.frame(colData(sc))
         rownames(meta) <- sc@colData@rownames
         clu <- which(colnames(meta) == "ident")
         colnames(meta)[clu] <- "ident"
-    } else {
-        stop("Object indicated is not of class 'Seurat' or 
-            'SummarizedExperiment', make sure you are using
-            the correct data.")
     }
     return(meta)
 }
 
 #This is to add the sample and ID prefixes for combineBCR()/TCR()
-#' @keywords internal
-.modifyBarcodes <- function(df, samples, ID) {
+modifyBarcodes <- function(df, samples, ID) {
     out <- NULL
     for (x in seq_along(df)) {
         data <- df[[x]] 
@@ -175,25 +127,23 @@ is_seurat_or_se_object <- function(obj) {
 }
 
 #Removing barcodes with NA recovered
-#' @keywords internal
-.removingNA <- function(final) {
+removingNA <- function(final) {
     for(i in seq_along(final)) {
         final[[i]] <- na.omit(final[[i]])}
     return(final)
 }
 
 #Removing barcodes with > 2 clones recovered
-#' @keywords internal
-.removingMulti <- function(final){
+removingMulti <- function(final){
     for(i in seq_along(final)) {
         final[[i]] <- filter(final[[i]], !grepl(";",CTnt))}
     return(final)
 }
 
-#Removing extra clonotypes in barcodes with > 2 productive contigs
+#Removing extra clones in barcodes with > 2 productive contigs
 #' @import dplyr
-#' @keywords internal
-.filteringMulti <- function(x) {
+
+filteringMulti <- function(x) {
     x <- x %>%
       group_by(barcode, chain) %>% 
       slice_max(n = 1, order_by = reads)
@@ -219,53 +169,209 @@ is_seurat_or_se_object <- function(obj) {
 #Filtering NA contigs out of single-cell expression object
 #' @import dplyr
 #' @importFrom SingleCellExperiment colData
-#' @keywords internal
-.filteringNA <- function(sc) {
-    meta <- .grabMeta(sc)
-    evalNA <- data.frame(meta[,"cloneSize"])
+filteringNA <- function(sc) {
+    meta <- grabMeta(sc)
+    evalNA <- data.frame(meta[,"cloneType"])
     colnames(evalNA) <- "indicator"
     evalNA <- evalNA %>%
         transmute(indicator = ifelse(is.na(indicator), 0, 1))
     rownames(evalNA) <- rownames(meta)
     if (inherits(x=sc, what ="cell_data_set")){
       colData(sc)[["evalNA"]]<-evalNA
-      return(sc[, !is.na(sc$cloneSize)])
+      return(sc[, !is.na(sc$cloneType)])
     }else{
-      pos <- which(evalNA[,"indicator"] != 0)
-      sc <- subset(sc, cells = rownames(evalNA)[pos])
+      col.name <- names(evalNA) %||% colnames(evalNA)
+      sc[[col.name]] <- evalNA
+      sc <- subset(sc, cloneType != 0)
       return(sc)
     }
 }
 
+#Calculating diversity using Vegan R package
+#' @importFrom vegan diversity estimateR
+diversityCall <- function(data) {
+    w <- diversity(data[,"Freq"], index = "shannon")
+    x <- diversity(data[,"Freq"], index = "invsimpson")
+    y <- estimateR(data[,"Freq"])[2] #Chao
+    z <- estimateR(data[,"Freq"])[4] #ACE
+    z2 <- diversity(data[,"Freq"], index = "shannon")/log(length(data[,"Freq"]))
+    out <- c(w,x,y,z, z2)
+    return(out)
+}
+
 #Organizing list of contigs for visualization
-#' @keywords internal
-.parseContigs <- function(df, i, names, cloneCall) {
+parseContigs <- function(df, i, names, cloneCall) {
     data <- df[[i]]
-    data1 <- data %>% 
-              group_by(data[,cloneCall]) %>%
-              summarise(Abundance=n())
+    data1 <- data %>% group_by(data[,cloneCall]) %>%
+        summarise(Abundance=n())
     colnames(data1)[1] <- cloneCall
     data1$values <- names[i]
     return(data1)
 }
 
+<<<<<<< Updated upstream
+#Calculate the Morisita Index for Overlap Analysis
+#' @author Massimo Andreatta, Nick Borcherding
+morisitaIndex <- function(df, length, cloneCall, coef_matrix) {
+    for (i in seq_along(length)){
+        df.i <- df[[i]]
+        df.i <- data.frame(table(df.i[,cloneCall]))
+        colnames(df.i) <- c(cloneCall, 'Count')
+        df.i[,2] <- as.numeric(df.i[,2])
+        for (j in seq_along(length)){
+            if (i >= j){ next }
+            else { df.j <- df[[j]]
+            df.j <- data.frame(table(df.j[,cloneCall]))
+            colnames(df.j) <- c(cloneCall, 'Count')
+            df.j[,2] <- as.numeric(df.j[,2])
+            merged <- merge(df.i, df.j, by = cloneCall, all = TRUE)
+            merged[is.na(merged)] <- 0
+            X <- sum(merged[,2])
+            Y <- sum(merged[,3])
+            sum.df.i <- sum(df.i[,2]^2)
+            sum.df.j <- sum(df.j[,2]^2)
+            
+            num <- 2 * sum(merged[, 2] * merged[, 3])
+            den <- ((sum.df.i / (X^2) + sum.df.j / (Y^2)) * X * Y)
+                
+            coef.i.j <- num/den
+            coef_matrix[i,j] <- coef.i.j
+            }
+        }
+    }
+    return(coef_matrix)
+}
+
+
+#Calculate the Jaccard Similarity Index for Overlap Analysis
+jaccardIndex <- function(df, length, cloneCall, coef_matrix) {
+  for (i in seq_along(length)){
+    df.i <- df[[i]]
+    df.i <- df.i[,c("barcode",cloneCall)]
+    df.i_unique <- df.i[!duplicated(df.i[,cloneCall]),]
+    for (j in seq_along(length)){
+      if (i >= j){ next }
+      else { 
+        df.j <- df[[j]]
+        df.j <- df.j[,c("barcode",cloneCall)]
+        df.j_unique <- df.j[!duplicated(df.j[,cloneCall]),]
+        overlap <- length(intersect(df.i_unique[,cloneCall], 
+                                    df.j_unique[,cloneCall]))
+        coef_matrix[i,j] <- 
+          overlap/(sum(length(df.i_unique[,cloneCall]), 
+                                  length(df.j_unique[,cloneCall]))-overlap)
+      } 
+    }
+  }
+  return(coef_matrix)
+}
+
+rawIndex <- function(df, length, cloneCall, coef_matrix) {
+  for (i in seq_along(length)){
+    df.i <- df[[i]]
+    df.i <- df.i[,c("barcode",cloneCall)]
+    df.i_unique <- df.i[!duplicated(df.i[,cloneCall]),]
+    for (j in seq_along(length)){
+      if (i >= j){ next }
+      else { 
+        df.j <- df[[j]]
+        df.j <- df.j[,c("barcode",cloneCall)]
+        df.j_unique <- df.j[!duplicated(df.j[,cloneCall]),]
+        overlap <- length(intersect(df.i_unique[,cloneCall], 
+                                    df.j_unique[,cloneCall]))
+        coef_matrix[i,j] <- overlap
+      } 
+    }
+  }
+  return(coef_matrix)
+}
+
+
+#Calculate the Overlap Coefficient for Overlap Analysis
+#' @author Nick Bormann, Nick Borcherding
+overlapIndex <- function(df, length, cloneCall, coef_matrix) {
+    for (i in seq_along(length)){
+        df.i <- df[[i]]
+        df.i <- df.i[,c("barcode",cloneCall)]
+        df.i_unique <- df.i[!duplicated(df.i[,cloneCall]),]
+        for (j in seq_along(length)){
+            if (i >= j){ next }
+            else { df.j <- df[[j]]
+            df.j <- df.j[,c("barcode",cloneCall)]
+            df.j_unique <- df.j[!duplicated(df.j[,cloneCall]),]
+            overlap <- length(intersect(df.i_unique[,cloneCall], 
+                                        df.j_unique[,cloneCall]))
+            coef_matrix[i,j] <- 
+                overlap/min(length(df.i_unique[,cloneCall]), 
+                length(df.j_unique[,cloneCall])) } } }
+    return(coef_matrix)
+}
+
+# This suppressing outputs for using dput()
+quiet <- function(x) {
+    sink(tempfile())
+    on.exit(sink())
+    invisible(force(x))
+}
+
 # This is to help sort the type of clonotype data to use
+theCall <- function(x) {
+    if (x %in% c("CTnt", "CTgene", "CTaa", "CTstrict")) {
+      x <- x
+    }else if (x == "gene" | x == "genes") {
+        x <- "CTgene"
+    } else if(x == "nt" | x == "nucleotide") {
+        x <- "CTnt"
+    } else if (x == "aa" | x == "amino") {
+        x <- "CTaa"
+    } else if (x == "gene+nt" | x == "strict") {
+        x <- "CTstrict"
+=======
+# This is to help sort the type of clone data to use
 #' @keywords internal
 .theCall <- function(df, x, check.df = TRUE) {
     x <- .convertClonecall(x)
     if(check.df) {
       if(inherits(df, "list") & !any(colnames(df[[1]]) %in% x)) {
-        stop("Check the clonal variabe (cloneCall) being used in the function, it does not appear in the data provided.")
+        stop("Check the clonal variable (cloneCall) being used in the function, it does not appear in the data provided.")
       } else if (inherits(df, "data.frame") & !any(colnames(df) %in% x)) {
-        stop("Check the clonal variabe (cloneCall) being used in the function, it does not appear in the data provided.")
+        stop("Check the clonal variable (cloneCall) being used in the function, it does not appear in the data provided.")
       }
+>>>>>>> Stashed changes
     }
     return(x)
 }
 
-# helper for .theCall
-.convertClonecall <- function(x) {
+# Assigning positions for TCR contig data
+#' @author Gloria Kraus, Nick Bormann, Nicky de Vrij, Nick Borcherding
+parseTCR <- function(Con.df, unique_df, data2) {
+    data2 <- data2 %>% arrange(., chain, cdr3_nt)
+    for (y in seq_along(unique_df)){
+        barcode.i <- Con.df$barcode[y]
+        location.i <- which(barcode.i == data2$barcode)
+        for (z in seq_along(location.i)) {
+          where.chain <- data2[location.i[z],"chain"]
 
+<<<<<<< HEAD
+          if (where.chain == "TRA" | where.chain == "TRG") {
+            if(is.na(Con.df[y,"TCR1"])) {
+              Con.df[y,tcr1_lines] <- data2[location.i[z],data1_lines]
+            } else {
+              Con.df[y,tcr1_lines] <- paste(Con.df[y, tcr1_lines],
+                                            data2[location.i[z],data1_lines],sep=";") 
+            }
+          } else if (where.chain == "TRB" | where.chain == "TRD") {
+            if(is.na(Con.df[y,"TCR2"])) {
+              Con.df[y,tcr2_lines] <- data2[location.i[z],data2_lines]
+            } else {
+              Con.df[y,tcr2_lines] <- paste(Con.df[y, tcr2_lines],
+                                            data2[location.i[z],data2_lines],sep=";") 
+            }
+          }
+        }
+    }
+  return(Con.df)
+=======
   clonecall_dictionary <- hash::hash(
     "gene" = "CTgene",
 		"genes" = "CTgene",
@@ -288,35 +394,12 @@ is_seurat_or_se_object <- function(obj) {
 	if (!is.null(clonecall_dictionary[[x]])) {
 		return(clonecall_dictionary[[x]])
 	}
-
-	stop(paste(
-		"invalid input cloneCall, did you mean: '",
-		closest_word(
-			x,
-			c(names(clonecall_dictionary),
-			  unname(hash::values(clonecall_dictionary)))
-		),
-		"'?",
-		sep = ""
-	))
+	else {
+		warning("A custom variable ", x, " will be used to call clones")
+		return(x)
+	}
 }
 
-# helper for .convertClonecall
-closest_word <- function(s, strset) {
-    strset_lowercase <- tolower(strset)
-    s <- tolower(s)
-
-    closest_w <- strset_lowercase[1]
-    closest_dist <- utils::adist(s, closest_w)
-    for(i in 2:length(strset_lowercase)) {
-        curr_dist <- utils::adist(s, strset_lowercase[i])
-        if (curr_dist < closest_dist) {
-            closest_w <- strset[i]
-            closest_dist <- curr_dist
-        }
-    }
-    closest_w
-}
 
 # Assigning positions for TCR contig data
 # Used to be .parseTCR(Con.df, unique_df, data2) in v1
@@ -328,16 +411,16 @@ closest_word <- function(s, strset) {
     data2 %>% arrange(., chain, cdr3_nt),
     unique(data2[[1]]) # 1 is the index of the barcode column
   )
+>>>>>>> e7011982d62eed11b8d33254e3c5d7798ad52c3f
 }
 
 #Assigning positions for BCR contig data
 #Now assumes lambda over kappa in the context of only 2 light chains
-#' @author Gloria Kraus, Nick Bormann, Nick Borcherding, Qile Yang
-#' @keywords internal
-.parseBCR <- function (Con.df, unique_df, data2) {
-  barcodeIndex <- rcppConstructBarcodeIndex(unique_df, data2$barcode)
+#' @author Gloria Kraus, Nick Bormann, Nick Borcherding
+parseBCR <- function (Con.df, unique_df, data2) {
   for (y in seq_along(unique_df)) {
-    location.i <- barcodeIndex[[y]] # *may* be wrong but should be fine. Test on old version first
+    barcode.i <- Con.df$barcode[y]
+    location.i <- which(barcode.i == data2$barcode)
     
     for (z in seq_along(location.i)) {
       where.chain <- data2[location.i[z],"chain"]
@@ -373,11 +456,10 @@ closest_word <- function(s, strset) {
 
 
 #Producing a data frame to visualize for lengthContig()
-#' @keywords internal
-.lengthDF <- function(df, cloneCall, chain, group, c1, c2){
+lengthDF <- function(df, cloneCall, chain, group, c1, c2){
     Con.df <- NULL
     names <- names(df)
-    if (identical(chain, "both")) {
+    if (chain == "both") {
             for (i in seq_along(df)) {
                 length <- nchar(gsub("_", "", df[[i]][,cloneCall]))
                 val <- df[[i]][,cloneCall]
@@ -390,8 +472,9 @@ closest_word <- function(s, strset) {
                     data <- na.omit(data.frame(length, val, names[i]))
                     colnames(data) <- c("length", "CT", "values")
                     Con.df<- rbind.data.frame(Con.df, data) }}
-    } else {
+    } else if (chain != "both") {
             for (x in seq_along(df)) {
+                df[[x]] <- off.the.chain(df[[x]], chain, cloneCall)
                 strings <- df[[x]][,cloneCall]
                 val1 <- strings
                 for (i in seq_along(val1)) {
@@ -410,39 +493,36 @@ closest_word <- function(s, strset) {
                 data <- subset(data, CT != "NA" & CT != "")
                 Con.df<- rbind.data.frame(Con.df, data) }}
     }
-    return(Con.df)
-}
+return(Con.df)}
 
 #General combination of nucleotide, aa, and gene sequences for T/B cells
-#' @keywords internal
-.assignCT <- function(cellType, Con.df) {
+assignCT <- function(cellType, Con.df) {
     if (cellType == "T") {
         Con.df$CTgene <- paste(Con.df$TCR1, Con.df$TCR2, sep="_")
         Con.df$CTnt <- paste(Con.df$cdr3_nt1, Con.df$cdr3_nt2, sep="_")
         Con.df$CTaa <- paste(Con.df$cdr3_aa1, Con.df$cdr3_aa2, sep="_")
-        Con.df$CTstrict <- paste0(Con.df$TCR1, ";", Con.df$cdr3_nt1, "_",
-            Con.df$TCR2, ";", Con.df$cdr3_nt2)
-    } else { # assume cellType = B
+        Con.df$CTstrict <- paste(Con.df$TCR1, Con.df$cdr3_nt1, 
+            Con.df$TCR2, Con.df$cdr3_nt2, sep="_")
+    } else {
         Con.df$CTgene <- paste(Con.df$IGH, Con.df$IGLC, sep="_")
         Con.df$CTnt <- paste(Con.df$cdr3_nt1, Con.df$cdr3_nt2, sep="_")
-        Con.df$CTaa <- paste(Con.df$cdr3_aa1, Con.df$cdr3_aa2, sep="_")
-    }
-    return(Con.df)
+        Con.df$CTaa <- paste(Con.df$cdr3_aa1, Con.df$cdr3_aa2, sep="_") }
+return(Con.df)
 }
 
 
 #Sorting the V/D/J/C gene sequences for T and B cells
 #' @importFrom stringr str_c str_replace_na
 #' @importFrom dplyr bind_rows
-#' @keywords internal
-.makeGenes <- function(cellType, data2, chain1, chain2) {
+makeGenes <- function(cellType, data2, chain1, chain2) {
     if(cellType %in% c("T")) {
         data2 <- data2 %>% 
             mutate(TCR1 = ifelse(chain %in% c("TRA", "TRG"), 
                   str_c(str_replace_na(v_gene),  str_replace_na(j_gene), str_replace_na(c_gene), sep = "."), NA)) %>%
             mutate(TCR2 = ifelse(chain %in% c("TRB", "TRD"), 
                   str_c(str_replace_na(v_gene), str_replace_na(d_gene),  str_replace_na(j_gene),  str_replace_na(c_gene), sep = "."), NA))
-    } else if (cellType %in% c("B")) {
+    }
+    else {
         heavy <- data2[data2$chain == "IGH",] %>% 
           mutate(IGHct = str_c(str_replace_na(v_gene), str_replace_na(d_gene),  str_replace_na(j_gene),  str_replace_na(c_gene), sep = "."))
         kappa <- data2[data2$chain == "IGK",] %>% 
@@ -451,12 +531,10 @@ closest_word <- function(s, strset) {
           mutate(IGLct = str_c(str_replace_na(v_gene),  str_replace_na(j_gene), str_replace_na(c_gene), sep = "."))
         data2 <- bind_rows(heavy, kappa, lambda)
     }
-    data2
+    return(data2)
 }
 
-#Getting the minimum repertoire size for diversity boots
-#' @keywords internal
-.short.check <- function(df, cloneCall) {
+short.check <- function(df, cloneCall) {
   min <- c()
   for (x in seq_along(df)) {
     min.tmp <- length(which(!is.na(unique(df[[x]][,cloneCall]))))
@@ -466,6 +544,11 @@ closest_word <- function(s, strset) {
   return(min)
 }
 
+<<<<<<< Updated upstream
+select.gene <- function(df, chain, gene, label) {
+  if (chain %in% c("TRB", "TRD", "IGH")) {
+    gene <- unname(c(V = 1, D = 2, J = 3, C = 4)[gene])
+=======
 # check if object is a dataframe or list of dataframes
 #' @keywords internal
 is_df_or_list_of_df <- function(x) {
@@ -543,7 +626,7 @@ is_df_or_list_of_df <- function(x) {
       # Pre-allocate list
       list <- vector("list", length = length(nucleotides))
       
-      for (i in 1:(length(nucleotides) - 1)) {
+      for (i in seq_len((length(nucleotides) - 1))) {
         temp_list <- vector("list", length = length(nucleotides) - i)
         
         idx_i <- tmp[, chain_col_number] == nucleotides[i] & tmp[,2] == y
@@ -603,15 +686,27 @@ is_df_or_list_of_df <- function(x) {
       out$filtered <- tmp[,1][as.numeric(out$filtered)]
       uni_IG <- as.data.frame(unique(tmp[,1][tmp[,1] %!in% out$filtered]))
     }
+>>>>>>> Stashed changes
   } else {
-    uni_IG <- as.data.frame(unique(tmp[,1]))
+    gene <- unname(c(V = 1, J = 2, C = 3)[gene])
   }
-  colnames(uni_IG)[1] <- "filtered"
-  if (nrow(uni_IG) > 0) {
-    uni_IG$cluster <- paste0(gene, ".", seq_len(nrow(uni_IG)))
+  if (ncol(str_split(df[,"CTgene"], "_", simplify = TRUE)) == 1) {
+    C1 <- str_split(df[,"CTgene"], "_", simplify = TRUE)[,1] 
+    C1 <- str_split(C1, "[.]", simplify = TRUE)[,gene] 
+    df$C1 <- C1
+    x <- "C1"
+  } else {
+    C1 <- str_split(df[,"CTgene"], "_", simplify = TRUE)[,1] 
+    C1 <- str_split(C1, "[.]", simplify = TRUE)[,gene] 
+    C2 <- str_split(df[,"CTgene"], "_", simplify = TRUE)[,2] 
+    C2 <- str_split(C2, "[.]", simplify = TRUE)[,gene] 
+    df$C1 <- C1
+    df$C2 <- C2
+    if (chain %in% c("TRA", "TRG", "IGH")) {
+      x <- "C1"}
+    else if (chain %in% c("TRB", "TRD", "IGL")) {
+      x <- "C2"}
   }
-  output <- rbind.data.frame(out, uni_IG)
-  colnames(output) <- c("Cluster", "clone")
-  return(output)
+  return(df)
 }
 

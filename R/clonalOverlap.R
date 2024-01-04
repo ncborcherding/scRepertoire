@@ -1,7 +1,7 @@
 #' Examining the clonal overlap between groups or samples
 #'
 #' This functions allows for the calculation and visualizations of 
-#' various overlap metrics for clonotypes.
+#' various overlap metrics for clones.
 #' 
 #' @details
 #' The formulas for the indices are as follows:
@@ -36,9 +36,9 @@
 #'               cloneCall = "aa", 
 #'               method = "jaccard")
 #'
-#' @param input.data The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
-#'  \code{\link{combineExpression}}.
-#' @param cloneCall How to call the clonotype - VDJC gene (gene), 
+#' @param input.data The product of \code{\link{combineTCR}}, 
+#' \code{\link{combineBCR}}, or \code{\link{combineExpression}}.
+#' @param cloneCall How to call the clone - VDJC gene (gene), 
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa),
 #' VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data. 
 #' @param chain indicate if both or a specific chain should be used - 
@@ -47,7 +47,8 @@
 #' "jaccard", "cosine" indices or "raw" for the base numbers.
 #' @param group.by The variable to use for grouping.
 #' @param exportTable Returns the data frame used for forming the graph.
-#' @param palette Colors to use in visualization - input any \link[grDevices]{hcl.pals}.
+#' @param palette Colors to use in visualization - input any 
+#' \link[grDevices]{hcl.pals}.
 #' @importFrom stringr str_sort str_to_title
 #' @importFrom reshape2 melt
 #' @importFrom stats quantile
@@ -62,15 +63,15 @@ clonalOverlap <- function(input.data,
                           exportTable = FALSE,
                           palette = "inferno"){
     if(method == "morisita") {
-      return_type = "freq"
+      return_type <- "freq"
     } else {
-      return_type = "unique"
+      return_type <- "unique"
     }
-  input.data <- .data.wrangle(input.data, 
+    input.data <- .data.wrangle(input.data, 
                               group.by, 
                               .theCall(input.data, cloneCall, check.df = FALSE), 
                               chain)
-  cloneCall <- .theCall(input.data, cloneCall)
+    cloneCall <- .theCall(input.data, cloneCall)
     
     input.data <- input.data[order(names(input.data))]
     values <- str_sort(as.character(unique(names(input.data))), numeric = TRUE)
@@ -85,12 +86,17 @@ clonalOverlap <- function(input.data,
                         "jaccard"  = .jaccardCalc,
                         "raw"      = .rawCalc,
                         "overlap"  = .overlapCalc,
-                        "cosine"  = .cosineCalc,
+                        "cosine"  =  .cosineCalc,
                         stop("Invalid method provided"))
     
     #Calculating Index 
     coef_matrix <- data.frame(matrix(NA, num_samples, num_samples))
-    coef_matrix <- .calculateIndex(input.data, length, cloneCall, coef_matrix, indexFunc, return_type)
+    coef_matrix <- .calculateIndex(input.data, 
+                                   length, 
+                                   cloneCall, 
+                                   coef_matrix, 
+                                   indexFunc, 
+                                   return_type)
     
     #Data manipulation
     colnames(coef_matrix) <- names_samples
@@ -105,7 +111,10 @@ clonalOverlap <- function(input.data,
     
     plot <- ggplot(mat_melt, aes(x=Var1, y=Var2, fill=value)) +
                 geom_tile() + 
-                geom_tile(data = mat_melt[!is.na(mat_melt[,"value"]),], fill = NA, lwd= 0.25, color = "black") +
+                geom_tile(data = mat_melt[!is.na(mat_melt[,"value"]),], 
+                          fill = NA, 
+                          lwd= 0.25, 
+                          color = "black") +
                 labs(fill = str_to_title(method)) +
                 geom_text(aes(label = round(value, digits = 3), 
                               color = ifelse(value <= mean_value,
@@ -119,7 +128,9 @@ clonalOverlap <- function(input.data,
 }
 
 # Helper function to prepare data
-.prepareDataFrame <- function(df, cloneCall, return_type = "unique") {
+.prepareDataFrame <- function(df, 
+                              cloneCall, 
+                              return_type = "unique") {
   if (return_type == "unique") {
     return(unique(df[, cloneCall]))
   } else if (return_type == "freq") {
@@ -131,7 +142,12 @@ clonalOverlap <- function(input.data,
 }
 
 # Helper function for common loop and conditional structure
-.calculateIndex <- function(df, length, cloneCall, coef_matrix, indexFunc, return_type = "unique") {
+.calculateIndex <- function(df, 
+                            length, 
+                            cloneCall, 
+                            coef_matrix, 
+                            indexFunc, 
+                            return_type = "unique") {
   for (i in seq_along(length)) {
     df_i <- .prepareDataFrame(df[[i]], cloneCall, return_type)
     for (j in seq_along(length)) {

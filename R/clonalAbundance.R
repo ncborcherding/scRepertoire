@@ -1,6 +1,6 @@
-#' Demonstrate the relative abundance of clonotypes by group or sample.
+#' Demonstrate the relative abundance of clones by group or sample.
 #'
-#' Displays the number of clonotypes at specific Frequencies by sample 
+#' Displays the number of clones at specific Frequencies by sample 
 #' or group. Visualization can either be a line graph using
 #' calculated numbers or if \strong{scale} = TRUE, the output will be a 
 #' density plot. Multiple sequencing runs can be group together 
@@ -16,9 +16,9 @@
 #'                 cloneCall = "gene", 
 #'                 scale = FALSE)
 #'
-#' @param input.data The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
-#'  \code{\link{combineExpression}}.
-#' @param cloneCall How to call the clonotype - VDJC gene (gene), 
+#' @param input.data The product of \code{\link{combineTCR}}, 
+#' \code{\link{combineBCR}}, or \code{\link{combineExpression}}.
+#' @param cloneCall How to call the clone - VDJC gene (gene), 
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa),
 #' VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data. 
 #' @param chain indicate if both or a specific chain should be used - 
@@ -29,11 +29,12 @@
 #' relative distributions.
 #' @param exportTable Returns the data frame used for forming the graph
 #' to the visualization.
-#' @param palette Colors to use in visualization - input any \link[grDevices]{hcl.pals}.
+#' @param palette Colors to use in visualization - input any 
+#' \link[grDevices]{hcl.pals}.
 #' @importFrom ggplot2 ggplot
 #' @export
 #' @concept Visualizing_Clones
-#' @return ggplot of the total or relative abundance of clonotypes 
+#' @return ggplot of the total or relative abundance of clones 
 #' across quanta
 clonalAbundance <- function(input.data, 
                             cloneCall = "strict", 
@@ -62,14 +63,17 @@ clonalAbundance <- function(input.data,
       col <- length(unique(Con.df[,group.by]))
       fill <- group.by
       if (scale == TRUE) { 
-        ylab <- "Density of Clonotypes"
+        ylab <- "Density of Clones"
         plot <- ggplot(Con.df, aes(x=Abundance, fill=Con.df[,group.by])) +
-                      geom_density(aes(y=after_stat(scaled)), alpha=0.5, 
-                                   lwd=0.25, color="black", bw=0.5)  +
+                      geom_density(aes(y=after_stat(scaled)), 
+                                   alpha=0.5, 
+                                   lwd=0.25, 
+                                   color="black", 
+                                   bw=0.5)  +
                       scale_fill_manual(values = .colorizer(palette,col)) +
                       labs(fill = fill)
     } else { 
-        ylab <- "Number of Clonotypes"
+        ylab <- "Number of Clones"
         plot <- ggplot(Con.df, aes(x=Abundance, group.by = values, 
                                color = Con.df[,group.by])) +
                         geom_line(stat="count") +
@@ -88,14 +92,17 @@ clonalAbundance <- function(input.data,
     col <- length(unique(Con.df$values))
     fill <- "Samples"
     if (scale == TRUE) { 
-      ylab <- "Density of Clonotypes"
+      ylab <- "Density of Clones"
       plot <- ggplot(Con.df, aes(Abundance, fill=values)) +
-                      geom_density(aes(y=after_stat(scaled)), alpha=0.5, lwd=0.25, 
-                                   color="black", bw=0.5) +
+                      geom_density(aes(y=after_stat(scaled)), 
+                                   alpha=0.5, 
+                                   lwd=0.25, 
+                                   color="black", 
+                                   bw=0.5) +
                       scale_fill_manual(values = .colorizer(palette,col)) +
                       labs(fill = fill)
     } else { 
-      ylab <- "Number of Clonotypes"
+      ylab <- "Number of Clones"
       plot <- ggplot(Con.df, aes(x=Abundance, group = values, 
                                color = values)) +
                       geom_line(stat="count") +

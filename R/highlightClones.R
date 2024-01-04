@@ -1,6 +1,6 @@
-#' Highlighting specific clonotypes in Seurat
+#' Highlighting specific clones in Seurat
 #'
-#' Use a specific clonotype sequence to highlight on top of the dimensional 
+#' Use a specific clonal sequence to highlight on top of the dimensional 
 #' reduction in single-cell object.
 #'
 #' @examples
@@ -16,20 +16,22 @@
 #' scRep_example  <- combineExpression(combined, 
 #'                                     scRep_example)
 #' 
-#' #Using highlightClonotype()
+#' #Using highlightClones()
 #' scRep_example   <- highlightClones(scRep_example, 
 #'                                    cloneCall= "aa", 
 #'                                    sequence = c("CVVSDNTGGFKTIF_CASSVRRERANTGELFF"))
 #' 
-#' @param sc.data The single-cell object to attach after \code{\link{combineExpression}}
-#' @param cloneCall How to call the clonotype - VDJC gene (gene), 
+#' @param sc.data The single-cell object to attach after 
+#' \code{\link{combineExpression}}
+#' @param cloneCall How to call the clone - VDJC gene (gene), 
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa),
 #' VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data. 
 #' @param sequence The specific sequence or sequence to highlight
 #' @importFrom S4Vectors DataFrame
 #' @export
 #' @concept SC_Functions
-#' @return Single-cell object object with new meta data column for indicated clones
+#' @return Single-cell object object with new meta data column 
+#' for indicated clones
 highlightClones <- function(sc.data, 
                             cloneCall = c("gene", "nt", "aa", "strict"), 
                             sequence = NULL){

@@ -1,8 +1,8 @@
-#' Quantify the unique clonotypes
+#' Quantify the unique clones
 #'
-#' This function quantifies unique clonotypes. The unique clonotypes 
+#' This function quantifies unique clones. The unique clones 
 #' can be either reported as a raw output or scaled to the total number of 
-#' clonotypes recovered using the scale parameter. 
+#' clones recovered using the scale parameter. 
 #'
 #' @examples
 #' #Making combined contig data
@@ -11,22 +11,23 @@
 #'                                     "P19B","P19L", "P20B", "P20L"))
 #' clonalQuant(combined, cloneCall="strict", scale = TRUE)
 #'
-#' @param input.data The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
-#'  \code{\link{combineExpression}}.
-#' @param cloneCall How to call the clonotype - VDJC gene (gene), 
+#' @param input.data The product of \code{\link{combineTCR}}, 
+#' \code{\link{combineBCR}}, or \code{\link{combineExpression}}.
+#' @param cloneCall How to call the clone - VDJC gene (gene), 
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa),
 #' VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data. 
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL"
 #' @param group.by The column header used for grouping.
 #' @param order Maintain the order of the list when plotting
-#' @param scale Converts the graphs into percentage of unique clonotypes.
+#' @param scale Converts the graphs into percentage of unique clones.
 #' @param exportTable Returns the data frame used for forming the graph.
-#' @param palette Colors to use in visualization - input any \link[grDevices]{hcl.pals}.
+#' @param palette Colors to use in visualization - input any 
+#' \link[grDevices]{hcl.pals}.
 #' @import ggplot2
 #' @export
 #' @concept Visualizing_Clones
-#' @return ggplot of the total or relative unique clonotypes
+#' @return ggplot of the total or relative unique clones
 clonalQuant <- function(input.data, 
                         cloneCall = "strict", 
                         chain = "both", 
@@ -74,11 +75,11 @@ clonalQuant <- function(input.data,
   if (scale) { 
       y <- "scaled"
       mat$scaled <- mat$contigs/mat$total*100
-      ylab <- "Percent of Unique Clonotype"
+      ylab <- "Percent of Unique clone"
    } else { 
       y <- "contigs"
       x <- group.by
-      ylab <- "Unique Clonotypes"
+      ylab <- "Unique clones"
    }
   
   if (exportTable) {
@@ -100,16 +101,17 @@ clonalQuant <- function(input.data,
   }
   
   #Plotting
-  plot <- ggplot(aes(x=mat[,x], y=mat[,y], fill=as.factor(mat[,x])), data = mat) +
-                  stat_summary(geom = "errorbar", 
-                               fun.data = mean_se, 
-                               position = "dodge", 
-                               width=.5) + 
-                  labs(fill = labs) +
-                  ylab(ylab) +
-                  stat_summary(fun=mean, geom="bar", color="black", lwd=0.25)+
-                  theme_classic() + xlab("Samples") + 
-                  scale_fill_manual(values = .colorizer(palette, col))
+  plot <- ggplot(data = mat, 
+                 aes(x=mat[,x], y=mat[,y], fill=as.factor(mat[,x]))) +
+            stat_summary(geom = "errorbar", 
+                         fun.data = mean_se, 
+                         position = "dodge", 
+                         width=.5) + 
+              labs(fill = labs) +
+              ylab(ylab) +
+              stat_summary(fun=mean, geom="bar", color="black", lwd=0.25)+
+              theme_classic() + xlab("Samples") + 
+              scale_fill_manual(values = .colorizer(palette, col))
   
   # if it is a single run, remove x axis labels if sample name missing
   if ((length(input.data) == 1) && identical(names(input.data), NA_character_)) {

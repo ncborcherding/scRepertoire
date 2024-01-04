@@ -63,7 +63,7 @@ StartracDiversity <- function(sc.data,
        }
        group.by <- "orig.ident"
     }
-    group.levels = unique(df[,group.by])
+    group.levels <- unique(df[,group.by])
     
     if (chain != "both") {
       df <- .off.the.chain(df, chain, cloneCall)
