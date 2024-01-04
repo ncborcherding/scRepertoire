@@ -17,10 +17,10 @@ clonalRarefaction(
 )
 }
 \arguments{
-\item{input.data}{The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
-\code{\link{combineExpression}}.}
+\item{input.data}{The product of \code{\link{combineTCR}}, 
+\code{\link{combineBCR}}, or \code{\link{combineExpression}}.}
 
-\item{cloneCall}{How to call the clonotype - VDJC gene (gene), 
+\item{cloneCall}{How to call the clone - VDJC gene (gene), 
 CDR3 nucleotide (nt), CDR3 amino acid (aa),
 VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data.}
 
@@ -29,17 +29,21 @@ e.g. "both", "TRA", "TRG", "IGH", "IGL".}
 
 \item{group.by}{The variable to use for grouping.}
 
-\item{plot.type}{sample-size-based rarefaction/extrapolation curve (\code{type = 1}); 
-sample completeness curve (\code{type = 2}); coverage-based rarefaction/extrapolation curve (\code{type = 3}).}
+\item{plot.type}{sample-size-based rarefaction/extrapolation curve 
+(\code{type = 1}); sample completeness curve (\code{type = 2}); 
+coverage-based rarefaction/extrapolation curve (\code{type = 3}).}
 
-\item{hill.numbers}{The Hill numbers to be plotted out (0 - species richness, 1 - Shannon, 2 - Simpson)}
+\item{hill.numbers}{The Hill numbers to be plotted out 
+(0 - species richness, 1 - Shannon, 2 - Simpson)}
 
-\item{n.boots}{The number of bootstraps to downsample in order to get mean diversity.}
+\item{n.boots}{The number of bootstraps to downsample in o
+rder to get mean diversity.}
 
 \item{exportTable}{Exports a table of the data into the global 
 environment in addition to the visualization.}
 
-\item{palette}{Colors to use in visualization - input any \link[grDevices]{hcl.pals}.}
+\item{palette}{Colors to use in visualization - input any 
+\link[grDevices]{hcl.pals}.}
 }
 \description{
 This functions uses the Hill numbers of order q: species richness (\strong{q = 0}), 

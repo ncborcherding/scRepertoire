@@ -16,10 +16,10 @@ clonalLength(
 )
 }
 \arguments{
-\item{input.data}{The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
-\code{\link{combineExpression}}.}
+\item{input.data}{The product of \code{\link{combineTCR}}, 
+\code{\link{combineBCR}}, or \code{\link{combineExpression}}.}
 
-\item{cloneCall}{How to call the clonotype - CDR3 nucleotide (nt), 
+\item{cloneCall}{How to call the clone - CDR3 nucleotide (nt), 
 CDR3 amino acid (aa).}
 
 \item{chain}{indicate if both or a specific chain should be used - 
@@ -38,16 +38,16 @@ relative distributions.}
 }
 \value{
 ggplot of the discrete or relative length distributions of 
-clonotype sequences
+clone sequences
 }
 \description{
 This function displays either the nucleotide (nt) or amino 
 acid (aa) sequence length. The sequence length visualized can be 
-selected using the chains parameter, either the combined clonotype 
+selected using the chains parameter, either the combined clone 
 (both chains) or across all single chains. Visualization can either 
-be a histogram or if \strong{scale} = TRUE, the output will be a density plot. 
-Multiple sequencing runs can be group together using the 
-group parameter.
+be a histogram or if \strong{scale} = TRUE, the output will 
+be a density plot. Multiple sequencing runs can be group together 
+using the group.by parameter.
 }
 \examples{
 #Making combined contig data

@@ -66,7 +66,7 @@
 <text x='529.17' y='556.10' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='21.53px' lengthAdjust='spacingAndGlyphs'>P20B</text>
 <text x='603.63' y='556.10' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='20.56px' lengthAdjust='spacingAndGlyphs'>P20L</text>
 <text x='343.00' y='568.24' text-anchor='middle' style='font-size: 11.00px; font-family: sans;' textLength='42.81px' lengthAdjust='spacingAndGlyphs'>Samples</text>
-<text transform='translate(13.05,283.95) rotate(-90)' text-anchor='middle' style='font-size: 11.00px; font-family: sans;' textLength='140.66px' lengthAdjust='spacingAndGlyphs'>Percent of Unique Clonotype</text>
+<text transform='translate(13.05,283.95) rotate(-90)' text-anchor='middle' style='font-size: 11.00px; font-family: sans;' textLength='117.42px' lengthAdjust='spacingAndGlyphs'>Percent of Unique clone</text>
 <rect x='659.27' y='201.68' width='55.25' height='164.53' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <text x='664.75' y='215.87' style='font-size: 11.00px; font-family: sans;' textLength='42.81px' lengthAdjust='spacingAndGlyphs'>Samples</text>
 <rect x='665.10' y='222.85' width='16.57' height='16.57' style='stroke-width: 0.53; stroke-linecap: butt; stroke-linejoin: miter; fill: #040404;' />

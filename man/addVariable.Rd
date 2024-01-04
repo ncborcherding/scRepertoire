@@ -2,12 +2,13 @@
 % Please edit documentation in R/addVariable.R
 \name{addVariable}
 \alias{addVariable}
-\title{Adding variables after the combination of clonotypes.}
+\title{Adding variables after the combination of clones.}
 \usage{
 addVariable(input.data, variable.name = NULL, variables = NULL)
 }
 \arguments{
-\item{input.data}{The product of \code{\link{combineTCR}} or \code{\link{combineBCR}}.}
+\item{input.data}{The product of \code{\link{combineTCR}} or 
+\code{\link{combineBCR}}.}
 
 \item{variable.name}{The column header to add.}
 

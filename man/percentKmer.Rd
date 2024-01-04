@@ -16,12 +16,12 @@ percentKmer(
 )
 }
 \arguments{
-\item{input.data}{The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
-\code{\link{combineExpression}}.}
+\item{input.data}{The product of \code{\link{combineTCR}}, 
+\code{\link{combineBCR}}, or \code{\link{combineExpression}}.}
 
 \item{chain}{"TRA", "TRB", "TRG", "TRG", "IGH", "IGL".}
 
-\item{cloneCall}{How to call the clonotype - CDR3 nucleotide (nt) or 
+\item{cloneCall}{How to call the clone - CDR3 nucleotide (nt) or 
 CDR3 amino acid (aa).}
 
 \item{group.by}{The variable to use for grouping.}
@@ -33,7 +33,8 @@ median absolute deviation.}
 
 \item{exportTable}{Returns the data frame used for forming the graph.}
 
-\item{palette}{Colors to use in visualization - input any \link[grDevices]{hcl.pals}.}
+\item{palette}{Colors to use in visualization - input any 
+\link[grDevices]{hcl.pals}.}
 }
 \value{
 ggplot of percentage of kmers as a heatmap

@@ -19,10 +19,10 @@ clonalDiversity(
 )
 }
 \arguments{
-\item{input.data}{The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
-\code{\link{combineExpression}}.}
+\item{input.data}{The product of \code{\link{combineTCR}}, 
+\code{\link{combineBCR}}, or \code{\link{combineExpression}}.}
 
-\item{cloneCall}{How to call the clonotype - VDJC gene (gene), 
+\item{cloneCall}{How to call the clone - VDJC gene (gene), 
 CDR3 nucleotide (nt), CDR3 amino acid (aa),
 VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data.}
 
@@ -33,15 +33,17 @@ e.g. "both", "TRA", "TRG", "IGH", "IGL".}
 
 \item{x.axis}{Additional variable in which to split the x.axis.}
 
-\item{metrics}{The indices to use in diversity calculations - "shannon", "inv.simpson", 
-"norm.entropy", "gini.simpson", "chao1", "ACE".}
+\item{metrics}{The indices to use in diversity calculations - 
+"shannon", "inv.simpson", "norm.entropy", "gini.simpson", "chao1", "ACE".}
 
 \item{exportTable}{Exports a table of the data into the global environment 
 in addition to the visualization.}
 
-\item{palette}{Colors to use in visualization - input any \link[grDevices]{hcl.pals}.}
+\item{palette}{Colors to use in visualization - input any 
+\link[grDevices]{hcl.pals}.}
 
-\item{n.boots}{number of bootstraps to downsample in order to get mean diversity}
+\item{n.boots}{number of bootstraps to downsample in order to 
+get mean diversity}
 
 \item{return.boots}{export boot strapped values calculated - 
 will automatically exportTable = TRUE.}

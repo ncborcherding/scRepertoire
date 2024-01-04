@@ -2,7 +2,7 @@
 % Please edit documentation in R/clonalAbundance.R
 \name{clonalAbundance}
 \alias{clonalAbundance}
-\title{Demonstrate the relative abundance of clonotypes by group or sample.}
+\title{Demonstrate the relative abundance of clones by group or sample.}
 \usage{
 clonalAbundance(
   input.data,
@@ -16,10 +16,10 @@ clonalAbundance(
 )
 }
 \arguments{
-\item{input.data}{The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
-\code{\link{combineExpression}}.}
+\item{input.data}{The product of \code{\link{combineTCR}}, 
+\code{\link{combineBCR}}, or \code{\link{combineExpression}}.}
 
-\item{cloneCall}{How to call the clonotype - VDJC gene (gene), 
+\item{cloneCall}{How to call the clone - VDJC gene (gene), 
 CDR3 nucleotide (nt), CDR3 amino acid (aa),
 VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data.}
 
@@ -36,14 +36,15 @@ relative distributions.}
 \item{exportTable}{Returns the data frame used for forming the graph
 to the visualization.}
 
-\item{palette}{Colors to use in visualization - input any \link[grDevices]{hcl.pals}.}
+\item{palette}{Colors to use in visualization - input any 
+\link[grDevices]{hcl.pals}.}
 }
 \value{
-ggplot of the total or relative abundance of clonotypes 
+ggplot of the total or relative abundance of clones 
 across quanta
 }
 \description{
-Displays the number of clonotypes at specific Frequencies by sample 
+Displays the number of clones at specific Frequencies by sample 
 or group. Visualization can either be a line graph using
 calculated numbers or if \strong{scale} = TRUE, the output will be a 
 density plot. Multiple sequencing runs can be group together 

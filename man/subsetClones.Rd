@@ -7,7 +7,8 @@
 subsetClones(input.data, name, variables = NULL)
 }
 \arguments{
-\item{input.data}{The product of \code{\link{combineTCR}} or \code{\link{combineBCR}}.}
+\item{input.data}{The product of \code{\link{combineTCR}} or 
+\code{\link{combineBCR}}.}
 
 \item{name}{The column header you'd like to use to subset.}
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/combineContigs.R
 \name{combineTCR}
 \alias{combineTCR}
-\title{Combining the list of T cell receptor contigs into clonotypes}
+\title{Combining the list of T cell receptor contigs into clones}
 \usage{
 combineTCR(
   input.data,
@@ -14,7 +14,8 @@ combineTCR(
 )
 }
 \arguments{
-\item{input.data}{List of filtered contig annotations or outputs from \code{\link{loadContigs}}}
+\item{input.data}{List of filtered contig annotations or 
+outputs from \code{\link{loadContigs}}}
 
 \item{samples}{The labels of samples}
 
@@ -28,7 +29,7 @@ combineTCR(
 corresponding chains with the highest expression for a single barcode.}
 }
 \value{
-List of clonotypes for individual cell barcodes
+List of clones for individual cell barcodes
 }
 \description{
 This function consolidates a list of TCR sequencing results to

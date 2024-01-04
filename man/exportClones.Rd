@@ -2,7 +2,7 @@
 % Please edit documentation in R/exportClones.R
 \name{exportClones}
 \alias{exportClones}
-\title{Exporting clonotypes}
+\title{Exporting clones}
 \usage{
 exportClones(
   input.data,
@@ -14,14 +14,15 @@ exportClones(
 )
 }
 \arguments{
-\item{input.data}{The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
-\code{\link{combineExpression}}.}
+\item{input.data}{The product of \code{\link{combineTCR}}, 
+\code{\link{combineBCR}}, or \code{\link{combineExpression}}.}
 
 \item{format}{The format to export the clones - "paired", "airr", or "TCRMatch".}
 
 \item{group.by}{The variable to use for grouping.}
 
-\item{write.file}{\strong{TRUE}, save the file or \strong{FALSE}, return a data.frame}
+\item{write.file}{\strong{TRUE}, save the file or \strong{FALSE}, 
+return a data.frame}
 
 \item{dir}{directory location to save the csv}
 
@@ -31,9 +32,10 @@ exportClones(
 CSV file of the paired sequences.
 }
 \description{
-This function saves a csv file of clonotypes (genes, amino acid, and nucleotide sequences)
-by barcodes. \strong{format} determines the structure of the csv file - \emph{paired} will
-export sequences by barcodes and include multiple chains, \emph{airr} will export a data 
+This function saves a csv file of clones (genes, amino acid, and 
+nucleotide sequences) by barcodes. \strong{format} determines 
+the structure of the csv file - \emph{paired} will export sequences 
+by barcodes and include multiple chains, \emph{airr} will export a data 
 frame that is consistent with the AIRR format, and \emph{TCRMatch} will 
 export a data frame that has the TRB chain with count information.
 }

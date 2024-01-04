@@ -2,7 +2,7 @@
 % Please edit documentation in R/alluvialClones.R
 \name{alluvialClones}
 \alias{alluvialClones}
-\title{Exploring interaction of clonotypes by single-cell object dynamics}
+\title{Exploring interaction of clones by single-cell object dynamics}
 \usage{
 alluvialClones(
   sc.data,
@@ -17,9 +17,10 @@ alluvialClones(
 )
 }
 \arguments{
-\item{sc.data}{The single-cell object to visualize after \code{\link{combineExpression}}.}
+\item{sc.data}{The single-cell object to visualize 
+after \code{\link{combineExpression}}.}
 
-\item{cloneCall}{How to call the clonotype - VDJC gene (gene), 
+\item{cloneCall}{How to call the clone - VDJC gene (gene), 
 CDR3 nucleotide (nt), CDR3 amino acid (aa),
 VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data.}
 
@@ -29,7 +30,7 @@ e.g. "both", "TRA", "TRG", "IGH", "IGL".}
 \item{y.axes}{The columns that will separate the proportional .
 visualizations.}
 
-\item{color}{The column header or clonotype(s) to be highlighted.}
+\item{color}{The column header or clone(s) to be highlighted.}
 
 \item{alpha}{The column header to have gradated opacity.}
 
@@ -38,18 +39,19 @@ visualizations.}
 \item{exportTable}{Exports a table of the data into the global 
 environment in addition to the visualization.}
 
-\item{palette}{Colors to use in visualization - input any \link[grDevices]{hcl.pals}.}
+\item{palette}{Colors to use in visualization - input any 
+\link[grDevices]{hcl.pals}.}
 }
 \value{
-Alluvial ggplot comparing clonotype distribution.
+Alluvial ggplot comparing clone distribution.
 }
 \description{
-View the proportional contribution of clonotypes by seurat or SCE object 
-meta data after \code{\link{combineExpression}}. The visualization is based on the 
-ggalluvial package, which requires the aesthetics to be part of the axes 
-that are visualized. Therefore, alpha, facet, and color should be part of 
-the the axes you wish to view or will add an additional stratum/column to 
-the end of the graph.
+View the proportional contribution of clones by seurat or SCE object 
+meta data after \code{\link{combineExpression}}. The visualization 
+is based on the ggalluvial package, which requires the aesthetics 
+to be part of the axes that are visualized. Therefore, alpha, facet, 
+and color should be part of the the axes you wish to view or will 
+add an additional stratum/column to the end of the graph.
 }
 \examples{
 #Getting the combined contigs

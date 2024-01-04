@@ -17,26 +17,29 @@ vizGenes(
 )
 }
 \arguments{
-\item{input.data}{The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
-\code{\link{combineExpression}}.}
+\item{input.data}{The product of \code{\link{combineTCR}}, 
+\code{\link{combineBCR}}, or \code{\link{combineExpression}}.}
 
-\item{x.axis}{Gene segments to separate the x-axis, such as "TRAV", "TRBD", "IGKJ".}
+\item{x.axis}{Gene segments to separate the x-axis, such as "TRAV", 
+"TRBD", "IGKJ".}
 
-\item{y.axis}{Variable to separate the y-axis, can be both categorical or other gene 
-gene segments, such as "TRAV", "TRBD", "IGKJ".}
+\item{y.axis}{Variable to separate the y-axis, can be both categorical 
+or other gene gene segments, such as "TRAV", "TRBD", "IGKJ".}
 
 \item{group.by}{Variable in which to group the diversity calculation.}
 
-\item{plot}{The type of plot to return - heatmap or barplot}
+\item{plot}{The type of plot to return - heatmap or barplot.}
 
-\item{order}{Categorical variable to organize the x-axis, either "gene" or "variance"}
+\item{order}{Categorical variable to organize the x-axis, either 
+"gene" or "variance"}
 
-\item{scale}{Converts the individual count of genes to proportion using the total 
-respective repertoire size}
+\item{scale}{Converts the individual count of genes to proportion using 
+the total respective repertoire size}
 
 \item{exportTable}{Returns the data frame used for forming the graph.}
 
-\item{palette}{Colors to use in visualization - input any \link[grDevices]{hcl.pals}.}
+\item{palette}{Colors to use in visualization - input any 
+\link[grDevices]{hcl.pals}.}
 }
 \value{
 ggplot bar diagram or heatmap of gene usage
@@ -45,7 +48,7 @@ ggplot bar diagram or heatmap of gene usage
 This function will allow for the visualizing the distribution 
 of the any VDJ and C gene of the TCR or BCR using heatmap or
 bar chart. This function requires assumes two chains were used in 
-defining clonotype, if not, it will default to the only chain 
+defining clone, if not, it will default to the only chain 
 present regardless of the chain parameter.
 }
 \examples{

@@ -2,7 +2,7 @@
 % Please edit documentation in R/combineContigs.R
 \name{combineBCR}
 \alias{combineBCR}
-\title{Combining the list of B cell receptor contigs into clonotypes}
+\title{Combining the list of B cell receptor contigs into clones}
 \usage{
 combineBCR(
   input.data,
@@ -16,27 +16,29 @@ combineBCR(
 )
 }
 \arguments{
-\item{input.data}{List of filtered contig annotations or outputs from \code{\link{loadContigs}}.}
+\item{input.data}{List of filtered contig annotations or outputs from 
+\code{\link{loadContigs}}.}
 
 \item{samples}{The labels of samples}
 
 \item{ID}{The additional sample labeling}
 
-\item{call.related.clones}{Use the nucleotide sequence and V gene to call related clones. 
-Default is set to TRUE. FALSE will return a CTstrict or strict clonotype as V gene + amino acid sequence}
+\item{call.related.clones}{Use the nucleotide sequence and V gene 
+to call related clones. Default is set to TRUE. FALSE will return 
+a CTstrict or strict clone as V gene + amino acid sequence}
 
-\item{threshold}{The normalized edit distance to consider. The higher the number the more 
-similarity of sequence will be used for clustering.}
+\item{threshold}{The normalized edit distance to consider. The higher 
+the number the more similarity of sequence will be used for clustering.}
 
 \item{removeNA}{This will remove any chain without values.}
 
 \item{removeMulti}{This will remove barcodes with greater than 2 chains.}
 
-\item{filterMulti}{This option will allow for the selection of the highest-expressing light and heavy 
-chains, if not calling related clones.}
+\item{filterMulti}{This option will allow for the selection of the 
+highest-expressing light and heavy chains, if not calling related clones.}
 }
 \value{
-List of clonotypes for individual cell barcodes
+List of clones for individual cell barcodes
 }
 \description{
 This function consolidates a list of BCR sequencing results to the level 
@@ -44,14 +46,15 @@ of the individual cell barcodes. Using the samples and ID parameters,
 the function will add the strings as prefixes to prevent issues with 
 repeated barcodes. The resulting new barcodes will need to match the 
 Seurat or SCE object in order to use, \code{\link{combineExpression}}. 
-Unlike \code{\link{combineTCR}}, combineBCR produces a column \strong{CTstrict}
-of an index of nucleotide sequence and the corresponding V gene. 
-This index automatically calculates the Levenshtein distance between 
-sequences with the same V gene and will index sequences using a normalized 
-Levenshtein distance with the same ID. After which, clonotype clusters 
-are called using the \code{\link[igraph]{components}} function. Clones
-that are clustered across multiple sequences will then be labeled 
-with "Cluster" in the CTstrict header.
+Unlike \code{\link{combineTCR}}, combineBCR produces a column 
+\strong{CTstrict} of an index of nucleotide sequence and the 
+corresponding V gene. This index automatically calculates the 
+Levenshtein distance between sequences with the same V gene and will
+index sequences using a normalized Levenshtein distance with the same 
+ID. After which, clone clusters are called using the 
+\code{\link[igraph]{components}} function. Clones that are clustered 
+across multiple sequences will then be labeled with "Cluster" in the 
+CTstrict header.
 }
 \examples{
 #Data derived from the 10x Genomics intratumoral NSCLC B cells

@@ -16,12 +16,12 @@ clonalHomeostasis(
 )
 }
 \arguments{
-\item{input.data}{The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
-\code{\link{combineExpression}}.}
+\item{input.data}{The product of \code{\link{combineTCR}}, 
+\code{\link{combineBCR}}, or \code{\link{combineExpression}}.}
 
-\item{cloneSize}{The cutpoints of the proportions.}
+\item{cloneSize}{The cut points of the proportions.}
 
-\item{cloneCall}{How to call the clonotype - VDJC gene (gene), 
+\item{cloneCall}{How to call the clone - VDJC gene (gene), 
 CDR3 nucleotide (nt), CDR3 amino acid (aa),
 VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data.}
 
@@ -33,15 +33,16 @@ e.g. "both", "TRA", "TRG", "IGH", "IGL"}
 \item{exportTable}{Exports a table of the data into the global 
 environment in addition to the visualization}
 
-\item{palette}{Colors to use in visualization - input any \link[grDevices]{hcl.pals}.}
+\item{palette}{Colors to use in visualization - input any 
+\link[grDevices]{hcl.pals}.}
 }
 \value{
-ggplot of the space occupied by the specific proportion of clonotypes
+ggplot of the space occupied by the specific proportion of clones
 }
 \description{
-This function calculates the space occupied by clonotype proportions. 
-The grouping of these clonotypes is based on the parameter cloneSize, 
-at default, cloneSize will group the clonotypes into bins of Rare = 0 
+This function calculates the space occupied by clone proportions. 
+The grouping of these clones is based on the parameter cloneSize, 
+at default, cloneSize will group the clones into bins of Rare = 0 
 to 0.0001, Small = 0.0001 to 0.001, etc. To adjust the proportions, 
 change the number or labeling of the cloneSize parameter. If a matrix 
 output for the data is preferred, set \strong{exportTable} = TRUE.

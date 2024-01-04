@@ -1,52 +1,34 @@
 #' Examine clone bias
 #' 
-<<<<<<< Updated upstream
-#' Clonotype bias method was developed and outlined from a single-cell 
-=======
 #' The metric seeks to quantify how individual clones are skewed towards 
 #' a specific cellular compartment or cluster. A clone bias of \emph{1}* - 
 #' indicates that a clone is composed of cells from a single 
 #' compartment or cluster, while a clone bias of \emph{0} - matches the 
 #' background subtype distribution. Please read and cite the following
->>>>>>> Stashed changes
 #' \href{https://pubmed.ncbi.nlm.nih.gov/35829695/}{manuscript} 
-#' characterizing CD4 responses to acute and chronic infection. The metric seeks to 
-#' quantify how individual clones are skewed towards a specific cellular 
-#' compartment or cluster. A clonotype bias of 1 indicates that a clonotype 
-#' is composed of cells from a single compartment or cluster, while a clonotype
-#' bias of 0 matches the background subtype distribution. 
+#' if using \code{\link{clonalBias}}.
 #' 
 #' @examples
-#' \dontrun{
-#' Getting the combined contigs
-#' combined <- combineTCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), 
-#' rep(c("P", "T"), 3))
+#' #Making combined contig data
+#' combined <- combineTCR(contig_list, 
+#'                         samples = c("P17B", "P17L", "P18B", "P18L", 
+#'                                     "P19B","P19L", "P20B", "P20L"))
 #' 
 #' #Getting a sample of a Seurat object
-#' screp_example <- get(data("screp_example"))
-#' sce <- suppressMessages(Seurat::UpdateSeuratObject(screp_example))
+#' scRep_example <- get(data("scRep_example"))
 #' 
 #' #Using combineExpresion()
-#' sce <- combineExpression(combined, sce)
+#' scRep_example <- combineExpression(combined, scRep_example)
+#' scRep_example$Patient <- substring(scRep_example$orig.ident,1,3)
 #' 
-#' #Using occupiedscRepertoire()
-#' clonotypeBias(sce, cloneCall = "CTaa", split.by = "Patient", group.by = "seurat_clusters",
-#' n.boots = 20, min.expand = 2)
-#' }
+#' #Using clonalBias()
+#' clonalBias(scRep_example, 
+#'               cloneCall = "aa", 
+#'               split.by = "Patient", 
+#'               group.by = "seurat_clusters",
+#'               n.boots = 5, 
+#'               min.expand = 2)
 #' 
-<<<<<<< Updated upstream
-#' @param df The product of combineTCR(), combineBCR(), expression2List(), 
-#' or combineExpression().
-#' @param cloneCall How to call the clonotype - VDJC gene (gene), 
-#' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
-#' VDJC gene + CDR3 nucleotide (strict).
-#' @param group.by The column header used for comparisons of bias.
-#' @param split.by The column header used for calculating the baseline frequencies.
-#' For example, "Type" for tumor vs peripheral blood comparison 
-#' @param n.boots number of bootstraps to downsample
-#' @param min.expand clonotype frequency cut off for the purpose of comparison
-#' @param exportTable Returns the data frame used for forming the graph
-=======
 #' 
 #' @param sc.data The single-cell object after \code{\link{combineExpression}}.
 #' @param cloneCall How to call the clone - VDJC gene (gene), 
@@ -60,22 +42,10 @@
 #' @param exportTable Returns the data frame used for forming the graph.
 #' @param palette Colors to use in visualization - input any 
 #' \link[grDevices]{hcl.pals}.
->>>>>>> Stashed changes
 #' @import ggplot2
+#' @importFrom quantreg rqss
 #' @importFrom stringr str_sort
 #' @export
-<<<<<<< Updated upstream
-#' @return Returns ggplot of the clonotype bias
-clonotypeBias <- function(df, 
-                          cloneCall="strict", 
-                          split.by=NULL, 
-                          group.by=NULL, 
-                          n.boots = 20,
-                          min.expand=10,
-                          exportTable = FALSE) {
-  
-  bias <- get_clono_bias(df, 
-=======
 #' @concept SC_Functions
 #' @return ggplot scatter plot with clone bias
 clonalBias <- function(sc.data, 
@@ -90,21 +60,13 @@ clonalBias <- function(sc.data,
   cloneCall <- .theCall(.grabMeta(sc.data), cloneCall)
   #Calculating bias
   bias <- .get_clono_bias(sc.data, 
->>>>>>> Stashed changes
                          split.by = split.by, 
                          group.by = group.by , 
                          cloneCall=cloneCall, 
                          min.expand=min.expand)
   df_shuffle.list <- list()
+  #Bootstrapping
   for (ii in seq_len(n.boots)) {
-<<<<<<< Updated upstream
-    df_shuffle.list[[ii]] <- get_clono_bias(df, split.by = split.by,
-                                            group.by = group.by, 
-                                            cloneCall=cloneCall, 
-                                            min.expand=min.expand, 
-                                            do.shuffle = TRUE, 
-                                            seed=ii)
-=======
     df_shuffle.list[[ii]] <- .get_clono_bias(sc.data, 
                                              split.by = split.by,
                                              group.by = group.by, 
@@ -112,10 +74,10 @@ clonalBias <- function(sc.data,
                                              min.expand=min.expand, 
                                              do.shuffle = TRUE, 
                                              seed=ii)
->>>>>>> Stashed changes
   }
   df_shuffle <- Reduce(rbind, df_shuffle.list)
   
+  #Sumarrising boot straps
   stat.summary <- df_shuffle %>%
     group_by(ncells) %>%
     summarise(mean = mean(bias), 
@@ -125,6 +87,7 @@ clonalBias <- function(sc.data,
   bias$Top_state <- factor(bias$Top_state, 
                            str_sort(unique(bias$Top_state), numeric = TRUE))
   
+  #Calculating Bias Z-score
   bias$Z.score <- NA
   for(i in seq_len(nrow(bias))) {
     stat.pos <- bias[i,]$ncells
@@ -133,18 +96,17 @@ clonalBias <- function(sc.data,
     bias$Z.score[i] <- z.score
   }
   
-  plot <- ggplot(bias, aes(x=ncells,y=bias)) + 
-    geom_point(aes(colour=Top_state)) + 
-    quiet(stat_quantile(data=df_shuffle, quantiles = c(corrected_p), method = "rqss", lambda=3)) + 
-    theme_classic() + 
-    xlab("Clone Size") + 
-    ylab("Clonotype Bias")
-  if (exportTable == TRUE) { 
-    return(bias) 
+  #Attaching the cloneSize of original combineExpression()
+  meta <- .grabMeta(sc.data)
+  meta <- meta[meta[,cloneCall] %in% bias[,"Clone"],]
+  meta <- unique(meta[,c(cloneCall, split.by, "cloneSize")])
+  
+  bias$cloneSize <- NA
+  for(i in seq_len(nrow(bias))) {
+    split <- bias[,1][i]
+    clone <- bias[,3][i]
+    bias$cloneSize[i] <- as.vector(meta[which(meta[,cloneCall] == clone & meta[,split.by] == split),"cloneSize"])[1]
   }
-<<<<<<< Updated upstream
-  return(plot) 
-=======
   
   bias$cloneSize <- factor(bias$cloneSize, rev(levels(meta[, "cloneSize"])))
 
@@ -172,23 +134,15 @@ clonalBias <- function(sc.data,
     labs(size = "cloneSize", fill = "Group") + 
     xlab("Clonal Size") +
     ylab("Clonal Bias")
->>>>>>> Stashed changes
 }
 
-get_clono_bg <- function(df, 
+#Background summary of clones
+.get_clono_bg <- function(df, 
                          split.by=split.by, 
                          group.by=group.by, 
                          cloneCall=cloneCall, 
                          min.expand=10) {
-  if (!is.null(split.by)) {
-    df <- list.input.return(df, split.by)
-  } else {
-    if (inherits(x=df, what ="Seurat") | inherits(x=df, what ="SummarizedExperiment")) {
-      df <- list("Object" = grabMeta(df))
-    } 
-  }
-  cloneCall <- theCall(cloneCall)
-  df <- checkBlanks(df, cloneCall)
+  df <- .data.wrangle(df, split.by, cloneCall, "both")
   
   bg <- list()
   for (s in seq_along(df)) {
@@ -206,8 +160,8 @@ get_clono_bg <- function(df,
   return(bg)
 }
 
-#Code Derived from 
-get_clono_bias <- function(df, 
+#Clone Bias
+.get_clono_bias <- function(df, 
                            split.by=NULL, 
                            group.by=NULL, 
                            cloneCall=cloneCall, 
@@ -224,19 +178,20 @@ get_clono_bias <- function(df,
                     freq_diff=double(),
                     bias=double()) 
   
-  bg <- get_clono_bg(df, split.by=split.by, 
+  bg <- .get_clono_bg(df, 
+                     split.by=split.by, 
                      min.expand = min.expand, 
                      group.by = group.by, 
                      cloneCall = cloneCall)
   if (!is.null(split.by)) {
-    df <- list.input.return(df, split.by)
+    df <- .list.input.return(df, split.by)
   } else {
     if (inherits(x=df, what ="Seurat") | inherits(x=df, what ="SummarizedExperiment")) {
-      df <- list("Object" = grabMeta(df))
+      df <- list("Object" = .grabMeta(df))
     } 
   }
-  cloneCall <- theCall(cloneCall)
-  df <- checkBlanks(df, cloneCall)
+  cloneCall <- .theCall(df, cloneCall)
+  df <- .checkBlanks(df, cloneCall)
   
   for (s in names(bg)) {
     
@@ -252,7 +207,6 @@ get_clono_bias <- function(df,
         expanded <- df[[s]][which(df[[s]][,cloneCall] %in% names(clones)), c(group.by, cloneCall)]
         
         if (do.shuffle) {  #reshuffle annotation column
-          set.seed(seed)
           expanded[[group.by]] <- sample(expanded[[group.by]])
         }
         

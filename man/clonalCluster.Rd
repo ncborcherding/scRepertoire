@@ -15,8 +15,8 @@ clonalCluster(
 )
 }
 \arguments{
-\item{input.data}{The product of \code{\link{combineTCR}}, \code{\link{combineBCR}} 
-or \code{\link{combineExpression}}.}
+\item{input.data}{The product of \code{\link{combineTCR}}, 
+\code{\link{combineBCR}} or \code{\link{combineExpression}}.}
 
 \item{chain}{Indicate if both or a specific chain should be used - 
 e.g. "both", "TRA", "TRG", "IGH", "IGL".}
@@ -25,13 +25,15 @@ e.g. "both", "TRA", "TRG", "IGH", "IGL".}
 
 \item{samples}{The specific samples to isolate for visualization.}
 
-\item{threshold}{The normalized edit distance to consider. The higher the number the more 
-similarity of sequence will be used for clustering.}
+\item{threshold}{The normalized edit distance to consider. 
+The higher the number the more similarity of sequence will be 
+used for clustering.}
 
 \item{group.by}{The column header used for to group contigs.}
 
-\item{exportGraph}{Return an igraph object of connected sequences (TRUE) or the amended
-input with a new cluster-based variable (FALSE)}
+\item{exportGraph}{Return an igraph object of connected 
+sequences (TRUE) or the amendedinput with a new cluster-based 
+variable (FALSE)}
 }
 \value{
 Either amended input with edit-distanced clusters added 
@@ -42,8 +44,8 @@ This function uses edit distances of either the nucleotide or amino acid
 sequences of the CDR3 and V genes to cluster similar TCR/BCRs together. 
 As a default, the function takes the input from \code{\link{combineTCR}}, 
 \code{\link{combineBCR}} or \code{\link{combineExpression}} and amends a 
-cluster to the data frame or meta data. If \strong{exportGraph} is set to TRUE, 
-the function returns an igraph object of the connected sequences.
+cluster to the data frame or meta data. If \strong{exportGraph} is set 
+to TRUE, the function returns an igraph object of the connected sequences.
 }
 \examples{
 # Getting the combined contigs
@@ -51,7 +53,9 @@ combined <- combineTCR(contig_list,
                         samples = c("P17B", "P17L", "P18B", "P18L", 
                                     "P19B","P19L", "P20B", "P20L"))
 
-sub_combined <- clonalCluster(combined[c(1,2)], chain = "TRA", sequence = "aa")
+sub_combined <- clonalCluster(combined[c(1,2)], 
+                              chain = "TRA", 
+                              sequence = "aa")
 
 }
 \concept{Visualizing_Clones}

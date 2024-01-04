@@ -2,7 +2,7 @@
 % Please edit documentation in R/combineExpression.R
 \name{combineExpression}
 \alias{combineExpression}
-\title{Adding clonotype information to a single-cell object}
+\title{Adding clone information to a single-cell object}
 \usage{
 combineExpression(
   input.data,
@@ -18,12 +18,13 @@ combineExpression(
 )
 }
 \arguments{
-\item{input.data}{The product of \code{\link{combineTCR}}, \code{\link{combineBCR}} or a list of 
+\item{input.data}{The product of \code{\link{combineTCR}}, 
+\code{\link{combineBCR}} or a list of 
 both c(\code{\link{combineTCR}}, \code{\link{combineBCR}}).}
 
 \item{sc.data}{The Seurat or Single-Cell Experiment (SCE) object to attach}
 
-\item{cloneCall}{How to call the clonotype - VDJC gene (gene), 
+\item{cloneCall}{How to call the clone - VDJC gene (gene), 
 CDR3 nucleotide (nt), CDR3 amino acid (aa),
 VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data.}
 
@@ -31,31 +32,32 @@ VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data.}
 e.g. "both", "TRA", "TRG", "IGH", "IGL"}
 
 \item{group.by}{The column label in the combined clones in which 
-clonotype frequency will be calculated. "none" will keep the list as is, 
+clone frequency will be calculated. "none" will keep the list as is, 
 while NULL will merge all the clones into a single data frame.}
 
-\item{proportion}{Whether to proportion (**TRUE**) or total frequency (**FALSE**) 
-of the clonotype based on the group.by variable.}
+\item{proportion}{Whether to proportion (**TRUE**) or total 
+frequency (**FALSE**) of the clone based on the group.by variable.}
 
 \item{filterNA}{Method to subset seurat object of barcodes without 
-clonotype information}
+clone information}
 
 \item{cloneSize}{The bins for the grouping based on proportion or frequency. 
-If proportion is **FALSE** and the *cloneSizes* are not set high enough based 
-on frequency, the upper limit of *cloneSizes* will be automatically amended.}
+If proportion is **FALSE** and the *cloneSizes* are not set high enough
+based on frequency, the upper limit of *cloneSizes* will be automatically
+amended.}
 
 \item{addLabel}{This will add a label to the frequency header, allowing
 the user to try multiple group.by variables or recalculate frequencies after 
 subsetting the data.}
 }
 \value{
-Single-cell object with clonotype information added to meta data
+Single-cell object with clone information added to meta data
 information
 }
 \description{
 This function adds the immune receptor information to the Seurat or 
 SCE object to the meta data. By default this function also calculates 
-the frequencies and proportion of the clonotypes by sequencing 
+the frequencies and proportion of the clones by sequencing 
 run (\strong{group.by} = NULL). To change how the frequencies/proportions
 are calculated, select a column header for the \strong{group.by} variable. 
 Importantly, before using \code{\link{combineExpression}} ensure the 

@@ -13,7 +13,8 @@ loadContigs(input, format = "10X")
 "10X", "AIRR", "BD", "JSON", "MiXCR", "Omniscope", "TRUST4", and "WAT3R"}
 }
 \value{
-List of contigs for compatibility  with \code{\link{combineTCR}} or \code{\link{combineBCR}}
+List of contigs for compatibility  with \code{\link{combineTCR}} or 
+\code{\link{combineBCR}}
 }
 \description{
 This function generates a contig list and formats the data to allow for 

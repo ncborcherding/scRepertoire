@@ -20,7 +20,7 @@ clonalOccupy(
 
 \item{x.axis}{The variable in the meta data to graph along the x.axis.}
 
-\item{label}{Include the number of clonotype in each category by x.axis variable.}
+\item{label}{Include the number of clone in each category by x.axis variable.}
 
 \item{facet.by}{The column header used for faceting the graph.}
 
@@ -31,18 +31,19 @@ clonalOccupy(
 \item{exportTable}{Exports a table of the data into the global 
 environment in addition to the visualization.}
 
-\item{palette}{Colors to use in visualization - input any \link[grDevices]{hcl.pals}.}
+\item{palette}{Colors to use in visualization - input any 
+\link[grDevices]{hcl.pals}.}
 }
 \value{
-Stacked bar plot of counts of cells by clonotype frequency group
+Stacked bar plot of counts of cells by clone frequency group
 }
 \description{
-View the count of clonotypes frequency group in Seurat or SCE object 
-meta data after \code{\link{combineExpression}}. The visualization will take the 
-new meta data variable \strong{"cloneSize"} and plot the number of cells with
-each designation using a secondary variable, like cluster. Credit to 
-the idea goes to Drs. Carmona and Andreatta and their work with
-\href{https://github.com/carmonalab/ProjecTILs}{ProjectTIL}.
+View the count of clones frequency group in Seurat or SCE object 
+meta data after \code{\link{combineExpression}}. The visualization 
+will take the new meta data variable \strong{"cloneSize"} and 
+plot the number of cells with each designation using a secondary 
+variable, like cluster. Credit to the idea goes to Drs. Carmona 
+and Andreatta and their work with \href{https://github.com/carmonalab/ProjecTILs}{ProjectTIL}.
 }
 \examples{
 #Getting the combined contigs

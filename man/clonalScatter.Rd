@@ -18,10 +18,10 @@ clonalScatter(
 )
 }
 \arguments{
-\item{input.data}{The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
-\code{\link{combineExpression}}.}
+\item{input.data}{The product of \code{\link{combineTCR}}, 
+\code{\link{combineBCR}}, or \code{\link{combineExpression}}.}
 
-\item{cloneCall}{How to call the clonotype - VDJC gene (gene), 
+\item{cloneCall}{How to call the clone - VDJC gene (gene), 
 CDR3 nucleotide (nt), CDR3 amino acid (aa),
 VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data.}
 
@@ -41,15 +41,17 @@ use for size of dots.}
 
 \item{exportTable}{Returns the data frame used for forming the graph.}
 
-\item{palette}{Colors to use in visualization - input any \link[grDevices]{hcl.pals}.}
+\item{palette}{Colors to use in visualization - input any 
+\link[grDevices]{hcl.pals}.}
 }
 \value{
 ggplot of the relative clone numbers between two sequencing runs or groups
 }
 \description{
-This function produces a scatter plot directly comparing the specific clonotypes
-between two samples. The clonotypes will be categorized by counts into singlets 
-or expanded, either exclusive or shared between the selected samples.
+This function produces a scatter plot directly comparing 
+the specific clones between two samples. The clones will 
+be categorized by counts into singlets or expanded, either 
+exclusive or shared between the selected samples.
 }
 \examples{
 #Making combined contig data

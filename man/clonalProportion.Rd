@@ -2,7 +2,7 @@
 % Please edit documentation in R/clonalProportion.R
 \name{clonalProportion}
 \alias{clonalProportion}
-\title{Examining the clonal space occupied by specific clonotypes}
+\title{Examining the clonal space occupied by specific clones}
 \usage{
 clonalProportion(
   input.data,
@@ -15,12 +15,12 @@ clonalProportion(
 )
 }
 \arguments{
-\item{input.data}{The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
-\code{\link{combineExpression}}.}
+\item{input.data}{The product of \code{\link{combineTCR}}, 
+\code{\link{combineBCR}}, or \code{\link{combineExpression}}.}
 
-\item{clonalSplit}{The cut points for the specific clonotypes.}
+\item{clonalSplit}{The cut points for the specific clones.}
 
-\item{cloneCall}{How to call the clonotype - VDJC gene (gene), 
+\item{cloneCall}{How to call the clone - VDJC gene (gene), 
 CDR3 nucleotide (nt), CDR3 amino acid (aa),
 VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data.}
 
@@ -32,16 +32,17 @@ e.g. "both", "TRA", "TRG", "IGH", "IGL".}
 \item{exportTable}{Exports a table of the data into the global.
 environment in addition to the visualization.}
 
-\item{palette}{Colors to use in visualization - input any \link[grDevices]{hcl.pals}.}
+\item{palette}{Colors to use in visualization - input any 
+\link[grDevices]{hcl.pals}.}
 }
 \value{
-ggplot of the space occupied by the specific rank of clonotypes
+ggplot of the space occupied by the specific rank of clones
 }
 \description{
 This function calculates the relative clonal space occupied by the 
-clonotypes. The grouping of these clonotypes is based on the parameter 
-\strong{clonalSplit}, at default, \strong{clonalSplit} will group the clonotypes 
-into bins of 1:10, 11:100, 101:1001, etc. To adjust the clonotypes 
+clones. The grouping of these clones is based on the parameter 
+\strong{clonalSplit}, at default, \strong{clonalSplit} will group the clones 
+into bins of 1:10, 11:100, 101:1001, etc. To adjust the clones 
 selected, change the numbers in the variable split. If a matrix output 
 for the data is preferred, set exportTable = TRUE.
 }
