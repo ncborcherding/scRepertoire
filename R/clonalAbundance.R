@@ -1,11 +1,12 @@
-#' Demonstrate the relative abundance of clones by group or sample.
+#' Demonstrate the relative abundance of clones by group or sample
 #'
-#' Displays the number of clones at specific Frequencies by sample 
-#' or group. Visualization can either be a line graph using
-#' calculated numbers or if \strong{scale} = TRUE, the output will be a 
-#' density plot. Multiple sequencing runs can be group together 
-#' using the group parameter. If a matrix output for the data is 
-#' preferred, set \strong{exportTable} = TRUE.
+#' Displays the number of clones at specific frequencies by sample 
+#' or group. Visualization can either be a line graph (
+#' \strong{scale} = FALSE) using calculated numbers or density 
+#' plot (\strong{scale} = TRUE). Multiple sequencing runs can 
+#' be group together using the group parameter. If a matrix 
+#' output for the data is preferred, set 
+#' \strong{exportTable} = TRUE.
 #'
 #' @examples
 #' #Making combined contig data
@@ -18,9 +19,10 @@
 #'
 #' @param input.data The product of \code{\link{combineTCR}}, 
 #' \code{\link{combineBCR}}, or \code{\link{combineExpression}}.
-#' @param cloneCall How to call the clone - VDJC gene (gene), 
-#' CDR3 nucleotide (nt), CDR3 amino acid (aa),
-#' VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data. 
+#' @param cloneCall How to call the clone - VDJC gene (\strong{gene}), 
+#' CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
+#' VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable 
+#' in the data. 
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL"
 #' @param group.by The variable to use for grouping

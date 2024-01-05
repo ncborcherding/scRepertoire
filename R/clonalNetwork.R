@@ -29,18 +29,19 @@
 #' @param reduction The name of the dimensional reduction of the 
 #' single-cell object.
 #' @param group.by The variable to use for the nodes. 
-#' @param filter.clones Use to select the top n clones (filter.clones = 2000) 
-#' or n of clones based on the minimum number of all the comparators 
-#' (filter.clone = "min").
+#' @param filter.clones Use to select the top n clones (eg, \strong{filter.clones} 
+#' = 2000) or n of clones based on the minimum number of all the comparators 
+#' (eg, \strong{filter.clone} = "min").
 #' @param filter.identity Display the network for a specific level of the 
 #' indicated identity.
 #' @param filter.proportion Remove clones from the network below a specific
 #'  proportion.
 #' @param filter.graph Remove the reciprocal edges from the half of the graph,
 #' allowing for cleaner visualization.
-#' @param cloneCall How to call the clone - VDJC gene (gene), 
-#' CDR3 nucleotide (nt), CDR3 amino acid (aa),
-#' VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data. 
+#' @param cloneCall How to call the clone - VDJC gene (\strong{gene}), 
+#' CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
+#' VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable 
+#' in the data. 
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL".
 #' @param exportTable Exports a table of the data into the global 

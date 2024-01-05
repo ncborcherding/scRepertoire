@@ -2,7 +2,7 @@
 % Please edit documentation in R/clonalCluster.R
 \name{clonalCluster}
 \alias{clonalCluster}
-\title{Clustering adaptive receptor sequences}
+\title{Clustering adaptive receptor sequences by edit distance}
 \usage{
 clonalCluster(
   input.data,
@@ -21,7 +21,8 @@ clonalCluster(
 \item{chain}{Indicate if both or a specific chain should be used - 
 e.g. "both", "TRA", "TRG", "IGH", "IGL".}
 
-\item{sequence}{Clustering based on either "aa" or "nt".}
+\item{sequence}{Clustering based on either \strong{"aa"} or 
+\strong{"nt"}.}
 
 \item{samples}{The specific samples to isolate for visualization.}
 
@@ -32,8 +33,8 @@ used for clustering.}
 \item{group.by}{The column header used for to group contigs.}
 
 \item{exportGraph}{Return an igraph object of connected 
-sequences (TRUE) or the amendedinput with a new cluster-based 
-variable (FALSE)}
+sequences (\strong{TRUE}) or the amended input with a
+new cluster-based variable (\strong{FALSE}).}
 }
 \value{
 Either amended input with edit-distanced clusters added 

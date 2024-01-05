@@ -2,7 +2,7 @@
 % Please edit documentation in R/clonalScatter.R
 \name{clonalScatter}
 \alias{clonalScatter}
-\title{Scatter plot comparing the expansion of two samples}
+\title{Scatter plot comparing the clonal expansion of two samples}
 \usage{
 clonalScatter(
   input.data,
@@ -21,9 +21,10 @@ clonalScatter(
 \item{input.data}{The product of \code{\link{combineTCR}}, 
 \code{\link{combineBCR}}, or \code{\link{combineExpression}}.}
 
-\item{cloneCall}{How to call the clone - VDJC gene (gene), 
-CDR3 nucleotide (nt), CDR3 amino acid (aa),
-VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data.}
+\item{cloneCall}{How to call the clone - VDJC gene (\strong{gene}), 
+CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
+VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable 
+in the data.}
 
 \item{x.axis}{name of the list element to appear on the x.axis.}
 

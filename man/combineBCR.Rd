@@ -21,11 +21,11 @@ combineBCR(
 
 \item{samples}{The labels of samples}
 
-\item{ID}{The additional sample labeling}
+\item{ID}{The additional sample labeling (optional).}
 
 \item{call.related.clones}{Use the nucleotide sequence and V gene 
 to call related clones. Default is set to TRUE. FALSE will return 
-a CTstrict or strict clone as V gene + amino acid sequence}
+a CTstrict or strict clone as V gene + amino acid sequence.}
 
 \item{threshold}{The normalized edit distance to consider. The higher 
 the number the more similarity of sequence will be used for clustering.}

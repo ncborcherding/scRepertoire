@@ -10,7 +10,7 @@ subsetClones(input.data, name, variables = NULL)
 \item{input.data}{The product of \code{\link{combineTCR}} or 
 \code{\link{combineBCR}}.}
 
-\item{name}{The column header you'd like to use to subset.}
+\item{name}{The column header/name to use for subsetting.}
 
 \item{variables}{The values to subset by, must be in the names(input.data).}
 }

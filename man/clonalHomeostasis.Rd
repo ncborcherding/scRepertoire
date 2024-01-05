@@ -2,7 +2,7 @@
 % Please edit documentation in R/clonalHomeostasis.R
 \name{clonalHomeostasis}
 \alias{clonalHomeostasis}
-\title{Examining the clonal homeostasis}
+\title{Examining the clonal homeostasis of the repertoire}
 \usage{
 clonalHomeostasis(
   input.data,
@@ -21,17 +21,18 @@ clonalHomeostasis(
 
 \item{cloneSize}{The cut points of the proportions.}
 
-\item{cloneCall}{How to call the clone - VDJC gene (gene), 
-CDR3 nucleotide (nt), CDR3 amino acid (aa),
-VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data.}
+\item{cloneCall}{How to call the clone - VDJC gene (\strong{gene}), 
+CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
+VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable 
+in the data.}
 
 \item{chain}{indicate if both or a specific chain should be used - 
-e.g. "both", "TRA", "TRG", "IGH", "IGL"}
+e.g. "both", "TRA", "TRG", "IGH", "IGL".}
 
 \item{group.by}{The variable to use for grouping.}
 
 \item{exportTable}{Exports a table of the data into the global 
-environment in addition to the visualization}
+environment in addition to the visualization.}
 
 \item{palette}{Colors to use in visualization - input any 
 \link[grDevices]{hcl.pals}.}
@@ -41,8 +42,8 @@ ggplot of the space occupied by the specific proportion of clones
 }
 \description{
 This function calculates the space occupied by clone proportions. 
-The grouping of these clones is based on the parameter cloneSize, 
-at default, cloneSize will group the clones into bins of Rare = 0 
+The grouping of these clones is based on the parameter \strong{cloneSize}, 
+at default, \strong{cloneSize} will group the clones into bins of Rare = 0 
 to 0.0001, Small = 0.0001 to 0.001, etc. To adjust the proportions, 
 change the number or labeling of the cloneSize parameter. If a matrix 
 output for the data is preferred, set \strong{exportTable} = TRUE.

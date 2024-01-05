@@ -27,9 +27,9 @@ single-cell object.}
 
 \item{group.by}{The variable to use for the nodes.}
 
-\item{filter.clones}{Use to select the top n clones (filter.clones = 2000) 
-or n of clones based on the minimum number of all the comparators 
-(filter.clone = "min").}
+\item{filter.clones}{Use to select the top n clones (eg, \strong{filter.clones} 
+= 2000) or n of clones based on the minimum number of all the comparators 
+(eg, \strong{filter.clone} = "min").}
 
 \item{filter.identity}{Display the network for a specific level of the 
 indicated identity.}
@@ -40,9 +40,10 @@ proportion.}
 \item{filter.graph}{Remove the reciprocal edges from the half of the graph,
 allowing for cleaner visualization.}
 
-\item{cloneCall}{How to call the clone - VDJC gene (gene), 
-CDR3 nucleotide (nt), CDR3 amino acid (aa),
-VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data.}
+\item{cloneCall}{How to call the clone - VDJC gene (\strong{gene}), 
+CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
+VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable 
+in the data.}
 
 \item{chain}{indicate if both or a specific chain should be used - 
 e.g. "both", "TRA", "TRG", "IGH", "IGL".}

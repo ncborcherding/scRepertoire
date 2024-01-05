@@ -5,7 +5,7 @@
 #' \strong{clonalSplit}, at default, \strong{clonalSplit} will group the clones 
 #' into bins of 1:10, 11:100, 101:1001, etc. To adjust the clones 
 #' selected, change the numbers in the variable split. If a matrix output 
-#' for the data is preferred, set exportTable = TRUE.
+#' for the data is preferred, set \strong{exportTable} = TRUE.
 #'
 #' @examples
 #' #Making combined contig data
@@ -17,9 +17,10 @@
 #' @param input.data The product of \code{\link{combineTCR}}, 
 #' \code{\link{combineBCR}}, or \code{\link{combineExpression}}.
 #' @param clonalSplit The cut points for the specific clones.
-#' @param cloneCall How to call the clone - VDJC gene (gene), 
-#' CDR3 nucleotide (nt), CDR3 amino acid (aa),
-#' VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data. 
+#' @param cloneCall How to call the clone - VDJC gene (\strong{gene}), 
+#' CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
+#' VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable 
+#' in the data. 
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL".
 #' @param group.by The variable to use for grouping.

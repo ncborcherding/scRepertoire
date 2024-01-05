@@ -12,7 +12,7 @@
 #'
 #' @param input.data The product of \code{\link{combineTCR}} or 
 #' \code{\link{combineBCR}}.
-#' @param name The column header you'd like to use to subset.
+#' @param name The column header/name to use for subsetting.
 #' @param variables The values to subset by, must be in the names(input.data).
 
 #' @export

@@ -21,13 +21,14 @@ utils::globalVariables(c(
 #' @title Combining the list of T cell receptor contigs into clones
 #'
 #' @description This function consolidates a list of TCR sequencing results to
-#' the level of  the individual cell barcodes. Using the samples and ID
-#' parameters, the function will add the strings as prefixes to prevent issues
-#' with repeated  barcodes. The resulting new barcodes will need to match the
-#' Seurat or SCE object in order to use, \code{\link{combineExpression}}.
-#' Several levels of filtering exist - \emph{removeNA}, \emph{removeMulti}, or
-#' \emph{filterMulti} are parameters that control how the function deals with
-#' barcodes with multiple chains recovered.
+#' the level of  the individual cell barcodes. Using the \strong{samples} and 
+#' \strong{ID} parameters, the function will add the strings as prefixes to 
+#' prevent issues with repeated  barcodes. The resulting new barcodes will 
+#' need to match the Seurat or SCE object in order to use, 
+#' \code{\link{combineExpression}}. Several levels of filtering exist - 
+#' \emph{removeNA}, \emph{removeMulti}, or \emph{filterMulti} are parameters 
+#' that control how the function deals with barcodes with multiple chains 
+#' recovered.
 #' 
 #' @examples
 #' combined <- combineTCR(contig_list, 
@@ -35,9 +36,9 @@ utils::globalVariables(c(
 #'                                     "P19B","P19L", "P20B", "P20L"))
 #' 
 #' @param input.data List of filtered contig annotations or 
-#' outputs from \code{\link{loadContigs}}
-#' @param samples The labels of samples
-#' @param ID The additional sample labeling
+#' outputs from \code{\link{loadContigs}}.
+#' @param samples The labels of samples (recommended).
+#' @param ID The additional sample labeling (optional).
 #' @param removeNA This will remove any chain without values.
 #' @param removeMulti This will remove barcodes with greater than 2 chains.
 #' @param filterMulti This option will allow for the selection of the 2 
@@ -158,10 +159,10 @@ combineTCR <- function(input.data,
 #' @param input.data List of filtered contig annotations or outputs from 
 #' \code{\link{loadContigs}}.
 #' @param samples The labels of samples
-#' @param ID The additional sample labeling
+#' @param ID The additional sample labeling (optional).
 #' @param call.related.clones Use the nucleotide sequence and V gene 
 #' to call related clones. Default is set to TRUE. FALSE will return 
-#' a CTstrict or strict clone as V gene + amino acid sequence
+#' a CTstrict or strict clone as V gene + amino acid sequence.
 #' @param threshold The normalized edit distance to consider. The higher 
 #' the number the more similarity of sequence will be used for clustering.
 #' @param removeNA This will remove any chain without values.

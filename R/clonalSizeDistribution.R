@@ -1,15 +1,13 @@
 #' Hierarchical clustering of clones using Gamma-GPD spliced threshold model
 #'
 #' This function produces a hierarchical clustering of clonotypes by sample 
-#' using discrete gamma-GPD spliced threshold 
-#' model. If using this model please read and cite 
-#' \href{https://pubmed.ncbi.nlm.nih.gov/30485278/}{PMID: 30485278}.
+#' using discrete gamma-GPD spliced threshold model. If using this 
+#' model please read and cite powerTCR (more info available at 
+#' \href{https://pubmed.ncbi.nlm.nih.gov/30485278/}{PMID: 30485278}).
 #' 
 #' @details
 #' The probability density function (pdf) for the \strong{Generalized Pareto Distribution (GPD)} is given by:
-#' \deqn{f(x|\mu, \sigma, \xi) = \frac{1}{\sigma} \left(1 + \xi \left( \frac{x - \mu}{\sigma} \right) \right)^{-\left( \frac{1}{\xi} + 1 \right)}}{
-#' f(x|mu, sigma, xi) = 1/sigma * (1 + xi * ((x - mu)/sigma))^(-1/xi - 1)
-#' }
+#'  \deqn{f(x|\mu, \sigma, \xi) = \frac{1}{\sigma} \left( 1 + \xi \left( \frac{x - \mu}{\sigma} \right) \right)^{-\left( \frac{1}{\xi} + 1 \right)}}
 #' 
 #' Where:
 #' \itemize{
@@ -20,9 +18,7 @@
 #' }
 #'               
 #' The probability density function (pdf) for the \strong{Gamma Distribution} is given by:
-#' \deqn{f(x|\alpha, \beta) = \frac{x^{\alpha-1} e^{-x/\beta}}{\beta^\alpha \Gamma(\alpha)}}{
-#' f(x|alpha, beta) = (x^(alpha-1) * exp(-x/beta)) / (beta^alpha * Gamma(alpha))
-#' }
+#' \deqn{f(x|\alpha, \beta) = \frac{x^{\alpha-1} e^{-x/\beta}}{\beta^\alpha \Gamma(\alpha)}}  #
 #' 
 #' Where:
 #' \itemize{
@@ -41,9 +37,10 @@
 #'
 #' @param input.data The product of \code{\link{combineTCR}}, 
 #' \code{\link{combineBCR}}, or \code{\link{combineExpression}}.
-#' @param cloneCall How to call the clonotype - VDJC gene (gene),
-#' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
-#' VDJC gene + CDR3 nucleotide (strict).
+#' @param cloneCall How to call the clone - VDJC gene (\strong{gene}), 
+#' CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
+#' VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable 
+#' in the data. 
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL".
 #' @param threshold Numerical vector containing the thresholds 

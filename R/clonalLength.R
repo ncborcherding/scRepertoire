@@ -1,8 +1,8 @@
-#' Demonstrate the distribution of lengths filtered clones
+#' Demonstrate the distribution of clonal length
 #'
-#' This function displays either the nucleotide (nt) or amino 
-#' acid (aa) sequence length. The sequence length visualized can be 
-#' selected using the chains parameter, either the combined clone 
+#' This function displays either the nucleotide (\strong{nt}) or amino 
+#' acid (\strong{aa}) sequence length. The sequence length visualized 
+#' can be selected using the chains parameter, either the combined clone 
 #' (both chains) or across all single chains. Visualization can either 
 #' be a histogram or if \strong{scale} = TRUE, the output will 
 #' be a density plot. Multiple sequencing runs can be group together 
@@ -17,16 +17,17 @@
 #'
 #' @param input.data The product of \code{\link{combineTCR}}, 
 #' \code{\link{combineBCR}}, or \code{\link{combineExpression}}.
-#' @param cloneCall How to call the clone - CDR3 nucleotide (nt), 
-#' CDR3 amino acid (aa).
+#' @param cloneCall How to call the clone - CDR3 nucleotide (\strong{nt}) 
+#' or CDR3 amino acid (\strong{aa}).
 #' @param group.by The variable to use for grouping.
 #' @param scale Converts the graphs into density plots in order to show 
 #' relative distributions.
-#' @param order Maintain the order of the list when plotting
+#' @param order Maintain the order of the list when plotting.
 #' @param chain indicate if both or a specific chain should be used - 
-#' e.g. "both", "TRA", "TRG", "IGH", "IGL"
+#' e.g. "both", "TRA", "TRG", "IGH", "IGL".
 #' @param exportTable Returns the data frame used for forming the graph.
-#' @param palette Colors to use in visualization - input any \link[grDevices]{hcl.pals}.
+#' @param palette Colors to use in visualization - input any 
+#' \link[grDevices]{hcl.pals}.
 #' @importFrom stringr str_split
 #' @importFrom ggplot2 ggplot
 #' @export

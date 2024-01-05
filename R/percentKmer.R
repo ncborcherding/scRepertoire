@@ -1,7 +1,8 @@
-#' Examining the relative composition of kmer motifs
+#' Examining the relative composition of kmer motifs in clones.
 #'
-#' This function the of kmer for nucleotide or amino acids 
-#' in the CDR3 sequence.
+#' This function the of kmer for nucleotide (\strong{nt}) or 
+#' amino acid (\strong{aa}) sequences. Select the length of the
+#' kmer to quantify using the \strong{motif.length} parameter.
 #'
 #' @examples
 #' #Making combined contig data
@@ -15,8 +16,8 @@
 #' @param input.data The product of \code{\link{combineTCR}}, 
 #' \code{\link{combineBCR}}, or \code{\link{combineExpression}}.
 #' @param chain "TRA", "TRB", "TRG", "TRG", "IGH", "IGL".
-#' @param cloneCall How to call the clone - CDR3 nucleotide (nt) or 
-#' CDR3 amino acid (aa).
+#' @param cloneCall How to call the clone - CDR3 nucleotide (\strong{nt}) or 
+#' CDR3 amino acid (\strong{aa}).
 #' @param group.by The variable to use for grouping.
 #' @param motif.length The length of the kmer to analyze.
 #' @param top.motifs Return the n most variable motifs as a function of 

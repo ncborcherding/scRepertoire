@@ -25,21 +25,22 @@
 #' \code{\link{combineBCR}} or a list of 
 #' both c(\code{\link{combineTCR}}, \code{\link{combineBCR}}).
 #' @param sc.data The Seurat or Single-Cell Experiment (SCE) object to attach
-#' @param cloneCall How to call the clone - VDJC gene (gene), 
-#' CDR3 nucleotide (nt), CDR3 amino acid (aa),
-#' VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data. 
+#' @param cloneCall How to call the clone - VDJC gene (\strong{gene}), 
+#' CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
+#' VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable 
+#' in the data. 
 #' @param chain indicate if both or a specific chain should be used - 
-#' e.g. "both", "TRA", "TRG", "IGH", "IGL"
+#' e.g. "both", "TRA", "TRG", "IGH", "IGL".
 #' @param group.by The column label in the combined clones in which 
-#' clone frequency will be calculated. "none" will keep the list as is, 
-#' while NULL will merge all the clones into a single data frame. 
-#' @param proportion Whether to proportion (**TRUE**) or total 
-#' frequency (**FALSE**) of the clone based on the group.by variable. 
+#' clone frequency will be calculated. \strong{NULL} or \strong{"none"} will 
+#' keep the format of input.data.
+#' @param proportion Whether to proportion (\strong{TRUE}) or total 
+#' frequency (\strong{FALSE}) of the clone based on the group.by variable. 
 #' @param cloneSize The bins for the grouping based on proportion or frequency. 
-#' If proportion is **FALSE** and the *cloneSizes* are not set high enough
-#' based on frequency, the upper limit of *cloneSizes* will be automatically
-#'amended. 
-#' @param filterNA Method to subset seurat object of barcodes without 
+#' If proportion is \strong{FALSE} and the cloneSizes are not set high enough
+#' based on frequency, the upper limit of cloneSizes will be automatically
+#' updated.S
+#' @param filterNA Method to subset Seurat/SCE object of barcodes without 
 #' clone information
 #' @param addLabel This will add a label to the frequency header, allowing
 #' the user to try multiple group.by variables or recalculate frequencies after 

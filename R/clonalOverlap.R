@@ -1,31 +1,35 @@
 #' Examining the clonal overlap between groups or samples
 #'
 #' This functions allows for the calculation and visualizations of 
-#' various overlap metrics for clones.
+#' various overlap metrics for clones. The methods include overlap 
+#' coefficient (\strong{overlap}), Morisita's overlap index 
+#' (\strong{morisita}), Jaccard index (\strong{jaccard}), cosine 
+#' similarity (\strong{cosine}) or the exact number of clonal 
+#' overlap (\strong{raw}).
 #' 
 #' @details
 #' The formulas for the indices are as follows:
 #' 
 #' \strong{Overlap Coefficient:}
-#' \deqn{overlap = \frac{\sum \min(a_i, b_i)}{\min(\sum a_i, \sum b_i)}}
+#' \deqn{overlap = \frac{\sum \min(a, b)}{\min(\sum a, \sum b)}}  
 #' 
 #' \strong{Raw Count Overlap:}
-#' \deqn{raw = \sum \min(a_i, b_i)}
+#' \deqn{raw = \sum \min(a, b)}
 #' 
 #' \strong{Morisita Index:}
-#' \deqn{morisita = \frac{\sum a_i b_i}{(\sum a_i)(\sum b_i)}}
+#' \deqn{morisita = \frac{\sum a b}{(\sum a)(\sum b)}}  
 #' 
 #' \strong{Jaccard Index:}
-#' \deqn{jaccard = \frac{\sum \min(a_i, b_i)}{\sum a_i + \sum b_i - \sum \min(a_i, b_i)}}
+#' \deqn{jaccard = \frac{\sum \min(a, b)}{\sum a + \sum b - \sum \min(a, b)}}  
 #' 
 #' \strong{Cosine Similarity:}
-#' \deqn{cosine = \frac{\sum a_i b_i}{\sqrt{(\sum a_i^2)(\sum b_i^2)}}}
+#' \deqn{cosine = \frac{\sum a b}{\sqrt{(\sum a^2)(\sum b^2)}}}  
 #' 
-#' Where:
-#' \itemize{
-#'   \item{\eqn{a_i} and \eqn{b_i} are the abundances of species \eqn{i} in groups A and B, respectively.}
+#' Where:  
+#' \itemize{  
+#'   \item{\eqn{a} and \eqn{b} are the abundances of species \eqn{i} in groups A and B, respectively.}
 #' }
-#'
+
 #' @examples
 #' #Making combined contig data
 #' combined <- combineTCR(contig_list, 
@@ -38,9 +42,10 @@
 #'
 #' @param input.data The product of \code{\link{combineTCR}}, 
 #' \code{\link{combineBCR}}, or \code{\link{combineExpression}}.
-#' @param cloneCall How to call the clone - VDJC gene (gene), 
-#' CDR3 nucleotide (nt), CDR3 amino acid (aa),
-#' VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data. 
+#' @param cloneCall How to call the clone - VDJC gene (\strong{gene}), 
+#' CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
+#' VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable 
+#' in the data.  
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL"
 #' @param method The method to calculate the "overlap", "morisita", 

@@ -1,39 +1,39 @@
-#' Examine the clonal diversity of samples
+#' Calculate the clonal diversity for samples or groupings
 #'
 #' This function calculates traditional measures of diversity - \strong{Shannon}, 
 #' \strong{inverse Simpson}, \strong{normalized entropy}, \strong{Gini-Simpson}, \strong{Chao1 index}, and
 #' \strong{abundance-based coverage estimators (ACE)} measure of species evenness by sample or group. 
 #' The function automatically down samples the diversity metrics using 
-#' 100 boot straps The group parameter can be used to condense the individual 
-#' samples. If a matrix output for the data is preferred, set exportTable = TRUE.
+#' 100 boot straps (\strong{n.boots = 100}). The group parameter can be used to condense the individual 
+#' samples. If a matrix output for the data is preferred, set \strong{exportTable} = TRUE.
 #' 
 #' @details
 #' The formulas for the indices and estimators are as follows:
 #' 
 #' \strong{Shannon Index:}
-#' \deqn{H = - \sum p_i \cdot \log(p_i)}
+#' \deqn{Index = - \sum p_i * \log(p_i)}
 #' 
 #' \strong{Inverse Simpson Index:}
-#' \deqn{ D^{-1} = 1 / \sum p_i^2}
+#' \deqn{Index = \frac{1}{(\sum_{i=1}^{S} p_i^2)}}
 #' 
 #' \strong{Normalized Entropy:}
-#' \deqn{E^H = H / \log(S)}
+#' \deqn{Index = -\frac{\sum_{i=1}^{S} p_i \ln(p_i)}{\ln(S)}}
 #' 
 #' \strong{Gini-Simpson Index:}
-#' \deqn{1 - D = 1 - \sum p_i^2}
+#' \deqn{Index = 1 - \sum_{i=1}^{S} p_i^2}
 #' 
 #' \strong{Chao1 Index:}
-#' \deqn{\hat{S}_{Chao1} = S + \left( \frac{n_1(n_1 - 1)}{2(n_2 + 1)} \right)}
+#' \deqn{Index = S_{obs} + \frac{n_1(n_1-1)}{2*n_2+1}}
 #' 
 #' \strong{Abundance-based Coverage Estimator (ACE):}
-#' \deqn{\hat{S}_{ACE} = S_{abundant} + \frac{S_{rare}}{C_{rare}} + \left( \frac{S_{rare} - 1}{C_{rare}} \right) \cdot F_1}
+#' \deqn{Index = S_{abund} + \frac{S_{rare}}{C_{ace}} + \frac{F_1}{C_{ace}}} 
 #' 
 #' Where:
 #' \itemize{
-#'   \item{\eqn{p_i} is the proportion of species \eqn{i} in the dataset.}
-#'   \item{\eqn{S} is the total number of species.}
-#'   \item{\eqn{n_1} and \eqn{n_2} are the number of singletons and doubletons, respectively.}
-#'   \item{\eqn{S_{abundant}}, \eqn{S_{rare}}, \eqn{C_{rare}}, and \eqn{F_1} are parameters derived from the data.}
+#'   \item{\eqn{p_i}{p[i]} is the proportion of species \eqn{i}{i} in the dataset.}
+#'   \item{\eqn{S}{S} is the total number of species.}
+#'   \item{\eqn{n_1}{n[1]} and \eqn{n_2}{n[2]} are the number of singletons and doubletons, respectively.}
+#'   \item{\eqn{S_{abund}}{S[abund]}, \eqn{S_{rare}}{S[rare]}, \eqn{C_{rare}}{C[rare]}, and \eqn{F_1}{F[1]} are parameters derived from the data.}
 #' }
 #'
 #' @examples
@@ -45,9 +45,10 @@
 #'
 #' @param input.data The product of \code{\link{combineTCR}}, 
 #' \code{\link{combineBCR}}, or \code{\link{combineExpression}}.
-#' @param cloneCall How to call the clone - VDJC gene (gene), 
-#' CDR3 nucleotide (nt), CDR3 amino acid (aa),
-#' VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data. 
+#' @param cloneCall How to call the clone - VDJC gene (\strong{gene}), 
+#' CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
+#' VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable 
+#' in the data. 
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL".
 #' @param group.by Variable in which to group the diversity calculation.
@@ -59,11 +60,11 @@
 #' in addition to the visualization.
 #' @param palette Colors to use in visualization - input any 
 #' \link[grDevices]{hcl.pals}.
-#' @param n.boots number of bootstraps to downsample in order to 
-#' get mean diversity
+#' @param n.boots number of bootstraps to down sample in order to 
+#' get mean diversity.
 #' @param return.boots export boot strapped values calculated - 
 #' will automatically exportTable = TRUE.
-#' @param skip.boots remove downsampling and boot strapping from the calculation.
+#' @param skip.boots remove down sampling and boot strapping from the calculation.
 #' @importFrom stringr str_sort str_split
 #' @importFrom reshape2 melt
 #' @importFrom dplyr sample_n

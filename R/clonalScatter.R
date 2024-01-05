@@ -1,4 +1,4 @@
-#' Scatter plot comparing the expansion of two samples
+#' Scatter plot comparing the clonal expansion of two samples
 #'
 #' This function produces a scatter plot directly comparing 
 #' the specific clones between two samples. The clones will 
@@ -17,9 +17,10 @@
 #' 
 #' @param input.data The product of \code{\link{combineTCR}}, 
 #' \code{\link{combineBCR}}, or \code{\link{combineExpression}}.
-#' @param cloneCall How to call the clone - VDJC gene (gene), 
-#' CDR3 nucleotide (nt), CDR3 amino acid (aa),
-#' VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data. 
+#' @param cloneCall How to call the clone - VDJC gene (\strong{gene}), 
+#' CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
+#' VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable 
+#' in the data. 
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL".
 #' @param x.axis name of the list element to appear on the x.axis.

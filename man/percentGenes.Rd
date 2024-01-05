@@ -2,7 +2,7 @@
 % Please edit documentation in R/percentGenes.R
 \name{percentGenes}
 \alias{percentGenes}
-\title{Examining the V or J gene usage across groupings}
+\title{Examining the VDJ gene usage across clones}
 \usage{
 percentGenes(
   input.data,
@@ -33,7 +33,9 @@ ggplot of percentage of indicated genes as a heatmap
 }
 \description{
 This function the proportion V or J genes used by 
-grouping variables
+grouping variables. This function only quantifies
+single gene loci for indicated \strong{chain}. For 
+examining VJ pairing, please see code{\link{percentVJ}}
 }
 \examples{
 #Making combined contig data

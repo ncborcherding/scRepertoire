@@ -2,7 +2,7 @@
 % Please edit documentation in R/percentVJ.R
 \name{percentVJ}
 \alias{percentVJ}
-\title{Examining the V or J gene usage across groupings}
+\title{Quantifying the V and J gene usage across clones}
 \usage{
 percentVJ(
   input.data,
@@ -29,8 +29,9 @@ percentVJ(
 ggplot of percentage of V and J gene pairings as a heatmap
 }
 \description{
-This function the proportion V or J genes used by 
-grouping variables
+This function the proportion V and J genes used by 
+grouping variables for an indicated \strong{chain} to
+produce a matrix of VJ gene pairings.
 }
 \examples{
 #Making combined contig data

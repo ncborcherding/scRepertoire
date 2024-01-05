@@ -1,4 +1,4 @@
-#' Clustering adaptive receptor sequences
+#' Clustering adaptive receptor sequences by edit distance
 #'
 #' This function uses edit distances of either the nucleotide or amino acid 
 #' sequences of the CDR3 and V genes to cluster similar TCR/BCRs together. 
@@ -21,15 +21,16 @@
 #' \code{\link{combineBCR}} or \code{\link{combineExpression}}.
 #' @param chain Indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL".
-#' @param sequence Clustering based on either "aa" or "nt".
+#' @param sequence Clustering based on either \strong{"aa"} or 
+#' \strong{"nt"}.
 #' @param samples The specific samples to isolate for visualization.
 #' @param threshold The normalized edit distance to consider. 
 #' The higher the number the more similarity of sequence will be 
 #' used for clustering.
 #' @param group.by The column header used for to group contigs.
 #' @param exportGraph Return an igraph object of connected 
-#' sequences (TRUE) or the amendedinput with a new cluster-based 
-#' variable (FALSE)
+#' sequences (\strong{TRUE}) or the amended input with a
+#' new cluster-based variable (\strong{FALSE}).
 #' @importFrom stringdist stringdist
 #' @importFrom igraph set_vertex_attr V
 #' @importFrom plyr join

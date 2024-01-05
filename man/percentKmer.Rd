@@ -2,7 +2,7 @@
 % Please edit documentation in R/percentKmer.R
 \name{percentKmer}
 \alias{percentKmer}
-\title{Examining the relative composition of kmer motifs}
+\title{Examining the relative composition of kmer motifs in clones.}
 \usage{
 percentKmer(
   input.data,
@@ -21,8 +21,8 @@ percentKmer(
 
 \item{chain}{"TRA", "TRB", "TRG", "TRG", "IGH", "IGL".}
 
-\item{cloneCall}{How to call the clone - CDR3 nucleotide (nt) or 
-CDR3 amino acid (aa).}
+\item{cloneCall}{How to call the clone - CDR3 nucleotide (\strong{nt}) or 
+CDR3 amino acid (\strong{aa}).}
 
 \item{group.by}{The variable to use for grouping.}
 
@@ -40,8 +40,9 @@ median absolute deviation.}
 ggplot of percentage of kmers as a heatmap
 }
 \description{
-This function the of kmer for nucleotide or amino acids 
-in the CDR3 sequence.
+This function the of kmer for nucleotide (\strong{nt}) or 
+amino acid (\strong{aa}) sequences. Select the length of the
+kmer to quantify using the \strong{motif.length} parameter.
 }
 \examples{
 #Making combined contig data

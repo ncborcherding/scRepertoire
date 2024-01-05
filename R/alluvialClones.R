@@ -17,9 +17,9 @@
                          diffuse = if(length(diffuse_elements) > 0) diffuse_elements else NULL)
   return(lodes)
 }
-#' Exploring interaction of clones by single-cell object dynamics
+#' Alluvial plotting for single-cell object meta data
 #'
-#' View the proportional contribution of clones by seurat or SCE object 
+#' View the proportional contribution of clones by Seurat or SCE object 
 #' meta data after \code{\link{combineExpression}}. The visualization 
 #' is based on the ggalluvial package, which requires the aesthetics 
 #' to be part of the axes that are visualized. Therefore, alpha, facet, 
@@ -47,9 +47,10 @@
 #' 
 #' @param sc.data The single-cell object to visualize 
 #' after \code{\link{combineExpression}}. 
-#' @param cloneCall How to call the clone - VDJC gene (gene), 
-#' CDR3 nucleotide (nt), CDR3 amino acid (aa),
-#' VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data. 
+#' @param cloneCall How to call the clone - VDJC gene (\strong{gene}), 
+#' CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
+#' VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable 
+#' in the data. 
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL".
 #' @param y.axes The columns that will separate the proportional .

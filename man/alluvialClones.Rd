@@ -2,7 +2,7 @@
 % Please edit documentation in R/alluvialClones.R
 \name{alluvialClones}
 \alias{alluvialClones}
-\title{Exploring interaction of clones by single-cell object dynamics}
+\title{Alluvial plotting for single-cell object meta data}
 \usage{
 alluvialClones(
   sc.data,
@@ -20,9 +20,10 @@ alluvialClones(
 \item{sc.data}{The single-cell object to visualize 
 after \code{\link{combineExpression}}.}
 
-\item{cloneCall}{How to call the clone - VDJC gene (gene), 
-CDR3 nucleotide (nt), CDR3 amino acid (aa),
-VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data.}
+\item{cloneCall}{How to call the clone - VDJC gene (\strong{gene}), 
+CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
+VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable 
+in the data.}
 
 \item{chain}{indicate if both or a specific chain should be used - 
 e.g. "both", "TRA", "TRG", "IGH", "IGL".}
@@ -46,7 +47,7 @@ environment in addition to the visualization.}
 Alluvial ggplot comparing clone distribution.
 }
 \description{
-View the proportional contribution of clones by seurat or SCE object 
+View the proportional contribution of clones by Seurat or SCE object 
 meta data after \code{\link{combineExpression}}. The visualization 
 is based on the ggalluvial package, which requires the aesthetics 
 to be part of the axes that are visualized. Therefore, alpha, facet, 

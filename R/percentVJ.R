@@ -1,7 +1,8 @@
-#' Examining the V or J gene usage across groupings
+#' Quantifying the V and J gene usage across clones
 #'
-#' This function the proportion V or J genes used by 
-#' grouping variables
+#' This function the proportion V and J genes used by 
+#' grouping variables for an indicated \strong{chain} to
+#' produce a matrix of VJ gene pairings.
 #'
 #' @examples
 #' #Making combined contig data
