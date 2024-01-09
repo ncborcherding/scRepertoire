@@ -150,9 +150,6 @@ clonalDiversity <- function(input.data,
     rownames(mat) <- names(input.data)
   
     mat_melt <- suppressMessages(melt(mat, id.vars = c(group.by, x.axis)))
-    values <- str_sort(as.character(unique(mat_melt[,group.by])), 
-                       numeric = TRUE)
-    mat_melt[,group.by] <- factor(mat_melt[,group.by], levels = values)
     if (x.axis == "x.axis") {
         plot <- ggplot(mat_melt, aes(x=1, y=as.numeric(value)))
     } else {
