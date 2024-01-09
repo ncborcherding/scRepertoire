@@ -77,7 +77,6 @@ clonalQuant <- function(input.data,
       ylab <- "Percent of Unique Clonotype"
    } else { 
       y <- "contigs"
-      x <- group.by
       ylab <- "Unique Clonotypes"
    }
   
