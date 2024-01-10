@@ -4,7 +4,8 @@
 #' \strong{inverse Simpson}, \strong{normalized entropy}, \strong{Gini-Simpson}, \strong{Chao1 index}, and
 #' \strong{abundance-based coverage estimators (ACE)} measure of species evenness by sample or group. 
 #' The function automatically down samples the diversity metrics using 
-#' 100 boot straps (\strong{n.boots = 100}). The group parameter can be used to condense the individual 
+#' 100 boot straps (\strong{n.boots = 100}) and outputs the mean of the values.
+#'The group parameter can be used to condense the individual 
 #' samples. If a matrix output for the data is preferred, set \strong{exportTable} = TRUE.
 #' 
 #' @details
@@ -33,7 +34,7 @@
 #'   \item{\eqn{p_i}{p[i]} is the proportion of species \eqn{i}{i} in the dataset.}
 #'   \item{\eqn{S}{S} is the total number of species.}
 #'   \item{\eqn{n_1}{n[1]} and \eqn{n_2}{n[2]} are the number of singletons and doubletons, respectively.}
-#'   \item{\eqn{S_{abund}}{S[abund]}, \eqn{S_{rare}}{S[rare]}, \eqn{C_{rare}}{C[rare]}, and \eqn{F_1}{F[1]} are parameters derived from the data.}
+#'   \item{\eqn{S_{abund}}{S[abund]}, \eqn{S_{rare}}{S[rare]}, \eqn{C_{ace}}{C[ace]}, and \eqn{F_1}{F[1]} are parameters derived from the data.}
 #' }
 #'
 #' @examples
@@ -51,9 +52,8 @@
 #' in the data. 
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL".
-#' @param group.by Variable in which to group the diversity calculation.
-#' @param x.axis Additional variable in which to split the x.axis.
-#' @param group.by The variable to use for grouping.
+#' @param group.by Variable in which to combine for the diversity calculation.
+#' @param x.axis Additional variable grouping that will space the sample along the x-axis.
 #' @param metrics The indices to use in diversity calculations - 
 #' "shannon", "inv.simpson", "norm.entropy", "gini.simpson", "chao1", "ACE".
 #' @param exportTable Exports a table of the data into the global environment 
@@ -95,9 +95,9 @@ clonalDiversity <- function(input.data,
 
   mat <- NULL
   sample <- c()
-  if (!is.null(group.by) || !is.null(x.axis)) {
+  if (!is.null(group.by)) {
     input.data <- bind_rows(input.data, .id = "element.names")
-    input.data$group.element <- paste0(input.data[,group.by], ".", input.data[,x.axis])
+    input.data$group.element <- input.data[,group.by]
     #group.element.uniq <- unique(input.data$group.element)
     input.data <- split(input.data, f = input.data[,"group.element"])
   }
@@ -132,14 +132,17 @@ clonalDiversity <- function(input.data,
     }
     colnames(mat) <- c("shannon", "inv.simpson", "norm.entropy", "gini.simpson", "chao1", "ACE")
     mat <- mat[,colnames(mat) %in% metrics]
-    if (!is.null(group.by)) {
-      mat[,group.by] <- str_split(names(input.data), "[.]", simplify = TRUE)[,1]
-    } else {
+    if (is.null(group.by)) {
       group.by <- "Group"
-      mat[,group.by] <- names(input.data)
     }
+    mat[,group.by] <- names(input.data)
     if (!is.null(x.axis)) {
-      mat[,x.axis] <- str_split(names(input.data), "[.]", simplify = TRUE)[,2]
+      x.variable <- lapply(input.data, function(x) {
+        unique(x[,x.axis])[1]
+      })
+      x.variable <- as.data.frame(do.call(rbind, x.variable))
+      colnames(x.variable) <- x.axis
+      mat <- merge(mat, x.variable, by.x = ncol(mat), by.y = 0)
     } else {
       x.axis <- "x.axis"
       mat[,x.axis] <- 1
