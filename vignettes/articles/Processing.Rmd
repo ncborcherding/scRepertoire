@@ -1,0 +1,105 @@
+---
+title: "Additional Processing Steps"
+date: 'Compiled: `r format(Sys.Date(), "%B %d, %Y")`'
+output: rmarkdown::html_vignette
+theme: united
+df_print: kable
+vignette: >
+  %\VignetteIndexEntry{Additional Processing Steps}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+<style>
+p.caption {
+  font-size: 0.9em;
+}
+</style>
+ 
+```{r setup, include=FALSE}
+all_times <- list()  # store the time for each chunk
+knitr::knit_hooks$set(time_it = local({
+  now <- NULL
+  function(before, options) {
+    if (before) {
+      now <<- Sys.time()
+    } else {
+      res <- difftime(Sys.time(), now, units = "secs")
+      all_times[[options$label]] <<- res
+    }
+  }
+}))
+knitr::opts_chunk$set(
+  tidy = TRUE,
+  tidy.opts = list(width.cutoff = 95),
+  message = FALSE,
+  warning = FALSE,
+  time_it = TRUE
+)
+
+suppressMessages(library(scRepertoire))
+data("contig_list") 
+combined.TCR <- combineTCR(contig_list, 
+                           samples = c("P17B", "P17L", "P18B", "P18L", 
+                                            "P19B","P19L", "P20B", "P20L"))
+```
+
+## addVariable
+
+What if there are more variables to add than just sample and ID? We can add them by using the `addVariable()` function. All we need is the **variable.name** of the variable you'd like to add and the specific character or numeric values (**variables**). As an example, here we add the **Type** in which the samples were processed and sequenced. 
+
+```{r tidy = FALSE}
+combined.TCR <- addVariable(combined.TCR, 
+                            variable.name = "Type", 
+                            variables = rep(c("B", "L"), 4))
+
+head(combined.TCR[[1]])
+```
+
+## subsetClones
+
+Likewise, we can remove specific list elements after `combineTCR()` using the `subsetClones()` function. In order to subset, we need to identify the vector we would like to use for subsetting (**name**) and the variable values to subset (**variables**). Below, we isolate just the 2 sequencing results from P18L and P18B. 
+
+```{r, tidy = FALSE}
+subset1 <- subsetClones(combined.TCR, 
+                        name = "sample", 
+                        variables = c("P18L", "P18B"))
+
+head(subset1[[1]])
+```
+
+Alternatively, we can also just select the list elements after `combineTCR()` or `combineBCR()`.
+
+```{r}
+subset2 <- combined.TCR[c(3,4)]
+head(subset2[[1]])
+```
+
+## exportClones  
+
+After assigning the clone by barcode, we can export the paired clonotypes using `exportClones()` to save for later use or to use in other pipelines. 
+
+**format**  
+
+* "paired" - Export the paired sequences **(default)**.  
+* "airr" - Export data in an AIRR-compliant format.  
+* "TCRMatch" - Export TCRB chain information. 
+    
+**write.file**    
+
+* TRUE, save the file.  
+* FALSE, return a data.frame.  
+
+**dir**  
+directory location to save the csv  
+
+**file.name**  
+the csv file name  
+
+```{r, eval = FALSE, tidy = FALSE}
+exportClones(combined, 
+             write.file = TRUE,
+             dir = "~/Documents/MyExperiment/Sample1/"
+             file.name = "clones.csv"
+```
+

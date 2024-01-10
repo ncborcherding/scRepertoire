@@ -2,3 +2,9 @@
 .DS_Store
 .Rhistory
 .Rhistory
+local_tests.R
+.RData
+docs
+vignettes/articles/scRep_example_full.rds
+.vscode
+qile

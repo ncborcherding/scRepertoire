@@ -1,0 +1,118 @@
+---
+title: "Loading Data into scRepertoire"
+date: 'Compiled: `r format(Sys.Date(), "%B %d, %Y")`'
+output: rmarkdown::html_vignette
+theme: united
+df_print: kable
+vignette: >
+  %\VignetteIndexEntry{Loading Data into scRepertoire}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+<style>
+p.caption {
+  font-size: 0.9em;
+}
+</style>
+ 
+```{r setup, include=FALSE}
+all_times <- list()  # store the time for each chunk
+knitr::knit_hooks$set(time_it = local({
+  now <- NULL
+  function(before, options) {
+    if (before) {
+      now <<- Sys.time()
+    } else {
+      res <- difftime(Sys.time(), now, units = "secs")
+      all_times[[options$label]] <<- res
+    }
+  }
+}))
+knitr::opts_chunk$set(
+  tidy = TRUE,
+  tidy.opts = list(width.cutoff = 95),
+  message = FALSE,
+  warning = FALSE,
+  time_it = TRUE
+)
+
+suppressMessages(library(scRepertoire))
+```
+
+## Loading and Processing Contig Data
+
+### What data to load into scRepertoire?
+
+scRepertoire functions using the **filtered_contig_annotations.csv** output from the 10x Genomics Cell Ranger. This file is located in the ./outs/ directory of the VDJ alignment folder. To generate a list of contigs to use for scRepertoire:  
+
+* load the **filtered_contig_annotations.csv** for each of the samples.  
+* make a list in the R environment.  
+
+```{r, eval=FALSE}
+S1 <- read.csv(".../Sample1/outs/filtered_contig_annotations.csv")
+S2 <- read.csv(".../Sample2/outs/filtered_contig_annotations.csv")
+S3 <- read.csv(".../Sample3/outs/filtered_contig_annotations.csv")
+S4 <- read.csv(".../Sample4/outs/filtered_contig_annotations.csv")
+
+contig_list <- list(S1, S2, S3, S4)
+```
+
+## Other alignment workflows
+
+Beyond the default 10x Genomic Cell Ranger pipeline outputs, scRepertoire supports the following **single-cell** formats: 
+
+* AIRR  
+* BD Rhapsody Multiomic Immune Profiling  
+* [Immcantation](https://immcantation.readthedocs.io/en/stable/index.html)  
+* JSON-formatted contig data  
+* [MiXCR](https://pubmed.ncbi.nlm.nih.gov/25924071/)  
+* [Omniscope](https://www.omniscope.ai/)  
+* [TRUST4](https://pubmed.ncbi.nlm.nih.gov/33986545/)  
+* [WAT3R](https://pubmed.ncbi.nlm.nih.gov/35674381/)  
+
+```loadContigs()``` can be given a directory where the sequencing experiments are located and it will recursively load and process the contig data based on the file names. Alternatively, ```loadContigs()``` can be given a list of data frames and process the contig data
+
+
+```{r, eval=FALSE, tidy = FALSE}
+#Directory example
+contig.output <- c("~/Documents/MyExperiment")
+contig.list <- loadContigs(input = contig.output, 
+                           format = "TRUST4")
+
+#List of data frames example
+S1 <- read.csv("~/Documents/MyExperiment/Sample1/outs/barcode_results.csv")
+S2 <- read.csv("~/Documents/MyExperiment/Sample2/outs/barcode_results.csv")
+S3 <- read.csv("~/Documents/MyExperiment/Sample3/outs/barcode_results.csv")
+S4 <- read.csv("~/Documents/MyExperiment/Sample4/outs/barcode_results.csv")
+
+contig_list <- list(S1, S2, S3, S4)
+contig.list <- loadContigs(input = contig.output, 
+                           format = "WAT3R")
+```
+
+## Multiplexed Experiment
+
+It is now easy to create the contig list from a multiplexed experiment by first generating a single-cell RNA object (either Seurat or Single Cell Experiment), loading the filtered contig file and then using `createHTOContigList()`. This function will return a list separated by the **group.by** variable(s). 
+
+This function depends on the match of barcodes between the single-cell object and contigs. If there is a prefix or different suffix added to the barcode, this will result in no contigs recovered. Currently, it is recommended you do this step before the integration, as integration workflows commonly alter the barcodes. There is a **multi.run** variable that can be used on the integrated object. However, it assumes you have modified the barcodes with the Seurat pipeline (automatic addition of _# to end), and your contig list is in the same order.
+
+```{r, eval = F, tidy = FALSE}
+contigs <- read.csv(".../outs/filtered_contig_annotations.csv")
+
+contig.list <- createHTOContigList(contigs, 
+                                   Seurat.Obj, 
+                                   group.by = "HTO_maxID")
+```
+
+## Example Data in scRepertoire
+
+scRepertoire comes with a data set from T cells derived from four patients with acute respiratory distress to demonstrate the functionality of the R package. More information on the data set can be found in the corresponding [manuscript](https://pubmed.ncbi.nlm.nih.gov/33622974/). The samples consist of paired peripheral-blood (B) and bronchoalveolar lavage (L), effectively creating 8 distinct runs for T cell receptor (TCR) enrichment. We can preview the elements in the list by using the head function and looking at the first contig annotation. 
+
+The built-in example data is derived from the 10x Cell Ranger pipeline, so it is ready to go for downstream processing and analysis. 
+
+```{r tidy = FALSE}
+data("contig_list") #the data built into scRepertoire
+
+head(contig_list[[1]])
+```

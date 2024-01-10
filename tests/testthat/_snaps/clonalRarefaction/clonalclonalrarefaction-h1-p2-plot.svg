@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' class='svglite' data-engine-version='2.0' width='720.00pt' height='576.00pt' viewBox='0 0 720.00 576.00'>
+<defs>
+  <style type='text/css'><![CDATA[
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+  ]]></style>
+</defs>
+<rect width='100%' height='100%' style='stroke: none; fill: #FFFFFF;'/>
+<defs>
+  <clipPath id='cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA='>
+    <rect x='0.00' y='0.00' width='720.00' height='576.00' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'>
+<rect x='0.00' y='0.00' width='720.00' height='576.00' style='stroke-width: 1.07; stroke: #FFFFFF; fill: #FFFFFF;' />
+</g>
+<defs>
+  <clipPath id='cpNDAuMTN8NzE0LjUyfDIyLjc4fDU0NS4xMQ=='>
+    <rect x='40.13' y='22.78' width='674.39' height='522.33' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpNDAuMTN8NzE0LjUyfDIyLjc4fDU0NS4xMQ==)'>
+<rect x='40.13' y='22.78' width='674.39' height='522.33' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
+<circle cx='377.21' cy='312.61' r='5.69' style='stroke-width: 0.71; stroke: none; fill: #040404;' />
+<circle cx='365.67' cy='257.98' r='5.69' style='stroke-width: 0.71; stroke: none; fill: #FFFE9E;' />
+<polyline points='70.79,520.91 87.64,480.76 104.73,457.09 121.82,441.35 138.68,429.43 155.76,419.09 172.85,409.64 189.71,400.81 206.80,392.18 223.88,383.76 240.74,375.62 257.83,367.50 274.92,359.48 291.77,351.65 308.86,343.78 325.95,335.95 342.80,328.26 359.89,320.48 376.98,312.71 377.21,312.61 ' style='stroke-width: 3.20; stroke: #040404; stroke-linecap: butt;' />
+<polyline points='70.79,521.37 86.95,502.48 103.35,484.44 119.74,467.34 136.14,450.99 152.53,435.26 168.93,420.03 185.32,405.21 201.72,390.73 218.11,376.54 234.27,362.79 250.67,349.07 267.06,335.54 283.46,322.20 299.85,309.05 316.25,296.06 332.64,283.25 349.04,270.61 365.43,258.15 365.67,257.98 ' style='stroke-width: 3.20; stroke: #FFFE9E; stroke-linecap: butt;' />
+<polyline points='377.44,312.50 393.38,305.27 409.54,297.97 425.70,290.68 441.87,283.42 458.03,276.18 474.20,268.97 490.13,261.89 506.29,254.73 522.46,247.59 538.62,240.47 554.78,233.38 570.95,226.32 586.88,219.38 603.05,212.36 619.21,205.36 635.37,198.39 651.54,191.45 667.70,184.52 683.87,177.62 ' style='stroke-width: 3.20; stroke: #040404; stroke-dasharray: 8.54,8.54; stroke-linecap: butt;' />
+<polyline points='365.90,257.80 381.37,246.15 396.84,234.57 412.31,223.05 427.78,211.59 443.48,200.03 458.96,188.70 474.43,177.43 489.90,166.23 505.37,155.09 521.07,143.84 536.54,132.82 552.01,121.87 567.49,110.97 582.96,100.13 598.66,89.19 614.13,78.48 629.60,67.82 645.07,57.22 660.78,46.53 ' style='stroke-width: 3.20; stroke: #FFFE9E; stroke-dasharray: 8.54,8.54; stroke-linecap: butt;' />
+</g>
+<g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'>
+<polyline points='40.13,545.11 40.13,22.78 ' style='stroke-width: 1.07; stroke-linecap: butt;' />
+<text x='35.20' y='524.68' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='17.13px' lengthAdjust='spacingAndGlyphs'>0.00</text>
+<text x='35.20' y='406.10' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='17.13px' lengthAdjust='spacingAndGlyphs'>0.05</text>
+<text x='35.20' y='287.53' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='17.13px' lengthAdjust='spacingAndGlyphs'>0.10</text>
+<text x='35.20' y='168.95' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='17.13px' lengthAdjust='spacingAndGlyphs'>0.15</text>
+<text x='35.20' y='50.38' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='17.13px' lengthAdjust='spacingAndGlyphs'>0.20</text>
+<polyline points='37.39,521.65 40.13,521.65 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='37.39,403.07 40.13,403.07 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='37.39,284.50 40.13,284.50 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='37.39,165.92 40.13,165.92 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='37.39,47.35 40.13,47.35 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='40.13,545.11 714.52,545.11 ' style='stroke-width: 1.07; stroke-linecap: butt;' />
+<polyline points='70.56,547.85 70.56,545.11 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='301.47,547.85 301.47,545.11 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
+<polyline points='532.39,547.85 532.39,545.11 ' style='stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;' />
+<text x='70.56' y='556.10' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='4.89px' lengthAdjust='spacingAndGlyphs'>0</text>
+<text x='301.47' y='556.10' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='19.58px' lengthAdjust='spacingAndGlyphs'>1000</text>
+<text x='532.39' y='556.10' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='19.58px' lengthAdjust='spacingAndGlyphs'>2000</text>
+<text x='377.33' y='568.24' text-anchor='middle' style='font-size: 11.00px; font-family: sans;' textLength='105.78px' lengthAdjust='spacingAndGlyphs'>Number of individuals</text>
+<text transform='translate(13.05,283.95) rotate(-90)' text-anchor='middle' style='font-size: 11.00px; font-family: sans;' textLength='85.62px' lengthAdjust='spacingAndGlyphs'>Sample coverage</text>
+<text x='40.13' y='14.56' style='font-size: 13.20px; font-family: sans;' textLength='209.17px' lengthAdjust='spacingAndGlyphs'>clonalclonalRarefaction_h1_p2_plot</text>
+</g>
+</svg>

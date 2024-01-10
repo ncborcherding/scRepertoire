@@ -2,27 +2,24 @@
 % Please edit documentation in R/combineContigs.R
 \name{combineTCR}
 \alias{combineTCR}
-\title{Combining the list of T Cell Receptor contigs}
+\title{Combining the list of T cell receptor contigs into clones}
 \usage{
 combineTCR(
-  df,
+  input.data,
   samples = NULL,
   ID = NULL,
-  cells = "T-AB",
   removeNA = FALSE,
   removeMulti = FALSE,
   filterMulti = FALSE
 )
 }
 \arguments{
-\item{df}{List of filtered contig annotations from 10x Genomics.}
+\item{input.data}{List of filtered contig annotations or 
+outputs from \code{\link{loadContigs}}.}
 
-\item{samples}{The labels of samples (required).}
+\item{samples}{The labels of samples (recommended).}
 
 \item{ID}{The additional sample labeling (optional).}
-
-\item{cells}{The type of T cell - T cell-AB or T cell-GD. Only 1 T cell type can
-be called at once.}
 
 \item{removeNA}{This will remove any chain without values.}
 
@@ -32,22 +29,23 @@ be called at once.}
 corresponding chains with the highest expression for a single barcode.}
 }
 \value{
-List of clonotypes for individual cell barcodes
+List of clones for individual cell barcodes
 }
 \description{
-This function consolidates a list of TCR sequencing results to the level of 
-the individual cell barcodes. Using the samples and ID parameters, the 
-function will add the strings as prefixes to prevent issues with repeated 
-barcodes. The resulting new barcodes will need to match the Seurat or SCE 
-object in order to use, \code{\link{combineExpression}}. Several 
-levels of filtering exist - remove or filterMulti are parameters that 
-control how  the function  deals with barcodes with multiple chains 
+This function consolidates a list of TCR sequencing results to
+the level of  the individual cell barcodes. Using the \strong{samples} and 
+\strong{ID} parameters, the function will add the strings as prefixes to 
+prevent issues with repeated  barcodes. The resulting new barcodes will 
+need to match the Seurat or SCE object in order to use, 
+\code{\link{combineExpression}}. Several levels of filtering exist - 
+\emph{removeNA}, \emph{removeMulti}, or \emph{filterMulti} are parameters 
+that control how the function deals with barcodes with multiple chains 
 recovered.
 }
 \examples{
-combineTCR(contig_list, 
-           samples = rep(c("PX", "PY", "PZ"), each=2), 
-           ID = rep(c("P", "T"), 3), 
-           cells ="T-AB")
+combined <- combineTCR(contig_list, 
+                        samples = c("P17B", "P17L", "P18B", "P18L", 
+                                    "P19B","P19L", "P20B", "P20L"))
 
 }
+\concept{Loading_and_Processing_Contigs}

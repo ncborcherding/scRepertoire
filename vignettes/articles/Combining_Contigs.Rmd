@@ -1,0 +1,111 @@
+---
+title: "Combining Contigs into Clones"
+date: 'Compiled: `r format(Sys.Date(), "%B %d, %Y")`'
+output: rmarkdown::html_vignette
+theme: united
+df_print: kable
+vignette: >
+  %\VignetteIndexEntry{Combining Contigs into Clones}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+<style>
+p.caption {
+  font-size: 0.9em;
+}
+</style>
+ 
+```{r setup, include=FALSE}
+all_times <- list()  # store the time for each chunk
+knitr::knit_hooks$set(time_it = local({
+  now <- NULL
+  function(before, options) {
+    if (before) {
+      now <<- Sys.time()
+    } else {
+      res <- difftime(Sys.time(), now, units = "secs")
+      all_times[[options$label]] <<- res
+    }
+  }
+}))
+knitr::opts_chunk$set(
+  tidy = TRUE,
+  tidy.opts = list(width.cutoff = 95),
+  message = FALSE,
+  warning = FALSE,
+  time_it = TRUE
+)
+
+suppressMessages(library(scRepertoire))
+data("contig_list") 
+```
+
+There are varying definitions of clones or clones in the literature. For the purposes of scRepertoire, we will use **clone** and define this as the cells with shared/trackable complementarity-determining region 3 (CDR3) sequences. Within this definition, one might use amino acid (**aa**) sequences of one or both chains to define a clone. Alternatively, we could use nucleotide (**nt**) or the V(D)JC genes (**genes**) to define a clone. The latter **genes** would be a more permissive definition of *"clones"*, as multiple amino acid or nucleotide sequences can result from the same gene combination. Another option to define clone is the use of the V(D)JC and nucleotide sequence (**strict**). scRepertoire allows for the use of all these definitions of clones and allows for users to select both or individual chains to examine. 
+
+The first step in getting clones is to use the single-cell barcodes to organize cells into paired sequences. This is accomplished using `combineTCR()` and `combineBCR()`.
+
+## combineTCR
+
+**input.data**  
+
+* List of *filtered_contig_annotations.csv* data frames from the 10x Cell Ranger.  
+* List of data processed using `loadContigs()`.  
+
+**samples** and **ID**  
+
+* Grouping variables for downstream analysis and will be added as prefixes to 
+prevent issues with duplicate barcodes **(optional)**.  
+
+**removeNA**  
+
+* TRUE - Filter to remove any cell barcode with an NA value in at least one of the chains.  
+* FALSE - Include and incorporate cells with 1 NA value **(default)**.   
+
+**removeMulti**  
+
+* TRUE - Filter to remove any cell barcode with more than 2 immune receptor chains.  
+* FALSE - Include and incorporate cells with > 2 chains **(default)**.  
+
+**filterMulti**  
+
+* TRUE - Isolate the top 2 expressed chains in cell barcodes with multiple chains.  
+* FALSE - Include and incorporate cells with > 2 chains **(default)**.  
+
+The output of `combineTCR()` will be a list of contig data frames that will be reduced to the reads associated with a single cell barcode. It will also combine the multiple reads into clone calls by either the nucleotide sequence (**CTnt**), amino acid sequence (**CTaa**), the VDJC gene sequence (**CTgene**), or the combination of the nucleotide and gene sequence (**CTstrict**).
+
+```{r tidy = FALSE}
+combined.TCR <- combineTCR(contig_list, 
+                           samples = c("P17B", "P17L", "P18B", "P18L", 
+                                            "P19B","P19L", "P20B", "P20L"),
+                           removeNA = FALSE, 
+                           removeMulti = FALSE, 
+                           filterMulti = FALSE)
+
+head(combined.TCR[[1]])
+```
+
+## combineBCR
+
+`combineBCR()` is analogous to `combineTCR()` with 2 major changes: **1)** Each barcode can only have a maximum of 2 sequences, if greater exists, the 2 with the highest reads are selected; **2)** The **strict** definition of a clone is based on the normalized Levenshtein edit distance of CDR3 nucleotide sequences and V-gene usage. For more information on this approach, please see the respective [citation](https://pubmed.ncbi.nlm.nih.gov/34161770/). This definition allows for the grouping of BCRs derived from the same progenitor that have undergone mutation as part of somatic hypermutation and affinity maturation.
+
+**threshold**  
+The level of similarity in sequences to group together. **Default** is 0.85.
+
+\[
+\text{threshold}(s, t) = 1-\frac{\text{Levenshtein}(s, t)}{\frac{\text{length}(s) + \text{length}(t)}{2}}
+\]
+
+**call.related.clones**  
+Calculate the normalized edit distance (**TRUE**) or skip the calculation (**FALSE**). Skipping the edit distance calculation may save time, especially in the context of large data sets, but is not recommended. 
+
+
+```{r tidy = FALSE}
+BCR.contigs <- read.csv("https://www.borch.dev/uploads/contigs/b_contigs.csv")
+combined.BCR <- combineBCR(BCR.contigs, 
+                           samples = "P1", 
+                           threshold = 0.85)
+
+head(combined.BCR[[1]])
+```
+

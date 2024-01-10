@@ -5,44 +5,58 @@
 \title{Visualize clonal network along reduced dimensions}
 \usage{
 clonalNetwork(
-  sc,
+  sc.data,
   reduction = "umap",
-  identity = "ident",
+  group.by = "ident",
   filter.clones = NULL,
   filter.identity = NULL,
   filter.proportion = NULL,
   filter.graph = FALSE,
   cloneCall = "strict",
   chain = "both",
-  exportTable = FALSE
+  exportTable = FALSE,
+  exportClones = FALSE,
+  palette = "inferno"
 )
 }
 \arguments{
-\item{sc}{The Seurat or SingleCellExperiment (SCE) after combineExpression().}
+\item{sc.data}{The single-cell object after \code{\link{combineExpression}}.}
 
-\item{reduction}{The name of the dimensional reduction of the single-cell object}
+\item{reduction}{The name of the dimensional reduction of the 
+single-cell object.}
 
-\item{identity}{A variable in the meta data to use for the nodes.}
+\item{group.by}{The variable to use for the nodes.}
 
-\item{filter.clones}{Use to select the top n clones (filter.clones = 2000) or 
-n of clones based on the minimum number of all the comparators (filter.clone = "min").}
+\item{filter.clones}{Use to select the top n clones (e.g., \strong{filter.clones} 
+= 2000) or n of clones based on the minimum number of all the comparators 
+(e.g., \strong{filter.clone} = "min").}
 
-\item{filter.identity}{Display the network for a specific level of the indicated identity}
+\item{filter.identity}{Display the network for a specific level of the 
+indicated identity.}
 
-\item{filter.proportion}{Remove clonotypes from the network below a specific proportion}
+\item{filter.proportion}{Remove clones from the network below a specific
+proportion.}
 
-\item{filter.graph}{Remove the reciprocal edges from the half of the graph, 
-allowing for cleaner visualization}
+\item{filter.graph}{Remove the reciprocal edges from the half of the graph,
+allowing for cleaner visualization.}
 
-\item{cloneCall}{How to call the clonotype - VDJC gene (gene), 
-CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
-VDJC gene + CDR3 nucleotide (strict).}
+\item{cloneCall}{How to call the clone - VDJC gene (\strong{gene}), 
+CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
+VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable 
+in the data.}
 
 \item{chain}{indicate if both or a specific chain should be used - 
-e.g. "both", "TRA", "TRG", "IGH", "IGL"}
+e.g. "both", "TRA", "TRG", "IGH", "IGL".}
 
 \item{exportTable}{Exports a table of the data into the global 
-environment in addition to the visualization}
+environment in addition to the visualization.}
+
+\item{exportClones}{Exports a table of clones that are shared
+across multiple identity groups and ordered by the total number
+of clone copies.}
+
+\item{palette}{Colors to use in visualization - input any 
+\link[grDevices]{hcl.pals}.}
 }
 \value{
 ggplot object
@@ -56,18 +70,21 @@ plot.
 \examples{
 \dontrun{
 #Getting the combined contigs
-combined <- combineTCR(contig_list, rep(c("PX", "PY", "PZ"), each=2), 
-rep(c("P", "T"), 3), cells ="T-AB")
+combined <- combineTCR(contig_list, 
+                        samples = c("P17B", "P17L", "P18B", "P18L", 
+                                    "P19B","P19L", "P20B", "P20L"))
 
 #Getting a sample of a Seurat object
-screp_example <- get(data("screp_example"))
+scRep_example  <- get(data("scRep_example"))
 
 #Using combineExpresion()
-screp_example <- combineExpression(combined, screp_example)
+scRep_example  <- combineExpression(combined, scRep_example)
 
 #Using clonalNetwork()
-clonalNetwork(screp_example, reduction = "umap",
-              identity = "cluster")
+clonalNetwork(scRep_example, 
+              reduction = "umap",
+              group.by = "seurat_clusters")
 }
               
 }
+\concept{SC_Functions}

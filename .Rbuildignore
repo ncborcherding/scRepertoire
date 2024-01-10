@@ -1,2 +1,12 @@
 ^scRepertoire\.Rproj$
 ^\.Rproj\.user$
+^www$
+^\.github$
+^LICENSE\.md$
+^JOSS$
+^draft-pdf\.yml$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^index\.md$
+^qile$

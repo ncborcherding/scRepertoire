@@ -1,0 +1,196 @@
+---
+title: "Comparing Clonal Diversity and Overlap"
+date: 'Compiled: `r format(Sys.Date(), "%B %d, %Y")`'
+output: rmarkdown::html_vignette
+theme: united
+df_print: kable
+vignette: >
+  %\VignetteIndexEntry{Comparing Clonal Diversity and Overlap}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+<style>
+p.caption {
+  font-size: 0.9em;
+}
+</style>
+ 
+```{r setup, include=FALSE}
+all_times <- list()  # store the time for each chunk
+knitr::knit_hooks$set(time_it = local({
+  now <- NULL
+  function(before, options) {
+    if (before) {
+      now <<- Sys.time()
+    } else {
+      res <- difftime(Sys.time(), now, units = "secs")
+      all_times[[options$label]] <<- res
+    }
+  }
+}))
+knitr::opts_chunk$set(
+  tidy = TRUE,
+  tidy.opts = list(width.cutoff = 95),
+  message = FALSE,
+  warning = FALSE,
+  time_it = TRUE
+)
+
+suppressMessages(library(scRepertoire))
+data("contig_list") 
+combined.TCR <- combineTCR(contig_list, 
+                           samples = c("P17B", "P17L", "P18B", "P18L", 
+                                            "P19B","P19L", "P20B", "P20L"))
+```
+
+## clonalDiversity
+
+Diversity can also be measured for samples or by other variables. Diversity **metrics** calculated, include: **"shannon"**, **"inv.simpson"**, **"norm.entropy"**, **"gini.simpson"**, **"chao1"**, and **"ACE"**. Please see the manual for more information on each metric and the underlying calculations. 
+
+Inherent in diversity calculations is a bias for increasing diversity with increasing repertoire size. ```clonalDiversity()``` will automatically downsample to the smallest repertoire size and perform bootstrapping to return the mean diversity estimates. If the output of diversity values are strange or minimally variable, it is likely due to a sample with small repertoire size.
+
+**n.boots**  
+The number of calculations to perform **(default = 100)**.  
+
+**return.boots**  
+
+* TRUE: Return all the calculations.  
+* FALSE: Return only the mean values **(default)**.  
+
+**skip.boots**  
+Skip the bootstrapping calculations.
+
+
+```{r tidy = FALSE}
+clonalDiversity(combined.TCR, 
+                cloneCall = "gene")
+```
+
+There are 2 options for grouping in ```clonalDiversity()``` and it is important to understand the difference. 
+
+**group.by**
+
+* Reorganize the clone information into new groups that the calculation will be based on.
+
+**x.axis**
+
+* Keep the organization of the clone information the same, but will plot along the x-axis for improved visibility or grouping.
+
+
+```{r tidy = FALSE}
+combined.TCR <- addVariable(combined.TCR, 
+                            variable.name = "Patient", 
+                             variables = c("P17", "P17", "P18", "P18", 
+"P19","P19", "P20", "P20"))
+
+clonalDiversity(combined.TCR, 
+                cloneCall = "gene", 
+                group.by = "Patient")
+
+clonalDiversity(combined.TCR, 
+                cloneCall = "gene", 
+                x.axis = "Patient")
+```
+
+As a default, ```clonalDiversity()``` will return all the metrics calculated - **"shannon"**, **"inv.simpson"**, **"norm.entropy"**, **"gini.simpson"**, **"chao1"**, and **"ACE"**. Selecting a single or a subset of these methods using the **metrics** parameter.
+
+```{r tidy=FALSE}
+#Return only a subset of metrics
+clonalDiversity(combined.TCR, 
+                metrics = c("shannon", "ACE"),
+                cloneCall = "gene", 
+                n.boots = 20)
+```
+
+## clonaRarefaction
+
+We can also use Hill numbers to estimate the rarefaction, or estimating species richness, using the the abundance of clones across groupings. Underlying the rarefaction calculation is the use of observed receptor of abundance to compute diversity. 
+
+**hill.numbers** 
+
++ 0 - species-richness  
++ 1 - Shannon  
++ 2 - Simpson  
+
+**plot.type**  
+
++ 1 - sample-size-based rarefaction/extrapolation  
++ 2 - sample completeness curve  
++ 3 - coverage-based rarefaction/extrapolation curve  
+
+This relies on the [iNEXT](https://cran.r-project.org/web/packages/iNEXT/index.html) with the accompanying [manuscript](http://chao.stat.nthu.edu.tw/wordpress/paper/120_pdf_appendix.pdf). Like the other wrapping functions in scRepertoire, please cite the original work. 
+
+### Rarefaction using Shannon Diversity (q = 0)
+
+```{r, message=FALSE, tidy = FALSE}
+clonalRarefaction(combined.TCR,
+                  plot.type = 1,
+                  hill.numbers = 0,
+                  n.boots = 2)
+
+clonalRarefaction(combined.TCR,
+                  plot.type = 2,
+                  hill.numbers = 0,
+                  n.boots = 2)
+
+clonalRarefaction(combined.TCR,
+                  plot.type = 3,
+                  hill.numbers = 0,
+                  n.boots = 2)
+```
+
+### Rarefaction using Shannon Diversity (q = 1)
+
+```{r tidy = FALSE}
+clonalRarefaction(combined.TCR,
+                  plot.type = 1,
+                  hill.numbers = 1,
+                  n.boots = 2)
+
+clonalRarefaction(combined.TCR,
+                  plot.type = 2,
+                  hill.numbers = 1,
+                  n.boots = 2)
+
+clonalRarefaction(combined.TCR,
+                  plot.type = 3,
+                  hill.numbers = 1,
+                  n.boots = 2)
+```
+
+## clonalSizeDistribution
+
+Another method for modeling the repertoire distribution is a discrete gamma-GPD spliced threshold model, proposed by [Koch et al.](https://pubmed.ncbi.nlm.nih.gov/30485278/) The spliced model models the repertoire and allows for the application of a power law distribution for larger clonal-expanded sequences and a Poisson distribution for smaller clones. After fitting the models, repertoires can be compared using Euclidean distance. 
+
+If using this function, please read/cite [Koch et al.](https://pubmed.ncbi.nlm.nih.gov/30485278/) and check out the [powerTCR](https://bioconductor.org/packages/release/bioc/html/powerTCR.html) R package.
+
+```{r tidy = FALSE}
+clonalSizeDistribution(combined.TCR, 
+                       cloneCall = "aa", 
+                       method= "ward.D2")
+```
+
+## clonalOverlap
+
+If you are interested in measures of similarity between the samples loaded into scRepertoire, using `clonalOverlap()` can assist in the visualization. 
+
+The underlying `clonalOverlap()` calculation varies by the **method** parameter, more information on the exact calculations are available in the manual. 
+
+**method**
+
+* "overlap" - overlap coefficient 
+* "morisita" - Morisita's overlap index
+* "jaccard" - Jaccard index
+* "cosine" - cosine similarity
+* "raw" - exact number of overlapping clones
+
+```{r tidy = FALSE}
+clonalOverlap(combined.TCR, 
+              cloneCall = "strict", 
+              method = "morisita")
+
+clonalOverlap(combined.TCR, 
+              cloneCall = "strict", 
+              method = "raw")
+```

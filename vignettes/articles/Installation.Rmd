@@ -1,0 +1,58 @@
+---
+title: "Installation Instructions for scRepertoire"
+date: 'Compiled: `r format(Sys.Date(), "%B %d, %Y")`'
+output: rmarkdown::html_vignette
+theme: united
+df_print: kable
+vignette: >
+  %\VignetteIndexEntry{Installation Instructions for scRepertoire}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+<style>
+p.caption {
+  font-size: 0.9em;
+}
+</style>
+ 
+```{r setup, include=FALSE}
+all_times <- list()  # store the time for each chunk
+knitr::knit_hooks$set(time_it = local({
+  now <- NULL
+  function(before, options) {
+    if (before) {
+      now <<- Sys.time()
+    } else {
+      res <- difftime(Sys.time(), now, units = "secs")
+      all_times[[options$label]] <<- res
+    }
+  }
+}))
+knitr::opts_chunk$set(
+  tidy = TRUE,
+  tidy.opts = list(width.cutoff = 95),
+  message = FALSE,
+  warning = FALSE,
+  time_it = TRUE
+)
+```
+
+scRepertoire requires [R](https://www.r-project.org/) version 4.1 or greater and highly recommend installing [R Studio](https://posit.co/downloads/).
+
+## Release Notes  
+A full copy of the changes in each version can be found in the [NEWS/ChangeLog](https://borch.dev/uploads/scRepertoire/news/index.html).
+
+
+## GitHub Branches
+scRepertoire is an active project, that receives a number of changes based on user feedback, the most up-to-date versions are available via the GitHub repositories. These versions can be installed using ```devtools::install_github()``` or ```remotes::install_github()```. The **dev** version is the active development branch and might be less stable than the main branch or bioconductor versions. 
+
+```
+devtools::install_github(repo = "ncborcherding/scRepertoire")
+
+remotes::install_github(repo = "ncborcherding/scRepertoire", ref = "dev")
+```
+
+## Bioconductor
+
+Coming soon
