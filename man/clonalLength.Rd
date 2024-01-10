@@ -9,7 +9,6 @@ clonalLength(
   cloneCall = "aa",
   chain = "both",
   group.by = NULL,
-  order = TRUE,
   scale = FALSE,
   exportTable = FALSE,
   palette = "inferno"
@@ -26,8 +25,6 @@ or CDR3 amino acid (\strong{aa}).}
 e.g. "both", "TRA", "TRG", "IGH", "IGL".}
 
 \item{group.by}{The variable to use for grouping.}
-
-\item{order}{Maintain the order of the list when plotting.}
 
 \item{scale}{Converts the graphs into density plots in order to show 
 relative distributions.}

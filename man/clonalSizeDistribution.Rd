@@ -43,7 +43,7 @@ the grid search was performed over.}
 ggplot dendrogram of the clone size distribution
 }
 \description{
-This function produces a hierarchical clustering of clonotypes by sample 
+This function produces a hierarchical clustering of clones by sample 
 using discrete gamma-GPD spliced threshold model. If using this 
 model please read and cite powerTCR (more info available at 
 \href{https://pubmed.ncbi.nlm.nih.gov/30485278/}{PMID: 30485278}).
@@ -61,7 +61,7 @@ Where:
 }
               
 The probability density function (pdf) for the \strong{Gamma Distribution} is given by:
-\deqn{f(x|\alpha, \beta) = \frac{x^{\alpha-1} e^{-x/\beta}}{\beta^\alpha \Gamma(\alpha)}}  #
+\deqn{f(x|\alpha, \beta) = \frac{x^{\alpha-1} e^{-x/\beta}}{\beta^\alpha \Gamma(\alpha)}}
 
 Where:
 \itemize{

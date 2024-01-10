@@ -38,7 +38,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-scRepertoire requires [R](https://www.r-project.org/) version 4.0 or greater. Highly recommend installing [R Studio](https://posit.co/downloads/).
+scRepertoire requires [R](https://www.r-project.org/) version 4.1 or greater and highly recommend installing [R Studio](https://posit.co/downloads/).
 
 ## Release Notes  
 A full copy of the changes in each version can be found in the [NEWS/ChangeLog](https://borch.dev/uploads/scRepertoire/news/index.html).
@@ -52,3 +52,7 @@ devtools::install_github(repo = "ncborcherding/scRepertoire")
 
 remotes::install_github(repo = "ncborcherding/scRepertoire", ref = "dev")
 ```
+
+## Bioconductor
+
+Coming soon

@@ -21,6 +21,7 @@ Useful links:
 Authors:
 \itemize{
   \item Qile Yang \email{qile0317@gmail.com}
+  \item Ksenia Safina \email{safina@broadinstitute.org}
 }
 
 }

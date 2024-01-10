@@ -27,9 +27,9 @@ single-cell object.}
 
 \item{group.by}{The variable to use for the nodes.}
 
-\item{filter.clones}{Use to select the top n clones (eg, \strong{filter.clones} 
+\item{filter.clones}{Use to select the top n clones (e.g., \strong{filter.clones} 
 = 2000) or n of clones based on the minimum number of all the comparators 
-(eg, \strong{filter.clone} = "min").}
+(e.g., \strong{filter.clone} = "min").}
 
 \item{filter.identity}{Display the network for a specific level of the 
 indicated identity.}

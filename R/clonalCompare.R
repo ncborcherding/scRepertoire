@@ -27,7 +27,8 @@
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL".
 #' @param samples The specific samples to isolate for visualization.
 #' @param clones The specific clonal sequences of interest.
-#' @param top.clones The top number of clone sequences per group.
+#' @param top.clones The top number of clonal sequences per group.
+#' (e.g., top.clones = 5)
 #' @param highlight.clones Clonal sequences to highlight, if present, 
 #' all other clones returned will be grey.
 #' @param relabel.clones Simplify the legend of the graph by returning

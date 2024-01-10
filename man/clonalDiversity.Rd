@@ -30,9 +30,9 @@ in the data.}
 \item{chain}{indicate if both or a specific chain should be used - 
 e.g. "both", "TRA", "TRG", "IGH", "IGL".}
 
-\item{group.by}{The variable to use for grouping.}
+\item{group.by}{Variable in which to combine for the diversity calculation.}
 
-\item{x.axis}{Additional variable in which to split the x.axis.}
+\item{x.axis}{Additional variable grouping that will space the sample along the x-axis.}
 
 \item{metrics}{The indices to use in diversity calculations - 
 "shannon", "inv.simpson", "norm.entropy", "gini.simpson", "chao1", "ACE".}
@@ -59,7 +59,8 @@ This function calculates traditional measures of diversity - \strong{Shannon},
 \strong{inverse Simpson}, \strong{normalized entropy}, \strong{Gini-Simpson}, \strong{Chao1 index}, and
 \strong{abundance-based coverage estimators (ACE)} measure of species evenness by sample or group. 
 The function automatically down samples the diversity metrics using 
-100 boot straps (\strong{n.boots = 100}). The group parameter can be used to condense the individual 
+100 boot straps (\strong{n.boots = 100}) and outputs the mean of the values.
+The group parameter can be used to condense the individual 
 samples. If a matrix output for the data is preferred, set \strong{exportTable} = TRUE.
 }
 \details{
@@ -88,7 +89,7 @@ Where:
   \item{\eqn{p_i}{p[i]} is the proportion of species \eqn{i}{i} in the dataset.}
   \item{\eqn{S}{S} is the total number of species.}
   \item{\eqn{n_1}{n[1]} and \eqn{n_2}{n[2]} are the number of singletons and doubletons, respectively.}
-  \item{\eqn{S_{abund}}{S[abund]}, \eqn{S_{rare}}{S[rare]}, \eqn{C_{rare}}{C[rare]}, and \eqn{F_1}{F[1]} are parameters derived from the data.}
+  \item{\eqn{S_{abund}}{S[abund]}, \eqn{S_{rare}}{S[rare]}, \eqn{C_{ace}}{C[ace]}, and \eqn{F_1}{F[1]} are parameters derived from the data.}
 }
 }
 \examples{

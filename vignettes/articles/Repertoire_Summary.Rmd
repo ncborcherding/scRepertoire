@@ -49,22 +49,27 @@ combined.TCR <- combineTCR(contig_list,
 A visualization of the relative usage of genes of the TCR or BCR, using `vizGenes()`. There is some functional crossover between `vizGenes()` and two functions below called  `percentGenes()` and `percentVJ()`. But `vizGenes()` is more adaptable to allow for comparisons across chains, scaling, etc. 
 
 **x.axis**  
-+ Gene segment to separate the x-axis, such as "TRAV", "TRBD", "IGKJ"
 
-**y.axis**  
-+ Gene segment or categorical variable to visualize along the y-axis
+* Gene segment to separate the x-axis, such as "TRAV", "TRBD", "IGKJ"
+
+**y.axis** 
+
+* Gene segment or categorical variable to visualize along the y-axis
 
 **plot**  
-+ "barplot" for a bar chart  
-+ "heatmap" for a heatmap  
+
+* "barplot" for a bar chart  
+* "heatmap" for a heatmap  
 
 **scale**  
-+ TRUE to scale the graph by number of genes per sample  
-+ FALSE to report raw numbers  
+
+* TRUE to scale the graph by number of genes per sample  
+* FALSE to report raw numbers  
 
 **order**  
-+ "gene" to order by gene name  
-+ "variance" to order by variance between the separate variable categories  
+
+* "gene" to order by gene name  
+* "variance" to order by variance between the separate variable categories  
 
 ```{r tidy = FALSE}
 vizGenes(combined.TCR, 
@@ -105,7 +110,7 @@ vizGenes(combined.TCR[c(1,2)],
 
 ## percentAA
 
-Quantify the proportion of amino acids along the cdr3 sequence with `percentAA()`. By default, the function will pad the sequences with NAs up to the maximum of **aa.length**. Sequences longer than **aa.length** will be removed before visualization. 
+Quantify the proportion of amino acids along the cdr3 sequence with `percentAA()`. By default, the function will pad the sequences with NAs up to the maximum of **aa.length**. Sequences longer than **aa.length** will be removed before visualization **(default aa.length = 20)**. 
 
 ```{r, message = FALSE, tidy = FALSE}
 percentAA(combined.TCR, 
@@ -180,10 +185,12 @@ ggplot(df, aes(x = PC1, y = PC2)) +
 Another quantification of the composition of the CDR3 sequence is to define motifs by sliding across the amino acid or nucleotide sequences at set intervals resulting in substrings or kmers. 
 
 **motif.length**  
-Numerical value for the length of the kmer.
+
+* Numerical value for the length of the kmer.
 
 **top.motifs**  
-Display the most variable genes determined by mean absolute deviation.
+
+* Display the most variable genes determined by mean absolute deviation (MAD).
 
 ```{r tidy = FALSE}
 percentKmer(combined.TCR, 

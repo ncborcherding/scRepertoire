@@ -35,7 +35,8 @@ e.g. "both", "TRA", "TRG", "IGH", "IGL".}
 
 \item{clones}{The specific clonal sequences of interest.}
 
-\item{top.clones}{The top number of clone sequences per group.}
+\item{top.clones}{The top number of clonal sequences per group.
+(e.g., top.clones = 5)}
 
 \item{highlight.clones}{Clonal sequences to highlight, if present, 
 all other clones returned will be grey.}

@@ -56,14 +56,15 @@ scRep_example <- combineExpression(combined.TCR,
 
 ## clonalCluster
 
-The nucleotide or amino acid sequences of the chains can be used to cluster clonotypes by examining the edit distance of the sequences. This approach is underlying the `combineBCR()` function but now can be applied to the B or T cell receptors at the level of nucleotides (**sequence** = "nt) or amino acids (**sequence** = "aa). It will add a cluster to the end of each list element by generating a network connected by the similarity in sequence. This network is directed by the threshold variable, where 0.85 is the normalized mean edit distance.
+The nucleotide or amino acid sequences of the chains can be used to cluster clonotypes by examining the edit distance of the sequences. This approach is underlying the `combineBCR()` function but now can be applied to the B or T cell receptors at the level of nucleotides (**sequence = "nt"**) or amino acids (**sequence = "aa"**). It will add a cluster to the end of each list element by generating a network connected by the similarity in sequence. This network is directed by the **threshold** variable, where 0.85 is the normalized mean edit distance.
 
-Edit-distance based clusters will have the following format:   
-* [chain:] + :Cluster + [number]  [e.g., TRA:Cluster.1]
+Edit-distance based clusters will have the following format: 
 
-*Cluster* denotes if the cluster was called using the normalized Levenshtein distance, which takes the edit distance calculated between 2 sequences and divides that by the mean of the sequence lengths. Unconnected sequences will have *NA* values.
+* [chain:] + :Cluster + [number]  e.g., TRA:Cluster.1
 
-### Basic use: 
+**Cluster** denotes if the cluster was called using the normalized Levenshtein distance, which takes the edit distance calculated between 2 sequences and divides that by the mean of the sequence lengths. Unconnected sequences will have *NA* values.
+
+### Basic use
 
 ```{r tidy = FALSE}
 sub_combined <- clonalCluster(combined.TCR[[2]], 
@@ -75,9 +76,9 @@ sub_combined <- clonalCluster(combined.TCR[[2]],
 head(sub_combined[,c(1,2,13)])
 ```
 
-If performed over the number of samples, such as the list elements, **group.by** can used to calculate only the clusters on the setting of patient sample (**group.by** = "Patient") or tissue type (**group.by** = "Type"). This will add the selected group to the beginning of the cluster designation. We can also call ```clonalCluster()``` directly on a Single-Cell Object.
+### Clustering with a single-cell object
 
-### Clustering with attached data: 
+If performed over the number of samples, such as the list elements, **group.by** can used to calculate only the clusters on the setting of patient sample (**group.by** = "Patient") or tissue type (**group.by** = "Type"). This will add the selected group to the beginning of the cluster designation. We can also call ```clonalCluster()``` directly on a Single-Cell Object.
 
 ```{r tidy = FALSE}
 #Adding patient information
@@ -100,7 +101,7 @@ DimPlot(scRep_example, group.by = "TRA_cluster") +
   NoLegend()
 ```
 
-Using ```clonalCluster()```, we can also return an igraph object of all the related sequences using **exportGraph** = TRUE. The returned igraph object contains only the sequences that have at least one connection with another sequence. The igraph can then be directly visualized (below) or used for downstream analysis (see the igraph [website](https://r.igraph.org/). 
+Using ```clonalCluster()```, we can also return an igraph object of all the related sequences using **exportGraph** = TRUE. The returned igraph object contains only the sequences that have at least one connection with another sequence. The igraph can then be directly visualized (below) or used for downstream analysis (see the igraph [website](https://r.igraph.org/)). 
 
 ### Returning an igraph object:
 

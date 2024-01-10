@@ -29,9 +29,9 @@
 #' @param reduction The name of the dimensional reduction of the 
 #' single-cell object.
 #' @param group.by The variable to use for the nodes. 
-#' @param filter.clones Use to select the top n clones (eg, \strong{filter.clones} 
+#' @param filter.clones Use to select the top n clones (e.g., \strong{filter.clones} 
 #' = 2000) or n of clones based on the minimum number of all the comparators 
-#' (eg, \strong{filter.clone} = "min").
+#' (e.g., \strong{filter.clone} = "min").
 #' @param filter.identity Display the network for a specific level of the 
 #' indicated identity.
 #' @param filter.proportion Remove clones from the network below a specific

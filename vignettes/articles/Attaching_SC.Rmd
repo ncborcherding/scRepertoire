@@ -1,11 +1,11 @@
 ---
-title: "Combining Contigs into Clones"
+title: "Combining Clones and Single-Cell Objects"
 date: 'Compiled: `r format(Sys.Date(), "%B %d, %Y")`'
 output: rmarkdown::html_vignette
 theme: united
 df_print: kable
 vignette: >
-  %\VignetteIndexEntry{Combining Contigs into Clones}
+  %\VignetteIndexEntry{Combining Clones and Single-Cell Objects}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -49,9 +49,9 @@ combined.TCR <- combineTCR(contig_list,
 googledrive::drive_download("https://drive.google.com/file/d/1_YuRraDyg8UgF3oasjF0-jgPnwox-B24/view?usp=share_link", overwrite = TRUE)
 ```
 
-The data in the scRepertoire package is derived from a [study](https://pubmed.ncbi.nlm.nih.gov/33622974/) of acute respiratory stress disorder in the context of bacterial and COVID-19 infections. The internal single cell data (`scRep_example()`) built in to scRepertoire is randomly sampled 500 cells from the fully integrated Seurat object to minimize the package size. However for the purpose of the vignette we will use the full single-cell object with almost 13,000 cells. We will use both Seurat and Single Cell Experiment (SCE) with scater to perform further visualizations in tandem. 
+The data in the scRepertoire package is derived from a [study](https://pubmed.ncbi.nlm.nih.gov/33622974/) of acute respiratory stress disorder in the context of bacterial and COVID-19 infections. The internal single cell data (`scRep_example()`) built in to scRepertoire is randomly sampled 500 cells from the fully integrated Seurat object to minimize the package size. However, for the purpose of the vignette we will use the full single-cell object with 30,000 cells. We will use both Seurat and Single-Cell Experiment (SCE) with scater to perform further visualizations in tandem. 
 
-## Quick Pre-processing of the Single-Cell Object
+## Preprocessed Single-Cell Object
 
 ```{r tidy = FALSE}
 scRep_example <- readRDS("scRep_example_full.rds")
@@ -69,9 +69,11 @@ After processing the contig data into clones via `combineBCR()` or `combineTCR()
 
 ### Calculating cloneSize
 
-Part of `combineExpression()` is calculating the clonal frequency and proportion, placing each clone into groups called **cloneSize**. The default **cloneSize** argument uses the following bins: c(Rare = 1e-4, Small = 0.001, Medium = 0.01, Large = 0.1, Hyperexpanded = 1), which can be modified to include more/less bins or different names. Clonal frequency and proportion is dependent on the repertoires being compared, which we can modify the calculation using the **group.by** parameter, such as grouping by the *Patient* variable from above. If **group.by** is not set, `combineExpression()` will calculate clonal frequency, proportion, and **cloneSize** as a function of individual sequencing runs. In addition, **cloneSize** can use the frequency of clones when **proportion** = FALSE. 
+Part of `combineExpression()` is calculating the clonal frequency and proportion, placing each clone into groups called **cloneSize**. The default **cloneSize** argument uses the following bins: c(Rare = 1e-4, Small = 0.001, Medium = 0.01, Large = 0.1, Hyperexpanded = 1), which can be modified to include more/less bins or different names. 
 
-We can check the default cloneSize groupings using the Single-Cell Experiment object we just created above with using **group.by** set to the *sample* variable used in ```combineTCR()``` :
+Clonal frequency and proportion is dependent on the repertoires being compared, which we can modify the calculation using the **group.by** parameter, such as grouping by the *Patient* variable from above. If **group.by** is not set, `combineExpression()` will calculate clonal frequency, proportion, and **cloneSize** as a function of individual sequencing runs. In addition, **cloneSize** can use the frequency of clones when **proportion** = FALSE. 
+
+We can look at the default cloneSize groupings using the Single-Cell Experiment object we just created above with using **group.by** set to the *sample* variable used in ```combineTCR()``` :
 
 ```{r tidy = FALSE}
 sce <- combineExpression(combined.TCR, 
@@ -87,7 +89,7 @@ plotUMAP(sce, colour_by = "cloneSize") +
     scale_color_manual(values=rev(colorblind_vector[c(1,3,5,7)]))
 ```
 
-Alternatively, if we want **cloneSize** to be based on the frequency of the clone, we can set **proportion** = FALSE and we will need to change the **cloneSize** bins to integers. If we have not inspected our clone data, setting the upper limit of the clonal frequency might be difficult -  ```combineExpression()``` will automatically adjust the upper limit to fit the distribution of the frequencies. To demonstrate this, check out the Seurat object below: 
+Alternatively, if we want **cloneSize** to be based on the frequency of the clone, we can set **proportion** = FALSE and we will need to change the **cloneSize** bins to integers. If we have not inspected our clone data, setting the upper limit of the clonal frequency might be difficult - ```combineExpression()``` will automatically adjust the upper limit to fit the distribution of the frequencies. To demonstrate this, check out the Seurat object below: 
 
 ```{r tidy = FALSE}
 scRep_example <- combineExpression(combined.TCR, 
@@ -105,7 +107,9 @@ Seurat::DimPlot(scRep_example, group.by = "cloneSize") +
 
 If we have TCR/BCR enrichment or want to add info for gamma-delta and alpha-beta T cells, we can make a single list and use ```combineExpression()```. 
 
-**Major note** if there are duplicate barcodes (if a cell has both Ig and TCR), the immune receptor information will not be added. It might be worth checking cluster identities and removing incongruent barcodes in the products of ```combineTCR()``` and ```combineBCR()```. As an anecdote, the [testing data](https://support.10xgenomics.com/single-cell-vdj/datasets/6.0.1/SC5v2_Melanoma_5Kcells_Connect_single_channel_SC5v2_Melanoma_5Kcells_Connect_single_channel) we used to improve this function had 5-6% of barcode overlap.
+**Major note** if there are duplicate barcodes (if a cell has both Ig and TCR), the immune receptor information will not be added. It might be worth checking cluster identities and removing incongruent barcodes in the products of ```combineTCR()``` and ```combineBCR()```. 
+
+As an anecdote, the [testing data](https://support.10xgenomics.com/single-cell-vdj/datasets/6.0.1/SC5v2_Melanoma_5Kcells_Connect_single_channel_SC5v2_Melanoma_5Kcells_Connect_single_channel) we used to improve this function had 5-6% of barcode overlap.
 
 ```{r, eval=FALSE, tidy = FALSE}
 #This is an example of the process, which will not be evaluated during knit

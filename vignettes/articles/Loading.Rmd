@@ -44,7 +44,10 @@ suppressMessages(library(scRepertoire))
 
 ### What data to load into scRepertoire?
 
-scRepertoire functions using the **filtered_contig_annotations.csv** output from the 10x Genomics Cell Ranger. This file is located in the ./outs/ directory of the VDJ alignment folder. To generate a list of contigs to use for scRepertoire, just 1) load the **filtered_contig_annotations.csv** for each of the samples and then 2) make a list. For example:
+scRepertoire functions using the **filtered_contig_annotations.csv** output from the 10x Genomics Cell Ranger. This file is located in the ./outs/ directory of the VDJ alignment folder. To generate a list of contigs to use for scRepertoire:  
+
+* load the **filtered_contig_annotations.csv** for each of the samples.  
+* make a list in the R environment.  
 
 ```{r, eval=FALSE}
 S1 <- read.csv(".../Sample1/outs/filtered_contig_annotations.csv")
