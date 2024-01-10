@@ -1,5 +1,5 @@
 
-# scRepertoire VERSION 2.0.0 (2023-11-4)
+# scRepertoire VERSION 2.0.0 (2024-01-10)
 
 ## NEW FEATURES
 
@@ -16,7 +16,7 @@
 * Changed lengthContigs to ```clonalLength()```
 * Changed occupiedscRepertoire to ```clonalOccupy()```
 * Changed abundanceContig to ```clonalAbundance()```
-* Changed alluvialClonotypes to ```clonalClones()```
+* Changed alluvialClonotypes to ```alluvialClones()```
 * Added features to ```clonalCompare()``` to allow for highlighting sequences, relabeling clonotypes.
 
 ## UNDERLYING CHANGES
@@ -34,6 +34,10 @@
 * Made GitHub.io website for support/vignettes/FAQ
 * Restructured NEWS Tracking
 * Added testthat for all exported and internal functions
+* Fixed issue with ```clonalQuant()``` for instance of **scale** = FALSE and **group.by** being set.
+* ```clonalDiversity()``` no longer automatically orders samples.
+* Remove **order** parameter from ```clonalQuant()```, ```clonalLength()```, and ```clonalAbundance()```
+* **x.axis** parameter in ```clonalDiversity()``` separated from **group.by** parameter
 
 ## DEPRECATED AND DEFUNCT
 

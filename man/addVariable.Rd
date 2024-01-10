@@ -2,14 +2,15 @@
 % Please edit documentation in R/addVariable.R
 \name{addVariable}
 \alias{addVariable}
-\title{Adding variables after the combination of clonotypes.}
+\title{Adding variables after combineTCR() or combineBCR()}
 \usage{
 addVariable(input.data, variable.name = NULL, variables = NULL)
 }
 \arguments{
-\item{input.data}{The product of \code{\link{combineTCR}} or \code{\link{combineBCR}}.}
+\item{input.data}{The product of \code{\link{combineTCR}} or 
+\code{\link{combineBCR}}.}
 
-\item{variable.name}{The column header to add.}
+\item{variable.name}{The new column name/header.}
 
 \item{variables}{The exact values to add to each element of the list.}
 }
@@ -19,9 +20,10 @@ input.data list with the variable column added to each element.
 \description{
 This function adds variables to the product of \code{\link{combineTCR}}, 
 or \code{\link{combineBCR}} to be used in later visualizations. 
-For each element, the function will add a column (labeled by name) 
-with the variable. The length of the variable parameter needs to match
-the length of the combined object.
+For each element, the function will add a column (labeled by 
+\strong{variable.name}) with the variable. The length of the 
+\strong{variables} parameter needs to match the length of the 
+combined object.
 }
 \examples{
 combined <- combineTCR(contig_list, 

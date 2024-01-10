@@ -11,24 +11,26 @@ createHTOContigList(contig, sc.data, group.by = NULL, multi.run = NULL)
 
 \item{sc.data}{The Seurat or Single-Cell Experiment object.}
 
-\item{group.by}{One or more meta data headers to create the contig list based on. 
-If more than one header listed, the function combines them into a single variable.}
+\item{group.by}{One or more meta data headers to create the contig 
+list based on. If more than one header listed, the function combines 
+them into a single variable.}
 
-\item{multi.run}{If using integrated single-cell object, the meta data variable
-that indicates the sequencing run.}
+\item{multi.run}{If using integrated single-cell object, the meta data 
+variable that indicates the sequencing run.}
 }
 \value{
-Returns a list of contigs as input for \code{\link{combineBCR}} or \code{\link{combineTCR}}
+Returns a list of contigs as input for \code{\link{combineBCR}} 
+or \code{\link{combineTCR}}
 }
 \description{
 This function reprocess and forms a list of contigs for downstream analysis 
 in scRepertoire, \code{\link{createHTOContigList}} take the filtered contig 
-annotation output and the single-cell RNA object to create the list. If using an 
-integrated single-cell object, it is recommended to split the object by sequencing run 
-and remove extra prefixes and suffixes on the barcode before using 
-\code{\link{createHTOContigList}}. Alternatively, the variable \strong{multi.run} can 
-be used to separate a list of contigs by a meta data variable. This may have 
-issues with the repeated barcodes.
+annotation output and the single-cell RNA object to create the list. 
+If using an integrated single-cell object, it is recommended to split the 
+object by sequencing run and remove extra prefixes and suffixes on the 
+barcode before using \code{\link{createHTOContigList}}. Alternatively, 
+the variable \strong{multi.run} can be used to separate a list of contigs
+by a meta data variable. This may have issues with the repeated barcodes.
 }
 \examples{
 \dontrun{

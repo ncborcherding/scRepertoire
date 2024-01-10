@@ -1,15 +1,13 @@
 #' Hierarchical clustering of clones using Gamma-GPD spliced threshold model
 #'
-#' This function produces a hierarchical clustering of clonotypes by sample 
-#' using discrete gamma-GPD spliced threshold 
-#' model. If using this model please read and cite 
-#' \href{https://pubmed.ncbi.nlm.nih.gov/30485278/}{PMID: 30485278}.
+#' This function produces a hierarchical clustering of clones by sample 
+#' using discrete gamma-GPD spliced threshold model. If using this 
+#' model please read and cite powerTCR (more info available at 
+#' \href{https://pubmed.ncbi.nlm.nih.gov/30485278/}{PMID: 30485278}).
 #' 
 #' @details
 #' The probability density function (pdf) for the \strong{Generalized Pareto Distribution (GPD)} is given by:
-#' \deqn{f(x|\mu, \sigma, \xi) = \frac{1}{\sigma} \left(1 + \xi \left( \frac{x - \mu}{\sigma} \right) \right)^{-\left( \frac{1}{\xi} + 1 \right)}}{
-#' f(x|mu, sigma, xi) = 1/sigma * (1 + xi * ((x - mu)/sigma))^(-1/xi - 1)
-#' }
+#'  \deqn{f(x|\mu, \sigma, \xi) = \frac{1}{\sigma} \left( 1 + \xi \left( \frac{x - \mu}{\sigma} \right) \right)^{-\left( \frac{1}{\xi} + 1 \right)}}
 #' 
 #' Where:
 #' \itemize{
@@ -20,9 +18,7 @@
 #' }
 #'               
 #' The probability density function (pdf) for the \strong{Gamma Distribution} is given by:
-#' \deqn{f(x|\alpha, \beta) = \frac{x^{\alpha-1} e^{-x/\beta}}{\beta^\alpha \Gamma(\alpha)}}{
-#' f(x|alpha, beta) = (x^(alpha-1) * exp(-x/beta)) / (beta^alpha * Gamma(alpha))
-#' }
+#' \deqn{f(x|\alpha, \beta) = \frac{x^{\alpha-1} e^{-x/\beta}}{\beta^\alpha \Gamma(\alpha)}}
 #' 
 #' Where:
 #' \itemize{
@@ -39,11 +35,12 @@
 #'                                     "P19B","P19L", "P20B", "P20L"))
 #' clonalSizeDistribution(combined, cloneCall = "strict", method="ward.D2")
 #'
-#' @param input.data The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
-#'  \code{\link{combineExpression}}.
-#' @param cloneCall How to call the clonotype - VDJC gene (gene),
-#' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
-#' VDJC gene + CDR3 nucleotide (strict).
+#' @param input.data The product of \code{\link{combineTCR}}, 
+#' \code{\link{combineBCR}}, or \code{\link{combineExpression}}.
+#' @param cloneCall How to call the clone - VDJC gene (\strong{gene}), 
+#' CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
+#' VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable 
+#' in the data. 
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL".
 #' @param threshold Numerical vector containing the thresholds 
@@ -51,7 +48,8 @@
 #' @param method The clustering parameter for the dendrogram.
 #' @param group.by The variable to use for grouping.
 #' @param exportTable Returns the data frame used for forming the graph.
-#' @param palette Colors to use in visualization - input any \link[grDevices]{hcl.pals}.
+#' @param palette Colors to use in visualization - input any 
+#' \link[grDevices]{hcl.pals}.
 #' @import ggplot2 
 #' @importFrom dplyr bind_rows
 #' @importFrom ggdendro dendro_data segment label
@@ -106,16 +104,26 @@ clonalSizeDistribution <- function(input.data,
   names(list) <- names(input.data)
   grid <- 0:10000
   distances <- .get_distances(list, grid, modelType="Spliced")
-  mat_melt <- dendro_data(hclust(as.dist(distances), method = method), type = "rectangle")
+  mat_melt <- dendro_data(hclust(as.dist(distances), method = method), 
+                          type = "rectangle")
   
   #Plotting
   plot <- ggplot() + 
             geom_segment(data = segment(mat_melt), 
-                         aes(x = x, y = y, xend = xend, yend = yend)) +
+                         aes(x = x, 
+                             y = y, 
+                             xend = xend, 
+                             yend = yend)) +
             geom_text(data = label(mat_melt), 
-                              aes(x = x, y = -0.02, label = label, hjust = 0), size = 4) +
+                              aes(x = x, y = -0.02, 
+                                  label = label, 
+                                  hjust = 0), 
+                      size = 4) +
             geom_point(data = label(mat_melt), 
-                              aes(x = x, y = -0.01, color = as.factor(label)), size = 2) + 
+                              aes(x = x, 
+                                  y = -0.01, 
+                                  color = as.factor(label)), 
+                       size = 2) + 
             coord_flip() +
             scale_y_reverse(expand = c(0.2, 0)) + 
             scale_color_manual(values = .colorizer(palette, nrow(label(mat_melt)))) + 
@@ -325,10 +333,10 @@ pdiscgpd <- function(q, thresh, sigma, xi, phiu){
 }
 
 
-##----------------------------------------------------------------------------------
+##-----------------------------------------------------------
 ## negative log likelihood and parameter estimation functions
 ## for discrete truncated gamma and discrete gpd
-##----------------------------------------------------------------------------------
+##----------------------------------------------------------
 
 .discgammanll <- function(param, dat, thresh, phiu, shift=0){
   shape <- exp(param[1])
@@ -554,8 +562,8 @@ pdiscgpd <- function(q, thresh, sigma, xi, phiu){
     stop("alphap and alphaq must be greater than 0.")
   }
   
-  lower = min(grid)
-  upper = max(grid)
+  lower <- min(grid)
+  upper <- max(grid)
   
   out <- adaptIntegrate(.eval_desponds,
                         lowerLimit = lower, upperLimit = upper,

@@ -20,12 +20,13 @@ clonalCompare(
 )
 }
 \arguments{
-\item{input.data}{The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
-\code{\link{combineExpression}}.}
+\item{input.data}{The product of \code{\link{combineTCR}}, 
+\code{\link{combineBCR}}, or \code{\link{combineExpression}}.}
 
-\item{cloneCall}{How to call the clonotype - VDJC gene (gene), 
-CDR3 nucleotide (nt), CDR3 amino acid (aa),
-VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data.}
+\item{cloneCall}{How to call the clone - VDJC gene (\strong{gene}), 
+CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
+VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable 
+in the data.}
 
 \item{chain}{indicate if both or a specific chain should be used - 
 e.g. "both", "TRA", "TRG", "IGH", "IGL".}
@@ -34,7 +35,8 @@ e.g. "both", "TRA", "TRG", "IGH", "IGL".}
 
 \item{clones}{The specific clonal sequences of interest.}
 
-\item{top.clones}{The top number of clonotype sequences per group.}
+\item{top.clones}{The top number of clonal sequences per group.
+(e.g., top.clones = 5)}
 
 \item{highlight.clones}{Clonal sequences to highlight, if present, 
 all other clones returned will be grey.}
@@ -42,14 +44,17 @@ all other clones returned will be grey.}
 \item{relabel.clones}{Simplify the legend of the graph by returning
 clones that are numerically indexed.}
 
-\item{group.by}{If using a single-cell object, the column header .
-to group the new list. NULL will return clusters.}
+\item{group.by}{If using a single-cell object, the column header
+to group the new list. \strong{NULL} will return the active 
+identity or cluster.}
 
-\item{graph}{The type of graph produced, either "alluvial" or "area".}
+\item{graph}{The type of graph produced, either \strong{"alluvial"} 
+or \strong{"area"}.}
 
 \item{exportTable}{Returns the data frame used for forming the graph.}
 
-\item{palette}{Colors to use in visualization - input any \link[grDevices]{hcl.pals}.}
+\item{palette}{Colors to use in visualization - input any 
+\link[grDevices]{hcl.pals}.}
 }
 \value{
 ggplot of the proportion of total sequencing read of 
@@ -57,10 +62,11 @@ selecting clones
 }
 \description{
 This function produces an alluvial or area graph of the proportion of 
-the indicated clones for all or selected samples. clones can be 
-selected using the clones parameter with the specific sequence of 
-interest or using the number parameter with the top n clones by 
-proportion to be visualized.
+the indicated clones for all or selected samples (using the 
+\strong{samples} parameter). Individual clones can be selected 
+using the \strong{clones} parameter with the specific sequence of 
+interest or using the \strong{top.clones} parameter with the top 
+n clones by proportion to be visualized.
 }
 \examples{
 #Making combined contig data

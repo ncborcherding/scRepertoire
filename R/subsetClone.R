@@ -10,8 +10,9 @@
 #'                                     "P19B","P19L", "P20B", "P20L"))
 #' subset <- subsetClones(combined, name = "sample", variables = c("P17B"))
 #'
-#' @param input.data The product of \code{\link{combineTCR}} or \code{\link{combineBCR}}.
-#' @param name The column header you'd like to use to subset.
+#' @param input.data The product of \code{\link{combineTCR}} or 
+#' \code{\link{combineBCR}}.
+#' @param name The column header/name to use for subsetting.
 #' @param variables The values to subset by, must be in the names(input.data).
 
 #' @export

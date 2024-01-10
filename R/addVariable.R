@@ -1,10 +1,11 @@
-#' Adding variables after the combination of clonotypes.
+#' Adding variables after combineTCR() or combineBCR()
 #'
 #' This function adds variables to the product of \code{\link{combineTCR}}, 
 #' or \code{\link{combineBCR}} to be used in later visualizations. 
-#' For each element, the function will add a column (labeled by name) 
-#' with the variable. The length of the variable parameter needs to match
-#' the length of the combined object.
+#' For each element, the function will add a column (labeled by 
+#' \strong{variable.name}) with the variable. The length of the 
+#' \strong{variables} parameter needs to match the length of the 
+#' combined object.
 #'
 #' @examples
 #' combined <- combineTCR(contig_list, 
@@ -14,8 +15,9 @@
 #'                         variable.name = "Type", 
 #'                         variables = rep(c("B", "L"), 4))
 #'
-#' @param input.data The product of \code{\link{combineTCR}} or \code{\link{combineBCR}}.
-#' @param variable.name The column header to add.
+#' @param input.data The product of \code{\link{combineTCR}} or 
+#' \code{\link{combineBCR}}.
+#' @param variable.name The new column name/header.
 #' @param variables The exact values to add to each element of the list.
 #' @export
 #' @concept Loading_and_Processing_Contigs

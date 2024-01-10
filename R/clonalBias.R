@@ -1,9 +1,9 @@
-#' Examine clonotype bias
+#' Examine skew of clones towards a cluster or compartment
 #' 
 #' The metric seeks to quantify how individual clones are skewed towards 
-#' a specific cellular compartment or cluster. A clonotype bias of \emph{1}* - 
-#' indicates that a clonotype is composed of cells from a single 
-#' compartment or cluster, while a clonotype bias of \emph{0} - matches the 
+#' a specific cellular compartment or cluster. A clone bias of \strong{1} - 
+#' indicates that a clone is composed of cells from a single 
+#' compartment or cluster, while a clone bias of \strong{0} - matches the 
 #' background subtype distribution. Please read and cite the following
 #' \href{https://pubmed.ncbi.nlm.nih.gov/35829695/}{manuscript} 
 #' if using \code{\link{clonalBias}}.
@@ -31,22 +31,24 @@
 #' 
 #' 
 #' @param sc.data The single-cell object after \code{\link{combineExpression}}.
-#' @param cloneCall How to call the clonotype - VDJC gene (gene), 
-#' CDR3 nucleotide (nt), CDR3 amino acid (aa),
-#' VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data. 
+#' @param cloneCall How to call the clone - VDJC gene (\strong{gene}), 
+#' CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
+#' VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable 
+#' in the data. 
 #' @param group.by The variable to use for calculating bias
 #' @param split.by The variable to use for calculating the baseline frequencies.
 #' For example, "Type" for lung vs peripheral blood comparison 
 #' @param n.boots number of bootstraps to downsample.
-#' @param min.expand clonotype frequency cut off for the purpose of comparison.
+#' @param min.expand clone frequency cut off for the purpose of comparison.
 #' @param exportTable Returns the data frame used for forming the graph.
-#' @param palette Colors to use in visualization - input any \link[grDevices]{hcl.pals}.
+#' @param palette Colors to use in visualization - input any 
+#' \link[grDevices]{hcl.pals}.
 #' @import ggplot2
 #' @importFrom quantreg rqss
 #' @importFrom stringr str_sort
 #' @export
 #' @concept SC_Functions
-#' @return ggplot scatter plot with clonotype bias
+#' @return ggplot scatter plot with clone bias
 clonalBias <- function(sc.data, 
                        cloneCall="strict", 
                        split.by=NULL, 
@@ -66,12 +68,13 @@ clonalBias <- function(sc.data,
   df_shuffle.list <- list()
   #Bootstrapping
   for (ii in seq_len(n.boots)) {
-    df_shuffle.list[[ii]] <- .get_clono_bias(sc.data, split.by = split.by,
-                                            group.by = group.by, 
-                                            cloneCall=cloneCall, 
-                                            min.expand=min.expand, 
-                                            do.shuffle = TRUE, 
-                                            seed=ii)
+    df_shuffle.list[[ii]] <- .get_clono_bias(sc.data, 
+                                             split.by = split.by,
+                                             group.by = group.by, 
+                                             cloneCall=cloneCall, 
+                                             min.expand=min.expand, 
+                                             do.shuffle = TRUE, 
+                                             seed=ii)
   }
   df_shuffle <- Reduce(rbind, df_shuffle.list)
   
@@ -82,7 +85,8 @@ clonalBias <- function(sc.data,
               std = sd(bias))
   
   corrected_p <- 1-(0.05/nrow(bias))
-  bias$Top_state <- factor(bias$Top_state, str_sort(unique(bias$Top_state), numeric = TRUE))
+  bias$Top_state <- factor(bias$Top_state, 
+                           str_sort(unique(bias$Top_state), numeric = TRUE))
   
   #Calculating Bias Z-score
   bias$Z.score <- NA
@@ -114,7 +118,9 @@ clonalBias <- function(sc.data,
   
   #else, return the plot 
   ggplot(bias, aes(x=ncells,y=bias)) + 
-    geom_point(aes(fill=Top_state, size = dotSize), shape = 21, stroke = 0.25) + 
+    geom_point(aes(fill=Top_state, size = dotSize), 
+               shape = 21, 
+               stroke = 0.25) + 
     stat_quantile(data=df_shuffle, 
                          quantiles = c(corrected_p), 
                          method = "rqss", 
@@ -122,7 +128,8 @@ clonalBias <- function(sc.data,
                          color = "black", 
                          lty = 2) + 
     #This is ridiculous way to get around the internal ggplot "style"-based warnings
-    scale_size_continuous(breaks = as.vector(unique(bias$dotSize)), labels = as.vector(unique(bias$cloneSize))) + 
+    scale_size_continuous(breaks = as.vector(unique(bias$dotSize)), 
+                          labels = as.vector(unique(bias$cloneSize))) + 
     scale_fill_manual(values = .colorizer(palette,  length(unique(bias[,"Top_state"])))) + 
     theme_classic() +
     labs(size = "cloneSize", fill = "Group") + 

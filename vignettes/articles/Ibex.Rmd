@@ -45,6 +45,7 @@ suppressMessages(library(viridis))
 suppressMessages(library(dplyr))
 ```
 
+# Getting Started
 
 The idea behind Ibex is to combine BCR CDR3 amino acid information with phenotypic RNA/protein data to direct the use of single-cell sequencing towards antigen-specific discoveries.  This is a growing field - specifically [TESSA](https://github.com/jcao89757/TESSA) uses amino acid characteristics and autoencoder as a means to get a dimensional reduction. Another option is [CoNGA](https://github.com/phbradley/conga), which produces an embedding using BCR and RNA. Ibex was designed to make a customizable approach to this combined approach using R.
 
@@ -58,33 +59,38 @@ devtools::install_github("ncborcherding/Ibex")
 
 ## The Data Set
 
-To show the multiple options of Ibex, the example data is derived from [this manuscript](https://pubmed.ncbi.nlm.nih.gov/33891889/) - multimodal single-cell characterization of COVID19-associated multisystem inflammatory syndrome in children. The data example built into the package (ibex_example) is derived from randomly sampling cells from Patient 1.
+To show the multiple options of Ibex, the example data is derived from [this manuscript](https://pubmed.ncbi.nlm.nih.gov/33891889/), multimodal single-cell characterization of COVID19-associated multisystem inflammatory syndrome in children. The data example built into the package (**ibex_example**) is derived from randomly sampling cells from Patient 1.
 
 ```{r tidy = FALSE}
 SeuratObj <- readRDS(url("https://www.borch.dev/uploads/data/Ibex_FullExample.rds"))
 ```
 
+# Running Ibex
 
 ## Ibex.matrix Function
 
 Ibex has 2 major functions - the first being ```Ibex.matrix()```, which is the backbone of the algorithm and returns the encoded values based on the selection of variables. Unlike ```runIbex()``` below, ```Ibex.matrix()``` does not filter the input for only B cells with attached BCR data. In addition, ```Ibex.matrix()``` is compatible with the list output from the ```combineBCR()``` function from the [scRepertoire](https://github.com/ncborcherding/scRepertoire) R package, while ```runIbex()``` must be performed on a single-cell object.
 
 **chains**  
+
 * "Heavy" for Ig Heavy Chain  
 * "Light" for Ig Light Chain  
 
 **method**  
+
 * "encoder" for a convolution neural network (CNN) based encoding.  
 * "geometric" for a geometric transformation.    
 
 **encoder.model**  
+
 * "VAE" for a variational autoencoder  
 * "AE" for a traditional autoencoder  
 
-**encoder.input**  
+**encoder.input** 
+
 * "AF" to use Atchley factors  
 * "KF" to use Kidera factors  
-* "both" to use both  
+* "both" to use both  Atchley and Kidera factors
 * "OHE" for a One Hot Autoencoder
 
 **theta**  
@@ -189,7 +195,7 @@ plot5 + plot6 + plot7
 
 # CoNGA Reduction
 
-Recent [work](https://pubmed.ncbi.nlm.nih.gov/34426704/) has proposed using representative cells for the characterization of clonotype and gene expression relationships. In order to generate these representative cells, either a mean expression across a clone or using the PCA dimensional space to identify a single cell that has the minimum euclidean distance across a clone. 
+Recent [work](https://pubmed.ncbi.nlm.nih.gov/34426704/) has proposed using representative cells for the characterization of clone and gene expression relationships. In order to generate these representative cells, either a mean expression across a clone or using the PCA dimensional space to identify a single cell that has the minimum euclidean distance across a clone. 
 
 In order to generate a single-cell object based on the CoNGA approach, Ibex offers the function ```CoNGAfy()```. For **method**, select either "mean" or "dist" as described above. After performing ```CoNGAfy()```, the user can use any of the above reduction strategies. 
 

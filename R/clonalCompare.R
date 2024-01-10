@@ -1,10 +1,11 @@
 #' Demonstrate the difference in clonal proportion between clones
 #'
 #' This function produces an alluvial or area graph of the proportion of 
-#' the indicated clones for all or selected samples. clones can be 
-#' selected using the clones parameter with the specific sequence of 
-#' interest or using the number parameter with the top n clones by 
-#' proportion to be visualized. 
+#' the indicated clones for all or selected samples (using the 
+#' \strong{samples} parameter). Individual clones can be selected 
+#' using the \strong{clones} parameter with the specific sequence of 
+#' interest or using the \strong{top.clones} parameter with the top 
+#' n clones by proportion to be visualized. 
 #'
 #' @examples
 #' #Making combined contig data
@@ -16,25 +17,30 @@
 #'               samples = c("P17B", "P17L"), 
 #'               cloneCall="aa")
 #'
-#' @param input.data The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
-#'  \code{\link{combineExpression}}.
-#' @param cloneCall How to call the clonotype - VDJC gene (gene), 
-#' CDR3 nucleotide (nt), CDR3 amino acid (aa),
-#' VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data. 
+#' @param input.data The product of \code{\link{combineTCR}}, 
+#' \code{\link{combineBCR}}, or \code{\link{combineExpression}}.
+#' @param cloneCall How to call the clone - VDJC gene (\strong{gene}), 
+#' CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
+#' VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable 
+#' in the data. 
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL".
 #' @param samples The specific samples to isolate for visualization.
 #' @param clones The specific clonal sequences of interest.
-#' @param top.clones The top number of clonotype sequences per group.
+#' @param top.clones The top number of clonal sequences per group.
+#' (e.g., top.clones = 5)
 #' @param highlight.clones Clonal sequences to highlight, if present, 
 #' all other clones returned will be grey.
 #' @param relabel.clones Simplify the legend of the graph by returning
 #' clones that are numerically indexed.
-#' @param group.by If using a single-cell object, the column header .
-#' to group the new list. NULL will return clusters.
-#' @param graph The type of graph produced, either "alluvial" or "area".
+#' @param group.by If using a single-cell object, the column header
+#' to group the new list. \strong{NULL} will return the active 
+#' identity or cluster.
+#' @param graph The type of graph produced, either \strong{"alluvial"} 
+#' or \strong{"area"}.
 #' @param exportTable Returns the data frame used for forming the graph.
-#' @param palette Colors to use in visualization - input any \link[grDevices]{hcl.pals}.
+#' @param palette Colors to use in visualization - input any 
+#' \link[grDevices]{hcl.pals}.
 #' @import ggplot2
 #' @importFrom stringr str_sort
 #'
@@ -98,14 +104,15 @@ clonalCompare <- function(input.data,
   #Clones relabeling
   clones.returned <- as.vector(unique(Con.df[order(Con.df[,"Proportion"], decreasing = TRUE),"clones"]))
   if (relabel.clones) {
-    new.clones <- paste0("Clonotype: ", seq_len(length(clones.returned)))
+    new.clones <- paste0("Clone: ", seq_len(length(clones.returned)))
     names(new.clones) <- clones.returned
     #Isolated new clone names for highlight purposes
     if(!is.null(highlight.clones)) {
       highlight.clones <- unname(new.clones[which(names(new.clones) %in% highlight.clones)])
     }
     Con.df[,"clones"] <- new.clones[as.vector(Con.df[,"clones"])]
-    Con.df[,"clones"] <- factor(Con.df[,"clones"], levels = str_sort(unique(Con.df[,"clones"]), numeric = TRUE))
+    Con.df[,"clones"] <- factor(Con.df[,"clones"], 
+                                levels = str_sort(unique(Con.df[,"clones"]), numeric = TRUE))
     clones.returned <- as.vector(unique(Con.df[,"clones"]))
   }
   if (exportTable == TRUE) { 

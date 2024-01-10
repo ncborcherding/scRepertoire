@@ -3,7 +3,7 @@
 #' This function will allow for the visualizing the distribution 
 #' of the any VDJ and C gene of the TCR or BCR using heatmap or
 #' bar chart. This function requires assumes two chains were used in 
-#' defining clonotype, if not, it will default to the only chain 
+#' defining clone, if not, it will default to the only chain 
 #' present regardless of the chain parameter.
 #'
 #' @examples
@@ -17,18 +17,21 @@
 #'          y.axis = NULL,
 #'          plot = "heatmap")
 #'
-#' @param input.data The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
-#'  \code{\link{combineExpression}}.
-#' @param plot The type of plot to return - heatmap or barplot 
-#' @param x.axis Gene segments to separate the x-axis, such as "TRAV", "TRBD", "IGKJ".
-#' @param y.axis Variable to separate the y-axis, can be both categorical or other gene 
-#' gene segments, such as "TRAV", "TRBD", "IGKJ".
+#' @param input.data The product of \code{\link{combineTCR}}, 
+#' \code{\link{combineBCR}}, or \code{\link{combineExpression}}.
+#' @param plot The type of plot to return - heatmap or barplot. 
+#' @param x.axis Gene segments to separate the x-axis, such as "TRAV", 
+#' "TRBD", "IGKJ".
+#' @param y.axis Variable to separate the y-axis, can be both categorical 
+#' or other gene gene segments, such as "TRAV", "TRBD", "IGKJ".
 #' @param group.by Variable in which to group the diversity calculation.
-#' @param order Categorical variable to organize the x-axis, either "gene" or "variance"
-#' @param scale Converts the individual count of genes to proportion using the total 
-#' respective repertoire size 
+#' @param order Categorical variable to organize the x-axis, either 
+#' "gene" or "variance"
+#' @param scale Converts the individual count of genes to proportion using 
+#' the total respective repertoire size 
 #' @param exportTable Returns the data frame used for forming the graph.
-#' @param palette Colors to use in visualization - input any \link[grDevices]{hcl.pals}.
+#' @param palette Colors to use in visualization - input any 
+#' \link[grDevices]{hcl.pals}.
 #' @import ggplot2
 #' @importFrom stringr str_split
 #' @importFrom stats sd
@@ -132,7 +135,7 @@ vizGenes <- function(input.data,
              proportion = count / total) %>%
       as.data.frame() %>%
       na.omit()
-      colnames(mat)[1:2] <- c("y.axis", "x.axis")
+      colnames(mat)[seq_len(2)] <- c("y.axis", "x.axis")
       mat$n <- mat[,values]
       mat <- mat %>%
         group_by(y.axis, x.axis) %>%
@@ -184,7 +187,8 @@ vizGenes <- function(input.data,
 
 #Parsing the CTgene
 .select.gene <- function(df, position, label) {
-  chains <- c("TRAV" = 1, "TRBV" = 1, "TRGV" = 1, "TRDV" = 1, "IGHV" = 1, "IGLV" = 1, "IGKV" = 1,
+  chains <- c("TRAV" = 1, "TRBV" = 1, "TRGV" = 1, "TRDV" = 1, 
+              "IGHV" = 1, "IGLV" = 1, "IGKV" = 1,
               "TRAJ" = 2, "TRGJ" = 2, "IGKJ" = 2, "IKLJ" = 2,
               "TRBD" = 2, "TRDD" = 2, "IGHV" = 2, 
               "TRBJ" = 3, "TRDJ" = 2, "IGHJ" = 3)

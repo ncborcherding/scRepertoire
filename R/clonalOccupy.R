@@ -1,11 +1,11 @@
 #' Visualize the number of single cells with cloneSizes by cluster
 #'
-#' View the count of clonotypes frequency group in Seurat or SCE object 
-#' meta data after \code{\link{combineExpression}}. The visualization will take the 
-#' new meta data variable \strong{"cloneSize"} and plot the number of cells with
-#' each designation using a secondary variable, like cluster. Credit to 
-#' the idea goes to Drs. Carmona and Andreatta and their work with
-#' \href{https://github.com/carmonalab/ProjecTILs}{ProjectTIL}.
+#' View the count of clones frequency group in Seurat or SCE object 
+#' meta data after \code{\link{combineExpression}}. The visualization 
+#' will take the new meta data variable \strong{"cloneSize"} and 
+#' plot the number of cells with each designation using a secondary 
+#' variable, like cluster. Credit to the idea goes to Drs. Carmona 
+#' and Andreatta and their work with \href{https://github.com/carmonalab/ProjecTILs}{ProjectTIL}.
 #'
 #' @examples
 #' #Getting the combined contigs
@@ -25,19 +25,20 @@
 #' 
 #' @param sc.data The single-cell object after \code{\link{combineExpression}}.
 #' @param x.axis The variable in the meta data to graph along the x.axis.
-#' @param label Include the number of clonotype in each category by x.axis variable.
+#' @param label Include the number of clone in each category by x.axis variable.
 #' @param facet.by The column header used for faceting the graph.
 #' @param proportion Convert the stacked bars into relative proportion.
 #' @param na.include Visualize NA values or not.
 #' @param exportTable Exports a table of the data into the global 
 #' environment in addition to the visualization.
-#' @param palette Colors to use in visualization - input any \link[grDevices]{hcl.pals}.
+#' @param palette Colors to use in visualization - input any 
+#' \link[grDevices]{hcl.pals}.
 #' @importFrom dplyr %>% group_by mutate
 #' @importFrom reshape2 melt
 #' @import ggplot2
 #' @export
 #' @concept SC_Functions
-#' @return Stacked bar plot of counts of cells by clonotype frequency group
+#' @return Stacked bar plot of counts of cells by clone frequency group
 
 clonalOccupy <- function(sc.data, 
                          x.axis = "ident", 
@@ -72,26 +73,28 @@ clonalOccupy <- function(sc.data,
   col <- length(unique(meta[,"cloneSize"]))
   if(proportion) {
     plot <- ggplot(meta, aes(x = meta[,x.axis], y = prop, fill = cloneSize)) + 
-      geom_bar(stat = "identity", color = "black", lwd = 0.25) 
+              geom_bar(stat = "identity", color = "black", lwd = 0.25) 
     lab <- "Proportion of Cells"
     
   } else {
     plot <- ggplot(meta, aes(x = meta[,x.axis], y = value, fill = cloneSize)) + 
-      geom_bar(stat = "identity", color = "black", lwd = 0.25) 
+              geom_bar(stat = "identity", color = "black", lwd = 0.25) 
     lab <- "Single Cells"
     
   } 
   plot <- plot + 
-    theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
-    scale_fill_manual(values = rev(c(.colorizer(palette,col)))) + 
-    ylab(lab) + 
-    theme_classic() + 
-    theme(axis.title.x = element_blank())
+            theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
+            scale_fill_manual(values = rev(c(.colorizer(palette,col)))) + 
+            ylab(lab) + 
+            theme_classic() + 
+            theme(axis.title.x = element_blank())
   if (!is.null(facet.by)) {
-    plot <- plot + facet_grid(.~meta[,facet.by])
+    plot <- plot + 
+              facet_grid(.~meta[,facet.by])
   }
   if (label) {
-    plot <- plot + geom_text(aes(label = value), position = position_stack(vjust = 0.5))
+    plot <- plot + 
+              geom_text(aes(label = value), position = position_stack(vjust = 0.5))
   }
   plot
 }

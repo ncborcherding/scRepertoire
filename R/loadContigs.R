@@ -35,7 +35,8 @@
 #' @importFrom rjson fromJSON
 #' @export
 #' @concept Loading_and_Processing_Contigs
-#' @return List of contigs for compatibility  with \code{\link{combineTCR}} or \code{\link{combineBCR}}
+#' @return List of contigs for compatibility  with \code{\link{combineTCR}} or 
+#' \code{\link{combineBCR}}
 loadContigs <- function(input, 
                         format = "10X") {
   #Loading from directory, recursively

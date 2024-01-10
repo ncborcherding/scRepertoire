@@ -16,21 +16,26 @@
 #' clonalRarefaction(combined[c(1,2)], cloneCall = "gene", n.boots = 3)
 #'
 #'
-#' @param input.data The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
-#'  \code{\link{combineExpression}}.
-#' @param cloneCall How to call the clonotype - VDJC gene (gene), 
-#' CDR3 nucleotide (nt), CDR3 amino acid (aa),
-#' VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data. 
+#' @param input.data The product of \code{\link{combineTCR}}, 
+#' \code{\link{combineBCR}}, or \code{\link{combineExpression}}.
+#' @param cloneCall How to call the clone - VDJC gene (\strong{gene}), 
+#' CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
+#' VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable 
+#' in the data. 
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL".
 #' @param group.by The variable to use for grouping.
-#' @param plot.type sample-size-based rarefaction/extrapolation curve (\code{type = 1}); 
-#' sample completeness curve (\code{type = 2}); coverage-based rarefaction/extrapolation curve (\code{type = 3}).   
-#' @param hill.numbers The Hill numbers to be plotted out (0 - species richness, 1 - Shannon, 2 - Simpson)
-#' @param n.boots The number of bootstraps to downsample in order to get mean diversity.
+#' @param plot.type sample-size-based rarefaction/extrapolation curve 
+#' (\code{type = 1}); sample completeness curve (\code{type = 2}); 
+#' coverage-based rarefaction/extrapolation curve (\code{type = 3}).   
+#' @param hill.numbers The Hill numbers to be plotted out 
+#' (0 - species richness, 1 - Shannon, 2 - Simpson)
+#' @param n.boots The number of bootstraps to downsample in o
+#' rder to get mean diversity.
 #' @param exportTable Exports a table of the data into the global 
 #' environment in addition to the visualization.
-#' @param palette Colors to use in visualization - input any \link[grDevices]{hcl.pals}.
+#' @param palette Colors to use in visualization - input any 
+#' \link[grDevices]{hcl.pals}.
 #' 
 #' @importFrom iNEXT iNEXT ggiNEXT
 #' @import ggplot2

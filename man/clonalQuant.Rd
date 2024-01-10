@@ -2,7 +2,7 @@
 % Please edit documentation in R/clonalQuant.R
 \name{clonalQuant}
 \alias{clonalQuant}
-\title{Quantify the unique clonotypes}
+\title{Quantify the unique clones by group or sample}
 \usage{
 clonalQuant(
   input.data,
@@ -10,39 +10,38 @@ clonalQuant(
   chain = "both",
   scale = FALSE,
   group.by = NULL,
-  order = TRUE,
   exportTable = FALSE,
   palette = "inferno"
 )
 }
 \arguments{
-\item{input.data}{The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
-\code{\link{combineExpression}}.}
+\item{input.data}{The product of \code{\link{combineTCR}}, 
+\code{\link{combineBCR}}, or \code{\link{combineExpression}}.}
 
-\item{cloneCall}{How to call the clonotype - VDJC gene (gene), 
-CDR3 nucleotide (nt), CDR3 amino acid (aa),
-VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data.}
+\item{cloneCall}{How to call the clone - VDJC gene (\strong{gene}), 
+CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
+VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable 
+in the data.}
 
 \item{chain}{indicate if both or a specific chain should be used - 
 e.g. "both", "TRA", "TRG", "IGH", "IGL"}
 
-\item{scale}{Converts the graphs into percentage of unique clonotypes.}
+\item{scale}{Converts the graphs into percentage of unique clones.}
 
 \item{group.by}{The column header used for grouping.}
 
-\item{order}{Maintain the order of the list when plotting}
-
 \item{exportTable}{Returns the data frame used for forming the graph.}
 
-\item{palette}{Colors to use in visualization - input any \link[grDevices]{hcl.pals}.}
+\item{palette}{Colors to use in visualization - input any 
+\link[grDevices]{hcl.pals}.}
 }
 \value{
-ggplot of the total or relative unique clonotypes
+ggplot of the total or relative unique clones
 }
 \description{
-This function quantifies unique clonotypes. The unique clonotypes 
+This function quantifies unique clones. The unique clones 
 can be either reported as a raw output or scaled to the total number of 
-clonotypes recovered using the scale parameter.
+clones recovered using the scale parameter.
 }
 \examples{
 #Making combined contig data

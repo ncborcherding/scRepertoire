@@ -1,8 +1,8 @@
-#' Adding clonotype information to a single-cell object
+#' Adding clone information to a single-cell object
 #'
 #' This function adds the immune receptor information to the Seurat or 
 #' SCE object to the meta data. By default this function also calculates 
-#' the frequencies and proportion of the clonotypes by sequencing 
+#' the frequencies and proportion of the clones by sequencing 
 #' run (\strong{group.by} = NULL). To change how the frequencies/proportions
 #' are calculated, select a column header for the \strong{group.by} variable. 
 #' Importantly, before using \code{\link{combineExpression}} ensure the 
@@ -21,24 +21,27 @@
 #' #Using combineExpresion()
 #' scRep_example <- combineExpression(combined, scRep_example)
 #' 
-#' @param input.data The product of \code{\link{combineTCR}}, \code{\link{combineBCR}} or a list of 
+#' @param input.data The product of \code{\link{combineTCR}}, 
+#' \code{\link{combineBCR}} or a list of 
 #' both c(\code{\link{combineTCR}}, \code{\link{combineBCR}}).
 #' @param sc.data The Seurat or Single-Cell Experiment (SCE) object to attach
-#' @param cloneCall How to call the clonotype - VDJC gene (gene), 
-#' CDR3 nucleotide (nt), CDR3 amino acid (aa),
-#' VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data. 
+#' @param cloneCall How to call the clone - VDJC gene (\strong{gene}), 
+#' CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
+#' VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable 
+#' in the data. 
 #' @param chain indicate if both or a specific chain should be used - 
-#' e.g. "both", "TRA", "TRG", "IGH", "IGL"
+#' e.g. "both", "TRA", "TRG", "IGH", "IGL".
 #' @param group.by The column label in the combined clones in which 
-#' clonotype frequency will be calculated. "none" will keep the list as is, 
-#' while NULL will merge all the clones into a single data frame. 
-#' @param proportion Whether to proportion (**TRUE**) or total frequency (**FALSE**) 
-#' of the clonotype based on the group.by variable. 
+#' clone frequency will be calculated. \strong{NULL} or \strong{"none"} will 
+#' keep the format of input.data.
+#' @param proportion Whether to proportion (\strong{TRUE}) or total 
+#' frequency (\strong{FALSE}) of the clone based on the group.by variable. 
 #' @param cloneSize The bins for the grouping based on proportion or frequency. 
-#' If proportion is **FALSE** and the *cloneSizes* are not set high enough based 
-#' on frequency, the upper limit of *cloneSizes* will be automatically amended. 
-#' @param filterNA Method to subset seurat object of barcodes without 
-#' clonotype information
+#' If proportion is \strong{FALSE} and the cloneSizes are not set high enough
+#' based on frequency, the upper limit of cloneSizes will be automatically
+#' updated.S
+#' @param filterNA Method to subset Seurat/SCE object of barcodes without 
+#' clone information
 #' @param addLabel This will add a label to the frequency header, allowing
 #' the user to try multiple group.by variables or recalculate frequencies after 
 #' subsetting the data.
@@ -47,7 +50,7 @@
 #' @importFrom SummarizedExperiment colData<- colData
 #' @export
 #' @concept SC_Functions
-#' @return Single-cell object with clonotype information added to meta data
+#' @return Single-cell object with clone information added to meta data
 #' information
 #' 
 combineExpression <- function(input.data, 
@@ -152,8 +155,6 @@ combineExpression <- function(input.data,
                                             "clonalFrequency"), group.by)
     }
     
-
-    
     if (is_seurat_object(sc.data)) { 
         if (length(which(rownames(PreMeta) %in% 
                          rownames(sc.data[[]])))/length(rownames(sc.data[[]])) < 0.01) {
@@ -169,7 +170,9 @@ combineExpression <- function(input.data,
       colData(sc.data) <- cbind(colData(sc.data), PreMeta[rownames,])[, union(colnames(colData(sc.data)),  colnames(PreMeta))]
       rownames(colData(sc.data)) <- rownames  
     }
-    if (filterNA) { sc.data <- .filteringNA(sc.data) }
+    if (filterNA) { 
+      sc.data <- .filteringNA(sc.data) 
+    }
     sc.data$cloneSize <- factor(sc.data$cloneSize, levels = rev(names(cloneSize)))
     
     if(is_seurat_object(sc.data)) {

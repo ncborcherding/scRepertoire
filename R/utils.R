@@ -190,7 +190,7 @@ is_seurat_or_se_object <- function(obj) {
     return(final)
 }
 
-#Removing extra clonotypes in barcodes with > 2 productive contigs
+#Removing extra clones in barcodes with > 2 productive contigs
 #' @import dplyr
 #' @keywords internal
 .filteringMulti <- function(x) {
@@ -249,7 +249,7 @@ is_seurat_or_se_object <- function(obj) {
     return(data1)
 }
 
-# This is to help sort the type of clonotype data to use
+# This is to help sort the type of clone data to use
 #' @keywords internal
 .theCall <- function(df, x, check.df = TRUE) {
     x <- .convertClonecall(x)
@@ -520,7 +520,7 @@ is_df_or_list_of_df <- function(x) {
       # Pre-allocate list
       list <- vector("list", length = length(nucleotides))
       
-      for (i in 1:(length(nucleotides) - 1)) {
+      for (i in seq_len((length(nucleotides) - 1))) {
         temp_list <- vector("list", length = length(nucleotides) - i)
         
         idx_i <- tmp[, chain_col_number] == nucleotides[i] & tmp[,2] == y

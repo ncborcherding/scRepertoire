@@ -53,27 +53,30 @@ original: ACGTACGTACGTACGT-1
 seurat-modified: ACGTACGTACGTACGT-1_1
 ```
 
-scRepertoire uses the samples in combineTCR() to add a prefix to the barcodes:
+scRepertoire uses the samples in ```combineTCR()``` or ```combineBCR()``` to add a prefix to the barcodes (using the **samples** and/or **ID** parameters):
 
 ```
 original: ACGTACGTACGTACGT-1
 scRepertoire-modified: Sample1_ACGTACGTACGTACGT-1
 ```
 
-The easiest way to make these compatible is to rename the cell barcodes in the Seurat object by using the RenameCells().
+The easiest way to make these compatible is to rename the cell barcodes in the Seurat object by using the `RenameCells()` from the SeuratObject package.
 
 ```{r, eval=FALSE}
 cell.barcodes <- rownames(seuratObj[[]])
-cell.barcodes <- stringr::str_split(cell.barcodes, "_", simplify = TRUE)[,1] #This is removing the _1 at the end of the barcodes)
-cell.barcodes <- paste0(seuratObj$orig.ident, "_", cell.barcodes) #This is adding the prefix of the orig.ident to the barcodes, assuming that is the sample ids
+#removing the _1 at the end of the barcodes)
+cell.barcodes <- stringr::str_split(cell.barcodes, "_", simplify = TRUE)[,1] 
+#adding the prefix of the orig.ident to the barcodes, assuming that is the sample ids
+cell.barcodes <- paste0(seuratObj$orig.ident, "_", cell.barcodes) 
 seuratObj <- RenameCells(seuratObj, new.names = cell.barcodes)
 ```
 
 ### Adjusting Color Palettes
 
-For all visualizations in scRepertoire, there are 2 ways to adjust the color scheme:
-+ Change the **palette** parameter to the desired color scheme. This approach uses the built-in palettes of grDevices and we can access the list of color schemes using ``hcl.pals()``.  
-+ Add a ggplot layer with a new color scheme. 
+For all visualizations in scRepertoire, there are 2 ways to adjust the color scheme:  
+
+* Change the **palette** parameter to the desired color scheme. This approach uses the built-in palettes of grDevices and we can access the list of color schemes using ``hcl.pals()``.  
+* Add a ggplot layer with a new color scheme.  
 
 ```{r tidy = FALSE}
 clonalQuant(combined.TCR, 
@@ -103,12 +106,9 @@ clonalQuant_output
 
 ###  Citing scRepertoire
 
-***Borcherding, N. & Wang, Q. scRepertoire v2: Expanded toolkit for single-cell immune repertoire analysis***
+We are working on submitting the scRepertoire as a peer review article,
 
 ### Bug Reports/New Features
 
 Submit a [GitHub issue](https://github.com/ncborcherding/scRepertoire/issues) - if possible please include a [reproducible example](https://reprex.tidyverse.org/). Alternatively, an example with the internal **scRep_example** and **contig_list** would 
 be extremely helpful.
-
-### Features or Enhancements Requests 
-Feature request can also be submitted as [GitHub issues](https://github.com/ncborcherding/scRepertoire/issues).

@@ -4,8 +4,8 @@
 #' \href{https://pubmed.ncbi.nlm.nih.gov/30479382/}{PMID: 30479382}.
 #' Required to run the function, the "type" variable needs to include the 
 #' difference in where the cells were derived. The output of this function 
-#' will produce 3 indices: *expa* (clonal expansion), *migra* 
-#' (cross-tissue migration), and *trans* (state transition). In order 
+#' will produce 3 indices: \strong{expa} (clonal expansion), \strong{migra} 
+#' (cross-tissue migration), and \strong{trans} (state transition). In order 
 #' to understand the underlying analyses of the outputs please 
 #' read and cite the linked manuscript. 
 #' 
@@ -29,9 +29,10 @@
 #' @param sc.data The single-cell object after \code{\link{combineExpression}}.
 #' For SCE objects, the cluster variable must be in the meta data under 
 #' "cluster".
-#' @param cloneCall How to call the clonotype - VDJC gene (gene), 
-#' CDR3 nucleotide (nt), CDR3 amino acid (aa),
-#' VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data. 
+#' @param cloneCall How to call the clone - VDJC gene (\strong{gene}), 
+#' CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
+#' VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable 
+#' in the data. 
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL".
 #' @param type The variable in the meta data that provides tissue type.
@@ -63,7 +64,7 @@ StartracDiversity <- function(sc.data,
        }
        group.by <- "orig.ident"
     }
-    group.levels = unique(df[,group.by])
+    group.levels <- unique(df[,group.by])
     
     if (chain != "both") {
       df <- .off.the.chain(df, chain, cloneCall)

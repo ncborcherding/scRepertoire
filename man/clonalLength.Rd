@@ -2,52 +2,50 @@
 % Please edit documentation in R/clonalLength.R
 \name{clonalLength}
 \alias{clonalLength}
-\title{Demonstrate the distribution of lengths filtered clones}
+\title{Demonstrate the distribution of clonal length}
 \usage{
 clonalLength(
   input.data,
   cloneCall = "aa",
   chain = "both",
   group.by = NULL,
-  order = TRUE,
   scale = FALSE,
   exportTable = FALSE,
   palette = "inferno"
 )
 }
 \arguments{
-\item{input.data}{The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
-\code{\link{combineExpression}}.}
+\item{input.data}{The product of \code{\link{combineTCR}}, 
+\code{\link{combineBCR}}, or \code{\link{combineExpression}}.}
 
-\item{cloneCall}{How to call the clonotype - CDR3 nucleotide (nt), 
-CDR3 amino acid (aa).}
+\item{cloneCall}{How to call the clone - CDR3 nucleotide (\strong{nt}) 
+or CDR3 amino acid (\strong{aa}).}
 
 \item{chain}{indicate if both or a specific chain should be used - 
-e.g. "both", "TRA", "TRG", "IGH", "IGL"}
+e.g. "both", "TRA", "TRG", "IGH", "IGL".}
 
 \item{group.by}{The variable to use for grouping.}
-
-\item{order}{Maintain the order of the list when plotting}
 
 \item{scale}{Converts the graphs into density plots in order to show 
 relative distributions.}
 
 \item{exportTable}{Returns the data frame used for forming the graph.}
 
-\item{palette}{Colors to use in visualization - input any \link[grDevices]{hcl.pals}.}
+\item{palette}{Colors to use in visualization - input any 
+\link[grDevices]{hcl.pals}.}
 }
 \value{
 ggplot of the discrete or relative length distributions of 
-clonotype sequences
+clone sequences
 }
 \description{
-This function displays either the nucleotide (nt) or amino 
-acid (aa) sequence length. The sequence length visualized can be 
-selected using the chains parameter, either the combined clonotype 
+This function displays either the nucleotide (\strong{nt}) or amino 
+acid (\strong{aa}) sequence length. The sequence length visualized 
+can be selected using the chains parameter, either the combined clone 
 (both chains) or across all single chains. Visualization can either 
-be a histogram or if \strong{scale} = TRUE, the output will be a density plot. 
-Multiple sequencing runs can be group together using the 
-group parameter.
+be a histogram or if \strong{scale} = TRUE, the output will 
+be a density plot. Multiple sequencing runs can be group together 
+using the group.by parameter.
 }
 \examples{
 #Making combined contig data

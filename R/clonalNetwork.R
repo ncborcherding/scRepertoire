@@ -26,17 +26,22 @@
 #' }
 #'               
 #' @param sc.data The single-cell object after \code{\link{combineExpression}}.
-#' @param reduction The name of the dimensional reduction of the single-cell object.
+#' @param reduction The name of the dimensional reduction of the 
+#' single-cell object.
 #' @param group.by The variable to use for the nodes. 
-#' @param filter.clones Use to select the top n clones (filter.clones = 2000) or 
-#' n of clones based on the minimum number of all the comparators (filter.clone = "min").
-#' @param filter.identity Display the network for a specific level of the indicated identity.
-#' @param filter.proportion Remove clonotypes from the network below a specific proportion.
+#' @param filter.clones Use to select the top n clones (e.g., \strong{filter.clones} 
+#' = 2000) or n of clones based on the minimum number of all the comparators 
+#' (e.g., \strong{filter.clone} = "min").
+#' @param filter.identity Display the network for a specific level of the 
+#' indicated identity.
+#' @param filter.proportion Remove clones from the network below a specific
+#'  proportion.
 #' @param filter.graph Remove the reciprocal edges from the half of the graph,
 #' allowing for cleaner visualization.
-#' @param cloneCall How to call the clonotype - VDJC gene (gene), 
-#' CDR3 nucleotide (nt), CDR3 amino acid (aa),
-#' VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data. 
+#' @param cloneCall How to call the clone - VDJC gene (\strong{gene}), 
+#' CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
+#' VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable 
+#' in the data. 
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL".
 #' @param exportTable Exports a table of the data into the global 
@@ -44,7 +49,8 @@
 #' @param exportClones Exports a table of clones that are shared
 #' across multiple identity groups and ordered by the total number
 #' of clone copies.
-#' @param palette Colors to use in visualization - input any \link[grDevices]{hcl.pals}.
+#' @param palette Colors to use in visualization - input any 
+#' \link[grDevices]{hcl.pals}.
 
 #' @import ggplot2
 #' @importFrom stringr str_sort
@@ -134,7 +140,7 @@ clonalNetwork <- function(sc.data,
     
     #Placing the Position of the nodes
     id.positions <- data.frame(coord)
-    colnames(id.positions)[1:2] <- c("x", "y")
+    colnames(id.positions)[seq_len(2)] <- c("x", "y")
     centers <- id.positions %>%
       group_by(group.by) %>%
       summarise(across(c(x, y), mean, .names = "{col}")) %>%
@@ -171,7 +177,9 @@ clonalNetwork <- function(sc.data,
        grid <- expand.grid(names(num),names(num))
        grid <- grid[grid[,1] != grid[,2],]
        for (x in seq_len(nrow(grid))) {
-          summary <- c(to = as.vector(grid[x,1]), from = as.vector(grid[x,2]), weight = num[grid[x,2]]/total.number[as.vector(grid[x,1])])
+          summary <- c(to = as.vector(grid[x,1]), 
+                       from = as.vector(grid[x,2]), 
+                       weight = num[grid[x,2]]/total.number[as.vector(grid[x,1])])
           edge.list <- rbind(edge.list, summary)
        }
     }
@@ -210,7 +218,9 @@ clonalNetwork <- function(sc.data,
     #Warning from this is produced by geom_edge_bend and there is nothng that can be done
     #until the authors of the package update it.
     plot <- ggraph(graph, layout = centers[match(names(V(graph)), rownames(centers)),]) + 
-                  geom_point(data = coord, aes(x = coord[,1], y = coord[,2], color = group.by)) + 
+                  geom_point(data = coord, aes(x = coord[,1], 
+                                               y = coord[,2], 
+                                               color = group.by)) + 
                   geom_edge_bend(aes(edge_color = as.numeric(weight)), 
                                  alpha = 0.7, 
                                  width = 1,
@@ -224,7 +234,8 @@ clonalNetwork <- function(sc.data,
                   xlab(paste0(reduction, "_1")) + 
                   guides(color = "none") + 
                   scale_edge_colour_gradientn(colors  = .colorizer(palette,13), trans = "log10") + 
-                  labs(size = "Unique Clones", edge_color = "Relative Proportion of \nClones of Starting Node") + 
+                  labs(size = "Unique Clones", 
+                       edge_color = "Relative Proportion of \nClones of Starting Node") + 
                   theme(
                       panel.background = element_blank(),
                       panel.border = element_blank(), 

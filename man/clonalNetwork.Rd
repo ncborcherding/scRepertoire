@@ -22,23 +22,28 @@ clonalNetwork(
 \arguments{
 \item{sc.data}{The single-cell object after \code{\link{combineExpression}}.}
 
-\item{reduction}{The name of the dimensional reduction of the single-cell object.}
+\item{reduction}{The name of the dimensional reduction of the 
+single-cell object.}
 
 \item{group.by}{The variable to use for the nodes.}
 
-\item{filter.clones}{Use to select the top n clones (filter.clones = 2000) or 
-n of clones based on the minimum number of all the comparators (filter.clone = "min").}
+\item{filter.clones}{Use to select the top n clones (e.g., \strong{filter.clones} 
+= 2000) or n of clones based on the minimum number of all the comparators 
+(e.g., \strong{filter.clone} = "min").}
 
-\item{filter.identity}{Display the network for a specific level of the indicated identity.}
+\item{filter.identity}{Display the network for a specific level of the 
+indicated identity.}
 
-\item{filter.proportion}{Remove clonotypes from the network below a specific proportion.}
+\item{filter.proportion}{Remove clones from the network below a specific
+proportion.}
 
 \item{filter.graph}{Remove the reciprocal edges from the half of the graph,
 allowing for cleaner visualization.}
 
-\item{cloneCall}{How to call the clonotype - VDJC gene (gene), 
-CDR3 nucleotide (nt), CDR3 amino acid (aa),
-VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data.}
+\item{cloneCall}{How to call the clone - VDJC gene (\strong{gene}), 
+CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
+VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable 
+in the data.}
 
 \item{chain}{indicate if both or a specific chain should be used - 
 e.g. "both", "TRA", "TRG", "IGH", "IGL".}
@@ -50,7 +55,8 @@ environment in addition to the visualization.}
 across multiple identity groups and ordered by the total number
 of clone copies.}
 
-\item{palette}{Colors to use in visualization - input any \link[grDevices]{hcl.pals}.}
+\item{palette}{Colors to use in visualization - input any 
+\link[grDevices]{hcl.pals}.}
 }
 \value{
 ggplot object

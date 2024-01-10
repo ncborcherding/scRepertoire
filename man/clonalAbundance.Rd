@@ -2,7 +2,7 @@
 % Please edit documentation in R/clonalAbundance.R
 \name{clonalAbundance}
 \alias{clonalAbundance}
-\title{Demonstrate the relative abundance of clonotypes by group or sample.}
+\title{Demonstrate the relative abundance of clones by group or sample}
 \usage{
 clonalAbundance(
   input.data,
@@ -10,18 +10,18 @@ clonalAbundance(
   chain = "both",
   scale = FALSE,
   group.by = NULL,
-  order = TRUE,
   exportTable = FALSE,
   palette = "inferno"
 )
 }
 \arguments{
-\item{input.data}{The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
-\code{\link{combineExpression}}.}
+\item{input.data}{The product of \code{\link{combineTCR}}, 
+\code{\link{combineBCR}}, or \code{\link{combineExpression}}.}
 
-\item{cloneCall}{How to call the clonotype - VDJC gene (gene), 
-CDR3 nucleotide (nt), CDR3 amino acid (aa),
-VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data.}
+\item{cloneCall}{How to call the clone - VDJC gene (\strong{gene}), 
+CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
+VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable 
+in the data.}
 
 \item{chain}{indicate if both or a specific chain should be used - 
 e.g. "both", "TRA", "TRG", "IGH", "IGL"}
@@ -31,24 +31,24 @@ relative distributions.}
 
 \item{group.by}{The variable to use for grouping}
 
-\item{order}{Maintain the order of the list when plotting}
-
 \item{exportTable}{Returns the data frame used for forming the graph
 to the visualization.}
 
-\item{palette}{Colors to use in visualization - input any \link[grDevices]{hcl.pals}.}
+\item{palette}{Colors to use in visualization - input any 
+\link[grDevices]{hcl.pals}.}
 }
 \value{
-ggplot of the total or relative abundance of clonotypes 
+ggplot of the total or relative abundance of clones 
 across quanta
 }
 \description{
-Displays the number of clonotypes at specific Frequencies by sample 
-or group. Visualization can either be a line graph using
-calculated numbers or if \strong{scale} = TRUE, the output will be a 
-density plot. Multiple sequencing runs can be group together 
-using the group parameter. If a matrix output for the data is 
-preferred, set \strong{exportTable} = TRUE.
+Displays the number of clones at specific frequencies by sample 
+or group. Visualization can either be a line graph (
+\strong{scale} = FALSE) using calculated numbers or density 
+plot (\strong{scale} = TRUE). Multiple sequencing runs can 
+be group together using the group parameter. If a matrix 
+output for the data is preferred, set 
+\strong{exportTable} = TRUE.
 }
 \examples{
 #Making combined contig data

@@ -60,26 +60,33 @@ head(combined.TCR[[1]])
 
 Likewise, we can remove specific list elements after `combineTCR()` using the `subsetClones()` function. In order to subset, we need to identify the vector we would like to use for subsetting (**name**) and the variable values to subset (**variables**). Below, we isolate just the 2 sequencing results from P18L and P18B. 
 
-Alternatively, we can also just select the list elements after `combineTCR()` or `combineBCR()`.
-
 ```{r, tidy = FALSE}
 subset1 <- subsetClones(combined.TCR, 
                         name = "sample", 
                         variables = c("P18L", "P18B"))
 
-#Subset using list elements
-subset2 <- combined.TCR[c(3,4)]
-
 head(subset1[[1]])
-head(subset2[[1]])
 ```
 
+Alternatively, we can also just select the list elements after `combineTCR()` or `combineBCR()`.
+
+```{r}
+subset2 <- combined.TCR[c(3,4)]
+head(subset2[[1]])
+```
 
 ## exportClones  
 
 After assigning the clone by barcode, we can export the paired clonotypes using `exportClones()` to save for later use or to use in other pipelines. 
 
+**format**  
+
+* "paired" - Export the paired sequences **(default)**.  
+* "airr" - Export data in an AIRR-compliant format.  
+* "TCRMatch" - Export TCRB chain information. 
+    
 **write.file**    
+
 * TRUE, save the file.  
 * FALSE, return a data.frame.  
 

@@ -1,11 +1,11 @@
-#' Examining the clonal space occupied by specific clonotypes
+#' Examining the clonal space occupied by specific clones
 #'
 #' This function calculates the relative clonal space occupied by the 
-#' clonotypes. The grouping of these clonotypes is based on the parameter 
-#' \strong{clonalSplit}, at default, \strong{clonalSplit} will group the clonotypes 
-#' into bins of 1:10, 11:100, 101:1001, etc. To adjust the clonotypes 
+#' clones. The grouping of these clones is based on the parameter 
+#' \strong{clonalSplit}, at default, \strong{clonalSplit} will group the clones 
+#' into bins of 1:10, 11:100, 101:1001, etc. To adjust the clones 
 #' selected, change the numbers in the variable split. If a matrix output 
-#' for the data is preferred, set exportTable = TRUE.
+#' for the data is preferred, set \strong{exportTable} = TRUE.
 #'
 #' @examples
 #' #Making combined contig data
@@ -14,18 +14,20 @@
 #'                                     "P19B","P19L", "P20B", "P20L"))
 #' clonalProportion(combined, cloneCall = "gene")
 #'
-#' @param input.data The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
-#'  \code{\link{combineExpression}}.
-#' @param clonalSplit The cut points for the specific clonotypes.
-#' @param cloneCall How to call the clonotype - VDJC gene (gene), 
-#' CDR3 nucleotide (nt), CDR3 amino acid (aa),
-#' VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data. 
+#' @param input.data The product of \code{\link{combineTCR}}, 
+#' \code{\link{combineBCR}}, or \code{\link{combineExpression}}.
+#' @param clonalSplit The cut points for the specific clones.
+#' @param cloneCall How to call the clone - VDJC gene (\strong{gene}), 
+#' CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
+#' VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable 
+#' in the data. 
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL".
 #' @param group.by The variable to use for grouping.
 #' @param exportTable Exports a table of the data into the global.
 #' environment in addition to the visualization.
-#' @param palette Colors to use in visualization - input any \link[grDevices]{hcl.pals}.
+#' @param palette Colors to use in visualization - input any 
+#' \link[grDevices]{hcl.pals}.
 #'
 #' @import ggplot2
 #' @importFrom stringr str_sort
@@ -34,7 +36,7 @@
 #'
 #' @export
 #' @concept Visualizing_Clones
-#' @return ggplot of the space occupied by the specific rank of clonotypes
+#' @return ggplot of the space occupied by the specific rank of clones
 clonalProportion <- function(input.data,
                              clonalSplit = c(10, 100, 1000, 10000, 30000, 100000), 
                              cloneCall = "strict", 
@@ -67,8 +69,8 @@ clonalProportion <- function(input.data,
     }
     cut <- c(1, clonalSplit[-length(clonalSplit)] + 1)
     for (i in seq_along(clonalSplit)) {
-        mat[,i] <- vapply(input.data, function (x) sum(na.omit(x[cut[i]:clonalSplit[i]])), 
-                            FUN.VALUE = numeric(1))
+        mat[,i] <- vapply(input.data, function (x) 
+                          sum(na.omit(x[cut[i]:clonalSplit[i]])), FUN.VALUE = numeric(1))
     }
     if (exportTable == TRUE) {
         return(mat)

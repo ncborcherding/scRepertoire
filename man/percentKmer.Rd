@@ -2,7 +2,7 @@
 % Please edit documentation in R/percentKmer.R
 \name{percentKmer}
 \alias{percentKmer}
-\title{Examining the relative composition of kmer motifs}
+\title{Examining the relative composition of kmer motifs in clones.}
 \usage{
 percentKmer(
   input.data,
@@ -16,13 +16,13 @@ percentKmer(
 )
 }
 \arguments{
-\item{input.data}{The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
-\code{\link{combineExpression}}.}
+\item{input.data}{The product of \code{\link{combineTCR}}, 
+\code{\link{combineBCR}}, or \code{\link{combineExpression}}.}
 
 \item{chain}{"TRA", "TRB", "TRG", "TRG", "IGH", "IGL".}
 
-\item{cloneCall}{How to call the clonotype - CDR3 nucleotide (nt) or 
-CDR3 amino acid (aa).}
+\item{cloneCall}{How to call the clone - CDR3 nucleotide (\strong{nt}) or 
+CDR3 amino acid (\strong{aa}).}
 
 \item{group.by}{The variable to use for grouping.}
 
@@ -33,14 +33,16 @@ median absolute deviation.}
 
 \item{exportTable}{Returns the data frame used for forming the graph.}
 
-\item{palette}{Colors to use in visualization - input any \link[grDevices]{hcl.pals}.}
+\item{palette}{Colors to use in visualization - input any 
+\link[grDevices]{hcl.pals}.}
 }
 \value{
 ggplot of percentage of kmers as a heatmap
 }
 \description{
-This function the of kmer for nucleotide or amino acids 
-in the CDR3 sequence.
+This function the of kmer for nucleotide (\strong{nt}) or 
+amino acid (\strong{aa}) sequences. Select the length of the
+kmer to quantify using the \strong{motif.length} parameter.
 }
 \examples{
 #Making combined contig data

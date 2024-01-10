@@ -2,7 +2,7 @@
 % Please edit documentation in R/percentGenes.R
 \name{percentGenes}
 \alias{percentGenes}
-\title{Examining the V or J gene usage across groupings}
+\title{Examining the VDJ gene usage across clones}
 \usage{
 percentGenes(
   input.data,
@@ -14,8 +14,8 @@ percentGenes(
 )
 }
 \arguments{
-\item{input.data}{The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
-\code{\link{combineExpression}}.}
+\item{input.data}{The product of \code{\link{combineTCR}}, 
+\code{\link{combineBCR}}, or \code{\link{combineExpression}}.}
 
 \item{chain}{"TRA", "TRB", "TRG", "TRG", "IGH", "IGL".}
 
@@ -25,14 +25,17 @@ percentGenes(
 
 \item{exportTable}{Returns the data frame used for forming the graph.}
 
-\item{palette}{Colors to use in visualization - input any \link[grDevices]{hcl.pals}.}
+\item{palette}{Colors to use in visualization - input any 
+\link[grDevices]{hcl.pals}.}
 }
 \value{
 ggplot of percentage of indicated genes as a heatmap
 }
 \description{
 This function the proportion V or J genes used by 
-grouping variables
+grouping variables. This function only quantifies
+single gene loci for indicated \strong{chain}. For 
+examining VJ pairing, please see code{\link{percentVJ}}
 }
 \examples{
 #Making combined contig data

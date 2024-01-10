@@ -1,8 +1,9 @@
-#' Scatter plot comparing the expansion of two samples
+#' Scatter plot comparing the clonal expansion of two samples
 #'
-#' This function produces a scatter plot directly comparing the specific clonotypes
-#' between two samples. The clonotypes will be categorized by counts into singlets 
-#' or expanded, either exclusive or shared between the selected samples. 
+#' This function produces a scatter plot directly comparing 
+#' the specific clones between two samples. The clones will 
+#' be categorized by counts into singlets or expanded, either 
+#' exclusive or shared between the selected samples. 
 #'
 #' @examples
 #' #Making combined contig data
@@ -14,11 +15,12 @@
 #'               y.axis = "P17L",
 #'               graph = "proportion")
 #' 
-#' @param input.data The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
-#'  \code{\link{combineExpression}}.
-#' @param cloneCall How to call the clonotype - VDJC gene (gene), 
-#' CDR3 nucleotide (nt), CDR3 amino acid (aa),
-#' VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data. 
+#' @param input.data The product of \code{\link{combineTCR}}, 
+#' \code{\link{combineBCR}}, or \code{\link{combineExpression}}.
+#' @param cloneCall How to call the clone - VDJC gene (\strong{gene}), 
+#' CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
+#' VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable 
+#' in the data. 
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL".
 #' @param x.axis name of the list element to appear on the x.axis.
@@ -28,7 +30,8 @@
 #' @param group.by The variable to use for grouping.
 #' @param graph graph either the clonal "proportion" or "count".
 #' @param exportTable Returns the data frame used for forming the graph.
-#' @param palette Colors to use in visualization - input any \link[grDevices]{hcl.pals}.
+#' @param palette Colors to use in visualization - input any 
+#' \link[grDevices]{hcl.pals}.
 #' 
 #' @import ggplot2
 #' 
@@ -124,7 +127,10 @@ clonalScatter <- function(input.data,
                 labs(size = "Total n")
   if (graph == "proportion") {
     plot <- plot + 
-            geom_abline(slope = 1, intercept = 0, alpha = 0.4, lty=2)  + 
+            geom_abline(slope = 1, 
+                        intercept = 0, 
+                        alpha = 0.4, 
+                        lty=2)  + 
             scale_y_sqrt() + 
             scale_x_sqrt() 
   } else if (graph == "count") {
@@ -133,7 +139,10 @@ clonalScatter <- function(input.data,
             xlim(0, max(x,y)) 
   }
   plot <- plot + 
-          geom_point(aes(size = size), shape = 21, color = "black", stroke = 0.25)
+          geom_point(aes(size = size), 
+                     shape = 21, 
+                     color = "black", 
+                     stroke = 0.25)
   
   return(plot)  
 }

@@ -1,10 +1,10 @@
 #' Generate data frame to be used with circlize R package to visualize
-#' clonotypes as a chord diagram. 
+#' clones as a chord diagram. 
 #' 
 #' This function will take the meta data from the product of 
 #' \code{\link{combineExpression}} and generate a relational data frame to 
 #' be used for a chord diagram. Each cord will represent the number of 
-#' clonotype unique and shared across the multiple \strong{group.by} variable. 
+#' clone unique and shared across the multiple \strong{group.by} variable. 
 #' If using the downstream circlize R package, please read and cite the
 #' following \href{https://pubmed.ncbi.nlm.nih.gov/24930139/}{manuscript}.
 #' If looking for more advance ways for circular visualizations, there
@@ -28,19 +28,19 @@
 #' 
 #' 
 #' @param sc.data The single-cell object after \code{\link{combineExpression}}.
-#' @param cloneCall How to call the clonotype - VDJC gene (gene), 
-#' CDR3 nucleotide (nt), CDR3 amino acid (aa), or 
-#' VDJC gene + CDR3 nucleotide (strict).
+#' @param cloneCall How to call the clone - VDJC gene (gene), 
+#' CDR3 nucleotide (nt), CDR3 amino acid (aa),
+#' VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data. 
 #' @param group.by The group header for which you would like to analyze 
 #' the data.
-#' @param proportion Boolean will calculate relationship unique 
-#' clonotypes (proportion = FALSE) or a ratio of the group.by 
-#' variable (proportion = TRUE)
+#' @param proportion Calculate the relationship unique 
+#' clones (proportion = FALSE) or normalized by 
+#' proportion (proportion = TRUE)
 #' 
 #' @importFrom reshape2 dcast
 #' @export
 #' @concept SC_Functions
-#' @return data frame of shared clonotypes between groups
+#' @return A data frame of shared clones between groups formated for \link[circlize]{chordDiagram}
 #' @author Dillon Corvino, Nick Borcherding
 getCirclize <- function(sc.data, 
                         cloneCall = "strict", 
@@ -66,7 +66,7 @@ getCirclize <- function(sc.data,
     list[[i]] <- which(mat2[i,] > 0)
   }
   
-  #Making a pairwise matrix that sums the shared clonotypes
+  #Making a pairwise matrix that sums the shared clones
   matrix_out <- matrix(ncol = ncol(mat2), nrow = ncol(mat2), 0)
   for (j in seq_along(list)) {
     matrix_out[list[[j]],list[[j]]] <- matrix_out[list[[j]],list[[j]]] + 1

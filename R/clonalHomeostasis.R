@@ -1,8 +1,8 @@
-#' Examining the clonal homeostasis
+#' Examining the clonal homeostasis of the repertoire
 #'
-#' This function calculates the space occupied by clonotype proportions. 
-#' The grouping of these clonotypes is based on the parameter cloneSize, 
-#' at default, cloneSize will group the clonotypes into bins of Rare = 0 
+#' This function calculates the space occupied by clone proportions. 
+#' The grouping of these clones is based on the parameter \strong{cloneSize}, 
+#' at default, \strong{cloneSize} will group the clones into bins of Rare = 0 
 #' to 0.0001, Small = 0.0001 to 0.001, etc. To adjust the proportions, 
 #' change the number or labeling of the cloneSize parameter. If a matrix 
 #' output for the data is preferred, set \strong{exportTable} = TRUE.
@@ -14,28 +14,29 @@
 #'                                     "P19B","P19L", "P20B", "P20L"))
 #' clonalHomeostasis(combined, cloneCall = "gene")
 #'
-#' @param input.data The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
-#'  \code{\link{combineExpression}}.
-#' @param cloneSize The cutpoints of the proportions.
-#' @param cloneCall How to call the clonotype - VDJC gene (gene), 
-#' CDR3 nucleotide (nt), CDR3 amino acid (aa),
-#' VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data. 
+#' @param input.data The product of \code{\link{combineTCR}}, 
+#' \code{\link{combineBCR}}, or \code{\link{combineExpression}}.
+#' @param cloneSize The cut points of the proportions.
+#' @param cloneCall How to call the clone - VDJC gene (\strong{gene}), 
+#' CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
+#' VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable 
+#' in the data. 
 #' @param chain indicate if both or a specific chain should be used - 
-#' e.g. "both", "TRA", "TRG", "IGH", "IGL"
+#' e.g. "both", "TRA", "TRG", "IGH", "IGL".
 #' @param group.by The variable to use for grouping.
 #' @param exportTable Exports a table of the data into the global 
-#' environment in addition to the visualization
-#' @param palette Colors to use in visualization - input any \link[grDevices]{hcl.pals}.
+#' environment in addition to the visualization.
+#' @param palette Colors to use in visualization - input any 
+#' \link[grDevices]{hcl.pals}.
 #' @import ggplot2
 #' @importFrom stringr str_split
 #' @importFrom reshape2 melt
 #' @importFrom dplyr bind_rows
 #' @export
 #' @concept Visualizing_Clones
-#' @return ggplot of the space occupied by the specific proportion of clonotypes
+#' @return ggplot of the space occupied by the specific proportion of clones
 clonalHomeostasis <- function(input.data, 
-                              cloneSize = 
-                                c(Rare = .0001, Small = .001, Medium = .01, Large = .1, Hyperexpanded = 1),
+                              cloneSize = c(Rare = .0001, Small = .001, Medium = .01, Large = .1, Hyperexpanded = 1),
                               cloneCall = "strict", 
                               chain = "both", 
                               group.by = NULL,
@@ -63,8 +64,8 @@ clonalHomeostasis <- function(input.data,
     fun <- function(x) { table(x)/length(x) }
     input.data <- lapply(input.data, fun)
     for (i in 2:length(cloneSize)) {
-        mat[,i-1] <- vapply(input.data, function (x) sum(x[x > cloneSize[i-1] & x <= 
-                            cloneSize[i]]), FUN.VALUE = numeric(1))
+        mat[,i-1] <- vapply(input.data, function (x) 
+                              sum(x[x > cloneSize[i-1] & x <= cloneSize[i]]), FUN.VALUE = numeric(1))
         colnames(mat)[i-1] <- paste0(names(cloneSize[i]), ' (', 
                                     cloneSize[i-1], ' < X <= ', 
                                     cloneSize[i], ')') }
@@ -78,7 +79,7 @@ clonalHomeostasis <- function(input.data,
     plot <- ggplot(mat_melt, aes(x=as.factor(Var1), y=value, fill=Var2)) +
         geom_bar(stat = "identity", position="fill", 
                     color = "black", lwd= 0.25) +
-        scale_fill_manual(name = "Clonotype Group", 
+        scale_fill_manual(name = "Clonal Group", 
                     values = .colorizer(palette,col)) +
         xlab("Samples") +
         ylab("Relative Abundance") +

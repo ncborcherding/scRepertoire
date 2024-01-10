@@ -1,12 +1,12 @@
-#' Demonstrate the distribution of lengths filtered clones
+#' Demonstrate the distribution of clonal length
 #'
-#' This function displays either the nucleotide (nt) or amino 
-#' acid (aa) sequence length. The sequence length visualized can be 
-#' selected using the chains parameter, either the combined clonotype 
+#' This function displays either the nucleotide (\strong{nt}) or amino 
+#' acid (\strong{aa}) sequence length. The sequence length visualized 
+#' can be selected using the chains parameter, either the combined clone 
 #' (both chains) or across all single chains. Visualization can either 
-#' be a histogram or if \strong{scale} = TRUE, the output will be a density plot. 
-#' Multiple sequencing runs can be group together using the 
-#' group parameter.
+#' be a histogram or if \strong{scale} = TRUE, the output will 
+#' be a density plot. Multiple sequencing runs can be group together 
+#' using the group.by parameter.
 #'
 #' @examples
 #' #Making combined contig data
@@ -15,29 +15,28 @@
 #'                                     "P19B","P19L", "P20B", "P20L"))
 #' clonalLength(combined, cloneCall="aa", chain = "both")
 #'
-#' @param input.data The product of \code{\link{combineTCR}}, \code{\link{combineBCR}}, or
-#'  \code{\link{combineExpression}}.
-#' @param cloneCall How to call the clonotype - CDR3 nucleotide (nt), 
-#' CDR3 amino acid (aa).
+#' @param input.data The product of \code{\link{combineTCR}}, 
+#' \code{\link{combineBCR}}, or \code{\link{combineExpression}}.
+#' @param cloneCall How to call the clone - CDR3 nucleotide (\strong{nt}) 
+#' or CDR3 amino acid (\strong{aa}).
 #' @param group.by The variable to use for grouping.
 #' @param scale Converts the graphs into density plots in order to show 
 #' relative distributions.
-#' @param order Maintain the order of the list when plotting
 #' @param chain indicate if both or a specific chain should be used - 
-#' e.g. "both", "TRA", "TRG", "IGH", "IGL"
+#' e.g. "both", "TRA", "TRG", "IGH", "IGL".
 #' @param exportTable Returns the data frame used for forming the graph.
-#' @param palette Colors to use in visualization - input any \link[grDevices]{hcl.pals}.
+#' @param palette Colors to use in visualization - input any 
+#' \link[grDevices]{hcl.pals}.
 #' @importFrom stringr str_split
 #' @importFrom ggplot2 ggplot
 #' @export
 #' @concept Visualizing_Clones
 #' @return ggplot of the discrete or relative length distributions of 
-#' clonotype sequences
+#' clone sequences
 clonalLength <- function(input.data, 
                          cloneCall = "aa", 
                          chain = "both", 
                          group.by = NULL, 
-                         order = TRUE,
                          scale = FALSE, 
                          exportTable = FALSE, 
                          palette = "inferno") {
@@ -76,9 +75,6 @@ clonalLength <- function(input.data,
   Con.df <- NULL
   Con.df <- .lengthDF(input.data, cloneCall, chain, group.by, c1, c2)
   
-  if(is.null(group.by) & order) {
-    Con.df[,"values"] <- factor(Con.df[,"values"], levels = names(input.data))
-  }
   names <- names(input.data)
   
   #Skip plotting if want to export table
