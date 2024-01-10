@@ -20,7 +20,6 @@
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL"
 #' @param group.by The column header used for grouping.
-#' @param order Maintain the order of the list when plotting
 #' @param scale Converts the graphs into percentage of unique clones.
 #' @param exportTable Returns the data frame used for forming the graph.
 #' @param palette Colors to use in visualization - input any 
@@ -34,7 +33,6 @@ clonalQuant <- function(input.data,
                         chain = "both", 
                         scale=FALSE, 
                         group.by = NULL, 
-                        order = TRUE,
                         exportTable = FALSE, 
                         palette = "inferno") {
   
@@ -94,9 +92,6 @@ clonalQuant <- function(input.data,
     return(mat)
   }
   
-  if(order & is.null(group.by)) {
-    mat[,x] <- factor(mat[,x], levels = mat[,x])
-  }
   if(!is.null(group.by)) {
     col <- length(unique(mat[,group.by]))
   }

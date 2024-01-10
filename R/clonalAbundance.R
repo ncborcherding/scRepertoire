@@ -26,7 +26,6 @@
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL"
 #' @param group.by The variable to use for grouping
-#' @param order Maintain the order of the list when plotting
 #' @param scale Converts the graphs into density plots in order to show 
 #' relative distributions.
 #' @param exportTable Returns the data frame used for forming the graph
@@ -43,7 +42,6 @@ clonalAbundance <- function(input.data,
                             chain = "both", 
                             scale=FALSE, 
                             group.by = NULL, 
-                            order = TRUE,
                             exportTable = FALSE, 
                             palette = "inferno") {
   Con.df <- NULL
@@ -88,9 +86,6 @@ clonalAbundance <- function(input.data,
       Con.df<- rbind.data.frame(Con.df, data1) 
     }
     Con.df <- data.frame(Con.df)
-    if(order) {
-      Con.df[,"values"] <- factor(Con.df[,"values"], levels = names(input.data))
-    }
     col <- length(unique(Con.df$values))
     fill <- "Samples"
     if (scale == TRUE) { 

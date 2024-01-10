@@ -22,7 +22,6 @@
 #' @param group.by The variable to use for grouping.
 #' @param scale Converts the graphs into density plots in order to show 
 #' relative distributions.
-#' @param order Maintain the order of the list when plotting.
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL".
 #' @param exportTable Returns the data frame used for forming the graph.
@@ -38,7 +37,6 @@ clonalLength <- function(input.data,
                          cloneCall = "aa", 
                          chain = "both", 
                          group.by = NULL, 
-                         order = TRUE,
                          scale = FALSE, 
                          exportTable = FALSE, 
                          palette = "inferno") {
@@ -77,9 +75,6 @@ clonalLength <- function(input.data,
   Con.df <- NULL
   Con.df <- .lengthDF(input.data, cloneCall, chain, group.by, c1, c2)
   
-  if(is.null(group.by) & order) {
-    Con.df[,"values"] <- factor(Con.df[,"values"], levels = names(input.data))
-  }
   names <- names(input.data)
   
   #Skip plotting if want to export table
