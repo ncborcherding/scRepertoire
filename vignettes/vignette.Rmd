@@ -1091,7 +1091,7 @@ clonalBias(scRep_example,
            split.by = "Patient", 
            group.by = "seurat_clusters",
            n.boots = 10, 
-           min.expand =5)
+           min.expand =0)
 ```
 
 ***
@@ -1170,6 +1170,7 @@ legend("topleft", legend = levels(color.legend), pch = 16, col = unique(col_samp
 ```
 
 ***
+
 # Conclusion  
 
 This has been a general overview of the capabilities of scRepertoire from the initial processing and visualization to attach to the mRNA expression values in a single-cell object. If you have any questions, comments, or suggestions, please visit the GitHub repository or [email me](mailto:ncborch@gmail.com).

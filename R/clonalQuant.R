@@ -74,10 +74,10 @@ clonalQuant <- function(input.data,
   if (scale) { 
       y <- "scaled"
       mat$scaled <- mat$contigs/mat$total*100
-      ylab <- "Percent of Unique clone"
+      ylab <- "Percent of Unique Clones"
    } else { 
       y <- "contigs"
-      ylab <- "Unique Clonotypes"
+      ylab <- "Unique Clones"
    }
   
   if (exportTable) {
