@@ -775,12 +775,12 @@ clonalOverlap(combined.TCR,
 ***
 # Combining Clones and Single-Cell Objects
 
-The data in the scRepertoire package is derived from a [study](https://pubmed.ncbi.nlm.nih.gov/33622974/) of acute respiratory stress disorder in the context of bacterial and COVID-19 infections. The internal single cell data (`scRep_example()`) built in to scRepertoire is randomly sampled 500 cells from the fully integrated Seurat object to minimize the package size. However, for the purpose of the vignette we will use the full single-cell object with 30,000 cells. We will use both Seurat and Single-Cell Experiment (SCE) with scater to perform further visualizations in tandem. 
+The data in the scRepertoire package is derived from a [study](https://pubmed.ncbi.nlm.nih.gov/33622974/) of acute respiratory stress disorder in the context of bacterial and COVID-19 infections. The internal single cell data (`scRep_example()`) built in to scRepertoire is randomly sampled 500 cells from the fully integrated Seurat object to minimize the package size. We will use both Seurat and Single-Cell Experiment (SCE) with scater to perform further visualizations in tandem. 
 
 ## Preprocessed Single-Cell Object
 
 ```{r tidy = FALSE}
-scRep_example <- readRDS("./articles/scRep_example_full.rds")
+scRep_example <- get(data("scRep_example"))
 
 #Making a Single-Cell Experiment object
 sce <- Seurat::as.SingleCellExperiment(scRep_example)
