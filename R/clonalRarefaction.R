@@ -6,7 +6,8 @@
 #' estimates for rarefaction and extrapolation. The function relies on the
 #' \code{\link[iNEXT]{iNEXT}} R package. Please read and cite the 
 #' \href{https://besjournals.onlinelibrary.wiley.com/doi/10.1111/2041-210X.12613}{manuscript} 
-#' if using this function.
+#' if using this function. The input into the iNEXT calculation is abundance, 
+#' incidence-based calculations are not supported.
 #' 
 #' @examples
 #' #Making combined contig data
