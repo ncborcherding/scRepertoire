@@ -28,6 +28,7 @@
 #' The higher the number the more similarity of sequence will be 
 #' used for clustering.
 #' @param group.by The column header used for to group contigs.
+#' If (\strong{NULL}), clusters will be calculated across samples.
 #' @param exportGraph Return an igraph object of connected 
 #' sequences (\strong{TRUE}) or the amended input with a
 #' new cluster-based variable (\strong{FALSE}).
@@ -98,14 +99,13 @@ clonalCluster <- function(input.data,
                           group_by(bound[,ref2]) %>%
                           dplyr::summarize(sample_count = n(),
                                     unique_samples = paste0(unique(group.by), collapse = ","))
-    dictionary <- list(bound)
   } else {
     bound <- bind_rows(dat)
     graph.variables <- bind_rows(dat) %>%
                           group_by(bound[,ref2]) %>%
                           dplyr::summarize(sample_count = n())
-    dictionary <- dat
   }
+  dictionary <- dat
   #Generating Connected Component
   output.list <- lapply(dictionary, function(x) {
     cluster <- .lvCompare(x, 
