@@ -23,6 +23,13 @@ devtools::install_github("ncborcherding/scRepertoire")
 ```
 devtools::install_github("ncborcherding/scRepertoire@dev")
 ```
+### Installing from Bioconductor
+The current version of scRepertoire is also available in the development version of Bioconductor. Important to note, the version is listed as 1.99.0 on [Bioconductor](https://bioconductor.org/packages/3.19/bioc/html/scRepertoire.html) per their version guidelines.
+
+```
+BiocManager::install(version='devel')
+BiocManager::install("scRepertoire")
+```
 
 #### Legacy Version 1
 If you are looking for version 1 of scRepertoire - there is a static version available below:
