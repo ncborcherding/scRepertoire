@@ -44,7 +44,7 @@ navbar:
       href: articles/Attaching_SC.html
     - text: Visualizations for Single-Cell Objects
       href: articles/SC_Visualizations.html
-    - text: Clonal Bias
+    - text: Quantifying Clonal Bias
       href: articles/Clonal_Bias.html
     - text: '-------'
     - text: Combining Deep Learning and TCRs with Trex
