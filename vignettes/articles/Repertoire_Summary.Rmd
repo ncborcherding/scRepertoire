@@ -107,7 +107,6 @@ vizGenes(combined.TCR[c(1,2)],
          scale = FALSE)
 ```
 
-
 ## percentAA
 
 Quantify the proportion of amino acids along the cdr3 sequence with `percentAA()`. By default, the function will pad the sequences with NAs up to the maximum of **aa.length**. Sequences longer than **aa.length** will be removed before visualization **(default aa.length = 20)**. 
@@ -117,6 +116,23 @@ percentAA(combined.TCR,
           chain = "TRB", 
           aa.length = 20)
 ```
+
+## positionalEntropy
+
+We can also quantify the level of entropy/diversity across amino acid residues along the cdr3 sequence. `positionalEntropy()` combines the quantification by residue of ``percentAA()`` with the diversity calls in ```clonalDiversity()```. Importantly, because diversity can be affected by size of sample, similar to ```clonalDiversity()```, ```positionalEntropy()``` will also downsample/bootstrap the calculation.
+
+**method**  
+
+* "shannon" - Shannon Diversity  
+* "inv.simpson" - Inverse Simpson Diversity 
+* "norm.entropy" - Normalized Entropy  
+
+```{r}
+positionalEntropy(combined, 
+                  chain = "TRB", 
+                  aa.length = 20)
+```
+
 
 ## percentGenes
 
