@@ -119,7 +119,7 @@ percentAA(combined.TCR,
 
 ## positionalEntropy
 
-We can also quantify the level of entropy/diversity across amino acid residues along the cdr3 sequence. `positionalEntropy()` combines the quantification by residue of ``percentAA()`` with the diversity calls in ```clonalDiversity()```. Importantly, because diversity can be affected by size of sample, similar to ```clonalDiversity()```, ```positionalEntropy()``` will also downsample/bootstrap the calculation.
+We can also quantify the level of entropy/diversity across amino acid residues along the cdr3 sequence. `positionalEntropy()` combines the quantification by residue of ``percentAA()`` with the diversity calls in ```clonalDiversity()```. Importantly, because diversity can be affected by size of sample, similar to ```clonalDiversity()```, ```positionalEntropy()``` will also downsample/bootstrap the calculation. Positions without variance will have a value reported as 0 for the purposes of comparison.
 
 **method**  
 
@@ -128,7 +128,7 @@ We can also quantify the level of entropy/diversity across amino acid residues a
 * "norm.entropy" - Normalized Entropy  
 
 ```{r}
-positionalEntropy(combined, 
+positionalEntropy(combined.TCR, 
                   chain = "TRB", 
                   aa.length = 20)
 ```
