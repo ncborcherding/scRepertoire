@@ -42,7 +42,9 @@ ggplot of line graph of diversity by position
 This function the diversity amino acids along the residues 
 of the CDR3 amino acid sequence. Please see 
 \code{\link{clonalDiversity}} for more information on 
-the underlying methods for diversity/entropy calculations.
+the underlying methods for diversity/entropy calculations. 
+Positions without variance will have a value reported as 0 
+for the purposes of comparison.
 }
 \examples{
 #Making combined contig data
