@@ -18,9 +18,20 @@ is_seurat_or_se_object <- function(obj) {
   } else {
     warning("It looks like ", chain, " does not match the available options for `chain = `")
   }
+  
+  #Adding a chain check to prevent issues with TRA + TRD/IGH data
+  chain.check<- substr(str_split(dat[,"CTgene"], "_", simplify = TRUE)[,x], 1,3)
+  chain.check[chain.check == "NA"] <- NA
+  chain.check[chain.check == "NA;NA"] <- NA
+  any.alt.chains <- which(!is.na(chain.check) & chain.check != chain)
+  if(length(any.alt.chains) > 0) {
+    dat <- dat[-any.alt.chains,]
+  }
+  
   dat[,cloneCall] <- str_split(dat[,cloneCall], "_", simplify = TRUE)[,x]
   dat[,cloneCall][dat[,cloneCall] == "NA"] <- NA
   dat[,cloneCall][dat[,cloneCall] == "NA;NA"] <- NA
+ 
   return(dat)
 }
 
