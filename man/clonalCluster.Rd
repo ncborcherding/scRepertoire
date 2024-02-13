@@ -30,7 +30,8 @@ e.g. "both", "TRA", "TRG", "IGH", "IGL".}
 The higher the number the more similarity of sequence will be 
 used for clustering.}
 
-\item{group.by}{The column header used for to group contigs.}
+\item{group.by}{The column header used for to group contigs.
+If (\strong{NULL}), clusters will be calculated across samples.}
 
 \item{exportGraph}{Return an igraph object of connected 
 sequences (\strong{TRUE}) or the amended input with a

@@ -86,6 +86,7 @@ clonalAbundance <- function(input.data,
       Con.df<- rbind.data.frame(Con.df, data1) 
     }
     Con.df <- data.frame(Con.df)
+    Con.df$values <- factor(Con.df$values, levels=names(input.data))
     col <- length(unique(Con.df$values))
     fill <- "Samples"
     if (scale == TRUE) { 

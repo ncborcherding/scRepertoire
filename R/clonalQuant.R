@@ -94,10 +94,11 @@ clonalQuant <- function(input.data,
   if(!is.null(group.by)) {
     col <- length(unique(mat[,group.by]))
   }
+  mat[,x] = factor(mat[,x], levels = names(input.data))
   
   #Plotting
   plot <- ggplot(data = mat, 
-                 aes(x=mat[,x], y=mat[,y], fill=as.factor(mat[,x]))) +
+                 aes(x=mat[,x], y=mat[,y], fill=mat[,x])) +
             stat_summary(geom = "errorbar", 
                          fun.data = mean_se, 
                          position = "dodge", 

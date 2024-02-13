@@ -75,9 +75,6 @@ clonalCompare <- function(input.data,
   
   #Loop through the list to get a proportional summary
   for (i in seq_along(input.data)) {
-    if (chain != "both") {
-      input.data[[i]] <- .off.the.chain(input.data[[i]], chain, cloneCall)
-    }
     tbl <- as.data.frame(table(input.data[[i]][,cloneCall]))
     tbl[,2] <- tbl[,2]/sum(tbl[,2])
     colnames(tbl) <- c("clones", "Proportion")

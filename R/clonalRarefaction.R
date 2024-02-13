@@ -6,7 +6,8 @@
 #' estimates for rarefaction and extrapolation. The function relies on the
 #' \code{\link[iNEXT]{iNEXT}} R package. Please read and cite the 
 #' \href{https://besjournals.onlinelibrary.wiley.com/doi/10.1111/2041-210X.12613}{manuscript} 
-#' if using this function.
+#' if using this function. The input into the iNEXT calculation is abundance, 
+#' incidence-based calculations are not supported.
 #' 
 #' @examples
 #' #Making combined contig data
@@ -68,7 +69,7 @@ clonalRarefaction <- function(input.data,
   mat <- iNEXT(mat.list, q=hill.numbers, datatype="abundance",nboot = n.boots) 
   plot <- suppressMessages(ggiNEXT(mat, type=plot.type) + 
             scale_shape_manual(values = rep(16,col)) + 
-            scale_fill_manual(values = rep("white", col)) + 
+            scale_fill_manual(values = c(.colorizer(palette,col))) + 
             scale_color_manual(values = c(.colorizer(palette,col)))  + 
             theme_classic())
   if (exportTable == TRUE) { 

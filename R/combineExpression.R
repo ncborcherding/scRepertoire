@@ -91,9 +91,14 @@ combineExpression <- function(input.data,
                                   clonalFrequency = n())
             colnames(data2)[1] <- cloneCall
             data <- merge(data, data2, by = cloneCall, all = TRUE)
-            data <- data[,c("barcode", "CTgene", "CTnt", 
-                             "CTaa", "CTstrict", "clonalProportion", 
-                             "clonalFrequency")]
+            if ( cloneCall %!in% c("CTgene", "CTnt", "CTaa", "CTstrict") ) {
+              data <- data[,c("barcode", "CTgene", "CTnt",
+                              "CTaa", "CTstrict", cloneCall,
+                              "clonalProportion", "clonalFrequency")]
+            } else {
+              data <- data[,c("barcode", "CTgene", "CTnt", 
+                              "CTaa", "CTstrict",
+                              "clonalProportion", "clonalFrequency")] }
             Con.df <- rbind.data.frame(Con.df, data)
         }
     } else if (group.by != "none" || !is.null(group.by)) {
@@ -108,9 +113,14 @@ combineExpression <- function(input.data,
         
         colnames(data2)[c(1,2)] <- c(cloneCall, group.by)
         data <- merge(data, data2, by = c(cloneCall, group.by), all = TRUE)
-        Con.df <- data[,c("barcode", "CTgene", "CTnt", 
-                          "CTaa", "CTstrict", "clonalProportion", 
-                          "clonalFrequency")]
+        if ( cloneCall %!in% c("CTgene", "CTnt", "CTaa", "CTstrict") ) {
+              Con.df <- data[,c("barcode", "CTgene", "CTnt",
+                              "CTaa", "CTstrict", cloneCall,
+                              "clonalProportion", "clonalFrequency")]
+            } else {
+              Con.df <- data[,c("barcode", "CTgene", "CTnt", 
+                              "CTaa", "CTstrict",
+                              "clonalProportion", "clonalFrequency")] }
         }
     #Detect if largest cloneSize category is too small for experiment and amend
     #this prevents a ton of NA values in the data
@@ -140,9 +150,16 @@ combineExpression <- function(input.data,
       }
     
     #Formating the meta data to add
-    PreMeta <- unique(Con.df[,c("barcode", "CTgene", "CTnt", 
-                "CTaa", "CTstrict", "clonalProportion", 
-                "clonalFrequency", "cloneSize")])
+    if ( cloneCall %!in% c("CTgene", "CTnt", 
+                         "CTaa", "CTstrict") ) {
+      PreMeta <- unique(Con.df[,c("barcode", "CTgene", "CTnt", 
+                                  "CTaa", "CTstrict", cloneCall, 
+                                  "clonalProportion", "clonalFrequency", "cloneSize")])
+    } else {
+      PreMeta <- unique(Con.df[,c("barcode", "CTgene", "CTnt", 
+                                "CTaa", "CTstrict", "clonalProportion", 
+                                "clonalFrequency", "cloneSize")])
+    }
     dup <- PreMeta$barcode[which(duplicated(PreMeta$barcode))]
     PreMeta <- PreMeta[PreMeta$barcode %!in% dup,]
     barcodes <- PreMeta$barcode

@@ -78,7 +78,7 @@ head(sub_combined[,c(1,2,13)])
 
 ### Clustering with a single-cell object
 
-If performed over the number of samples, such as the list elements, **group.by** can used to calculate only the clusters on the setting of patient sample (**group.by** = "Patient") or tissue type (**group.by** = "Type"). This will add the selected group to the beginning of the cluster designation. We can also call ```clonalCluster()``` directly on a Single-Cell Object.
+If performed over the number of samples, such as the list elements, **group.by** can used to calculate only the clusters on the setting of patient sample (**group.by** = "Patient") or tissue type (**group.by** = "Type"). This will add the selected group to the beginning of the cluster designation. We can also call ```clonalCluster()``` directly on a Single-Cell Object. If **group.by** = NULL (**default**), the clusters will be calculated across all samples. 
 
 ```{r tidy = FALSE}
 #Adding patient information

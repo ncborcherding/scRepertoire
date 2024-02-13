@@ -3,7 +3,7 @@
 [![BioC status](http://www.bioconductor.org/shields/build/release/bioc/scRepertoire.svg)](https://bioconductor.org/checkResults/release/bioc-LATEST/scRepertoire)
 [![R-CMD-check](https://github.com/ncborcherding/scRepertoire/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/ncborcherding/scRepertoire/actions/workflows/R-CMD-check.yaml)
 [![Codecov test coverage](https://codecov.io/gh/ncborcherding/scRepertoire/branch/master/graph/badge.svg)](https://app.codecov.io/gh/ncborcherding/scRepertoire?branch=master)
-[![Documentation](https://img.shields.io/badge/docs-stable-blue.svg)](https://www.borch.dev/uploads/vignette/vignette)
+[![Documentation](https://img.shields.io/badge/docs-stable-blue.svg)](https://www.borch.dev/uploads/screpertoire/)
 <!-- badges: end -->
 
 ## A toolkit for single-cell immune profiling
@@ -28,10 +28,12 @@ scRepertoire has a comprehensive [website](https://www.borch.dev/uploads/screper
 devtools::install_github("ncborcherding/scRepertoire")
 ```
 
-### Most up-to-date version
+### Installing from Bioconductor
+The current version of scRepertoire is also available in the development version of Bioconductor. Important to note, the version is listed as 1.99.0 on [Bioconductor](https://bioconductor.org/packages/3.19/bioc/html/scRepertoire.html) per their version guidelines.
 
 ```R
-devtools::install_github("ncborcherding/scRepertoire@dev")
+BiocManager::install(version='devel')
+BiocManager::install("scRepertoire")
 ```
 
 ### Legacy Version 1
