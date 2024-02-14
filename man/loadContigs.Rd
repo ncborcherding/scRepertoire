@@ -25,7 +25,7 @@ need to use this function as the data is already compatible.
 \details{
 The files that this function parses includes:  
 \itemize{
-  \item 10X =  "filtered_contig_annotation.csv"  
+  \item 10X =  "filtered_contig_annotations.csv"
   \item AIRR = "airr_rearrangement.tsv" 
   \item BD = "Contigs_AIRR.tsv" 
   \item Immcantation = "data.tsv" 

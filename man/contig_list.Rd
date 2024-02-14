@@ -5,7 +5,7 @@
 \alias{contig_list}
 \title{A list of 8 single-cell T cell receptor sequences runs.}
 \description{
-A list of 8 filtered_contig_annotation.csv files
+A list of 8 `filtered_contig_annotations.csv` files
 outputted from 10X Cell Ranger. More information on the 
 data can be found in the following
  \href{https://pubmed.ncbi.nlm.nih.gov/33622974/}{manuscript}.
