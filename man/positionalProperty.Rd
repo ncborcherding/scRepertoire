@@ -60,7 +60,7 @@ combined <- combineTCR(contig_list,
                                     "P19B","P19L", "P20B", "P20L"))
 positionalProperty(combined, 
                    chain = "TRB",
-                   method = "Atchley" 
+                   method = "Atchley", 
                    aa.length = 20)
 }
 \concept{Summarize_Repertoire}

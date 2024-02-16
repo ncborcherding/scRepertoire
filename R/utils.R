@@ -9,7 +9,7 @@ is_seurat_or_se_object <- function(obj) {
 #Use to shuffle between chains Qile: the NA handling here *might* be related to the unnamed combineTCR bugs from the new rcpp con.df construction
 #' @keywords internal
 #' @author Ye-Lin Son Nick Borcherding
-.off.the.chain <- function(dat, chain, cloneCall) {
+.off.the.chain <- function(dat, chain, cloneCall, check = TRUE) {
   chain1 <- toupper(chain) #to just make it easier
   if (chain1 %in% c("TRA", "TRG", "IGH")) {
     x <- 1
@@ -19,14 +19,16 @@ is_seurat_or_se_object <- function(obj) {
     warning("It looks like ", chain, " does not match the available options for `chain = `")
   }
   
+  if(check){
   #Adding a chain check to prevent issues with TRA + TRD/IGH data
-  chain.check<- substr(str_split(dat[,"CTgene"], "_", simplify = TRUE)[,x], 1,3)
-  chain.check[chain.check == "NA"] <- NA
-  chain.check[chain.check == "NA;NA"] <- NA
-  chain.check[chain.check == "Non"] <- NA
-  any.alt.chains <- which(!is.na(chain.check) & chain.check != chain)
-  if(length(any.alt.chains) > 0) {
-    dat <- dat[-any.alt.chains,]
+    chain.check<- substr(str_split(dat[,"CTgene"], "_", simplify = TRUE)[,x], 1,3)
+    chain.check[chain.check == "NA"] <- NA
+    chain.check[chain.check == "NA;NA"] <- NA
+    chain.check[chain.check == "Non"] <- NA
+    any.alt.chains <- which(!is.na(chain.check) & chain.check != chain)
+    if(length(any.alt.chains) > 0) {
+      dat <- dat[-any.alt.chains,]
+    }
   }
   
   dat[,cloneCall] <- str_split(dat[,cloneCall], "_", simplify = TRUE)[,x]

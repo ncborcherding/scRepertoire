@@ -8,6 +8,8 @@
 * Added ```percentVJ()```
 * Added ```percentKmer()```
 * Added ```exportClones()``` 
+* Added ```positionalEntropy()``` 
+* Added ```positionalProperty()``` 
 * Changed compareClonotypes to ```clonalCompare()```
 * Changed clonotypeSizeDistribution to ```clonalSizeDistribution()```
 * Changed scatterClonotypes to ```clonalScatter()```

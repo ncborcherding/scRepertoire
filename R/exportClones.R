@@ -60,11 +60,11 @@ exportClones <- function(input.data,
 
 .TCRmatchExport<- function(input.data) {
 
-  input.data <- .data.wrangle(input.data, group.by, "CTgene", "TRB")
+  input.data <- .data.wrangle(input.data, NULL, "CTgene", "TRB")
   
   for(i in seq_along(input.data)) {
-    input.data[[i]] <- .off.the.chain(input.data[[i]], "TRB", "CTaa")
-    input.data[[i]] <- .off.the.chain(input.data[[i]], "TRB", "CTnt")
+    input.data[[i]] <- .off.the.chain(input.data[[i]], "TRB", "CTaa", check = FALSE)
+    input.data[[i]] <- .off.the.chain(input.data[[i]], "TRB", "CTnt", check = FALSE)
   }
   
   input.data <- bind_rows(input.data, .id = "group")

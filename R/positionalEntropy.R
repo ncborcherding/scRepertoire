@@ -34,8 +34,7 @@ positionalEntropy <- function(input.data,
                               chain = "TRB", 
                               group.by = NULL, 
                               aa.length = 20,
-                              method = "shannon",
-                              n.boots = 20,
+                              method = "norm.entropy",
                               exportTable = FALSE, 
                               palette = "inferno")  {
   

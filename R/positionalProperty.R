@@ -26,7 +26,7 @@
 #'                                     "P19B","P19L", "P20B", "P20L"))
 #' positionalProperty(combined, 
 #'                    chain = "TRB",
-#'                    method = "Atchley" 
+#'                    method = "Atchley", 
 #'                    aa.length = 20)
 
 #' @param input.data The product of \code{\link{combineTCR}}, 
@@ -40,6 +40,7 @@
 #' @param palette Colors to use in visualization - input any \link[grDevices]{hcl.pals}.
 #' @import ggplot2
 #' @importFrom stringr str_split
+#' @importFrom stats qt
 #' @export
 #' @concept Summarize_Repertoire
 #' @return ggplot of line graph of diversity by position
@@ -51,7 +52,7 @@ positionalProperty <- function(input.data,
                                method = "Atchley",
                                exportTable = FALSE, 
                                palette = "inferno")  {
-  
+  options( dplyr.summarise.inform = FALSE )
   if(method %!in% c("Atchley", "Kidera", "stScales", "tScales", "VHSE")) {
     stop("Please select a compatible method.")
   }
@@ -69,15 +70,14 @@ positionalProperty <- function(input.data,
   #Selecting Diversit Function
   propertyFunc <- switch(method,
                           "Atchley" = .af.ref,
-                          "Kidera" = .ikf.ref,
+                          "Kidera" = .kf.ref,
                           "stScales" = .stscales.ref,
                           "tScales" = .tscales.ref,
                           "VHSE" = .vhse.ref,
                           stop("Invalid method provided"))
   
   #Getting AA Counts
-  aa.count.list <- .aa.counter(input.data, cloneCall, aa.length, boot.strap = FALSE, NULL, NULL)
-  
+  aa.count.list <- .aa.counter(input.data, cloneCall, aa.length)
   
   #Calculating properties and melting data
   lapply(seq_along(aa.count.list), function(x) {

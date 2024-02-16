@@ -43,5 +43,10 @@
     utils::globalVariables ("group")
     utils::globalVariables ("chain2_aa")
     utils::globalVariables ("dotSize")
+    utils::globalVariables ("ci_lower")
+    utils::globalVariables ("ci_upper") 
+    utils::globalVariables ("mat_melt") 
+    utils::globalVariables ("position") 
+    utils::globalVariables ("se")
     invisible ()
 }
