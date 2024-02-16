@@ -23,8 +23,6 @@
 #' @param aa.length The maximum length of the CDR3 amino acid sequence. 
 #' @param method The method to calculate the entropy/diversity - 
 #' "shannon", "inv.simpson", "norm.entropy".
-#' @param n.boots number of bootstraps to down sample in order to 
-#' get mean diversity.
 #' @param exportTable Returns the data frame used for forming the graph.
 #' @param palette Colors to use in visualization - input any \link[grDevices]{hcl.pals}.
 #' @import ggplot2
@@ -55,52 +53,33 @@ positionalEntropy <- function(input.data,
     input.data <- .groupList(input.data, group.by)
   }
   
-  #Selecting Diversit Function
+  #Selecting Diversity Function
   diversityFunc <- switch(method,
-                          "norm.entropy" = .shannon,
+                          "norm.entropy" = .normentropy,
                           "inv.simpson" = .invsimpson,
-                          "shannon" = .normentropy,
+                          "shannon" = .shannon,
                           stop("Invalid method provided"))
   
-  min <- .short.check(input.data, cloneCall)
+  aa.count.list <- .aa.counter(input.data, "CTaa", aa.length)
   
-  lapply(input.data, function(x) {
-      lapply(seq_len(n.boots), function(y) {
-       strings <- x[,cloneCall]
-       strings <- do.call(c,str_split(strings, ";"))
-       strings <- strings[strings != "NA"]
-       strings <- na.omit(strings)
-       strings <- strings[nchar(strings) < aa.length]
-       strings <- strings[sample(seq_len(length(strings)), min)]
-       strings <- .padded_strings(strings, aa.length)
-       strings <- do.call(rbind, strings)
-       aa.output <- apply(strings, 2, function(z) {
-         summary <- as.data.frame(table(z, useNA = "always"))
-       })
-       res <- suppressWarnings(Reduce(function(...) merge(..., all = TRUE, by="z"), aa.output))
-       colnames(res) <- c("AA", paste0("pos.", seq_len(aa.length)))
-       res[seq_len(20),][is.na(res[seq_len(20),])] <- 0
-       diversity <- sapply(res[,2:ncol(res)], diversityFunc)
-       diversity[is.nan(diversity)] <- 0
-       diversity
-    }) -> diversity.calculations
-    diversity.calculations <- do.call(rbind, diversity.calculations)
-    diversity.means <- colMeans(diversity.calculations)
-    diversity.means
-    }) -> positional.diversity
+  lapply(aa.count.list, function(x){
+      diversity <- sapply(x[,2:ncol(x)], diversityFunc)
+      diversity[is.nan(diversity)] <- 0
+      diversity
+  }) -> group.results
+
+  mat <- do.call(rbind, group.results)
+  mat_melt <- suppressMessages(melt(mat))
     
-    mat <- do.call(rbind, positional.diversity)
-    mat_melt <- suppressMessages(melt(mat))
-    
-    plot <- ggplot(mat_melt, aes(x=Var2, y = value, group= Var1, color = Var1)) +
-      geom_line(stat = "identity") +
-      geom_point() + 
-      scale_color_manual(name = "Groups", 
-                        values = rev(.colorizer(palette,nrow(mat)))) +
-      xlab("Amino Acid Residues") +
-      ylab("Relative Diversity") +
-      theme_classic() + 
-      theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+  plot <- ggplot(mat_melt, aes(x=Var2, y = value, group= Var1, color = Var1)) +
+          geom_line(stat = "identity") +
+          geom_point() + 
+          scale_color_manual(name = "Groups", 
+                            values = rev(.colorizer(palette,nrow(mat)))) +
+          xlab("Amino Acid Residues") +
+          ylab("Relative Diversity") +
+          theme_classic() + 
+          theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
     if (exportTable == TRUE) { 
       return(mat_melt) 
     }

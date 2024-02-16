@@ -36,6 +36,41 @@ is_seurat_or_se_object <- function(obj) {
   return(dat)
 }
 
+.padded_strings <- function(strings, max_length) {
+  
+  x <- lapply(strings, function(str) {
+    str_len <- nchar(str)
+    str <- strsplit(str, split = "")[[1]]
+    if (str_len < max_length) {
+      c(str, rep(NA, max_length - str_len))
+    } else {
+      str
+    }
+  })
+}
+
+
+#' @importFrom stringr str_split
+.aa.counter <- function(input.data, cloneCall, aa.length) {
+    lapply(input.data, function(x) {
+        strings <- x[,cloneCall]
+        strings <- do.call(c,str_split(strings, ";"))
+        strings <- strings[strings != "NA"]
+        strings <- na.omit(strings)
+        strings <- strings[nchar(strings) < aa.length]
+        strings <- .padded_strings(strings, aa.length)
+        strings <- do.call(rbind, strings)
+        aa.output <- apply(strings, 2, function(z) {
+          summary <- as.data.frame(table(z, useNA = "always"))
+        })
+        res <- suppressWarnings(Reduce(function(...) merge(..., all = TRUE, by="z"), aa.output))
+        colnames(res) <- c("AA", paste0("pos.", seq_len(aa.length)))
+        res[seq_len(20),][is.na(res[seq_len(20),])] <- 0
+        res
+    }) -> res.list
+  return(res.list)
+}
+
 #Pulling a color palette for visualizations
 #' @importFrom grDevices hcl.colors
 #' @keywords internal

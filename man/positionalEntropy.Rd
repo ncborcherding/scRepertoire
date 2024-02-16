@@ -28,9 +28,6 @@ positionalEntropy(
 \item{method}{The method to calculate the entropy/diversity - 
 "shannon", "inv.simpson", "norm.entropy".}
 
-\item{n.boots}{number of bootstraps to down sample in order to 
-get mean diversity.}
-
 \item{exportTable}{Returns the data frame used for forming the graph.}
 
 \item{palette}{Colors to use in visualization - input any \link[grDevices]{hcl.pals}.}
