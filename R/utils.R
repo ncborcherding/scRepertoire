@@ -23,6 +23,7 @@ is_seurat_or_se_object <- function(obj) {
   chain.check<- substr(str_split(dat[,"CTgene"], "_", simplify = TRUE)[,x], 1,3)
   chain.check[chain.check == "NA"] <- NA
   chain.check[chain.check == "NA;NA"] <- NA
+  chain.check[chain.check == "Non"] <- NA
   any.alt.chains <- which(!is.na(chain.check) & chain.check != chain)
   if(length(any.alt.chains) > 0) {
     dat <- dat[-any.alt.chains,]
