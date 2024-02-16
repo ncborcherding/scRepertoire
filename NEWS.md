@@ -8,6 +8,8 @@
 * Added ```percentVJ()```
 * Added ```percentKmer()```
 * Added ```exportClones()``` 
+* Added ```positionalEntropy()``` 
+* Added ```positionalProperty()``` 
 * Changed compareClonotypes to ```clonalCompare()```
 * Changed clonotypeSizeDistribution to ```clonalSizeDistribution()```
 * Changed scatterClonotypes to ```clonalScatter()```
@@ -38,13 +40,13 @@
 * ```clonalDiversity()``` no longer automatically orders samples.
 * Remove **order** parameter from ```clonalQuant()```, ```clonalLength()```, and ```clonalAbundance()```
 * **x.axis** parameter in ```clonalDiversity()``` separated from **group.by** parameter
+* filtering chains will not eliminate none matching chains.
 
 ## DEPRECATED AND DEFUNCT
 
 * Deprecate stripBarcodes()
 * Deprecate expression2List() (now only an internal function).
 * Deprecate checkContigs()
-
 
 # scRepertoire VERSION 1.11.0
 

@@ -44,6 +44,51 @@ combined.TCR <- combineTCR(contig_list,
                                             "P19B","P19L", "P20B", "P20L"))
 ```
 
+## percentAA
+
+Quantify the proportion of amino acids along the cdr3 sequence with `percentAA()`. By default, the function will pad the sequences with NAs up to the maximum of **aa.length**. Sequences longer than **aa.length** will be removed before visualization **(default aa.length = 20)**. 
+
+```{r, message = FALSE, tidy = FALSE}
+percentAA(combined.TCR, 
+          chain = "TRB", 
+          aa.length = 20)
+```
+
+## positionalEntropy
+
+We can also quantify the level of entropy/diversity across amino acid residues along the cdr3 sequence. `positionalEntropy()` combines the quantification by residue of ``percentAA()`` with the diversity calls in ```clonalDiversity()```. 
+
+**method**  
+
+* "shannon" - Shannon Diversity  
+* "inv.simpson" - Inverse Simpson Diversity 
+* "norm.entropy" - Normalized Entropy  
+
+```{r tidy = FALSE}
+positionalEntropy(combined.TCR, 
+                  chain = "TRB", 
+                  aa.length = 20)
+```
+## positionalProperty
+
+Like ```positionalEntropy()```, we can also examine a series of amino acid properties along the cdr3 sequences using ```positionalProperty()```. Important differences from the above function for ```positionalProperty()``` is dropping NA values as they would void the mean calculation. ```positionalProperty()``` also display a ribbon with the 95% confidence interval surrounding the mean value for the selected properties.
+
+**method**  
+
+* "Atchley" - Atchley Factors 
+* "Kidera" - Kidera Factors 
+* "stScales" - stScales Vectors
+* "tScales" - tScales Vectors
+* "VHSE" - Vectors of Hydrophobic, Steric, and Electronic properties
+
+```{r tidy = FALSE}
+positionalProperty(combined.TCR[c(1,2)], 
+                  chain = "TRB", 
+                  aa.length = 20, 
+                  method = "Atchley") + 
+  scale_color_manual(values = hcl.colors(5, "inferno")[c(2,4)])
+```
+
 ## vizGenes
 
 A visualization of the relative usage of genes of the TCR or BCR, using `vizGenes()`. There is some functional crossover between `vizGenes()` and two functions below called  `percentGenes()` and `percentVJ()`. But `vizGenes()` is more adaptable to allow for comparisons across chains, scaling, etc. 
@@ -106,33 +151,6 @@ vizGenes(combined.TCR[c(1,2)],
          plot = "heatmap", 
          scale = FALSE)
 ```
-
-## percentAA
-
-Quantify the proportion of amino acids along the cdr3 sequence with `percentAA()`. By default, the function will pad the sequences with NAs up to the maximum of **aa.length**. Sequences longer than **aa.length** will be removed before visualization **(default aa.length = 20)**. 
-
-```{r, message = FALSE, tidy = FALSE}
-percentAA(combined.TCR, 
-          chain = "TRB", 
-          aa.length = 20)
-```
-
-## positionalEntropy
-
-We can also quantify the level of entropy/diversity across amino acid residues along the cdr3 sequence. `positionalEntropy()` combines the quantification by residue of ``percentAA()`` with the diversity calls in ```clonalDiversity()```. Importantly, because diversity can be affected by size of sample, similar to ```clonalDiversity()```, ```positionalEntropy()``` will also downsample/bootstrap the calculation. Positions without variance will have a value reported as 0 for the purposes of comparison.
-
-**method**  
-
-* "shannon" - Shannon Diversity  
-* "inv.simpson" - Inverse Simpson Diversity 
-* "norm.entropy" - Normalized Entropy  
-
-```{r}
-positionalEntropy(combined.TCR, 
-                  chain = "TRB", 
-                  aa.length = 20)
-```
-
 
 ## percentGenes
 

@@ -69,11 +69,14 @@ combineExpression <- function(input.data,
         stop("Adjust the cloneSize parameter - there are groupings < 1")
     }
     cloneSize <- c(None = 0, cloneSize)
+    
+    cloneCall <- .theCall(input.data, cloneCall)
     if (chain != "both") {
-      input.data[[i]] <- .off.the.chain(input.data[[i]], chain, cloneCall)
+      for(i in seq_along(input.data)) {
+        input.data[[i]] <- .off.the.chain(input.data[[i]], chain, cloneCall)
+      }
     }
     input.data <- .checkList(input.data)
-    cloneCall <- .theCall(input.data, cloneCall)
     
     #Getting Summaries of clones from combineTCR() or combineBCR()
     Con.df <- NULL

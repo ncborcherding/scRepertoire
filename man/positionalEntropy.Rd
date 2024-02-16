@@ -9,8 +9,7 @@ positionalEntropy(
   chain = "TRB",
   group.by = NULL,
   aa.length = 20,
-  method = "shannon",
-  n.boots = 20,
+  method = "norm.entropy",
   exportTable = FALSE,
   palette = "inferno"
 )
@@ -27,9 +26,6 @@ positionalEntropy(
 
 \item{method}{The method to calculate the entropy/diversity - 
 "shannon", "inv.simpson", "norm.entropy".}
-
-\item{n.boots}{number of bootstraps to down sample in order to 
-get mean diversity.}
 
 \item{exportTable}{Returns the data frame used for forming the graph.}
 

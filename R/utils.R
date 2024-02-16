@@ -9,7 +9,7 @@ is_seurat_or_se_object <- function(obj) {
 #Use to shuffle between chains Qile: the NA handling here *might* be related to the unnamed combineTCR bugs from the new rcpp con.df construction
 #' @keywords internal
 #' @author Ye-Lin Son Nick Borcherding
-.off.the.chain <- function(dat, chain, cloneCall) {
+.off.the.chain <- function(dat, chain, cloneCall, check = TRUE) {
   chain1 <- toupper(chain) #to just make it easier
   if (chain1 %in% c("TRA", "TRG", "IGH")) {
     x <- 1
@@ -18,10 +18,59 @@ is_seurat_or_se_object <- function(obj) {
   } else {
     warning("It looks like ", chain, " does not match the available options for `chain = `")
   }
+  
+  if(check){
+  #Adding a chain check to prevent issues with TRA + TRD/IGH data
+    chain.check<- substr(str_split(dat[,"CTgene"], "_", simplify = TRUE)[,x], 1,3)
+    chain.check[chain.check == "NA"] <- NA
+    chain.check[chain.check == "NA;NA"] <- NA
+    chain.check[chain.check == "Non"] <- NA
+    any.alt.chains <- which(!is.na(chain.check) & chain.check != chain)
+    if(length(any.alt.chains) > 0) {
+      dat <- dat[-any.alt.chains,]
+    }
+  }
+  
   dat[,cloneCall] <- str_split(dat[,cloneCall], "_", simplify = TRUE)[,x]
   dat[,cloneCall][dat[,cloneCall] == "NA"] <- NA
   dat[,cloneCall][dat[,cloneCall] == "NA;NA"] <- NA
+ 
   return(dat)
+}
+
+.padded_strings <- function(strings, max_length) {
+  
+  x <- lapply(strings, function(str) {
+    str_len <- nchar(str)
+    str <- strsplit(str, split = "")[[1]]
+    if (str_len < max_length) {
+      c(str, rep(NA, max_length - str_len))
+    } else {
+      str
+    }
+  })
+}
+
+
+#' @importFrom stringr str_split
+.aa.counter <- function(input.data, cloneCall, aa.length) {
+    lapply(input.data, function(x) {
+        strings <- x[,cloneCall]
+        strings <- do.call(c,str_split(strings, ";"))
+        strings <- strings[strings != "NA"]
+        strings <- na.omit(strings)
+        strings <- strings[nchar(strings) < aa.length]
+        strings <- .padded_strings(strings, aa.length)
+        strings <- do.call(rbind, strings)
+        aa.output <- apply(strings, 2, function(z) {
+          summary <- as.data.frame(table(z, useNA = "always"))
+        })
+        res <- suppressWarnings(Reduce(function(...) merge(..., all = TRUE, by="z"), aa.output))
+        colnames(res) <- c("AA", paste0("pos.", seq_len(aa.length)))
+        res[seq_len(20),][is.na(res[seq_len(20),])] <- 0
+        res
+    }) -> res.list
+  return(res.list)
 }
 
 #Pulling a color palette for visualizations

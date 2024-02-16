@@ -21,6 +21,7 @@
 #' @param palette Colors to use in visualization - input any \link[grDevices]{hcl.pals}.
 #' @import ggplot2
 #' @importFrom reshape2 melt
+#' @importFrom dplyr mutate_at %>%
 #' @export
 #' @concept Summarize_Repertoire
 #' @return ggplot of stacked bar graphs of amino acid proportions
@@ -37,29 +38,17 @@ percentAA <- function(input.data,
     input.data <- .groupList(input.data, group.by)
   }
   
-  res.list <- list()
-  for (i in seq_along(input.data)) {
-    strings <- input.data[[i]][,"CTaa"]
-    strings <- do.call(c,str_split(strings, ";"))
-    strings <- strings[strings != "NA"]
-    strings <- strings[nchar(strings) < aa.length]
-    strings <- na.omit(strings)
-    strings <- .padded_strings(strings, aa.length)
-    strings <- do.call(rbind, strings)
-    
-    #Summarizing the % of each position
-    aa.output <- apply(strings, 2, function(x) {
-      summary <- as.data.frame(prop.table(table(x, useNA = "always")))
-    })
-    
-    #Forming a matrix of % across each position and formatting
-    res <- suppressWarnings(Reduce(function(...) merge(..., all = TRUE, by="x"), aa.output))
-    colnames(res) <- c("AA", paste0("pos.", seq_len(aa.length)))
-    res[seq_len(20),][is.na(res[seq_len(20),])] <- 0
-    melt.res <- suppressMessages(melt(res))
-    melt.res$group <- names(input.data)[i]
-    res.list[[i]] <- melt.res
-  }
+  #Getting AA Counts
+  aa.count.list <- .aa.counter(input.data, "CTaa", aa.length)
+  
+  #Calculating proportion and melting data
+  lapply(seq_along(aa.count.list), function(x) {
+    aa.count.list[[x]] <- aa.count.list[[x]] %>% mutate_if(is.numeric, list(~ ./sum(.)))
+    melt.res <- suppressMessages(melt(aa.count.list[[x]]))
+    melt.res$group <- names(input.data)[x]
+    melt.res
+  }) -> res.list
+  
   mat_melt <- do.call(rbind, res.list)
   plot <- ggplot(mat_melt, aes(x=as.factor(variable), y = value, fill=AA)) +
     geom_bar(stat = "identity", position="fill", lwd= 0.25, color = "black") +
@@ -78,15 +67,3 @@ percentAA <- function(input.data,
   return(plot)
 }    
     
-.padded_strings <- function(strings, max_length) {
-      
-      x <- lapply(strings, function(str) {
-        str_len <- nchar(str)
-        str <- strsplit(str, split = "")[[1]]
-        if (str_len < max_length) {
-          c(str, rep(NA, max_length - str_len))
-        } else {
-          str
-        }
-    })
-  }
