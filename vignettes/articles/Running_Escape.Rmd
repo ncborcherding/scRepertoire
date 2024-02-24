@@ -5,7 +5,7 @@ output: rmarkdown::html_vignette
 theme: united
 df_print: kable
 vignette: >
-  %\VignetteIndexEntry{Summarizing Repertoires}
+  %\VignetteIndexEntry{Single-cell Gene Set Enrichment Analysis}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -211,7 +211,7 @@ enrichment.scores <- escape.matrix(scRep_example,
 
 We can visualize the raw results with a ggplot: 
 
-```{r}
+```{r tidy=FALSE}
 ggplot(data = as.data.frame(enrichment.scores), 
       mapping = aes(x = `HALLMARK-DNA-REPAIR`, `HALLMARK-G2M-CHECKPOINT`)) + 
   geom_point() + 
@@ -251,10 +251,19 @@ Although we glossed over the normalization that can be used in ```escape.matrix(
 There can be inherent bias in enrichment values due to drop out in single-cell expression data. Cells with larger numbers of features and counts will likely have higher enrichment values. ```performNormalization()``` will normalize the enrichment values by calculating the number of genes expressed in each gene set and cell. This is similar to the normalization in classic GSEA and it will be stored in a new assay. 
 
 
-```{r eval = F}
+```{r eval = F, tidy=FALSE}
 scRep_example <- performNormalization(scRep_example, 
                                       assay = "escape.ssGSEA", 
                                       gene.sets = GS.hallmark)
+```
+
+An alternative for scaling by expressed gene sets would be to use a scaling factor previously calculated during normal single-cell data processing and quality control. This can be done using the **scale.factor** argument and providing a vector. This approach may be particularly advantageous for large data sets.
+
+```{r eval = FALSE, tidy = FALSE}
+scRep_example <- performNormalization(scRep_example, 
+                                      assay = "escape.ssGSEA", 
+                                      gene.sets = GS.hallmark, 
+                                      scale.factor = scRep_example$nFeature_RNA)
 ```
 
 ```performNormalization()``` has an additional parameter **make.positive**. Across the individual gene sets, if negative normalized enrichment scores are seen, the minimum value is added to all values. For example if the normalized enrichment scores (after the above accounting for drop out) ranges from -50 to 50, **make.positive** will adjust the range to 0 to 100 (by adding 50). This allows for compatible log2-fold change downstream, but can alter the enrichment score interpretation.
@@ -269,7 +278,7 @@ There are a number of ways to look at the enrichment values downstream of ```run
 
 We can examine the enrichment values across our gene sets by using ```heatmapEnrichment()```. This visualization will return the mean of the **group.by** variable. As a default - all visualizations of single-cell objects will use the cluster assignment or active identity as a default for visualizations. We will use a subset of the Hallmark Gene Sets to display for the vignette format using the  **gene.set.use** set to first 12 gene sets. Alternatively, we can plot all gene sets using **gene.set.use** = "all".
 
-```{r}
+```{r tidy=FALSE}
 heatmapEnrichment(scRep_example, 
                   group.by = "ident",
                   gene.set.use = rownames(scRep_example@assays$escape.ssGSEA@data)[1:12],
@@ -292,7 +301,7 @@ Most of the visualizations in *escape* have a defined set of parameters.
 
 In addition, ```heatmapEnrichment()``` allows for the reclustering of rows and columns using Euclidean distance of the enrichment scores and the Ward2 methods for clustering using **cluster.rows** and **cluster.columns**.
 
-```{r}
+```{r tidy=FALSE}
 heatmapEnrichment(scRep_example, 
                   group.by = "ident",
                   assay = "escape.ssGSEA",
@@ -308,7 +317,7 @@ Each visualization has an additional argument called **palette that supplies the
 hcl.pals()
 ```
 
-```{r}
+```{r tidy=FALSE}
 heatmapEnrichment(scRep_example, 
                   group.by = "ident",
                   gene.set.use = rownames(scRep_example@assays$escape.ssGSEA@data)[1:12],
@@ -318,7 +327,7 @@ heatmapEnrichment(scRep_example,
 
 Alternatively, we can add an additional layer to the ggplot object that is returned by the visualizations using something like ```scale_fill_gradientn()``` for continuous values or ```scale_fill_manual()``` for the categorical variables.
 
-```{r}
+```{r tidy=FALSE}
 heatmapEnrichment(scRep_example, 
                   group.by = "ident",
                   gene.set.use = rownames(scRep_example@assays$escape.ssGSEA@data)[1:12],
@@ -330,7 +339,7 @@ heatmapEnrichment(scRep_example,
 
 We can also focus on individual gene sets - one approach is to use ```geyserEnrichment()```. Here individual cells are plotted along the Y-axis with graphical summary where the central dot refers to the median enrichment value and the thicker/thinner lines demonstrate the interval summaries referring to the 66% and 95%.
 
-```{r}
+```{r tidy=FALSE}
 geyserEnrichment(scRep_example, 
                  assay = "escape.ssGSEA",
                  gene.set = "HALLMARK-INTERFERON-GAMMA-RESPONSE")
@@ -338,7 +347,7 @@ geyserEnrichment(scRep_example,
 
 To show the additional parameters that appear in visualizations of individual enrichment gene sets - we can reorder the groups by the mean of the gene set using **order.by** = "mean".
 
-```{r}
+```{r tidy=FALSE}
 geyserEnrichment(scRep_example, 
                  assay = "escape.ssGSEA",
                  gene.set = "HALLMARK-INTERFERON-GAMMA-RESPONSE", 
@@ -347,7 +356,7 @@ geyserEnrichment(scRep_example,
 
 What if we had 2 separate samples or groups within the data? Another parameter we can use is **facet.by** to allow for direct visualization of an additional variable. 
 
-```{r}
+```{r tidy=FALSE}
 geyserEnrichment(scRep_example, 
                  assay = "escape.ssGSEA",
                  gene.set = "HALLMARK-INTERFERON-GAMMA-RESPONSE", 
@@ -355,7 +364,7 @@ geyserEnrichment(scRep_example,
 ```
 Lastly, we can select the way the color is applied to the plot using the **color.by** parameter. Here we can set it to the gene set of interest *"HALLMARK-INTERFERON-GAMMA-RESPONSE"*.
 
-```{r}
+```{r tidy=FALSE}
 geyserEnrichment(scRep_example, 
                  assay = "escape.ssGSEA",
                  gene.set = "HALLMARK-INTERFERON-GAMMA-RESPONSE", 
@@ -366,14 +375,14 @@ geyserEnrichment(scRep_example,
 
 Similar to the ```geyserEnrichment()``` the ```ridgeEnrichment()``` can display the distribution of enrichment values across the selected gene set. The central line is at the median value for the respective grouping. 
 
-```{r}
+```{r tidy=FALSE}
 ridgeEnrichment(scRep_example, 
                 assay = "escape.ssGSEA",
                 gene.set = "HALLMARK-IL2-STAT5-SIGNALING")
 ```
 We can get the relative position of individual cells along the x-axis using the **add.rug** parameter.
 
-```{r}
+```{r tidy=FALSE}
 ridgeEnrichment(scRep_example, 
                 assay = "escape.ssGSEA",
                 gene.set = "HALLMARK-IL2-STAT5-SIGNALING",
@@ -385,7 +394,7 @@ ridgeEnrichment(scRep_example,
 
 Another distribution visualization is a violin plot, which we separate and directly compare using a binary classification. Like ```ridgeEnrichment()```, this allows for greater use of categorical variables. For ```splitEnrichment()```, the output will be two halves of a violin plot based on the **split.by** parameter with a central boxplot with the relative distribution across all samples. Here, we split the samples by *Type* where **B** refers to the peripheral blood and **L** refers to lung.
 
-```{r}
+```{r tidy=FALSE}
 splitEnrichment(scRep_example, 
                 assay = "escape.ssGSEA",
                 gene.set = "HALLMARK-IL2-STAT5-SIGNALING", 
@@ -404,9 +413,10 @@ splitEnrichment(scRep_example,
 
 * The gene set library from either of the 3 options in the first section of the vignette.
 
-```{r}
+```{r tidy=FALSE}
 densityEnrichment(scRep_example, 
                   gene.set.use = "HALLMARK-IL6-JAK-STAT3-SIGNALING", 
+                  group.by = "orig.ident",
                   gene.sets = GS.hallmark)
 ```
 
@@ -415,7 +425,7 @@ densityEnrichment(scRep_example,
 It may be advantageous to look at the distribution of multiple gene sets - here we can use ```scatterEnrichment()``` for a 2 gene set comparison. The color values are based on the density of points determined by the number of neighbors, similar to the [Nebulosa R package](https://www.bioconductor.org/packages/release/bioc/html/Nebulosa.html). We just need to define which gene set to plot on the **x.axis** and which to plot on the **y.axis**.
 
 
-```{r}
+```{r tidy=FALSE}
 scatterEnrichment(scRep_example, 
                   assay = "escape.ssGSEA",
                   x.axis = "HALLMARK-INTERFERON-GAMMA-RESPONSE",
@@ -424,7 +434,7 @@ scatterEnrichment(scRep_example,
 
 The scatter plot can also be converted into a hexbin, another method for summarizing the individual cell distributions along the x and y axis, by setting **style** = "hex". 
 
-```{r}
+```{r tidy=FALSE}
 scatterEnrichment(scRep_example, 
                   assay = "escape.ssGSEA",
                   x.axis = "HALLMARK-INTERFERON-GAMMA-RESPONSE",
@@ -442,15 +452,15 @@ escape has its own PCA function ```performPCA()``` which will work on a single-c
 
 Alternatively, other PCA-based functions like Seurat's ```RunPCA()``` or scater's ```runPCA()` can be used. These functions are likely faster and would be ideal if we have a larger number of cells and/or gene sets.
 
-```{r}
+```{r tidy=FALSE}
 scRep_example <- performPCA(scRep_example, 
-                         assay = "escape.ssGSEA",
-                         n.dim = 1:10)
+                            assay = "escape.ssGSEA",
+                            n.dim = 1:10)
 ```
 
 *escape* has a built in method for plotting PCA ```pcaEnrichment()``` that functions similarly to the ```scatterEnrichment()``` function where **x.axis** and **y.axis** are the components to plot.
 
-```{r}
+```{r tidy=FALSE}
 pcaEnrichment(scRep_example, 
               dimRed = "escape.PCA",
               x.axis = "PC1",
@@ -463,7 +473,7 @@ pcaEnrichment(scRep_example,
 
 **display.factors** will overlay the magnitude and direction that the features/gene sets contribute to the selected components. The number of gene sets is determined by **number.of.factors**. This can assist in understanding the underlying differences in enrichment across different cells.
 
-```{r}
+```{r tidy=FALSE}
 pcaEnrichment(scRep_example, 
               dimRed = "escape.PCA",
               x.axis = "PC1",
@@ -475,13 +485,13 @@ pcaEnrichment(scRep_example,
 
 ## Differential Enrichment
 
-Differential enrichment analysis can be performed similar to differential gene expression analysis. For the purposes of finding the differential enrichment values, we can first normalize the enrichment values for the ssGSEA calculations. 
+Differential enrichment analysis can be performed similar to differential gene expression analysis. For the purposes of finding the differential enrichment values, we can first normalize the enrichment values for the ssGSEA calculations. Here we are using the **scale.factor** parameter of *nFeature_RNA*, which is the total feature space for each cell. 
 
-```{r}
+```{r tidy=FALSE}
 scRep_example <- performNormalization(scRep_example, 
-                                   assay = "escape.ssGSEA", 
-                                   gene.sets = GS.hallmark,
-                                   make.positive = FALSE)
+                                      assay = "escape.ssGSEA", 
+                                      gene.sets = GS.hallmark, 
+                                      scale.factor = scRep_example$nFeature_RNA)
 
 all.markers <- FindAllMarkers(scRep_example, 
                               assay = "escape.ssGSEA_normalized", 

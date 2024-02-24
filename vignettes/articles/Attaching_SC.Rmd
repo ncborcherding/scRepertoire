@@ -45,8 +45,6 @@ data("contig_list")
 combined.TCR <- combineTCR(contig_list, 
                            samples = c("P17B", "P17L", "P18B", "P18L", 
                                             "P19B","P19L", "P20B", "P20L"))
-
-googledrive::drive_download("https://drive.google.com/file/d/1_YuRraDyg8UgF3oasjF0-jgPnwox-B24/view?usp=share_link", overwrite = TRUE)
 ```
 
 The data in the scRepertoire package is derived from a [study](https://pubmed.ncbi.nlm.nih.gov/33622974/) of acute respiratory stress disorder in the context of bacterial and COVID-19 infections. The internal single cell data (`scRep_example()`) built in to scRepertoire is randomly sampled 500 cells from the fully integrated Seurat object to minimize the package size. However, for the purpose of the vignette we will use the full single-cell object with 30,000 cells. We will use both Seurat and Single-Cell Experiment (SCE) with scater to perform further visualizations in tandem. 
