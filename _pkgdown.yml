@@ -51,6 +51,8 @@ navbar:
       href: articles/Trex.html
     - text: Combining Deep Learning and BCRs with Ibex
       href: articles/Ibex.html
+    - text: Single-cell Gene Set Enrichment Analysis
+      href: articles/Running_Escape.html
   - text: News/Changelog
     href: news/index.html
   - text: Reference
@@ -89,6 +91,7 @@ reference:
 - contents:
   - percentAA
   - positionalEntropy
+  - positionalProperty
   - percentGenes
   - percentKmer
   - percentVJ

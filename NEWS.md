@@ -27,7 +27,7 @@
 * **.theCall()** now allows for a custom header/variable and checks the colnames. 
 * Replaced data arguments to be more descriptive: *df* is now *input.data*, *dir* is now *input*, and *sc* is now *sc.data*
 * Deep clean on the documentation for each function for increased consistency and explainability
-* ```Startracdiversity()``` metric re-implemented to remove startrac-class object intermediary
+* ```StartracDiversity()``` metric re-implemented to remove startrac-class object intermediary
 * Implemented powerTCR locally to reduce dependencies and continue support
 * Universalized underlying function language and intermediate variables
 * License change to MIT

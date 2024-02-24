@@ -43,7 +43,7 @@ suppressMessages(library(ggplot2))
 suppressMessages(library(viridis))
 suppressMessages(library(dplyr))
 suppressMessages(library(reticulate))
-use_condaenv(condaenv = "r-reticulate", required = TRUE)
+#use_condaenv(condaenv = "r-reticulate", required = TRUE)
 ```
 
 # Getting Started 

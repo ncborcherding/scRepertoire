@@ -67,7 +67,7 @@ positionalProperty <- function(input.data,
     input.data <- .groupList(input.data, group.by)
   }
   
-  #Selecting Diversit Function
+  #Selecting Property Function
   propertyFunc <- switch(method,
                           "Atchley" = .af.ref,
                           "Kidera" = .kf.ref,

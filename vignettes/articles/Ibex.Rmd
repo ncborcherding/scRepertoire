@@ -37,7 +37,7 @@ knitr::opts_chunk$set(
   time_it = TRUE
 )
 suppressMessages(library(reticulate))
-use_condaenv(condaenv = "r-reticulate", required = TRUE)
+#use_condaenv(condaenv = "r-reticulate", required = TRUE)
 suppressMessages(library(Ibex))
 suppressMessages(library(Seurat))
 suppressMessages(library(ggplot2))
