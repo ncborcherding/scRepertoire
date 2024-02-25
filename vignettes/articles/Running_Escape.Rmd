@@ -297,7 +297,7 @@ Most of the visualizations in *escape* have a defined set of parameters.
 **scale**
 
 * **TRUE** - z-transform the enrichment values.
-* **FALSE** - leave raw values (**DEFAULT**).
+* **FALSE** - leave raw values (**default**).
 
 In addition, ```heatmapEnrichment()``` allows for the reclustering of rows and columns using Euclidean distance of the enrichment scores and the Ward2 methods for clustering using **cluster.rows** and **cluster.columns**.
 
@@ -311,7 +311,7 @@ heatmapEnrichment(scRep_example,
                   cluster.columns = TRUE)
 ```
 
-Each visualization has an additional argument called **palette that supplies the coloring scheme to be used - available color palettes can be viewed with ```hcl.pals()```. 
+Each visualization has an additional argument called **palette** that supplies the coloring scheme to be used - available color palettes can be viewed with ```hcl.pals()```. 
 
 ```{r}
 hcl.pals()

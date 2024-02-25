@@ -69,6 +69,7 @@ positionalEntropy(combined.TCR,
                   chain = "TRB", 
                   aa.length = 20)
 ```
+
 ## positionalProperty
 
 Like ```positionalEntropy()```, we can also examine a series of amino acid properties along the cdr3 sequences using ```positionalProperty()```. Important differences from the above function for ```positionalProperty()``` is dropping NA values as they would void the mean calculation. ```positionalProperty()``` also display a ribbon with the 95% confidence interval surrounding the mean value for the selected properties.
