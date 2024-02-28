@@ -184,20 +184,20 @@
 <text x='531.59' y='568.69' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='21.53px' lengthAdjust='spacingAndGlyphs'>P20B</text>
 <text x='607.29' y='568.69' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='20.56px' lengthAdjust='spacingAndGlyphs'>P20L</text>
 <rect x='663.67' y='233.90' width='50.85' height='112.69' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
+<text x='669.15' y='248.09' style='font-size: 11.00px; font-family: sans;' textLength='38.53px' lengthAdjust='spacingAndGlyphs'>Jaccard</text>
 <image width='17.28' height='86.40' x='669.15' y='254.71' preserveAspectRatio='none' xlink:href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAEsCAYAAAACUNnVAAAA0ElEQVQ4jbWQS5LEIAxDhe9/hrlp682CQIAY0jVVs0lJ1scmwj+EsEK2Hgg2wmB5zfKeIBW40FrQUSaMVZ98OUNCCtE/daUSIbEgBc4s6s/ftkjBYkkRCvZqW1TP2FlYn1UUUBQ4GqIhcc+64IkOBall6qulqzpbMjVNNEFnnzdXGV2/s36kaZZQkML6W+xIs+Z/WTRQoXChVYk2U5+VNntY9DBT5mxi3mZv8yH7Xsp3pchfIctX6ageYxwta1WSuCnZbKJmus/4urmiSj8V/QKjaCWAqvLxxwAAAABJRU5ErkJggg=='/>
+<polyline points='682.98,320.77 686.43,320.77 ' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
+<polyline points='682.98,299.72 686.43,299.72 ' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
+<polyline points='682.98,278.68 686.43,278.68 ' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
+<polyline points='682.98,257.63 686.43,257.63 ' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
+<polyline points='672.61,320.77 669.15,320.77 ' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
+<polyline points='672.61,299.72 669.15,299.72 ' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
+<polyline points='672.61,278.68 669.15,278.68 ' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
+<polyline points='672.61,257.63 669.15,257.63 ' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
 <text x='691.91' y='323.80' style='font-size: 8.80px; font-family: sans;' textLength='17.13px' lengthAdjust='spacingAndGlyphs'>0.01</text>
 <text x='691.91' y='302.75' style='font-size: 8.80px; font-family: sans;' textLength='17.13px' lengthAdjust='spacingAndGlyphs'>0.02</text>
 <text x='691.91' y='281.71' style='font-size: 8.80px; font-family: sans;' textLength='17.13px' lengthAdjust='spacingAndGlyphs'>0.03</text>
 <text x='691.91' y='260.66' style='font-size: 8.80px; font-family: sans;' textLength='17.13px' lengthAdjust='spacingAndGlyphs'>0.04</text>
-<text x='669.15' y='248.09' style='font-size: 11.00px; font-family: sans;' textLength='38.53px' lengthAdjust='spacingAndGlyphs'>Jaccard</text>
-<line x1='669.15' y1='320.77' x2='672.61' y2='320.77' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
-<line x1='669.15' y1='299.72' x2='672.61' y2='299.72' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
-<line x1='669.15' y1='278.68' x2='672.61' y2='278.68' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
-<line x1='669.15' y1='257.63' x2='672.61' y2='257.63' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
-<line x1='682.98' y1='320.77' x2='686.43' y2='320.77' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
-<line x1='682.98' y1='299.72' x2='686.43' y2='299.72' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
-<line x1='682.98' y1='278.68' x2='686.43' y2='278.68' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
-<line x1='682.98' y1='257.63' x2='686.43' y2='257.63' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
 <text x='31.94' y='14.56' style='font-size: 13.20px; font-family: sans;' textLength='159.25px' lengthAdjust='spacingAndGlyphs'>clonalOverlap_jaccard_plot</text>
 </g>
 </svg>

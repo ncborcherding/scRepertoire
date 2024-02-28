@@ -81,8 +81,11 @@
 <text transform='translate(13.05,290.24) rotate(-90)' text-anchor='middle' style='font-size: 11.00px; font-family: sans;' textLength='90.49px' lengthAdjust='spacingAndGlyphs'>Proportion of Cells</text>
 <rect x='562.14' y='251.18' width='152.38' height='78.13' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <text x='567.62' y='265.37' style='font-size: 11.00px; font-family: sans;' textLength='47.70px' lengthAdjust='spacingAndGlyphs'>cloneSize</text>
+<rect x='567.62' y='271.99' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <rect x='567.98' y='272.35' width='16.57' height='16.57' style='stroke-width: 0.53; stroke-linecap: butt; stroke-linejoin: miter; fill: #FFFE9E;' />
+<rect x='567.62' y='289.27' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <rect x='567.98' y='289.63' width='16.57' height='16.57' style='stroke-width: 0.53; stroke-linecap: butt; stroke-linejoin: miter; fill: #C53270;' />
+<rect x='567.62' y='306.55' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <rect x='567.98' y='306.91' width='16.57' height='16.57' style='stroke-width: 0.53; stroke-linecap: butt; stroke-linejoin: miter; fill: #040404;' />
 <text x='590.38' y='283.66' style='font-size: 8.80px; font-family: sans;' textLength='118.66px' lengthAdjust='spacingAndGlyphs'>Hyperexpanded (0.1 &lt; X &lt;= 1)</text>
 <text x='590.38' y='300.94' style='font-size: 8.80px; font-family: sans;' textLength='91.25px' lengthAdjust='spacingAndGlyphs'>Large (0.01 &lt; X &lt;= 0.1)</text>

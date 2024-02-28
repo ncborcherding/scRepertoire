@@ -549,21 +549,21 @@
 <circle cx='249.29' cy='505.35' r='1.42' style='stroke-width: 0.71; fill: #000000;' />
 </g>
 <g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'>
-<polyline points='8.22,567.78 8.22,22.78 ' style='stroke-width: 0.75;' />
-<polyline points='8.22,567.78 575.80,567.78 ' style='stroke-width: 0.75;' />
+<polyline points='8.22,567.78 8.22,22.78 ' style='stroke-width: 1.07; stroke-linecap: butt;' />
+<polyline points='8.22,567.78 575.80,567.78 ' style='stroke-width: 1.07; stroke-linecap: butt;' />
 <rect x='586.76' y='179.81' width='127.76' height='124.57' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
+<text x='592.24' y='194.00' style='font-size: 11.00px; font-family: sans;' textLength='108.84px' lengthAdjust='spacingAndGlyphs'>Relative Proportion of </text>
+<text x='592.24' y='205.88' style='font-size: 11.00px; font-family: sans;' textLength='116.80px' lengthAdjust='spacingAndGlyphs'>Clones of Starting Node</text>
 <image width='17.28' height='86.40' x='592.24' y='212.50' preserveAspectRatio='none' xlink:href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAEsCAYAAAACUNnVAAAA3UlEQVQ4jaWUWQ6DMAxEJ77/GXrS4tePBJPFgVb9QbN5bCSE8BcmXCZ3VUSgph0NMeby8KQdp7aNdAZLfWcky+VbYzqSjVuNePgtgqjKIp6PsW8uMlEWRKIJ5RqdpnyC2Sgy3GRgMmGtBW61kba91s5tfSWZndzzBT1eFRToB80vuq/KJtS7naadERPe5RS5MuY0nHZp15hYqqorkrBkDklY7eNawlHV0dj7gPglPC7ao6CFcdHUEkbJbmF35KPxF+XLMJnrMsnPv4C8afV32CEWjdAy6hqQcwR9V/oB9eo0gIYOR9MAAAAASUVORK5CYII='/>
+<polyline points='606.06,291.94 609.52,291.94 ' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
+<polyline points='606.06,272.84 609.52,272.84 ' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
+<polyline points='606.06,246.91 609.52,246.91 ' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
+<polyline points='595.70,291.94 592.24,291.94 ' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
+<polyline points='595.70,272.84 592.24,272.84 ' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
+<polyline points='595.70,246.91 592.24,246.91 ' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
 <text x='615.00' y='294.97' style='font-size: 8.80px; font-family: sans;' textLength='17.13px' lengthAdjust='spacingAndGlyphs'>0.03</text>
 <text x='615.00' y='275.87' style='font-size: 8.80px; font-family: sans;' textLength='17.13px' lengthAdjust='spacingAndGlyphs'>0.05</text>
 <text x='615.00' y='249.94' style='font-size: 8.80px; font-family: sans;' textLength='17.13px' lengthAdjust='spacingAndGlyphs'>0.10</text>
-<text x='592.24' y='194.00' style='font-size: 11.00px; font-family: sans;' textLength='108.84px' lengthAdjust='spacingAndGlyphs'>Relative Proportion of </text>
-<text x='592.24' y='205.88' style='font-size: 11.00px; font-family: sans;' textLength='116.80px' lengthAdjust='spacingAndGlyphs'>Clones of Starting Node</text>
-<line x1='592.24' y1='291.94' x2='595.70' y2='291.94' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
-<line x1='592.24' y1='272.84' x2='595.70' y2='272.84' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
-<line x1='592.24' y1='246.91' x2='595.70' y2='246.91' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
-<line x1='606.06' y1='291.94' x2='609.52' y2='291.94' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
-<line x1='606.06' y1='272.84' x2='609.52' y2='272.84' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
-<line x1='606.06' y1='246.91' x2='609.52' y2='246.91' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
 <rect x='586.76' y='315.34' width='83.12' height='95.41' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <text x='592.24' y='329.53' style='font-size: 11.00px; font-family: sans;' textLength='72.16px' lengthAdjust='spacingAndGlyphs'>Unique Clones</text>
 <circle cx='600.88' cy='344.79' r='1.42' style='stroke-width: 0.71; fill: #000000;' />

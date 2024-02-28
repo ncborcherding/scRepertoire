@@ -18,7 +18,7 @@
   </clipPath>
 </defs>
 <g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'>
-<rect x='0.000000000000064' y='0.00' width='720.00' height='576.00' style='stroke-width: 1.07; stroke: #FFFFFF; fill: #FFFFFF;' />
+<rect x='0.00' y='0.00' width='720.00' height='576.00' style='stroke-width: 1.07; stroke: #FFFFFF; fill: #FFFFFF;' />
 </g>
 <defs>
   <clipPath id='cpMjUuMDd8NjM2LjMzfDIyLjc4fDU1OS43Mg=='>
@@ -156,17 +156,17 @@
 <text transform='translate(194.81,564.65) rotate(-90)' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='5.87px' lengthAdjust='spacingAndGlyphs'>B</text>
 <text transform='translate(472.65,564.65) rotate(-90)' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='4.89px' lengthAdjust='spacingAndGlyphs'>L</text>
 <rect x='647.29' y='234.90' width='67.23' height='112.69' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
+<text x='652.77' y='249.10' style='font-size: 11.00px; font-family: sans;' textLength='56.27px' lengthAdjust='spacingAndGlyphs'>Percentage</text>
 <image width='17.28' height='86.40' x='652.77' y='255.72' preserveAspectRatio='none' xlink:href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAEsCAYAAAACUNnVAAAA6ElEQVQ4jZ2US5IDMQhDBfc/w5w0jbIAfwA7Sc3GhXiS3NULg/ZHBQ0KMyh9etB3lnfPvuOiB/PPlhsA+Q3UrEvmBDsozWT+0k4jSygMfUeE5NWy7WQmBAoKlE5l+ooFUNYYoDANSY5plcJ0xqRRblKhNI2WcngLpdMMvGU2c8l1mPTdESAmO+z26TdgPhUfZj3yURIpZkBLlJ2hl36OGTgAMC73iTFtiQyWmWAvLQAZ8AY8wQTkBq6JgzT5bjmWMieuVR8T/5Pxsy++2NmQLL4EtiwT8JcG+U3EmMK85DOu5DPlC0q+8AaR+TOAHSyAQgAAAABJRU5ErkJggg=='/>
+<polyline points='666.59,314.85 670.05,314.85 ' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
+<polyline points='666.59,287.19 670.05,287.19 ' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
+<polyline points='666.59,259.53 670.05,259.53 ' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
+<polyline points='656.23,314.85 652.77,314.85 ' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
+<polyline points='656.23,287.19 652.77,287.19 ' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
+<polyline points='656.23,259.53 652.77,259.53 ' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
 <text x='675.53' y='317.88' style='font-size: 8.80px; font-family: sans;' textLength='17.13px' lengthAdjust='spacingAndGlyphs'>0.02</text>
 <text x='675.53' y='290.22' style='font-size: 8.80px; font-family: sans;' textLength='17.13px' lengthAdjust='spacingAndGlyphs'>0.04</text>
 <text x='675.53' y='262.56' style='font-size: 8.80px; font-family: sans;' textLength='17.13px' lengthAdjust='spacingAndGlyphs'>0.06</text>
-<text x='652.77' y='249.10' style='font-size: 11.00px; font-family: sans;' textLength='56.27px' lengthAdjust='spacingAndGlyphs'>Percentage</text>
-<line x1='652.77' y1='314.85' x2='656.23' y2='314.85' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
-<line x1='652.77' y1='287.19' x2='656.23' y2='287.19' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
-<line x1='652.77' y1='259.53' x2='656.23' y2='259.53' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
-<line x1='666.59' y1='314.85' x2='670.05' y2='314.85' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
-<line x1='666.59' y1='287.19' x2='670.05' y2='287.19' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
-<line x1='666.59' y1='259.53' x2='670.05' y2='259.53' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
 <text x='25.07' y='14.56' style='font-size: 13.20px; font-family: sans;' textLength='188.60px' lengthAdjust='spacingAndGlyphs'>percentKmer_group_motif2_plot</text>
 </g>
 </svg>

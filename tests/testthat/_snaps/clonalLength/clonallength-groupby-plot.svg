@@ -234,7 +234,9 @@
 <text transform='translate(13.05,283.95) rotate(-90)' text-anchor='middle' style='font-size: 11.00px; font-family: sans;' textLength='109.42px' lengthAdjust='spacingAndGlyphs'>Number of CDR3 (NT)</text>
 <rect x='674.93' y='253.52' width='39.59' height='60.85' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <text x='680.41' y='267.71' style='font-size: 11.00px; font-family: sans;' textLength='24.46px' lengthAdjust='spacingAndGlyphs'>Type</text>
+<rect x='680.41' y='274.33' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <rect x='680.76' y='274.69' width='16.57' height='16.57' style='stroke-width: 0.53; stroke-linecap: butt; stroke-linejoin: miter; fill: #040404;' />
+<rect x='680.41' y='291.61' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <rect x='680.76' y='291.97' width='16.57' height='16.57' style='stroke-width: 0.53; stroke-linecap: butt; stroke-linejoin: miter; fill: #FFFE9E;' />
 <text x='703.17' y='286.00' style='font-size: 8.80px; font-family: sans;' textLength='5.87px' lengthAdjust='spacingAndGlyphs'>B</text>
 <text x='703.17' y='303.28' style='font-size: 8.80px; font-family: sans;' textLength='4.89px' lengthAdjust='spacingAndGlyphs'>L</text>

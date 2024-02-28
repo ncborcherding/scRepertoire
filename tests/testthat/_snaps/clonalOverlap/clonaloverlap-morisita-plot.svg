@@ -184,20 +184,20 @@
 <text x='531.59' y='568.69' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='21.53px' lengthAdjust='spacingAndGlyphs'>P20B</text>
 <text x='607.29' y='568.69' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='20.56px' lengthAdjust='spacingAndGlyphs'>P20L</text>
 <rect x='663.67' y='233.90' width='50.85' height='112.69' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
+<text x='669.15' y='248.09' style='font-size: 11.00px; font-family: sans;' textLength='38.51px' lengthAdjust='spacingAndGlyphs'>Morisita</text>
 <image width='17.28' height='86.40' x='669.15' y='254.71' preserveAspectRatio='none' xlink:href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAEsCAYAAAACUNnVAAAA0ElEQVQ4jbWQS5LEIAxDhe9/hrlp682CQIAY0jVVs0lJ1scmwj+EsEK2Hgg2wmB5zfKeIBW40FrQUSaMVZ98OUNCCtE/daUSIbEgBc4s6s/ftkjBYkkRCvZqW1TP2FlYn1UUUBQ4GqIhcc+64IkOBall6qulqzpbMjVNNEFnnzdXGV2/s36kaZZQkML6W+xIs+Z/WTRQoXChVYk2U5+VNntY9DBT5mxi3mZv8yH7Xsp3pchfIctX6ageYxwta1WSuCnZbKJmus/4urmiSj8V/QKjaCWAqvLxxwAAAABJRU5ErkJggg=='/>
+<polyline points='682.98,340.97 686.43,340.97 ' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
+<polyline points='682.98,316.58 686.43,316.58 ' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
+<polyline points='682.98,292.20 686.43,292.20 ' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
+<polyline points='682.98,267.82 686.43,267.82 ' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
+<polyline points='672.61,340.97 669.15,340.97 ' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
+<polyline points='672.61,316.58 669.15,316.58 ' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
+<polyline points='672.61,292.20 669.15,292.20 ' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
+<polyline points='672.61,267.82 669.15,267.82 ' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
 <text x='691.91' y='344.00' style='font-size: 8.80px; font-family: sans;' textLength='17.13px' lengthAdjust='spacingAndGlyphs'>0.00</text>
 <text x='691.91' y='319.61' style='font-size: 8.80px; font-family: sans;' textLength='17.13px' lengthAdjust='spacingAndGlyphs'>0.02</text>
 <text x='691.91' y='295.23' style='font-size: 8.80px; font-family: sans;' textLength='17.13px' lengthAdjust='spacingAndGlyphs'>0.04</text>
 <text x='691.91' y='270.84' style='font-size: 8.80px; font-family: sans;' textLength='17.13px' lengthAdjust='spacingAndGlyphs'>0.06</text>
-<text x='669.15' y='248.09' style='font-size: 11.00px; font-family: sans;' textLength='38.51px' lengthAdjust='spacingAndGlyphs'>Morisita</text>
-<line x1='669.15' y1='340.97' x2='672.61' y2='340.97' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
-<line x1='669.15' y1='316.58' x2='672.61' y2='316.58' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
-<line x1='669.15' y1='292.20' x2='672.61' y2='292.20' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
-<line x1='669.15' y1='267.82' x2='672.61' y2='267.82' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
-<line x1='682.98' y1='340.97' x2='686.43' y2='340.97' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
-<line x1='682.98' y1='316.58' x2='686.43' y2='316.58' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
-<line x1='682.98' y1='292.20' x2='686.43' y2='292.20' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
-<line x1='682.98' y1='267.82' x2='686.43' y2='267.82' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
 <text x='31.94' y='14.56' style='font-size: 13.20px; font-family: sans;' textLength='162.90px' lengthAdjust='spacingAndGlyphs'>clonalOverlap_morisita_plot</text>
 </g>
 </svg>

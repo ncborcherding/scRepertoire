@@ -528,20 +528,20 @@
 <text transform='translate(619.30,529.43) rotate(-90)' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='41.09px' lengthAdjust='spacingAndGlyphs'>TRBV29-1</text>
 <text transform='translate(631.84,529.43) rotate(-90)' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='33.26px' lengthAdjust='spacingAndGlyphs'>TRBV30</text>
 <rect x='647.29' y='217.30' width='67.23' height='112.69' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
+<text x='652.77' y='231.49' style='font-size: 11.00px; font-family: sans;' textLength='56.27px' lengthAdjust='spacingAndGlyphs'>Percentage</text>
 <image width='17.28' height='86.40' x='652.77' y='238.11' preserveAspectRatio='none' xlink:href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAEsCAYAAAACUNnVAAAA6ElEQVQ4jZ2US5IDMQhDBfc/w5w0jbIAfwA7Sc3GhXiS3NULg/ZHBQ0KMyh9etB3lnfPvuOiB/PPlhsA+Q3UrEvmBDsozWT+0k4jSygMfUeE5NWy7WQmBAoKlE5l+ooFUNYYoDANSY5plcJ0xqRRblKhNI2WcngLpdMMvGU2c8l1mPTdESAmO+z26TdgPhUfZj3yURIpZkBLlJ2hl36OGTgAMC73iTFtiQyWmWAvLQAZ8AY8wQTkBq6JgzT5bjmWMieuVR8T/5Pxsy++2NmQLL4EtiwT8JcG+U3EmMK85DOu5DPlC0q+8AaR+TOAHSyAQgAAAABJRU5ErkJggg=='/>
+<polyline points='666.59,324.36 670.05,324.36 ' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
+<polyline points='666.59,301.76 670.05,301.76 ' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
+<polyline points='666.59,279.15 670.05,279.15 ' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
+<polyline points='666.59,256.54 670.05,256.54 ' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
+<polyline points='656.23,324.36 652.77,324.36 ' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
+<polyline points='656.23,301.76 652.77,301.76 ' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
+<polyline points='656.23,279.15 652.77,279.15 ' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
+<polyline points='656.23,256.54 652.77,256.54 ' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
 <text x='675.53' y='327.39' style='font-size: 8.80px; font-family: sans;' textLength='4.89px' lengthAdjust='spacingAndGlyphs'>0</text>
 <text x='675.53' y='304.78' style='font-size: 8.80px; font-family: sans;' textLength='9.79px' lengthAdjust='spacingAndGlyphs'>10</text>
 <text x='675.53' y='282.18' style='font-size: 8.80px; font-family: sans;' textLength='9.79px' lengthAdjust='spacingAndGlyphs'>20</text>
 <text x='675.53' y='259.57' style='font-size: 8.80px; font-family: sans;' textLength='9.79px' lengthAdjust='spacingAndGlyphs'>30</text>
-<text x='652.77' y='231.49' style='font-size: 11.00px; font-family: sans;' textLength='56.27px' lengthAdjust='spacingAndGlyphs'>Percentage</text>
-<line x1='652.77' y1='324.36' x2='656.23' y2='324.36' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
-<line x1='652.77' y1='301.76' x2='656.23' y2='301.76' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
-<line x1='652.77' y1='279.15' x2='656.23' y2='279.15' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
-<line x1='652.77' y1='256.54' x2='656.23' y2='256.54' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
-<line x1='666.59' y1='324.36' x2='670.05' y2='324.36' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
-<line x1='666.59' y1='301.76' x2='670.05' y2='301.76' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
-<line x1='666.59' y1='279.15' x2='670.05' y2='279.15' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
-<line x1='666.59' y1='256.54' x2='670.05' y2='256.54' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
 <text x='31.94' y='14.56' style='font-size: 13.20px; font-family: sans;' textLength='111.56px' lengthAdjust='spacingAndGlyphs'>percentGenes_plot</text>
 </g>
 </svg>

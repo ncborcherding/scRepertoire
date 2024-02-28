@@ -18,7 +18,7 @@
   </clipPath>
 </defs>
 <g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'>
-<rect x='0.00' y='0.00' width='720.00' height='576.00' style='stroke-width: 1.07; stroke: #FFFFFF; fill: #FFFFFF;' />
+<rect x='0.00000000000013' y='0.00' width='720.00' height='576.00' style='stroke-width: 1.07; stroke: #FFFFFF; fill: #FFFFFF;' />
 </g>
 <defs>
   <clipPath id='cpNDAuMTN8MTE4Ljk1fDM5LjQzfDU2Ny43OA=='>
@@ -286,13 +286,21 @@
 <text transform='translate(13.05,303.61) rotate(-90)' text-anchor='middle' style='font-size: 11.00px; font-family: sans;' textLength='58.71px' lengthAdjust='spacingAndGlyphs'>Index Score</text>
 <rect x='659.27' y='221.34' width='55.25' height='164.53' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <text x='664.75' y='235.53' style='font-size: 11.00px; font-family: sans;' textLength='30.58px' lengthAdjust='spacingAndGlyphs'>Group</text>
+<rect x='664.75' y='242.15' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <circle cx='673.39' cy='250.79' r='3.38' style='stroke-width: 0.35; fill: #040404;' />
+<rect x='664.75' y='259.43' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <circle cx='673.39' cy='268.07' r='3.38' style='stroke-width: 0.35; fill: #341348;' />
+<rect x='664.75' y='276.71' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <circle cx='673.39' cy='285.35' r='3.38' style='stroke-width: 0.35; fill: #701069;' />
+<rect x='664.75' y='293.99' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <circle cx='673.39' cy='302.63' r='3.38' style='stroke-width: 0.35; fill: #AB1E75;' />
+<rect x='664.75' y='311.27' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <circle cx='673.39' cy='319.91' r='3.38' style='stroke-width: 0.35; fill: #DC4962;' />
+<rect x='664.75' y='328.55' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <circle cx='673.39' cy='337.19' r='3.38' style='stroke-width: 0.35; fill: #F58426;' />
+<rect x='664.75' y='345.83' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <circle cx='673.39' cy='354.47' r='3.38' style='stroke-width: 0.35; fill: #F8C149;' />
+<rect x='664.75' y='363.11' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <circle cx='673.39' cy='371.75' r='3.38' style='stroke-width: 0.35; fill: #FFFE9E;' />
 <text x='687.51' y='253.82' style='font-size: 8.80px; font-family: sans;' textLength='21.53px' lengthAdjust='spacingAndGlyphs'>P17B</text>
 <text x='687.51' y='271.10' style='font-size: 8.80px; font-family: sans;' textLength='20.56px' lengthAdjust='spacingAndGlyphs'>P17L</text>
