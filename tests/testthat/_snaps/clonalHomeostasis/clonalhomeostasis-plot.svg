@@ -101,10 +101,15 @@
 <text transform='translate(13.05,283.95) rotate(-90)' text-anchor='middle' style='font-size: 11.00px; font-family: sans;' textLength='98.47px' lengthAdjust='spacingAndGlyphs'>Relative Abundance</text>
 <rect x='562.14' y='227.60' width='152.38' height='112.69' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <text x='567.62' y='241.79' style='font-size: 11.00px; font-family: sans;' textLength='64.82px' lengthAdjust='spacingAndGlyphs'>Clonal Group</text>
+<rect x='567.62' y='248.41' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <rect x='567.98' y='248.77' width='16.57' height='16.57' style='stroke-width: 0.53; stroke-linecap: butt; stroke-linejoin: miter; fill: #040404;' />
+<rect x='567.62' y='265.69' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <rect x='567.98' y='266.05' width='16.57' height='16.57' style='stroke-width: 0.53; stroke-linecap: butt; stroke-linejoin: miter; fill: #611163;' />
+<rect x='567.62' y='282.97' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <rect x='567.98' y='283.33' width='16.57' height='16.57' style='stroke-width: 0.53; stroke-linecap: butt; stroke-linejoin: miter; fill: #C53270;' />
+<rect x='567.62' y='300.25' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <rect x='567.98' y='300.61' width='16.57' height='16.57' style='stroke-width: 0.53; stroke-linecap: butt; stroke-linejoin: miter; fill: #F69422;' />
+<rect x='567.62' y='317.53' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <rect x='567.98' y='317.89' width='16.57' height='16.57' style='stroke-width: 0.53; stroke-linecap: butt; stroke-linejoin: miter; fill: #FFFE9E;' />
 <text x='590.38' y='260.08' style='font-size: 8.80px; font-family: sans;' textLength='85.86px' lengthAdjust='spacingAndGlyphs'>Rare (0 &lt; X &lt;= 1e-04)</text>
 <text x='590.38' y='277.36' style='font-size: 8.80px; font-family: sans;' textLength='105.92px' lengthAdjust='spacingAndGlyphs'>Small (1e-04 &lt; X &lt;= 0.001)</text>

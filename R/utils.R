@@ -198,7 +198,7 @@ is_seurat_or_se_object <- function(obj) {
     } else if (is_se_object(sc)){
         meta <- data.frame(colData(sc))
         rownames(meta) <- sc@colData@rownames
-        clu <- which(colnames(meta) == "ident")
+        clu <- which(colnames(meta) == "label") # as set by colLabels()
         colnames(meta)[clu] <- "ident"
     } else {
         stop("Object indicated is not of class 'Seurat' or 

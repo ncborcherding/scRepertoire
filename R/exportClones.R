@@ -52,9 +52,9 @@ exportClones <- function(input.data,
   }
   
   if(is.null(dir)) {
-    dir <- "./"
+    dir <- "."
   }
-  filepath <- paste0(dir, file.name)
+  filepath <- file.path(dir, file.name)
   write.csv(mat, file = filepath)
 }
 

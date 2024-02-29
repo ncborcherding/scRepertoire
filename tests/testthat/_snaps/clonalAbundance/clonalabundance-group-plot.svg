@@ -57,7 +57,9 @@
 <text transform='translate(13.05,283.95) rotate(-90)' text-anchor='middle' style='font-size: 11.00px; font-family: sans;' textLength='88.66px' lengthAdjust='spacingAndGlyphs'>Number of Clones</text>
 <rect x='674.93' y='253.52' width='39.59' height='60.85' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <text x='680.41' y='267.71' style='font-size: 11.00px; font-family: sans;' textLength='24.46px' lengthAdjust='spacingAndGlyphs'>Type</text>
+<rect x='680.41' y='274.33' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <line x1='682.14' y1='282.97' x2='695.96' y2='282.97' style='stroke-width: 1.07; stroke: #040404; stroke-linecap: butt;' />
+<rect x='680.41' y='291.61' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <line x1='682.14' y1='300.25' x2='695.96' y2='300.25' style='stroke-width: 1.07; stroke: #FFFE9E; stroke-linecap: butt;' />
 <text x='703.17' y='286.00' style='font-size: 8.80px; font-family: sans;' textLength='5.87px' lengthAdjust='spacingAndGlyphs'>B</text>
 <text x='703.17' y='303.28' style='font-size: 8.80px; font-family: sans;' textLength='4.89px' lengthAdjust='spacingAndGlyphs'>L</text>

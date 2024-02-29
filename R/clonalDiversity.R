@@ -129,7 +129,7 @@ clonalDiversity <- function(input.data,
       }
     }
     colnames(mat) <- c("shannon", "inv.simpson", "norm.entropy", "gini.simpson", "chao1", "ACE")
-    mat <- mat[,colnames(mat) %in% metrics]
+    mat <- mat[,colnames(mat) %in% metrics,drop=FALSE]
     if (is.null(group.by)) {
       group.by <- "Group"
     }
