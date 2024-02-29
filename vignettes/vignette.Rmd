@@ -877,10 +877,13 @@ Using the dimensional reduction graphs as a reference, we can also generate an o
 
 * The dimensional reduction for the visualization, **(default = "pca")**
 
-**freq.cutpoint**  
+**cut.category**  
+
+* Use of "clonalFrequency" or "clonalProportion" to filter the overlay
+
+**cutpoint**  
 
 * lowest clonal frequency or proportion to generate the contour plot
-
 
 **bins** 
 
@@ -896,7 +899,7 @@ scRep_example$Patient <- substr(scRep_example$orig.ident, 1,3)
 
 clonalOverlay(scRep_example, 
               reduction = "umap", 
-              freq.cutpoint = 1, 
+              cutpoint = 1, 
               bins = 10, 
               facet.by = "Patient") + 
               guides(color = "none")

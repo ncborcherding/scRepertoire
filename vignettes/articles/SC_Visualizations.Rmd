@@ -69,10 +69,13 @@ Using the dimensional reduction graphs as a reference, we can also generate an o
 
 * The dimensional reduction for the visualization, **(default = "pca")**
 
-**freq.cutpoint**  
+**cut.category**  
+
+* Use of "clonalFrequency" or "clonalProportion" to filter the overlay
+
+**cutpoint**  
 
 * lowest clonal frequency or proportion to generate the contour plot
-
 
 **bins** 
 
