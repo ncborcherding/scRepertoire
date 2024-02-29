@@ -2,7 +2,7 @@
 
 ## UNDERLYING CHANGES
 
-*```clonalOverlay()``` arguments now cutpoint and use cut.category to select either clonalPorportion or clonalFrequency
+*```clonalOverlay()``` arguments now cutpoint and use cut.category to select either clonalProportion or clonalFrequency
 
 
 # scRepertoire VERSION 2.0.0 (2024-01-10)
