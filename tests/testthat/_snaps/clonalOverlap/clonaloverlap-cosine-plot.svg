@@ -184,17 +184,17 @@
 <text x='531.59' y='568.69' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='21.53px' lengthAdjust='spacingAndGlyphs'>P20B</text>
 <text x='607.29' y='568.69' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='20.56px' lengthAdjust='spacingAndGlyphs'>P20L</text>
 <rect x='663.67' y='233.90' width='50.85' height='112.69' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
+<text x='669.15' y='248.09' style='font-size: 11.00px; font-family: sans;' textLength='34.25px' lengthAdjust='spacingAndGlyphs'>Cosine</text>
 <image width='17.28' height='86.40' x='669.15' y='254.71' preserveAspectRatio='none' xlink:href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAEsCAYAAAACUNnVAAAA0ElEQVQ4jbWQS5LEIAxDhe9/hrlp682CQIAY0jVVs0lJ1scmwj+EsEK2Hgg2wmB5zfKeIBW40FrQUSaMVZ98OUNCCtE/daUSIbEgBc4s6s/ftkjBYkkRCvZqW1TP2FlYn1UUUBQ4GqIhcc+64IkOBall6qulqzpbMjVNNEFnnzdXGV2/s36kaZZQkML6W+xIs+Z/WTRQoXChVYk2U5+VNntY9DBT5mxi3mZv8yH7Xsp3pchfIctX6ageYxwta1WSuCnZbKJmus/4urmiSj8V/QKjaCWAqvLxxwAAAABJRU5ErkJggg=='/>
+<polyline points='682.98,318.32 686.43,318.32 ' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
+<polyline points='682.98,295.52 686.43,295.52 ' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
+<polyline points='682.98,272.73 686.43,272.73 ' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
+<polyline points='672.61,318.32 669.15,318.32 ' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
+<polyline points='672.61,295.52 669.15,295.52 ' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
+<polyline points='672.61,272.73 669.15,272.73 ' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
 <text x='691.91' y='321.35' style='font-size: 8.80px; font-family: sans;' textLength='17.13px' lengthAdjust='spacingAndGlyphs'>0.03</text>
 <text x='691.91' y='298.55' style='font-size: 8.80px; font-family: sans;' textLength='17.13px' lengthAdjust='spacingAndGlyphs'>0.06</text>
 <text x='691.91' y='275.76' style='font-size: 8.80px; font-family: sans;' textLength='17.13px' lengthAdjust='spacingAndGlyphs'>0.09</text>
-<text x='669.15' y='248.09' style='font-size: 11.00px; font-family: sans;' textLength='34.25px' lengthAdjust='spacingAndGlyphs'>Cosine</text>
-<line x1='669.15' y1='318.32' x2='672.61' y2='318.32' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
-<line x1='669.15' y1='295.52' x2='672.61' y2='295.52' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
-<line x1='669.15' y1='272.73' x2='672.61' y2='272.73' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
-<line x1='682.98' y1='318.32' x2='686.43' y2='318.32' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
-<line x1='682.98' y1='295.52' x2='686.43' y2='295.52' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
-<line x1='682.98' y1='272.73' x2='686.43' y2='272.73' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
 <text x='31.94' y='14.56' style='font-size: 13.20px; font-family: sans;' textLength='154.85px' lengthAdjust='spacingAndGlyphs'>clonalOverlap_cosine_plot</text>
 </g>
 </svg>

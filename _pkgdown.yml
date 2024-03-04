@@ -44,13 +44,15 @@ navbar:
       href: articles/Attaching_SC.html
     - text: Visualizations for Single-Cell Objects
       href: articles/SC_Visualizations.html
-    - text: Clonal Bias
+    - text: Quantifying Clonal Bias
       href: articles/Clonal_Bias.html
     - text: '-------'
     - text: Combining Deep Learning and TCRs with Trex
       href: articles/Trex.html
     - text: Combining Deep Learning and BCRs with Ibex
       href: articles/Ibex.html
+    - text: Single-cell Gene Set Enrichment Analysis
+      href: articles/Running_Escape.html
   - text: News/Changelog
     href: news/index.html
   - text: Reference
@@ -88,6 +90,8 @@ reference:
   desc: Functions to summarize clonal sequences across the repertoire.
 - contents:
   - percentAA
+  - positionalEntropy
+  - positionalProperty
   - percentGenes
   - percentKmer
   - percentVJ

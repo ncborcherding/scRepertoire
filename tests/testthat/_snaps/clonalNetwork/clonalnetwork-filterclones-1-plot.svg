@@ -534,25 +534,25 @@
 <circle cx='344.57' cy='396.07' r='5.19' style='stroke-width: 0.71; fill: #000000;' />
 </g>
 <g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'>
-<polyline points='8.22,567.78 8.22,22.78 ' style='stroke-width: 0.75;' />
-<polyline points='8.22,567.78 575.80,567.78 ' style='stroke-width: 0.75;' />
-<rect x='586.76' y='205.73' width='83.12' height='43.57' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
-<text x='592.24' y='219.92' style='font-size: 11.00px; font-family: sans;' textLength='72.16px' lengthAdjust='spacingAndGlyphs'>Unique Clones</text>
-<circle cx='600.88' cy='235.18' r='5.19' style='stroke-width: 0.71; fill: #000000;' />
-<text x='615.00' y='238.21' style='font-size: 8.80px; font-family: sans;' textLength='4.89px' lengthAdjust='spacingAndGlyphs'>1</text>
-<rect x='586.76' y='260.26' width='127.76' height='124.57' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
-<image width='17.28' height='86.40' x='592.24' y='292.95' preserveAspectRatio='none' xlink:href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAEsCAYAAAACUNnVAAAA3UlEQVQ4jaWUWQ6DMAxEJ77/GXrS4tePBJPFgVb9QbN5bCSE8BcmXCZ3VUSgph0NMeby8KQdp7aNdAZLfWcky+VbYzqSjVuNePgtgqjKIp6PsW8uMlEWRKIJ5RqdpnyC2Sgy3GRgMmGtBW61kba91s5tfSWZndzzBT1eFRToB80vuq/KJtS7naadERPe5RS5MuY0nHZp15hYqqorkrBkDklY7eNawlHV0dj7gPglPC7ao6CFcdHUEkbJbmF35KPxF+XLMJnrMsnPv4C8afV32CEWjdAy6hqQcwR9V/oB9eo0gIYOR9MAAAAASUVORK5CYII='/>
-<text x='615.00' y='382.24' style='font-size: 8.80px; font-family: sans;' textLength='12.23px' lengthAdjust='spacingAndGlyphs'>0.1</text>
-<text x='615.00' y='339.18' style='font-size: 8.80px; font-family: sans;' textLength='12.23px' lengthAdjust='spacingAndGlyphs'>1.0</text>
-<text x='615.00' y='296.13' style='font-size: 8.80px; font-family: sans;' textLength='17.13px' lengthAdjust='spacingAndGlyphs'>10.0</text>
-<text x='592.24' y='274.45' style='font-size: 11.00px; font-family: sans;' textLength='108.84px' lengthAdjust='spacingAndGlyphs'>Relative Proportion of </text>
-<text x='592.24' y='286.33' style='font-size: 11.00px; font-family: sans;' textLength='116.80px' lengthAdjust='spacingAndGlyphs'>Clones of Starting Node</text>
-<line x1='592.24' y1='379.21' x2='595.70' y2='379.21' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
-<line x1='592.24' y1='336.15' x2='595.70' y2='336.15' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
-<line x1='592.24' y1='293.10' x2='595.70' y2='293.10' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
-<line x1='606.06' y1='379.21' x2='609.52' y2='379.21' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
-<line x1='606.06' y1='336.15' x2='609.52' y2='336.15' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
-<line x1='606.06' y1='293.10' x2='609.52' y2='293.10' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
+<polyline points='8.22,567.78 8.22,22.78 ' style='stroke-width: 1.07; stroke-linecap: butt;' />
+<polyline points='8.22,567.78 575.80,567.78 ' style='stroke-width: 1.07; stroke-linecap: butt;' />
+<rect x='586.76' y='205.73' width='127.76' height='124.57' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
+<text x='592.24' y='219.92' style='font-size: 11.00px; font-family: sans;' textLength='108.84px' lengthAdjust='spacingAndGlyphs'>Relative Proportion of </text>
+<text x='592.24' y='231.80' style='font-size: 11.00px; font-family: sans;' textLength='116.80px' lengthAdjust='spacingAndGlyphs'>Clones of Starting Node</text>
+<image width='17.28' height='86.40' x='592.24' y='238.42' preserveAspectRatio='none' xlink:href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAEsCAYAAAACUNnVAAAA3UlEQVQ4jaWUWQ6DMAxEJ77/GXrS4tePBJPFgVb9QbN5bCSE8BcmXCZ3VUSgph0NMeby8KQdp7aNdAZLfWcky+VbYzqSjVuNePgtgqjKIp6PsW8uMlEWRKIJ5RqdpnyC2Sgy3GRgMmGtBW61kba91s5tfSWZndzzBT1eFRToB80vuq/KJtS7naadERPe5RS5MuY0nHZp15hYqqorkrBkDklY7eNawlHV0dj7gPglPC7ao6CFcdHUEkbJbmF35KPxF+XLMJnrMsnPv4C8afV32CEWjdAy6hqQcwR9V/oB9eo0gIYOR9MAAAAASUVORK5CYII='/>
+<polyline points='606.06,324.68 609.52,324.68 ' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
+<polyline points='606.06,281.62 609.52,281.62 ' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
+<polyline points='606.06,238.57 609.52,238.57 ' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
+<polyline points='595.70,324.68 592.24,324.68 ' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
+<polyline points='595.70,281.62 592.24,281.62 ' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
+<polyline points='595.70,238.57 592.24,238.57 ' style='stroke-width: 0.38; stroke: #FFFFFF; stroke-linecap: butt;' />
+<text x='615.00' y='327.71' style='font-size: 8.80px; font-family: sans;' textLength='12.23px' lengthAdjust='spacingAndGlyphs'>0.1</text>
+<text x='615.00' y='284.65' style='font-size: 8.80px; font-family: sans;' textLength='12.23px' lengthAdjust='spacingAndGlyphs'>1.0</text>
+<text x='615.00' y='241.60' style='font-size: 8.80px; font-family: sans;' textLength='17.13px' lengthAdjust='spacingAndGlyphs'>10.0</text>
+<rect x='586.76' y='341.26' width='83.12' height='43.57' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
+<text x='592.24' y='355.45' style='font-size: 11.00px; font-family: sans;' textLength='72.16px' lengthAdjust='spacingAndGlyphs'>Unique Clones</text>
+<circle cx='600.88' cy='370.71' r='5.19' style='stroke-width: 0.71; fill: #000000;' />
+<text x='615.00' y='373.74' style='font-size: 8.80px; font-family: sans;' textLength='4.89px' lengthAdjust='spacingAndGlyphs'>1</text>
 <text x='8.22' y='14.56' style='font-size: 13.20px; font-family: sans;' textLength='192.99px' lengthAdjust='spacingAndGlyphs'>clonalNetwork_filterclones.1_plot</text>
 </g>
 </svg>

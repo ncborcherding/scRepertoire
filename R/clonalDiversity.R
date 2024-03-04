@@ -87,6 +87,7 @@ clonalDiversity <- function(input.data,
   if(return.boots) {
     exportTable <- TRUE
   }
+  sco <- is_seurat_object(input.data) | is_se_object(input.data)
   input.data <- .data.wrangle(input.data, 
                               group.by, 
                               .theCall(input.data, cloneCall, check.df = FALSE), 
@@ -95,11 +96,8 @@ clonalDiversity <- function(input.data,
 
   mat <- NULL
   sample <- c()
-  if (!is.null(group.by)) {
-    input.data <- bind_rows(input.data, .id = "element.names")
-    input.data$group.element <- input.data[,group.by]
-    #group.element.uniq <- unique(input.data$group.element)
-    input.data <- split(input.data, f = input.data[,"group.element"])
+  if(!is.null(group.by) & !sco) {
+    input.data <- .groupList(input.data, group.by)
   }
   min <- .short.check(input.data, cloneCall)
   for (i in seq_along(input.data)) {
@@ -131,7 +129,7 @@ clonalDiversity <- function(input.data,
       }
     }
     colnames(mat) <- c("shannon", "inv.simpson", "norm.entropy", "gini.simpson", "chao1", "ACE")
-    mat <- mat[,colnames(mat) %in% metrics]
+    mat <- mat[,colnames(mat) %in% metrics,drop=FALSE]
     if (is.null(group.by)) {
       group.by <- "Group"
     }

@@ -43,7 +43,6 @@ data("contig_list")
 combined.TCR <- combineTCR(contig_list, 
                            samples = c("P17B", "P17L", "P18B", "P18L", 
                                             "P19B","P19L", "P20B", "P20L"))
-googledrive::drive_download("https://drive.google.com/file/d/1_YuRraDyg8UgF3oasjF0-jgPnwox-B24/view?usp=share_link", overwrite = TRUE)
 
 scRep_example <- readRDS("scRep_example_full.rds")
 

@@ -7,7 +7,7 @@
 #' 
 #' The files that this function parses includes:  
 #' \itemize{
-#'   \item 10X =  "filtered_contig_annotation.csv"  
+#'   \item 10X =  "filtered_contig_annotations.csv"
 #'   \item AIRR = "airr_rearrangement.tsv" 
 #'   \item BD = "Contigs_AIRR.tsv" 
 #'   \item Immcantation = "data.tsv" 
@@ -42,7 +42,7 @@ loadContigs <- function(input,
   #Loading from directory, recursively
   if (inherits(x=input, what ="character")) {
     format.list <- list("WAT3R" = "barcode_results.csv", 
-                        "10X" =  "filtered_contig_annotation.csv", 
+                        "10X" =  "filtered_contig_annotations.csv", 
                         "AIRR" = "airr_rearrangement.tsv", 
                         "Immcantation" = "_data.tsv",
                         "MiXCR" = "clones.tsv", 
