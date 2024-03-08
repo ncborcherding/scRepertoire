@@ -229,8 +229,14 @@ loadContigs <- function(input,
   for (i in seq_along(df)) {
     df[[i]][df[[i]] == ""] <- NA
     df[[i]] <- as.data.frame(df[[i]])
-    df[[i]] <- df[[i]][,c("sequence_id", "locus", "consensus_count",  "v_call", "d_call", "j_call", "c_call", "cdr3", "cdr3_aa")]
-    colnames(df[[i]]) <- c("barcode", "chain", "reads", "v_gene", "d_gene", "j_gene", "c_gene", "cdr3_nt", "cdr3")
+    if("c_call" %in% colnames(df[[i]])) {
+      df[[i]] <- df[[i]][,c("sequence_id", "locus", "consensus_count",  "v_call", "d_call", "j_call", "c_call", "cdr3", "cdr3_aa")]
+      colnames(df[[i]]) <- c("barcode", "chain", "reads", "v_gene", "d_gene", "j_gene", "c_gene", "cdr3_nt", "cdr3")
+    } else {
+      df[[i]] <- df[[i]][,c("sequence_id", "locus", "consensus_count",  "v_call", "d_call", "j_call", "cdr3", "cdr3_aa")]
+      colnames(df[[i]]) <- c("barcode", "chain", "reads", "v_gene", "d_gene", "j_gene", "cdr3_nt", "cdr3")
+      df[[i]][,"c_gene"] <- NA
+    }
     df[[i]]$barcode <- str_split(df[[i]][,"barcode"], "_", simplify = TRUE)[,1]
   }
   return(df)
