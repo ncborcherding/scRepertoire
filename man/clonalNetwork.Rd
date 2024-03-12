@@ -31,8 +31,9 @@ single-cell object.}
 = 2000) or n of clones based on the minimum number of all the comparators 
 (e.g., \strong{filter.clone} = "min").}
 
-\item{filter.identity}{Display the network for a specific level of the 
-indicated identity.}
+\item{filter.identity}{Display the network for one or more levels of the 
+indicated identity - e.g. \code{filter.identity = c(3, 4)} to examine 
+cluster 3 and 4.}
 
 \item{filter.proportion}{Remove clones from the network below a specific
 proportion.}
