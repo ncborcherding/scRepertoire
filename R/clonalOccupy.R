@@ -50,7 +50,7 @@ clonalOccupy <- function(sc.data,
                          palette = "inferno") {
   .checkSingleObject(sc.data)
   meta <- .grabMeta(sc.data)
-  meta <- melt(table(meta[!is.na(meta[,"clonalFrequency"]), 
+  meta <- melt(table(meta[(meta[,"clonalFrequency"]), 
                           c(x.axis, facet.by, "cloneSize")], useNA = "ifany"))
   #Check for NAs
   if (!na.include) {
