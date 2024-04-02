@@ -55,6 +55,7 @@ clonalOccupy <- function(sc.data,
             group_by(meta[,x.axis], meta[,facet.by], cloneSize) %>%
             count() %>%
             as.data.frame()
+  meta[,1] <- as.factor(meta[,1])
   
   colnames(meta)[1] <- x.axis
   if(!is.null(facet.by)) {
