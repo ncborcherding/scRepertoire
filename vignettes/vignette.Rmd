@@ -996,9 +996,9 @@ clonalOccupy(scRep_example,
               x.axis = "seurat_clusters")
 
 clonalOccupy(scRep_example, 
-                     x.axis = "ident", 
-                     proportion = TRUE, 
-                     label = FALSE)
+             x.axis = "ident", 
+             proportion = TRUE, 
+             label = FALSE)
 ```
 
 ## alluvialClones

@@ -1,10 +1,14 @@
+# scRepertoire VERSION 2.0.2
+
+## UNDERLYING CHANGES
+
+*```clonalOccupy()``` rewrite counting and NA handling
+
 # scRepertoire VERSION 2.0.1 
 
 ## UNDERLYING CHANGES
 
 *```clonalOverlay()``` arguments now cutpoint and use cut.category to select either clonalProportion or clonalFrequency
-* ```clonalOccupy()``` allow NA calls
-
 
 # scRepertoire VERSION 2.0.0 (2024-01-10)
 

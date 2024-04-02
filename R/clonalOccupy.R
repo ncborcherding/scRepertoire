@@ -33,7 +33,7 @@
 #' environment in addition to the visualization.
 #' @param palette Colors to use in visualization - input any 
 #' \link[grDevices]{hcl.pals}.
-#' @importFrom dplyr %>% group_by mutate
+#' @importFrom dplyr %>% group_by mutate count
 #' @importFrom reshape2 melt
 #' @import ggplot2
 #' @export
@@ -50,20 +50,29 @@ clonalOccupy <- function(sc.data,
                          palette = "inferno") {
   .checkSingleObject(sc.data)
   meta <- .grabMeta(sc.data)
-  meta <- melt(table(meta[(meta[,"clonalFrequency"]), 
-                          c(x.axis, facet.by, "cloneSize")], useNA = "ifany"))
+  
+  meta <- meta %>%
+            group_by(meta[,x.axis], meta[,facet.by], cloneSize) %>%
+            count() %>%
+            as.data.frame()
+  
+  colnames(meta)[1] <- x.axis
+  if(!is.null(facet.by)) {
+    colnames(meta)[2] <- facet.by
+  }
+ 
   #Check for NAs
   if (!na.include) {
     meta <- na.omit(meta)
   }
-  meta <- meta[meta$value != 0,]
+  meta <- meta[meta$n != 0,]
   
   #Convert to proportion
   if(proportion) {
     meta <- meta %>%
       group_by(meta[,1]) %>%
-      mutate(total = sum(value), 
-             prop = value/total)
+      mutate(total = sum(n), 
+             prop = n/total)
     meta <- as.data.frame(meta)
   }
   if (exportTable) {
@@ -77,7 +86,7 @@ clonalOccupy <- function(sc.data,
     lab <- "Proportion of Cells"
     
   } else {
-    plot <- ggplot(meta, aes(x = meta[,x.axis], y = value, fill = cloneSize)) + 
+    plot <- ggplot(meta, aes(x = meta[,x.axis], y = n, fill = cloneSize)) + 
               geom_bar(stat = "identity", color = "black", lwd = 0.25) 
     lab <- "Single Cells"
     
@@ -94,7 +103,7 @@ clonalOccupy <- function(sc.data,
   }
   if (label) {
     plot <- plot + 
-              geom_text(aes(label = value), position = position_stack(vjust = 0.5))
+              geom_text(aes(label = n), position = position_stack(vjust = 0.5))
   }
   plot
 }
