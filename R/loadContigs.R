@@ -191,10 +191,10 @@ loadContigs <- function(input,
 .parseOmniscope <- function(df) {
   for (i in seq_along(df)) {
     if("c_call" %in% colnames(df[[i]])) {
-      df[[i]] <- df[[i]][,c("contig_id", "locus", "umi_count", "v_call", "d_call", "j_call", "c_call", "cdr3", "cdr3_aa")]
+      df[[i]] <- df[[i]][,c("cell_id", "locus", "umi_count", "v_call", "d_call", "j_call", "c_call", "cdr3", "cdr3_aa")]
       colnames(df[[i]]) <- c("barcode", "chain", "reads", "v_gene", "d_gene", "j_gene", "c_gene", "cdr3_nt", "cdr3")
     } else { #TCR contigs do not include C gene
-      df[[i]] <- df[[i]][,c("contig_id", "locus", "umi_count", "v_call", "d_call", "j_call", "cdr3", "cdr3_aa")]
+      df[[i]] <- df[[i]][,c("cell_id", "locus", "umi_count", "v_call", "d_call", "j_call", "cdr3", "cdr3_aa")]
       colnames(df[[i]]) <- c("barcode", "chain", "reads", "v_gene", "d_gene", "j_gene", "cdr3_nt", "cdr3")
       df[[i]][,"c_gene"] <- NA
     df[[i]] <- df[[i]][with(df[[i]], order(reads, chain)),]
