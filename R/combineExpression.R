@@ -72,6 +72,11 @@ combineExpression <- function(input.data,
     
     cloneCall <- .theCall(input.data, cloneCall)
     if (chain != "both") {
+      #Retain the full clone information
+      full.clone <- lapply(input.data, function(x) {
+                        x[,c("barcode", cloneCall)]
+      full.clone <- bind_rows(full.clone)
+      })
       for(i in seq_along(input.data)) {
         input.data[[i]] <- .off.the.chain(input.data[[i]], chain, cloneCall)
       }
@@ -87,6 +92,7 @@ combineExpression <- function(input.data,
       
             data <- data.frame(input.data[[i]], stringsAsFactors = FALSE)
             data2 <- unique(data[,c("barcode", cloneCall)])
+            #This ensures all calculations are based on the cells in the SCO
             data2 <- na.omit(data2[data2[,"barcode"] %in% cell.names,])
             data2 <- data2 %>% 
                         group_by(data2[,cloneCall]) %>%
@@ -107,6 +113,7 @@ combineExpression <- function(input.data,
     } else if (group.by != "none" || !is.null(group.by)) {
         data <- data.frame(bind_rows(input.data), stringsAsFactors = FALSE)
         data2 <- na.omit(unique(data[,c("barcode", cloneCall, group.by)]))
+        #This ensures all calculations are based on the cells in the SCO
         data2 <- data2[data2[,"barcode"] %in% cell.names, ]
         data2 <- as.data.frame(data2 %>% 
                                   group_by(data2[,cloneCall], data2[,group.by]) %>% 
@@ -130,7 +137,6 @@ combineExpression <- function(input.data,
     if(!proportion && max(na.omit(Con.df[,"clonalFrequency"])) > cloneSize[length(cloneSize)]) {
       cloneSize[length(cloneSize)] <- max(na.omit(Con.df[,"clonalFrequency"]))
     }
-    
     
     #Creating the bins for cloneSize
     Con.df$cloneSize <- NA
@@ -163,8 +169,18 @@ combineExpression <- function(input.data,
                                 "CTaa", "CTstrict", "clonalProportion", 
                                 "clonalFrequency", "cloneSize")])
     }
+    #Removing any duplicate barcodes, should not be an issue
     dup <- PreMeta$barcode[which(duplicated(PreMeta$barcode))]
     PreMeta <- PreMeta[PreMeta$barcode %!in% dup,]
+    
+    #Re-adding full clones 
+    if (chain != "both") {
+      clone_sym <- sym(cloneCall)
+      PreMeta <- PreMeta %>%
+        left_join(full.clone, by = "barcode", suffix = c("", ".from_full_clones")) %>%
+        mutate(!!column_sym := coalesce(!!sym(paste0(cloneCall, ".from_full_clones")), !!column_sym)) %>%
+        select(-all_of(paste0(cloneCall, ".from_full_clones")))
+    }
     barcodes <- PreMeta$barcode
     PreMeta <- PreMeta[,-1]
     rownames(PreMeta) <- barcodes
