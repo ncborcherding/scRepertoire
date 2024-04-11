@@ -60,7 +60,70 @@ devtools::install_github("ncborcherding/Trex")
 
 ## The Data Set
 
-To show the multiple options of Trex, the example data is derived from [GSE167118](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE167118), a cohort of CITE-seq data derived from severe COVID-19 patients. More information is available in the [corresponding manuscript](https://pubmed.ncbi.nlm.nih.gov/33622974/). The data example built into the package (**trex_example**) is derived from randomly sampling T cells from patient 17. 
+To show the multiple options of Trex, the example data is derived from [GSE167118](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE167118), a cohort of CITE-seq data derived from severe COVID-19 patients. More information is available in the [corresponding manuscript](https://pubmed.ncbi.nlm.nih.gov/33622974/).
+
+### Formation of the Single-cell Object
+
+Here is the basic workflow that was used to make the single-cell object to use in the vignette. Notice there is a removal of TCR-related CITE-seq data and RNA features (using the **Trex** function ```quietTCRgenes()```). As we are going to combine multimodal data, both the GEX and CITE probes may cause bias in the weighted output. 
+
+```{r, eval=FALSE, tidy=FALSE}
+##################################
+#scRNA/ADT loading and processing
+#################################
+tmp <-  Read10X("~/Patient17/filtered_feature_bc_matrix")
+
+Pt17 <- CreateSeuratObject(counts = tmp$`Gene Expression`)
+
+#Removing TCR-specific antibody
+adt_assay <- CreateAssayObject(counts = tmp$`Antibody Capture`[1:37,])
+Pt17[["ADT"]] <- adt_assay
+Pt17 <- subset(Pt17, subset = nFeature_RNA > 100) 
+Pt17  <- RenameCells(object = Pt17 , new.names = paste0("Pt17_", rownames(Pt17[[]])))
+Pt17[["mito.genes"]] <- PercentageFeatureSet(Pt17, pattern = "^MT-")
+    
+#Filtering step
+standev <- sd(log(Pt17$nFeature_RNA))*2.5 #cutting off above standard deviation of 2.5
+mean <- mean(log(Pt17$nFeature_RNA))
+cut <- round(exp(standev+mean))
+Pt17 <- subset(Pt17, subset = mito.genes < 10 & nFeature_RNA < cut)
+
+#Processing RNA
+DefaultAssay(Pt17) <- 'RNA'
+Pt17 <- NormalizeData(Pt17) %>% 
+  FindVariableFeatures() %>% 
+  quietTCRgenes() %>% 
+  ScaleData() %>% 
+  RunPCA(verbose = FALSE)
+
+#Processing ADT
+DefaultAssay(Pt17) <- 'ADT'
+VariableFeatures(Pt17) <- rownames(Pt17[["ADT"]])
+Pt17 <- NormalizeData(Pt17, normalization.method = 'CLR', margin = 2) %>% 
+  ScaleData() %>% 
+  RunPCA(reduction.name = 'apca')
+
+
+##################################
+#Processing and Adding Contig Info
+##################################
+
+contigs <- read.csv("~/Patient17/filtered_contig_annotations.csv")
+clones <- combineTCR(contigs, samples = "Pt17", cells = "T-AB", filterMulti = TRUE, removeNA = TRUE)
+Pt17 <- combineExpression(clones, Pt17, cloneCall="aa")
+saveRDS(Pt17, file = "Trex_FullExample.rds")
+
+###################################
+#Making Example Data Set for Trex
+#################################
+meta <- Pt17[[]]
+meta <- meta[sample(nrow(meta), nrow(meta)*0.1),]
+trex_example <- subset(Pt17, cells = rownames(meta))
+save(trex_example, file = "trex_example.rda", compress = "xz")
+```
+
+### Loading the Data Object
+
+For the purpose of the vignette, we will load the full object. The data example built into the package (**trex_example**) is derived from randomly sampling T cells from patient 17 (see above workflow).
 
 ```{r tidy = FALSE}
 SeuratObj <- readRDS(url("https://www.borch.dev/uploads/data/Trex_FullExample.rds"))

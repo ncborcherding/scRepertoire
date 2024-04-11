@@ -59,7 +59,71 @@ devtools::install_github("ncborcherding/Ibex")
 
 ## The Data Set
 
-To show the multiple options of Ibex, the example data is derived from [this manuscript](https://pubmed.ncbi.nlm.nih.gov/33891889/), multimodal single-cell characterization of COVID19-associated multisystem inflammatory syndrome in children. The data example built into the package (**ibex_example**) is derived from randomly sampling cells from Patient 1.
+To show the multiple options of Ibex, the example data is derived from [this manuscript](https://pubmed.ncbi.nlm.nih.gov/33891889/), multimodal single-cell characterization of COVID19-associated multisystem inflammatory syndrome in children. 
+
+### Formation of the Single-cell Object
+
+Here is the basic workflow that was used to make the single-cell object to use in the vignette.  Notice there is a removal of BCR-related RNA features (using the **Ibex** function ```quietBCRgenes()```). As we are going to combine multimodal data, both the GEX and CITE probes may cause bias in the weighted output. 
+
+
+```{r, eval=FALSE, tidy = FALSE}
+##################################
+#scRNA/ADT loading and processing
+#################################
+tmp <-  Read10X("~/data/GSM5073055_P1.1_filtered_feature_bc_matrix")
+
+MIS.sample <- CreateSeuratObject(counts = tmp$`Gene Expression`)
+rownames(tmp$`Antibody Capture`) <- stringr::str_remove_all(rownames(tmp$`Antibody Capture`), "anti_human_")
+rownames(tmp$`Antibody Capture`) <- stringr::str_remove_all(rownames(tmp$`Antibody Capture`), "anti_mousehuman_")
+rownames(tmp$`Antibody Capture`) <- substr(rownames(tmp$`Antibody Capture`), 6, nchar(rownames(tmp$`Antibody Capture`)))
+
+adt_assay <- CreateAssayObject(counts = tmp$`Antibody Capture`)
+
+
+MIS.sample[["ADT"]] <- adt_assay
+MIS.sample <- subset(MIS.sample, subset = nFeature_RNA > 100) 
+MIS.sample  <- RenameCells(object = MIS.sample , new.names = paste0("MIS.sample_", rownames(MIS.sample[[]])))
+MIS.sample[["mito.genes"]] <- PercentageFeatureSet(MIS.sample, pattern = "^MT-")
+    
+#Filtering step
+standev <- sd(log(MIS.sample$nFeature_RNA))*2.5 #cutting off above standard deviation of 2.5
+mean <- mean(log(MIS.sample$nFeature_RNA))
+cut <- round(exp(standev+mean))
+MIS.sample <- subset(MIS.sample, subset = mito.genes < 10 & nFeature_RNA < cut)
+
+#Processing and Adding Contig Info
+contigs <- read.csv("~/data/GSM5073091_PBMC_P1.1_MIS-C_Severe_BCR_filtered_contig_annotations.csv.gz")
+clones <- combineBCR(contigs, samples = "MIS.sample", removeNA = TRUE)
+MIS.sample <- combineExpression(clones, MIS.sample, cloneCall="aa")
+
+#Subset only B cells (by contigs)
+MIS.sample$BCR.recoverd <- "No"
+MIS.sample$BCR.recoverd[!is.na(MIS.sample$CTaa)] <- "Yes"
+MIS.sample <- subset(MIS.sample, BCR.recoverd == "Yes")
+
+#Processing RNA
+DefaultAssay(MIS.sample) <- 'RNA'
+MIS.sample <- NormalizeData(MIS.sample) %>% FindVariableFeatures() %>% 
+  quietBCRgenes() %>% ScaleData() %>% RunPCA(verbose = FALSE)
+
+#Processing ADT
+DefaultAssay(MIS.sample) <- 'ADT'
+VariableFeatures(MIS.sample) <- rownames(MIS.sample[["ADT"]])
+MIS.sample <- NormalizeData(MIS.sample, normalization.method = 'CLR', margin = 2) %>% 
+  ScaleData() %>% RunPCA(reduction.name = 'apca')
+
+###################################
+#Making Example Data Set for Trex
+#################################
+meta <- MIS.sample[[]]
+meta <- meta[sample(nrow(meta), nrow(meta)*0.33),]
+ibex_example <- subset(MIS.sample, cells = rownames(meta))
+save(ibex_example, file = "ibex_example.rda", compress = "xz")
+```
+
+### Loading the Data Object
+
+For the purpose of the vignette, we will load the full object. The data example built into the package (**ibex_example**) is derived from randomly sampling cells from Patient 1 (see above).
 
 ```{r tidy = FALSE}
 SeuratObj <- readRDS(url("https://www.borch.dev/uploads/data/Ibex_FullExample.rds"))
