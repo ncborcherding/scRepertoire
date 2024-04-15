@@ -1,3 +1,10 @@
+# scRepertoire VERSION 2.0.3
+
+## UNDERLYING CHANGES
+
+* Modified support for Omniscope format to allow for dual chains
+* Added ParseBio support int ```loadContigs()``` and testthat
+
 # scRepertoire VERSION 2.0.2
 
 ## UNDERLYING CHANGES

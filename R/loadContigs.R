@@ -12,6 +12,7 @@
 #'   \item BD = "Contigs_AIRR.tsv" 
 #'   \item Immcantation = "data.tsv" 
 #'   \item JSON = ".json"
+#'   \item ParseBio = "barcode_report.tsv"
 #'   \item MiXCR = "clones.tsv"
 #'   \item Omniscope = ".csv" 
 #'   \item TRUST4 = "barcode_report.tsv"
@@ -30,7 +31,7 @@
 #' 
 #' @param input The directory in which contigs are located or a list with contig elements
 #' @param format The format of the single-cell contig, currently supporting: 
-#' "10X", "AIRR", "BD", "JSON", "MiXCR", "Omniscope", "TRUST4", and "WAT3R"
+#' "10X", "AIRR", "BD", "JSON", "MiXCR", "ParseBio", "Omniscope", "TRUST4", and "WAT3R"
 #' @importFrom utils read.csv read.delim
 #' @importFrom rjson fromJSON
 #' @export
@@ -49,7 +50,8 @@ loadContigs <- function(input,
                         "JSON" = ".json",
                         "TRUST4" = "barcode_report.tsv", 
                         "BD" = "Contigs_AIRR.tsv",
-                        "Omniscope" =c("_OSB.csv", "_OST.csv"))
+                        "Omniscope" =c("_OSB.csv", "_OST.csv"),
+                        "ParseBio" = "barcode_report.tsv")
         file.pattern <- format.list[[format]]
         contig.files <- list.files(input, paste0(file.pattern, collapse = "|"), recursive = TRUE, full.names = TRUE)
         
@@ -77,6 +79,7 @@ loadContigs <- function(input,
                      "WAT3R"  = .parseWAT3R,
                      "Omniscope" = .parseOmniscope,
                      "Immcantation" = .parseImmcantation,
+                     "ParseBio" = .parseParse,
                       stop("Invalid format provided"))
   
   df <- loadFunc(df)
@@ -238,6 +241,38 @@ loadContigs <- function(input,
       df[[i]][,"c_gene"] <- NA
     }
     df[[i]]$barcode <- str_split(df[[i]][,"barcode"], "_", simplify = TRUE)[,1]
+  }
+  return(df)
+}
+
+.parseParse <- function(df) {
+  for (i in seq_along(df)) {
+    df[[i]][df[[i]] == ""] <- NA
+    df[[i]][df[[i]] == "NaN"] <- NA
+    df[[i]][df[[i]] == "nan"] <- NA
+    df[[i]] <- as.data.frame(df[[i]])
+    TRA.1 <- df[[i]][,c("Barcode", "TRA_V", "TRA_D", "TRA_J", "TRA_C", "TRA_cdr3_aa", "TRA_read_count", "TRA_transcript_count")]
+    TRA.2 <- df[[i]][,c("Barcode", "secondary_TRA_V", "secondary_TRA_D", "secondary_TRA_J", "secondary_TRA_C", "secondary_TRA_cdr3_aa", "secondary_TRA_read_count", "secondary_TRA_transcript_count")]
+    colnames(TRA.1) <- 1:8
+    colnames(TRA.2) <- 1:8
+    TRA <- rbind(TRA.1, TRA.2)
+    TRA$chain <- "TRA"
+    
+    TRB.1 <- df[[i]][,c("Barcode", "TRB_V", "TRB_D", "TRB_J", "TRB_C", "TRB_cdr3_aa", "TRB_read_count", "TRB_transcript_count")]
+    TRB.2 <- df[[i]][,c("Barcode", "secondary_TRB_V", "secondary_TRB_D", "secondary_TRB_J", "secondary_TRB_C", "secondary_TRB_cdr3_aa", "secondary_TRB_read_count", "secondary_TRB_transcript_count")]
+    colnames(TRB.1) <- 1:8
+    colnames(TRB.2) <- 1:8
+    TRB <- rbind(TRB.1, TRB.2)
+    TRB$chain <- "TRB"
+    
+    data2 <- rbind(TRA, TRB)
+    data2 <- data2[rowSums(is.na(data2[2:8])) != 7, ]
+    colnames(data2) <- c("barcode", "v_gene", "d_gene", "j_gene", "c_gene", "cdr3", "reads", "umis", "chain")
+    data2$cdr3_nt <- NA
+    data2 <- data2[,c("barcode", "chain", "v_gene", "d_gene", "j_gene", "c_gene", "cdr3_nt", "cdr3", "reads", "umis")]
+    
+    df[[i]] <- data2
+    df[[i]] <- df[[i]][with(df[[i]], order(reads, chain)),]
   }
   return(df)
 }

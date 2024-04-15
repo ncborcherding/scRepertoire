@@ -44,6 +44,12 @@ test_that("loadContigs works", {
     expect_identical(trial7, 
                      getdata("load", "loadContigs_Omniscope")
     )
+    
+    Parse <- read.csv("https://www.borch.dev/uploads/contigs/Parse_contigs.csv")
+    trial8 <- loadContigs(Parse, format = "ParseBio")
+    expect_identical(trial8, 
+                     getdata("load", "loadContigs_Parse")
+    )
 }) 
 
 # TODO Add tests for .json and AIRR and OS
