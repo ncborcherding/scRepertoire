@@ -12,7 +12,8 @@ combineBCR(
   threshold = 0.85,
   removeNA = FALSE,
   removeMulti = FALSE,
-  filterMulti = TRUE
+  filterMulti = TRUE,
+  filterNonproductive = TRUE
 )
 }
 \arguments{
@@ -36,6 +37,10 @@ the number the more similarity of sequence will be used for clustering.}
 
 \item{filterMulti}{This option will allow for the selection of the 
 highest-expressing light and heavy chains, if not calling related clones.}
+
+\item{filterNonproductive}{This option will allow for the removal of 
+nonproductive chains if the variable exists in the contig data. Default
+is set to TRUE to remove nonproductive contigs.}
 }
 \value{
 List of clones for individual cell barcodes

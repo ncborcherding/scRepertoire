@@ -33,6 +33,14 @@ test_that("combineTCR works", {
 	)
 	
 	expect_identical(trial4, getdata("combineContigs", "combineTCR_list_removeNA"))
+	
+	trial5 <- combineTCR(
+	  input.data  = contig_list[1:2],
+	  samples = c("P17B", "P17L"),
+	  filterNonproductive = FALSE
+	)
+	
+	expect_identical(trial5, getdata("combineContigs", "combineTCR_list_nonproductive"))
 }) 
 
 # TODO combineTCR & combineBCR (need more edge cases, different args, errors, etc.)

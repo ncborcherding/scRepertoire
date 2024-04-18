@@ -43,6 +43,9 @@ utils::globalVariables(c(
 #' @param removeMulti This will remove barcodes with greater than 2 chains.
 #' @param filterMulti This option will allow for the selection of the 2 
 #' corresponding chains with the highest expression for a single barcode. 
+#' @param filterNonproductive This option will allow for the removal of 
+#' nonproductive chains if the variable exists in the contig data. Default
+#' is set to TRUE to remove nonproductive contigs.
 #' 
 #' @import dplyr
 #' @export
@@ -54,7 +57,8 @@ combineTCR <- function(input.data,
                        ID = NULL, 
                        removeNA = FALSE, 
                        removeMulti = FALSE, 
-                       filterMulti = FALSE) {
+                       filterMulti = FALSE,
+                       filterNonproductive = TRUE) {
     input.data <- .checkList(input.data)
     input.data <- .checkContigs(input.data)
     out <- NULL
@@ -63,7 +67,7 @@ combineTCR <- function(input.data,
         if(c("chain") %in% colnames(input.data[[i]])) {
           input.data[[i]] <- subset(input.data[[i]], chain != "Multi")
         }
-        if(c("productive") %in% colnames(input.data[[i]])) {
+        if(c("productive") %in% colnames(input.data[[i]]) & filterNonproductive) {
           input.data[[i]] <- subset(input.data[[i]], productive %in% c(TRUE, "TRUE", "True", "true"))
         }
         input.data[[i]]$sample <- samples[i]
@@ -169,6 +173,9 @@ combineTCR <- function(input.data,
 #' @param removeMulti This will remove barcodes with greater than 2 chains.
 #' @param filterMulti This option will allow for the selection of the 
 #' highest-expressing light and heavy chains, if not calling related clones.
+#' @param filterNonproductive This option will allow for the removal of 
+#' nonproductive chains if the variable exists in the contig data. Default
+#' is set to TRUE to remove nonproductive contigs.
 #' @import dplyr
 #' @export
 #' @concept Loading_and_Processing_Contigs
@@ -180,7 +187,8 @@ combineBCR <- function(input.data,
                        threshold = 0.85,
                        removeNA = FALSE, 
                        removeMulti = FALSE,
-                       filterMulti = TRUE) {
+                       filterMulti = TRUE,
+                       filterNonproductive = TRUE) {
     input.data <- .checkList(input.data)
     input.data <- .checkContigs(input.data)
     out <- NULL
@@ -190,6 +198,9 @@ combineBCR <- function(input.data,
     for (i in seq_along(input.data)) {
         input.data[[i]] <- subset(input.data[[i]], chain %in% c("IGH", "IGK", "IGL"))
         input.data[[i]]$ID <- ID[i]
+        if(c("productive") %in% colnames(input.data[[i]]) & filterNonproductive) {
+          input.data[[i]] <- subset(input.data[[i]], productive %in% c(TRUE, "TRUE", "True", "true"))
+        }
         if (filterMulti) {
                     # Keep IGH / IGK / IGL info in save_chain
                     input.data[[i]]$save_chain <- input.data[[i]]$chain
