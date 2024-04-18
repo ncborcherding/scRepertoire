@@ -566,6 +566,7 @@ is_df_or_list_of_df <- function(x) {
     if (length(nucleotides) > 1) {
       chain_col_number <- 1
       nucleotide_lengths <- nchar(nucleotides)
+      
       # Pre-allocate list
       list <- vector("list", length = length(nucleotides))
       

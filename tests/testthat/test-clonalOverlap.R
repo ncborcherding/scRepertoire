@@ -12,6 +12,13 @@ test_that("clonalOverlap works", {
   )
   
   expect_doppelganger( # warning from testthat: Removed 36 rows containing missing values (`geom_text()`).
+    "clonalOverlap_reorder_plot",
+    clonalOverlap(
+      combined[c(3,4,1,2,7,8,5,6)], 
+      method = "raw")
+  )
+  
+  expect_doppelganger( # warning from testthat: Removed 36 rows containing missing values (`geom_text()`).
     "clonalOverlap_morisita_plot",
     clonalOverlap(
       combined, 
