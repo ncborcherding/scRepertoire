@@ -20,7 +20,7 @@ combineBCR(
 \item{input.data}{List of filtered contig annotations or outputs from 
 \code{\link{loadContigs}}.}
 
-\item{samples}{The labels of samples}
+\item{samples}{The labels of samples (required).}
 
 \item{ID}{The additional sample labeling (optional).}
 

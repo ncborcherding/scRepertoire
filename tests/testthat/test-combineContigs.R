@@ -44,6 +44,7 @@ test_that("combineTCR works", {
 }) 
 
 # TODO combineTCR & combineBCR (need more edge cases, different args, errors, etc.)
+# TODO combineTCR for non-10x formats
 
 test_that("combineBCR works", {
 

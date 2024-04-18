@@ -99,13 +99,22 @@ combineTCR <- function(input.data,
         Con.df[Con.df == "NA_NA" | Con.df == "NA;NA_NA;NA"] <- NA 
         data3 <- merge(data2[,-which(names(data2) %in% c("TCR1","TCR2"))], 
             Con.df, by = "barcode")
-        if (!is.null(samples) && !is.null(ID)) {
-            data3 <- data3[, c("barcode", "sample", "ID", tcr1_lines, tcr2_lines,
-                CT_lines)] }
-        else if (!is.null(samples) & is.null(ID)) {
-          data3<-data3[,c("barcode","sample",tcr1_lines,tcr2_lines,
-                          CT_lines)] 
+        
+        columns_to_include <- c("barcode")
+        # Conditionally add columns based on user input
+        if (!is.null(samples)) {
+          columns_to_include <- c(columns_to_include, "sample")
         }
+        if (!is.null(ID)) {
+          columns_to_include <- c(columns_to_include, "ID")
+        }
+        
+        # Add TCR and CT lines which are presumably always needed
+        columns_to_include <- c(columns_to_include, tcr1_lines, tcr2_lines, CT_lines)
+        
+        # Subset the data frame based on the dynamically built list of columns
+        data3 <- data3[, columns_to_include]
+        
         final[[i]] <- data3 
     }
     name_vector <- character(length(samples))
@@ -162,7 +171,7 @@ combineTCR <- function(input.data,
 #' 
 #' @param input.data List of filtered contig annotations or outputs from 
 #' \code{\link{loadContigs}}.
-#' @param samples The labels of samples
+#' @param samples The labels of samples (required).
 #' @param ID The additional sample labeling (optional).
 #' @param call.related.clones Use the nucleotide sequence and V gene 
 #' to call related clones. Default is set to TRUE. FALSE will return 
