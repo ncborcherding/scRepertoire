@@ -198,6 +198,9 @@ combineBCR <- function(input.data,
                        removeMulti = FALSE,
                        filterMulti = TRUE,
                        filterNonproductive = TRUE) {
+    if(is.null(samples)) {
+      stop("combineBCR() requires the samples paramter for the calculation of edit distance.")
+    }
     input.data <- .checkList(input.data)
     input.data <- .checkContigs(input.data)
     out <- NULL

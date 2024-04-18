@@ -5,7 +5,8 @@
 * Modified support for Omniscope format to allow for dual chains
 * Added ParseBio support int ```loadContigs()``` and testthat
 * Added support for productive variable to ```loadContigs()``` for BD, Omniscope, and Immcantation formats
-* ```combineBCR()``` and ```combineTCR()``` no allow for unproductive contig inclusions with new **filterNonproductive** parameter
+* ```combineBCR()``` and ```combineTCR()``` no allow for unproductive contig inclusions with new **filterNonproductive** parameter.
+* ```combineBCR()``` will now prompt user if **samples** is not included instead of erroring.
 
 # scRepertoire VERSION 2.0.2
 
