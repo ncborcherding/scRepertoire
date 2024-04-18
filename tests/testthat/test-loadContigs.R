@@ -52,5 +52,5 @@ test_that("loadContigs works", {
     )
 }) 
 
-# TODO Add tests for .json and AIRR and OS
+# TODO Add tests for .json and AIRR
 # TODO Would be nice to have a dir option

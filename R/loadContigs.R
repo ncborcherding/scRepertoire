@@ -176,8 +176,8 @@ loadContigs <- function(input,
 #Loads BD AIRR
 .parseBD <- function(df) {
   for (i in seq_along(df)) {
-    df[[i]] <- df[[i]][,c(1,2,20,25,30, 35, 48,49,4)]
-    colnames(df[[i]]) <- c("barcode", "chain", "v_gene", "d_gene", "j_gene", "c_gene", "cdr3_nt", "cdr3", "reads")
+    df[[i]] <- df[[i]][,c("cell_id","locus","v_call","d_call","j_call", "c_call", "cdr3","cdr3_aa","consensus_count", "productive")]
+    colnames(df[[i]]) <- c("barcode", "chain", "v_gene", "d_gene", "j_gene", "c_gene", "cdr3_nt", "cdr3", "reads", "productive")
     df[[i]] <- df[[i]][with(df[[i]], order(reads, chain)),]
   }
   return(df)
@@ -194,11 +194,11 @@ loadContigs <- function(input,
 .parseOmniscope <- function(df) {
   for (i in seq_along(df)) {
     if("c_call" %in% colnames(df[[i]])) {
-      df[[i]] <- df[[i]][,c("cell_id", "locus", "umi_count", "v_call", "d_call", "j_call", "c_call", "cdr3", "cdr3_aa")]
-      colnames(df[[i]]) <- c("barcode", "chain", "reads", "v_gene", "d_gene", "j_gene", "c_gene", "cdr3_nt", "cdr3")
+      df[[i]] <- df[[i]][,c("cell_id", "locus", "umi_count", "v_call", "d_call", "j_call", "c_call", "cdr3", "cdr3_aa", "productive")]
+      colnames(df[[i]]) <- c("barcode", "chain", "reads", "v_gene", "d_gene", "j_gene", "c_gene", "cdr3_nt", "cdr3", "productive")
     } else { #TCR contigs do not include C gene
-      df[[i]] <- df[[i]][,c("cell_id", "locus", "umi_count", "v_call", "d_call", "j_call", "cdr3", "cdr3_aa")]
-      colnames(df[[i]]) <- c("barcode", "chain", "reads", "v_gene", "d_gene", "j_gene", "cdr3_nt", "cdr3")
+      df[[i]] <- df[[i]][,c("cell_id", "locus", "umi_count", "v_call", "d_call", "j_call", "cdr3", "cdr3_aa", "productive")]
+      colnames(df[[i]]) <- c("barcode", "chain", "reads", "v_gene", "d_gene", "j_gene", "cdr3_nt", "cdr3", "productive")
       df[[i]][,"c_gene"] <- NA
     df[[i]] <- df[[i]][with(df[[i]], order(reads, chain)),]
     }
@@ -233,11 +233,11 @@ loadContigs <- function(input,
     df[[i]][df[[i]] == ""] <- NA
     df[[i]] <- as.data.frame(df[[i]])
     if("c_call" %in% colnames(df[[i]])) {
-      df[[i]] <- df[[i]][,c("sequence_id", "locus", "consensus_count",  "v_call", "d_call", "j_call", "c_call", "cdr3", "cdr3_aa")]
-      colnames(df[[i]]) <- c("barcode", "chain", "reads", "v_gene", "d_gene", "j_gene", "c_gene", "cdr3_nt", "cdr3")
+      df[[i]] <- df[[i]][,c("sequence_id", "locus", "consensus_count",  "v_call", "d_call", "j_call", "c_call", "cdr3", "cdr3_aa", "productive")]
+      colnames(df[[i]]) <- c("barcode", "chain", "reads", "v_gene", "d_gene", "j_gene", "c_gene", "cdr3_nt", "cdr3", "productive")
     } else {
-      df[[i]] <- df[[i]][,c("sequence_id", "locus", "consensus_count",  "v_call", "d_call", "j_call", "cdr3", "cdr3_aa")]
-      colnames(df[[i]]) <- c("barcode", "chain", "reads", "v_gene", "d_gene", "j_gene", "cdr3_nt", "cdr3")
+      df[[i]] <- df[[i]][,c("sequence_id", "locus", "consensus_count",  "v_call", "d_call", "j_call", "cdr3", "cdr3_aa", "productive")]
+      colnames(df[[i]]) <- c("barcode", "chain", "reads", "v_gene", "d_gene", "j_gene", "cdr3_nt", "cdr3", "productive")
       df[[i]][,"c_gene"] <- NA
     }
     df[[i]]$barcode <- str_split(df[[i]][,"barcode"], "_", simplify = TRUE)[,1]
