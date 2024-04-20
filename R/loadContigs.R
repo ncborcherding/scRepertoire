@@ -122,21 +122,20 @@ loadContigs <- function(input,
 #' @author Kyle Romine, Nick Borcherding
 .parseWAT3R <- function(df) {
     for (i in seq_along(df)) {
-        colnames(df[[i]])[1] <- "barcode"
         df[[i]][df[[i]] == ""] <- NA
-        chain2 <- df[[i]][,c(1,8,9,10,4,3,7,5)]
+        chain2 <- df[[i]][,c("BC","TRBV","TRBD","TRBJ","TRB_CDR3nuc","TRB_CDR3","TRB_nReads","TRB_CDR3_UMIcount")]
         chain2 <- data.frame(chain2[,1], chain = "TRB", chain2[,2:4], c_gene = NA, chain2[,5:8])
         colnames(chain2) <- c("barcode", "chain", "v_gene", "d_gene", "j_gene", "c_gene", "cdr3_nt", "cdr3", "reads", "umis")
         
         #TRA Chain 1
-        chain1 <-  df[[i]][,c(1,16,17,12,11,15,13)]
+        chain1 <-  df[[i]][,c("BC","TRAV","TRAJ","TRA_CDR3nuc","TRA_CDR3","TRA_nReads","TRA_CDR3_UMIcount")]
         chain1 <- data.frame(chain1[,1], chain = "TRA",chain1[,2], d_gene = NA, chain1[,3], c_gene = NA, chain1[,4:7])
         colnames(chain1) <- c("barcode", "chain", "v_gene", "d_gene", "j_gene", "c_gene", "cdr3_nt", "cdr3", "reads", "umis")
         data2 <- rbind(chain1, chain2)
         data2[data2 == ""] <- NA
         
         #TRA Chain 2
-        chain3 <-  df[[i]][,c(1,23,24,19,18,22,20)]
+        chain3 <-  df[[i]][,c("BC","TRAV.2","TRAJ.2","TRA.2_CDR3nuc","TRA.2_CDR3","TRA.2_nReads","TRA.2_CDR3_UMIcount")]
         chain3 <- data.frame(chain3[,1], chain = "TRA",chain3[,2],  d_gene = NA, chain3[,3], c_gene = NA, chain3[,4:7])
         colnames(chain3) <- c("barcode", "chain", "v_gene", "d_gene", "j_gene", "c_gene", "cdr3_nt", "cdr3", "reads", "umis")
         data2 <- rbind(chain1, chain2, chain3)

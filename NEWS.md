@@ -5,6 +5,7 @@
 * Modified support for Omniscope format to allow for dual chains
 * Added ParseBio support int ```loadContigs()``` and testthat
 * Added support for productive variable to ```loadContigs()``` for BD, Omniscope, and Immcantation formats
+* Replace numerical indexing with name indexing for ```loadContigs()```
 * ```combineBCR()``` and ```combineTCR()``` no allow for unproductive contig inclusions with new **filterNonproductive** parameter.
 * ```combineBCR()``` will now prompt user if **samples** is not included instead of erroring.
 
