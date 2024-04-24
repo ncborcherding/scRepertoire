@@ -49,9 +49,10 @@ test_that("combineTCR works", {
 test_that("combineBCR works", {
 
   BCR <- read.csv("https://www.borch.dev/uploads/contigs/b_contigs.csv")
-  trial1 <- combineBCR(BCR, 
+  bcr.trial1 <- combineBCR(BCR, 
                     samples = "Patient1")
+  bcr.trial1[[1]] <- bcr.trial1[[1]][order(bcr.trial1[[1]]$barcode),]
 
-  expect_identical(trial1, getdata("combineContigs", "combineBCR_list_expected"))
+  expect_identical(bcr.trial1, getdata("combineContigs", "combineBCR_list_expected"))
 
 })
