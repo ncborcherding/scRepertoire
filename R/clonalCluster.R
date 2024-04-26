@@ -6,6 +6,8 @@
 #' \code{\link{combineBCR}} or \code{\link{combineExpression}} and amends a 
 #' cluster to the data frame or meta data. If \strong{exportGraph} is set 
 #' to TRUE, the function returns an igraph object of the connected sequences. 
+#' If multiple sequences per chain are present, this function only compares
+#' the first sequence.
 #' 
 #' @examples
 #' # Getting the combined contigs
@@ -33,9 +35,9 @@
 #' sequences (\strong{TRUE}) or the amended input with a
 #' new cluster-based variable (\strong{FALSE}).
 #' @importFrom stringdist stringdist
-#' @importFrom igraph set_vertex_attr V
+#' @importFrom igraph set_vertex_attr V union
 #' @importFrom plyr join
-#' @importFrom dplyr bind_rows
+#' @importFrom dplyr bind_rows summarize
 #' @importFrom stringr str_split str_replace_all
 #' @importFrom rlang %||%
 #' @importFrom SummarizedExperiment colData<- colData
@@ -95,13 +97,19 @@ clonalCluster <- function(input.data,
   
   if (!is.null(group.by)) {
     bound <- bind_rows(dat, .id = "group.by")
+    bound <- bound[!is.na(bound[,ref2]),]
+    retain.ref <- data.frame(old = bound[,ref2], new = str_split(bound[,ref2], ";", simplify = TRUE)[,1])
+    bound[,ref2] <- str_split(bound[,ref2], ";", simplify = TRUE)[,1]
     graph.variables <- bound %>%
                           group_by(bound[,ref2]) %>%
                           dplyr::summarize(sample_count = n(),
                                     unique_samples = paste0(unique(group.by), collapse = ","))
   } else {
     bound <- bind_rows(dat)
-    graph.variables <- bind_rows(dat) %>%
+    bound <- bound[!is.na(bound[,ref2]),]
+    retain.ref <- data.frame(old = bound[,ref2], new = str_split(bound[,ref2], ";", simplify = TRUE)[,1])
+    bound[,ref2] <- str_split(bound[,ref2], ";", simplify = TRUE)[,1]
+    graph.variables <- bound %>%
                           group_by(bound[,ref2]) %>%
                           dplyr::summarize(sample_count = n())
   }
@@ -120,10 +128,10 @@ clonalCluster <- function(input.data,
   
   #Returning the igraph object if eexportGraph = TRUE
   if(exportGraph) {
-    cluster <- output.list[[1]]
+    cluster <- do.call(union, output.list)
     vertex <- names(V(cluster))
     data_df <- unique(data.frame(
-      id = V(cluster)$name
+      id = vertex
     ))
     data_df <- merge(data_df, graph.variables, by = 1)
     cluster <- set_vertex_attr(cluster, 

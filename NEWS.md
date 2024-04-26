@@ -8,6 +8,9 @@
 * Replace numerical indexing with name indexing for ```loadContigs()```
 * ```combineBCR()``` and ```combineTCR()``` no allow for unproductive contig inclusions with new **filterNonproductive** parameter.
 * ```combineBCR()``` will now prompt user if **samples** is not included instead of erroring.
+* Added base threshold by length for internal ```.lvcCmpare()```-
+* Ensured internal ```.lvcompare()``` only looks at first set of sequences in multi-sequence chain.
+* Fixed bug in exporting graph for ```clonaCluster()```
 
 # scRepertoire VERSION 2.0.2
 

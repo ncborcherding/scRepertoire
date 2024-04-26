@@ -47,7 +47,9 @@ sequences of the CDR3 and V genes to cluster similar TCR/BCRs together.
 As a default, the function takes the input from \code{\link{combineTCR}}, 
 \code{\link{combineBCR}} or \code{\link{combineExpression}} and amends a 
 cluster to the data frame or meta data. If \strong{exportGraph} is set 
-to TRUE, the function returns an igraph object of the connected sequences.
+to TRUE, the function returns an igraph object of the connected sequences. 
+If multiple sequences per chain are present, this function only compares
+the first sequence.
 }
 \examples{
 # Getting the combined contigs

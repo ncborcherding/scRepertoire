@@ -560,7 +560,8 @@ is_df_or_list_of_df <- function(x) {
   
   edge.list <- lapply(str_sort(na.omit(unique(dictionary$v.gene)), numeric = T), function(v_gene) {
     filtered_df <- filter(dictionary, v.gene == v_gene)
-    nucleotides <- sort(unique(filtered_df[[chain]]))
+    nucleotides <- filtered_df[[chain]]
+    nucleotides <- sort(unique(str_split(nucleotides, ";", simplify = TRUE)[,1]))
     
     if (length(nucleotides) <= 1) return(NULL)
     
@@ -590,6 +591,7 @@ is_df_or_list_of_df <- function(x) {
   })
   
   edge.list <- do.call(rbind, edge.list)
+  
   if(exportGraph) {
     graph <- graph_from_edgelist(as.matrix(edge.list)[,c(1,2)])
     return(graph)
