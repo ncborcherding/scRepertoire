@@ -21,7 +21,7 @@
 #' @param palette Colors to use in visualization - input any \link[grDevices]{hcl.pals}.
 #' @import ggplot2
 #' @importFrom reshape2 melt
-#' @importFrom dplyr mutate_at %>%
+#' @importFrom dplyr mutate_at %>% mutate_if
 #' @export
 #' @concept Summarize_Repertoire
 #' @return ggplot of stacked bar graphs of amino acid proportions

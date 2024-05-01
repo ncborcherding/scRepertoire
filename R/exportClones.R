@@ -58,6 +58,7 @@ exportClones <- function(input.data,
   write.csv(mat, file = filepath)
 }
 
+#' @importFrom dplyr %>% group_by mutate
 .TCRmatchExport<- function(input.data) {
 
   input.data <- .data.wrangle(input.data, NULL, "CTgene", "TRB")

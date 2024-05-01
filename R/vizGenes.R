@@ -35,7 +35,7 @@
 #' @import ggplot2
 #' @importFrom stringr str_split
 #' @importFrom stats sd
-#' @importFrom dplyr bind_rows
+#' @importFrom dplyr bind_rows %>% group_by mutate ungroup summarise
 #' @export
 #' @concept Visualizing_Clones
 #' @return ggplot bar diagram or heatmap of gene usage

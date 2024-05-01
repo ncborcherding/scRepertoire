@@ -11,6 +11,7 @@
 * Added base threshold by length for internal ```.lvcCmpare()```-
 * Ensured internal ```.lvcompare()``` only looks at first set of sequences in multi-sequence chain.
 * Fixed bug in exporting graph for ```clonaCluster()```
+* Fixed conflict in functions between igraph and dplyr packages
 
 # scRepertoire VERSION 2.0.2
 

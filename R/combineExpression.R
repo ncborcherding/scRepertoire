@@ -45,7 +45,7 @@
 #' @param addLabel This will add a label to the frequency header, allowing
 #' the user to try multiple group.by variables or recalculate frequencies after 
 #' subsetting the data.
-#' @importFrom dplyr bind_rows %>% summarise left_join mutate select
+#' @importFrom dplyr bind_rows %>% summarise left_join mutate select n
 #' @importFrom  rlang %||% sym :=
 #' @importFrom SummarizedExperiment colData<- colData
 #' @export
@@ -96,8 +96,8 @@ combineExpression <- function(input.data,
             data2 <- na.omit(data2[data2[,"barcode"] %in% cell.names,])
             data2 <- data2 %>% 
                         group_by(data2[,cloneCall]) %>%
-                        summarise(clonalProportion = n()/nrow(data2), 
-                                  clonalFrequency = n())
+                        summarise(clonalProportion = dplyr::n()/nrow(data2), 
+                                  clonalFrequency = dplyr::n())
             colnames(data2)[1] <- cloneCall
             data <- merge(data, data2, by = cloneCall, all = TRUE)
             if ( cloneCall %!in% c("CTgene", "CTnt", "CTaa", "CTstrict") ) {
@@ -117,8 +117,8 @@ combineExpression <- function(input.data,
         data2 <- data2[data2[,"barcode"] %in% cell.names, ]
         data2 <- as.data.frame(data2 %>% 
                                   group_by(data2[,cloneCall], data2[,group.by]) %>% 
-                                  summarise(clonalProportion = n()/nrow(data2), 
-                                            clonalFrequency = n())
+                                  summarise(clonalProportion = dplyr::n()/nrow(data2), 
+                                            clonalFrequency = dplyr::n())
         )
         
         colnames(data2)[c(1,2)] <- c(cloneCall, group.by)
@@ -203,7 +203,11 @@ combineExpression <- function(input.data,
       if (length(which(rownames(PreMeta) %in% 
                        rownames))/length(rownames) < 0.01) {
         warning(.warn_str) }
-      colData(sc.data) <- cbind(colData(sc.data), PreMeta[rownames,])[, union(colnames(colData(sc.data)),  colnames(PreMeta))]
+      
+      combined_col_names <- unique(c(colnames(colData(sc.data)), colnames(PreMeta)))
+      full_data <- merge(colData(sc.data), PreMeta[rownames, , drop = FALSE], by = "row.names", all = TRUE)
+      colData(sc.data) <- full_data[, combined_col_names]
+      
       rownames(colData(sc.data)) <- rownames  
     }
     if (filterNA) { 

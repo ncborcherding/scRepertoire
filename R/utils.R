@@ -241,7 +241,7 @@ is_seurat_or_se_object <- function(obj) {
 }
 
 #Removing extra clones in barcodes with > 2 productive contigs
-#' @import dplyr
+#' @importFrom dplyr group_by %>% slice_max
 #' @keywords internal
 .filteringMulti <- function(x) {
     x <- x %>%
@@ -267,7 +267,7 @@ is_seurat_or_se_object <- function(obj) {
 
 
 #Filtering NA contigs out of single-cell expression object
-#' @import dplyr
+#' @importFrom dplyr %>% transmute
 #' @importFrom SingleCellExperiment colData
 #' @keywords internal
 .filteringNA <- function(sc) {
@@ -289,6 +289,7 @@ is_seurat_or_se_object <- function(obj) {
 
 #Organizing list of contigs for visualization
 #' @keywords internal
+#' @importFrom dplyr %>% group_by n summarise
 .parseContigs <- function(df, i, names, cloneCall) {
     data <- df[[i]]
     data1 <- data %>% 
@@ -350,9 +351,10 @@ is_seurat_or_se_object <- function(obj) {
 # but now also constructs Con.df and runs the parseTCR algorithm on it, all in Rcpp
 #' @author Gloria Kraus, Nick Bormann, Nicky de Vrij, Nick Borcherding, Qile Yang
 #' @keywords internal
+#' @importFrom dplyr %>% arrange
 .constructConDfAndParseTCR <- function(data2) {
   rcppConstructConDfAndParseTCR(
-    data2 %>% arrange(., chain, cdr3_nt),
+    data2 %>% dplyr::arrange(., chain, cdr3_nt),
     unique(data2[[1]]) # 1 is the index of the barcode column
   )
 }
@@ -460,7 +462,7 @@ is_seurat_or_se_object <- function(obj) {
 
 #Sorting the V/D/J/C gene sequences for T and B cells
 #' @importFrom stringr str_c str_replace_na
-#' @importFrom dplyr bind_rows
+#' @importFrom dplyr bind_rows mutate %>%
 #' @keywords internal
 .makeGenes <- function(cellType, data2, chain1, chain2) {
     if(cellType %in% c("T")) {
@@ -548,7 +550,7 @@ is_df_or_list_of_df <- function(x) {
 #' @importFrom stringr str_split str_sort
 #' @importFrom stringdist stringdist
 #' @importFrom igraph graph_from_data_frame components graph_from_edgelist
-#' @importFrom dplyr bind_rows
+#' @importFrom dplyr bind_rows filter
 #' @keywords internal
 .lvCompare <- function(dictionary, gene, chain, threshold, exportGraph = FALSE) {
   overlap <- NULL
@@ -559,7 +561,7 @@ is_df_or_list_of_df <- function(x) {
   #chunking the sequences for distance by v.gene
   
   edge.list <- lapply(str_sort(na.omit(unique(dictionary$v.gene)), numeric = T), function(v_gene) {
-    filtered_df <- filter(dictionary, v.gene == v_gene)
+    filtered_df <- dplyr::filter(dictionary, v.gene == v_gene)
     nucleotides <- filtered_df[[chain]]
     nucleotides <- sort(unique(str_split(nucleotides, ";", simplify = TRUE)[,1]))
     

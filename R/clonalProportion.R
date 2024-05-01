@@ -32,7 +32,7 @@
 #' @import ggplot2
 #' @importFrom stringr str_sort
 #' @importFrom reshape2 melt
-#' @importFrom dplyr bind_rows
+#' @importFrom dplyr bind_rows n
 #'
 #' @export
 #' @concept Visualizing_Clones

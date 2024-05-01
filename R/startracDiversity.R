@@ -40,6 +40,7 @@
 #' @param exportTable Returns the data frame used for forming the graph.
 #' @param palette Colors to use in visualization - input any \link[grDevices]{hcl.pals}.
 #' @importFrom reshape2 melt
+#' @importFrom dplyr %>% mutate group_by
 #' @import ggplot2
 #' @export
 #' @concept SC_Functions

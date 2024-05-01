@@ -126,9 +126,9 @@ clonalCluster <- function(input.data,
   #Grabbing column order for later return
   column.order <- colnames(bound)
   
-  #Returning the igraph object if eexportGraph = TRUE
+  #Returning the igraph object if exportGraph = TRUE
   if(exportGraph) {
-    cluster <- do.call(union, output.list)
+    cluster <- do.call(igraph::union, output.list)
     vertex <- names(V(cluster))
     data_df <- unique(data.frame(
       id = vertex
@@ -178,8 +178,10 @@ clonalCluster <- function(input.data,
       input.data[[col.name]] <- PreMeta
     } else {
       rownames <- rownames(colData(input.data))
-      colData(input.data) <- cbind(colData(input.data), 
-                                   PreMeta[rownames,])[, union(colnames(colData(input.data)),  colnames(PreMeta))]
+      combined_col_names <- unique(c(colnames(colData(input.data)), colnames(PreMeta)))
+      full_data <- merge(colData(input.data), PreMeta[rownames, , drop = FALSE], by = "row.names", all = TRUE)
+      colData(input.data) <- full_data[, combined_col_names]
+      
       rownames(colData(input.data)) <- rownames 
     }
   } else {
