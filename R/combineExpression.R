@@ -46,7 +46,7 @@
 #' the user to try multiple group.by variables or recalculate frequencies after 
 #' subsetting the data.
 #' @importFrom dplyr bind_rows %>% summarise left_join mutate select
-#' @importFrom  rlang %||%
+#' @importFrom  rlang %||% sym :=
 #' @importFrom SummarizedExperiment colData<- colData
 #' @export
 #' @concept SC_Functions
