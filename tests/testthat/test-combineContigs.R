@@ -33,16 +33,26 @@ test_that("combineTCR works", {
 	)
 	
 	expect_identical(trial4, getdata("combineContigs", "combineTCR_list_removeNA"))
+	
+	trial5 <- combineTCR(
+	  input.data  = contig_list[1:2],
+	  samples = c("P17B", "P17L"),
+	  filterNonproductive = FALSE
+	)
+	
+	expect_identical(trial5, getdata("combineContigs", "combineTCR_list_nonproductive"))
 }) 
 
 # TODO combineTCR & combineBCR (need more edge cases, different args, errors, etc.)
+# TODO combineTCR for non-10x formats
 
 test_that("combineBCR works", {
 
   BCR <- read.csv("https://www.borch.dev/uploads/contigs/b_contigs.csv")
-  trial1 <- combineBCR(BCR, 
+  bcr.trial1 <- combineBCR(BCR, 
                     samples = "Patient1")
+  bcr.trial1[[1]] <- bcr.trial1[[1]][order(bcr.trial1[[1]]$barcode),]
 
-  expect_identical(trial1, getdata("combineContigs", "combineBCR_list_expected"))
+  expect_identical(bcr.trial1, getdata("combineContigs", "combineBCR_list_expected"))
 
 })

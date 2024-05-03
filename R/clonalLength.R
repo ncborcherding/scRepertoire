@@ -41,8 +41,6 @@ clonalLength <- function(input.data,
                          exportTable = FALSE, 
                          palette = "inferno") {
   
-
-  
   input.data <- .data.wrangle(input.data, 
                               group.by, 
                               .theCall(input.data, cloneCall, check.df = FALSE), 

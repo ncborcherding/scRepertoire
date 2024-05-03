@@ -10,7 +10,8 @@ combineTCR(
   ID = NULL,
   removeNA = FALSE,
   removeMulti = FALSE,
-  filterMulti = FALSE
+  filterMulti = FALSE,
+  filterNonproductive = TRUE
 )
 }
 \arguments{
@@ -27,6 +28,10 @@ outputs from \code{\link{loadContigs}}.}
 
 \item{filterMulti}{This option will allow for the selection of the 2 
 corresponding chains with the highest expression for a single barcode.}
+
+\item{filterNonproductive}{This option will allow for the removal of 
+nonproductive chains if the variable exists in the contig data. Default
+is set to TRUE to remove nonproductive contigs.}
 }
 \value{
 List of clones for individual cell barcodes

@@ -69,10 +69,13 @@ Using the dimensional reduction graphs as a reference, we can also generate an o
 
 * The dimensional reduction for the visualization, **(default = "pca")**
 
-**freq.cutpoint**  
+**cut.category**  
+
+* Use of "clonalFrequency" or "clonalProportion" to filter the overlay
+
+**cutpoint**  
 
 * lowest clonal frequency or proportion to generate the contour plot
-
 
 **bins** 
 
@@ -85,7 +88,7 @@ This visualization was authored by Dr. Francesco Mazziotta and inspired by Drs. 
 ```{r tidy = FALSE}
 clonalOverlay(scRep_example, 
               reduction = "umap", 
-              freq.cutpoint = 1, 
+              cutpoint = 1, 
               bins = 10, 
               facet.by = "Patient") + 
               guides(color = "none")
@@ -126,7 +129,6 @@ clonalNetwork(scRep_example,
               filter.clones = NULL,
               filter.identity = NULL,
               cloneCall = "aa")
-
 ```
 
 We can look at the clonal relationships relative to a single cluster using the **filter.identity** parameter. 
@@ -182,9 +184,9 @@ clonalOccupy(scRep_example,
               x.axis = "seurat_clusters")
 
 clonalOccupy(scRep_example, 
-                     x.axis = "ident", 
-                     proportion = TRUE, 
-                     label = FALSE)
+             x.axis = "ident", 
+             proportion = TRUE, 
+             label = FALSE)
 ```
 
 ## alluvialClones

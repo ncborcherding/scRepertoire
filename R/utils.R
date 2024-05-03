@@ -7,6 +7,7 @@ is_seurat_or_se_object <- function(obj) {
 }
 
 #Use to shuffle between chains Qile: the NA handling here *might* be related to the unnamed combineTCR bugs from the new rcpp con.df construction
+#' @importFrom stringr str_split
 #' @keywords internal
 #' @author Ye-Lin Son Nick Borcherding
 .off.the.chain <- function(dat, chain, cloneCall, check = TRUE) {
@@ -240,7 +241,7 @@ is_seurat_or_se_object <- function(obj) {
 }
 
 #Removing extra clones in barcodes with > 2 productive contigs
-#' @import dplyr
+#' @importFrom dplyr group_by %>% slice_max
 #' @keywords internal
 .filteringMulti <- function(x) {
     x <- x %>%
@@ -266,7 +267,7 @@ is_seurat_or_se_object <- function(obj) {
 
 
 #Filtering NA contigs out of single-cell expression object
-#' @import dplyr
+#' @importFrom dplyr %>% transmute
 #' @importFrom SingleCellExperiment colData
 #' @keywords internal
 .filteringNA <- function(sc) {
@@ -288,6 +289,7 @@ is_seurat_or_se_object <- function(obj) {
 
 #Organizing list of contigs for visualization
 #' @keywords internal
+#' @importFrom dplyr %>% group_by n summarise
 .parseContigs <- function(df, i, names, cloneCall) {
     data <- df[[i]]
     data1 <- data %>% 
@@ -349,9 +351,10 @@ is_seurat_or_se_object <- function(obj) {
 # but now also constructs Con.df and runs the parseTCR algorithm on it, all in Rcpp
 #' @author Gloria Kraus, Nick Bormann, Nicky de Vrij, Nick Borcherding, Qile Yang
 #' @keywords internal
+#' @importFrom dplyr %>% arrange
 .constructConDfAndParseTCR <- function(data2) {
   rcppConstructConDfAndParseTCR(
-    data2 %>% arrange(., chain, cdr3_nt),
+    data2 %>% dplyr::arrange(., chain, cdr3_nt),
     unique(data2[[1]]) # 1 is the index of the barcode column
   )
 }
@@ -459,7 +462,7 @@ is_seurat_or_se_object <- function(obj) {
 
 #Sorting the V/D/J/C gene sequences for T and B cells
 #' @importFrom stringr str_c str_replace_na
-#' @importFrom dplyr bind_rows
+#' @importFrom dplyr bind_rows mutate %>%
 #' @keywords internal
 .makeGenes <- function(cellType, data2, chain1, chain2) {
     if(cellType %in% c("T")) {
@@ -544,9 +547,10 @@ is_df_or_list_of_df <- function(x) {
 
 # Calculates the normalized Levenshtein Distance between the contig 
 # nucleotide sequence.
+#' @importFrom stringr str_split str_sort
 #' @importFrom stringdist stringdist
 #' @importFrom igraph graph_from_data_frame components graph_from_edgelist
-#' @importFrom dplyr bind_rows
+#' @importFrom dplyr bind_rows filter
 #' @keywords internal
 .lvCompare <- function(dictionary, gene, chain, threshold, exportGraph = FALSE) {
   overlap <- NULL
@@ -555,68 +559,47 @@ is_df_or_list_of_df <- function(x) {
   dictionary$v.gene <- stringr::str_split(dictionary[,gene], "[.]", simplify = TRUE)[,1]
   tmp <- na.omit(unique(dictionary[,c(chain, "v.gene")]))
   #chunking the sequences for distance by v.gene
-  unique.v <- na.omit(unique(tmp$v.gene))
   
-  edge.list <- lapply(unique.v, function(y) {
-  #for(y in unique.v) {
-    secondary.list <- list()
-    filtered_df <- tmp %>% filter(v.gene == y)
-    filtered_df <- filtered_df[!is.na(filtered_df[,chain]),]
-    nucleotides <- unique(filtered_df[,chain])
-    if (length(nucleotides) > 1) {
-      chain_col_number <- 1
-      nucleotide_lengths <- nchar(nucleotides)
-      # Pre-allocate list
-      list <- vector("list", length = length(nucleotides))
-      
-      for (i in seq_len((length(nucleotides) - 1))) {
-        temp_list <- vector("list", length = length(nucleotides) - i)
-        
-        idx_i <- tmp[, chain_col_number] == nucleotides[i] & tmp[,2] == y
-        len_i <- nucleotide_lengths[i]
-        
-        for (j in (i + 1):length(nucleotides)) {
-          distance <- stringdist::stringdist(nucleotides[i], nucleotides[j], method = "lv")
-          distance_norm <- 1 - distance / ((len_i + nucleotide_lengths[j]) / 2)
-          
-          if (!is.na(distance_norm) & distance_norm >= threshold) {
-            idx_j <- tmp[, chain_col_number] == nucleotides[j]
-            stored_positions <- idx_j & !idx_i
-            
-            if(any(stored_positions)) {
-              # Store this pair in the edge list that is not the same chain
-              temp_list[[j - i]] <- data.frame(from = which(idx_i), 
-                                               to = which(stored_positions))
-            }
-          }
+  edge.list <- lapply(str_sort(na.omit(unique(dictionary$v.gene)), numeric = T), function(v_gene) {
+    filtered_df <- dplyr::filter(dictionary, v.gene == v_gene)
+    nucleotides <- filtered_df[[chain]]
+    nucleotides <- sort(unique(str_split(nucleotides, ";", simplify = TRUE)[,1]))
+    
+    if (length(nucleotides) <= 1) return(NULL)
+    
+    results <- list()
+    # Only iterate until the second last element to avoid the issue
+    for (i in 1:(length(nucleotides) - 1)) {
+      for (j in (i + 1):length(nucleotides)) {
+        # Check based on length difference feasibility
+        if (abs(nchar(nucleotides[i]) - nchar(nucleotides[j])) > max(nchar(nucleotides[i]), nchar(nucleotides[j])) * (1 - threshold)) {
+          next
         }
-        list[[i]] <- do.call(rbind, temp_list)  # Collapsing all data.frames in temp_list
-      }
-      
-      #Remove any NULL or 0 list elements
-      if(length(list) > 0) {
-        list <-  list[-which(unlist(lapply(list, is.null)))]
-        list <-  list[lapply(list,length)>0]
-        list <- bind_rows(list) %>% as.data.frame()
-        secondary.list[[i]] <- list
-      }
-      #Remove any NULL or 0 list elements
-      if(length(secondary.list) > 0) {
-        secondary.list <-  secondary.list[-which(unlist(lapply(secondary.list, is.null)))]
-        secondary.list <-  secondary.list[lapply(secondary.list,length)>0]
+        
+        distance <- stringdist::stringdist(nucleotides[i], nucleotides[j], method = "lv")
+        normalized_distance <- 1 - distance / mean(c(nchar(nucleotides[i]), nchar(nucleotides[j])))
+        
+        if (normalized_distance >= threshold) {
+          results[[length(results) + 1]] <- data.frame(
+            from = nucleotides[i],
+            to = nucleotides[j],
+            distance = normalized_distance
+          )
+        }
       }
     }
-    secondary.list
+    
+    do.call(rbind, results)
   })
-  edge.list <- bind_rows(edge.list)
+  
+  edge.list <- do.call(rbind, edge.list)
+  
   if(exportGraph) {
-    edge.list[,1] <- tmp[,1][edge.list[,1]]
-    edge.list[,2] <- tmp[,1][edge.list[,2]]
-    graph <- graph_from_edgelist(as.matrix(edge.list))
+    graph <- graph_from_edgelist(as.matrix(edge.list)[,c(1,2)])
     return(graph)
   }
   
-  if (nrow(edge.list) > 0) { 
+  if (!is.null(dim(edge.list))) { 
     edge.list <- unique(edge.list)
     g <- graph_from_data_frame(edge.list)
     components <- igraph::components(g, mode = c("weak"))
@@ -626,7 +609,6 @@ is_df_or_list_of_df <- function(x) {
     out <- subset(out, cluster %in% filter)
     if(nrow(out) > 1) {
       out$cluster <- paste0(gene, ":Cluster", ".", out$cluster)
-      out$filtered <- tmp[,1][as.numeric(out$filtered)]
       uni_IG <- as.data.frame(unique(tmp[,1][tmp[,1] %!in% out$filtered]))
     }
   } else {

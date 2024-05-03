@@ -20,13 +20,15 @@
 #' #Using clonalOverlay()
 #' clonalOverlay(scRep_example, 
 #'               reduction = "umap", 
-#'               freq.cutpoint = 0.3, 
+#'               cutpoint = 3, 
 #'               bins = 5) 
 #' 
 #' @param sc.data The single-cell object after \code{\link{combineExpression}}.
-#' @param reduction The dimensional reduction to visualize
-#' @param freq.cutpoint The overlay cut point to include, this corresponds to the 
-#' Frequency variable in the single-cell object
+#' @param reduction The dimensional reduction to visualize.
+#' @param cut.category Meta data variable of the single-cell object to use for 
+#' filtering.
+#' @param cutpoint The overlay cut point to include, this corresponds to the 
+#' cut.category variable in the meta data of the single-cell object.
 #' @param bins The number of contours to the overlay
 #' @param facet.by meta data variable to facet the comparison
 #' 
@@ -40,20 +42,28 @@
 
 clonalOverlay <- function(sc.data, 
                           reduction = NULL, 
-                          freq.cutpoint = 30, 
+                          cut.category = "clonalFrequency",
+                          cutpoint = 30, 
                           bins = 25, 
                           facet.by = NULL) {
   .checkSingleObject(sc.data)
 
   #Forming the data frame to plot
   tmp <- data.frame(.grabMeta(sc.data), .get.coord(sc.data, reduction))
+  
+  if(cut.category %!in% colnames(tmp)) {
+    stop("If filtering the data using a cutpoint, ensure the cut.category correspond to a variable in the meta data.")
+  }
   #Add facet variable if present
   if (!is.null(facet.by)) { 
     facet.by <- tmp[,facet.by]
     tmp <- data.frame(facet.by, tmp)
   }
-  tmp$include <- ifelse(tmp[,"clonalFrequency"] >= freq.cutpoint, "Yes", NA)
-  tmp2 <- subset(tmp, include == "Yes")
+  #If using cut.category for filtering
+  if(!is.null(cut.category) & !is.null(cutpoint)) {
+    tmp$include <- ifelse(tmp[,cut.category] >= cutpoint, "Yes", NA)
+    tmp2 <- subset(tmp, include == "Yes")
+  }
   
   #Plotting
   plot <- ggplot(tmp2, mapping = aes(x = tmp2[,(ncol(tmp2)-2)], 

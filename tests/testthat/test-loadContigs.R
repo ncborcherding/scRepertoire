@@ -39,12 +39,18 @@ test_that("loadContigs works", {
                      getdata("load", "loadContigs_Immcantation")
     )
     
-    OS <- read.csv("https://www.borch.dev/uploads/contigs/OS_contigs.csv")
+    OS <- read.csv("https://www.borch.dev/uploads/contigs/OS_contigs2.csv")
     trial7 <- loadContigs(OS, format = "Omniscope")
     expect_identical(trial7, 
                      getdata("load", "loadContigs_Omniscope")
     )
+    
+    Parse <- read.csv("https://www.borch.dev/uploads/contigs/Parse_contigs.csv")
+    trial8 <- loadContigs(Parse, format = "ParseBio")
+    expect_identical(trial8, 
+                     getdata("load", "loadContigs_Parse")
+    )
 }) 
 
-# TODO Add tests for .json and AIRR and OS
+# TODO Add tests for .json and AIRR
 # TODO Would be nice to have a dir option

@@ -77,10 +77,7 @@ clonalOverlap <- function(input.data,
                               .theCall(input.data, cloneCall, check.df = FALSE), 
                               chain)
     cloneCall <- .theCall(input.data, cloneCall)
-    
-    input.data <- input.data[order(names(input.data))]
-    values <- str_sort(as.character(unique(names(input.data))), numeric = TRUE)
-    input.data <- input.data[values]
+
     num_samples <- length(input.data[])
     names_samples <- names(input.data)
     length <- seq_len(num_samples)

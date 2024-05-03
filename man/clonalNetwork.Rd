@@ -14,8 +14,8 @@ clonalNetwork(
   filter.graph = FALSE,
   cloneCall = "strict",
   chain = "both",
-  exportTable = FALSE,
   exportClones = FALSE,
+  exportTable = FALSE,
   palette = "inferno"
 )
 }
@@ -48,12 +48,11 @@ in the data.}
 \item{chain}{indicate if both or a specific chain should be used - 
 e.g. "both", "TRA", "TRG", "IGH", "IGL".}
 
-\item{exportTable}{Exports a table of the data into the global 
-environment in addition to the visualization.}
-
 \item{exportClones}{Exports a table of clones that are shared
 across multiple identity groups and ordered by the total number
 of clone copies.}
+
+\item{exportTable}{Exports a table of the data into the global}
 
 \item{palette}{Colors to use in visualization - input any 
 \link[grDevices]{hcl.pals}.}

@@ -7,7 +7,8 @@
 clonalOverlay(
   sc.data,
   reduction = NULL,
-  freq.cutpoint = 30,
+  cut.category = "clonalFrequency",
+  cutpoint = 30,
   bins = 25,
   facet.by = NULL
 )
@@ -15,10 +16,13 @@ clonalOverlay(
 \arguments{
 \item{sc.data}{The single-cell object after \code{\link{combineExpression}}.}
 
-\item{reduction}{The dimensional reduction to visualize}
+\item{reduction}{The dimensional reduction to visualize.}
 
-\item{freq.cutpoint}{The overlay cut point to include, this corresponds to the 
-Frequency variable in the single-cell object}
+\item{cut.category}{Meta data variable of the single-cell object to use for 
+filtering.}
+
+\item{cutpoint}{The overlay cut point to include, this corresponds to the 
+cut.category variable in the meta data of the single-cell object.}
 
 \item{bins}{The number of contours to the overlay}
 
@@ -48,7 +52,7 @@ scRep_example <- combineExpression(combined,
 #Using clonalOverlay()
 clonalOverlay(scRep_example, 
               reduction = "umap", 
-              freq.cutpoint = 0.3, 
+              cutpoint = 3, 
               bins = 5) 
 
 }

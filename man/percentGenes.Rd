@@ -35,7 +35,7 @@ ggplot of percentage of indicated genes as a heatmap
 This function the proportion V or J genes used by 
 grouping variables. This function only quantifies
 single gene loci for indicated \strong{chain}. For 
-examining VJ pairing, please see code{\link{percentVJ}}
+examining VJ pairing, please see \code{\link{percentVJ}}.
 }
 \examples{
 #Making combined contig data

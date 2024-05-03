@@ -45,7 +45,6 @@
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL".
 #' @param exportTable Exports a table of the data into the global 
-#' environment in addition to the visualization.
 #' @param exportClones Exports a table of clones that are shared
 #' across multiple identity groups and ordered by the total number
 #' of clone copies.
@@ -55,7 +54,7 @@
 #' @import ggplot2
 #' @importFrom stringr str_sort
 #' @importFrom igraph graph_from_data_frame V `V<-`
-#' @importFrom dplyr %>% group_by select summarize_all count
+#' @importFrom dplyr %>% group_by select summarize_all count n across all_of desc
 #' @importFrom tidygraph as_tbl_graph activate
 #' @importFrom ggraph ggraph geom_edge_bend  geom_node_point scale_edge_colour_gradientn circle guide_edge_colourbar
 #' @importFrom stats setNames
@@ -72,8 +71,8 @@ clonalNetwork <- function(sc.data,
                           filter.graph = FALSE,
                           cloneCall = "strict", 
                           chain = "both", 
-                          exportTable = FALSE, 
                           exportClones = FALSE,
+                          exportTable = FALSE,
                           palette = "inferno") {
     to <- from <- weight <- y <- NULL
     meta <- .grabMeta(sc.data)
@@ -155,7 +154,7 @@ clonalNetwork <- function(sc.data,
       group_by(meta[,group.by]) %>%
       na.omit() %>%
       unique() %>%
-      summarise(n = n()) %>%
+      summarise(n = dplyr::n()) %>%
       {setNames(.$n, .$`meta[, group.by]`)} 
     
     #Total clones per group.by
@@ -163,7 +162,7 @@ clonalNetwork <- function(sc.data,
       select(all_of(c(cloneCall, group.by))) %>%
       group_by(meta[,group.by]) %>%
       na.omit() %>%
-      summarise(n = n()) %>%
+      summarise(n = dplyr::n()) %>%
       {setNames(.$n, .$`meta[, group.by]`)} 
     
     edge.list <- NULL
