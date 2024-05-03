@@ -15,6 +15,7 @@ clonalNetwork(
   cloneCall = "strict",
   chain = "both",
   exportClones = FALSE,
+  exportTable = FALSE,
   palette = "inferno"
 )
 }
@@ -51,10 +52,10 @@ e.g. "both", "TRA", "TRG", "IGH", "IGL".}
 across multiple identity groups and ordered by the total number
 of clone copies.}
 
+\item{exportTable}{Exports a table of the data into the global}
+
 \item{palette}{Colors to use in visualization - input any 
 \link[grDevices]{hcl.pals}.}
-
-\item{exportTable}{Exports a table of the data into the global}
 }
 \value{
 ggplot object

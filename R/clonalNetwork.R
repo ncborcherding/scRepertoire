@@ -72,6 +72,7 @@ clonalNetwork <- function(sc.data,
                           cloneCall = "strict", 
                           chain = "both", 
                           exportClones = FALSE,
+                          exportTable = FALSE,
                           palette = "inferno") {
     to <- from <- weight <- y <- NULL
     meta <- .grabMeta(sc.data)
