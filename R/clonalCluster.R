@@ -42,6 +42,8 @@
 #' @importFrom rlang %||%
 #' @importFrom SummarizedExperiment colData<- colData
 #' @importFrom stats na.omit
+#' @importFrom S4Vectors DataFrame
+#' 
 #' @export
 #' @concept Visualizing_Clones
 #' @return Either amended input with edit-distanced clusters added 
@@ -177,12 +179,11 @@ clonalCluster <- function(input.data,
       col.name <- names(PreMeta) %||% colnames(PreMeta)
       input.data[[col.name]] <- PreMeta
     } else {
-      rownames <- rownames(colData(input.data))
-      combined_col_names <- unique(c(colnames(colData(input.data)), colnames(PreMeta)))
-      full_data <- merge(colData(input.data), PreMeta[rownames, , drop = FALSE], by = "row.names", all = TRUE)
-      colData(input.data) <- full_data[, combined_col_names]
-      
-      rownames(colData(input.data)) <- rownames 
+      combined_col_names <- unique(c(colnames(colData(sc.data)), colnames(PreMeta)))
+      full_data <- merge(colData(sc.data), PreMeta[rownames, , drop = FALSE], by = "row.names", all.x = TRUE)
+      rownames(full_data) <- full_data[, 1]
+      full_data  <- full_data[, -1]
+      colData(sc.data) <- DataFrame(full_data[, combined_col_names])
     }
   } else {
     #Reorder columns

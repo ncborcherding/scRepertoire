@@ -45,9 +45,10 @@
 #' @param addLabel This will add a label to the frequency header, allowing
 #' the user to try multiple group.by variables or recalculate frequencies after 
 #' subsetting the data.
-#' @importFrom dplyr bind_rows %>% summarise left_join mutate select n
+#' @importFrom dplyr bind_rows %>% summarise left_join mutate select n all_of coalesce
 #' @importFrom  rlang %||% sym :=
 #' @importFrom SummarizedExperiment colData<- colData
+#' @importFrom S4Vectors DataFrame
 #' @export
 #' @concept SC_Functions
 #' @return Single-cell object with clone information added to meta data
@@ -205,8 +206,10 @@ combineExpression <- function(input.data,
         warning(.warn_str) }
       
       combined_col_names <- unique(c(colnames(colData(sc.data)), colnames(PreMeta)))
-      full_data <- merge(colData(sc.data), PreMeta[rownames, , drop = FALSE], by = "row.names", all = TRUE)
-      colData(sc.data) <- full_data[, combined_col_names]
+      full_data <- merge(colData(sc.data), PreMeta[rownames, , drop = FALSE], by = "row.names", all.x = TRUE)
+      rownames(full_data) <- full_data[, 1]
+      full_data  <- full_data[, -1]
+      colData(sc.data) <- DataFrame(full_data[, combined_col_names])
       
       rownames(colData(sc.data)) <- rownames  
     }
