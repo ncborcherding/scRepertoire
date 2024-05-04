@@ -63,11 +63,12 @@ contig_list <- list(S1, S2, S3, S4)
 Beyond the default 10x Genomic Cell Ranger pipeline outputs, scRepertoire supports the following **single-cell** formats: 
 
 * AIRR  
-* BD Rhapsody Multiomic Immune Profiling  
+* [BD Rhapsody](https://www.bd-rhapsody.com/) Multiomic Immune Profiling  
 * [Immcantation](https://immcantation.readthedocs.io/en/stable/index.html)  
 * JSON-formatted contig data  
 * [MiXCR](https://pubmed.ncbi.nlm.nih.gov/25924071/)  
-* [Omniscope](https://www.omniscope.ai/)  
+* [Omniscope](https://www.omniscope.ai/) OS-T/OS-B
+* [Parse](https://www.parsebiosciences.com/) Evercode TCR/BCR
 * [TRUST4](https://pubmed.ncbi.nlm.nih.gov/33986545/)  
 * [WAT3R](https://pubmed.ncbi.nlm.nih.gov/35674381/)  
 

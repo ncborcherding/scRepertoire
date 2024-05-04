@@ -218,6 +218,7 @@ ggplot(data = as.data.frame(enrichment.scores),
   theme_classic() + 
   theme()
 ```
+
 Multi-core support is for all methods is available through [BiocParallel](https://bioconductor.org/packages/release/bioc/html/BiocParallel.html). To add more cores, use the argument **BPPARAM** to ```escape.matrix()```. Here we will use the ```SnowParam()``` for it's support across platforms and explicitly call 2 workers (or cores).
 
 ```{r tidy=FALSE, eval=FALSE}
