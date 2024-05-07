@@ -18,7 +18,8 @@ articles:
   Running_Escape: Running_Escape.html
   SC_Visualizations: SC_Visualizations.html
   Trex: Trex.html
-last_built: 2024-02-24T16:17Z
+  vignette: vignette.html
+last_built: 2024-05-04T10:19Z
 urls:
   reference: https://www.borch.dev/uploads/scRepertoire/reference
   article: https://www.borch.dev/uploads/scRepertoire/articles

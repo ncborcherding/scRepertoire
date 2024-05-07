@@ -8,8 +8,8 @@
 * Replace numerical indexing with name indexing for ```loadContigs()```
 * ```combineBCR()``` and ```combineTCR()``` no allow for unproductive contig inclusions with new **filterNonproductive** parameter.
 * ```combineBCR()``` will now prompt user if **samples** is not included instead of erroring.
-* Added base threshold by length for internal ```.lvcCmpare()```-
-* Ensured internal ```.lvcompare()``` only looks at first set of sequences in multi-sequence chain.
+* Added base threshold by length for internal ```.lvCompare()```
+* Ensured internal ```.lvCompare()``` only looks at first set of sequences in multi-sequence chain.
 * Fixed bug in exporting graph for ```clonaCluster()```
 * Fixed conflict in functions between igraph and dplyr packages
 
@@ -17,13 +17,13 @@
 
 ## UNDERLYING CHANGES
 
-*```clonalOccupy()``` rewrite counting and NA handling
+* ```clonalOccupy()``` rewrite counting and NA handling
 
 # scRepertoire VERSION 2.0.1 
 
 ## UNDERLYING CHANGES
 
-*```clonalOverlay()``` arguments now cutpoint and use cut.category to select either clonalProportion or clonalFrequency
+* ```clonalOverlay()``` arguments now cutpoint and use cut.category to select either clonalProportion or clonalFrequency
 
 # scRepertoire VERSION 2.0.0 (2024-01-10)
 

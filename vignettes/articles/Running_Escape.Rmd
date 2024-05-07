@@ -219,6 +219,16 @@ ggplot(data = as.data.frame(enrichment.scores),
   theme()
 ```
 
+Multi-core support is for all methods is available through [BiocParallel](https://bioconductor.org/packages/release/bioc/html/BiocParallel.html). To add more cores, use the argument **BPPARAM** to ```escape.matrix()```. Here we will use the ```SnowParam()``` for it's support across platforms and explicitly call 2 workers (or cores).
+
+```{r tidy=FALSE, eval=FALSE}
+enrichment.scores <- escape.matrix(scRep_example, 
+                                   gene.sets = GS.hallmark, 
+                                   groups = 5000, 
+                                   min.size = 5, 
+                                   BPPARAM = SnowParam(workers = 2))
+```
+
 ## runEscape
 
 Alternatively, we can use ```runEscape()``` to calculate the enrichment score and directly attach the output to a single-cell object. The additional parameter for ```runEscape` is **new.assay.name**, in order to save the enrichment scores as a custom assay in the single-cell object. 
@@ -380,6 +390,7 @@ ridgeEnrichment(scRep_example,
                 assay = "escape.ssGSEA",
                 gene.set = "HALLMARK-IL2-STAT5-SIGNALING")
 ```
+
 We can get the relative position of individual cells along the x-axis using the **add.rug** parameter.
 
 ```{r tidy=FALSE}
