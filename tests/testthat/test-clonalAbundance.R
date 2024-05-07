@@ -11,6 +11,12 @@ test_that("clonalAbundance works", {
     clonalAbundance(getCombined(), scale = TRUE)
   )
   
+  expect_doppelganger(
+    "clonalAbundance_order_plot",
+    clonalAbundance(getCombined(),
+                    order.by = c("P17B","P18B","P19B","P20B","P17L","P18L","P19L","P20L"))
+  )
+  
   combined <- getCombined()
   combined <- addVariable(getCombined(), 
                           variable.name = "Type", 
@@ -21,4 +27,3 @@ test_that("clonalAbundance works", {
   )
   
 })
-#TODO Add grouping plot

@@ -14,17 +14,19 @@
 #'             motif.length = 3)
 #' 
 #' @param input.data The product of \code{\link{combineTCR}}, 
-#' \code{\link{combineBCR}}, or \code{\link{combineExpression}}.
-#' @param chain "TRA", "TRB", "TRG", "TRG", "IGH", "IGL".
+#' \code{\link{combineBCR}}, or \code{\link{combineExpression}}
+#' @param chain "TRA", "TRB", "TRG", "TRG", "IGH", "IGL"
 #' @param cloneCall How to call the clone - CDR3 nucleotide (\strong{nt}) or 
-#' CDR3 amino acid (\strong{aa}).
-#' @param group.by The variable to use for grouping.
-#' @param motif.length The length of the kmer to analyze.
+#' CDR3 amino acid (\strong{aa})
+#' @param group.by The variable to use for grouping
+#' @param order.by A vector of specific plotting order or "alphanumeric"
+#' to plot groups in order
+#' @param motif.length The length of the kmer to analyze
 #' @param top.motifs Return the n most variable motifs as a function of 
-#' median absolute deviation. 
+#' median absolute deviation
 #' @param exportTable Returns the data frame used for forming the graph.
 #' @param palette Colors to use in visualization - input any 
-#' \link[grDevices]{hcl.pals}.
+#' \link[grDevices]{hcl.pals}
 #' @import ggplot2
 #' @importFrom reshape2 melt
 #' @importFrom stats mad
@@ -36,6 +38,7 @@ percentKmer <- function(input.data,
                         chain = "TRB", 
                         cloneCall = "aa",
                         group.by = NULL, 
+                        order.by = NULL,
                         motif.length = 3,
                         top.motifs = 30,
                         exportTable = FALSE, 
@@ -111,6 +114,12 @@ percentKmer <- function(input.data,
   mat_melt <- melt(mat)
   if (!is.null(motifs.to.save)) {
     mat_melt$Var2 <- factor(mat_melt$Var2, levels = rev(motifs.to.save))
+  }
+  
+  if(!is.null(order.by)) {
+    mat_melt <- .ordering.function(vector = order.by,
+                                   group.by = "Var1", 
+                                   mat_melt)
   }
   
   if (exportTable) {

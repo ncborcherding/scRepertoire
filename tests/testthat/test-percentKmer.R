@@ -30,6 +30,15 @@ test_that("percentKmer works for NTs", {
                   cloneCall = "aa",
                   group.by = "Type")
   )
+  
+  expect_doppelganger(
+    "percentKmer_group_motif2_order_plot",
+    percentKmer(combined, 
+                motif.length = 2,
+                cloneCall = "aa",
+                group.by = "Type",
+                order.by = c("P17B","P18B","P19B","P20B","P17L","P18L","P19L","P20L"))
+  )
 })
 
 test_that("tokenize_sequence works", {

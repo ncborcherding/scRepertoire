@@ -26,6 +26,8 @@
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL"
 #' @param group.by The variable to use for grouping
+#' @param order.by A vector of specific plotting order or "alphanumeric"
+#' to plot groups in order
 #' @param scale Converts the graphs into density plots in order to show 
 #' relative distributions.
 #' @param exportTable Returns the data frame used for forming the graph
@@ -42,7 +44,8 @@ clonalAbundance <- function(input.data,
                             chain = "both", 
                             scale=FALSE, 
                             group.by = NULL, 
-                            exportTable = FALSE, 
+                            order.by = NULL,
+                            exportTable = FALSE,
                             palette = "inferno") {
   Con.df <- NULL
   xlab <- "Abundance"
@@ -58,11 +61,17 @@ clonalAbundance <- function(input.data,
       data1 <- .parseContigs(input.data, i, names, cloneCall)
       label <- input.data[[i]][1,group.by]
       data1[,paste(group.by)] <- label
-      Con.df<- rbind.data.frame(Con.df, data1) }
-      Con.df <- data.frame(Con.df)
-      col <- length(unique(Con.df[,group.by]))
-      fill <- group.by
-      if (scale == TRUE) { 
+      Con.df<- rbind.data.frame(Con.df, data1) 
+    }
+    Con.df <- data.frame(Con.df)
+    col <- length(unique(Con.df[,group.by]))
+    fill <- group.by
+    if(!is.null(order.by)) {
+        Con.df <- .ordering.function(vector = order.by,
+                                     group.by = group.by, 
+                                     Con.df)
+    }
+    if (scale == TRUE) { 
         ylab <- "Density of Clones"
         plot <- ggplot(Con.df, aes(x=Abundance, fill=Con.df[,group.by])) +
                       geom_density(aes(y=after_stat(scaled)), 
@@ -86,7 +95,10 @@ clonalAbundance <- function(input.data,
       Con.df<- rbind.data.frame(Con.df, data1) 
     }
     Con.df <- data.frame(Con.df)
-    Con.df$values <- factor(Con.df$values, levels=names(input.data))
+    Con.df <- .ordering.function(vector = order.by,
+                                 group.by = "values", 
+                                 Con.df)
+    
     col <- length(unique(Con.df$values))
     fill <- "Samples"
     if (scale == TRUE) { 

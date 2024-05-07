@@ -8,6 +8,7 @@ positionalEntropy(
   input.data,
   chain = "TRB",
   group.by = NULL,
+  order.by = NULL,
   aa.length = 20,
   method = "norm.entropy",
   exportTable = FALSE,
@@ -16,20 +17,22 @@ positionalEntropy(
 }
 \arguments{
 \item{input.data}{The product of \code{\link{combineTCR}}, 
-\code{\link{combineBCR}}, or \code{\link{combineExpression}}.}
+\code{\link{combineBCR}}, or \code{\link{combineExpression}}}
 
-\item{chain}{"TRA", "TRB", "TRG", "TRG", "IGH", "IGL".}
+\item{chain}{"TRA", "TRB", "TRG", "TRG", "IGH", "IGL"}
 
-\item{group.by}{The variable to use for grouping.}
+\item{group.by}{The variable to use for grouping
+#' @param order.by A vector of specific plotting order or "alphanumeric"
+to plot groups in order}
 
 \item{aa.length}{The maximum length of the CDR3 amino acid sequence.}
 
 \item{method}{The method to calculate the entropy/diversity - 
-"shannon", "inv.simpson", "norm.entropy".}
+"shannon", "inv.simpson", "norm.entropy"}
 
-\item{exportTable}{Returns the data frame used for forming the graph.}
+\item{exportTable}{Returns the data frame used for forming the graph}
 
-\item{palette}{Colors to use in visualization - input any \link[grDevices]{hcl.pals}.}
+\item{palette}{Colors to use in visualization - input any \link[grDevices]{hcl.pals}}
 }
 \value{
 ggplot of line graph of diversity by position

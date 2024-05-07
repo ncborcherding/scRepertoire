@@ -6,6 +6,18 @@ is_seurat_or_se_object <- function(obj) {
     is_seurat_object(obj) || is_se_object(obj)
 }
 
+#'@importFrom stringr str_sort
+.ordering.function <- function(vector, 
+                               group.by,
+                               data.frame) {
+  if(length(vector) == 1 && vector == "alphanumeric") {
+    data.frame[,group.by] <- factor(data.frame[,group.by], levels = str_sort(unique(data.frame[,group.by]), numeric = TRUE))
+  } else {
+    data.frame[,group.by] <- factor(data.frame[,group.by], levels = order.by)
+  }
+  return(data.frame)
+}
+
 #Use to shuffle between chains Qile: the NA handling here *might* be related to the unnamed combineTCR bugs from the new rcpp con.df construction
 #' @importFrom stringr str_split
 #' @keywords internal
