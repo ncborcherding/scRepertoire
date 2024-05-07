@@ -5,6 +5,7 @@
 * Added ```.count.clones()``` internal function for ```getCirclize()``` and ```clonalNetwork()```
 * Added **order.by** parameter to visualizations to specifically call order of plotting using a vector or can use "alphanumeric" to plot things in order
 * Fix issue with ```clonalLength()``` and NA handling
+* ```clonalCompare()``` now retains the original clonal info if using **relabel.clones**.
 
 
 # scRepertoire VERSION 2.0.3

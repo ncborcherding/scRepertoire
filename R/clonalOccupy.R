@@ -44,6 +44,7 @@ clonalOccupy <- function(sc.data,
                          x.axis = "ident", 
                          label = TRUE, 
                          facet.by = NULL,
+                         order.by = "alphanumeric",
                          proportion = FALSE, 
                          na.include = FALSE,
                          exportTable = FALSE, 
@@ -55,7 +56,14 @@ clonalOccupy <- function(sc.data,
             group_by(meta[,x.axis], meta[,facet.by], cloneSize) %>%
             count() %>%
             as.data.frame()
-  meta[,1] <- as.factor(meta[,1])
+  
+  if(!is.null(order.by)) {
+    meta <- .ordering.function(vector = order.by,
+                               group.by = x.axis, 
+                               mat_melt)
+  } else {
+    meta[,1] <- as.factor(meta[,1])
+  }
   
   colnames(meta)[1] <- x.axis
   if(!is.null(facet.by)) {

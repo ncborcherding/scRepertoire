@@ -41,19 +41,21 @@
 #'               method = "jaccard")
 #'
 #' @param input.data The product of \code{\link{combineTCR}}, 
-#' \code{\link{combineBCR}}, or \code{\link{combineExpression}}.
+#' \code{\link{combineBCR}}, or \code{\link{combineExpression}}
 #' @param cloneCall How to call the clone - VDJC gene (\strong{gene}), 
 #' CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
 #' VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable 
-#' in the data.  
+#' in the data
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL"
 #' @param method The method to calculate the "overlap", "morisita", 
-#' "jaccard", "cosine" indices or "raw" for the base numbers.
-#' @param group.by The variable to use for grouping.
-#' @param exportTable Returns the data frame used for forming the graph.
+#' "jaccard", "cosine" indices or "raw" for the base numbers
+#' @param group.by The variable to use for grouping
+#' @param order.by A vector of specific plotting order or "alphanumeric"
+#' to plot groups in order
+#' @param exportTable Returns the data frame used for forming the graph
 #' @param palette Colors to use in visualization - input any 
-#' \link[grDevices]{hcl.pals}.
+#' \link[grDevices]{hcl.pals}
 #' @importFrom stringr str_sort str_to_title
 #' @importFrom reshape2 melt
 #' @importFrom stats quantile
@@ -65,6 +67,7 @@ clonalOverlap <- function(input.data,
                           method = NULL, 
                           chain = "both", 
                           group.by = NULL,
+                          order.by = NULL,
                           exportTable = FALSE,
                           palette = "inferno"){
     if(method == "morisita") {
@@ -76,6 +79,15 @@ clonalOverlap <- function(input.data,
                               group.by, 
                               .theCall(input.data, cloneCall, check.df = FALSE), 
                               chain)
+    if(!is.null(order.by)) {
+      if(length(order.by) == 1 && order.by == "alphanumeric") {
+        input.data <- input.data[str_sort(names(input.data), numeric = TRUE)]
+        
+      } else {
+        input.data <- input.data[order.by]
+      }
+    }
+    
     cloneCall <- .theCall(input.data, cloneCall)
 
     num_samples <- length(input.data[])
