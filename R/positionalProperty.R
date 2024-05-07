@@ -128,9 +128,9 @@ positionalProperty <- function(input.data,
   mat$position <- factor(mat$position, levels = str_sort(unique(mat$position), numeric = TRUE))
   
   if(!is.null(order.by)) {
-    mat_melt <- .ordering.function(vector = order.by,
-                                   group.by = "group", 
-                                   mat)
+    mat <- .ordering.function(vector = order.by,
+                              group.by = "group", 
+                              mat)
   }
   
     plot <- ggplot(mat, aes(x = position, 

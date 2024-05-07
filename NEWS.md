@@ -3,6 +3,8 @@
 ## UNDERLYING CHANGES
 * ```getCirclize()``` refactored to prevent assumptions and added **include.self** argument
 * Added ```.count.clones()``` internal function for ```getCirclize()``` and ```clonalNetwork()```
+* Added **order.by** parameter to visualizations to specifically call order of plotting using a vector or can use "alphanumeric" to plot things in order
+* Fix issue with ```clonalLength()``` and NA handling
 
 
 # scRepertoire VERSION 2.0.3

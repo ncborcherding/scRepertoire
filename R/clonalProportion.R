@@ -16,18 +16,20 @@
 #'
 #' @param input.data The product of \code{\link{combineTCR}}, 
 #' \code{\link{combineBCR}}, or \code{\link{combineExpression}}.
-#' @param clonalSplit The cut points for the specific clones.
+#' @param clonalSplit The cut points for the specific clones
 #' @param cloneCall How to call the clone - VDJC gene (\strong{gene}), 
 #' CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
 #' VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable 
-#' in the data. 
+#' in the data
 #' @param chain indicate if both or a specific chain should be used - 
-#' e.g. "both", "TRA", "TRG", "IGH", "IGL".
-#' @param group.by The variable to use for grouping.
+#' e.g. "both", "TRA", "TRG", "IGH", "IGL"
+#' @param group.by The variable to use for grouping
+#' @param order.by A vector of specific plotting order or "alphanumeric"
+#' to plot groups in order
 #' @param exportTable Exports a table of the data into the global.
-#' environment in addition to the visualization.
+#' environment in addition to the visualization
 #' @param palette Colors to use in visualization - input any 
-#' \link[grDevices]{hcl.pals}.
+#' \link[grDevices]{hcl.pals}
 #'
 #' @import ggplot2
 #' @importFrom stringr str_sort
@@ -42,6 +44,7 @@ clonalProportion <- function(input.data,
                              cloneCall = "strict", 
                              chain = "both", 
                              group.by = NULL,
+                             order.by = NULL,
                              exportTable = FALSE, 
                              palette = "inferno") {
     Con.df <- NULL
@@ -77,6 +80,12 @@ clonalProportion <- function(input.data,
     }
     #Plotting
     mat_melt <- melt(mat)
+    
+    if(!is.null(order.by)) {
+      mat_melt <- .ordering.function(vector = order.by,
+                                     group.by = "Var1", 
+                                     mat_melt)
+    }
     col <- length(unique(mat_melt$Var2))
     plot <- ggplot(mat_melt, aes(x=as.factor(Var1), y=value, fill=Var2)) +
         geom_bar(stat = "identity", position="fill", 

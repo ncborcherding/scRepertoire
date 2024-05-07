@@ -9,6 +9,7 @@ clonalLength(
   cloneCall = "aa",
   chain = "both",
   group.by = NULL,
+  order.by = NULL,
   scale = FALSE,
   exportTable = FALSE,
   palette = "inferno"
@@ -16,15 +17,18 @@ clonalLength(
 }
 \arguments{
 \item{input.data}{The product of \code{\link{combineTCR}}, 
-\code{\link{combineBCR}}, or \code{\link{combineExpression}}.}
+\code{\link{combineBCR}}, or \code{\link{combineExpression}}}
 
 \item{cloneCall}{How to call the clone - CDR3 nucleotide (\strong{nt}) 
-or CDR3 amino acid (\strong{aa}).}
+or CDR3 amino acid (\strong{aa})}
 
 \item{chain}{indicate if both or a specific chain should be used - 
-e.g. "both", "TRA", "TRG", "IGH", "IGL".}
+e.g. "both", "TRA", "TRG", "IGH", "IGL"}
 
-\item{group.by}{The variable to use for grouping.}
+\item{group.by}{The variable to use for grouping}
+
+\item{order.by}{A vector of specific plotting order or "alphanumeric"
+to plot groups in order description}
 
 \item{scale}{Converts the graphs into density plots in order to show 
 relative distributions.}
@@ -32,7 +36,7 @@ relative distributions.}
 \item{exportTable}{Returns the data frame used for forming the graph.}
 
 \item{palette}{Colors to use in visualization - input any 
-\link[grDevices]{hcl.pals}.}
+\link[grDevices]{hcl.pals}}
 }
 \value{
 ggplot of the discrete or relative length distributions of 

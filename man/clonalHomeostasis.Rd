@@ -11,6 +11,7 @@ clonalHomeostasis(
   cloneCall = "strict",
   chain = "both",
   group.by = NULL,
+  order.by = NULL,
   exportTable = FALSE,
   palette = "inferno"
 )
@@ -29,7 +30,10 @@ in the data.}
 \item{chain}{indicate if both or a specific chain should be used - 
 e.g. "both", "TRA", "TRG", "IGH", "IGL".}
 
-\item{group.by}{The variable to use for grouping.}
+\item{group.by}{The variable to use for grouping}
+
+\item{order.by}{A vector of specific plotting order or "alphanumeric"
+to plot groups in order}
 
 \item{exportTable}{Exports a table of the data into the global 
 environment in addition to the visualization.}

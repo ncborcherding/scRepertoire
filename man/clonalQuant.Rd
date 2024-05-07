@@ -10,6 +10,7 @@ clonalQuant(
   chain = "both",
   scale = FALSE,
   group.by = NULL,
+  order.by = NULL,
   exportTable = FALSE,
   palette = "inferno"
 )
@@ -21,19 +22,22 @@ clonalQuant(
 \item{cloneCall}{How to call the clone - VDJC gene (\strong{gene}), 
 CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
 VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable 
-in the data.}
+in the data}
 
 \item{chain}{indicate if both or a specific chain should be used - 
 e.g. "both", "TRA", "TRG", "IGH", "IGL"}
 
-\item{scale}{Converts the graphs into percentage of unique clones.}
+\item{scale}{Converts the graphs into percentage of unique clones}
 
-\item{group.by}{The column header used for grouping.}
+\item{group.by}{The column header used for grouping}
 
-\item{exportTable}{Returns the data frame used for forming the graph.}
+\item{order.by}{A vector of specific plotting order or "alphanumeric"
+to plot groups in order}
+
+\item{exportTable}{Returns the data frame used for forming the graph}
 
 \item{palette}{Colors to use in visualization - input any 
-\link[grDevices]{hcl.pals}.}
+\link[grDevices]{hcl.pals}}
 }
 \value{
 ggplot of the total or relative unique clones
@@ -48,7 +52,9 @@ clones recovered using the scale parameter.
 combined <- combineTCR(contig_list, 
                         samples = c("P17B", "P17L", "P18B", "P18L", 
                                     "P19B","P19L", "P20B", "P20L"))
-clonalQuant(combined, cloneCall="strict", scale = TRUE)
+clonalQuant(combined, 
+            cloneCall="strict", 
+            scale = TRUE)
 
 }
 \concept{Visualizing_Clones}

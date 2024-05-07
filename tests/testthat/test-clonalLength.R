@@ -7,6 +7,13 @@ test_that("clonalLength works", {
   )
   
   expect_doppelganger(
+    "clonalLength_both_chain_order_plot", 
+    clonalLength(getCombined(), 
+                 chain = "both",
+                 order.by = c("P17B","P18B","P19B","P20B","P17L","P18L","P19L","P20L")) 
+  )
+  
+  expect_doppelganger(
     "clonalLength_scaled_plot", 
     clonalLength(getCombined(), 
                  scale = TRUE) 

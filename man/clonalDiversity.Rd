@@ -9,6 +9,7 @@ clonalDiversity(
   cloneCall = "strict",
   chain = "both",
   group.by = NULL,
+  order.by = NULL,
   x.axis = NULL,
   metrics = c("shannon", "inv.simpson", "norm.entropy", "gini.simpson", "chao1", "ACE"),
   exportTable = FALSE,
@@ -25,26 +26,29 @@ clonalDiversity(
 \item{cloneCall}{How to call the clone - VDJC gene (\strong{gene}), 
 CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
 VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable 
-in the data.}
+in the data}
 
 \item{chain}{indicate if both or a specific chain should be used - 
-e.g. "both", "TRA", "TRG", "IGH", "IGL".}
+e.g. "both", "TRA", "TRG", "IGH", "IGL"}
 
-\item{group.by}{Variable in which to combine for the diversity calculation.}
+\item{group.by}{Variable in which to combine for the diversity calculation}
 
-\item{x.axis}{Additional variable grouping that will space the sample along the x-axis.}
+\item{order.by}{A vector of specific plotting order or "alphanumeric"
+to plot groups in order}
+
+\item{x.axis}{Additional variable grouping that will space the sample along the x-axis}
 
 \item{metrics}{The indices to use in diversity calculations - 
-"shannon", "inv.simpson", "norm.entropy", "gini.simpson", "chao1", "ACE".}
+"shannon", "inv.simpson", "norm.entropy", "gini.simpson", "chao1", "ACE"}
 
 \item{exportTable}{Exports a table of the data into the global environment 
-in addition to the visualization.}
+in addition to the visualization}
 
 \item{palette}{Colors to use in visualization - input any 
-\link[grDevices]{hcl.pals}.}
+\link[grDevices]{hcl.pals}}
 
 \item{n.boots}{number of bootstraps to down sample in order to 
-get mean diversity.}
+get mean diversity}
 
 \item{return.boots}{export boot strapped values calculated - 
 will automatically exportTable = TRUE.}

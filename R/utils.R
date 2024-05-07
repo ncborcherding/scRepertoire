@@ -434,12 +434,15 @@ is_seurat_or_se_object <- function(obj) {
 
 #Producing a data frame to visualize for lengthContig()
 #' @keywords internal
+#' @importFrom stringr str_remove_all
 .lengthDF <- function(df, cloneCall, chain, group, c1, c2){
     Con.df <- NULL
     names <- names(df)
     if (identical(chain, "both")) {
             for (i in seq_along(df)) {
-                length <- nchar(gsub("_", "", df[[i]][,cloneCall]))
+                clones <- str_remove_all(df[[i]][,cloneCall], "_NA")
+                clones <- str_remove_all(clones, "NA_")
+                length <- nchar(gsub("_", "", clones))
                 val <- df[[i]][,cloneCall]
                 if (!is.null(group)) { 
                     cols <- df[[i]][,group]
