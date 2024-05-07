@@ -95,7 +95,7 @@ clonalCompare <- function(input.data,
     Con.df <- Con.df[Con.df$clones %in% top$clones,] 
   }
   if (nrow(Con.df) < length(unique(Con.df$Sample))) {
-    stop("Reasses the filtering strategies here, there are not 
+    stop("Please reasses the filtering strategies here, there are not 
             enough clones to examine.") 
   }
   #Clones relabeling
@@ -107,6 +107,7 @@ clonalCompare <- function(input.data,
     if(!is.null(highlight.clones)) {
       highlight.clones <- unname(new.clones[which(names(new.clones) %in% highlight.clones)])
     }
+    Con.df[,"original.clones"] <- Con.df[,"clones"]
     Con.df[,"clones"] <- new.clones[as.vector(Con.df[,"clones"])]
     Con.df[,"clones"] <- factor(Con.df[,"clones"], 
                                 levels = str_sort(unique(Con.df[,"clones"]), numeric = TRUE))
