@@ -52,6 +52,25 @@ is_seurat_or_se_object <- function(obj) {
   })
 }
 
+#' @importFrom dplyr %>% group_by arrange desc ungroup count mutate
+#' @importFrom rlang ensym !!
+.clone.counter <- function(meta,
+                           group.by, 
+                           cloneCall) {
+  clone.table <- meta %>%
+                  group_by(across(all_of(c(group.by, cloneCall)))) %>%
+                  count() %>%
+                  na.omit() %>%
+                  arrange(desc(n)) %>%
+                  ungroup() %>%
+                  group_by(!!ensym(group.by)) %>%
+                  mutate(group.sum = sum(n))  %>%
+                  ungroup() %>%
+                  group_by(!!ensym(cloneCall)) %>%
+                  mutate(clone.sum = sum(n)) %>%
+                  as.data.frame()
+}
+
 
 #' @importFrom stringr str_split
 .aa.counter <- function(input.data, cloneCall, aa.length) {

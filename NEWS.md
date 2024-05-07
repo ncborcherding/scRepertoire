@@ -1,3 +1,10 @@
+# scRepertoire VERSION 2.0.4
+
+## UNDERLYING CHANGES
+* ```getCirclize()``` refactored to prevent assumptions and added **include.self** argument
+* Added ```.count.clones()``` internal function for ```getCirclize()``` and ```clonalNetwork()```
+
+
 # scRepertoire VERSION 2.0.3
 
 ## UNDERLYING CHANGES

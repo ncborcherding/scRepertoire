@@ -28,16 +28,18 @@
 #' 
 #' 
 #' @param sc.data The single-cell object after \code{\link{combineExpression}}.
-#' @param cloneCall How to call the clone - VDJC gene (gene), 
-#' CDR3 nucleotide (nt), CDR3 amino acid (aa),
-#' VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data. 
+#' @param cloneCall How to call the clone - VDJC gene (\strong{gene}), 
+#' CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
+#' VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable 
+#' in the data.  
 #' @param group.by The group header for which you would like to analyze 
 #' the data.
 #' @param proportion Calculate the relationship unique 
 #' clones (proportion = FALSE) or normalized by 
 #' proportion (proportion = TRUE)
+#' @param include.self Include counting the clones within a single group.by
+#' comparison
 #' 
-#' @importFrom reshape2 dcast
 #' @export
 #' @concept SC_Functions
 #' @return A data frame of shared clones between groups formated for \link[circlize]{chordDiagram}
@@ -45,51 +47,50 @@
 getCirclize <- function(sc.data, 
                         cloneCall = "strict", 
                         group.by = NULL, 
-                        proportion = FALSE) {
+                        proportion = FALSE,
+                        include.self = TRUE) {
   meta <- .grabMeta(sc.data)
   cloneCall <- .theCall(meta, cloneCall)
   if(is.null(group.by)) {
     group.by <- "ident"
   }
   
-  #Quantifying clones across group.by variable
-  dat <- meta[, c(cloneCall, group.by)]
-  dat <- dat[!is.na(dat[,cloneCall]),]
-  mat <- suppressMessages(dcast(dat, dat[,cloneCall] ~ dat[,group.by]))
-  mat <- mat[apply(mat[,-1], 1, function(x) !all(x==0)),]
-  mat2<- mat[-1]
-  mat2[mat2 >= 1] <- 1
-  total <- nrow(mat)
+  #Making exhaustive group.by dat frame
+  group_pairs <- expand.grid(group1 = unique(meta[,group.by]), group2 = unique(meta[,group.by]))
+  group_pairs <- unique(t(apply(group_pairs, 1, function(x) str_sort(x, numeric = TRUE))))
+  group_pairs <- as.data.frame(group_pairs)
+  colnames(group_pairs) <- c("from", "to")
   
-  list <- list()
-  for (i in seq_len(nrow(mat2))) {
-    list[[i]] <- which(mat2[i,] > 0)
+  if(!include.self) {
+    group_pairs <- group_pairs[group_pairs[,1] != group_pairs[,2],]
   }
   
-  #Making a pairwise matrix that sums the shared clones
-  matrix_out <- matrix(ncol = ncol(mat2), nrow = ncol(mat2), 0)
-  for (j in seq_along(list)) {
-    matrix_out[list[[j]],list[[j]]] <- matrix_out[list[[j]],list[[j]]] + 1
-    if (length(list[[j]]) > 1) {
-      #length <- length(list[[j]])
-      diag(matrix_out[list[[j]],list[[j]]]) <-  diag(matrix_out[list[[j]],list[[j]]]) - 1
+  #Count clones across all identities
+  clone.table <- .clone.counter(meta, group.by, cloneCall)
+  
+  group_pairs$value <- NA
+  
+  for(i in seq_len(nrow(group_pairs))) {
+    pair1 <- group_pairs[i,1]
+    pair2 <- group_pairs[i,2]
+    
+    clone1 <- clone.table[clone.table[,1] == pair1, cloneCall]
+    clone2 <- clone.table[clone.table[,1] == pair2, cloneCall]
+    
+    common <- intersect(clone1, clone2)
+    value <- length(common)
+    
+    if(pair1 == pair2) {
+      tmp <- clone.table[clone.table[,cloneCall] %in% common & clone.table[,1] != pair1,]
+      shared.clones <- unique(tmp[,cloneCall])
+      value <- value - length(shared.clones)
     }
+    
+    if (proportion) {
+      value <- value/length(unique(clone.table[clone.table[,1] == pair2,cloneCall]))
+    }
+    
+    group_pairs$value[i] <- value
   }
-  matrix_out[lower.tri(matrix_out)] <- NA
-  
-  colnames(matrix_out) <- colnames(mat2)
-  rownames(matrix_out) <- colnames(mat2)
-  
-  #Converting matrix to data frame to work with criclize
-  output <- data.frame(from = rep(rownames(matrix_out), 
-                                  times = ncol(matrix_out)),
-                       to = rep(colnames(matrix_out), each = nrow(matrix_out)),
-                       value = as.vector(matrix_out),
-                       stringsAsFactors = FALSE)
-  output <- na.omit(output)
-  
-  if (proportion == TRUE) {
-    output$value <- output$value/total
-  } 
-  return(output)
+  return(group_pairs)
 }
