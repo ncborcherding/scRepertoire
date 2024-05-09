@@ -9,7 +9,7 @@ clonalOccupy(
   x.axis = "ident",
   label = TRUE,
   facet.by = NULL,
-  order.by = "alphanumeric",
+  order.by = NULL,
   proportion = FALSE,
   na.include = FALSE,
   exportTable = FALSE,

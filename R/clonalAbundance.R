@@ -95,9 +95,11 @@ clonalAbundance <- function(input.data,
       Con.df<- rbind.data.frame(Con.df, data1) 
     }
     Con.df <- data.frame(Con.df)
-    Con.df <- .ordering.function(vector = order.by,
-                                 group.by = "values", 
-                                 Con.df)
+    if(!is.null(order.by)) {
+      Con.df <- .ordering.function(vector = order.by,
+                                   group.by = "values", 
+                                   Con.df)
+    }
     
     col <- length(unique(Con.df$values))
     fill <- "Samples"
