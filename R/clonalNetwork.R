@@ -109,16 +109,16 @@ clonalNetwork <- function(sc.data,
     
     if(exportClones) {
       #Summarizing all the clones by group.by
-      table <- .clone.counter(meta, group.by, cloneCall)
+      table <- .clone.counter(meta, group.by, cloneCall)[,seq_len(3)]
       #Identifying the clones across the group by
       clones.across.identities <- names(which(table(table[,2]) > 1))
       if(length(clones.across.identities) < 1) {
         stop("No shared clones across group.by variables for the current parameters selected")
       }
       #Getting the clones to output
-      subset.table <- subset.table[subset.table[,2] %in% clones.across.identities,]
-      colnames(subset.table) <- c("id", "clone", "n")
-      dupl.clones <- subset.table %>%
+      table <- table[table[,2] %in% clones.across.identities,]
+      colnames(table) <- c("id", "clone", "n")
+      dupl.clones <- table %>%
                       group_by(clone) %>%
                       summarise(sum = sum(n))%>%
                       arrange(desc(sum)) 

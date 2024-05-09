@@ -84,7 +84,7 @@ clonalProportion <- function(input.data,
     if(!is.null(order.by)) {
       mat_melt <- .ordering.function(vector = order.by,
                                      group.by = "Var1", 
-                                     mat_melt)
+                                     data.frame = mat_melt)
     }
     col <- length(unique(mat_melt$Var2))
     plot <- ggplot(mat_melt, aes(x=as.factor(Var1), y=value, fill=Var2)) +

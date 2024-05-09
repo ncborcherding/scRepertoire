@@ -109,7 +109,7 @@ positionalProperty <- function(input.data,
                       summarise(mean = mean(value),
                                 sd = sd(value),  # Standard deviation
                                 n = n(),         # Number of observations per group
-                                se = if_else(n > 1, sd / sqrt(n), 0), # Standard error of the mean
+                                se = ifelse(n > 1, sd / sqrt(n), 0), # Standard error of the mean
                                 ci_lower = ifelse(n > 1, mean - qt(0.975, n-1) * se, mean),
                                 ci_upper = ifelse(n > 1, mean + qt(0.975, n-1) * se, mean)) %>%
                       as.data.frame()

@@ -56,11 +56,12 @@ clonalOccupy <- function(sc.data,
             group_by(meta[,x.axis], meta[,facet.by], cloneSize) %>%
             count() %>%
             as.data.frame()
+  colnames(meta)[1] <- x.axis
   
   if(!is.null(order.by)) {
     meta <- .ordering.function(vector = order.by,
                                group.by = x.axis, 
-                               mat_melt)
+                               data.frame = meta)
   } else {
     meta[,1] <- as.factor(meta[,1])
   }
