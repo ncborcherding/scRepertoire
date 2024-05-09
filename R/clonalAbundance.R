@@ -69,7 +69,7 @@ clonalAbundance <- function(input.data,
     if(!is.null(order.by)) {
         Con.df <- .ordering.function(vector = order.by,
                                      group.by = group.by, 
-                                     Con.df)
+                                     data.frame =  Con.df)
     }
     if (scale == TRUE) { 
         ylab <- "Density of Clones"
@@ -98,7 +98,7 @@ clonalAbundance <- function(input.data,
     if(!is.null(order.by)) {
       Con.df <- .ordering.function(vector = order.by,
                                    group.by = "values", 
-                                   Con.df)
+                                   data.frame = Con.df)
     }
     
     col <- length(unique(Con.df$values))

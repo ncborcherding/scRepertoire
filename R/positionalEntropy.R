@@ -20,7 +20,7 @@
 #' \code{\link{combineBCR}}, or \code{\link{combineExpression}}
 #' @param chain "TRA", "TRB", "TRG", "TRG", "IGH", "IGL"
 #' @param group.by The variable to use for grouping
-#' #' @param order.by A vector of specific plotting order or "alphanumeric"
+#' @param order.by A vector of specific plotting order or "alphanumeric"
 #' to plot groups in order
 #' @param aa.length The maximum length of the CDR3 amino acid sequence. 
 #' @param method The method to calculate the entropy/diversity - 

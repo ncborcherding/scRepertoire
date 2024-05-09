@@ -123,7 +123,7 @@ clonalCompare <- function(input.data,
   if(!is.null(order.by)) {
     Con.df <- .ordering.function(vector = order.by,
                                  group.by = "Sample", 
-                                 Con.df)
+                                 data.frame = Con.df)
   }
   
   

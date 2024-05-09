@@ -17,23 +17,26 @@ clonalOccupy(
 )
 }
 \arguments{
-\item{sc.data}{The single-cell object after \code{\link{combineExpression}}.}
+\item{sc.data}{The single-cell object after \code{\link{combineExpression}}}
 
 \item{x.axis}{The variable in the meta data to graph along the x.axis.}
 
-\item{label}{Include the number of clone in each category by x.axis variable.}
+\item{label}{Include the number of clone in each category by x.axis variable}
 
-\item{facet.by}{The column header used for faceting the graph.}
+\item{facet.by}{The column header used for faceting the graph}
 
-\item{proportion}{Convert the stacked bars into relative proportion.}
+\item{order.by}{A vector of specific plotting order or "alphanumeric"
+to plot groups in order description}
 
-\item{na.include}{Visualize NA values or not.}
+\item{proportion}{Convert the stacked bars into relative proportion}
+
+\item{na.include}{Visualize NA values or not}
 
 \item{exportTable}{Exports a table of the data into the global 
-environment in addition to the visualization.}
+environment in addition to the visualization}
 
 \item{palette}{Colors to use in visualization - input any 
-\link[grDevices]{hcl.pals}.}
+\link[grDevices]{hcl.pals}}
 }
 \value{
 Stacked bar plot of counts of cells by clone frequency group

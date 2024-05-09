@@ -87,11 +87,11 @@ clonalLength <- function(input.data,
     if (!is.null(group.by)) { 
       Con.df <- .ordering.function(vector = order.by,
                                    group.by = group.by, 
-                                   Con.df)
+                                   data.frame = Con.df)
     } else {
       Con.df <- .ordering.function(vector = order.by,
                                    group.by = "values", 
-                                   Con.df)
+                                   data.frame = Con.df)
     }
   }
   

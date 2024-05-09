@@ -13,7 +13,7 @@ is_seurat_or_se_object <- function(obj) {
   if(length(vector) == 1 && vector == "alphanumeric") {
     data.frame[,group.by] <- factor(data.frame[,group.by], levels = str_sort(unique(data.frame[,group.by]), numeric = TRUE))
   } else {
-    data.frame[,group.by] <- factor(data.frame[,group.by], levels = order.by)
+    data.frame[,group.by] <- factor(data.frame[,group.by], levels = vector)
   }
   return(data.frame)
 }
