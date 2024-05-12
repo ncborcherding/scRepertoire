@@ -49,9 +49,6 @@ devtools::install_github("ncborcherding/scRepertoire@v1")
 
 Unfortunately, Github limits the size of individual files. In order to access the seurat object paired with scRepertoire please download the .rda from [here](https://drive.google.com/file/d/1_YuRraDyg8UgF3oasjF0-jgPnwox-B24/view?usp=share_link).
 
-## Please Cite
-Feel free to use, edit, modify scRepertoire, but if you do, please cite the [manuscript](https://f1000research.com/articles/9-47/v1). If you are building your own tool based on scRepertoire, reach out, I am happy to help and make things compatible.
-
 ## Bug Reports/New Features
 
 #### If you run into any issues or bugs please submit a [GitHub issue](https://github.com/ncborcherding/scRepertoire/issues) with details of the issue.
@@ -64,5 +61,5 @@ be extremely helpful.
 
 #### [Pull Requests](https://github.com/ncborcherding/scRepertoire/pulls) are welcome for bug fixes, new features, or enhancements.
 
-### Please Cite
+## Please Cite
 Feel free to use, edit, modify scRepertoire, but if you do, please cite the [manuscript](https://f1000research.com/articles/9-47/v1). If you are building your own tool based on scRepertoire, reach out, I am happy to help and make things compatible.
