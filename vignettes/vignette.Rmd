@@ -1191,7 +1191,7 @@ legend("topleft", legend = levels(color.legend), pch = 16, col = unique(col_samp
 
 # Conclusion  
 
-This has been a general overview of the capabilities of scRepertoire from the initial processing and visualization to attach to the mRNA expression values in a single-cell object. If you have any questions, comments, or suggestions, please visit the GitHub repository or [email me](mailto:ncborch@gmail.com).
+This has been a general overview of the capabilities of scRepertoire from the initial processing and visualization to attach to the mRNA expression values in a single-cell object. If you have any questions, comments, or suggestions, please visit the [GitHub repository](https://github.com/ncborcherding/scRepertoire).
 
 ### Session Info
 
