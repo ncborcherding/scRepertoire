@@ -50,6 +50,12 @@ test_that("loadContigs works", {
     expect_identical(trial8, 
                      getdata("load", "loadContigs_Parse")
     )
+    
+    Dandelion <- read.csv("https://www.borch.dev/uploads/contigs/Dandelion_contigs.csv")
+    trial9 <- loadContigs(Dandelion, format = "Dandelion")
+    expect_identical(trial9, 
+                     getdata("load", "loadContigs_Dandelion")
+    )
 }) 
 
 # TODO Add tests for .json and AIRR

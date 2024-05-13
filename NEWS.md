@@ -6,6 +6,7 @@
 * Added **order.by** parameter to visualizations to specifically call order of plotting using a vector or can use "alphanumeric" to plot things in order
 * Fix issue with ```clonalLength()``` and NA handling
 * ```clonalCompare()``` now retains the original clonal info if using **relabel.clones**.
+* Add Dandelion support in to ```loadContigs()``` and testthat
 
 
 # scRepertoire VERSION 2.0.3
@@ -13,7 +14,7 @@
 ## UNDERLYING CHANGES
 
 * Modified support for Omniscope format to allow for dual chains
-* Added ParseBio support int ```loadContigs()``` and testthat
+* Added ParseBio support in to ```loadContigs()``` and testthat
 * Added support for productive variable to ```loadContigs()``` for BD, Omniscope, and Immcantation formats
 * Replace numerical indexing with name indexing for ```loadContigs()```
 * ```combineBCR()``` and ```combineTCR()``` no allow for unproductive contig inclusions with new **filterNonproductive** parameter.
