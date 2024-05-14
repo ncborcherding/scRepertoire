@@ -99,7 +99,7 @@ is_seurat_or_se_object <- function(obj) {
         })
         res <- suppressWarnings(Reduce(function(...) merge(..., all = TRUE, by="z"), aa.output))
         colnames(res) <- c("AA", paste0("pos.", seq_len(aa.length)))
-        res[seq_len(20),][is.na(res[seq_len(20),])] <- 0
+        res[which(!is.na(res$AA)),][is.na(res[which(!is.na(res$AA)),])] <- 0
         res
     }) -> res.list
   return(res.list)

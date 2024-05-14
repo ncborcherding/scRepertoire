@@ -86,8 +86,8 @@ positionalProperty <- function(input.data,
   #Calculating properties and melting data
   lapply(seq_along(aa.count.list), function(x) {
       lapply(seq_len(nrow(aa.count.list[[x]]))[-1], function(y) {
-          pos <- aa.count.list[[x]][1:20,y]
-          names(pos) <- aa.count.list[[x]][1:20,1]
+          pos <- aa.count.list[[x]][!is.na(aa.count.list[[x]]$AA),y]
+          names(pos) <- aa.count.list[[x]][!is.na(aa.count.list[[x]]$AA),1]
           pos <- pos[pos > 0]
           lapply(seq_len(length(pos)), function(t) {
             char <- names(pos[t])

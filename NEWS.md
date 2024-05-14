@@ -7,6 +7,7 @@
 * Fix issue with ```clonalLength()``` and NA handling
 * ```clonalCompare()``` now retains the original clonal info if using **relabel.clones**.
 * Add Dandelion support in to ```loadContigs()``` and testthat
+* Fixed issue with ```positionalProperty()``` assumption that the clones will all have 20 amino acids.
 
 
 # scRepertoire VERSION 2.0.3
