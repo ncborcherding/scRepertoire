@@ -104,6 +104,8 @@ vizGenes <- function(input.data,
     col.lab <- "Scaled Values"
     values <- "proportion"
   }
+  #Ensure only x.axis match is displayed
+  input.data <- input.data[grep(x.axis, input.data[,x.axis]),]
   
   #Calculating the summary values
   if (!is.null(y.axis) && y.axis != "element.names") {
