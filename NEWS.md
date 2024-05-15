@@ -5,9 +5,10 @@
 * Added ```.count.clones()``` internal function for ```getCirclize()``` and ```clonalNetwork()```
 * Added **order.by** parameter to visualizations to specifically call order of plotting using a vector or can use "alphanumeric" to plot things in order
 * Fix issue with ```clonalLength()``` and NA handling
-* ```clonalCompare()``` now retains the original clonal info if using **relabel.clones**.
+* ```clonalCompare()``` now retains the original clonal info if using **relabel.clones**
 * Add Dandelion support in to ```loadContigs()``` and testthat
 * Fixed issue with ```positionalProperty()``` assumption that the clones will all have 20 amino acids.
+* Fixed IGH/K/L mistaking gene issue in ```vizGenes()```
 
 
 # scRepertoire VERSION 2.0.3

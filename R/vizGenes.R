@@ -193,7 +193,7 @@ vizGenes <- function(input.data,
               "TRBD" = 2, "TRDD" = 2, "IGHV" = 2, 
               "TRBJ" = 3, "TRDJ" = 2, "IGHJ" = 3)
   chain.poisiton <- chains[position]
-  if(substring(position,3,3) %in% c("A", "G", "K", "L")) {
+  if(substring(position,3,3) %in% c("A", "G", "H")) {
     chain.gene <- str_split(df[,"CTgene"], "_", simplify = TRUE)[,1]
   } else {
     chain.gene <- str_split(df[,"CTgene"], "_", simplify = TRUE)[,2]
