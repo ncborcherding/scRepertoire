@@ -58,5 +58,5 @@ All are welcome for bug fixes, new features, or enhancements.
 contains (referencing existing issue(s) if appropriate).
   
 ## Contact
-Questions, comments, suggestions, please feel free to contact Nick Borcherding via this repository, [email](mailto:ncborch@gmail.com), or using [twitter](https://twitter.com/theHumanBorch). 
+Questions, comments, suggestions, please feel free to reach out via the [GitHub Repository](https://github.com/ncborcherding/scRepertoire).
 
