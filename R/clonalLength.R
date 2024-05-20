@@ -16,17 +16,19 @@
 #' clonalLength(combined, cloneCall="aa", chain = "both")
 #'
 #' @param input.data The product of \code{\link{combineTCR}}, 
-#' \code{\link{combineBCR}}, or \code{\link{combineExpression}}.
+#' \code{\link{combineBCR}}, or \code{\link{combineExpression}}
 #' @param cloneCall How to call the clone - CDR3 nucleotide (\strong{nt}) 
-#' or CDR3 amino acid (\strong{aa}).
-#' @param group.by The variable to use for grouping.
+#' or CDR3 amino acid (\strong{aa})
+#' @param group.by The variable to use for grouping
+#' @param order.by A vector of specific plotting order or "alphanumeric"
+#' to plot groups in order description
 #' @param scale Converts the graphs into density plots in order to show 
 #' relative distributions.
 #' @param chain indicate if both or a specific chain should be used - 
-#' e.g. "both", "TRA", "TRG", "IGH", "IGL".
+#' e.g. "both", "TRA", "TRG", "IGH", "IGL"
 #' @param exportTable Returns the data frame used for forming the graph.
 #' @param palette Colors to use in visualization - input any 
-#' \link[grDevices]{hcl.pals}.
+#' \link[grDevices]{hcl.pals}
 #' @importFrom stringr str_split
 #' @importFrom ggplot2 ggplot
 #' @export
@@ -37,6 +39,7 @@ clonalLength <- function(input.data,
                          cloneCall = "aa", 
                          chain = "both", 
                          group.by = NULL, 
+                         order.by = NULL,
                          scale = FALSE, 
                          exportTable = FALSE, 
                          palette = "inferno") {
@@ -78,6 +81,18 @@ clonalLength <- function(input.data,
   #Skip plotting if want to export table
   if (exportTable == TRUE) { 
     return(Con.df) 
+  }
+  
+  if(!is.null(order.by)) {
+    if (!is.null(group.by)) { 
+      Con.df <- .ordering.function(vector = order.by,
+                                   group.by = group.by, 
+                                   data.frame = Con.df)
+    } else {
+      Con.df <- .ordering.function(vector = order.by,
+                                   group.by = "values", 
+                                   data.frame = Con.df)
+    }
   }
   
   #Plotting

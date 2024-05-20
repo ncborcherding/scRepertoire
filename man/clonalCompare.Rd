@@ -14,6 +14,7 @@ clonalCompare(
   highlight.clones = NULL,
   relabel.clones = FALSE,
   group.by = NULL,
+  order.by = NULL,
   graph = "alluvial",
   exportTable = FALSE,
   palette = "inferno"
@@ -26,35 +27,38 @@ clonalCompare(
 \item{cloneCall}{How to call the clone - VDJC gene (\strong{gene}), 
 CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
 VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable 
-in the data.}
+in the data}
 
 \item{chain}{indicate if both or a specific chain should be used - 
-e.g. "both", "TRA", "TRG", "IGH", "IGL".}
+e.g. "both", "TRA", "TRG", "IGH", "IGL"}
 
 \item{samples}{The specific samples to isolate for visualization.}
 
-\item{clones}{The specific clonal sequences of interest.}
+\item{clones}{The specific clonal sequences of interest}
 
 \item{top.clones}{The top number of clonal sequences per group.
 (e.g., top.clones = 5)}
 
 \item{highlight.clones}{Clonal sequences to highlight, if present, 
-all other clones returned will be grey.}
+all other clones returned will be grey}
 
 \item{relabel.clones}{Simplify the legend of the graph by returning
-clones that are numerically indexed.}
+clones that are numerically indexed}
 
 \item{group.by}{If using a single-cell object, the column header
 to group the new list. \strong{NULL} will return the active 
-identity or cluster.}
+identity or cluster}
+
+\item{order.by}{A vector of specific plotting order or "alphanumeric"
+to plot groups in order}
 
 \item{graph}{The type of graph produced, either \strong{"alluvial"} 
-or \strong{"area"}.}
+or \strong{"area"}}
 
-\item{exportTable}{Returns the data frame used for forming the graph.}
+\item{exportTable}{Returns the data frame used for forming the graph}
 
 \item{palette}{Colors to use in visualization - input any 
-\link[grDevices]{hcl.pals}.}
+\link[grDevices]{hcl.pals}}
 }
 \value{
 ggplot of the proportion of total sequencing read of 

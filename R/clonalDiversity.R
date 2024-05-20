@@ -49,19 +49,21 @@
 #' @param cloneCall How to call the clone - VDJC gene (\strong{gene}), 
 #' CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
 #' VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable 
-#' in the data. 
+#' in the data
 #' @param chain indicate if both or a specific chain should be used - 
-#' e.g. "both", "TRA", "TRG", "IGH", "IGL".
-#' @param group.by Variable in which to combine for the diversity calculation.
-#' @param x.axis Additional variable grouping that will space the sample along the x-axis.
+#' e.g. "both", "TRA", "TRG", "IGH", "IGL"
+#' @param group.by Variable in which to combine for the diversity calculation
+#' @param order.by A vector of specific plotting order or "alphanumeric"
+#' to plot groups in order
+#' @param x.axis Additional variable grouping that will space the sample along the x-axis
 #' @param metrics The indices to use in diversity calculations - 
-#' "shannon", "inv.simpson", "norm.entropy", "gini.simpson", "chao1", "ACE".
+#' "shannon", "inv.simpson", "norm.entropy", "gini.simpson", "chao1", "ACE"
 #' @param exportTable Exports a table of the data into the global environment 
-#' in addition to the visualization.
+#' in addition to the visualization
 #' @param palette Colors to use in visualization - input any 
-#' \link[grDevices]{hcl.pals}.
+#' \link[grDevices]{hcl.pals}
 #' @param n.boots number of bootstraps to down sample in order to 
-#' get mean diversity.
+#' get mean diversity
 #' @param return.boots export boot strapped values calculated - 
 #' will automatically exportTable = TRUE.
 #' @param skip.boots remove down sampling and boot strapping from the calculation.
@@ -77,6 +79,7 @@ clonalDiversity <- function(input.data,
                             cloneCall = "strict", 
                             chain = "both",
                             group.by = NULL, 
+                            order.by = NULL,
                             x.axis = NULL, 
                             metrics = c("shannon", "inv.simpson", "norm.entropy", "gini.simpson", "chao1", "ACE"),
                             exportTable = FALSE, 
@@ -151,6 +154,12 @@ clonalDiversity <- function(input.data,
     rownames(mat) <- names(input.data)
   
     mat_melt <- suppressMessages(melt(mat, id.vars = c(group.by, x.axis)))
+    if(!is.null(order.by)) {
+      mat_melt <- .ordering.function(vector = order.by,
+                                     group.by = names(mat_melt)[1], 
+                                     mat_melt)
+    }
+    
     if (x.axis == "x.axis") {
         plot <- ggplot(mat_melt, aes(x=1, y=as.numeric(value)))
     } else {

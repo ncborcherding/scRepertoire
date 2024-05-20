@@ -10,6 +10,7 @@ clonalProportion(
   cloneCall = "strict",
   chain = "both",
   group.by = NULL,
+  order.by = NULL,
   exportTable = FALSE,
   palette = "inferno"
 )
@@ -18,23 +19,26 @@ clonalProportion(
 \item{input.data}{The product of \code{\link{combineTCR}}, 
 \code{\link{combineBCR}}, or \code{\link{combineExpression}}.}
 
-\item{clonalSplit}{The cut points for the specific clones.}
+\item{clonalSplit}{The cut points for the specific clones}
 
 \item{cloneCall}{How to call the clone - VDJC gene (\strong{gene}), 
 CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
 VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable 
-in the data.}
+in the data}
 
 \item{chain}{indicate if both or a specific chain should be used - 
-e.g. "both", "TRA", "TRG", "IGH", "IGL".}
+e.g. "both", "TRA", "TRG", "IGH", "IGL"}
 
-\item{group.by}{The variable to use for grouping.}
+\item{group.by}{The variable to use for grouping}
+
+\item{order.by}{A vector of specific plotting order or "alphanumeric"
+to plot groups in order}
 
 \item{exportTable}{Exports a table of the data into the global.
-environment in addition to the visualization.}
+environment in addition to the visualization}
 
 \item{palette}{Colors to use in visualization - input any 
-\link[grDevices]{hcl.pals}.}
+\link[grDevices]{hcl.pals}}
 }
 \value{
 ggplot of the space occupied by the specific rank of clones

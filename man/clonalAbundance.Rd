@@ -10,6 +10,7 @@ clonalAbundance(
   chain = "both",
   scale = FALSE,
   group.by = NULL,
+  order.by = NULL,
   exportTable = FALSE,
   palette = "inferno"
 )
@@ -30,6 +31,9 @@ e.g. "both", "TRA", "TRG", "IGH", "IGL"}
 relative distributions.}
 
 \item{group.by}{The variable to use for grouping}
+
+\item{order.by}{A vector of specific plotting order or "alphanumeric"
+to plot groups in order}
 
 \item{exportTable}{Returns the data frame used for forming the graph
 to the visualization.}

@@ -90,14 +90,9 @@ clonalNetwork <- function(sc.data,
         }
         #Filtering clones based on the minimum value
         min_val <- min(min)
-        table <- meta %>%
-          group_by(across(all_of(c(group.by, cloneCall)))) %>%
-          count() %>%
-          na.omit() %>%
-          arrange(desc(n)) %>%
-          mutate(cumSum = cumsum(n))
-        cut <- which.min(abs(table$cumSum - min_val))
-        clones.to.filter <- table$group.by[seq_len(cut)]
+        table <- .clone.counter(meta, group.by, cloneCall)
+        cut <- which.min(abs(table$clone.sum - min_val))
+        clones.to.filter <- table[,1][seq_len(cut)]
       } else if (is.numeric(filter.clones)) {
           #Filtering based on a numeric value
           table <- meta %>%
@@ -114,18 +109,16 @@ clonalNetwork <- function(sc.data,
     
     if(exportClones) {
       #Summarizing all the clones by group.by
-      table <- meta %>%
-        group_by(meta[,group.by], meta[, cloneCall]) %>%
-        dplyr::count() %>%
-        na.omit() %>%
-        arrange(desc(n))
+      table <- .clone.counter(meta, group.by, cloneCall)[,seq_len(3)]
       #Identifying the clones across the group by
-      clones.across.identities <- names(which(table(table[[2]]) > 1))
+      clones.across.identities <- names(which(table(table[,2]) > 1))
+      if(length(clones.across.identities) < 1) {
+        stop("No shared clones across group.by variables for the current parameters selected")
+      }
       #Getting the clones to output
-      subset.table <- as.data.frame(table)
-      subset.table <- subset.table[subset.table[,2] %in% clones.across.identities,]
-      colnames(subset.table) <- c("id", "clone", "n")
-      dupl.clones <- subset.table %>%
+      table <- table[table[,2] %in% clones.across.identities,]
+      colnames(table) <- c("id", "clone", "n")
+      dupl.clones <- table %>%
                       group_by(clone) %>%
                       summarise(sum = sum(n))%>%
                       arrange(desc(sum)) 

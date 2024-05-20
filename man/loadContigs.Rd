@@ -10,7 +10,7 @@ loadContigs(input, format = "10X")
 \item{input}{The directory in which contigs are located or a list with contig elements}
 
 \item{format}{The format of the single-cell contig, currently supporting: 
-"10X", "AIRR", "BD", "JSON", "MiXCR", "ParseBio", "Omniscope", "TRUST4", and "WAT3R"}
+"10X", "AIRR", "BD", "Dandelion", "JSON", "MiXCR", "ParseBio", "Omniscope", "TRUST4", and "WAT3R"}
 }
 \value{
 List of contigs for compatibility  with \code{\link{combineTCR}} or 
@@ -28,6 +28,7 @@ The files that this function parses includes:
   \item 10X =  "filtered_contig_annotations.csv"
   \item AIRR = "airr_rearrangement.tsv" 
   \item BD = "Contigs_AIRR.tsv" 
+  \item Dandelion = "all_contig_dandelion.tsv" 
   \item Immcantation = "data.tsv" 
   \item JSON = ".json"
   \item ParseBio = "barcode_report.tsv"

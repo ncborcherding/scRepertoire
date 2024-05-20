@@ -14,6 +14,13 @@ test_that("clonalQuant works", {
 	)
 	
 	expect_doppelganger(
+	  "clonalQuant_order_plot", 
+	  clonalQuant(combined, 
+	              scale = TRUE,
+	              order.by = c("P17B","P18B","P19B","P20B","P17L","P18L","P19L","P20L"))
+	)
+	
+	expect_doppelganger(
 	  "clonalQuant_unscaled_plot",
   	clonalQuant(combined, 
   	            group.by = "Type",

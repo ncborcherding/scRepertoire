@@ -8,6 +8,7 @@ percentVJ(
   input.data,
   chain = "TRB",
   group.by = NULL,
+  order.by = NULL,
   exportTable = FALSE,
   palette = "inferno"
 )
@@ -18,7 +19,10 @@ percentVJ(
 
 \item{chain}{"TRA", "TRB", "TRG", "TRG", "IGH", "IGL"}
 
-\item{group.by}{The variable to use for grouping.}
+\item{group.by}{The variable to use for grouping}
+
+\item{order.by}{A vector of specific plotting order or "alphanumeric"
+to plot groups in order}
 
 \item{exportTable}{Returns the data frame used for forming the graph}
 

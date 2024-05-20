@@ -30,17 +30,20 @@
 #'                    aa.length = 20)
 
 #' @param input.data The product of \code{\link{combineTCR}}, 
-#' \code{\link{combineBCR}}, or \code{\link{combineExpression}}.
-#' @param chain "TRA", "TRB", "TRG", "TRG", "IGH", "IGL".
-#' @param group.by The variable to use for grouping.
+#' \code{\link{combineBCR}}, or \code{\link{combineExpression}}
+#' @param chain "TRA", "TRB", "TRG", "TRG", "IGH", "IGL"
+#' @param group.by The variable to use for grouping
+#' @param order.by A vector of specific plotting order or "alphanumeric"
+#' to plot groups in order
 #' @param aa.length The maximum length of the CDR3 amino acid sequence. 
 #' @param method The method to calculate the property - "Atchley", "Kidera",
-#' "stScales", "tScales", or "VHSE".
-#' @param exportTable Returns the data frame used for forming the graph.
-#' @param palette Colors to use in visualization - input any \link[grDevices]{hcl.pals}.
+#' "stScales", "tScales", or "VHSE"
+#' @param exportTable Returns the data frame used for forming the graph
+#' @param palette Colors to use in visualization - input any \link[grDevices]{hcl.pals}
 #' @import ggplot2
 #' @importFrom stringr str_split
 #' @importFrom stats qt
+#' @importFrom dplyr %>% summarise n group_by 
 #' @export
 #' @concept Summarize_Repertoire
 #' @return ggplot of line graph of diversity by position
@@ -48,6 +51,7 @@
 positionalProperty <- function(input.data, 
                                chain = "TRB", 
                                group.by = NULL, 
+                               order.by = NULL,
                                aa.length = 20,
                                method = "Atchley",
                                exportTable = FALSE, 
@@ -82,8 +86,8 @@ positionalProperty <- function(input.data,
   #Calculating properties and melting data
   lapply(seq_along(aa.count.list), function(x) {
       lapply(seq_len(nrow(aa.count.list[[x]]))[-1], function(y) {
-          pos <- aa.count.list[[x]][1:20,y]
-          names(pos) <- aa.count.list[[x]][1:20,1]
+          pos <- aa.count.list[[x]][!is.na(aa.count.list[[x]]$AA),y]
+          names(pos) <- aa.count.list[[x]][!is.na(aa.count.list[[x]]$AA),1]
           pos <- pos[pos > 0]
           lapply(seq_len(length(pos)), function(t) {
             char <- names(pos[t])
@@ -103,11 +107,11 @@ positionalProperty <- function(input.data,
             summary <- df %>% 
                       group_by(group) %>% 
                       summarise(mean = mean(value),
-                                  sd = sd(value),  # Standard deviation
-                                  n = n(),         # Number of observations per group
-                                  se = sd / sqrt(n), # Standard error of the mean
-                                  ci_lower = mean - qt(0.975, n-1) * se,
-                                  ci_upper = mean + qt(0.975, n-1) * se) %>%
+                                sd = sd(value),  # Standard deviation
+                                n = n(),         # Number of observations per group
+                                se = ifelse(n > 1, sd / sqrt(n), 0), # Standard error of the mean
+                                ci_lower = ifelse(n > 1, mean - qt(0.975, n-1) * se, mean),
+                                ci_upper = ifelse(n > 1, mean + qt(0.975, n-1) * se, mean)) %>%
                       as.data.frame()
           
            summary <- summary[,c("mean", "ci_lower", "ci_upper")]
@@ -122,7 +126,13 @@ positionalProperty <- function(input.data,
   mat <- bind_rows(property.calculations, .id = "group")
   mat$position <- paste0("pos", mat$position)
   mat$position <- factor(mat$position, levels = str_sort(unique(mat$position), numeric = TRUE))
-    
+  
+  if(!is.null(order.by)) {
+    mat <- .ordering.function(vector = order.by,
+                              group.by = "group", 
+                              mat)
+  }
+  
     plot <- ggplot(mat, aes(x = position, 
                             y = mean, 
                             group = group, 

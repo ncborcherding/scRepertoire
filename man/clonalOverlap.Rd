@@ -10,31 +10,35 @@ clonalOverlap(
   method = NULL,
   chain = "both",
   group.by = NULL,
+  order.by = NULL,
   exportTable = FALSE,
   palette = "inferno"
 )
 }
 \arguments{
 \item{input.data}{The product of \code{\link{combineTCR}}, 
-\code{\link{combineBCR}}, or \code{\link{combineExpression}}.}
+\code{\link{combineBCR}}, or \code{\link{combineExpression}}}
 
 \item{cloneCall}{How to call the clone - VDJC gene (\strong{gene}), 
 CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
 VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable 
-in the data.}
+in the data}
 
 \item{method}{The method to calculate the "overlap", "morisita", 
-"jaccard", "cosine" indices or "raw" for the base numbers.}
+"jaccard", "cosine" indices or "raw" for the base numbers}
 
 \item{chain}{indicate if both or a specific chain should be used - 
 e.g. "both", "TRA", "TRG", "IGH", "IGL"}
 
-\item{group.by}{The variable to use for grouping.}
+\item{group.by}{The variable to use for grouping}
 
-\item{exportTable}{Returns the data frame used for forming the graph.}
+\item{order.by}{A vector of specific plotting order or "alphanumeric"
+to plot groups in order}
+
+\item{exportTable}{Returns the data frame used for forming the graph}
 
 \item{palette}{Colors to use in visualization - input any 
-\link[grDevices]{hcl.pals}.}
+\link[grDevices]{hcl.pals}}
 }
 \value{
 ggplot of the overlap of clones by group

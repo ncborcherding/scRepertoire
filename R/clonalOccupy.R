@@ -23,16 +23,18 @@
 #' clonalOccupy(scRep_example, x.axis = "ident")
 #' table <- clonalOccupy(scRep_example, x.axis = "ident", exportTable = TRUE)
 #' 
-#' @param sc.data The single-cell object after \code{\link{combineExpression}}.
+#' @param sc.data The single-cell object after \code{\link{combineExpression}}
 #' @param x.axis The variable in the meta data to graph along the x.axis.
-#' @param label Include the number of clone in each category by x.axis variable.
-#' @param facet.by The column header used for faceting the graph.
-#' @param proportion Convert the stacked bars into relative proportion.
-#' @param na.include Visualize NA values or not.
+#' @param label Include the number of clone in each category by x.axis variable
+#' @param facet.by The column header used for faceting the graph
+#' @param order.by A vector of specific plotting order or "alphanumeric"
+#' to plot groups in order description
+#' @param proportion Convert the stacked bars into relative proportion
+#' @param na.include Visualize NA values or not
 #' @param exportTable Exports a table of the data into the global 
-#' environment in addition to the visualization.
+#' environment in addition to the visualization
 #' @param palette Colors to use in visualization - input any 
-#' \link[grDevices]{hcl.pals}.
+#' \link[grDevices]{hcl.pals}
 #' @importFrom dplyr %>% group_by mutate count
 #' @importFrom reshape2 melt
 #' @import ggplot2
@@ -44,6 +46,7 @@ clonalOccupy <- function(sc.data,
                          x.axis = "ident", 
                          label = TRUE, 
                          facet.by = NULL,
+                         order.by = NULL,
                          proportion = FALSE, 
                          na.include = FALSE,
                          exportTable = FALSE, 
@@ -55,7 +58,15 @@ clonalOccupy <- function(sc.data,
             group_by(meta[,x.axis], meta[,facet.by], cloneSize) %>%
             count() %>%
             as.data.frame()
-  meta[,1] <- as.factor(meta[,1])
+  colnames(meta)[1] <- x.axis
+  
+  if(!is.null(order.by)) {
+    meta <- .ordering.function(vector = order.by,
+                               group.by = x.axis, 
+                               data.frame = meta)
+  } else {
+    meta[,1] <- as.factor(meta[,1])
+  }
   
   colnames(meta)[1] <- x.axis
   if(!is.null(facet.by)) {

@@ -5,14 +5,21 @@
 \title{Generate data frame to be used with circlize R package to visualize
 clones as a chord diagram.}
 \usage{
-getCirclize(sc.data, cloneCall = "strict", group.by = NULL, proportion = FALSE)
+getCirclize(
+  sc.data,
+  cloneCall = "strict",
+  group.by = NULL,
+  proportion = FALSE,
+  include.self = TRUE
+)
 }
 \arguments{
 \item{sc.data}{The single-cell object after \code{\link{combineExpression}}.}
 
-\item{cloneCall}{How to call the clone - VDJC gene (gene), 
-CDR3 nucleotide (nt), CDR3 amino acid (aa),
-VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data.}
+\item{cloneCall}{How to call the clone - VDJC gene (\strong{gene}), 
+CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
+VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable 
+in the data.}
 
 \item{group.by}{The group header for which you would like to analyze 
 the data.}
@@ -20,6 +27,9 @@ the data.}
 \item{proportion}{Calculate the relationship unique 
 clones (proportion = FALSE) or normalized by 
 proportion (proportion = TRUE)}
+
+\item{include.self}{Include counting the clones within a single group.by
+comparison}
 }
 \value{
 A data frame of shared clones between groups formated for \link[circlize]{chordDiagram}

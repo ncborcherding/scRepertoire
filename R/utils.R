@@ -6,6 +6,18 @@ is_seurat_or_se_object <- function(obj) {
     is_seurat_object(obj) || is_se_object(obj)
 }
 
+#'@importFrom stringr str_sort
+.ordering.function <- function(vector, 
+                               group.by,
+                               data.frame) {
+  if(length(vector) == 1 && vector == "alphanumeric") {
+    data.frame[,group.by] <- factor(data.frame[,group.by], levels = str_sort(unique(data.frame[,group.by]), numeric = TRUE))
+  } else {
+    data.frame[,group.by] <- factor(data.frame[,group.by], levels = vector)
+  }
+  return(data.frame)
+}
+
 #Use to shuffle between chains Qile: the NA handling here *might* be related to the unnamed combineTCR bugs from the new rcpp con.df construction
 #' @importFrom stringr str_split
 #' @keywords internal
@@ -52,6 +64,25 @@ is_seurat_or_se_object <- function(obj) {
   })
 }
 
+#' @importFrom dplyr %>% group_by arrange desc ungroup count mutate
+#' @importFrom rlang ensym !!
+.clone.counter <- function(meta,
+                           group.by, 
+                           cloneCall) {
+  clone.table <- meta %>%
+                  group_by(across(all_of(c(group.by, cloneCall)))) %>%
+                  count() %>%
+                  na.omit() %>%
+                  arrange(desc(n)) %>%
+                  ungroup() %>%
+                  group_by(!!ensym(group.by)) %>%
+                  mutate(group.sum = sum(n))  %>%
+                  ungroup() %>%
+                  group_by(!!ensym(cloneCall)) %>%
+                  mutate(clone.sum = sum(n)) %>%
+                  as.data.frame()
+}
+
 
 #' @importFrom stringr str_split
 .aa.counter <- function(input.data, cloneCall, aa.length) {
@@ -68,7 +99,7 @@ is_seurat_or_se_object <- function(obj) {
         })
         res <- suppressWarnings(Reduce(function(...) merge(..., all = TRUE, by="z"), aa.output))
         colnames(res) <- c("AA", paste0("pos.", seq_len(aa.length)))
-        res[seq_len(20),][is.na(res[seq_len(20),])] <- 0
+        res[which(!is.na(res$AA)),][is.na(res[which(!is.na(res$AA)),])] <- 0
         res
     }) -> res.list
   return(res.list)
@@ -403,12 +434,15 @@ is_seurat_or_se_object <- function(obj) {
 
 #Producing a data frame to visualize for lengthContig()
 #' @keywords internal
+#' @importFrom stringr str_remove_all
 .lengthDF <- function(df, cloneCall, chain, group, c1, c2){
     Con.df <- NULL
     names <- names(df)
     if (identical(chain, "both")) {
             for (i in seq_along(df)) {
-                length <- nchar(gsub("_", "", df[[i]][,cloneCall]))
+                clones <- str_remove_all(df[[i]][,cloneCall], "_NA")
+                clones <- str_remove_all(clones, "NA_")
+                length <- nchar(gsub("_", "", clones))
                 val <- df[[i]][,cloneCall]
                 if (!is.null(group)) { 
                     cols <- df[[i]][,group]

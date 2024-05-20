@@ -18,4 +18,11 @@ test_that("getCirclize works", {
                   group.by = "Patient"),
       getdata("seuratFunctions", "getCirclize_proportion_output")
     )    
+    
+    expect_equal(
+      getCirclize(test_obj, 
+                  cloneCall = "gene",
+                  include.self = FALSE),
+      getdata("seuratFunctions", "getCirclize_noself_output")
+    )    
 })

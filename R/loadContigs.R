@@ -10,6 +10,7 @@
 #'   \item 10X =  "filtered_contig_annotations.csv"
 #'   \item AIRR = "airr_rearrangement.tsv" 
 #'   \item BD = "Contigs_AIRR.tsv" 
+#'   \item Dandelion = "all_contig_dandelion.tsv" 
 #'   \item Immcantation = "data.tsv" 
 #'   \item JSON = ".json"
 #'   \item ParseBio = "barcode_report.tsv"
@@ -31,7 +32,7 @@
 #' 
 #' @param input The directory in which contigs are located or a list with contig elements
 #' @param format The format of the single-cell contig, currently supporting: 
-#' "10X", "AIRR", "BD", "JSON", "MiXCR", "ParseBio", "Omniscope", "TRUST4", and "WAT3R"
+#' "10X", "AIRR", "BD", "Dandelion", "JSON", "MiXCR", "ParseBio", "Omniscope", "TRUST4", and "WAT3R"
 #' @importFrom utils read.csv read.delim
 #' @importFrom rjson fromJSON
 #' @export
@@ -45,6 +46,7 @@ loadContigs <- function(input,
     format.list <- list("WAT3R" = "barcode_results.csv", 
                         "10X" =  "filtered_contig_annotations.csv", 
                         "AIRR" = "airr_rearrangement.tsv", 
+                        "Dandelion" = "all_contig_dandelion.tsv",
                         "Immcantation" = "_data.tsv",
                         "MiXCR" = "clones.tsv", 
                         "JSON" = ".json",
@@ -72,6 +74,7 @@ loadContigs <- function(input,
   loadFunc <- switch(format,
                      "10X" = .parse10x,
                      "AIRR" = .parseAIRR,
+                     "Dandelion" = .parseDandelion,
                      "JSON" = .parseJSON,
                      "MiXCR" = .parseMiXCR,
                      "TRUST4" = .parseTRUST4,
@@ -273,5 +276,13 @@ loadContigs <- function(input,
     df[[i]] <- data2
     df[[i]] <- df[[i]][with(df[[i]], order(reads, chain)),]
   }
+  return(df)
+}
+
+.parseDandelion <- function(df) {
+  for (i in seq_along(df)) {
+    df[[i]] <- df[[i]][,c("cell_id", "locus", "consensus_count", "v_call", "d_call", "j_call", "c_call", "cdr3", "cdr3_aa", "productive")]
+    colnames(df[[i]]) <- c("barcode", "chain", "reads", "v_gene", "d_gene", "j_gene", "c_gene", "cdr3_nt", "cdr3", "productive")
+  } 
   return(df)
 }

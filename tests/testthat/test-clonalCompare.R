@@ -16,6 +16,18 @@ test_that("clonalCompare works", {
   )
   
   expect_doppelganger(
+    "clonalCompare_alluvial_order_plot",
+    clonalCompare(
+      combined, 
+      top.clones = 10, 
+      samples = c("P17B", "P17L"), 
+      order.by = c("P17L", "P17B"),
+      cloneCall="aa", 
+      graph = "alluvial"
+    )
+  )
+  
+  expect_doppelganger(
     "clonalCompare_area_plot",
     clonalCompare(
       combined, 

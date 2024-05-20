@@ -16,6 +16,8 @@
 #'  \code{\link{combineExpression}}.
 #' @param chain "TRA", "TRB", "TRG", "TRG", "IGH", "IGL".
 #' @param group.by The variable to use for grouping.
+#' @param order.by A vector of specific plotting order or "alphanumeric"
+#' to plot groups in order
 #' @param aa.length The maximum length of the CDR3 amino acid sequence. 
 #' @param exportTable Returns the data frame used for forming the graph.
 #' @param palette Colors to use in visualization - input any \link[grDevices]{hcl.pals}.
@@ -28,6 +30,7 @@
 percentAA <- function(input.data, 
                       chain = "TRB", 
                       group.by = NULL, 
+                      order.by = NULL,
                       aa.length = 20,
                       exportTable = FALSE, 
                       palette = "inferno")  {
@@ -50,6 +53,12 @@ percentAA <- function(input.data,
   }) -> res.list
   
   mat_melt <- do.call(rbind, res.list)
+  if(!is.null(order.by)) {
+    mat_melt <- .ordering.function(vector = order.by,
+                                   group.by = "variable", 
+                                   mat_melt)
+  }
+  
   plot <- ggplot(mat_melt, aes(x=as.factor(variable), y = value, fill=AA)) +
     geom_bar(stat = "identity", position="fill", lwd= 0.25, color = "black") +
     scale_fill_manual(name = "Amino Acid", 

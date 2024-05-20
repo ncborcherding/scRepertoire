@@ -92,6 +92,21 @@ clonalQuant(combined.TCR,
   scale_fill_manual(values = hcl.colors(8,"geyser"))
 ```
 
+### Adjusting Order of Plotting
+
+The order of the group plotting (whether along an axis or in color) can be directly ordered using the **order.by** parameter in functions. Here we can place a vector of strings that will set the exact plotting order. If using **order.by** it is important to make sure your vectors match the **group.by** strings exactly. 
+
+Alternatively, we can set **order.by** = "alphanumeric", if we would like the plots sorted in order of the **group.by** variable.
+
+```{r}
+clonalQuant(combined.TCR, 
+            cloneCall="strict", 
+            chain = "both", 
+            scale = TRUE, 
+            order.by = c("P17B","P18B","P19B","P20B","P17L","P18L","P19L","P20L"))
+```
+
+
 ### Getting Data Used in Plots
 
 Within each of the general analysis functions, there is the ability to export the data frame used to create the visualization. To get the exported values, use **exportTable** = TRUE. It will return the data frame used to make the graph instead of the visual output.  

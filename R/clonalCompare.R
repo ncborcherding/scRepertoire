@@ -22,25 +22,27 @@
 #' @param cloneCall How to call the clone - VDJC gene (\strong{gene}), 
 #' CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
 #' VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable 
-#' in the data. 
+#' in the data
 #' @param chain indicate if both or a specific chain should be used - 
-#' e.g. "both", "TRA", "TRG", "IGH", "IGL".
+#' e.g. "both", "TRA", "TRG", "IGH", "IGL"
 #' @param samples The specific samples to isolate for visualization.
-#' @param clones The specific clonal sequences of interest.
+#' @param clones The specific clonal sequences of interest
 #' @param top.clones The top number of clonal sequences per group.
 #' (e.g., top.clones = 5)
 #' @param highlight.clones Clonal sequences to highlight, if present, 
-#' all other clones returned will be grey.
+#' all other clones returned will be grey
 #' @param relabel.clones Simplify the legend of the graph by returning
-#' clones that are numerically indexed.
+#' clones that are numerically indexed
 #' @param group.by If using a single-cell object, the column header
 #' to group the new list. \strong{NULL} will return the active 
-#' identity or cluster.
+#' identity or cluster
+#' @param order.by A vector of specific plotting order or "alphanumeric"
+#' to plot groups in order
 #' @param graph The type of graph produced, either \strong{"alluvial"} 
-#' or \strong{"area"}.
-#' @param exportTable Returns the data frame used for forming the graph.
+#' or \strong{"area"}
+#' @param exportTable Returns the data frame used for forming the graph
 #' @param palette Colors to use in visualization - input any 
-#' \link[grDevices]{hcl.pals}.
+#' \link[grDevices]{hcl.pals}
 #' @import ggplot2
 #' @importFrom stringr str_sort
 #'
@@ -56,7 +58,8 @@ clonalCompare <- function(input.data,
                           top.clones = NULL,
                           highlight.clones = NULL,
                           relabel.clones = FALSE,
-                          group.by = NULL, 
+                          group.by = NULL,
+                          order.by = NULL,
                           graph = "alluvial", 
                           exportTable = FALSE, 
                           palette = "inferno"){
@@ -95,7 +98,7 @@ clonalCompare <- function(input.data,
     Con.df <- Con.df[Con.df$clones %in% top$clones,] 
   }
   if (nrow(Con.df) < length(unique(Con.df$Sample))) {
-    stop("Reasses the filtering strategies here, there are not 
+    stop("Please reasses the filtering strategies here, there are not 
             enough clones to examine.") 
   }
   #Clones relabeling
@@ -107,6 +110,7 @@ clonalCompare <- function(input.data,
     if(!is.null(highlight.clones)) {
       highlight.clones <- unname(new.clones[which(names(new.clones) %in% highlight.clones)])
     }
+    Con.df[,"original.clones"] <- Con.df[,"clones"]
     Con.df[,"clones"] <- new.clones[as.vector(Con.df[,"clones"])]
     Con.df[,"clones"] <- factor(Con.df[,"clones"], 
                                 levels = str_sort(unique(Con.df[,"clones"]), numeric = TRUE))
@@ -115,6 +119,13 @@ clonalCompare <- function(input.data,
   if (exportTable == TRUE) { 
     return(Con.df)
   }
+  
+  if(!is.null(order.by)) {
+    Con.df <- .ordering.function(vector = order.by,
+                                 group.by = "Sample", 
+                                 data.frame = Con.df)
+  }
+  
   
   #Plotting Functions
   plot <- ggplot(Con.df, aes(x = Sample, 
