@@ -9,6 +9,7 @@
 * Add Dandelion support in to ```loadContigs()``` and testthat
 * Fixed issue with ```positionalProperty()``` assumption that the clones will all have 20 amino acids.
 * Fixed IGH/K/L mistaking gene issue in ```vizGenes()```
+* Add error message for NULL results in ```clonalCluster()``` with **export.graph = TRUE**
 
 
 # scRepertoire VERSION 2.0.3

@@ -629,7 +629,12 @@ is_df_or_list_of_df <- function(x) {
   edge.list <- do.call(rbind, edge.list)
   
   if(exportGraph) {
-    graph <- graph_from_edgelist(as.matrix(edge.list)[,c(1,2)])
+    if(!is.null(edge.list)) {
+      graph <- graph_from_edgelist(as.matrix(edge.list)[,c(1,2)])
+      
+    } else {
+      graph <- NULL
+    }
     return(graph)
   }
   

@@ -130,23 +130,28 @@ clonalCluster <- function(input.data,
   
   #Returning the igraph object if exportGraph = TRUE
   if(exportGraph) {
-    cluster <- do.call(igraph::union, output.list)
-    vertex <- names(V(cluster))
-    data_df <- unique(data.frame(
-      id = vertex
-    ))
-    data_df <- merge(data_df, graph.variables, by = 1)
-    cluster <- set_vertex_attr(cluster, 
-                               name = "size", 
-                               index = data_df$id, 
-                               value = data_df[,2])
-    if(ncol(data_df) == 3) { #add grouping variable
+    if(length(is.null(output.list)) == length(output.list)) {
+      stop("No clusters detected with current parameters.")
+    } else {
+      output.list <- output.list[lapply(output.list,length)>0]
+      cluster <- do.call(igraph::union, output.list)
+      vertex <- names(V(cluster))
+      data_df <- unique(data.frame(
+        id = vertex
+      ))
+      data_df <- merge(data_df, graph.variables, by = 1)
       cluster <- set_vertex_attr(cluster, 
-                                 name = "group", 
+                                 name = "size", 
                                  index = data_df$id, 
-                                 value = data_df[,3])
+                                 value = data_df[,2])
+      if(ncol(data_df) == 3) { #add grouping variable
+        cluster <- set_vertex_attr(cluster, 
+                                   name = "group", 
+                                   index = data_df$id, 
+                                   value = data_df[,3])
+      }
+      return(cluster)
     }
-    return(cluster)
   }
   
   cluster.list <- lapply(seq_len(length(output.list)), function(x) {
