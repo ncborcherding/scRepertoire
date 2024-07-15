@@ -76,8 +76,9 @@ combineExpression <- function(input.data,
       #Retain the full clone information
       full.clone <- lapply(input.data, function(x) {
                         x[,c("barcode", cloneCall)]
-      full.clone <- bind_rows(full.clone)
+                 
       })
+      full.clone <- bind_rows(full.clone)
       for(i in seq_along(input.data)) {
         input.data[[i]] <- .off.the.chain(input.data[[i]], chain, cloneCall)
       }
@@ -179,7 +180,7 @@ combineExpression <- function(input.data,
       clone_sym <- sym(cloneCall)
       PreMeta <- PreMeta %>%
         left_join(full.clone, by = "barcode", suffix = c("", ".from_full_clones")) %>%
-        mutate(!!column_sym := coalesce(!!sym(paste0(cloneCall, ".from_full_clones")), !!column_sym)) %>%
+        mutate(!!clone_sym := coalesce(!!sym(paste0(cloneCall, ".from_full_clones")), !!clone_sym)) %>%
         select(-all_of(paste0(cloneCall, ".from_full_clones")))
     }
     barcodes <- PreMeta$barcode
