@@ -47,6 +47,8 @@ navbar:
     - text: Quantifying Clonal Bias
       href: articles/Clonal_Bias.html
     - text: '-------'
+    - text: Making Deep Learning Models with immApex
+      href: articles/immApex.html
     - text: Combining Deep Learning and TCRs with Trex
       href: articles/Trex.html
     - text: Combining Deep Learning and BCRs with Ibex
