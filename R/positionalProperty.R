@@ -47,6 +47,7 @@
 #' @export
 #' @concept Summarize_Repertoire
 #' @return ggplot of line graph of diversity by position
+#' @author Florian Bach, Nick Borcherding
 
 positionalProperty <- function(input.data, 
                                chain = "TRB", 
@@ -82,6 +83,8 @@ positionalProperty <- function(input.data,
   
   #Getting AA Counts
   aa.count.list <- .aa.counter(input.data, cloneCall, aa.length)
+  
+  aa.count.list <- lapply(aa.count.list, function(x)subset(x, x$AA %in% c("A", "R", "N", "D", "C", "Q", "E", "G", "H", "I", "L", "K", "M", "F", "P", "S", "T", "W", "Y", "V")))
   
   #Calculating properties and melting data
   lapply(seq_along(aa.count.list), function(x) {
