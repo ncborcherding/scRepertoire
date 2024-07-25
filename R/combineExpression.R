@@ -53,7 +53,7 @@
 #' @concept SC_Functions
 #' @return Single-cell object with clone information added to meta data
 #' information
-#' 
+#'
 combineExpression <- function(input.data, 
                               sc.data, 
                               cloneCall ="strict", 
@@ -64,6 +64,17 @@ combineExpression <- function(input.data,
                               cloneSize = c(Rare = 1e-4,Small = 0.001,Medium = 0.01,Large = 0.1,Hyperexpanded = 1),
                               addLabel = FALSE) {
     call_time <- Sys.time()
+
+    # rudimentary type checking
+    assertthat::assert_that(isAnyValidProductOfCombineContigs(input.data))
+    assertthat::assert_that(is_seurat_or_se_object(sc.data))
+    assertthat::assert_that(assertthat::is.string(cloneCall))
+    assertthat::assert_that(assertthat::is.string(chain))
+    assertthat::assert_that(assertthat::is.string(group.by) || is.null(group.by))
+    assertthat::assert_that(assertthat::is.flag(proportion))
+    assertthat::assert_that(assertthat::is.flag(filterNA))
+    assertthat::assert_that(is_named_numeric(cloneSize))
+    assertthat::assert_that(assertthat::is.flag(addLabel))
   
     options( dplyr.summarise.inform = FALSE )
     if (!proportion && any(cloneSize < 1)) {
@@ -227,14 +238,4 @@ combineExpression <- function(input.data,
     return(sc.data)
 } 
 
-
 .warn_str <- "< 1% of barcodes match: Ensure the barcodes in the single-cell object match the barcodes in the combined immune receptor output from scRepertoire. If getting this error, please check https://www.borch.dev/uploads/screpertoire/articles/faq."
-
-
-
-
-
-
-
-
-

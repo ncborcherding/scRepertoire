@@ -3,13 +3,13 @@ Title: A toolkit for single-cell immune receptor profiling
 Version: 2.0.4
 Authors@R: c(
     person(given = "Nick", family = "Borcherding", role = c("aut", "cre"), email = "ncborch@gmail.com"), 
-    person(given = "Qile", family = "Yang", role = c("aut"), email = "qile0317@gmail.com"), 
+    person(given = "Qile", family = "Yang", role = c("aut"), email = "qile.yang@berkeley.edu"), 
     person(given = "Ksenia", family = "Safina", role = c("aut"), email = "safina@broadinstitute.org"))
 Description: scRepertoire is a toolkit for processing and analyzing single-cell T-cell receptor (TCR) and immunoglobulin (Ig). The scRepertoire framework supports use of 10x, AIRR, BD, MiXCR, Omniscope, TRUST4, and WAT3R single-cell formats. The functionality includes basic clonal analyses, repertoire summaries, distance-based clustering and interaction with the popular Seurat and SingleCellExperiment/Bioconductor R workflows.
 License: MIT + file LICENSE 
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 biocViews: Software, ImmunoOncology, SingleCell, Classification, Annotation, Sequencing
 Depends: 
 	ggplot2, 
@@ -42,7 +42,8 @@ Imports:
     truncdist,
     utils,
     VGAM,
-    hash
+    hash,
+    assertthat
 Suggests: 
     BiocManager,
     BiocStyle,
