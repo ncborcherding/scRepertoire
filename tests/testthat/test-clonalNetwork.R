@@ -1,7 +1,5 @@
 # test script for clonalNetwork.R - testcases are NOT comprehensive!
 
-# library(ggraph) # Qile: I believe libraries shouldn't need to be loaded in scripts? Correct me if im wrong.
-
 test_that("clonalNetwork works", {
   library(ggraph)
   data("scRep_example")

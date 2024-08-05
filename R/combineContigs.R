@@ -58,6 +58,14 @@ combineTCR <- function(input.data,
                        removeMulti = FALSE, 
                        filterMulti = FALSE,
                        filterNonproductive = TRUE) {
+
+    # rudimentary input checking
+    assertthat::assert_that(is.character(samples) || is.null(samples))
+    assertthat::assert_that(is.character(ID) || is.null(ID))
+    assertthat::assert_that(assertthat::is.flag(removeNA))
+    assertthat::assert_that(assertthat::is.flag(removeMulti))
+    assertthat::assert_that(assertthat::is.flag(filterMulti))
+    
     input.data <- .checkList(input.data)
     input.data <- .checkContigs(input.data)
     out <- NULL
@@ -200,6 +208,16 @@ combineBCR <- function(input.data,
     if(is.null(samples)) {
       stop("combineBCR() requires the samples paramter for the calculation of edit distance.")
     }
+
+    # rudimentary input checking
+    assertthat::assert_that(is.character(samples) || is.null(samples))
+    assertthat::assert_that(is.character(ID) || is.null(ID))
+    assertthat::assert_that(assertthat::is.flag(call.related.clones))
+    assertthat::assert_that(is.numeric(threshold))
+    assertthat::assert_that(assertthat::is.flag(removeNA))
+    assertthat::assert_that(assertthat::is.flag(removeMulti))
+    assertthat::assert_that(assertthat::is.flag(filterMulti))
+
     input.data <- .checkList(input.data)
     input.data <- .checkContigs(input.data)
     out <- NULL

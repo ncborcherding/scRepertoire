@@ -67,4 +67,7 @@ positionalProperty(combined,
                    method = "Atchley", 
                    aa.length = 20)
 }
+\author{
+Florian Bach, Nick Borcherding
+}
 \concept{Summarize_Repertoire}

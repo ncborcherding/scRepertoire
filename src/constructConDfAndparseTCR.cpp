@@ -73,6 +73,8 @@ public:
                     handleTcr1(y, index);
                 } else if (chainType == "TRB" || chainType == "TRD") {
                     handleTcr2(y, index);
+                } else {
+                    Rcpp::stop("Invalid chain type: " + chainType + " for barcode: " + conDf[0][y]);
                 }
             }
         }
