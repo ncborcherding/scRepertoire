@@ -1,6 +1,13 @@
 # scRepertoire VERSION 2.0.4
 
 ## UNDERLYING CHANGES
+* added type checks using asserthat
+* updated conditional statements in constructConDFAndparseTCR.cpp
+
+
+# scRepertoire VERSION 2.0.4
+
+## UNDERLYING CHANGES
 * ```getCirclize()``` refactored to prevent assumptions and added **include.self** argument
 * Added ```.count.clones()``` internal function for ```getCirclize()``` and ```clonalNetwork()```
 * Added **order.by** parameter to visualizations to specifically call order of plotting using a vector or can use "alphanumeric" to plot things in order

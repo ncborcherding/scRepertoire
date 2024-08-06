@@ -49,6 +49,7 @@
 #' @importFrom  rlang %||% sym :=
 #' @importFrom SummarizedExperiment colData<- colData
 #' @importFrom S4Vectors DataFrame
+#' @importFrom assertthat assert_that is.string is.flag
 #' @export
 #' @concept SC_Functions
 #' @return Single-cell object with clone information added to meta data
@@ -66,15 +67,15 @@ combineExpression <- function(input.data,
     call_time <- Sys.time()
 
     # rudimentary type checking
-    assertthat::assert_that(isAnyValidProductOfCombineContigs(input.data))
-    assertthat::assert_that(is_seurat_or_se_object(sc.data))
-    assertthat::assert_that(assertthat::is.string(cloneCall))
-    assertthat::assert_that(assertthat::is.string(chain))
-    assertthat::assert_that(assertthat::is.string(group.by) || is.null(group.by))
-    assertthat::assert_that(assertthat::is.flag(proportion))
-    assertthat::assert_that(assertthat::is.flag(filterNA))
-    assertthat::assert_that(is_named_numeric(cloneSize))
-    assertthat::assert_that(assertthat::is.flag(addLabel))
+    assert_that(isAnyValidProductOfCombineContigs(input.data))
+    assert_that(is_seurat_or_se_object(sc.data))
+    assert_that(is.string(cloneCall))
+    assert_that(is.string(chain))
+    assert_that(is.string(group.by) || is.null(group.by))
+    assert_that(is.flag(proportion))
+    assert_that(is.flag(filterNA))
+    assert_that(is_named_numeric(cloneSize))
+    assert_that(is.flag(addLabel))
   
     options( dplyr.summarise.inform = FALSE )
     if (!proportion && any(cloneSize < 1)) {

@@ -11,7 +11,7 @@ scRepertoire is a toolkit for processing and analyzing single-cell T-cell recept
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://www.borch.dev/uploads/screpertoire/}
+  \item \url{https://www.borch.dev/uploads/scRepertoire/}
   \item Report bugs at \url{https://github.com/ncborcherding/scRepertoire/issues}
 }
 

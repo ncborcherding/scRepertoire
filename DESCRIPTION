@@ -1,6 +1,6 @@
 Package: scRepertoire
 Title: A toolkit for single-cell immune receptor profiling
-Version: 2.0.4
+Version: 2.0.5
 Authors@R: c(
     person(given = "Nick", family = "Borcherding", role = c("aut", "cre"), email = "ncborch@gmail.com"), 
     person(given = "Qile", family = "Yang", role = c("aut"), email = "qile.yang@berkeley.edu"), 
@@ -12,9 +12,10 @@ LazyData: true
 RoxygenNote: 7.3.2
 biocViews: Software, ImmunoOncology, SingleCell, Classification, Annotation, Sequencing
 Depends: 
-	ggplot2, 
-	R (>= 4.0)
+     ggplot2, 
+     R (>= 4.0)
 Imports: 
+    assertthat,
     cubature,
     dplyr,
     evmix,
@@ -42,8 +43,7 @@ Imports:
     truncdist,
     utils,
     VGAM,
-    hash,
-    assertthat
+    hash
 Suggests: 
     BiocManager,
     BiocStyle,
@@ -61,5 +61,5 @@ Config/testthat/edition: 3
 Language: en-US
 LinkingTo: 
     Rcpp
-URL: https://www.borch.dev/uploads/screpertoire/
+URL: https://www.borch.dev/uploads/scRepertoire/
 BugReports: https://github.com/ncborcherding/scRepertoire/issues

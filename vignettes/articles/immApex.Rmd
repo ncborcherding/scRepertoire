@@ -356,7 +356,7 @@ We have a function called ```sequenceDecoder()``` that extracts sequences from 
 
 Parameters for ```sequenceDecoder()```
 
-* **sequence.matrix** The encoded sequences to decode in an array opr matrix
+* **sequence.matrix** The encoded sequences to decode in an array or matrix
 * **encoder** The method to prepare the sequencing information - "onehotEncoder" or "propertyEncoder"
 * **aa.method.to.use** The method or approach to use for the conversion corresponding to the input to ```propertyEncoder()```. This will be ignored if **encoder** = "onehotEncoder"
 * **call.threshold** The relative strictness of sequence calling with higher values being more stringent
