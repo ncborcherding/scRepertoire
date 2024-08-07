@@ -73,7 +73,7 @@ clonalQuant <- function(input.data,
       mat[i,3] <- length(na.omit(input.data[[i]][,cloneCall]))
       if (!is.null(group.by)) {
         location <- which(colnames(input.data[[i]]) == group.by)
-        mat[i,4] <- input.data[[i]][1,location]
+        mat[i,4] <- as.vector(input.data[[i]][1,location])
       }
   }
   if (scale) { 
