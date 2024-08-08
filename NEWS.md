@@ -1,9 +1,9 @@
-# scRepertoire VERSION 2.0.4
+# scRepertoire VERSION 2.0.5
 
 ## UNDERLYING CHANGES
-* added type checks using asserthat
+* added type checks using assertthat
 * updated conditional statements in constructConDFAndparseTCR.cpp
-
+* Fixed issue in ```clonalQuant()``` and factor-based **group.by** variable
 
 # scRepertoire VERSION 2.0.4
 
