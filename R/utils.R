@@ -1,10 +1,5 @@
-# readability functions
+# readability functions with appropriate assertthat fail messages
 "%!in%" <- Negate("%in%")
-is_seurat_object <- function(obj) inherits(obj, "Seurat")
-is_se_object <- function(obj) inherits(obj, "SummarizedExperiment")
-is_seurat_or_se_object <- function(obj) {
-    is_seurat_object(obj) || is_se_object(obj)
-}
 
 #'@importFrom stringr str_sort
 .ordering.function <- function(vector, 
@@ -148,7 +143,7 @@ is_seurat_or_se_object <- function(obj) {
 .checkList <- function(df) {
   df <- tryCatch(
       {
-          if (!inherits(df, "list")) { 
+          if (!inherits(df, "list")) {
               df <- list(df)
           }
           df
@@ -629,7 +624,12 @@ is_df_or_list_of_df <- function(x) {
   edge.list <- do.call(rbind, edge.list)
   
   if(exportGraph) {
-    graph <- graph_from_edgelist(as.matrix(edge.list)[,c(1,2)])
+    if(!is.null(edge.list)) {
+      graph <- graph_from_edgelist(as.matrix(edge.list)[,c(1,2)])
+      
+    } else {
+      graph <- NULL
+    }
     return(graph)
   }
   

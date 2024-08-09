@@ -1,3 +1,10 @@
+# scRepertoire VERSION 2.0.5
+
+## UNDERLYING CHANGES
+* added type checks using assertthat
+* updated conditional statements in constructConDFAndparseTCR.cpp
+* Fixed issue in ```clonalQuant()``` and factor-based **group.by** variable
+
 # scRepertoire VERSION 2.0.4
 
 ## UNDERLYING CHANGES
@@ -8,7 +15,10 @@
 * ```clonalCompare()``` now retains the original clonal info if using **relabel.clones**
 * Add Dandelion support in to ```loadContigs()``` and testthat
 * Fixed issue with ```positionalProperty()``` assumption that the clones will all have 20 amino acids.
+* Fixed issue with ```positionalProperty()``` and removing non-amino acids.
 * Fixed IGH/K/L mistaking gene issue in ```vizGenes()```
+* Add error message for NULL results in ```clonalCluster()``` with **export.graph = TRUE**
+* Fixed issue with "full.clones" missing in ```combineExpression()``` when using 1 chain
 
 
 # scRepertoire VERSION 2.0.3

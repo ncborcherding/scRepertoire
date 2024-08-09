@@ -47,6 +47,7 @@ utils::globalVariables(c(
 #' nonproductive chains if the variable exists in the contig data. Default
 #' is set to TRUE to remove nonproductive contigs.
 #' 
+#' @importFrom assertthat assert_that is.flag
 #' @export
 #' @concept Loading_and_Processing_Contigs
 #' @return List of clones for individual cell barcodes
@@ -58,6 +59,14 @@ combineTCR <- function(input.data,
                        removeMulti = FALSE, 
                        filterMulti = FALSE,
                        filterNonproductive = TRUE) {
+
+    # rudimentary input checking
+    assert_that(is.character(samples) || is.null(samples))
+    assert_that(is.character(ID) || is.null(ID))
+    assert_that(is.flag(removeNA))
+    assert_that(is.flag(removeMulti))
+    assert_that(is.flag(filterMulti))
+    
     input.data <- .checkList(input.data)
     input.data <- .checkContigs(input.data)
     out <- NULL
@@ -185,6 +194,7 @@ combineTCR <- function(input.data,
 #' nonproductive chains if the variable exists in the contig data. Default
 #' is set to TRUE to remove nonproductive contigs.
 #' @importFrom dplyr %>% mutate
+#' @importFrom assertthat assert_that is.flag
 #' @export
 #' @concept Loading_and_Processing_Contigs
 #' @return List of clones for individual cell barcodes
@@ -200,6 +210,16 @@ combineBCR <- function(input.data,
     if(is.null(samples)) {
       stop("combineBCR() requires the samples paramter for the calculation of edit distance.")
     }
+
+    # rudimentary input checking
+    assert_that(is.character(samples) || is.null(samples))
+    assert_that(is.character(ID) || is.null(ID))
+    assert_that(is.flag(call.related.clones))
+    assert_that(is.numeric(threshold))
+    assert_that(is.flag(removeNA))
+    assert_that(is.flag(removeMulti))
+    assert_that(is.flag(filterMulti))
+
     input.data <- .checkList(input.data)
     input.data <- .checkContigs(input.data)
     out <- NULL

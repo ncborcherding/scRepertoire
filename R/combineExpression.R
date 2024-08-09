@@ -49,11 +49,12 @@
 #' @importFrom  rlang %||% sym :=
 #' @importFrom SummarizedExperiment colData<- colData
 #' @importFrom S4Vectors DataFrame
+#' @importFrom assertthat assert_that is.string is.flag
 #' @export
 #' @concept SC_Functions
 #' @return Single-cell object with clone information added to meta data
 #' information
-#' 
+#'
 combineExpression <- function(input.data, 
                               sc.data, 
                               cloneCall ="strict", 
@@ -64,6 +65,17 @@ combineExpression <- function(input.data,
                               cloneSize = c(Rare = 1e-4,Small = 0.001,Medium = 0.01,Large = 0.1,Hyperexpanded = 1),
                               addLabel = FALSE) {
     call_time <- Sys.time()
+
+    # rudimentary type checking
+    assert_that(isAnyValidProductOfCombineContigs(input.data))
+    assert_that(is_seurat_or_se_object(sc.data))
+    assert_that(is.string(cloneCall))
+    assert_that(is.string(chain))
+    assert_that(is.string(group.by) || is.null(group.by))
+    assert_that(is.flag(proportion))
+    assert_that(is.flag(filterNA))
+    assert_that(is_named_numeric(cloneSize))
+    assert_that(is.flag(addLabel))
   
     options( dplyr.summarise.inform = FALSE )
     if (!proportion && any(cloneSize < 1)) {
@@ -76,8 +88,9 @@ combineExpression <- function(input.data,
       #Retain the full clone information
       full.clone <- lapply(input.data, function(x) {
                         x[,c("barcode", cloneCall)]
-      full.clone <- bind_rows(full.clone)
+                 
       })
+      full.clone <- bind_rows(full.clone)
       for(i in seq_along(input.data)) {
         input.data[[i]] <- .off.the.chain(input.data[[i]], chain, cloneCall)
       }
@@ -179,7 +192,7 @@ combineExpression <- function(input.data,
       clone_sym <- sym(cloneCall)
       PreMeta <- PreMeta %>%
         left_join(full.clone, by = "barcode", suffix = c("", ".from_full_clones")) %>%
-        mutate(!!column_sym := coalesce(!!sym(paste0(cloneCall, ".from_full_clones")), !!column_sym)) %>%
+        mutate(!!clone_sym := coalesce(!!sym(paste0(cloneCall, ".from_full_clones")), !!clone_sym)) %>%
         select(-all_of(paste0(cloneCall, ".from_full_clones")))
     }
     barcodes <- PreMeta$barcode
@@ -226,14 +239,4 @@ combineExpression <- function(input.data,
     return(sc.data)
 } 
 
-
 .warn_str <- "< 1% of barcodes match: Ensure the barcodes in the single-cell object match the barcodes in the combined immune receptor output from scRepertoire. If getting this error, please check https://www.borch.dev/uploads/screpertoire/articles/faq."
-
-
-
-
-
-
-
-
-
