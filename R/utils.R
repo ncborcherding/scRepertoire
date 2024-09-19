@@ -360,12 +360,9 @@
 		"ctstrict" = "CTstrict"
 	)
 
-	x <- tolower(x)
-
-	if (!is.null(clonecall_dictionary[[x]])) {
-		return(clonecall_dictionary[[x]])
-	}
-	else {
+	if (!is.null(clonecall_dictionary[[tolower(x)]])) {
+		return(clonecall_dictionary[[tolower(x)]])
+	} else {
 		warning("A custom variable ", x, " will be used to call clones")
 		return(x)
 	}
