@@ -49,8 +49,8 @@ clonalQuant <- function(input.data,
                               .theCall(input.data, cloneCall, check.df = FALSE), 
                               chain)
   cloneCall <- .theCall(input.data, cloneCall)
+  
   sco <- is_seurat_object(input.data) | is_se_object(input.data)
-
   if(!is.null(group.by) & !sco) {
     input.data <- .groupList(input.data, group.by)
   }

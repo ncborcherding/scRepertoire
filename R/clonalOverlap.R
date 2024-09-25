@@ -89,6 +89,11 @@ clonalOverlap <- function(input.data,
     }
     
     cloneCall <- .theCall(input.data, cloneCall)
+    
+    sco <- is_seurat_object(input.data) | is_se_object(input.data)
+    if(!is.null(group.by) & !sco) {
+      input.data <- .groupList(input.data, group.by)
+    }
 
     num_samples <- length(input.data[])
     names_samples <- names(input.data)
