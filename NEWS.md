@@ -1,3 +1,9 @@
+# scRepertoire VERSION 2.0.7
+
+## UNDERLYING CHANGES
+* Fixed issue with "group.by" in ```clonalOverlap()```
+* Fixed issue with "group.by" in ```clonalCompare()```
+
 # scRepertoire VERSION 2.0.6
 
 ## UNDERLYING CHANGES
