@@ -61,20 +61,9 @@ clonalLength <- function(input.data,
           CDR3 sequence to analyze by using `cloneCall`")
   }
   
-  #Identifying and assigning chains
-  chain.pos <- which(colnames(input.data[[1]]) == "cdr3_aa1")-1
-  c1 <- na.omit(unique(substr(input.data[[1]][seq_len(10),chain.pos], 1,3)))
-  c1 <- c1[c1 != "NA."]
-  c1 <- c1[c1 != "NA"]
-
-  c2 <- switch(c1,
-               "TRA" = "TRB",
-               "IGH"  = "IGL",
-               "TRG"  = "TRD")
-  
   #Calculating Length
   Con.df <- NULL
-  Con.df <- .lengthDF(input.data, cloneCall, chain, group.by, c1, c2)
+  Con.df <- .lengthDF(input.data, cloneCall, chain, group.by)
   
   names <- names(input.data)
   

@@ -1,3 +1,9 @@
+# scRepertoire VERSION 2.0.8
+
+## UNDERLYING CHANGES
+* Fixed issue with single chain output for ```clonalLength()```
+* Removed unnecessary code remnant in ```clonalLength()```
+
 # scRepertoire VERSION 2.0.7
 
 ## UNDERLYING CHANGES

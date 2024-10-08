@@ -427,7 +427,7 @@
 #Producing a data frame to visualize for lengthContig()
 #' @keywords internal
 #' @importFrom stringr str_remove_all
-.lengthDF <- function(df, cloneCall, chain, group, c1, c2){
+.lengthDF <- function(df, cloneCall, chain, group){
     Con.df <- NULL
     names <- names(df)
     if (identical(chain, "both")) {
@@ -456,14 +456,17 @@
                 chain1 <- nchar(val1)
                 if (!is.null(group)) {
                     cols1 <- df[[x]][,group]
-                    data1 <- data.frame(chain1, val1, names[x], c1, cols1)
+                    data1 <- data.frame(chain1, val1, names[x], chain, cols1)
                     colnames(data1)<-c("length","CT","values","chain",group)
                 }else if (is.null(group)){
-                    data1 <- data.frame(chain1, val1, names[x], c1)
+                    data1 <- data.frame(chain1, val1, names[x], chain)
                     colnames(data1) <- c("length", "CT", "values", "chain")
+                }
                 data <- na.omit(data1)
                 data <- subset(data, CT != "NA" & CT != "")
-                Con.df<- rbind.data.frame(Con.df, data) }}
+                Con.df<- rbind.data.frame(Con.df, data) 
+                
+            }
     }
     return(Con.df)
 }
