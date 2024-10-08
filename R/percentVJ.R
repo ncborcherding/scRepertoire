@@ -99,8 +99,10 @@ percentVJ <- function(input.data,
     geom_tile(lwd= 0.25, color = "black") +
     scale_fill_gradientn(name = "Percentage", colors = .colorizer(palette,21)) +
     theme_classic() + 
-    facet_wrap(~L1) + 
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1), 
           axis.title = element_blank())
+  if(length(unique(mat_melt$L1)) > 1) {
+    plot <- plot + facet_wrap(~L1) 
+  }
   return(plot)
 }
