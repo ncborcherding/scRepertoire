@@ -3,6 +3,7 @@
 ## UNDERLYING CHANGES
 * Fixed issue with single chain output for ```clonalLength()```
 * Removed unnecessary code remnant in ```clonalLength()```
+* Allow one sample to be plotted by ```percentVJ()```
 
 # scRepertoire VERSION 2.0.7
 
