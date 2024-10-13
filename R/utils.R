@@ -340,7 +340,7 @@
     return(x)
 }
 
-# helper for .theCall
+# helper for .theCall # Qile: on second thought - converting to x to lowercase may be a bad idea...
 .convertClonecall <- function(x) {
 
   clonecall_dictionary <- hash::hash(

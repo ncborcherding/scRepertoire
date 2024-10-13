@@ -67,7 +67,7 @@ combineExpression <- function(input.data,
     call_time <- Sys.time()
 
     # rudimentary type checking
-    assert_that(isAnyValidProductOfCombineContigs(input.data))
+    assert_that(isListOfNonEmptyDataFrames(input.data))
     assert_that(is_seurat_or_se_object(sc.data))
     assert_that(is.string(cloneCall))
     assert_that(is.string(chain))
@@ -87,8 +87,7 @@ combineExpression <- function(input.data,
     if (chain != "both") {
       #Retain the full clone information
       full.clone <- lapply(input.data, function(x) {
-                        x[,c("barcode", cloneCall)]
-                 
+        x[, c("barcode", cloneCall)]
       })
       full.clone <- bind_rows(full.clone)
       for(i in seq_along(input.data)) {
@@ -103,8 +102,7 @@ combineExpression <- function(input.data,
     cell.names <- rownames(meta)
 
     conDfColnamesNoCloneSize <- unique(c(
-        "barcode", "CTgene", "CTnt", "CTaa", "CTstrict",
-        cloneCall, "clonalProportion", "clonalFrequency"
+        "barcode", CT_lines, cloneCall, "clonalProportion", "clonalFrequency"
     ))
 
     if (is.null(group.by) || group.by == "none") {
