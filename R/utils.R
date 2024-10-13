@@ -13,10 +13,10 @@
   return(data.frame)
 }
 
-#Use to shuffle between chains Qile: the NA handling here *might* be related to the unnamed combineTCR bugs from the new rcpp con.df construction
+#Use to shuffle between chains
 #' @importFrom stringr str_split
 #' @keywords internal
-#' @author Ye-Lin Son Nick Borcherding
+#' @author Ye-Lin Son, Nick Borcherding
 .off.the.chain <- function(dat, chain, cloneCall, check = TRUE) {
   chain1 <- toupper(chain) #to just make it easier
   if (chain1 %in% c("TRA", "TRG", "IGH")) {

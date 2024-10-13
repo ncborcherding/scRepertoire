@@ -82,7 +82,7 @@ combineExpression <- function(input.data,
         stop("Adjust the cloneSize parameter - there are groupings < 1")
     }
     cloneSize <- c(None = 0, cloneSize)
-    
+
     cloneCall <- .theCall(input.data, cloneCall)
     if (chain != "both") {
       #Retain the full clone information
@@ -101,9 +101,16 @@ combineExpression <- function(input.data,
     Con.df <- NULL
     meta <- .grabMeta(sc.data)
     cell.names <- rownames(meta)
+
+    conDfColnamesNoCloneSize <- unique(c(
+        "barcode", "CTgene", "CTnt", "CTaa", "CTstrict",
+        cloneCall, "clonalProportion", "clonalFrequency"
+    ))
+
     if (is.null(group.by) || group.by == "none") {
+
         for (i in seq_along(input.data)) {
-      
+
             data <- data.frame(input.data[[i]], stringsAsFactors = FALSE)
             data2 <- unique(data[,c("barcode", cloneCall)])
             #This ensures all calculations are based on the cells in the SCO
@@ -114,17 +121,11 @@ combineExpression <- function(input.data,
                                   clonalFrequency = dplyr::n())
             colnames(data2)[1] <- cloneCall
             data <- merge(data, data2, by = cloneCall, all = TRUE)
-            if ( cloneCall %!in% c("CTgene", "CTnt", "CTaa", "CTstrict") ) {
-              data <- data[,c("barcode", "CTgene", "CTnt",
-                              "CTaa", "CTstrict", cloneCall,
-                              "clonalProportion", "clonalFrequency")]
-            } else {
-              data <- data[,c("barcode", "CTgene", "CTnt", 
-                              "CTaa", "CTstrict",
-                              "clonalProportion", "clonalFrequency")] }
+            data <- data[, conDfColnamesNoCloneSize]
             Con.df <- rbind.data.frame(Con.df, data)
         }
-    } else if (group.by != "none" || !is.null(group.by)) {
+
+    } else {
         data <- data.frame(bind_rows(input.data), stringsAsFactors = FALSE)
         data2 <- na.omit(unique(data[,c("barcode", cloneCall, group.by)]))
         #This ensures all calculations are based on the cells in the SCO
@@ -134,18 +135,12 @@ combineExpression <- function(input.data,
                                   summarise(clonalProportion = dplyr::n()/nrow(data2), 
                                             clonalFrequency = dplyr::n())
         )
-        
+
         colnames(data2)[c(1,2)] <- c(cloneCall, group.by)
         data <- merge(data, data2, by = c(cloneCall, group.by), all = TRUE)
-        if ( cloneCall %!in% c("CTgene", "CTnt", "CTaa", "CTstrict") ) {
-              Con.df <- data[,c("barcode", "CTgene", "CTnt",
-                              "CTaa", "CTstrict", cloneCall,
-                              "clonalProportion", "clonalFrequency")]
-            } else {
-              Con.df <- data[,c("barcode", "CTgene", "CTnt", 
-                              "CTaa", "CTstrict",
-                              "clonalProportion", "clonalFrequency")] }
-        }
+        Con.df <- data[, conDfColnamesNoCloneSize]
+    }
+
     #Detect if largest cloneSize category is too small for experiment and amend
     #this prevents a ton of NA values in the data
     if(!proportion && max(na.omit(Con.df[,"clonalFrequency"])) > cloneSize[length(cloneSize)]) {
@@ -158,32 +153,19 @@ combineExpression <- function(input.data,
       names(cloneSize)[x] <- paste0(names(cloneSize[x]), ' (', cloneSize[x-1], 
         ' < X <= ', cloneSize[x], ')') 
     }
-    
-    if(proportion) {
-      c.column <- "clonalProportion"
-    } else {
-      c.column <- "clonalFrequency"
-    }
+
+    cloneRatioColname <- ifelse(proportion, "clonalProportion", "clonalFrequency")
+
     #Assigning cloneSize
     for (i in 2:length(cloneSize)) { 
-      Con.df$cloneSize <- ifelse(Con.df[,c.column] > cloneSize[i-1] & 
-                                 Con.df[,c.column] <= cloneSize[i], 
-                                 names(cloneSize[i]), 
-                                 Con.df$cloneSize)
-      }
-    
-    #Formating the meta data to add
-    if ( cloneCall %!in% c("CTgene", "CTnt", 
-                         "CTaa", "CTstrict") ) {
-      PreMeta <- unique(Con.df[,c("barcode", "CTgene", "CTnt", 
-                                  "CTaa", "CTstrict", cloneCall, 
-                                  "clonalProportion", "clonalFrequency", "cloneSize")])
-    } else {
-      PreMeta <- unique(Con.df[,c("barcode", "CTgene", "CTnt", 
-                                "CTaa", "CTstrict", "clonalProportion", 
-                                "clonalFrequency", "cloneSize")])
+        Con.df$cloneSize <- ifelse(Con.df[, cloneRatioColname] > cloneSize[i-1] & 
+                                   Con.df[, cloneRatioColname] <= cloneSize[i], 
+                                   names(cloneSize[i]), 
+                                   Con.df$cloneSize)
     }
-    #Removing any duplicate barcodes, should not be an issue
+    
+    #Formating the meta data to add and removing any duplicate barcodes
+    preMeta <- unique(Con.df[, c(conDfColnamesNoCloneSize, "cloneSize")])
     dup <- PreMeta$barcode[which(duplicated(PreMeta$barcode))]
     PreMeta <- PreMeta[PreMeta$barcode %!in% dup,]
     
@@ -208,7 +190,7 @@ combineExpression <- function(input.data,
     if (is_seurat_object(sc.data)) { 
         if (length(which(rownames(PreMeta) %in% 
                          rownames(sc.data[[]])))/length(rownames(sc.data[[]])) < 0.01) {
-          warning(.warn_str)
+          warning(getHighBarcodeMismatchWarning())
         }
         col.name <- names(PreMeta) %||% colnames(PreMeta)
         sc.data[[col.name]] <- PreMeta
@@ -216,7 +198,7 @@ combineExpression <- function(input.data,
       rownames <- rownames(colData(sc.data))
       if (length(which(rownames(PreMeta) %in% 
                        rownames))/length(rownames) < 0.01) {
-        warning(.warn_str) }
+        warning(getHighBarcodeMismatchWarning()) }
       
       combined_col_names <- unique(c(colnames(colData(sc.data)), colnames(PreMeta)))
       full_data <- merge(colData(sc.data), PreMeta[rownames, , drop = FALSE], by = "row.names", all.x = TRUE)
@@ -237,6 +219,11 @@ combineExpression <- function(input.data,
         )
     }
     return(sc.data)
-} 
+}
 
-.warn_str <- "< 1% of barcodes match: Ensure the barcodes in the single-cell object match the barcodes in the combined immune receptor output from scRepertoire. If getting this error, please check https://www.borch.dev/uploads/screpertoire/articles/faq."
+getHighBarcodeMismatchWarning <- function() paste(
+    "< 1% of barcodes match: Ensure the barcodes in the single-cell object",
+    "match the barcodes in the combined immune receptor output from",
+    "scRepertoire. If getting this error, please check",
+    "https://www.borch.dev/uploads/screpertoire/articles/faq."
+)
