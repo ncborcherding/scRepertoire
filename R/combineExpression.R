@@ -165,7 +165,7 @@ combineExpression <- function(input.data,
     }
     
     #Formating the meta data to add and removing any duplicate barcodes
-    preMeta <- unique(Con.df[, c(conDfColnamesNoCloneSize, "cloneSize")])
+    PreMeta <- unique(Con.df[, c(conDfColnamesNoCloneSize, "cloneSize")])
     dup <- PreMeta$barcode[which(duplicated(PreMeta$barcode))]
     PreMeta <- PreMeta[PreMeta$barcode %!in% dup,]
     
