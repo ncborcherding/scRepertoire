@@ -208,7 +208,7 @@ combineBCR <- function(input.data,
                        filterMulti = TRUE,
                        filterNonproductive = TRUE) {
     if(is.null(samples)) {
-      stop("combineBCR() requires the samples paramter for the calculation of edit distance.")
+      stop("combineBCR() requires the samples parameter for the calculation of edit distance.")
     }
 
     # rudimentary input checking

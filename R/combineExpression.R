@@ -105,6 +105,7 @@ combineExpression <- function(input.data,
         "barcode", CT_lines, cloneCall, "clonalProportion", "clonalFrequency"
     ))
 
+    # Computes the clonalProportion and clonalFrequency for each clone
     if (is.null(group.by) || group.by == "none") {
 
         for (i in seq_along(input.data)) {
