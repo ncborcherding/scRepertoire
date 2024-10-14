@@ -1,3 +1,13 @@
+# scRepertoire VERSION 2.0.8.9000 (development version)
+
+## NEW FEATURES
+* Added ```getContigDoublets()``` experimental function to identify TCR and BCR doublets as a preprocessing step to ```combineExpression()```
+
+## UNDERLYING CHANGES
+* convert documentation to use markdown (`roxygen2md`)
+* import `lifecycle` to add badges to functions
+* import `purrr`
+
 # scRepertoire VERSION 2.0.8
 
 ## UNDERLYING CHANGES
