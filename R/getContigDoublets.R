@@ -15,8 +15,9 @@
 #'
 #' @return
 #' A dataframe of barcodes that exist in both the TCR and BCR data, with
-#' columns from both sets of data. There will be an additional column `contigType`
-#' of type factor with levels 'TCR' and 'BCR' indicating the origin of the contig.
+#' columns from both sets of data. There will be an additional column
+#' `contigType` of type factor with levels 'TCR' and 'BCR' indicating the
+#' origin of the contig - this will be the new first column.
 #'
 #' If there are no doublets, the returned
 #' data.frame will have the same colnames but no rows.
@@ -32,30 +33,34 @@ getContigDoublets <- function(tcrOutput, bcrOutput) {
     doubletBarcodes <- getContigDoubletBarcodes(tcrOutput, bcrOutput)
 
     if (length(doubletBarcodes) == 0) {
-        output <- autoFullJoin(tcrOutput[[1]][0, ], bcrOutput[[1]][0, ])
-        output$contigType <- factor(character(0), levels = c("BCR", "TCR"))
-        return(output)
+        autoFullJoin(tcrOutput[[1]][0, ], bcrOutput[[1]][0, ]) %>%
+            dplyr::mutate(
+                contigType = factor(character(0), levels = c("BCR", "TCR")),
+                .before = 1
+            ) %>%
+            return()
     }
 
-    RbindedTcrBcrDoublets <- list(tcrOutput, bcrOutput) %>%
+    list(TCR = tcrOutput, BCR = bcrOutput) %>%
         lapplyOnAll(function(df) {
             df[df$barcode %in% doubletBarcodes, ]
         }) %>%
-        lapply(dplyr::bind_rows)
-
-    RbindedTcrBcrDoublets[[1]]$contigType <- "TCR"
-    RbindedTcrBcrDoublets[[2]]$contigType <- "BCR"
-    
-    RbindedTcrBcrDoublets %>%
+        purrr::imap(function(x, type) {
+            dplyr::bind_rows(x) %>%
+                dplyr::mutate(contigType = type)
+        }) %>%
         purrr::reduce(autoFullJoin) %>%
-        dplyr::mutate(contigType = factor(contigType))
+        dplyr::mutate(
+            contigType = factor(contigType, levels = c("BCR", "TCR"))
+        ) %>%
+        dplyr::relocate(contigType)
 }
 
 getContigDoubletBarcodes <- function(tcrOutput, bcrOutput) {
-    list(tcrOutput, bcrOutput) %>%
-        lapplyOnAll(function(df) unique(df$barcode)) %>%
-        lapply(purrr::list_flatten) %>%
-        purrr::reduce(intersect)
+    intersect(
+        dplyr::bind_rows(tcrOutput)$barcode,
+        dplyr::bind_rows(bcrOutput)$barcode
+    )
 }
 
 lapplyOnAll <- function(listOfLists, fun) {

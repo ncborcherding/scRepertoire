@@ -15,8 +15,9 @@ BCR contig information, each dataframe must have a \code{barcode} column.}
 }
 \value{
 A dataframe of barcodes that exist in both the TCR and BCR data, with
-columns from both sets of data. There will be an additional column \code{contigType}
-of type factor with levels 'TCR' and 'BCR' indicating the origin of the contig.
+columns from both sets of data. There will be an additional column
+\code{contigType} of type factor with levels 'TCR' and 'BCR' indicating the
+origin of the contig - this will be the new first column.
 
 If there are no doublets, the returned
 data.frame will have the same colnames but no rows.

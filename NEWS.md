@@ -5,8 +5,8 @@
 
 ## UNDERLYING CHANGES
 * convert documentation to use markdown (`roxygen2md`)
-* import `lifecycle` to add badges to functions
-* import `purrr`
+* import `lifecycle`, `purrr`, `withr`
+* suppressed "using discrete variable for alpha is not recommended" warning in alluvialClones unit tests.
 
 # scRepertoire VERSION 2.0.8
 
