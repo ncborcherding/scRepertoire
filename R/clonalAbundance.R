@@ -2,11 +2,11 @@
 #'
 #' Displays the number of clones at specific frequencies by sample 
 #' or group. Visualization can either be a line graph (
-#' \strong{scale} = FALSE) using calculated numbers or density 
-#' plot (\strong{scale} = TRUE). Multiple sequencing runs can 
+#' **scale** = FALSE) using calculated numbers or density 
+#' plot (**scale** = TRUE). Multiple sequencing runs can 
 #' be group together using the group parameter. If a matrix 
 #' output for the data is preferred, set 
-#' \strong{exportTable} = TRUE.
+#' **exportTable** = TRUE.
 #'
 #' @examples
 #' #Making combined contig data
@@ -17,11 +17,11 @@
 #'                 cloneCall = "gene", 
 #'                 scale = FALSE)
 #'
-#' @param input.data The product of \code{\link{combineTCR}}, 
-#' \code{\link{combineBCR}}, or \code{\link{combineExpression}}.
-#' @param cloneCall How to call the clone - VDJC gene (\strong{gene}), 
-#' CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
-#' VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable 
+#' @param input.data The product of [combineTCR()], 
+#' [combineBCR()], or [combineExpression()].
+#' @param cloneCall How to call the clone - VDJC gene (**gene**), 
+#' CDR3 nucleotide (**nt**), CDR3 amino acid (**aa**),
+#' VDJC gene + CDR3 nucleotide (**strict**) or a custom variable 
 #' in the data. 
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL"
@@ -33,7 +33,7 @@
 #' @param exportTable Returns the data frame used for forming the graph
 #' to the visualization.
 #' @param palette Colors to use in visualization - input any 
-#' \link[grDevices]{hcl.pals}.
+#' [hcl.pals][grDevices::hcl.pals].
 #' @importFrom ggplot2 ggplot
 #' @export
 #' @concept Visualizing_Clones

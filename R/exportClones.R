@@ -1,10 +1,10 @@
 #' Exporting clones
 #'
 #' This function saves a csv file of clones (genes, amino acid, and 
-#' nucleotide sequences) by barcodes. \strong{format} determines 
-#' the structure of the csv file - \emph{paired} will export sequences 
-#' by barcodes and include multiple chains, \emph{airr} will export a data 
-#' frame that is consistent with the AIRR format, and \emph{TCRMatch} will 
+#' nucleotide sequences) by barcodes. **format** determines 
+#' the structure of the csv file - *paired* will export sequences 
+#' by barcodes and include multiple chains, *airr* will export a data 
+#' frame that is consistent with the AIRR format, and *TCRMatch* will 
 #' export a data frame that has the TRB chain with count information.
 #' 
 #' @examples
@@ -17,11 +17,11 @@
 #'              format = "paired")
 #' }
 #'                                    
-#' @param input.data The product of \code{\link{combineTCR}}, 
-#' \code{\link{combineBCR}}, or \code{\link{combineExpression}}.
+#' @param input.data The product of [combineTCR()], 
+#' [combineBCR()], or [combineExpression()].
 #' @param format The format to export the clones - "paired", "airr", or "TCRMatch".
 #' @param group.by The variable to use for grouping.
-#' @param write.file \strong{TRUE}, save the file or \strong{FALSE}, 
+#' @param write.file **TRUE**, save the file or **FALSE**, 
 #' return a data.frame
 #' @param dir directory location to save the csv
 #' @param file.name the csv file name

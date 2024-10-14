@@ -2,27 +2,27 @@
 #'
 #' This functions allows for the calculation and visualizations of 
 #' various overlap metrics for clones. The methods include overlap 
-#' coefficient (\strong{overlap}), Morisita's overlap index 
-#' (\strong{morisita}), Jaccard index (\strong{jaccard}), cosine 
-#' similarity (\strong{cosine}) or the exact number of clonal 
-#' overlap (\strong{raw}).
+#' coefficient (**overlap**), Morisita's overlap index 
+#' (**morisita**), Jaccard index (**jaccard**), cosine 
+#' similarity (**cosine**) or the exact number of clonal 
+#' overlap (**raw**).
 #' 
 #' @details
 #' The formulas for the indices are as follows:
 #' 
-#' \strong{Overlap Coefficient:}
+#' **Overlap Coefficient:**
 #' \deqn{overlap = \frac{\sum \min(a, b)}{\min(\sum a, \sum b)}}  
 #' 
-#' \strong{Raw Count Overlap:}
+#' **Raw Count Overlap:**
 #' \deqn{raw = \sum \min(a, b)}
 #' 
-#' \strong{Morisita Index:}
+#' **Morisita Index:**
 #' \deqn{morisita = \frac{\sum a b}{(\sum a)(\sum b)}}  
 #' 
-#' \strong{Jaccard Index:}
+#' **Jaccard Index:**
 #' \deqn{jaccard = \frac{\sum \min(a, b)}{\sum a + \sum b - \sum \min(a, b)}}  
 #' 
-#' \strong{Cosine Similarity:}
+#' **Cosine Similarity:**
 #' \deqn{cosine = \frac{\sum a b}{\sqrt{(\sum a^2)(\sum b^2)}}}  
 #' 
 #' Where:  
@@ -40,11 +40,11 @@
 #'               cloneCall = "aa", 
 #'               method = "jaccard")
 #'
-#' @param input.data The product of \code{\link{combineTCR}}, 
-#' \code{\link{combineBCR}}, or \code{\link{combineExpression}}
-#' @param cloneCall How to call the clone - VDJC gene (\strong{gene}), 
-#' CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
-#' VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable 
+#' @param input.data The product of [combineTCR()], 
+#' [combineBCR()], or [combineExpression()]
+#' @param cloneCall How to call the clone - VDJC gene (**gene**), 
+#' CDR3 nucleotide (**nt**), CDR3 amino acid (**aa**),
+#' VDJC gene + CDR3 nucleotide (**strict**) or a custom variable 
 #' in the data
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL"
@@ -55,7 +55,7 @@
 #' to plot groups in order
 #' @param exportTable Returns the data frame used for forming the graph
 #' @param palette Colors to use in visualization - input any 
-#' \link[grDevices]{hcl.pals}
+#' [hcl.pals][grDevices::hcl.pals]
 #' @importFrom stringr str_sort str_to_title
 #' @importFrom reshape2 melt
 #' @importFrom stats quantile

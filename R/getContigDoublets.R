@@ -1,5 +1,8 @@
 #' Get Contig Doublets
 #'
+#' @description
+#' `r lifecycle::badge("experimental")`
+#' 
 #' This function identifies potential doublets by finding common barcodes
 #' between TCR and BCR outputs. It extracts unique barcodes from each list
 #' of dataframes, finds the intersection of the barcodes, and joins the

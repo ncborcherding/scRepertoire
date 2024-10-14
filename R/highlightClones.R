@@ -22,7 +22,7 @@
 #'                                    sequence = c("CVVSDNTGGFKTIF_CASSVRRERANTGELFF"))
 #' 
 #' @param sc.data The single-cell object to attach after 
-#' \code{\link{combineExpression}}
+#' [combineExpression()]
 #' @param cloneCall How to call the clone - VDJC gene (gene), 
 #' CDR3 nucleotide (nt), CDR3 amino acid (aa),
 #' VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data. 

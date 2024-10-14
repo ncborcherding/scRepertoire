@@ -21,12 +21,12 @@ utils::globalVariables(c(
 #' @title Combining the list of T cell receptor contigs into clones
 #'
 #' @description This function consolidates a list of TCR sequencing results to
-#' the level of  the individual cell barcodes. Using the \strong{samples} and 
-#' \strong{ID} parameters, the function will add the strings as prefixes to 
+#' the level of  the individual cell barcodes. Using the **samples** and 
+#' **ID** parameters, the function will add the strings as prefixes to 
 #' prevent issues with repeated  barcodes. The resulting new barcodes will 
 #' need to match the Seurat or SCE object in order to use, 
-#' \code{\link{combineExpression}}. Several levels of filtering exist - 
-#' \emph{removeNA}, \emph{removeMulti}, or \emph{filterMulti} are parameters 
+#' [combineExpression()]. Several levels of filtering exist - 
+#' *removeNA*, *removeMulti*, or *filterMulti* are parameters 
 #' that control how the function deals with barcodes with multiple chains 
 #' recovered.
 #' 
@@ -36,7 +36,7 @@ utils::globalVariables(c(
 #'                                     "P19B","P19L", "P20B", "P20L"))
 #' 
 #' @param input.data List of filtered contig annotations or 
-#' outputs from \code{\link{loadContigs}}.
+#' outputs from [loadContigs()].
 #' @param samples The labels of samples (recommended).
 #' @param ID The additional sample labeling (optional).
 #' @param removeNA This will remove any chain without values.
@@ -159,14 +159,14 @@ combineTCR <- function(input.data,
 #' of the individual cell barcodes. Using the samples and ID parameters, 
 #' the function will add the strings as prefixes to prevent issues with 
 #' repeated barcodes. The resulting new barcodes will need to match the 
-#' Seurat or SCE object in order to use, \code{\link{combineExpression}}. 
-#' Unlike \code{\link{combineTCR}}, combineBCR produces a column 
-#' \strong{CTstrict} of an index of nucleotide sequence and the 
+#' Seurat or SCE object in order to use, [combineExpression()]. 
+#' Unlike [combineTCR()], combineBCR produces a column 
+#' **CTstrict** of an index of nucleotide sequence and the 
 #' corresponding V gene. This index automatically calculates the 
 #' Levenshtein distance between sequences with the same V gene and will
 #' index sequences using a normalized Levenshtein distance with the same 
 #' ID. After which, clone clusters are called using the 
-#' \code{\link[igraph]{components}} function. Clones that are clustered 
+#' [igraph::components()] function. Clones that are clustered 
 #' across multiple sequences will then be labeled with "Cluster" in the 
 #' CTstrict header.
 #'
@@ -178,7 +178,7 @@ combineTCR <- function(input.data,
 #'                        threshold = 0.85)
 #' 
 #' @param input.data List of filtered contig annotations or outputs from 
-#' \code{\link{loadContigs}}.
+#' [loadContigs()].
 #' @param samples The labels of samples (required).
 #' @param ID The additional sample labeling (optional).
 #' @param call.related.clones Use the nucleotide sequence and V gene 

@@ -1,10 +1,10 @@
 #' Demonstrate the distribution of clonal length
 #'
-#' This function displays either the nucleotide (\strong{nt}) or amino 
-#' acid (\strong{aa}) sequence length. The sequence length visualized 
+#' This function displays either the nucleotide (**nt**) or amino 
+#' acid (**aa**) sequence length. The sequence length visualized 
 #' can be selected using the chains parameter, either the combined clone 
 #' (both chains) or across all single chains. Visualization can either 
-#' be a histogram or if \strong{scale} = TRUE, the output will 
+#' be a histogram or if **scale** = TRUE, the output will 
 #' be a density plot. Multiple sequencing runs can be group together 
 #' using the group.by parameter.
 #'
@@ -15,10 +15,10 @@
 #'                                     "P19B","P19L", "P20B", "P20L"))
 #' clonalLength(combined, cloneCall="aa", chain = "both")
 #'
-#' @param input.data The product of \code{\link{combineTCR}}, 
-#' \code{\link{combineBCR}}, or \code{\link{combineExpression}}
-#' @param cloneCall How to call the clone - CDR3 nucleotide (\strong{nt}) 
-#' or CDR3 amino acid (\strong{aa})
+#' @param input.data The product of [combineTCR()], 
+#' [combineBCR()], or [combineExpression()]
+#' @param cloneCall How to call the clone - CDR3 nucleotide (**nt**) 
+#' or CDR3 amino acid (**aa**)
 #' @param group.by The variable to use for grouping
 #' @param order.by A vector of specific plotting order or "alphanumeric"
 #' to plot groups in order description
@@ -28,7 +28,7 @@
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL"
 #' @param exportTable Returns the data frame used for forming the graph.
 #' @param palette Colors to use in visualization - input any 
-#' \link[grDevices]{hcl.pals}
+#' [hcl.pals][grDevices::hcl.pals]
 #' @importFrom stringr str_split
 #' @importFrom ggplot2 ggplot
 #' @export

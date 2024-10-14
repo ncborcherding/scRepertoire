@@ -16,59 +16,59 @@ clonalSizeDistribution(
 )
 }
 \arguments{
-\item{input.data}{The product of \code{\link{combineTCR}}, 
-\code{\link{combineBCR}}, or \code{\link{combineExpression}}.}
+\item{input.data}{The product of \code{\link[=combineTCR]{combineTCR()}},
+\code{\link[=combineBCR]{combineBCR()}}, or \code{\link[=combineExpression]{combineExpression()}}.}
 
-\item{cloneCall}{How to call the clone - VDJC gene (\strong{gene}), 
+\item{cloneCall}{How to call the clone - VDJC gene (\strong{gene}),
 CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
-VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable 
+VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable
 in the data.}
 
-\item{chain}{indicate if both or a specific chain should be used - 
+\item{chain}{indicate if both or a specific chain should be used -
 e.g. "both", "TRA", "TRG", "IGH", "IGL".}
 
 \item{method}{The clustering parameter for the dendrogram.}
 
-\item{threshold}{Numerical vector containing the thresholds 
+\item{threshold}{Numerical vector containing the thresholds
 the grid search was performed over.}
 
 \item{group.by}{The variable to use for grouping.}
 
 \item{exportTable}{Returns the data frame used for forming the graph.}
 
-\item{palette}{Colors to use in visualization - input any 
-\link[grDevices]{hcl.pals}.}
+\item{palette}{Colors to use in visualization - input any
+\link[grDevices:palettes]{hcl.pals}.}
 }
 \value{
 ggplot dendrogram of the clone size distribution
 }
 \description{
-This function produces a hierarchical clustering of clones by sample 
-using discrete gamma-GPD spliced threshold model. If using this 
-model please read and cite powerTCR (more info available at 
+This function produces a hierarchical clustering of clones by sample
+using discrete gamma-GPD spliced threshold model. If using this
+model please read and cite powerTCR (more info available at
 \href{https://pubmed.ncbi.nlm.nih.gov/30485278/}{PMID: 30485278}).
 }
 \details{
 The probability density function (pdf) for the \strong{Generalized Pareto Distribution (GPD)} is given by:
- \deqn{f(x|\mu, \sigma, \xi) = \frac{1}{\sigma} \left( 1 + \xi \left( \frac{x - \mu}{\sigma} \right) \right)^{-\left( \frac{1}{\xi} + 1 \right)}}
+\deqn{f(x|\mu, \sigma, \xi) = \frac{1}{\sigma} \left( 1 + \xi \left( \frac{x - \mu}{\sigma} \right) \right)^{-\left( \frac{1}{\xi} + 1 \right)}}
 
 Where:
 \itemize{
-  \item{\eqn{\mu} is a location parameter}
-  \item{\eqn{\sigma > 0} is a scale parameter}
-  \item{\eqn{\xi} is a shape parameter}
-  \item{\eqn{x \ge \mu} if \eqn{\xi \ge 0} and \eqn{\mu \le x \le \mu - \sigma/\xi} if \eqn{\xi < 0}}
+\item{\eqn{\mu} is a location parameter}
+\item{\eqn{\sigma > 0} is a scale parameter}
+\item{\eqn{\xi} is a shape parameter}
+\item{\eqn{x \ge \mu} if \eqn{\xi \ge 0} and \eqn{\mu \le x \le \mu - \sigma/\xi} if \eqn{\xi < 0}}
 }
-              
+
 The probability density function (pdf) for the \strong{Gamma Distribution} is given by:
 \deqn{f(x|\alpha, \beta) = \frac{x^{\alpha-1} e^{-x/\beta}}{\beta^\alpha \Gamma(\alpha)}}
 
 Where:
 \itemize{
-  \item{\eqn{\alpha > 0} is the shape parameter}
-  \item{\eqn{\beta > 0} is the scale parameter}
-  \item{\eqn{x \ge 0}}
-  \item{\eqn{\Gamma(\alpha)} is the gamma function of \eqn{\alpha}}
+\item{\eqn{\alpha > 0} is the shape parameter}
+\item{\eqn{\beta > 0} is the scale parameter}
+\item{\eqn{x \ge 0}}
+\item{\eqn{\Gamma(\alpha)} is the gamma function of \eqn{\alpha}}
 }
 }
 \examples{

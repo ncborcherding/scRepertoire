@@ -3,11 +3,11 @@
 #' This function adds the immune receptor information to the Seurat or 
 #' SCE object to the meta data. By default this function also calculates 
 #' the frequencies and proportion of the clones by sequencing 
-#' run (\strong{group.by} = NULL). To change how the frequencies/proportions
-#' are calculated, select a column header for the \strong{group.by} variable. 
-#' Importantly, before using \code{\link{combineExpression}} ensure the 
+#' run (**group.by** = NULL). To change how the frequencies/proportions
+#' are calculated, select a column header for the **group.by** variable. 
+#' Importantly, before using [combineExpression()] ensure the 
 #' barcodes of the single-cell object object match the barcodes in the output 
-#' of the \code{\link{combineTCR}} or \code{\link{combineBCR}}. 
+#' of the [combineTCR()] or [combineBCR()]. 
 #'
 #' @examples
 #' #Getting the combined contigs
@@ -21,23 +21,23 @@
 #' #Using combineExpresion()
 #' scRep_example <- combineExpression(combined, scRep_example)
 #' 
-#' @param input.data The product of \code{\link{combineTCR}}, 
-#' \code{\link{combineBCR}} or a list of 
-#' both c(\code{\link{combineTCR}}, \code{\link{combineBCR}}).
+#' @param input.data The product of [combineTCR()], 
+#' [combineBCR()] or a list of 
+#' both c([combineTCR()], [combineBCR()]).
 #' @param sc.data The Seurat or Single-Cell Experiment (SCE) object to attach
-#' @param cloneCall How to call the clone - VDJC gene (\strong{gene}), 
-#' CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
-#' VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable 
+#' @param cloneCall How to call the clone - VDJC gene (**gene**), 
+#' CDR3 nucleotide (**nt**), CDR3 amino acid (**aa**),
+#' VDJC gene + CDR3 nucleotide (**strict**) or a custom variable 
 #' in the data. 
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL".
 #' @param group.by The column label in the combined clones in which 
-#' clone frequency will be calculated. \strong{NULL} or \strong{"none"} will 
+#' clone frequency will be calculated. **NULL** or **"none"** will 
 #' keep the format of input.data.
-#' @param proportion Whether to proportion (\strong{TRUE}) or total 
-#' frequency (\strong{FALSE}) of the clone based on the group.by variable. 
+#' @param proportion Whether to proportion (**TRUE**) or total 
+#' frequency (**FALSE**) of the clone based on the group.by variable. 
 #' @param cloneSize The bins for the grouping based on proportion or frequency. 
-#' If proportion is \strong{FALSE} and the cloneSizes are not set high enough
+#' If proportion is **FALSE** and the cloneSizes are not set high enough
 #' based on frequency, the upper limit of cloneSizes will be automatically
 #' updated.S
 #' @param filterNA Method to subset Seurat/SCE object of barcodes without 
