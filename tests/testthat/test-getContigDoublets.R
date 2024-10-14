@@ -25,3 +25,18 @@ test_that("getContigDoublets works for no doublets", {
 
     expect_identical(getContigDoublets(tcr, bcr), expected_no_doublet_output)
 })
+
+test_that("getContigDoublets works for inputs with doublets", {
+
+    tcr <- getdata("combineContigs", "combineTCR_list_expected")
+
+    # create a BCR list from testdata with doublets
+    bcr <- getdata("combineContigs", "combineBCR_list_expected")
+    bcr <- list(bcr[[1]][1:10, ], bcr[[1]][20:30, ], bcr[[1]][100:110, ])
+    names(bcr) <- names(tcr)
+
+    # UNFINISHED
+    # TODO purposely introduce doublets into testing data
+    # TODO test expected output
+    expect_equal(2 * 2, 4)
+})
