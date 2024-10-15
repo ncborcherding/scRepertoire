@@ -154,7 +154,7 @@ positionalProperty <- function(input.data,
       theme_classic() + 
       theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
     if (exportTable == TRUE) { 
-      return(mat_melt) 
+      return(mat) 
     }
     return(plot)
   
