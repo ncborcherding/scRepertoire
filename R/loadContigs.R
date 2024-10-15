@@ -43,18 +43,19 @@ loadContigs <- function(input,
                         format = "10X") {
   #Loading from directory, recursively
   if (inherits(x=input, what ="character")) {
-    format.list <- list("WAT3R" = "barcode_results.csv", 
-                        "10X" =  "filtered_contig_annotations.csv", 
-                        "AIRR" = "airr_rearrangement.tsv", 
-                        "Dandelion" = "all_contig_dandelion.tsv",
-                        "Immcantation" = "_data.tsv",
-                        "MiXCR" = "clones.tsv", 
-                        "JSON" = ".json",
-                        "TRUST4" = "barcode_report.tsv", 
-                        "BD" = "Contigs_AIRR.tsv",
-                        "Omniscope" =c("_OSB.csv", "_OST.csv"),
-                        "ParseBio" = "barcode_report.tsv")
-        file.pattern <- format.list[[format]]
+    file.pattern <- switch(format,
+                       "WAT3R" = "barcode_results.csv",
+                       "10X" = "filtered_contig_annotations.csv",
+                       "AIRR" = "airr_rearrangement.tsv",
+                       "Dandelion" = "all_contig_dandelion.tsv",
+                       "Immcantation" = "_data.tsv",
+                       "MiXCR" = "clones.tsv",
+                       "JSON" = ".json",
+                       "TRUST4" = "barcode_report.tsv",
+                       "BD" = "Contigs_AIRR.tsv",
+                       "Omniscope" = c("_OSB.csv", "_OST.csv"),
+                       "ParseBio" = "barcode_report.tsv",
+                       stop("Invalid format: ",format))
         contig.files <- list.files(input, paste0(file.pattern, collapse = "|"), recursive = TRUE, full.names = TRUE)
         
         if (format %in% c("10X", "WAT3R", "Omniscope")) {
