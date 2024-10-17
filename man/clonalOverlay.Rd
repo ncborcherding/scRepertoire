@@ -14,14 +14,14 @@ clonalOverlay(
 )
 }
 \arguments{
-\item{sc.data}{The single-cell object after \code{\link{combineExpression}}.}
+\item{sc.data}{The single-cell object after \code{\link[=combineExpression]{combineExpression()}}.}
 
 \item{reduction}{The dimensional reduction to visualize.}
 
-\item{cut.category}{Meta data variable of the single-cell object to use for 
+\item{cut.category}{Meta data variable of the single-cell object to use for
 filtering.}
 
-\item{cutpoint}{The overlay cut point to include, this corresponds to the 
+\item{cutpoint}{The overlay cut point to include, this corresponds to the
 cut.category variable in the meta data of the single-cell object.}
 
 \item{bins}{The number of contours to the overlay}
@@ -32,7 +32,7 @@ cut.category variable in the meta data of the single-cell object.}
 ggplot object
 }
 \description{
-This function allows the user to visualize the clonal expansion by overlaying the 
+This function allows the user to visualize the clonal expansion by overlaying the
 cells with specific clonal frequency onto the dimensional reduction plots in Seurat.
 Credit to the idea goes to Drs Andreatta and Carmona and their work with
 \href{https://github.com/carmonalab/ProjecTILs}{ProjectTIL}.

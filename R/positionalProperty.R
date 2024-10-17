@@ -8,15 +8,15 @@
 #' @details
 #' More information for the individual methods can be found at the following citations:
 #' 
-#' \strong{Atchley:} \href{https://pubmed.ncbi.nlm.nih.gov/15851683/}{citation}
+#' **Atchley:** [citation](https://pubmed.ncbi.nlm.nih.gov/15851683/)
 #' 
-#' \strong{Kidera:} \href{https://link.springer.com/article/10.1007/BF01025492}{citation}
+#' **Kidera:** [citation](https://link.springer.com/article/10.1007/BF01025492)
 #' 
-#' \strong{stScales:} \href{https://pubmed.ncbi.nlm.nih.gov/19373543/}{citation}
+#' **stScales:** [citation](https://pubmed.ncbi.nlm.nih.gov/19373543/)
 #' 
-#' \strong{tScales:} \href{https://www.sciencedirect.com/science/article/pii/S0022286006006314?casa_token=uDj97DwXDDEAAAAA:VZfahldPRwU1WObySJlohudtMSDwF7nJSUzcEGwPhvkY13ALLKhs08Cf0_FyyfYZjxJlj-fVf0SM}{citation}
+#' **tScales:** [citation](https://www.sciencedirect.com/science/article/pii/S0022286006006314?casa_token=uDj97DwXDDEAAAAA:VZfahldPRwU1WObySJlohudtMSDwF7nJSUzcEGwPhvkY13ALLKhs08Cf0_FyyfYZjxJlj-fVf0SM)
 #' 
-#' \strong{VHSE:} \href{https://pubmed.ncbi.nlm.nih.gov/15895431/}{citation}
+#' **VHSE:** [citation](https://pubmed.ncbi.nlm.nih.gov/15895431/)
 #' 
 #'
 #' @examples
@@ -29,8 +29,8 @@
 #'                    method = "Atchley", 
 #'                    aa.length = 20)
 
-#' @param input.data The product of \code{\link{combineTCR}}, 
-#' \code{\link{combineBCR}}, or \code{\link{combineExpression}}
+#' @param input.data The product of [combineTCR()], 
+#' [combineBCR()], or [combineExpression()]
 #' @param chain "TRA", "TRB", "TRG", "TRG", "IGH", "IGL"
 #' @param group.by The variable to use for grouping
 #' @param order.by A vector of specific plotting order or "alphanumeric"
@@ -39,7 +39,7 @@
 #' @param method The method to calculate the property - "Atchley", "Kidera",
 #' "stScales", "tScales", or "VHSE"
 #' @param exportTable Returns the data frame used for forming the graph
-#' @param palette Colors to use in visualization - input any \link[grDevices]{hcl.pals}
+#' @param palette Colors to use in visualization - input any [hcl.pals][grDevices::hcl.pals]
 #' @import ggplot2
 #' @importFrom stringr str_split
 #' @importFrom stats qt

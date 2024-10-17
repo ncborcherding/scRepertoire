@@ -20,18 +20,18 @@ clonalNetwork(
 )
 }
 \arguments{
-\item{sc.data}{The single-cell object after \code{\link{combineExpression}}.}
+\item{sc.data}{The single-cell object after \code{\link[=combineExpression]{combineExpression()}}.}
 
-\item{reduction}{The name of the dimensional reduction of the 
+\item{reduction}{The name of the dimensional reduction of the
 single-cell object.}
 
 \item{group.by}{The variable to use for the nodes.}
 
-\item{filter.clones}{Use to select the top n clones (e.g., \strong{filter.clones} 
-= 2000) or n of clones based on the minimum number of all the comparators 
+\item{filter.clones}{Use to select the top n clones (e.g., \strong{filter.clones}
+= 2000) or n of clones based on the minimum number of all the comparators
 (e.g., \strong{filter.clone} = "min").}
 
-\item{filter.identity}{Display the network for a specific level of the 
+\item{filter.identity}{Display the network for a specific level of the
 indicated identity.}
 
 \item{filter.proportion}{Remove clones from the network below a specific
@@ -40,12 +40,12 @@ proportion.}
 \item{filter.graph}{Remove the reciprocal edges from the half of the graph,
 allowing for cleaner visualization.}
 
-\item{cloneCall}{How to call the clone - VDJC gene (\strong{gene}), 
+\item{cloneCall}{How to call the clone - VDJC gene (\strong{gene}),
 CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
-VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable 
+VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable
 in the data.}
 
-\item{chain}{indicate if both or a specific chain should be used - 
+\item{chain}{indicate if both or a specific chain should be used -
 e.g. "both", "TRA", "TRG", "IGH", "IGL".}
 
 \item{exportClones}{Exports a table of clones that are shared
@@ -54,14 +54,14 @@ of clone copies.}
 
 \item{exportTable}{Exports a table of the data into the global}
 
-\item{palette}{Colors to use in visualization - input any 
-\link[grDevices]{hcl.pals}.}
+\item{palette}{Colors to use in visualization - input any
+\link[grDevices:palettes]{hcl.pals}.}
 }
 \value{
 ggplot object
 }
 \description{
-This function generates a network based on clonal 
+This function generates a network based on clonal
 proportions of an indicated identity and then superimposes
 the network onto a single-cell object dimensional reduction
 plot.

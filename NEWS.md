@@ -1,3 +1,13 @@
+# scRepertoire VERSION 2.0.8.9000 (development version)
+
+## NEW FEATURES
+* Added ```getContigDoublets()``` experimental function to identify TCR and BCR doublets as a preprocessing step to ```combineExpression()```
+
+## UNDERLYING CHANGES
+* convert documentation to use markdown (`roxygen2md`)
+* import `lifecycle`, `purrr`, `withr`
+* suppressed "using discrete variable for alpha is not recommended" warning in alluvialClones unit tests.
+
 # scRepertoire VERSION 2.0.8
 
 ## UNDERLYING CHANGES

@@ -1,7 +1,7 @@
 #' Subset the product of combineTCR() or combineBCR()
 #'
 #' This function allows for the subsetting of the product of 
-#' \code{\link{combineTCR}} or \code{\link{combineBCR}} 
+#' [combineTCR()] or [combineBCR()] 
 #' by the name of the individual list element. 
 #'
 #' @examples
@@ -10,8 +10,8 @@
 #'                                     "P19B","P19L", "P20B", "P20L"))
 #' subset <- subsetClones(combined, name = "sample", variables = c("P17B"))
 #'
-#' @param input.data The product of \code{\link{combineTCR}} or 
-#' \code{\link{combineBCR}}.
+#' @param input.data The product of [combineTCR()] or 
+#' [combineBCR()].
 #' @param name The column header/name to use for subsetting.
 #' @param variables The values to subset by, must be in the names(input.data).
 

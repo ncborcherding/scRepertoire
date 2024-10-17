@@ -17,8 +17,8 @@
 #'          y.axis = NULL,
 #'          plot = "heatmap")
 #'
-#' @param input.data The product of \code{\link{combineTCR}}, 
-#' \code{\link{combineBCR}}, or \code{\link{combineExpression}}.
+#' @param input.data The product of [combineTCR()], 
+#' [combineBCR()], or [combineExpression()].
 #' @param plot The type of plot to return - heatmap or barplot. 
 #' @param x.axis Gene segments to separate the x-axis, such as "TRAV", 
 #' "TRBD", "IGKJ".
@@ -31,7 +31,7 @@
 #' the total respective repertoire size 
 #' @param exportTable Returns the data frame used for forming the graph.
 #' @param palette Colors to use in visualization - input any 
-#' \link[grDevices]{hcl.pals}.
+#' [hcl.pals][grDevices::hcl.pals].
 #' @import ggplot2
 #' @importFrom stringr str_split
 #' @importFrom stats sd

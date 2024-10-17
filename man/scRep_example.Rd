@@ -5,11 +5,11 @@
 \alias{scRep_example}
 \title{A Seurat object of 500 single T cells,}
 \description{
-The object is compatible with `contig_list` and the TCR
-sequencing data can be added with `combineExpression`.  The data is 
+The object is compatible with \code{contig_list} and the TCR
+sequencing data can be added with \code{combineExpression}.  The data is
 from 4 patients with acute respiratory distress, with samples taken
-from both the lung and peripheral blood. More information on the 
+from both the lung and peripheral blood. More information on the
 data can be found in the following
- \href{https://pubmed.ncbi.nlm.nih.gov/33622974/}{manuscript}.
+\href{https://pubmed.ncbi.nlm.nih.gov/33622974/}{manuscript}.
 }
 \concept{Data}

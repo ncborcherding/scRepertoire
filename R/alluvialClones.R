@@ -20,7 +20,7 @@
 #' Alluvial plotting for single-cell object meta data
 #'
 #' View the proportional contribution of clones by Seurat or SCE object 
-#' meta data after \code{\link{combineExpression}}. The visualization 
+#' meta data after [combineExpression()]. The visualization 
 #' is based on the ggalluvial package, which requires the aesthetics 
 #' to be part of the axes that are visualized. Therefore, alpha, facet, 
 #' and color should be part of the the axes you wish to view or will 
@@ -46,10 +46,10 @@
 #'                    color = "ident")
 #' 
 #' @param sc.data The single-cell object to visualize 
-#' after \code{\link{combineExpression}}. 
-#' @param cloneCall How to call the clone - VDJC gene (\strong{gene}), 
-#' CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
-#' VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable 
+#' after [combineExpression()]. 
+#' @param cloneCall How to call the clone - VDJC gene (**gene**), 
+#' CDR3 nucleotide (**nt**), CDR3 amino acid (**aa**),
+#' VDJC gene + CDR3 nucleotide (**strict**) or a custom variable 
 #' in the data. 
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL".
@@ -61,7 +61,7 @@
 #' @param exportTable Exports a table of the data into the global 
 #' environment in addition to the visualization.
 #' @param palette Colors to use in visualization - input any 
-#' \link[grDevices]{hcl.pals}.
+#' [hcl.pals][grDevices::hcl.pals].
 #' 
 #' @import ggplot2
 #' @importFrom ggalluvial StatStratum geom_flow geom_stratum to_lodes_form geom_alluvium

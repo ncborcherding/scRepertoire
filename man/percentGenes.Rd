@@ -15,8 +15,8 @@ percentGenes(
 )
 }
 \arguments{
-\item{input.data}{The product of \code{\link{combineTCR}}, 
-\code{\link{combineBCR}}, or \code{\link{combineExpression}}.}
+\item{input.data}{The product of \code{\link[=combineTCR]{combineTCR()}},
+\code{\link[=combineBCR]{combineBCR()}}, or \code{\link[=combineExpression]{combineExpression()}}.}
 
 \item{chain}{"TRA", "TRB", "TRG", "TRG", "IGH", "IGL".}
 
@@ -29,17 +29,17 @@ to plot groups in order}
 
 \item{exportTable}{Returns the data frame used for forming the graph.}
 
-\item{palette}{Colors to use in visualization - input any 
-\link[grDevices]{hcl.pals}.}
+\item{palette}{Colors to use in visualization - input any
+\link[grDevices:palettes]{hcl.pals}.}
 }
 \value{
 ggplot of percentage of indicated genes as a heatmap
 }
 \description{
-This function the proportion V or J genes used by 
+This function the proportion V or J genes used by
 grouping variables. This function only quantifies
-single gene loci for indicated \strong{chain}. For 
-examining VJ pairing, please see \code{\link{percentVJ}}.
+single gene loci for indicated \strong{chain}. For
+examining VJ pairing, please see \code{\link[=percentVJ]{percentVJ()}}.
 }
 \examples{
 #Making combined contig data

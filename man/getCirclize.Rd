@@ -14,31 +14,31 @@ getCirclize(
 )
 }
 \arguments{
-\item{sc.data}{The single-cell object after \code{\link{combineExpression}}.}
+\item{sc.data}{The single-cell object after \code{\link[=combineExpression]{combineExpression()}}.}
 
-\item{cloneCall}{How to call the clone - VDJC gene (\strong{gene}), 
+\item{cloneCall}{How to call the clone - VDJC gene (\strong{gene}),
 CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
-VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable 
+VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable
 in the data.}
 
-\item{group.by}{The group header for which you would like to analyze 
+\item{group.by}{The group header for which you would like to analyze
 the data.}
 
-\item{proportion}{Calculate the relationship unique 
-clones (proportion = FALSE) or normalized by 
+\item{proportion}{Calculate the relationship unique
+clones (proportion = FALSE) or normalized by
 proportion (proportion = TRUE)}
 
 \item{include.self}{Include counting the clones within a single group.by
 comparison}
 }
 \value{
-A data frame of shared clones between groups formated for \link[circlize]{chordDiagram}
+A data frame of shared clones between groups formated for \link[circlize:chordDiagram]{chordDiagram}
 }
 \description{
-This function will take the meta data from the product of 
-\code{\link{combineExpression}} and generate a relational data frame to 
-be used for a chord diagram. Each cord will represent the number of 
-clone unique and shared across the multiple \strong{group.by} variable. 
+This function will take the meta data from the product of
+\code{\link[=combineExpression]{combineExpression()}} and generate a relational data frame to
+be used for a chord diagram. Each cord will represent the number of
+clone unique and shared across the multiple \strong{group.by} variable.
 If using the downstream circlize R package, please read and cite the
 following \href{https://pubmed.ncbi.nlm.nih.gov/24930139/}{manuscript}.
 If looking for more advance ways for circular visualizations, there

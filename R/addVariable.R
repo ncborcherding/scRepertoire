@@ -1,10 +1,10 @@
 #' Adding variables after combineTCR() or combineBCR()
 #'
-#' This function adds variables to the product of \code{\link{combineTCR}}, 
-#' or \code{\link{combineBCR}} to be used in later visualizations. 
+#' This function adds variables to the product of [combineTCR()], 
+#' or [combineBCR()] to be used in later visualizations. 
 #' For each element, the function will add a column (labeled by 
-#' \strong{variable.name}) with the variable. The length of the 
-#' \strong{variables} parameter needs to match the length of the 
+#' **variable.name**) with the variable. The length of the 
+#' **variables** parameter needs to match the length of the 
 #' combined object.
 #'
 #' @examples
@@ -15,8 +15,8 @@
 #'                         variable.name = "Type", 
 #'                         variables = rep(c("B", "L"), 4))
 #'
-#' @param input.data The product of \code{\link{combineTCR}} or 
-#' \code{\link{combineBCR}}.
+#' @param input.data The product of [combineTCR()] or 
+#' [combineBCR()].
 #' @param variable.name The new column name/header.
 #' @param variables The exact values to add to each element of the list.
 #' @export

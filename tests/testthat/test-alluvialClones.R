@@ -32,21 +32,21 @@ test_that("alluvialClones works", {
                    color = NULL)
   )
   
-  expect_doppelganger(
+  suppressWarnings(expect_doppelganger(
     "alluvialClones_alpha_plot",
-    suppressWarnings(alluvialClones(test_obj, 
+    alluvialClones(test_obj, 
                    cloneCall = "aa", 
                    y.axes = c("Type", "ident"), 
                    alpha = "Patient"))
   )
   
-  expect_doppelganger(
+  suppressWarnings(expect_doppelganger(
     "alluvialClones_alphapluscolor_plot",
     alluvialClones(test_obj, 
                    cloneCall = "aa", 
                    y.axes = c("Type", "ident"), 
                    alpha = "Patient", 
-                   color = "Type")
+                   color = "Type"))
   )
 
   

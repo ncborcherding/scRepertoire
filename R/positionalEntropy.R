@@ -2,7 +2,7 @@
 #'
 #' This function the diversity amino acids along the residues 
 #' of the CDR3 amino acid sequence. Please see 
-#' \code{\link{clonalDiversity}} for more information on 
+#' [clonalDiversity()] for more information on 
 #' the underlying methods for diversity/entropy calculations. 
 #' Positions without variance will have a value reported as 0 
 #' for the purposes of comparison.
@@ -16,8 +16,8 @@
 #'                   chain = "TRB", 
 #'                   aa.length = 20)
 
-#' @param input.data The product of \code{\link{combineTCR}}, 
-#' \code{\link{combineBCR}}, or \code{\link{combineExpression}}
+#' @param input.data The product of [combineTCR()], 
+#' [combineBCR()], or [combineExpression()]
 #' @param chain "TRA", "TRB", "TRG", "TRG", "IGH", "IGL"
 #' @param group.by The variable to use for grouping
 #' @param order.by A vector of specific plotting order or "alphanumeric"
@@ -26,7 +26,7 @@
 #' @param method The method to calculate the entropy/diversity - 
 #' "shannon", "inv.simpson", "norm.entropy"
 #' @param exportTable Returns the data frame used for forming the graph
-#' @param palette Colors to use in visualization - input any \link[grDevices]{hcl.pals}
+#' @param palette Colors to use in visualization - input any [hcl.pals][grDevices::hcl.pals]
 #' @import ggplot2
 #' @importFrom stringr str_split
 #' @export

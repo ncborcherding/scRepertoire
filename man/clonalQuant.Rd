@@ -16,15 +16,15 @@ clonalQuant(
 )
 }
 \arguments{
-\item{input.data}{The product of \code{\link{combineTCR}}, 
-\code{\link{combineBCR}}, or \code{\link{combineExpression}}.}
+\item{input.data}{The product of \code{\link[=combineTCR]{combineTCR()}},
+\code{\link[=combineBCR]{combineBCR()}}, or \code{\link[=combineExpression]{combineExpression()}}.}
 
-\item{cloneCall}{How to call the clone - VDJC gene (\strong{gene}), 
+\item{cloneCall}{How to call the clone - VDJC gene (\strong{gene}),
 CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
-VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable 
+VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable
 in the data}
 
-\item{chain}{indicate if both or a specific chain should be used - 
+\item{chain}{indicate if both or a specific chain should be used -
 e.g. "both", "TRA", "TRG", "IGH", "IGL"}
 
 \item{scale}{Converts the graphs into percentage of unique clones}
@@ -36,15 +36,15 @@ to plot groups in order}
 
 \item{exportTable}{Returns the data frame used for forming the graph}
 
-\item{palette}{Colors to use in visualization - input any 
-\link[grDevices]{hcl.pals}}
+\item{palette}{Colors to use in visualization - input any
+\link[grDevices:palettes]{hcl.pals}}
 }
 \value{
 ggplot of the total or relative unique clones
 }
 \description{
-This function quantifies unique clones. The unique clones 
-can be either reported as a raw output or scaled to the total number of 
+This function quantifies unique clones. The unique clones
+can be either reported as a raw output or scaled to the total number of
 clones recovered using the scale parameter.
 }
 \examples{

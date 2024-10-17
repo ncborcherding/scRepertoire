@@ -3,22 +3,22 @@
 \docType{data}
 \name{mini_contig_list}
 \alias{mini_contig_list}
-\title{Processed subset of `contig_list`}
+\title{Processed subset of \code{contig_list}}
 \format{
-An R `list` of `data.frame` objects
+An R \code{list} of \code{data.frame} objects
 }
 \usage{
 data("mini_contig_list")
 }
 \description{
 A list of 8 data frames of T cell contigs outputted from the
-`filtered_contig_annotation` files, but subsetted to  365 valid T cells
-which correspond to the same barcodes found in `scRep_example`. The
+\code{filtered_contig_annotation} files, but subsetted to  365 valid T cells
+which correspond to the same barcodes found in \code{scRep_example}. The
 data is originally derived from the following
- \href{https://pubmed.ncbi.nlm.nih.gov/33622974/}{manuscript}.
+\href{https://pubmed.ncbi.nlm.nih.gov/33622974/}{manuscript}.
 }
 \seealso{
-\code{\link{contig_list}}
+\code{\link[=contig_list]{contig_list()}}
 }
 \concept{Data}
 \keyword{datasets}

@@ -3,7 +3,7 @@
 #' This function allows the user to visualize the clonal expansion by overlaying the 
 #' cells with specific clonal frequency onto the dimensional reduction plots in Seurat.
 #' Credit to the idea goes to Drs Andreatta and Carmona and their work with
-#' \href{https://github.com/carmonalab/ProjecTILs}{ProjectTIL}.
+#' [ProjectTIL](https://github.com/carmonalab/ProjecTILs).
 #'
 #' @examples
 #' #Getting the combined contigs
@@ -23,7 +23,7 @@
 #'               cutpoint = 3, 
 #'               bins = 5) 
 #' 
-#' @param sc.data The single-cell object after \code{\link{combineExpression}}.
+#' @param sc.data The single-cell object after [combineExpression()].
 #' @param reduction The dimensional reduction to visualize.
 #' @param cut.category Meta data variable of the single-cell object to use for 
 #' filtering.

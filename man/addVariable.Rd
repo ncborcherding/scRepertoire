@@ -7,8 +7,8 @@
 addVariable(input.data, variable.name = NULL, variables = NULL)
 }
 \arguments{
-\item{input.data}{The product of \code{\link{combineTCR}} or 
-\code{\link{combineBCR}}.}
+\item{input.data}{The product of \code{\link[=combineTCR]{combineTCR()}} or
+\code{\link[=combineBCR]{combineBCR()}}.}
 
 \item{variable.name}{The new column name/header.}
 
@@ -18,11 +18,11 @@ addVariable(input.data, variable.name = NULL, variables = NULL)
 input.data list with the variable column added to each element.
 }
 \description{
-This function adds variables to the product of \code{\link{combineTCR}}, 
-or \code{\link{combineBCR}} to be used in later visualizations. 
-For each element, the function will add a column (labeled by 
-\strong{variable.name}) with the variable. The length of the 
-\strong{variables} parameter needs to match the length of the 
+This function adds variables to the product of \code{\link[=combineTCR]{combineTCR()}},
+or \code{\link[=combineBCR]{combineBCR()}} to be used in later visualizations.
+For each element, the function will add a column (labeled by
+\strong{variable.name}) with the variable. The length of the
+\strong{variables} parameter needs to match the length of the
 combined object.
 }
 \examples{

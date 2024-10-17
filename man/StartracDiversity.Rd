@@ -15,16 +15,16 @@ StartracDiversity(
 )
 }
 \arguments{
-\item{sc.data}{The single-cell object after \code{\link{combineExpression}}.
-For SCE objects, the cluster variable must be in the meta data under 
+\item{sc.data}{The single-cell object after \code{\link[=combineExpression]{combineExpression()}}.
+For SCE objects, the cluster variable must be in the meta data under
 "cluster".}
 
-\item{cloneCall}{How to call the clone - VDJC gene (\strong{gene}), 
+\item{cloneCall}{How to call the clone - VDJC gene (\strong{gene}),
 CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
-VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable 
+VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable
 in the data.}
 
-\item{chain}{indicate if both or a specific chain should be used - 
+\item{chain}{indicate if both or a specific chain should be used -
 e.g. "both", "TRA", "TRG", "IGH", "IGL".}
 
 \item{type}{The variable in the meta data that provides tissue type.}
@@ -33,19 +33,19 @@ e.g. "both", "TRA", "TRG", "IGH", "IGL".}
 
 \item{exportTable}{Returns the data frame used for forming the graph.}
 
-\item{palette}{Colors to use in visualization - input any \link[grDevices]{hcl.pals}.}
+\item{palette}{Colors to use in visualization - input any \link[grDevices:palettes]{hcl.pals}.}
 }
 \value{
 ggplot object of Startrac diversity metrics
 }
 \description{
-This function utilizes the Startrac approach derived from 
+This function utilizes the Startrac approach derived from
 \href{https://pubmed.ncbi.nlm.nih.gov/30479382/}{PMID: 30479382}.
-Required to run the function, the "type" variable needs to include the 
-difference in where the cells were derived. The output of this function 
-will produce 3 indices: \strong{expa} (clonal expansion), \strong{migra} 
-(cross-tissue migration), and \strong{trans} (state transition). In order 
-to understand the underlying analyses of the outputs please 
+Required to run the function, the "type" variable needs to include the
+difference in where the cells were derived. The output of this function
+will produce 3 indices: \strong{expa} (clonal expansion), \strong{migra}
+(cross-tissue migration), and \strong{trans} (state transition). In order
+to understand the underlying analyses of the outputs please
 read and cite the linked manuscript.
 }
 \examples{

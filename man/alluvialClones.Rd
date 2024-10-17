@@ -17,15 +17,15 @@ alluvialClones(
 )
 }
 \arguments{
-\item{sc.data}{The single-cell object to visualize 
-after \code{\link{combineExpression}}.}
+\item{sc.data}{The single-cell object to visualize
+after \code{\link[=combineExpression]{combineExpression()}}.}
 
-\item{cloneCall}{How to call the clone - VDJC gene (\strong{gene}), 
+\item{cloneCall}{How to call the clone - VDJC gene (\strong{gene}),
 CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
-VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable 
+VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable
 in the data.}
 
-\item{chain}{indicate if both or a specific chain should be used - 
+\item{chain}{indicate if both or a specific chain should be used -
 e.g. "both", "TRA", "TRG", "IGH", "IGL".}
 
 \item{y.axes}{The columns that will separate the proportional .
@@ -37,21 +37,21 @@ visualizations.}
 
 \item{facet}{The column label to separate.}
 
-\item{exportTable}{Exports a table of the data into the global 
+\item{exportTable}{Exports a table of the data into the global
 environment in addition to the visualization.}
 
-\item{palette}{Colors to use in visualization - input any 
-\link[grDevices]{hcl.pals}.}
+\item{palette}{Colors to use in visualization - input any
+\link[grDevices:palettes]{hcl.pals}.}
 }
 \value{
 Alluvial ggplot comparing clone distribution.
 }
 \description{
-View the proportional contribution of clones by Seurat or SCE object 
-meta data after \code{\link{combineExpression}}. The visualization 
-is based on the ggalluvial package, which requires the aesthetics 
-to be part of the axes that are visualized. Therefore, alpha, facet, 
-and color should be part of the the axes you wish to view or will 
+View the proportional contribution of clones by Seurat or SCE object
+meta data after \code{\link[=combineExpression]{combineExpression()}}. The visualization
+is based on the ggalluvial package, which requires the aesthetics
+to be part of the axes that are visualized. Therefore, alpha, facet,
+and color should be part of the the axes you wish to view or will
 add an additional stratum/column to the end of the graph.
 }
 \examples{

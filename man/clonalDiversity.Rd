@@ -20,15 +20,15 @@ clonalDiversity(
 )
 }
 \arguments{
-\item{input.data}{The product of \code{\link{combineTCR}}, 
-\code{\link{combineBCR}}, or \code{\link{combineExpression}}.}
+\item{input.data}{The product of \code{\link[=combineTCR]{combineTCR()}},
+\code{\link[=combineBCR]{combineBCR()}}, or \code{\link[=combineExpression]{combineExpression()}}.}
 
-\item{cloneCall}{How to call the clone - VDJC gene (\strong{gene}), 
+\item{cloneCall}{How to call the clone - VDJC gene (\strong{gene}),
 CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
-VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable 
+VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable
 in the data}
 
-\item{chain}{indicate if both or a specific chain should be used - 
+\item{chain}{indicate if both or a specific chain should be used -
 e.g. "both", "TRA", "TRG", "IGH", "IGL"}
 
 \item{group.by}{Variable in which to combine for the diversity calculation}
@@ -38,19 +38,19 @@ to plot groups in order}
 
 \item{x.axis}{Additional variable grouping that will space the sample along the x-axis}
 
-\item{metrics}{The indices to use in diversity calculations - 
+\item{metrics}{The indices to use in diversity calculations -
 "shannon", "inv.simpson", "norm.entropy", "gini.simpson", "chao1", "ACE"}
 
-\item{exportTable}{Exports a table of the data into the global environment 
+\item{exportTable}{Exports a table of the data into the global environment
 in addition to the visualization}
 
-\item{palette}{Colors to use in visualization - input any 
-\link[grDevices]{hcl.pals}}
+\item{palette}{Colors to use in visualization - input any
+\link[grDevices:palettes]{hcl.pals}}
 
-\item{n.boots}{number of bootstraps to down sample in order to 
+\item{n.boots}{number of bootstraps to down sample in order to
 get mean diversity}
 
-\item{return.boots}{export boot strapped values calculated - 
+\item{return.boots}{export boot strapped values calculated -
 will automatically exportTable = TRUE.}
 
 \item{skip.boots}{remove down sampling and boot strapping from the calculation.}
@@ -59,12 +59,12 @@ will automatically exportTable = TRUE.}
 ggplot of the diversity of clones by group
 }
 \description{
-This function calculates traditional measures of diversity - \strong{Shannon}, 
+This function calculates traditional measures of diversity - \strong{Shannon},
 \strong{inverse Simpson}, \strong{normalized entropy}, \strong{Gini-Simpson}, \strong{Chao1 index}, and
-\strong{abundance-based coverage estimators (ACE)} measure of species evenness by sample or group. 
-The function automatically down samples the diversity metrics using 
+\strong{abundance-based coverage estimators (ACE)} measure of species evenness by sample or group.
+The function automatically down samples the diversity metrics using
 100 boot straps (\strong{n.boots = 100}) and outputs the mean of the values.
-The group parameter can be used to condense the individual 
+The group parameter can be used to condense the individual
 samples. If a matrix output for the data is preferred, set \strong{exportTable} = TRUE.
 }
 \details{
@@ -86,14 +86,14 @@ The formulas for the indices and estimators are as follows:
 \deqn{Index = S_{obs} + \frac{n_1(n_1-1)}{2*n_2+1}}
 
 \strong{Abundance-based Coverage Estimator (ACE):}
-\deqn{Index = S_{abund} + \frac{S_{rare}}{C_{ace}} + \frac{F_1}{C_{ace}}} 
+\deqn{Index = S_{abund} + \frac{S_{rare}}{C_{ace}} + \frac{F_1}{C_{ace}}}
 
 Where:
 \itemize{
-  \item{\eqn{p_i}{p[i]} is the proportion of species \eqn{i}{i} in the dataset.}
-  \item{\eqn{S}{S} is the total number of species.}
-  \item{\eqn{n_1}{n[1]} and \eqn{n_2}{n[2]} are the number of singletons and doubletons, respectively.}
-  \item{\eqn{S_{abund}}{S[abund]}, \eqn{S_{rare}}{S[rare]}, \eqn{C_{ace}}{C[ace]}, and \eqn{F_1}{F[1]} are parameters derived from the data.}
+\item{\eqn{p_i}{p[i]} is the proportion of species \eqn{i}{i} in the dataset.}
+\item{\eqn{S}{S} is the total number of species.}
+\item{\eqn{n_1}{n[1]} and \eqn{n_2}{n[2]} are the number of singletons and doubletons, respectively.}
+\item{\eqn{S_{abund}}{S[abund]}, \eqn{S_{rare}}{S[rare]}, \eqn{C_{ace}}{C[ace]}, and \eqn{F_1}{F[1]} are parameters derived from the data.}
 }
 }
 \examples{

@@ -18,37 +18,37 @@ combineExpression(
 )
 }
 \arguments{
-\item{input.data}{The product of \code{\link{combineTCR}}, 
-\code{\link{combineBCR}} or a list of 
-both c(\code{\link{combineTCR}}, \code{\link{combineBCR}}).}
+\item{input.data}{The product of \code{\link[=combineTCR]{combineTCR()}},
+\code{\link[=combineBCR]{combineBCR()}} or a list of
+both c(\code{\link[=combineTCR]{combineTCR()}}, \code{\link[=combineBCR]{combineBCR()}}).}
 
 \item{sc.data}{The Seurat or Single-Cell Experiment (SCE) object to attach}
 
-\item{cloneCall}{How to call the clone - VDJC gene (\strong{gene}), 
+\item{cloneCall}{How to call the clone - VDJC gene (\strong{gene}),
 CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
-VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable 
+VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable
 in the data.}
 
-\item{chain}{indicate if both or a specific chain should be used - 
+\item{chain}{indicate if both or a specific chain should be used -
 e.g. "both", "TRA", "TRG", "IGH", "IGL".}
 
-\item{group.by}{The column label in the combined clones in which 
-clone frequency will be calculated. \strong{NULL} or \strong{"none"} will 
+\item{group.by}{The column label in the combined clones in which
+clone frequency will be calculated. \strong{NULL} or \strong{"none"} will
 keep the format of input.data.}
 
-\item{proportion}{Whether to proportion (\strong{TRUE}) or total 
+\item{proportion}{Whether to proportion (\strong{TRUE}) or total
 frequency (\strong{FALSE}) of the clone based on the group.by variable.}
 
-\item{filterNA}{Method to subset Seurat/SCE object of barcodes without 
+\item{filterNA}{Method to subset Seurat/SCE object of barcodes without
 clone information}
 
-\item{cloneSize}{The bins for the grouping based on proportion or frequency. 
+\item{cloneSize}{The bins for the grouping based on proportion or frequency.
 If proportion is \strong{FALSE} and the cloneSizes are not set high enough
 based on frequency, the upper limit of cloneSizes will be automatically
 updated.S}
 
 \item{addLabel}{This will add a label to the frequency header, allowing
-the user to try multiple group.by variables or recalculate frequencies after 
+the user to try multiple group.by variables or recalculate frequencies after
 subsetting the data.}
 }
 \value{
@@ -56,14 +56,14 @@ Single-cell object with clone information added to meta data
 information
 }
 \description{
-This function adds the immune receptor information to the Seurat or 
-SCE object to the meta data. By default this function also calculates 
-the frequencies and proportion of the clones by sequencing 
+This function adds the immune receptor information to the Seurat or
+SCE object to the meta data. By default this function also calculates
+the frequencies and proportion of the clones by sequencing
 run (\strong{group.by} = NULL). To change how the frequencies/proportions
-are calculated, select a column header for the \strong{group.by} variable. 
-Importantly, before using \code{\link{combineExpression}} ensure the 
-barcodes of the single-cell object object match the barcodes in the output 
-of the \code{\link{combineTCR}} or \code{\link{combineBCR}}.
+are calculated, select a column header for the \strong{group.by} variable.
+Importantly, before using \code{\link[=combineExpression]{combineExpression()}} ensure the
+barcodes of the single-cell object object match the barcodes in the output
+of the \code{\link[=combineTCR]{combineTCR()}} or \code{\link[=combineBCR]{combineBCR()}}.
 }
 \examples{
 #Getting the combined contigs

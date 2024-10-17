@@ -1,11 +1,11 @@
 #' Calculate rarefaction based on the abundance of clones
 #' 
-#' This functions uses the Hill numbers of order q: species richness (\strong{q = 0}), 
-#' Shannon diversity (\strong{q = 1}), the exponential of Shannon entropy and Simpson 
-#' diversity (\strong{q = 2}, the inverse of Simpson concentration) to compute diversity 
+#' This functions uses the Hill numbers of order q: species richness (**q = 0**), 
+#' Shannon diversity (**q = 1**), the exponential of Shannon entropy and Simpson 
+#' diversity (**q = 2**, the inverse of Simpson concentration) to compute diversity 
 #' estimates for rarefaction and extrapolation. The function relies on the
-#' \code{\link[iNEXT]{iNEXT}} R package. Please read and cite the 
-#' \href{https://besjournals.onlinelibrary.wiley.com/doi/10.1111/2041-210X.12613}{manuscript} 
+#' [iNEXT::iNEXT()] R package. Please read and cite the 
+#' [manuscript](https://besjournals.onlinelibrary.wiley.com/doi/10.1111/2041-210X.12613) 
 #' if using this function. The input into the iNEXT calculation is abundance, 
 #' incidence-based calculations are not supported.
 #' 
@@ -17,18 +17,18 @@
 #' clonalRarefaction(combined[c(1,2)], cloneCall = "gene", n.boots = 3)
 #'
 #'
-#' @param input.data The product of \code{\link{combineTCR}}, 
-#' \code{\link{combineBCR}}, or \code{\link{combineExpression}}.
-#' @param cloneCall How to call the clone - VDJC gene (\strong{gene}), 
-#' CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
-#' VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable 
+#' @param input.data The product of [combineTCR()], 
+#' [combineBCR()], or [combineExpression()].
+#' @param cloneCall How to call the clone - VDJC gene (**gene**), 
+#' CDR3 nucleotide (**nt**), CDR3 amino acid (**aa**),
+#' VDJC gene + CDR3 nucleotide (**strict**) or a custom variable 
 #' in the data. 
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL".
 #' @param group.by The variable to use for grouping.
 #' @param plot.type sample-size-based rarefaction/extrapolation curve 
-#' (\code{type = 1}); sample completeness curve (\code{type = 2}); 
-#' coverage-based rarefaction/extrapolation curve (\code{type = 3}).   
+#' (`type = 1`); sample completeness curve (`type = 2`); 
+#' coverage-based rarefaction/extrapolation curve (`type = 3`).   
 #' @param hill.numbers The Hill numbers to be plotted out 
 #' (0 - species richness, 1 - Shannon, 2 - Simpson)
 #' @param n.boots The number of bootstraps to downsample in order 
@@ -36,7 +36,7 @@
 #' @param exportTable Exports a table of the data into the global 
 #' environment in addition to the visualization.
 #' @param palette Colors to use in visualization - input any 
-#' \link[grDevices]{hcl.pals}.
+#' [hcl.pals][grDevices::hcl.pals].
 #' 
 #' @importFrom iNEXT iNEXT ggiNEXT
 #' @import ggplot2
