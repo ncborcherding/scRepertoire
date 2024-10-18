@@ -5,6 +5,7 @@
 * Removed unnecessary code remnant in ```clonalLength()```
 * Allow one sample to be plotted by ```percentVJ()```
 * Fixed issue with ```positionalProperty()``` and exportTable
+* Restructured functions to exportTable before plotting
 
 # scRepertoire VERSION 2.0.7
 
