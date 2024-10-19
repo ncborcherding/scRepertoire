@@ -23,23 +23,20 @@ getTestBcrListWithDoublets <- function(doubletsPerSample, seed = 42) {
 }
 
 makeRandomBcrBarcodesMatchTcr <- function(bcrDf, tcrDf, n) {
-
-    sampleUniqueBarcodeDf <- function(contigDf) {
-        contigDf %>%
-            dplyr::select(barcode) %>%
-            dplyr::distinct() %>%
-            dplyr::slice_sample(n = min(n, nrow(.)))
-    }
-
-    bcrToTcrBarcodeMap <- sampleUniqueBarcodeDf(bcrDf) %>%
-        dplyr::mutate(tcrBarcode = sampleUniqueBarcodeDf(tcrDf)$barcode)
-
-    bcrDf %>%
-        dplyr::full_join(bcrToTcrBarcodeMap, by = "barcode") %>%
+    sampleUniqueBarcodeDf(bcrDf, n) %>%
+        dplyr::mutate(tcrBarcode = sampleUniqueBarcodeDf(tcrDf, n)$barcode) %>%
+        dplyr::full_join(bcrDf, by = "barcode") %>%
         dplyr::mutate(
             barcode = ifelse(is.na(tcrBarcode), barcode, tcrBarcode)
         ) %>%
         dplyr::select(-tcrBarcode)
+}
+
+sampleUniqueBarcodeDf <- function(contigDf, n) {
+    contigDf %>%
+        dplyr::select(barcode) %>%
+        dplyr::distinct() %>%
+        dplyr::slice_sample(n = n)
 }
 
 test_that("getContigDoublets works for no doublets", {
@@ -68,10 +65,10 @@ test_that("getContigDoublets works for no doublets", {
 
 test_that("getContigDoublets works for inputs with doublets", {
 
-    NUM_DOUBLETS_PER_SAMPLE <- 3
+    NUM_UNIQUE_DOUBLETS_PER_SAMPLE <- 3
     tcr <- getTestTcrList()
-    bcr <- getTestBcrListWithDoublets(NUM_DOUBLETS_PER_SAMPLE)
+    bcr <- getTestBcrListWithDoublets(NUM_UNIQUE_DOUBLETS_PER_SAMPLE)
 
-    expect_true(nrow(getContigDoublets(tcr, bcr)) > 0)
+    expect_true(nrow(getContigDoublets(tcr, bcr)) >= NUM_UNIQUE_DOUBLETS_PER_SAMPLE * length(tcr))
     # TODO
 })
