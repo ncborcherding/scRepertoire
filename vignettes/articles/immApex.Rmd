@@ -42,19 +42,30 @@ suppressMessages(library(keras))
 suppressMessages(library(ggplot2))
 suppressMessages(library(viridis))
 suppressMessages(library(dplyr))
+set.seed(42)
 ```
 
 # Getting Started 
 
-**immApex** is meant to serve as an API for deep-learning models based on immune receptor sequencing. These functions extract or generate amino acid or nucleotide sequences and prepare them for deep learning tasks through [Keras](https://tensorflow.rstudio.com/guides/keras/basics). **immApex** is the underlying structure for the BCR models in [Ibex](https://github.com/ncborcherding/Ibex) and TCR models in [Trex](https://github.com/ncborcherding/Trex). It should be noted, although the tools here are created for immune receptor sequences, they will work more generally for nucleotide or amino acid sequences. 
+**immApex** is meant to serve as an API for deep-learning models based on immune receptor sequencing. These functions extract or generate amino acid or nucleotide sequences and prepare them for deep learning tasks through [Keras](https://tensorflow.rstudio.com/guides/keras/basics). **immApex** is the underlying structure for the BCR models in [Ibex](https://github.com/ncborcherding/Ibex) and TCR models in [Trex](https://github.com/ncborcherding/Trex). It should be noted that the tools here are created for immune receptor sequences; they will work more generally for nucleotide or amino acid sequences. The package itself supports AIRR, Adaptive, and 10x formats and interacts with the **scRepertoire** R package.
 
 More information is available at the [immApex GitHub Repo](https://github.com/ncborcherding/immApex).
+
+## Loading Libraries
+
+```{r}
+suppressMessages(library(immApex))
+suppressMessages(library(keras))
+suppressMessages(library(ggplot2))
+suppressMessages(library(viridis))
+suppressMessages(library(dplyr))
+```
 
 # Getting and Manipulating Sequences
 
 ## generateSequences
 
-Generating synthetic sequences is a quick way to start testing the model code. ```generateSequences()``` can also generate realistic noise for generative adversarial networks.
+Generating synthetic sequences is a quick way to start testing the model code. ```generateSequences()``` can also generate realistic noise for generative adversarial networks.
 
 Parameters for ```generateSequences()```
 
@@ -74,7 +85,7 @@ sequences <- generateSequences(prefix.motif = "CAS",
 head(sequences)
 ```
 
-If we want to generate nucleotide sequences instead of amino acids, we just need to change the **sequence.dictionary**.
+If we want to generate nucleotide sequences instead of amino acids, we must to change the **sequence.dictionary**.
 
 ```{r tidy = FALSE}
 nucleotide.sequences <- generateSequences(number.of.sequences = 1000,
@@ -119,9 +130,10 @@ variational.sequences <- variationalSequences(sequences,
                                               call.threshold = 0.1)
 head(variational.sequences)
 ```
+
 ## mutateSequences
 
-A common approach is to mutate sequences randomly or at specific intervals. This can be particularly helpful if we have fewer sequences or want to test a model for accuracy given new, altered sequences. mutateSequences() allows us to tune the type of mutation, where along the sequences to introduce the mutation and the overall number of mutations.
+A common approach is to mutate sequences randomly or at specific intervals. This can be particularly helpful if we have fewer sequences or want to test a model for accuracy given new, altered sequences. ```mutateSequences()``` allows us to tune the type of mutation, where along the sequences to introduce the mutation and the overall number of mutations.
 
 Parameters for ```mutateSequences()```
 
@@ -149,7 +161,7 @@ Parameters for ```formatGenes()```
 
 * **input.data** Data frame of sequencing data or scRepertoire outputs
 * **region** Sequence gene loci to access - 'v', 'd', 'j', 'c' or a combination using c('v', 'd', 'j')
-* **technology** The sequencing technology employed - 'TenX', "Adaptive', 'AIRR', or 'Omniscope'.
+* **technology** The sequencing technology employed - 'TenX', "Adaptive', or 'AIRR'
 * **species** One or two word designation of species. Currently supporting: "human", "mouse", "rat", "rabbit", "rhesus monkey", "sheep", "pig", "platypus", "alpaca", "dog", "chicken", and "ferret"
 * **simplify.format** If applicable, remove the allelic designation (TRUE) or retain all information (FALSE)
 
@@ -166,7 +178,7 @@ head(Adaptive_example[,c("aminoAcid","vGeneName", "v_IMGT", "v_IMGT.check")])
 
 ## getIMGT
 
-Depending on the sequencing technology and the version, we might want to expand the length of our sequence embedding approach. The first step in the process is pulling the reference sequences from the ImMunoGeneTics (IMGT) system using ```getIMGT()```. More information for IMGT can be found at [imgt.org](https://www.imgt.org/). 
+Depending on the sequencing technology and the version, we might want to expand the length of our sequence embedding approach. The first step in the process is pulling the reference sequences from the ImMunoGeneTics (IMGT) system using ```getIMGT()```. More information for IMGT can be found at [imgt.org](https://www.imgt.org/). Data from IMGT is under a CC BY-NC-ND 4.0 license. Please be aware that attribution is required for usage and should not be used to create commercial or derivative work. 
 
 Parameters for ```getIMGT()```
 
@@ -196,7 +208,7 @@ Parameters for ```inferCDR```
 
 * **input.data** Data frame of sequencing data or output from formatGenes().
 * **reference** IMGT sequences from ```getIMGT()```
-* **technology** The sequencing technology employed - 'TenX', "Adaptive', 'AIRR', or 'Omniscope'
+* **technology** The sequencing technology employed - 'TenX', "Adaptive', or 'AIRR',
 * **sequence.type** Type of sequence - "aa" for amino acid or "nt" for nucleotide
 * **sequences** The specific regions of the CDR loop to get from the data.
 
@@ -280,7 +292,7 @@ head(median.property.matrix[,1:3])
 
 ## geometricEncoder
 
-One approach to encode amino acid sequences is geometric isometry, such as [GIANA](https://pubmed.ncbi.nlm.nih.gov/34349111/).
+One approach to encoding amino acid sequences is geometric isometry, such as [GIANA](https://pubmed.ncbi.nlm.nih.gov/34349111/).
 
 Parameters for ```geometricEncoder()```
 
@@ -296,7 +308,7 @@ head(geometric.matrix)
 
 ## tokenizeSequences
 
-Another approach to transforming a sequence into numerical values is tokenizing it into numbers. This is a common approach for recurrent neural networks where one letter corresponds to a single integer. In addition, we can add a start and stop tokens to our original sequences to differentiate between the beginning and end of the sequences. 
+Another approach to transforming a sequence into numerical values is tokenizing it into numbers. This is a common approach for recurrent neural networks where one letter corresponds to a single integer. In addition, we can add start and stop tokens to our original sequences to differentiate between the beginning and end of the sequences. 
 
 Parameters for ```tokenizeSequences()```
 
@@ -352,7 +364,7 @@ adj.matrix
 
 ## sequenceDecoder
 
-We have a function called ```sequenceDecoder()``` that extracts sequences from one-hot or property-encoded matrices or arrays. This function can be applied to any generative approach to sequence generation.
+We have a function called ```sequenceDecoder()``` that extracts sequences from one-hot or property-encoded matrices or arrays. This function can be applied to any generative approach to sequence generation.
 
 Parameters for ```sequenceDecoder()```
 
@@ -400,7 +412,7 @@ The steps to train the model include:
 4. Fitting the model
 
 ```{r tidy = FALSE}
-#Sampling to make Training/Valid Data
+#Sampling to make Training/Validation Data Cohorts
 set.seed(42)
 num_sequences <- nrow(sequence.matrix)
 indices <- 1:num_sequences
@@ -418,11 +430,11 @@ encoding_dim <- 40
 hidden_dim1 <- 256 # Hidden layer 1 size
 hidden_dim2 <- 128  # Hidden layer 2 size
     
-es = callback_early_stopping(monitor = "val_loss",
-                             min_delta = 0,
-                             patience = 4,
-                             verbose = 1,
-                             mode = "min")
+es <- callback_early_stopping(monitor = "val_loss",
+                              min_delta = 0,
+                              patience = 4,
+                              verbose = 1,
+                              mode = "min")
                     
 # Define the Model
 input_seq <- layer_input(shape = c(input_shape))
@@ -472,7 +484,7 @@ plot(history) +
 
 We can also build classifiers directly using deep or shallow neural networks. Building deep classifiers requires more data than classical machine learning methods, like random forests, so the vignette may not be ideal.
 
-The first step is to generate distinct types of sequences using ```generateSequences()``` and ```onehotEncoder()``` to prepare the data for the model.
+The first step is to generate distinct types of sequences using ```generateSequences()``` and ```onehotEncoder()``` to prepare the data for the model.
 
 ```{r tidy = FALSE}
 class1.sequences <- generateSequences(prefix.motif = "CAS",
@@ -512,7 +524,7 @@ classifier.model %>% compile(
         metrics = c("accuracy")
 )
 
-#Seperating data and labels
+#Separating data and labels
 set.seed(42)
 val_indices <- sample(nrow(classifier.matrix), 10000*0.2)
 x_val <- classifier.matrix[val_indices,]
@@ -541,11 +553,10 @@ Here, we can achieve a validation accuracy of 98.25%, which is impressive. But t
 ***
 # Conclusion
 
-This has been a general overview of the capabilities of immApex for processing immune receptor sequences and making deep learning models. If you have any questions, comments, or suggestions, feel free to visit the [GitHub repository](https://github.com/ncborcherding/immApex).
+This has been a general overview of the capabilities of **immApex** for processing immune receptor sequences and making deep learning models. If you have any questions, comments, or suggestions, feel free to visit the [GitHub repository](https://github.com/ncborcherding/immApex).
 
 ## Session Info
 
 ```{r}
 sessionInfo()
 ```
-
