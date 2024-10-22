@@ -589,40 +589,17 @@ is_df_or_list_of_df <- function(x) {
   tmp <- na.omit(unique(dictionary[,c(chain, "v.gene")]))
   #chunking the sequences for distance by v.gene
   
-  edge.list <- lapply(str_sort(na.omit(unique(dictionary$v.gene)), numeric = T), function(v_gene) {
+  # this can be easily parallelized by swapping lapply with a parallel version
+  # alternatively, some inspiration: https://stackoverflow.com/questions/38169332
+  edge.list <- lapply(str_sort(na.omit(unique(dictionary$v.gene)), numeric = TRUE), function(v_gene) {
     filtered_df <- dplyr::filter(dictionary, v.gene == v_gene)
-    nucleotides <- filtered_df[[chain]]
-    nucleotides <- sort(unique(str_split(nucleotides, ";", simplify = TRUE)[,1]))
-    
+    nucleotides <- sort(unique(str_split(filtered_df[[chain]], ";", simplify = TRUE)[,1]))
     if (length(nucleotides) <= 1) return(NULL)
-    
-    results <- list()
-    # Only iterate until the second last element to avoid the issue
-    for (i in 1:(length(nucleotides) - 1)) {
-      for (j in (i + 1):length(nucleotides)) {
-        # Check based on length difference feasibility
-        if (abs(nchar(nucleotides[i]) - nchar(nucleotides[j])) > max(nchar(nucleotides[i]), nchar(nucleotides[j])) * (1 - threshold)) {
-          next
-        }
-        
-        distance <- stringdist::stringdist(nucleotides[i], nucleotides[j], method = "lv")
-        normalized_distance <- 1 - distance / mean(c(nchar(nucleotides[i]), nchar(nucleotides[j])))
-        
-        if (normalized_distance >= threshold) {
-          results[[length(results) + 1]] <- data.frame(
-            from = nucleotides[i],
-            to = nucleotides[j],
-            distance = normalized_distance
-          )
-        }
-      }
-    }
-    
-    do.call(rbind, results)
+    rcppGetSigSequenceEditDistEdgeListDf(nucleotides, threshold)
   })
-  
-  edge.list <- do.call(rbind, edge.list)
-  
+
+  edge.list <- dplyr::bind_rows(edge.list)
+
   if(exportGraph) {
     if(!is.null(edge.list)) {
       graph <- graph_from_edgelist(as.matrix(edge.list)[,c(1,2)])

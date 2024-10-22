@@ -47,6 +47,18 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// rcppGetSigSequenceEditDistEdgeListDf
+Rcpp::DataFrame rcppGetSigSequenceEditDistEdgeListDf(std::vector<std::string> sequences, double threshold);
+RcppExport SEXP _scRepertoire_rcppGetSigSequenceEditDistEdgeListDf(SEXP sequencesSEXP, SEXP thresholdSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::vector<std::string> >::type sequences(sequencesSEXP);
+    Rcpp::traits::input_parameter< double >::type threshold(thresholdSEXP);
+    rcpp_result_gen = Rcpp::wrap(rcppGetSigSequenceEditDistEdgeListDf(sequences, threshold));
+    return rcpp_result_gen;
+END_RCPP
+}
 // rcppGenerateUniqueNtMotifs
 Rcpp::CharacterVector rcppGenerateUniqueNtMotifs(int k);
 RcppExport SEXP _scRepertoire_rcppGenerateUniqueNtMotifs(SEXP kSEXP) {
@@ -75,6 +87,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_scRepertoire_rcppGetAaKmerPercent", (DL_FUNC) &_scRepertoire_rcppGetAaKmerPercent, 3},
     {"_scRepertoire_rcppConstructBarcodeIndex", (DL_FUNC) &_scRepertoire_rcppConstructBarcodeIndex, 2},
     {"_scRepertoire_rcppConstructConDfAndParseTCR", (DL_FUNC) &_scRepertoire_rcppConstructConDfAndParseTCR, 2},
+    {"_scRepertoire_rcppGetSigSequenceEditDistEdgeListDf", (DL_FUNC) &_scRepertoire_rcppGetSigSequenceEditDistEdgeListDf, 2},
     {"_scRepertoire_rcppGenerateUniqueNtMotifs", (DL_FUNC) &_scRepertoire_rcppGenerateUniqueNtMotifs, 1},
     {"_scRepertoire_rcppGetNtKmerPercent", (DL_FUNC) &_scRepertoire_rcppGetNtKmerPercent, 2},
     {NULL, NULL, 0}

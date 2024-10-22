@@ -16,36 +16,36 @@ clonalSizeDistribution(
 )
 }
 \arguments{
-\item{input.data}{The product of \code{\link{combineTCR}}, 
+\item{input.data}{The product of \code{\link{combineTCR}},
 \code{\link{combineBCR}}, or \code{\link{combineExpression}}.}
 
-\item{cloneCall}{How to call the clone - VDJC gene (\strong{gene}), 
+\item{cloneCall}{How to call the clone - VDJC gene (\strong{gene}),
 CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
-VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable 
+VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable
 in the data.}
 
-\item{chain}{indicate if both or a specific chain should be used - 
+\item{chain}{indicate if both or a specific chain should be used -
 e.g. "both", "TRA", "TRG", "IGH", "IGL".}
 
 \item{method}{The clustering parameter for the dendrogram.}
 
-\item{threshold}{Numerical vector containing the thresholds 
+\item{threshold}{Numerical vector containing the thresholds
 the grid search was performed over.}
 
 \item{group.by}{The variable to use for grouping.}
 
 \item{exportTable}{Returns the data frame used for forming the graph.}
 
-\item{palette}{Colors to use in visualization - input any 
+\item{palette}{Colors to use in visualization - input any
 \link[grDevices]{hcl.pals}.}
 }
 \value{
 ggplot dendrogram of the clone size distribution
 }
 \description{
-This function produces a hierarchical clustering of clones by sample 
-using discrete gamma-GPD spliced threshold model. If using this 
-model please read and cite powerTCR (more info available at 
+This function produces a hierarchical clustering of clones by sample
+using discrete gamma-GPD spliced threshold model. If using this
+model please read and cite powerTCR (more info available at
 \href{https://pubmed.ncbi.nlm.nih.gov/30485278/}{PMID: 30485278}).
 }
 \details{
@@ -59,7 +59,7 @@ Where:
   \item{\eqn{\xi} is a shape parameter}
   \item{\eqn{x \ge \mu} if \eqn{\xi \ge 0} and \eqn{\mu \le x \le \mu - \sigma/\xi} if \eqn{\xi < 0}}
 }
-              
+
 The probability density function (pdf) for the \strong{Gamma Distribution} is given by:
 \deqn{f(x|\alpha, \beta) = \frac{x^{\alpha-1} e^{-x/\beta}}{\beta^\alpha \Gamma(\alpha)}}
 
@@ -73,8 +73,8 @@ Where:
 }
 \examples{
 #Making combined contig data
-combined <- combineTCR(contig_list, 
-                        samples = c("P17B", "P17L", "P18B", "P18L", 
+combined <- combineTCR(contig_list,
+                        samples = c("P17B", "P17L", "P18B", "P18L",
                                     "P19B","P19L", "P20B", "P20L"))
 clonalSizeDistribution(combined, cloneCall = "strict", method="ward.D2")
 
