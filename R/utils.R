@@ -593,12 +593,13 @@ is_df_or_list_of_df <- function(x) {
   # alternatively, some inspiration: https://stackoverflow.com/questions/38169332
   edge.list <- lapply(str_sort(na.omit(unique(dictionary$v.gene)), numeric = TRUE), function(v_gene) {
     filtered_df <- dplyr::filter(dictionary, v.gene == v_gene)
-    nucleotides <- sort(unique(str_split(filtered_df[[chain]], ";", simplify = TRUE)[,1]))
+    nucleotides <- filtered_df[[chain]]
+    nucleotides <- sort(unique(str_split(nucleotides, ";", simplify = TRUE)[,1]))
     if (length(nucleotides) <= 1) return(NULL)
     rcppGetSigSequenceEditDistEdgeListDf(nucleotides, threshold)
   })
 
-  edge.list <- dplyr::bind_rows(edge.list)
+  edge.list <- do.call(rbind, edge.list)
 
   if(exportGraph) {
     if(!is.null(edge.list)) {

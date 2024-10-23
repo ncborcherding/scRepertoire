@@ -48,13 +48,13 @@ BEGIN_RCPP
 END_RCPP
 }
 // rcppGetSigSequenceEditDistEdgeListDf
-Rcpp::DataFrame rcppGetSigSequenceEditDistEdgeListDf(std::vector<std::string> sequences, double threshold);
+Rcpp::DataFrame rcppGetSigSequenceEditDistEdgeListDf(const std::vector<std::string> sequences, const double threshold);
 RcppExport SEXP _scRepertoire_rcppGetSigSequenceEditDistEdgeListDf(SEXP sequencesSEXP, SEXP thresholdSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< std::vector<std::string> >::type sequences(sequencesSEXP);
-    Rcpp::traits::input_parameter< double >::type threshold(thresholdSEXP);
+    Rcpp::traits::input_parameter< const std::vector<std::string> >::type sequences(sequencesSEXP);
+    Rcpp::traits::input_parameter< const double >::type threshold(thresholdSEXP);
     rcpp_result_gen = Rcpp::wrap(rcppGetSigSequenceEditDistEdgeListDf(sequences, threshold));
     return rcpp_result_gen;
 END_RCPP
