@@ -7,23 +7,6 @@
 #include <unordered_map>
 #include "scRepHelper.h"
 
-#define BarcodeIndciesMap std::unordered_map<std::string, std::vector<int>>
-
-std::vector<std::vector<int>> constructBarcodeIndex(
-    std::vector<std::string>& conDfBarcodes, std::vector<std::string> data2Barcodes
-) {
-    std::vector<std::vector<int>> outputBarcodeIndex (conDfBarcodes.size());
-    BarcodeIndciesMap data2BarcodeIndiciesMap = scRepHelper::stringToIndiciesMap(data2Barcodes);
-
-    for (int i = 0; i < (int) conDfBarcodes.size(); i++) {
-        std::string& barcode = conDfBarcodes[i];
-        if (data2BarcodeIndiciesMap.find(barcode) != data2BarcodeIndiciesMap.end()) {
-            outputBarcodeIndex[i] = data2BarcodeIndiciesMap[barcode];
-        }
-    }
-    return outputBarcodeIndex;
-}
-
 class TcrParser {
 public:
     // variable for the eventual output Con.df
@@ -43,7 +26,7 @@ public:
     TcrParser(
         Rcpp::DataFrame& data2, std::vector<std::string>& uniqueData2Barcodes
     ) {
-        // construct conDf, initializaing the matrix to "NA" *strings*
+
         conDf = scRepHelper::initStringMatrix(
             7, uniqueData2Barcodes.size(), "NA"
         );
@@ -59,7 +42,7 @@ public:
         data2Tcr2 = data2[data2.findName("TCR2")];
 
         // construct barcodeIndex
-        barcodeIndex = constructBarcodeIndex(
+        barcodeIndex = scRepHelper::constructBarcodeIndex(
             uniqueData2Barcodes, Rcpp::as<std::vector<std::string>>(data2[data2.findName("barcode")])
         );
     }

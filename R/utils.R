@@ -389,7 +389,7 @@
 .parseBCR <- function (Con.df, unique_df, data2) {
   barcodeIndex <- rcppConstructBarcodeIndex(unique_df, data2$barcode)
   for (y in seq_along(unique_df)) {
-    location.i <- barcodeIndex[[y]] # *may* be wrong but should be fine. Test on old version first
+    location.i <- barcodeIndex[[y]]
     
     for (z in seq_along(location.i)) {
       where.chain <- data2[location.i[z],"chain"]
