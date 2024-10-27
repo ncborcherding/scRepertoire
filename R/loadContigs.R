@@ -50,7 +50,7 @@ loadContigs <- function(input, format = "10X") {
     ))
 
     #Loading from directory, recursively
-    df <- if (inherits(x = input, what = "character")) {
+    rawDataDfList <- if (inherits(x = input, what = "character")) {
 
         format.list <- list(
             "WAT3R" = "barcode_results.csv",
@@ -106,7 +106,7 @@ loadContigs <- function(input, format = "10X") {
         "ParseBio" = .parseParse
     )
 
-    loadFunc(df)
+    loadFunc(rawDataDfList)
 }
 
 #Formats TRUST4 data
