@@ -9,33 +9,34 @@ loadContigs(input, format = "10X")
 \arguments{
 \item{input}{The directory in which contigs are located or a list with contig elements}
 
-\item{format}{The format of the single-cell contig, currently supporting: 
-"10X", "AIRR", "BD", "Dandelion", "JSON", "MiXCR", "ParseBio", "Omniscope", "TRUST4", and "WAT3R"}
+\item{format}{The format of the single-cell contig, currently supporting:
+"10X", "AIRR", "BD", "Dandelion", "JSON", "MiXCR", "ParseBio", "Omniscope",
+"TRUST4", "WAT3R", and "Immcantation"}
 }
 \value{
-List of contigs for compatibility  with \code{\link{combineTCR}} or 
+List of contigs for compatibility  with \code{\link{combineTCR}} or
 \code{\link{combineBCR}}
 }
 \description{
-This function generates a contig list and formats the data to allow for 
-function with  \code{\link{combineTCR}} or \code{\link{combineBCR}}. If 
-using data derived from filtered outputs of 10X Genomics, there is no 
+This function generates a contig list and formats the data to allow for
+function with  \code{\link{combineTCR}} or \code{\link{combineBCR}}. If
+using data derived from filtered outputs of 10X Genomics, there is no
 need to use this function as the data is already compatible.
 }
 \details{
-The files that this function parses includes:  
+The files that this function parses includes: 
 \itemize{
   \item 10X =  "filtered_contig_annotations.csv"
-  \item AIRR = "airr_rearrangement.tsv" 
-  \item BD = "Contigs_AIRR.tsv" 
-  \item Dandelion = "all_contig_dandelion.tsv" 
-  \item Immcantation = "data.tsv" 
+  \item AIRR = "airr_rearrangement.tsv"
+  \item BD = "Contigs_AIRR.tsv"
+  \item Dandelion = "all_contig_dandelion.tsv"
+  \item Immcantation = "data.tsv"
   \item JSON = ".json"
   \item ParseBio = "barcode_report.tsv"
   \item MiXCR = "clones.tsv"
-  \item Omniscope = ".csv" 
+  \item Omniscope = ".csv"
   \item TRUST4 = "barcode_report.tsv"
-  \item WAT3R = "barcode_results.csv" 
+  \item WAT3R = "barcode_results.csv"
 }
 }
 \examples{

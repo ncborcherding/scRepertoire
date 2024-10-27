@@ -32,61 +32,79 @@
 #'
 #' @param input The directory in which contigs are located or a list with contig elements
 #' @param format The format of the single-cell contig, currently supporting:
-#' "10X", "AIRR", "BD", "Dandelion", "JSON", "MiXCR", "ParseBio", "Omniscope", "TRUST4", and "WAT3R"
+#' "10X", "AIRR", "BD", "Dandelion", "JSON", "MiXCR", "ParseBio", "Omniscope",
+#' "TRUST4", "WAT3R", and "Immcantation"
 #' @importFrom utils read.csv read.delim
 #' @importFrom rjson fromJSON
 #' @export
 #' @concept Loading_and_Processing_Contigs
 #' @return List of contigs for compatibility  with \code{\link{combineTCR}} or
 #' \code{\link{combineBCR}}
-loadContigs <- function(input,
-                        format = "10X") {
-  #Loading from directory, recursively
-  if (inherits(x=input, what ="character")) {
-    format.list <- list("WAT3R" = "barcode_results.csv",
-                        "10X" =  "filtered_contig_annotations.csv",
-                        "AIRR" = "airr_rearrangement.tsv",
-                        "Dandelion" = "all_contig_dandelion.tsv",
-                        "Immcantation" = "_data.tsv",
-                        "MiXCR" = "clones.tsv",
-                        "JSON" = ".json",
-                        "TRUST4" = "barcode_report.tsv",
-                        "BD" = "Contigs_AIRR.tsv",
-                        "Omniscope" =c("_OSB.csv", "_OST.csv"),
-                        "ParseBio" = "barcode_report.tsv")
+loadContigs <- function(input, format = "10X") {
+
+    assert_that(is.string(input) || is.list(input) || is.data.frame(input))
+    assert_that(is.string(format))
+    assert_that(format %in% c(
+        "10X", "AIRR", "BD", "Dandelion", "JSON", "MiXCR", "ParseBio",
+        "Omniscope", "TRUST4", "WAT3R", "Immcantation"
+    ))
+
+    #Loading from directory, recursively
+    df <- if (inherits(x = input, what = "character")) {
+
+        format.list <- list("WAT3R" = "barcode_results.csv",
+                            "10X" =  "filtered_contig_annotations.csv",
+                            "AIRR" = "airr_rearrangement.tsv",
+                            "Dandelion" = "all_contig_dandelion.tsv",
+                            "Immcantation" = "_data.tsv",
+                            "MiXCR" = "clones.tsv",
+                            "JSON" = ".json",
+                            "TRUST4" = "barcode_report.tsv",
+                            "BD" = "Contigs_AIRR.tsv",
+                            "Omniscope" =c("_OSB.csv", "_OST.csv"),
+                            "ParseBio" = "barcode_report.tsv")
         file.pattern <- format.list[[format]]
-        contig.files <- list.files(input, paste0(file.pattern, collapse = "|"), recursive = TRUE, full.names = TRUE)
-       
-        if (format %in% c("10X", "WAT3R", "Omniscope")) {
-          df <- lapply(contig.files, read.csv)
-        } else if(format %in% c("json")) {
-          df <- lapply(contig.files, function(x) {
-            tmp <- as.data.frame(fromJSON(x))
-          })
-        } else {
-          df <- lapply(contig.files, read.delim)
+        contig.files <- list.files(
+            input,
+            paste0(file.pattern, collapse = "|"),
+            recursive = TRUE,
+            full.names = TRUE
+        )
+
+        if (length(contig.files) == 0) {
+            warning("No files found in the directory")
+            return(list())
         }
-  #Already loaded list or data frame
-  } else if (inherits(x=input, what ="list") | inherits(x=input, what ="data.frame")) {
-    df <- .checkList(input)
-  }
- 
-  loadFunc <- switch(format,
-                     "10X" = .parse10x,
-                     "AIRR" = .parseAIRR,
-                     "Dandelion" = .parseDandelion,
-                     "JSON" = .parseJSON,
-                     "MiXCR" = .parseMiXCR,
-                     "TRUST4" = .parseTRUST4,
-                     "BD" = .parseBD,
-                     "WAT3R"  = .parseWAT3R,
-                     "Omniscope" = .parseOmniscope,
-                     "Immcantation" = .parseImmcantation,
-                     "ParseBio" = .parseParse,
-                      stop("Invalid format provided"))
- 
-  df <- loadFunc(df)
-  return(df)
+
+        reader <- if (format == "json") {
+            function(x) as.data.frame(fromJSON(x))
+        } else if (format %in% c("10X", "WAT3R", "Omniscope")) {
+            read.csv
+        } else {
+            read.delim
+        }
+
+        lapply(contig.files, reader)
+
+    } else { # handle an already loaded list of dfs / 1 df
+        .checkList(input)
+    }
+
+    loadFunc <- switch(format,
+        "10X" = .parse10x,
+        "AIRR" = .parseAIRR,
+        "Dandelion" = .parseDandelion,
+        "JSON" = .parseJSON,
+        "MiXCR" = .parseMiXCR,
+        "TRUST4" = .parseTRUST4,
+        "BD" = .parseBD,
+        "WAT3R"  = .parseWAT3R,
+        "Omniscope" = .parseOmniscope,
+        "Immcantation" = .parseImmcantation,
+        "ParseBio" = .parseParse
+    )
+
+    loadFunc(df)
 }
 
 #Formats TRUST4 data
