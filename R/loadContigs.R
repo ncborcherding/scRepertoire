@@ -1,65 +1,65 @@
 #' Loading the contigs derived from single-cell sequencing
 #'
-#' This function generates a contig list and formats the data to allow for 
-#' function with  \code{\link{combineTCR}} or \code{\link{combineBCR}}. If 
-#' using data derived from filtered outputs of 10X Genomics, there is no 
-#' need to use this function as the data is already compatible. 
-#' 
-#' The files that this function parses includes:  
+#' This function generates a contig list and formats the data to allow for
+#' function with  \code{\link{combineTCR}} or \code{\link{combineBCR}}. If
+#' using data derived from filtered outputs of 10X Genomics, there is no
+#' need to use this function as the data is already compatible.
+#'
+#' The files that this function parses includes: 
 #' \itemize{
 #'   \item 10X =  "filtered_contig_annotations.csv"
-#'   \item AIRR = "airr_rearrangement.tsv" 
-#'   \item BD = "Contigs_AIRR.tsv" 
-#'   \item Dandelion = "all_contig_dandelion.tsv" 
-#'   \item Immcantation = "data.tsv" 
+#'   \item AIRR = "airr_rearrangement.tsv"
+#'   \item BD = "Contigs_AIRR.tsv"
+#'   \item Dandelion = "all_contig_dandelion.tsv"
+#'   \item Immcantation = "data.tsv"
 #'   \item JSON = ".json"
 #'   \item ParseBio = "barcode_report.tsv"
 #'   \item MiXCR = "clones.tsv"
-#'   \item Omniscope = ".csv" 
+#'   \item Omniscope = ".csv"
 #'   \item TRUST4 = "barcode_report.tsv"
-#'   \item WAT3R = "barcode_results.csv" 
+#'   \item WAT3R = "barcode_results.csv"
 #' }
-#' 
+#'
 #' @examples
 #' TRUST4 <- read.csv("https://www.borch.dev/uploads/contigs/TRUST4_contigs.csv")
 #' contig.list <- loadContigs(TRUST4, format = "TRUST4")
-#' 
+#'
 #' BD <- read.csv("https://www.borch.dev/uploads/contigs/BD_contigs.csv")
 #' contig.list <- loadContigs(BD, format = "BD")
-#' 
+#'
 #' WAT3R <- read.csv("https://www.borch.dev/uploads/contigs/WAT3R_contigs.csv")
 #' contig.list <- loadContigs(WAT3R, format = "WAT3R")
-#' 
+#'
 #' @param input The directory in which contigs are located or a list with contig elements
-#' @param format The format of the single-cell contig, currently supporting: 
+#' @param format The format of the single-cell contig, currently supporting:
 #' "10X", "AIRR", "BD", "Dandelion", "JSON", "MiXCR", "ParseBio", "Omniscope", "TRUST4", and "WAT3R"
 #' @importFrom utils read.csv read.delim
 #' @importFrom rjson fromJSON
 #' @export
 #' @concept Loading_and_Processing_Contigs
-#' @return List of contigs for compatibility  with \code{\link{combineTCR}} or 
+#' @return List of contigs for compatibility  with \code{\link{combineTCR}} or
 #' \code{\link{combineBCR}}
-loadContigs <- function(input, 
+loadContigs <- function(input,
                         format = "10X") {
   #Loading from directory, recursively
   if (inherits(x=input, what ="character")) {
-    format.list <- list("WAT3R" = "barcode_results.csv", 
-                        "10X" =  "filtered_contig_annotations.csv", 
-                        "AIRR" = "airr_rearrangement.tsv", 
+    format.list <- list("WAT3R" = "barcode_results.csv",
+                        "10X" =  "filtered_contig_annotations.csv",
+                        "AIRR" = "airr_rearrangement.tsv",
                         "Dandelion" = "all_contig_dandelion.tsv",
                         "Immcantation" = "_data.tsv",
-                        "MiXCR" = "clones.tsv", 
+                        "MiXCR" = "clones.tsv",
                         "JSON" = ".json",
-                        "TRUST4" = "barcode_report.tsv", 
+                        "TRUST4" = "barcode_report.tsv",
                         "BD" = "Contigs_AIRR.tsv",
                         "Omniscope" =c("_OSB.csv", "_OST.csv"),
                         "ParseBio" = "barcode_report.tsv")
         file.pattern <- format.list[[format]]
         contig.files <- list.files(input, paste0(file.pattern, collapse = "|"), recursive = TRUE, full.names = TRUE)
-        
+       
         if (format %in% c("10X", "WAT3R", "Omniscope")) {
-          df <- lapply(contig.files, read.csv) 
-        } else if(format %in% c("json")) { 
+          df <- lapply(contig.files, read.csv)
+        } else if(format %in% c("json")) {
           df <- lapply(contig.files, function(x) {
             tmp <- as.data.frame(fromJSON(x))
           })
@@ -70,7 +70,7 @@ loadContigs <- function(input,
   } else if (inherits(x=input, what ="list") | inherits(x=input, what ="data.frame")) {
     df <- .checkList(input)
   }
-  
+ 
   loadFunc <- switch(format,
                      "10X" = .parse10x,
                      "AIRR" = .parseAIRR,
@@ -84,7 +84,7 @@ loadContigs <- function(input,
                      "Immcantation" = .parseImmcantation,
                      "ParseBio" = .parseParse,
                       stop("Invalid format provided"))
-  
+ 
   df <- loadFunc(df)
   return(df)
 }
@@ -95,7 +95,7 @@ loadContigs <- function(input,
     for (i in seq_along(df)) {
         colnames(df[[i]])[1] <- "barcode"
         df[[i]][df[[i]] == "*"] <- NA
-        
+       
         if(length(which(is.na(df[[i]]$chain1))) == length(df[[i]]$chain1)) {
           chain2 <- matrix(ncol = 7, nrow = length(df[[i]]$chain1))
         } else {
@@ -104,7 +104,7 @@ loadContigs <- function(input,
         }
         colnames(chain2) <- c("v_gene", "d_gene", "j_gene", "c_gene", "cdr3_nt", "cdr3", "reads")
         chain2 <- data.frame(barcode = df[[i]][,1], chain2)
-        
+       
         if(length(which(is.na(df[[i]]$chain2))) == length(df[[i]]$chain2)) {
           chain1 <- matrix(ncol = 7, nrow = length(df[[i]]$chain2))
         } else {
@@ -129,14 +129,14 @@ loadContigs <- function(input,
         chain2 <- df[[i]][,c("BC","TRBV","TRBD","TRBJ","TRB_CDR3nuc","TRB_CDR3","TRB_nReads","TRB_CDR3_UMIcount")]
         chain2 <- data.frame(chain2[,1], chain = "TRB", chain2[,2:4], c_gene = NA, chain2[,5:8])
         colnames(chain2) <- c("barcode", "chain", "v_gene", "d_gene", "j_gene", "c_gene", "cdr3_nt", "cdr3", "reads", "umis")
-        
+       
         #TRA Chain 1
         chain1 <-  df[[i]][,c("BC","TRAV","TRAJ","TRA_CDR3nuc","TRA_CDR3","TRA_nReads","TRA_CDR3_UMIcount")]
         chain1 <- data.frame(chain1[,1], chain = "TRA",chain1[,2], d_gene = NA, chain1[,3], c_gene = NA, chain1[,4:7])
         colnames(chain1) <- c("barcode", "chain", "v_gene", "d_gene", "j_gene", "c_gene", "cdr3_nt", "cdr3", "reads", "umis")
         data2 <- rbind(chain1, chain2)
         data2[data2 == ""] <- NA
-        
+       
         #TRA Chain 2
         chain3 <-  df[[i]][,c("BC","TRAV.2","TRAJ.2","TRA.2_CDR3nuc","TRA.2_CDR3","TRA.2_nReads","TRA.2_CDR3_UMIcount")]
         chain3 <- data.frame(chain3[,1], chain = "TRA",chain3[,2],  d_gene = NA, chain3[,3], c_gene = NA, chain3[,4:7])
@@ -145,7 +145,7 @@ loadContigs <- function(input,
         data2[data2 == ""] <- NA
         df[[i]] <- data2
         df[[i]] <- df[[i]][with(df[[i]], order(reads, chain)),]
-        
+       
     }
     return(df)
 }
@@ -167,7 +167,7 @@ loadContigs <- function(input,
         df[[i]] <- subset(df[[i]], productive %in% c(TRUE, "TRUE", "True", "true"))
         if (nrow(df[[i]]) == 0) { stop(
             "There are 0 contigs after internal filtering -
-            check the contig list to see if any issues exist 
+            check the contig list to see if any issues exist
             for productive chains", call. = FALSE) }
         df[[i]] <- subset(df[[i]], cdr3 != "None")
         df[[i]][df[[i]] == ""] <- NA
@@ -191,7 +191,7 @@ loadContigs <- function(input,
   }
   return(df)
 }
-    
+   
 
 .parseOmniscope <- function(df) {
   for (i in seq_along(df)) {
@@ -259,20 +259,20 @@ loadContigs <- function(input,
     colnames(TRA.2) <- 1:8
     TRA <- rbind(TRA.1, TRA.2)
     TRA$chain <- "TRA"
-    
+   
     TRB.1 <- df[[i]][,c("Barcode", "TRB_V", "TRB_D", "TRB_J", "TRB_C", "TRB_cdr3_aa", "TRB_read_count", "TRB_transcript_count")]
     TRB.2 <- df[[i]][,c("Barcode", "secondary_TRB_V", "secondary_TRB_D", "secondary_TRB_J", "secondary_TRB_C", "secondary_TRB_cdr3_aa", "secondary_TRB_read_count", "secondary_TRB_transcript_count")]
     colnames(TRB.1) <- 1:8
     colnames(TRB.2) <- 1:8
     TRB <- rbind(TRB.1, TRB.2)
     TRB$chain <- "TRB"
-    
+   
     data2 <- rbind(TRA, TRB)
     data2 <- data2[rowSums(is.na(data2[2:8])) != 7, ]
     colnames(data2) <- c("barcode", "v_gene", "d_gene", "j_gene", "c_gene", "cdr3", "reads", "umis", "chain")
     data2$cdr3_nt <- NA
     data2 <- data2[,c("barcode", "chain", "v_gene", "d_gene", "j_gene", "c_gene", "cdr3_nt", "cdr3", "reads", "umis")]
-    
+   
     df[[i]] <- data2
     df[[i]] <- df[[i]][with(df[[i]], order(reads, chain)),]
   }
@@ -283,6 +283,6 @@ loadContigs <- function(input,
   for (i in seq_along(df)) {
     df[[i]] <- df[[i]][,c("cell_id", "locus", "consensus_count", "v_call", "d_call", "j_call", "c_call", "cdr3", "cdr3_aa", "productive")]
     colnames(df[[i]]) <- c("barcode", "chain", "reads", "v_gene", "d_gene", "j_gene", "c_gene", "cdr3_nt", "cdr3", "productive")
-  } 
+  }
   return(df)
 }
