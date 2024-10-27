@@ -52,21 +52,23 @@ loadContigs <- function(input, format = "10X") {
     #Loading from directory, recursively
     df <- if (inherits(x = input, what = "character")) {
 
-        format.list <- list("WAT3R" = "barcode_results.csv",
-                            "10X" =  "filtered_contig_annotations.csv",
-                            "AIRR" = "airr_rearrangement.tsv",
-                            "Dandelion" = "all_contig_dandelion.tsv",
-                            "Immcantation" = "_data.tsv",
-                            "MiXCR" = "clones.tsv",
-                            "JSON" = ".json",
-                            "TRUST4" = "barcode_report.tsv",
-                            "BD" = "Contigs_AIRR.tsv",
-                            "Omniscope" =c("_OSB.csv", "_OST.csv"),
-                            "ParseBio" = "barcode_report.tsv")
+        format.list <- list(
+            "WAT3R" = "barcode_results.csv",
+            "10X" =  "filtered_contig_annotations.csv",
+            "AIRR" = "airr_rearrangement.tsv",
+            "Dandelion" = "all_contig_dandelion.tsv",
+            "Immcantation" = "_data.tsv",
+            "MiXCR" = "clones.tsv",
+            "JSON" = ".json",
+            "TRUST4" = "barcode_report.tsv",
+            "BD" = "Contigs_AIRR.tsv",
+            "Omniscope" = c("_OSB.csv", "_OST.csv"),
+            "ParseBio" = "barcode_report.tsv"
+        )
         file.pattern <- format.list[[format]]
         contig.files <- list.files(
             input,
-            paste0(file.pattern, collapse = "|"),
+            paste0("*", file.pattern, "$", collapse = "|"),
             recursive = TRUE,
             full.names = TRUE
         )
@@ -129,7 +131,7 @@ loadContigs <- function(input, format = "10X") {
           chain1 <- str_split(df[[i]]$chain2, ",", simplify = TRUE)[,seq_len(7)]
           chain1[chain1 == "*"] <- "None"
         }
-        colnames(chain1) <- c("v_gene", "d_gene", "j_gene", "c_gene", "cdr3_nt", "cdr3", "reads")
+        colnames(chain1) <- c("v_gene", "d_gene", "j_gene", "c_gene", "cdr3_nt", "cdr3", "reads") # issue 429
         chain1 <- data.frame(barcode = df[[i]][,1], chain1)
         data2 <- rbind(chain1, chain2)
         data2[data2 == ""] <- NA
