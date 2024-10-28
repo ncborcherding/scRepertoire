@@ -5,7 +5,7 @@
 #' using data derived from filtered outputs of 10X Genomics, there is no
 #' need to use this function as the data is already compatible.
 #'
-#' The files that this function parses includes: 
+#' The files that this function parses includes:
 #' \itemize{
 #'   \item 10X =  "filtered_contig_annotations.csv"
 #'   \item AIRR = "airr_rearrangement.tsv"
@@ -30,7 +30,8 @@
 #' WAT3R <- read.csv("https://www.borch.dev/uploads/contigs/WAT3R_contigs.csv")
 #' contig.list <- loadContigs(WAT3R, format = "WAT3R")
 #'
-#' @param input The directory in which contigs are located or a list with contig elements
+#' @param input The directory in which contigs are located or a list with contig
+#' elements
 #' @param format The format of the single-cell contig, currently supporting:
 #' "10X", "AIRR", "BD", "Dandelion", "JSON", "MiXCR", "ParseBio", "Omniscope",
 #' "TRUST4", "WAT3R", and "Immcantation"
@@ -112,11 +113,13 @@ loadContigs <- function(input, format = "10X") {
 #' Formats TRUST4 data
 #' @importFrom stringr str_split
 .parseTRUST4 <- function(df) {
+
     for (i in seq_along(df)) {
+
         colnames(df[[i]])[1] <- "barcode"
         df[[i]][df[[i]] == "*"] <- NA
 
-        if(length(which(is.na(df[[i]]$chain1))) == length(df[[i]]$chain1)) {
+        if (length(which(is.na(df[[i]]$chain1))) == length(df[[i]]$chain1)) {
             chain2 <- matrix(ncol = 7, nrow = length(df[[i]]$chain1))
         } else {
             chain2 <- str_split(df[[i]]$chain1, ",", simplify = TRUE)[, seq_len(7)]
@@ -125,7 +128,7 @@ loadContigs <- function(input, format = "10X") {
         colnames(chain2) <- c("v_gene", "d_gene", "j_gene", "c_gene", "cdr3_nt", "cdr3", "reads")
         chain2 <- data.frame(barcode = df[[i]][, 1], chain2)
 
-        if(length(which(is.na(df[[i]]$chain2))) == length(df[[i]]$chain2)) {
+        if (length(which(is.na(df[[i]]$chain2))) == length(df[[i]]$chain2)) {
             chain1 <- matrix(ncol = 7, nrow = length(df[[i]]$chain2))
         } else {
             chain1 <- str_split(df[[i]]$chain2, ",", simplify = TRUE)[, seq_len(7)]
@@ -137,8 +140,16 @@ loadContigs <- function(input, format = "10X") {
         data2[data2 == ""] <- NA
         df[[i]] <- data2
     }
-    df <- .chain.parser(df)
-    return(df)
+
+    .chain.parser(df)
+}
+
+#Grabs the chain info from v_gene
+.chain.parser <- function(df) {
+    lapply(df, function(x) {
+        x$chain <- substr(x$v_gene, 1, 3)
+        x
+    })
 }
 
 #Formats wat3r data
@@ -204,14 +215,6 @@ loadContigs <- function(input, format = "10X") {
   }
   return(df)
 }
-#Grabs the chain info from v_gene
-.chain.parser <- function(df) {
-  for (i in seq_along(df)) {
-    df[[i]]$chain <- substr(df[[i]][,"v_gene"],1,3)
-  }
-  return(df)
-}
-   
 
 .parseOmniscope <- function(df) {
   for (i in seq_along(df)) {
