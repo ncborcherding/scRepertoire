@@ -49,3 +49,29 @@ test_that("clonalCompare works", {
    )
   
 })
+
+test_that("clonalCompare works with exportTable and prop FALSE", {
+
+  getClonalCompareRes <- function(prop) {
+    clonalCompare(
+      combined,
+      top.clones = 10,
+      highlight.clones = c("CVVSDNTGGFKTIF_CASSVRRERANTGELFF", "NA_CASSVRRERANTGELFF"),
+      relabel.clones = TRUE,
+      samples = c("P17B", "P17L"),
+      cloneCall = "aa",
+      graph = "alluvial",
+      exportTable = TRUE,
+      prop = prop
+    )
+  }
+
+  clonalCompareCountConvertedToProp <- getClonalCompareRes(prop = FALSE) %>%
+    dplyr::mutate(Count = Count / sum(Count)) %>%
+    dplyr::rename(Proportion = Count)
+
+  expect_identical(
+    getClonalCompareRes(prop = TRUE),
+    clonalCompareCountConvertedToProp
+  )
+})

@@ -1,11 +1,12 @@
-#' Demonstrate the difference in clonal proportion between clones
+#' Demonstrate the difference in clonal proportions / counts between clones
 #'
-#' This function produces an alluvial or area graph of the proportion of
+#' This function produces an alluvial or area graph of the proportion or
+#' count composition of
 #' the indicated clones for all or selected samples (using the
 #' \strong{samples} parameter). Individual clones can be selected
 #' using the \strong{clones} parameter with the specific sequence of
 #' interest or using the \strong{top.clones} parameter with the top
-#' n clones by proportion to be visualized.
+#' n clones by proportion / counts to be visualized.
 #'
 #' @examples
 #' #Making combined contig data
@@ -65,8 +66,8 @@ clonalCompare <- function(input.data,
                           order.by = NULL,
                           graph = "alluvial",
                           exportTable = FALSE,
-                          palette = "inferno",
-                          prop = TRUE) {
+                          palette = "inferno")#,
+                          #prop = TRUE) {
 
   #Tie goes to indicated clones over top clones
   if(!is.null(top.clones) && !is.null(clones)) {
@@ -105,8 +106,12 @@ clonalCompare <- function(input.data,
     Con.df <- Con.df[Con.df$clones %in% clones,]
   } else if (!is.null(top.clones)) {
     top <- Con.df %>%
-      group_by(Con.df[,3]) %>%
-      slice_max(n = top.clones, order_by = Proportion, with_ties = FALSE)
+      group_by(Sample) %>%
+      slice_max(
+        n = top.clones,
+        order_by = !!sym(compareColname),
+        with_ties = FALSE
+      )
     Con.df <- Con.df[Con.df$clones %in% top$clones,]
   }
   if (nrow(Con.df) < length(unique(Con.df$Sample))) {
@@ -114,7 +119,7 @@ clonalCompare <- function(input.data,
             enough clones to examine.")
   }
   #Clones relabeling
-  clones.returned <- as.vector(unique(Con.df[order(Con.df[,"Proportion"], decreasing = TRUE),"clones"]))
+  clones.returned <- as.vector(unique(Con.df[order(Con.df[, compareColname], decreasing = TRUE),"clones"]))
   if (relabel.clones) {
     new.clones <- paste0("Clone: ", seq_len(length(clones.returned)))
     names(new.clones) <- clones.returned
@@ -122,14 +127,11 @@ clonalCompare <- function(input.data,
     if(!is.null(highlight.clones)) {
       highlight.clones <- unname(new.clones[which(names(new.clones) %in% highlight.clones)])
     }
-    Con.df[,"original.clones"] <- Con.df[,"clones"]
-    Con.df[,"clones"] <- new.clones[as.vector(Con.df[,"clones"])]
-    Con.df[,"clones"] <- factor(Con.df[,"clones"],
-                                levels = str_sort(unique(Con.df[,"clones"]), numeric = TRUE))
-    clones.returned <- as.vector(unique(Con.df[,"clones"]))
-  }
-  if (exportTable == TRUE) {
-    return(Con.df)
+    Con.df[,"original.clones"] <- Con.df[, "clones"]
+    Con.df[,"clones"] <- new.clones[as.vector(Con.df[, "clones"])]
+    Con.df[,"clones"] <- factor(Con.df[, "clones"],
+                                levels = str_sort(unique(Con.df[, "clones"]), numeric = TRUE))
+    clones.returned <- as.vector(unique(Con.df[, "clones"]))
   }
 
   if(!is.null(order.by)) {
@@ -138,6 +140,9 @@ clonalCompare <- function(input.data,
                                  data.frame = Con.df)
   }
 
+  if (exportTable == TRUE) {
+    return(Con.df)
+  }
 
   #Plotting Functions
   plot <- ggplot(Con.df, aes(x = Sample,
@@ -145,7 +150,7 @@ clonalCompare <- function(input.data,
                              group = clones,
                              stratum = clones,
                              alluvium = clones,
-                             y = Proportion,
+                             y = !!sym(compareColname),
                              label = clones)) +
     theme_classic() +
     theme(axis.title.x = element_blank(),
