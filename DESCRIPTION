@@ -43,7 +43,8 @@ Imports:
     truncdist,
     utils,
     VGAM,
-    hash
+    hash,
+    purrr
 Suggests: 
     BiocManager,
     BiocStyle,

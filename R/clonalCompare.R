@@ -79,20 +79,23 @@ clonalCompare <- function(input.data,
   cloneCall <- .theCall(input.data, cloneCall)
 
   sco <- is_seurat_object(input.data) | is_se_object(input.data)
-  if(!is.null(group.by) & !sco) {
+  if(!is.null(group.by) && !sco) {
     input.data <- .groupList(input.data, group.by)
   }
 
-  Con.df <- NULL
+  compareColname <- ifelse(prop, "Proportion", "Count")
 
-  #Loop through the list to get a proportional summary
-  for (i in seq_along(input.data)) {
-    tbl <- as.data.frame(table(input.data[[i]][,cloneCall]))
-    tbl[,2] <- tbl[,2]/sum(tbl[,2])
-    colnames(tbl) <- c("clones", "Proportion")
-    tbl$Sample <- names(input.data[i])
-    Con.df <- rbind.data.frame(Con.df, tbl)
-  }
+  Con.df <- input.data %>%
+    purrr::imap(function(df, columnNames) {
+      tbl <- as.data.frame(table(df[, cloneCall]))
+      if (prop) {
+        tbl[, 2] <- tbl[, 2] / sum(tbl[, 2])
+      }
+      colnames(tbl) <- c("clones", compareColname)
+      tbl$Sample <- columnNames
+      tbl
+    }) %>%
+    dplyr::bind_rows()
 
   #Filtering steps
   if (!is.null(samples)) {
