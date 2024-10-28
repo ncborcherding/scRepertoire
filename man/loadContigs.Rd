@@ -7,7 +7,8 @@
 loadContigs(input, format = "10X")
 }
 \arguments{
-\item{input}{The directory in which contigs are located or a list with contig elements}
+\item{input}{The directory in which contigs are located or a list with contig
+elements}
 
 \item{format}{The format of the single-cell contig, currently supporting:
 "10X", "AIRR", "BD", "Dandelion", "JSON", "MiXCR", "ParseBio", "Omniscope",
@@ -24,7 +25,7 @@ using data derived from filtered outputs of 10X Genomics, there is no
 need to use this function as the data is already compatible.
 }
 \details{
-The files that this function parses includes: 
+The files that this function parses includes:
 \itemize{
   \item 10X =  "filtered_contig_annotations.csv"
   \item AIRR = "airr_rearrangement.tsv"

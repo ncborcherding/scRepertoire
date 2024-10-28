@@ -110,7 +110,7 @@ loadContigs <- function(input, format = "10X") {
     loadFunc(rawDataDfList)
 }
 
-#' Formats TRUST4 data
+#Formats TRUST4 data
 #' @importFrom stringr str_split
 .parseTRUST4 <- function(df) {
 
@@ -122,7 +122,7 @@ loadContigs <- function(input, format = "10X") {
         if (length(which(is.na(df[[i]]$chain1))) == length(df[[i]]$chain1)) {
             chain2 <- matrix(ncol = 7, nrow = length(df[[i]]$chain1))
         } else {
-            chain2 <- str_split(df[[i]]$chain1, ",", simplify = TRUE)[, seq_len(7)]
+            chain2 <- str_split(df[[i]]$chain1, ",", simplify = TRUE)[, seq_len(7), drop = FALSE]
             chain2[chain2 == "*"] <- "None"
         }
         colnames(chain2) <- c("v_gene", "d_gene", "j_gene", "c_gene", "cdr3_nt", "cdr3", "reads")
@@ -131,14 +131,14 @@ loadContigs <- function(input, format = "10X") {
         if (length(which(is.na(df[[i]]$chain2))) == length(df[[i]]$chain2)) {
             chain1 <- matrix(ncol = 7, nrow = length(df[[i]]$chain2))
         } else {
-            chain1 <- str_split(df[[i]]$chain2, ",", simplify = TRUE)[, seq_len(7)]
+            chain1 <- str_split(df[[i]]$chain2, ",", simplify = TRUE)[, seq_len(7), drop = FALSE]
             chain1[chain1 == "*"] <- "None"
         }
-        colnames(chain1) <- c("v_gene", "d_gene", "j_gene", "c_gene", "cdr3_nt", "cdr3", "reads") # issue 429
+        colnames(chain1) <- c("v_gene", "d_gene", "j_gene", "c_gene", "cdr3_nt", "cdr3", "reads")
         chain1 <- data.frame(barcode = df[[i]][, 1], chain1)
         data2 <- rbind(chain1, chain2)
         data2[data2 == ""] <- NA
-        df[[i]] <- data2
+        df[[i]] <- data2 # is it necessary to drop rows that are fully NA with an existing barcode?
     }
 
     .chain.parser(df)
