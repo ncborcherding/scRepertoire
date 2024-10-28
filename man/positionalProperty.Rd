@@ -59,12 +59,12 @@ More information for the individual methods can be found at the following citati
 }
 \examples{
 #Making combined contig data
-combined <- combineTCR(contig_list,
-                        samples = c("P17B", "P17L", "P18B", "P18L",
+combined <- combineTCR(contig_list, 
+                        samples = c("P17B", "P17L", "P18B", "P18L", 
                                     "P19B","P19L", "P20B", "P20L"))
-positionalProperty(combined,
+positionalProperty(combined, 
                    chain = "TRB",
-                   method = "Atchley",
+                   method = "Atchley", 
                    aa.length = 20)
 }
 \author{
