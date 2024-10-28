@@ -66,7 +66,7 @@ clonalCompare <- function(input.data,
                           order.by = NULL,
                           graph = "alluvial",
                           exportTable = FALSE,
-                          palette = "inferno")#,
+                          palette = "inferno") {#,
                           #prop = TRUE) {
 
   #Tie goes to indicated clones over top clones

@@ -16,7 +16,7 @@ positionalEntropy(
 )
 }
 \arguments{
-\item{input.data}{The product of \code{\link{combineTCR}}, 
+\item{input.data}{The product of \code{\link{combineTCR}},
 \code{\link{combineBCR}}, or \code{\link{combineExpression}}}
 
 \item{chain}{"TRA", "TRB", "TRG", "TRG", "IGH", "IGL"}
@@ -28,7 +28,7 @@ to plot groups in order}
 
 \item{aa.length}{The maximum length of the CDR3 amino acid sequence.}
 
-\item{method}{The method to calculate the entropy/diversity - 
+\item{method}{The method to calculate the entropy/diversity -
 "shannon", "inv.simpson", "norm.entropy"}
 
 \item{exportTable}{Returns the data frame used for forming the graph}
@@ -39,20 +39,20 @@ to plot groups in order}
 ggplot of line graph of diversity by position
 }
 \description{
-This function the diversity amino acids along the residues 
-of the CDR3 amino acid sequence. Please see 
-\code{\link{clonalDiversity}} for more information on 
-the underlying methods for diversity/entropy calculations. 
-Positions without variance will have a value reported as 0 
+This function the diversity amino acids along the residues
+of the CDR3 amino acid sequence. Please see
+\code{\link{clonalDiversity}} for more information on
+the underlying methods for diversity/entropy calculations.
+Positions without variance will have a value reported as 0
 for the purposes of comparison.
 }
 \examples{
 #Making combined contig data
-combined <- combineTCR(contig_list, 
-                        samples = c("P17B", "P17L", "P18B", "P18L", 
+combined <- combineTCR(contig_list,
+                        samples = c("P17B", "P17L", "P18B", "P18L",
                                     "P19B","P19L", "P20B", "P20L"))
-positionalEntropy(combined, 
-                  chain = "TRB", 
+positionalEntropy(combined,
+                  chain = "TRB",
                   aa.length = 20)
 }
 \concept{Summarize_Repertoire}
