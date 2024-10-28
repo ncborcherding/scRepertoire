@@ -40,11 +40,11 @@ of the CDR3 amino acid sequence.
 }
 \examples{
 #Making combined contig data
-combined <- combineTCR(contig_list, 
-                        samples = c("P17B", "P17L", "P18B", "P18L", 
+combined <- combineTCR(contig_list,
+                        samples = c("P17B", "P17L", "P18B", "P18L",
                                     "P19B","P19L", "P20B", "P20L"))
-percentAA(combined, 
-          chain = "TRB", 
+percentAA(combined,
+          chain = "TRB",
           aa.length = 20)
 }
 \concept{Summarize_Repertoire}

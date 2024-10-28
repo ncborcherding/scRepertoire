@@ -62,3 +62,6 @@ po/*~
 
 # RStudio Connect folder
 rsconnect/
+
+dev
+.lintr

@@ -29,6 +29,7 @@ to plot groups in order}
 \item{aa.length}{The maximum length of the CDR3 amino acid sequence.}
 
 \item{method}{The method to calculate the entropy/diversity -
+\item{method}{The method to calculate the entropy/diversity -
 "shannon", "inv.simpson", "norm.entropy"}
 
 \item{exportTable}{Returns the data frame used for forming the graph}
@@ -48,11 +49,11 @@ for the purposes of comparison.
 }
 \examples{
 #Making combined contig data
-combined <- combineTCR(contig_list, 
-                        samples = c("P17B", "P17L", "P18B", "P18L", 
+combined <- combineTCR(contig_list,
+                        samples = c("P17B", "P17L", "P18B", "P18L",
                                     "P19B","P19L", "P20B", "P20L"))
-positionalEntropy(combined, 
-                  chain = "TRB", 
+positionalEntropy(combined,
+                  chain = "TRB",
                   aa.length = 20)
 }
 \concept{Summarize_Repertoire}
