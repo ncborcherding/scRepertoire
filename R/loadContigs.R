@@ -114,34 +114,35 @@ loadContigs <- function(input, format = "10X") {
 #' @importFrom stringr str_split
 .parseTRUST4 <- function(df) {
 
-    for (i in seq_along(df)) {
-
-        colnames(df[[i]])[1] <- "barcode"
-        df[[i]][df[[i]] == "*"] <- NA
-
-        if (length(which(is.na(df[[i]]$chain1))) == length(df[[i]]$chain1)) {
-            chain2 <- matrix(ncol = 7, nrow = length(df[[i]]$chain1))
+    processChain <- function(data, chain_col) {
+        if (all(is.na(data[[chain_col]]))) {
+            chain <- matrix(ncol = 7, nrow = length(data[[chain_col]]))
         } else {
-            chain2 <- str_split(df[[i]]$chain1, ",", simplify = TRUE)[, seq_len(7), drop = FALSE]
-            chain2[chain2 == "*"] <- "None"
+            chain <- str_split(data[[chain_col]], ",", simplify = TRUE)
+            chain <- chain[, seq_len(7), drop = FALSE]
+            chain[chain == "*"] <- "None"
         }
-        colnames(chain2) <- c("v_gene", "d_gene", "j_gene", "c_gene", "cdr3_nt", "cdr3", "reads")
-        chain2 <- data.frame(barcode = df[[i]][, 1], chain2)
-
-        if (length(which(is.na(df[[i]]$chain2))) == length(df[[i]]$chain2)) {
-            chain1 <- matrix(ncol = 7, nrow = length(df[[i]]$chain2))
-        } else {
-            chain1 <- str_split(df[[i]]$chain2, ",", simplify = TRUE)[, seq_len(7), drop = FALSE]
-            chain1[chain1 == "*"] <- "None"
-        }
-        colnames(chain1) <- c("v_gene", "d_gene", "j_gene", "c_gene", "cdr3_nt", "cdr3", "reads")
-        chain1 <- data.frame(barcode = df[[i]][, 1], chain1)
-        data2 <- rbind(chain1, chain2)
-        data2[data2 == ""] <- NA
-        df[[i]] <- data2 # is it necessary to drop rows that are fully NA with an existing barcode?
+        colnames(chain) <- c(
+            "v_gene", "d_gene", "j_gene", "c_gene", "cdr3_nt", "cdr3", "reads"
+        )
+        data.frame(barcode = data$barcode, chain)
     }
 
-    .chain.parser(df)
+    formattedDfs <- lapply(df, function(data) {
+
+        colnames(data)[1] <- "barcode"
+        data[data == "*"] <- NA
+
+        # not a mistake, opposite definitions in TRUST4 and scRepertoire
+        chain1 <- processChain(data, "chain2")
+        chain2 <- processChain(data, "chain1")
+
+        combined_data <- rbind(chain1, chain2)
+        combined_data[combined_data == ""] <- NA
+        combined_data
+    })
+    # is it necessary to drop rows that are fully NA with an existing barcode?
+    .chain.parser(formattedDfs)
 }
 
 #Grabs the chain info from v_gene
