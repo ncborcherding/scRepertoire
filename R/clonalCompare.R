@@ -1,86 +1,90 @@
 #' Demonstrate the difference in clonal proportion between clones
 #'
-#' This function produces an alluvial or area graph of the proportion of 
-#' the indicated clones for all or selected samples (using the 
-#' \strong{samples} parameter). Individual clones can be selected 
-#' using the \strong{clones} parameter with the specific sequence of 
-#' interest or using the \strong{top.clones} parameter with the top 
-#' n clones by proportion to be visualized. 
+#' This function produces an alluvial or area graph of the proportion of
+#' the indicated clones for all or selected samples (using the
+#' \strong{samples} parameter). Individual clones can be selected
+#' using the \strong{clones} parameter with the specific sequence of
+#' interest or using the \strong{top.clones} parameter with the top
+#' n clones by proportion to be visualized.
 #'
 #' @examples
 #' #Making combined contig data
-#' combined <- combineTCR(contig_list, 
-#'                        samples = c("P17B", "P17L", "P18B", "P18L", 
+#' combined <- combineTCR(contig_list,
+#'                        samples = c("P17B", "P17L", "P18B", "P18L",
 #'                                    "P19B","P19L", "P20B", "P20L"))
-#' clonalCompare(combined, 
-#'               top.clones = 5, 
-#'               samples = c("P17B", "P17L"), 
+#' clonalCompare(combined,
+#'               top.clones = 5,
+#'               samples = c("P17B", "P17L"),
 #'               cloneCall="aa")
 #'
-#' @param input.data The product of \code{\link{combineTCR}}, 
+#' @param input.data The product of \code{\link{combineTCR}},
 #' \code{\link{combineBCR}}, or \code{\link{combineExpression}}.
-#' @param cloneCall How to call the clone - VDJC gene (\strong{gene}), 
+#' @param cloneCall How to call the clone - VDJC gene (\strong{gene}),
 #' CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
-#' VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable 
+#' VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable
 #' in the data
-#' @param chain indicate if both or a specific chain should be used - 
+#' @param chain indicate if both or a specific chain should be used -
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL"
 #' @param samples The specific samples to isolate for visualization.
 #' @param clones The specific clonal sequences of interest
 #' @param top.clones The top number of clonal sequences per group.
 #' (e.g., top.clones = 5)
-#' @param highlight.clones Clonal sequences to highlight, if present, 
+#' @param highlight.clones Clonal sequences to highlight, if present,
 #' all other clones returned will be grey
 #' @param relabel.clones Simplify the legend of the graph by returning
 #' clones that are numerically indexed
 #' @param group.by If using a single-cell object, the column header
-#' to group the new list. \strong{NULL} will return the active 
+#' to group the new list. \strong{NULL} will return the active
 #' identity or cluster
 #' @param order.by A vector of specific plotting order or "alphanumeric"
 #' to plot groups in order
-#' @param graph The type of graph produced, either \strong{"alluvial"} 
+#' @param graph The type of graph produced, either \strong{"alluvial"}
 #' or \strong{"area"}
 #' @param exportTable Returns the data frame used for forming the graph
-#' @param palette Colors to use in visualization - input any 
+#' @param palette Colors to use in visualization - input any
 #' \link[grDevices]{hcl.pals}
+#' @param prop If \strong{TRUE}, the proportion of the total sequencing
+#' reads will be used for the y-axis. If \strong{FALSE}, the raw count
+#' will be used.
 #' @import ggplot2
 #' @importFrom stringr str_sort
 #'
 #' @export
 #' @concept Visualizing_Clones
-#' @return ggplot of the proportion of total sequencing read of 
+#' @return ggplot of the proportion of total sequencing read of
 #' selecting clones
-clonalCompare <- function(input.data, 
-                          cloneCall = "strict", 
-                          chain = "both", 
-                          samples = NULL, 
-                          clones = NULL, 
+clonalCompare <- function(input.data,
+                          cloneCall = "strict",
+                          chain = "both",
+                          samples = NULL,
+                          clones = NULL,
                           top.clones = NULL,
                           highlight.clones = NULL,
                           relabel.clones = FALSE,
                           group.by = NULL,
                           order.by = NULL,
-                          graph = "alluvial", 
-                          exportTable = FALSE, 
-                          palette = "inferno"){
-  
+                          graph = "alluvial",
+                          exportTable = FALSE,
+                          palette = "inferno",
+                          prop = TRUE) {
+
   #Tie goes to indicated clones over top clones
-  if(!is.null(top.clones) & !is.null(clones)) {
+  if(!is.null(top.clones) && !is.null(clones)) {
     top.clones <- NULL
   }
-  input.data <- .data.wrangle(input.data, 
-                              group.by, 
-                              .theCall(input.data, cloneCall, check.df = FALSE), 
+  input.data <- .data.wrangle(input.data,
+                              group.by,
+                              .theCall(input.data, cloneCall, check.df = FALSE),
                               chain)
   cloneCall <- .theCall(input.data, cloneCall)
-  
+
   sco <- is_seurat_object(input.data) | is_se_object(input.data)
   if(!is.null(group.by) & !sco) {
     input.data <- .groupList(input.data, group.by)
   }
-  
+
   Con.df <- NULL
-  
+
   #Loop through the list to get a proportional summary
   for (i in seq_along(input.data)) {
     tbl <- as.data.frame(table(input.data[[i]][,cloneCall]))
@@ -89,22 +93,22 @@ clonalCompare <- function(input.data,
     tbl$Sample <- names(input.data[i])
     Con.df <- rbind.data.frame(Con.df, tbl)
   }
-  
-  #Filtering steps 
+
+  #Filtering steps
   if (!is.null(samples)) {
-    Con.df <- Con.df[Con.df$Sample %in% samples,] 
+    Con.df <- Con.df[Con.df$Sample %in% samples,]
   }
   if (!is.null(clones)) {
-    Con.df <- Con.df[Con.df$clones %in% clones,] 
+    Con.df <- Con.df[Con.df$clones %in% clones,]
   } else if (!is.null(top.clones)) {
     top <- Con.df %>%
       group_by(Con.df[,3]) %>%
       slice_max(n = top.clones, order_by = Proportion, with_ties = FALSE)
-    Con.df <- Con.df[Con.df$clones %in% top$clones,] 
+    Con.df <- Con.df[Con.df$clones %in% top$clones,]
   }
   if (nrow(Con.df) < length(unique(Con.df$Sample))) {
-    stop("Please reasses the filtering strategies here, there are not 
-            enough clones to examine.") 
+    stop("Please reasses the filtering strategies here, there are not
+            enough clones to examine.")
   }
   #Clones relabeling
   clones.returned <- as.vector(unique(Con.df[order(Con.df[,"Proportion"], decreasing = TRUE),"clones"]))
@@ -117,32 +121,32 @@ clonalCompare <- function(input.data,
     }
     Con.df[,"original.clones"] <- Con.df[,"clones"]
     Con.df[,"clones"] <- new.clones[as.vector(Con.df[,"clones"])]
-    Con.df[,"clones"] <- factor(Con.df[,"clones"], 
+    Con.df[,"clones"] <- factor(Con.df[,"clones"],
                                 levels = str_sort(unique(Con.df[,"clones"]), numeric = TRUE))
     clones.returned <- as.vector(unique(Con.df[,"clones"]))
   }
-  if (exportTable == TRUE) { 
+  if (exportTable == TRUE) {
     return(Con.df)
   }
-  
+
   if(!is.null(order.by)) {
     Con.df <- .ordering.function(vector = order.by,
-                                 group.by = "Sample", 
+                                 group.by = "Sample",
                                  data.frame = Con.df)
   }
-  
-  
+
+
   #Plotting Functions
-  plot <- ggplot(Con.df, aes(x = Sample, 
-                             fill = clones, 
+  plot <- ggplot(Con.df, aes(x = Sample,
+                             fill = clones,
                              group = clones,
-                             stratum = clones, 
-                             alluvium = clones, 
-                             y = Proportion, 
+                             stratum = clones,
+                             alluvium = clones,
+                             y = Proportion,
                              label = clones)) +
     theme_classic() +
-    theme(axis.title.x = element_blank(), 
-          legend.text=element_text(size=rel(0.5)), 
+    theme(axis.title.x = element_blank(),
+          legend.text=element_text(size=rel(0.5)),
           legend.key.size = unit(0.5,"line"))
   if (graph == "alluvial") {
     plot <- plot +  geom_stratum() + geom_flow(stat = "alluvium")
@@ -150,7 +154,7 @@ clonalCompare <- function(input.data,
     plot <- plot +
       geom_area(aes(group = clones), color = "black")
   }
-  
+
   #Highlighting specific clones
   if (!is.null(highlight.clones)) {
     clone.colors <- rep("grey", length(clones.returned))
