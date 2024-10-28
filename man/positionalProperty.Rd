@@ -16,7 +16,7 @@ positionalProperty(
 )
 }
 \arguments{
-\item{input.data}{The product of \code{\link{combineTCR}}, 
+\item{input.data}{The product of \code{\link{combineTCR}},
 \code{\link{combineBCR}}, or \code{\link{combineExpression}}}
 
 \item{chain}{"TRA", "TRB", "TRG", "TRG", "IGH", "IGL"}
@@ -39,9 +39,9 @@ to plot groups in order}
 ggplot of line graph of diversity by position
 }
 \description{
-This function calculates the mean selected property for 
-amino acids along the residues of the CDR3 amino acid sequence. 
-The ribbon surrounding the individual line represents the 95% 
+This function calculates the mean selected property for
+amino acids along the residues of the CDR3 amino acid sequence.
+The ribbon surrounding the individual line represents the 95%
 confidence interval.
 }
 \details{
@@ -59,12 +59,12 @@ More information for the individual methods can be found at the following citati
 }
 \examples{
 #Making combined contig data
-combined <- combineTCR(contig_list, 
-                        samples = c("P17B", "P17L", "P18B", "P18L", 
+combined <- combineTCR(contig_list,
+                        samples = c("P17B", "P17L", "P18B", "P18L",
                                     "P19B","P19L", "P20B", "P20L"))
-positionalProperty(combined, 
+positionalProperty(combined,
                    chain = "TRB",
-                   method = "Atchley", 
+                   method = "Atchley",
                    aa.length = 20)
 }
 \author{
