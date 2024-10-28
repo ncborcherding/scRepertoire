@@ -8,5 +8,5 @@ docs
 vignettes/articles/scRep_example_full.rds
 .vscode
 qile
-.lintr
 dev
+.lintr

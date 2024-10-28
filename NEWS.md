@@ -5,6 +5,7 @@
 * Removed unnecessary code remnant in ```clonalLength()```
 * Allow one sample to be plotted by ```percentVJ()```
 * Fixed issue with ```positionalProperty()``` and exportTable
+* Fixed issue with ```loadContigs()``` edgecase when TRUST4 data only has 1 row.
 * improve performance of ```combineBCR()``` by a constant factor with C++
 
 # scRepertoire VERSION 2.0.7
