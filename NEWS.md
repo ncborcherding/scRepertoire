@@ -6,6 +6,7 @@
 * Allow one sample to be plotted by ```percentVJ()```
 * Fixed issue with ```positionalProperty()``` and exportTable
 * Fixed issue with ```loadContigs()``` edgecase when TRUST4 data only has 1 row.
+* Added **proportion** argument to ```clonalCompare()```
 
 # scRepertoire VERSION 2.0.7
 

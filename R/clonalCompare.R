@@ -41,12 +41,12 @@
 #' to plot groups in order
 #' @param graph The type of graph produced, either \strong{"alluvial"}
 #' or \strong{"area"}
+#' #' @param proportion If \strong{TRUE}, the proportion of the total sequencing
+#' reads will be used for the y-axis. If \strong{FALSE}, the raw count
+#' will be used
 #' @param exportTable Returns the data frame used for forming the graph
 #' @param palette Colors to use in visualization - input any
 #' \link[grDevices]{hcl.pals}
-#' @param prop If \strong{TRUE}, the proportion of the total sequencing
-#' reads will be used for the y-axis. If \strong{FALSE}, the raw count
-#' will be used.
 #' @import ggplot2
 #' @importFrom stringr str_sort
 #'
@@ -65,9 +65,9 @@ clonalCompare <- function(input.data,
                           group.by = NULL,
                           order.by = NULL,
                           graph = "alluvial",
+                          proportion = TRUE,
                           exportTable = FALSE,
-                          palette = "inferno") {#,
-                          #prop = TRUE) {
+                          palette = "inferno") {
 
   #Tie goes to indicated clones over top clones
   if(!is.null(top.clones) && !is.null(clones)) {
@@ -84,12 +84,12 @@ clonalCompare <- function(input.data,
     input.data <- .groupList(input.data, group.by)
   }
 
-  compareColname <- ifelse(prop, "Proportion", "Count")
+  compareColname <- ifelse(proportion, "Proportion", "Count")
 
   Con.df <- input.data %>%
     purrr::imap(function(df, columnNames) {
       tbl <- as.data.frame(table(df[, cloneCall]))
-      if (prop) {
+      if (proportion) {
         tbl[, 2] <- tbl[, 2] / sum(tbl[, 2])
       }
       colnames(tbl) <- c("clones", compareColname)

@@ -16,6 +16,7 @@ clonalCompare(
   group.by = NULL,
   order.by = NULL,
   graph = "alluvial",
+  proportion = TRUE,
   exportTable = FALSE,
   palette = "inferno"
 )
@@ -53,16 +54,15 @@ identity or cluster}
 to plot groups in order}
 
 \item{graph}{The type of graph produced, either \strong{"alluvial"}
-or \strong{"area"}}
+or \strong{"area"}
+#' @param proportion If \strong{TRUE}, the proportion of the total sequencing
+reads will be used for the y-axis. If \strong{FALSE}, the raw count
+will be used}
 
 \item{exportTable}{Returns the data frame used for forming the graph}
 
 \item{palette}{Colors to use in visualization - input any
 \link[grDevices]{hcl.pals}}
-
-\item{prop}{If \strong{TRUE}, the proportion of the total sequencing
-reads will be used for the y-axis. If \strong{FALSE}, the raw count
-will be used.}
 }
 \value{
 ggplot of the proportion of total sequencing read of
