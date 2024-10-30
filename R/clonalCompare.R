@@ -41,7 +41,7 @@
 #' to plot groups in order
 #' @param graph The type of graph produced, either \strong{"alluvial"}
 #' or \strong{"area"}
-#' #' @param proportion If \strong{TRUE}, the proportion of the total sequencing
+#' @param proportion If \strong{TRUE}, the proportion of the total sequencing
 #' reads will be used for the y-axis. If \strong{FALSE}, the raw count
 #' will be used
 #' @param exportTable Returns the data frame used for forming the graph
@@ -68,6 +68,23 @@ clonalCompare <- function(input.data,
                           proportion = TRUE,
                           exportTable = FALSE,
                           palette = "inferno") {
+
+  assert_that(
+    isCombineContigsOutput(input.data) || is_seurat_or_se_object(input.data),
+    is.string(cloneCall),
+    is.string(chain), chain %in% c("both", "TRA", "TRG", "IGH", "IGL"),
+    is.null(samples) || is.character(samples),
+    is.null(clones) || is.character(clones),
+    is.null(top.clones) || is.count(top.clones),
+    is.null(highlight.clones) || is.character(highlight.clones),
+    is.flag(relabel.clones),
+    is.null(group.by) || is.string(group.by),
+    is.null(order.by) || is.character(order.by),
+    is.string(graph), graph %in% c("alluvial", "area"),
+    is.flag(proportion),
+    is.flag(exportTable),
+    is.string(palette)
+  )
 
   #Tie goes to indicated clones over top clones
   if(!is.null(top.clones) && !is.null(clones)) {
@@ -140,7 +157,7 @@ clonalCompare <- function(input.data,
                                  data.frame = Con.df)
   }
 
-  if (exportTable == TRUE) {
+  if (exportTable) {
     return(Con.df)
   }
 

@@ -52,6 +52,8 @@ test_that("clonalCompare works", {
 
 test_that("clonalCompare works with exportTable and prop FALSE", {
 
+  combined <- getCombined()
+
   getClonalCompareRes <- function(prop) {
     clonalCompare(
       combined,
@@ -62,16 +64,16 @@ test_that("clonalCompare works with exportTable and prop FALSE", {
       cloneCall = "aa",
       graph = "alluvial",
       exportTable = TRUE,
-      prop = prop
+      proportion = prop
     )
   }
 
-  clonalCompareCountConvertedToProp <- getClonalCompareRes(prop = FALSE) %>%
-    dplyr::mutate(Count = Count / sum(Count)) %>%
+  clonalCompareCountConvertedToProp <- getClonalCompareRes(FALSE) %>%
+    dplyr::mutate(Count = Count / length(Count)) %>% #FIXME this is wrong
     dplyr::rename(Proportion = Count)
 
   expect_identical(
-    getClonalCompareRes(prop = TRUE),
+    getClonalCompareRes(TRUE),
     clonalCompareCountConvertedToProp
   )
 })

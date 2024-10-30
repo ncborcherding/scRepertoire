@@ -54,8 +54,9 @@ identity or cluster}
 to plot groups in order}
 
 \item{graph}{The type of graph produced, either \strong{"alluvial"}
-or \strong{"area"}
-#' @param proportion If \strong{TRUE}, the proportion of the total sequencing
+or \strong{"area"}}
+
+\item{proportion}{If \strong{TRUE}, the proportion of the total sequencing
 reads will be used for the y-axis. If \strong{FALSE}, the raw count
 will be used}
 
