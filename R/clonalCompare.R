@@ -102,12 +102,13 @@ clonalCompare <- function(input.data,
   }
 
   compareColname <- ifelse(proportion, "Proportion", "Count")
+  normalizer <- ifelse(proportion, sum, length)
 
   Con.df <- input.data %>%
     purrr::imap(function(df, columnNames) {
       tbl <- as.data.frame(table(df[, cloneCall]))
       if (proportion) {
-        tbl[, 2] <- tbl[, 2] / sum(tbl[, 2])
+        tbl[, 2] <- tbl[, 2] / normalizer(tbl[, 2])
       }
       colnames(tbl) <- c("clones", compareColname)
       tbl$Sample <- columnNames

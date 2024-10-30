@@ -68,12 +68,28 @@ test_that("clonalCompare works with exportTable and prop FALSE", {
     )
   }
 
-  clonalCompareCountConvertedToProp <- getClonalCompareRes(FALSE) %>%
-    dplyr::mutate(Count = Count / length(Count)) %>% #FIXME this is wrong
-    dplyr::rename(Proportion = Count)
+  countCompareRes <- getClonalCompareRes(prop = FALSE)
+  propCompareRes <- getClonalCompareRes(prop = TRUE)
 
   expect_identical(
-    getClonalCompareRes(TRUE),
-    clonalCompareCountConvertedToProp
+    countCompareRes %>% dplyr::select(-Count),
+    propCompareRes %>% dplyr::select(-Proportion)
+  )
+
+  fullJoined <- getClonalCompareRes(FALSE) %>%
+    dplyr::full_join(
+      getClonalCompareRes(TRUE)
+    )
+
+  expect_setequal(
+    colnames(fullJoined),
+    c("clones", "Count", "original.clones", "Proportion", "Sample")
+  )
+
+  countPropFactor <- fullJoined$Count / fullJoined$Proportion
+
+  expect_identical(
+    as.integer(fullJoined$Count - fullJoined$Proportion * countPropFactor),
+    integer(nrow(fullJoined))
   )
 })
