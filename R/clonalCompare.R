@@ -71,7 +71,8 @@ clonalCompare <- function(input.data,
                           palette = "inferno") {
 
   assert_that(
-    isCombineContigsOutput(input.data) || is_seurat_or_se_object(input.data),
+    isListOfNonEmptyDataFrames(input.data) ||
+      is_seurat_or_se_object(input.data),
     is.string(cloneCall),
     is.string(chain), chain %in% c("both", "TRA", "TRG", "IGH", "IGL"),
     is.null(samples) || is.character(samples),
