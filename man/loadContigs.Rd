@@ -15,29 +15,29 @@ elements}
 "TRUST4", "WAT3R", and "Immcantation"}
 }
 \value{
-List of contigs for compatibility  with \code{\link{combineTCR}} or
-\code{\link{combineBCR}}
+List of contigs for compatibility  with \code{\link[=combineTCR]{combineTCR()}} or
+\code{\link[=combineBCR]{combineBCR()}}
 }
 \description{
 This function generates a contig list and formats the data to allow for
-function with  \code{\link{combineTCR}} or \code{\link{combineBCR}}. If
+function with  \code{\link[=combineTCR]{combineTCR()}} or \code{\link[=combineBCR]{combineBCR()}}. If
 using data derived from filtered outputs of 10X Genomics, there is no
 need to use this function as the data is already compatible.
 }
 \details{
 The files that this function parses includes:
 \itemize{
-  \item 10X =  "filtered_contig_annotations.csv"
-  \item AIRR = "airr_rearrangement.tsv"
-  \item BD = "Contigs_AIRR.tsv"
-  \item Dandelion = "all_contig_dandelion.tsv"
-  \item Immcantation = "data.tsv"
-  \item JSON = ".json"
-  \item ParseBio = "barcode_report.tsv"
-  \item MiXCR = "clones.tsv"
-  \item Omniscope = ".csv"
-  \item TRUST4 = "barcode_report.tsv"
-  \item WAT3R = "barcode_results.csv"
+\item 10X =  "filtered_contig_annotations.csv"
+\item AIRR = "airr_rearrangement.tsv"
+\item BD = "Contigs_AIRR.tsv"
+\item Dandelion = "all_contig_dandelion.tsv"
+\item Immcantation = "data.tsv"
+\item JSON = ".json"
+\item ParseBio = "barcode_report.tsv"
+\item MiXCR = "clones.tsv"
+\item Omniscope = ".csv"
+\item TRUST4 = "barcode_report.tsv"
+\item WAT3R = "barcode_results.csv"
 }
 }
 \examples{

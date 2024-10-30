@@ -2,9 +2,9 @@
 #'
 #' This function uses edit distances of either the nucleotide or amino acid 
 #' sequences of the CDR3 and V genes to cluster similar TCR/BCRs together. 
-#' As a default, the function takes the input from \code{\link{combineTCR}}, 
-#' \code{\link{combineBCR}} or \code{\link{combineExpression}} and amends a 
-#' cluster to the data frame or meta data. If \strong{exportGraph} is set 
+#' As a default, the function takes the input from [combineTCR()], 
+#' [combineBCR()] or [combineExpression()] and amends a 
+#' cluster to the data frame or meta data. If **exportGraph** is set 
 #' to TRUE, the function returns an igraph object of the connected sequences. 
 #' If multiple sequences per chain are present, this function only compares
 #' the first sequence.
@@ -19,21 +19,21 @@
 #'                               chain = "TRA", 
 #'                               sequence = "aa")
 #' 
-#' @param input.data The product of \code{\link{combineTCR}}, 
-#' \code{\link{combineBCR}} or \code{\link{combineExpression}}.
+#' @param input.data The product of [combineTCR()], 
+#' [combineBCR()] or [combineExpression()].
 #' @param chain Indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL".
-#' @param sequence Clustering based on either \strong{"aa"} or 
-#' \strong{"nt"}.
+#' @param sequence Clustering based on either **"aa"** or 
+#' **"nt"**.
 #' @param samples The specific samples to isolate for visualization.
 #' @param threshold The normalized edit distance to consider. 
 #' The higher the number the more similarity of sequence will be 
 #' used for clustering.
 #' @param group.by The column header used for to group contigs.
-#' If (\strong{NULL}), clusters will be calculated across samples.
+#' If (**NULL**), clusters will be calculated across samples.
 #' @param exportGraph Return an igraph object of connected 
-#' sequences (\strong{TRUE}) or the amended input with a
-#' new cluster-based variable (\strong{FALSE}).
+#' sequences (**TRUE**) or the amended input with a
+#' new cluster-based variable (**FALSE**).
 #' @importFrom stringdist stringdist
 #' @importFrom igraph set_vertex_attr V union
 #' @importFrom plyr join

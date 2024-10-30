@@ -25,22 +25,22 @@
 #'               group.by = "seurat_clusters")
 #' }
 #'               
-#' @param sc.data The single-cell object after \code{\link{combineExpression}}.
+#' @param sc.data The single-cell object after [combineExpression()].
 #' @param reduction The name of the dimensional reduction of the 
 #' single-cell object.
 #' @param group.by The variable to use for the nodes. 
-#' @param filter.clones Use to select the top n clones (e.g., \strong{filter.clones} 
+#' @param filter.clones Use to select the top n clones (e.g., **filter.clones** 
 #' = 2000) or n of clones based on the minimum number of all the comparators 
-#' (e.g., \strong{filter.clone} = "min").
+#' (e.g., **filter.clone** = "min").
 #' @param filter.identity Display the network for a specific level of the 
 #' indicated identity.
 #' @param filter.proportion Remove clones from the network below a specific
 #'  proportion.
 #' @param filter.graph Remove the reciprocal edges from the half of the graph,
 #' allowing for cleaner visualization.
-#' @param cloneCall How to call the clone - VDJC gene (\strong{gene}), 
-#' CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
-#' VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable 
+#' @param cloneCall How to call the clone - VDJC gene (**gene**), 
+#' CDR3 nucleotide (**nt**), CDR3 amino acid (**aa**),
+#' VDJC gene + CDR3 nucleotide (**strict**) or a custom variable 
 #' in the data. 
 #' @param chain indicate if both or a specific chain should be used - 
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL".
@@ -49,7 +49,7 @@
 #' across multiple identity groups and ordered by the total number
 #' of clone copies.
 #' @param palette Colors to use in visualization - input any 
-#' \link[grDevices]{hcl.pals}.
+#' [hcl.pals][grDevices::hcl.pals].
 
 #' @import ggplot2
 #' @importFrom stringr str_sort

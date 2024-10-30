@@ -16,18 +16,18 @@ clonalOverlap(
 )
 }
 \arguments{
-\item{input.data}{The product of \code{\link{combineTCR}}, 
-\code{\link{combineBCR}}, or \code{\link{combineExpression}}}
+\item{input.data}{The product of \code{\link[=combineTCR]{combineTCR()}},
+\code{\link[=combineBCR]{combineBCR()}}, or \code{\link[=combineExpression]{combineExpression()}}}
 
-\item{cloneCall}{How to call the clone - VDJC gene (\strong{gene}), 
+\item{cloneCall}{How to call the clone - VDJC gene (\strong{gene}),
 CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
-VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable 
+VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable
 in the data}
 
-\item{method}{The method to calculate the "overlap", "morisita", 
+\item{method}{The method to calculate the "overlap", "morisita",
 "jaccard", "cosine" indices or "raw" for the base numbers}
 
-\item{chain}{indicate if both or a specific chain should be used - 
+\item{chain}{indicate if both or a specific chain should be used -
 e.g. "both", "TRA", "TRG", "IGH", "IGL"}
 
 \item{group.by}{The variable to use for grouping}
@@ -37,41 +37,41 @@ to plot groups in order}
 
 \item{exportTable}{Returns the data frame used for forming the graph}
 
-\item{palette}{Colors to use in visualization - input any 
-\link[grDevices]{hcl.pals}}
+\item{palette}{Colors to use in visualization - input any
+\link[grDevices:palettes]{hcl.pals}}
 }
 \value{
 ggplot of the overlap of clones by group
 }
 \description{
-This functions allows for the calculation and visualizations of 
-various overlap metrics for clones. The methods include overlap 
-coefficient (\strong{overlap}), Morisita's overlap index 
-(\strong{morisita}), Jaccard index (\strong{jaccard}), cosine 
-similarity (\strong{cosine}) or the exact number of clonal 
+This functions allows for the calculation and visualizations of
+various overlap metrics for clones. The methods include overlap
+coefficient (\strong{overlap}), Morisita's overlap index
+(\strong{morisita}), Jaccard index (\strong{jaccard}), cosine
+similarity (\strong{cosine}) or the exact number of clonal
 overlap (\strong{raw}).
 }
 \details{
 The formulas for the indices are as follows:
 
 \strong{Overlap Coefficient:}
-\deqn{overlap = \frac{\sum \min(a, b)}{\min(\sum a, \sum b)}}  
+\deqn{overlap = \frac{\sum \min(a, b)}{\min(\sum a, \sum b)}}
 
 \strong{Raw Count Overlap:}
 \deqn{raw = \sum \min(a, b)}
 
 \strong{Morisita Index:}
-\deqn{morisita = \frac{\sum a b}{(\sum a)(\sum b)}}  
+\deqn{morisita = \frac{\sum a b}{(\sum a)(\sum b)}}
 
 \strong{Jaccard Index:}
-\deqn{jaccard = \frac{\sum \min(a, b)}{\sum a + \sum b - \sum \min(a, b)}}  
+\deqn{jaccard = \frac{\sum \min(a, b)}{\sum a + \sum b - \sum \min(a, b)}}
 
 \strong{Cosine Similarity:}
-\deqn{cosine = \frac{\sum a b}{\sqrt{(\sum a^2)(\sum b^2)}}}  
+\deqn{cosine = \frac{\sum a b}{\sqrt{(\sum a^2)(\sum b^2)}}}
 
-Where:  
-\itemize{  
-  \item{\eqn{a} and \eqn{b} are the abundances of species \eqn{i} in groups A and B, respectively.}
+Where:
+\itemize{
+\item{\eqn{a} and \eqn{b} are the abundances of species \eqn{i} in groups A and B, respectively.}
 }
 }
 \examples{
