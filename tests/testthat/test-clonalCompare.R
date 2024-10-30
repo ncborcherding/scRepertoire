@@ -76,14 +76,24 @@ test_that("clonalCompare works with exportTable and prop FALSE", {
     propCompareRes %>% dplyr::select(-Proportion)
   )
 
-  fullJoined <- getClonalCompareRes(FALSE) %>%
-    dplyr::full_join(
-      getClonalCompareRes(TRUE)
-    )
+  fullJoined <- suppressMessages(getClonalCompareRes(FALSE) %>%
+    dplyr::full_join(getClonalCompareRes(TRUE))
+  )
 
   expect_setequal(
     colnames(fullJoined),
     c("clones", "Count", "original.clones", "Proportion", "Sample")
+  )
+
+  expect_identical(
+    fullJoined %>%
+      dplyr::mutate(propToCountScaleFactor = Count / Proportion) %>%
+      dplyr::group_by(Sample) %>%
+      dplyr::summarise(
+        areAllFactorsEqual = var(propToCountScaleFactor) < 1e-10
+      ) %>%
+      dplyr::pull(areAllFactorsEqual),
+    rep(TRUE, length(unique(fullJoined$Sample)))
   )
 
   countPropFactor <- fullJoined$Count / fullJoined$Proportion
