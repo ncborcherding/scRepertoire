@@ -11,21 +11,21 @@ highlightClones(
 )
 }
 \arguments{
-\item{sc.data}{The single-cell object to attach after 
-\code{\link{combineExpression}}}
+\item{sc.data}{The single-cell object to attach after
+\code{\link[=combineExpression]{combineExpression()}}}
 
-\item{cloneCall}{How to call the clone - VDJC gene (gene), 
+\item{cloneCall}{How to call the clone - VDJC gene (gene),
 CDR3 nucleotide (nt), CDR3 amino acid (aa),
 VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data.}
 
 \item{sequence}{The specific sequence or sequence to highlight}
 }
 \value{
-Single-cell object object with new meta data column 
+Single-cell object object with new meta data column
 for indicated clones
 }
 \description{
-Use a specific clonal sequence to highlight on top of the dimensional 
+Use a specific clonal sequence to highlight on top of the dimensional
 reduction in single-cell object.
 }
 \examples{

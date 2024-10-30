@@ -16,8 +16,8 @@ clonalSizeDistribution(
 )
 }
 \arguments{
-\item{input.data}{The product of \code{\link{combineTCR}},
-\code{\link{combineBCR}}, or \code{\link{combineExpression}}.}
+\item{input.data}{The product of \code{\link[=combineTCR]{combineTCR()}},
+\code{\link[=combineBCR]{combineBCR()}}, or \code{\link[=combineExpression]{combineExpression()}}.}
 
 \item{cloneCall}{How to call the clone - VDJC gene (\strong{gene}),
 CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
@@ -37,7 +37,7 @@ the grid search was performed over.}
 \item{exportTable}{Returns the data frame used for forming the graph.}
 
 \item{palette}{Colors to use in visualization - input any
-\link[grDevices]{hcl.pals}.}
+\link[grDevices:palettes]{hcl.pals}.}
 }
 \value{
 ggplot dendrogram of the clone size distribution
@@ -50,14 +50,14 @@ model please read and cite powerTCR (more info available at
 }
 \details{
 The probability density function (pdf) for the \strong{Generalized Pareto Distribution (GPD)} is given by:
- \deqn{f(x|\mu, \sigma, \xi) = \frac{1}{\sigma} \left( 1 + \xi \left( \frac{x - \mu}{\sigma} \right) \right)^{-\left( \frac{1}{\xi} + 1 \right)}}
+\deqn{f(x|\mu, \sigma, \xi) = \frac{1}{\sigma} \left( 1 + \xi \left( \frac{x - \mu}{\sigma} \right) \right)^{-\left( \frac{1}{\xi} + 1 \right)}}
 
 Where:
 \itemize{
-  \item{\eqn{\mu} is a location parameter}
-  \item{\eqn{\sigma > 0} is a scale parameter}
-  \item{\eqn{\xi} is a shape parameter}
-  \item{\eqn{x \ge \mu} if \eqn{\xi \ge 0} and \eqn{\mu \le x \le \mu - \sigma/\xi} if \eqn{\xi < 0}}
+\item{\eqn{\mu} is a location parameter}
+\item{\eqn{\sigma > 0} is a scale parameter}
+\item{\eqn{\xi} is a shape parameter}
+\item{\eqn{x \ge \mu} if \eqn{\xi \ge 0} and \eqn{\mu \le x \le \mu - \sigma/\xi} if \eqn{\xi < 0}}
 }
 
 The probability density function (pdf) for the \strong{Gamma Distribution} is given by:
@@ -65,16 +65,16 @@ The probability density function (pdf) for the \strong{Gamma Distribution} is gi
 
 Where:
 \itemize{
-  \item{\eqn{\alpha > 0} is the shape parameter}
-  \item{\eqn{\beta > 0} is the scale parameter}
-  \item{\eqn{x \ge 0}}
-  \item{\eqn{\Gamma(\alpha)} is the gamma function of \eqn{\alpha}}
+\item{\eqn{\alpha > 0} is the shape parameter}
+\item{\eqn{\beta > 0} is the scale parameter}
+\item{\eqn{x \ge 0}}
+\item{\eqn{\Gamma(\alpha)} is the gamma function of \eqn{\alpha}}
 }
 }
 \examples{
 #Making combined contig data
-combined <- combineTCR(contig_list,
-                        samples = c("P17B", "P17L", "P18B", "P18L",
+combined <- combineTCR(contig_list, 
+                        samples = c("P17B", "P17L", "P18B", "P18L", 
                                     "P19B","P19L", "P20B", "P20L"))
 clonalSizeDistribution(combined, cloneCall = "strict", method="ward.D2")
 

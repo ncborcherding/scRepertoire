@@ -17,8 +17,8 @@ vizGenes(
 )
 }
 \arguments{
-\item{input.data}{The product of \code{\link{combineTCR}},
-\code{\link{combineBCR}}, or \code{\link{combineExpression}}.}
+\item{input.data}{The product of \code{\link[=combineTCR]{combineTCR()}},
+\code{\link[=combineBCR]{combineBCR()}}, or \code{\link[=combineExpression]{combineExpression()}}.}
 
 \item{x.axis}{Gene segments to separate the x-axis, such as "TRAV",
 "TRBD", "IGKJ".}
@@ -39,7 +39,7 @@ the total respective repertoire size}
 \item{exportTable}{Returns the data frame used for forming the graph.}
 
 \item{palette}{Colors to use in visualization - input any
-\link[grDevices]{hcl.pals}.}
+\link[grDevices:palettes]{hcl.pals}.}
 }
 \value{
 ggplot bar diagram or heatmap of gene usage
@@ -53,11 +53,11 @@ present regardless of the chain parameter.
 }
 \examples{
 #Making combined contig data
-combined <- combineTCR(contig_list,
-                        samples = c("P17B", "P17L", "P18B", "P18L",
+combined <- combineTCR(contig_list, 
+                        samples = c("P17B", "P17L", "P18B", "P18L", 
                                     "P19B","P19L", "P20B", "P20L"))
 
-vizGenes(combined,
+vizGenes(combined, 
          x.axis = "TRBV",
          y.axis = NULL,
          plot = "heatmap")

@@ -2,13 +2,13 @@
 #' clones as a chord diagram. 
 #' 
 #' This function will take the meta data from the product of 
-#' \code{\link{combineExpression}} and generate a relational data frame to 
+#' [combineExpression()] and generate a relational data frame to 
 #' be used for a chord diagram. Each cord will represent the number of 
-#' clone unique and shared across the multiple \strong{group.by} variable. 
+#' clone unique and shared across the multiple **group.by** variable. 
 #' If using the downstream circlize R package, please read and cite the
-#' following \href{https://pubmed.ncbi.nlm.nih.gov/24930139/}{manuscript}.
+#' following [manuscript](https://pubmed.ncbi.nlm.nih.gov/24930139/).
 #' If looking for more advance ways for circular visualizations, there
-#' is a great \href{https://jokergoo.github.io/circlize_book/book/}{cookbook}
+#' is a great [cookbook](https://jokergoo.github.io/circlize_book/book/)
 #' for the circlize package.
 #' 
 #' @examples
@@ -27,10 +27,10 @@
 #'                        group.by = "seurat_clusters")
 #' 
 #' 
-#' @param sc.data The single-cell object after \code{\link{combineExpression}}.
-#' @param cloneCall How to call the clone - VDJC gene (\strong{gene}), 
-#' CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
-#' VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable 
+#' @param sc.data The single-cell object after [combineExpression()].
+#' @param cloneCall How to call the clone - VDJC gene (**gene**), 
+#' CDR3 nucleotide (**nt**), CDR3 amino acid (**aa**),
+#' VDJC gene + CDR3 nucleotide (**strict**) or a custom variable 
 #' in the data.  
 #' @param group.by The group header for which you would like to analyze 
 #' the data.
@@ -42,7 +42,7 @@
 #' 
 #' @export
 #' @concept SC_Functions
-#' @return A data frame of shared clones between groups formated for \link[circlize]{chordDiagram}
+#' @return A data frame of shared clones between groups formated for [chordDiagram][circlize::chordDiagram]
 #' @author Dillon Corvino, Nick Borcherding
 getCirclize <- function(sc.data, 
                         cloneCall = "strict", 
