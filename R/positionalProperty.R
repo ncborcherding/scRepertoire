@@ -1,77 +1,77 @@
 #' Examining the mean property of amino acids by position
 #'
-#' This function calculates the mean selected property for
-#' amino acids along the residues of the CDR3 amino acid sequence.
-#' The ribbon surrounding the individual line represents the 95%
+#' This function calculates the mean selected property for 
+#' amino acids along the residues of the CDR3 amino acid sequence. 
+#' The ribbon surrounding the individual line represents the 95% 
 #' confidence interval.
-#'
+#' 
 #' @details
 #' More information for the individual methods can be found at the following citations:
-#'
-#' \strong{Atchley:} \href{https://pubmed.ncbi.nlm.nih.gov/15851683/}{citation}
-#'
-#' \strong{Kidera:} \href{https://link.springer.com/article/10.1007/BF01025492}{citation}
-#'
-#' \strong{stScales:} \href{https://pubmed.ncbi.nlm.nih.gov/19373543/}{citation}
-#'
-#' \strong{tScales:} \href{https://www.sciencedirect.com/science/article/pii/S0022286006006314?casa_token=uDj97DwXDDEAAAAA:VZfahldPRwU1WObySJlohudtMSDwF7nJSUzcEGwPhvkY13ALLKhs08Cf0_FyyfYZjxJlj-fVf0SM}{citation}
-#'
-#' \strong{VHSE:} \href{https://pubmed.ncbi.nlm.nih.gov/15895431/}{citation}
-#'
+#' 
+#' **Atchley:** [citation](https://pubmed.ncbi.nlm.nih.gov/15851683/)
+#' 
+#' **Kidera:** [citation](https://link.springer.com/article/10.1007/BF01025492)
+#' 
+#' **stScales:** [citation](https://pubmed.ncbi.nlm.nih.gov/19373543/)
+#' 
+#' **tScales:** [citation](https://www.sciencedirect.com/science/article/pii/S0022286006006314?casa_token=uDj97DwXDDEAAAAA:VZfahldPRwU1WObySJlohudtMSDwF7nJSUzcEGwPhvkY13ALLKhs08Cf0_FyyfYZjxJlj-fVf0SM)
+#' 
+#' **VHSE:** [citation](https://pubmed.ncbi.nlm.nih.gov/15895431/)
+#' 
 #'
 #' @examples
 #' #Making combined contig data
-#' combined <- combineTCR(contig_list,
-#'                         samples = c("P17B", "P17L", "P18B", "P18L",
+#' combined <- combineTCR(contig_list, 
+#'                         samples = c("P17B", "P17L", "P18B", "P18L", 
 #'                                     "P19B","P19L", "P20B", "P20L"))
-#' positionalProperty(combined,
+#' positionalProperty(combined, 
 #'                    chain = "TRB",
-#'                    method = "Atchley",
+#'                    method = "Atchley", 
 #'                    aa.length = 20)
 
-#' @param input.data The product of \code{\link{combineTCR}},
-#' \code{\link{combineBCR}}, or \code{\link{combineExpression}}
+#' @param input.data The product of [combineTCR()], 
+#' [combineBCR()], or [combineExpression()]
 #' @param chain "TRA", "TRB", "TRG", "TRG", "IGH", "IGL"
 #' @param group.by The variable to use for grouping
 #' @param order.by A vector of specific plotting order or "alphanumeric"
 #' to plot groups in order
-#' @param aa.length The maximum length of the CDR3 amino acid sequence.
+#' @param aa.length The maximum length of the CDR3 amino acid sequence. 
 #' @param method The method to calculate the property - "Atchley", "Kidera",
 #' "stScales", "tScales", or "VHSE"
 #' @param exportTable Returns the data frame used for forming the graph
-#' @param palette Colors to use in visualization - input any \link[grDevices]{hcl.pals}
+#' @param palette Colors to use in visualization - input any [hcl.pals][grDevices::hcl.pals]
 #' @import ggplot2
 #' @importFrom stringr str_split
 #' @importFrom stats qt
-#' @importFrom dplyr %>% summarise n group_by
+#' @importFrom dplyr %>% summarise n group_by 
 #' @export
 #' @concept Summarize_Repertoire
 #' @return ggplot of line graph of diversity by position
 #' @author Florian Bach, Nick Borcherding
 
-positionalProperty <- function(input.data,
-                               chain = "TRB",
-                               group.by = NULL,
+positionalProperty <- function(input.data, 
+                               chain = "TRB", 
+                               group.by = NULL, 
                                order.by = NULL,
                                aa.length = 20,
                                method = "Atchley",
-                               exportTable = FALSE,
+                               exportTable = FALSE, 
                                palette = "inferno")  {
   options( dplyr.summarise.inform = FALSE )
   if(method %!in% c("Atchley", "Kidera", "stScales", "tScales", "VHSE")) {
     stop("Please select a compatible method.")
   }
   sco <- is_seurat_object(input.data) | is_se_object(input.data)
-  input.data <- .data.wrangle(input.data,
-                              group.by,
-                              .theCall(input.data, "CTaa", check.df = FALSE),
+  input.data <- .data.wrangle(input.data, 
+                              group.by, 
+                              .theCall(input.data, "CTaa", check.df = FALSE), 
                               chain)
   cloneCall <- .theCall(input.data, "CTaa")
-
+  
   if(!is.null(group.by) & !sco) {
     input.data <- .groupList(input.data, group.by)
   }
-
+  
   #Selecting Property Function
   propertyFunc <- switch(method,
                           "Atchley" = .af.ref,
@@ -80,12 +80,12 @@ positionalProperty <- function(input.data,
                           "tScales" = .tscales.ref,
                           "VHSE" = .vhse.ref,
                           stop("Invalid method provided"))
-
+  
   #Getting AA Counts
   aa.count.list <- .aa.counter(input.data, cloneCall, aa.length)
-
+  
   aa.count.list <- lapply(aa.count.list, function(x)subset(x, x$AA %in% c("A", "R", "N", "D", "C", "Q", "E", "G", "H", "I", "L", "K", "M", "F", "P", "S", "T", "W", "Y", "V")))
-
+  
   #Calculating properties and melting data
   lapply(seq_along(aa.count.list), function(x) {
       lapply(seq_len(nrow(aa.count.list[[x]]))[-1], function(y) {
@@ -98,17 +98,17 @@ positionalProperty <- function(input.data,
             results
           }) -> output.values
           output.values <- unlist(output.values)
-          df <- data.frame(group = names(output.values),
+          df <- data.frame(group = names(output.values), 
                            value = unlist(output.values))
-
+          
           if(nrow(df) == 0) { #For only NA positions
-            summary <- data.frame(mean = rep(0, dim(propertyFunc)[2]),
+            summary <- data.frame(mean = rep(0, dim(propertyFunc)[2]), 
                                   ci_lower = rep(0, dim(propertyFunc)[2]),
                                   ci_upper = rep(0, dim(propertyFunc)[2]))
-
+            
           } else {
-            summary <- df %>%
-                      group_by(group) %>%
+            summary <- df %>% 
+                      group_by(group) %>% 
                       summarise(mean = mean(value),
                                 sd = sd(value),  # Standard deviation
                                 n = n(),         # Number of observations per group
@@ -116,7 +116,7 @@ positionalProperty <- function(input.data,
                                 ci_lower = ifelse(n > 1, mean - qt(0.975, n-1) * se, mean),
                                 ci_upper = ifelse(n > 1, mean + qt(0.975, n-1) * se, mean)) %>%
                       as.data.frame()
-
+          
            summary <- summary[,c("mean", "ci_lower", "ci_upper")]
          }
          summary$property <- colnames(propertyFunc)
@@ -129,35 +129,35 @@ positionalProperty <- function(input.data,
   mat <- bind_rows(property.calculations, .id = "group")
   mat$position <- paste0("pos", mat$position)
   mat$position <- factor(mat$position, levels = str_sort(unique(mat$position), numeric = TRUE))
-  if (exportTable == TRUE) {
-    return(mat)
-  }
-
+  
   if(!is.null(order.by)) {
     mat <- .ordering.function(vector = order.by,
-                              group.by = "group",
+                              group.by = "group", 
                               mat)
   }
-
-    plot <- ggplot(mat, aes(x = position,
-                            y = mean,
-                            group = group,
+  
+    plot <- ggplot(mat, aes(x = position, 
+                            y = mean, 
+                            group = group, 
                             color = group)) +
       geom_ribbon(aes(ymin = ci_lower, ymax = ci_upper, fill = group), alpha = 0.5, lwd = 0) +
       geom_line(stat = "identity", alpha = 0.5) +
-      geom_point() +
-      scale_color_manual(name = "Group",
+      geom_point() + 
+      scale_color_manual(name = "Group", 
                          values = .colorizer(palette,length(unique(mat$group)))) +
       scale_fill_manual(values = .colorizer(palette,length(unique(mat$group)))) +
       xlab("Amino Acid Residues") +
       ylab("Mean Values") +
-      facet_grid(property~.) +
-      guides(fill = "none",
-             color = guide_legend(override.aes=list(fill=NA))) +
-      theme_classic() +
+      facet_grid(property~.) + 
+      guides(fill = "none", 
+             color = guide_legend(override.aes=list(fill=NA))) + 
+      theme_classic() + 
       theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+    if (exportTable == TRUE) { 
+      return(mat) 
+    }
     return(plot)
-
+  
 }
 
 ###############################

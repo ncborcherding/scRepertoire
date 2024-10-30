@@ -1,7 +1,7 @@
 #' Loading the contigs derived from single-cell sequencing
 #'
 #' This function generates a contig list and formats the data to allow for
-#' function with  \code{\link{combineTCR}} or \code{\link{combineBCR}}. If
+#' function with  [combineTCR()] or [combineBCR()]. If
 #' using data derived from filtered outputs of 10X Genomics, there is no
 #' need to use this function as the data is already compatible.
 #'
@@ -39,8 +39,8 @@
 #' @importFrom rjson fromJSON
 #' @export
 #' @concept Loading_and_Processing_Contigs
-#' @return List of contigs for compatibility  with \code{\link{combineTCR}} or
-#' \code{\link{combineBCR}}
+#' @return List of contigs for compatibility  with [combineTCR()] or
+#' [combineBCR()]
 loadContigs <- function(input, format = "10X") {
 
     assert_that(is.string(input) || is.list(input) || is.data.frame(input))

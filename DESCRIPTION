@@ -44,7 +44,9 @@ Imports:
     utils,
     VGAM,
     hash,
-    purrr
+    purrr,
+    lifecycle,
+    withr
 Suggests: 
     BiocManager,
     BiocStyle,
@@ -64,3 +66,4 @@ LinkingTo:
     Rcpp
 URL: https://www.borch.dev/uploads/scRepertoire/
 BugReports: https://github.com/ncborcherding/scRepertoire/issues
+Roxygen: list(markdown = TRUE)

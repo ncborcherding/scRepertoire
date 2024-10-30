@@ -17,7 +17,7 @@ clonalOccupy(
 )
 }
 \arguments{
-\item{sc.data}{The single-cell object after \code{\link{combineExpression}}}
+\item{sc.data}{The single-cell object after \code{\link[=combineExpression]{combineExpression()}}}
 
 \item{x.axis}{The variable in the meta data to graph along the x.axis.}
 
@@ -32,21 +32,21 @@ to plot groups in order description}
 
 \item{na.include}{Visualize NA values or not}
 
-\item{exportTable}{Exports a table of the data into the global 
+\item{exportTable}{Exports a table of the data into the global
 environment in addition to the visualization}
 
-\item{palette}{Colors to use in visualization - input any 
-\link[grDevices]{hcl.pals}}
+\item{palette}{Colors to use in visualization - input any
+\link[grDevices:palettes]{hcl.pals}}
 }
 \value{
 Stacked bar plot of counts of cells by clone frequency group
 }
 \description{
-View the count of clones frequency group in Seurat or SCE object 
-meta data after \code{\link{combineExpression}}. The visualization 
-will take the new meta data variable \strong{"cloneSize"} and 
-plot the number of cells with each designation using a secondary 
-variable, like cluster. Credit to the idea goes to Drs. Carmona 
+View the count of clones frequency group in Seurat or SCE object
+meta data after \code{\link[=combineExpression]{combineExpression()}}. The visualization
+will take the new meta data variable \strong{"cloneSize"} and
+plot the number of cells with each designation using a secondary
+variable, like cluster. Credit to the idea goes to Drs. Carmona
 and Andreatta and their work with \href{https://github.com/carmonalab/ProjecTILs}{ProjectTIL}.
 }
 \examples{

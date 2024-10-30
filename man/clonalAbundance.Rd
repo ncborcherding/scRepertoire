@@ -16,8 +16,8 @@ clonalAbundance(
 )
 }
 \arguments{
-\item{input.data}{The product of \code{\link{combineTCR}},
-\code{\link{combineBCR}}, or \code{\link{combineExpression}}.}
+\item{input.data}{The product of \code{\link[=combineTCR]{combineTCR()}},
+\code{\link[=combineBCR]{combineBCR()}}, or \code{\link[=combineExpression]{combineExpression()}}.}
 
 \item{cloneCall}{How to call the clone - VDJC gene (\strong{gene}),
 CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
@@ -39,7 +39,7 @@ to plot groups in order}
 to the visualization.}
 
 \item{palette}{Colors to use in visualization - input any
-\link[grDevices]{hcl.pals}.}
+\link[grDevices:palettes]{hcl.pals}.}
 }
 \value{
 ggplot of the total or relative abundance of clones
@@ -56,11 +56,11 @@ output for the data is preferred, set
 }
 \examples{
 #Making combined contig data
-combined <- combineTCR(contig_list,
-                        samples = c("P17B", "P17L", "P18B", "P18L",
+combined <- combineTCR(contig_list, 
+                        samples = c("P17B", "P17L", "P18B", "P18L", 
                                     "P19B","P19L", "P20B", "P20L"))
-clonalAbundance(combined,
-                cloneCall = "gene",
+clonalAbundance(combined, 
+                cloneCall = "gene", 
                 scale = FALSE)
 
 }
