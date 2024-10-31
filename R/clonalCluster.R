@@ -161,9 +161,9 @@ clonalCluster <- function(input.data,
                         }
                         colnames(output.list[[x]]) <- c(paste0(chain, "_cluster"), ref2)
                         output.list[[x]]
-                        
+
   })
-  cluster <- bind_rows(cluster.list)
+  cluster <- bind_rows(cluster.list) # the TRA_cluster isnt assigned in the failing test
   
   #Merging with contig info
   tmp <- bound
