@@ -13,6 +13,7 @@
 * convert documentation to use markdown (`roxygen2md`)
 * import `lifecycle`, `purrr`, `withr`
 * suppressed "using discrete variable for alpha is not recommended" warning in alluvialClones unit tests.
+* Fixed issue with ```clonalCluster()``` and exportGraph = TRUE
 * improve performance of ```combineBCR()``` by a constant factor with C++
 
 # scRepertoire VERSION 2.0.7
