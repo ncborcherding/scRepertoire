@@ -130,11 +130,11 @@ clonalCluster <- function(input.data,
   
   #Returning the igraph object if exportGraph = TRUE
   if(exportGraph) {
-    if(length(is.null(output.list)) == length(output.list)) {
+    output.list <- output.list[lapply(output.list,length)>0]
+    cluster <- do.call(igraph::union, output.list)
+    if(length(is.null(cluster)) == length(cluster)) {
       stop("No clusters detected with current parameters.")
     } else {
-      output.list <- output.list[lapply(output.list,length)>0]
-      cluster <- do.call(igraph::union, output.list)
       vertex <- names(V(cluster))
       data_df <- unique(data.frame(
         id = vertex
