@@ -35,3 +35,9 @@ is_named_numeric <- function(obj) {
 assertthat::on_failure(is_named_numeric) <- function(call, env) {
     paste0(deparse(call$obj), " is not a named numeric vector")
 }
+
+# functions
+
+assertthat::on_failure(`%in%`) <- function(call, env) {
+    paste0(deparse(call$x), " is not in ", deparse(call$table))
+}

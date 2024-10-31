@@ -2,6 +2,7 @@
 
 ## NEW FEATURES
 * Added ```getContigDoublets()``` experimental function to identify TCR and BCR doublets as a preprocessing step to ```combineExpression()```
+* Added **proportion** argument to ```clonalCompare()``` so that when set to FALSE, the comparison will be based on frequency normalized by per-sample repertoire diversity.
 
 ## UNDERLYING CHANGES
 * Fixed issue with single chain output for ```clonalLength()```

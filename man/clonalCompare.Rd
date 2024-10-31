@@ -2,7 +2,7 @@
 % Please edit documentation in R/clonalCompare.R
 \name{clonalCompare}
 \alias{clonalCompare}
-\title{Demonstrate the difference in clonal proportion between clones}
+\title{Demonstrate the difference in clonal proportions / counts between clones}
 \usage{
 clonalCompare(
   input.data,
@@ -16,13 +16,14 @@ clonalCompare(
   group.by = NULL,
   order.by = NULL,
   graph = "alluvial",
+  proportion = TRUE,
   exportTable = FALSE,
   palette = "inferno"
 )
 }
 \arguments{
-\item{input.data}{The product of \code{\link[=combineTCR]{combineTCR()}},
-\code{\link[=combineBCR]{combineBCR()}}, or \code{\link[=combineExpression]{combineExpression()}}.}
+\item{input.data}{The product of \code{\link{combineTCR}},
+\code{\link{combineBCR}}, or \code{\link{combineExpression}}.}
 
 \item{cloneCall}{How to call the clone - VDJC gene (\strong{gene}),
 CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
@@ -55,31 +56,36 @@ to plot groups in order}
 \item{graph}{The type of graph produced, either \strong{"alluvial"}
 or \strong{"area"}}
 
+\item{proportion}{If \strong{TRUE}, the proportion of the total sequencing
+reads will be used for the y-axis. If \strong{FALSE}, the raw count
+will be used}
+
 \item{exportTable}{Returns the data frame used for forming the graph}
 
 \item{palette}{Colors to use in visualization - input any
-\link[grDevices:palettes]{hcl.pals}}
+\link[grDevices]{hcl.pals}}
 }
 \value{
 ggplot of the proportion of total sequencing read of
 selecting clones
 }
 \description{
-This function produces an alluvial or area graph of the proportion of
+This function produces an alluvial or area graph of the proportion or
+count composition of
 the indicated clones for all or selected samples (using the
 \strong{samples} parameter). Individual clones can be selected
 using the \strong{clones} parameter with the specific sequence of
 interest or using the \strong{top.clones} parameter with the top
-n clones by proportion to be visualized.
+n clones by proportion / counts to be visualized.
 }
 \examples{
 #Making combined contig data
-combined <- combineTCR(contig_list, 
-                       samples = c("P17B", "P17L", "P18B", "P18L", 
+combined <- combineTCR(contig_list,
+                       samples = c("P17B", "P17L", "P18B", "P18L",
                                    "P19B","P19L", "P20B", "P20L"))
-clonalCompare(combined, 
-              top.clones = 5, 
-              samples = c("P17B", "P17L"), 
+clonalCompare(combined,
+              top.clones = 5,
+              samples = c("P17B", "P17L"),
               cloneCall="aa")
 
 }
