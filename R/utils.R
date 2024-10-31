@@ -587,28 +587,15 @@ is_df_or_list_of_df <- function(x) {
   dictionary[dictionary == "None"] <- NA
   dictionary$v.gene <- stringr::str_split(dictionary[,gene], "[.]", simplify = TRUE)[,1]
   tmp <- na.omit(unique(dictionary[,c(chain, "v.gene")]))
-  #chunking the sequences for distance by v.gene
-  
-  # this can be easily parallelized by swapping lapply with a parallel version
-  # alternatively, some inspiration: https://stackoverflow.com/questions/38169332
-  edge.list <- lapply(str_sort(na.omit(unique(dictionary$v.gene)), numeric = TRUE), function(v_gene) {
-    filtered_df <- dplyr::filter(dictionary, v.gene == v_gene)
-    nucleotides <- filtered_df[[chain]]
-    nucleotides <- sort(unique(str_split(nucleotides, ";", simplify = TRUE)[,1]))
-    if (length(nucleotides) <= 1) return(NULL)
-    rcppGetSigSequenceEditDistEdgeListDf(nucleotides, threshold)
-  })
 
-  edge.list <- do.call(rbind, edge.list)
+  #chunking the sequences for distance by v.gene
+  edge.list <- .createBcrEdgeListDf(dictionary, chain, threshold)
 
   if(exportGraph) {
-    if(!is.null(edge.list)) {
-      graph <- graph_from_edgelist(as.matrix(edge.list)[,c(1,2)])
-      
-    } else {
-      graph <- NULL
+    if (is.null(edge.list)) {
+      return(NULL)
     }
-    return(graph)
+    return(graph_from_edgelist(as.matrix(edge.list)[, c(1, 2)]))
   }
   
   if (!is.null(dim(edge.list))) { 
@@ -635,3 +622,39 @@ is_df_or_list_of_df <- function(x) {
   return(output)
 }
 
+#' create an edge list dataframe from clustering BCR data with edit distance
+#'
+#' This is a helper for the internal [.lvCompare()] that constructs a directed
+#' graph edge list as a dataframe, with weights being the normalized edit
+#' distance between two v genes.
+#'
+#' @param dictionary row binded loadContigs output with a column `v.gene`
+#' @param chain string. Which v gene type.
+#' @param threshold single numeric between 0 and 1
+#'
+#' @return A data.frame with the columns `to`, `from`, `distance`. To and from
+#' represents a directed edge between two v genes, and the distance being the
+#' normalized edit distance. Those that exceed the threshold are filtered.
+#
+#' @keywords internal
+#' @noRd
+.createBcrEdgeListDf <- function(dictionary, chain, threshold) {
+
+  vGenes <- str_sort(na.omit(unique(dictionary$v.gene)), numeric = TRUE)
+
+  edge.list <- lapply(vGenes, function(v_gene) {
+    filtered_df <- dplyr::filter(dictionary, v.gene == v_gene)
+    nucleotides <- filtered_df[[chain]]
+    nucleotides <- sort(unique(str_split(nucleotides, ";", simplify = TRUE)[, 1]))
+    if (length(nucleotides) <= 1) return(NULL)
+    out <- rcppGetSigSequenceEditDistEdgeListDf(nucleotides, threshold)
+    #print(out)
+    out
+  })
+
+  edgeListDf <- do.call(rbind, edge.list)
+  if (!is.null(edgeListDf) && nrow(edgeListDf) == 0) {
+    return(NULL)
+  }
+  edgeListDf
+}
