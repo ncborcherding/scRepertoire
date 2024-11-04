@@ -13,6 +13,10 @@ rcppConstructConDfAndParseTCR <- function(data2, uniqueData2Barcodes) {
     .Call(`_scRepertoire_rcppConstructConDfAndParseTCR`, data2, uniqueData2Barcodes)
 }
 
+rcppGetSigSequenceEditDistEdgeListDf <- function(sequences, threshold) {
+    .Call(`_scRepertoire_rcppGetSigSequenceEditDistEdgeListDf`, sequences, threshold)
+}
+
 rcppGenerateUniqueNtMotifs <- function(k) {
     .Call(`_scRepertoire_rcppGenerateUniqueNtMotifs`, k)
 }
