@@ -99,6 +99,7 @@ clonalQuant <- function(input.data,
   if(!is.null(group.by)) {
     col <- length(unique(mat[,group.by]))
   }
+  mat[,x] = factor(mat[,x], levels = names(input.data))
   
   if(!is.null(order.by)) {
     mat <- .ordering.function(vector = order.by,

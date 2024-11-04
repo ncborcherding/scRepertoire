@@ -15,6 +15,7 @@
 * suppressed "using discrete variable for alpha is not recommended" warning in alluvialClones unit tests.
 * Fixed issue with ```clonalCluster()``` and exportGraph = TRUE
 * improve performance of ```combineBCR()``` by a constant factor with C++
+* Restructured functions to exportTable before plotting
 
 # scRepertoire VERSION 2.0.7
 

@@ -1,5 +1,5 @@
 pandoc: 3.1.1
-pkgdown: 2.0.7
+pkgdown: 2.0.9
 pkgdown_sha: ~
 articles:
   Attaching_SC: Attaching_SC.html
@@ -11,6 +11,7 @@ articles:
   Combining_Contigs: Combining_Contigs.html
   FAQ: FAQ.html
   Ibex: Ibex.html
+  immApex: immApex.html
   Installation: Installation.html
   Loading: Loading.html
   Processing: Processing.html
@@ -18,9 +19,8 @@ articles:
   Running_Escape: Running_Escape.html
   SC_Visualizations: SC_Visualizations.html
   Trex: Trex.html
-  immApex: immApex.html
   vignette: vignette.html
-last_built: 2024-07-15T18:40Z
+last_built: 2024-08-09T12:11Z
 urls:
   reference: https://www.borch.dev/uploads/scRepertoire/reference
   article: https://www.borch.dev/uploads/scRepertoire/articles
