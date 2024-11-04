@@ -1,3 +1,7 @@
+ escape VERSION 2.2.1 
+
+#VERSION BUMP FOR BIOCONDUCTOR
+
 # scRepertoire VERSION 2.0.8
 
 ## NEW FEATURES
@@ -49,7 +53,6 @@
 * Fixed IGH/K/L mistaking gene issue in ```vizGenes()```
 * Add error message for NULL results in ```clonalCluster()``` with **export.graph = TRUE**
 * Fixed issue with "full.clones" missing in ```combineExpression()``` when using 1 chain
-
 
 # scRepertoire VERSION 2.0.3
 
