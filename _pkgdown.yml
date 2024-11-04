@@ -69,6 +69,7 @@ reference:
   - combineBCR
   - combineTCR
   - createHTOContigList
+  - getContigDoublets
   - exportClones
   - loadContigs
   - subsetClones
