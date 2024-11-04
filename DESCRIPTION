@@ -45,8 +45,7 @@ Imports:
     VGAM,
     hash,
     purrr,
-    lifecycle,
-    withr
+    lifecycle
 Suggests: 
     BiocManager,
     BiocStyle,
