@@ -29,7 +29,7 @@ devtools::install_github("ncborcherding/scRepertoire")
 ```
 
 ### Installing from Bioconductor
-The current version of scRepertoire is also available on [Bioconductor](https://bioconductor.org/packages/3.19/bioc/html/scRepertoire.html).
+The current version of scRepertoire is also available on [Bioconductor](https://www.bioconductor.org/packages/release/bioc/html/scRepertoire.html).
 
 ```R
 if (!require("BiocManager", quietly = TRUE))
@@ -47,7 +47,7 @@ devtools::install_github("ncborcherding/scRepertoire@v1")
 
 ## Getting Data
 
-Unfortunately, Github limits the size of individual files. In order to access the seurat object paired with scRepertoire please download the .rda from [here](https://drive.google.com/file/d/1_YuRraDyg8UgF3oasjF0-jgPnwox-B24/view?usp=share_link).
+Unfortunately, Github limits the size of individual files. In order to access the Seurat object paired with scRepertoire please download the .rda from [here](https://drive.google.com/file/d/1_YuRraDyg8UgF3oasjF0-jgPnwox-B24/view?usp=share_link).
 
 ## Bug Reports/New Features
 
@@ -62,4 +62,8 @@ be extremely helpful.
 #### [Pull Requests](https://github.com/ncborcherding/scRepertoire/pulls) are welcome for bug fixes, new features, or enhancements.
 
 ## Please Cite
-Feel free to use, edit, modify scRepertoire, but if you do, please cite the [manuscript](https://f1000research.com/articles/9-47/v1). If you are building your own tool based on scRepertoire, reach out, I am happy to help and make things compatible.
+We are working on submitting the scRepertoire v2 as a peer review article. For now, please cite scRepertoire using the doi from [Bioconductor](https://www.bioconductor.org/packages/release/bioc/html/scRepertoire.html).
+
+*Borcherding, N, Yang, Q, & Safina, K. (2024). scRepertoire v2: A toolkit for single-cell immune receptor profiling. DOI: 10.18129/B9.bioc.scRepertoire*
+
+If you are building your own tool based on scRepertoire, reach out, I am happy to help and make things compatible.
