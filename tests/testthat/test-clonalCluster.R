@@ -11,8 +11,7 @@ test_that("clonalCluster works", {
  
   test_obj <- getTestCombinedSeuratObj()
   combined <- getCombined()
-  withr::local_seed(42)
-
+  set.seed(42)
   expect_equal(
     clonalCluster(combined[[1]], 
                   chain = "TRB", 

@@ -17,7 +17,7 @@ getTestBcrListNoDoublets <- function() {
 }
 
 getTestBcrListWithDoublets <- function(doubletsPerSample, seed = 42) {
-    if (!is.null(seed)) withr::local_seed(seed)
+    if (!is.null(seed)) set.seed(seed)
     purrr:::map2(
         getTestBcrListNoDoublets(), getTestTcrList(),
         makeRandomBcrBarcodesMatchTcr,
