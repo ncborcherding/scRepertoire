@@ -16,18 +16,18 @@ clonalAbundance(
 )
 }
 \arguments{
-\item{input.data}{The product of \code{\link{combineTCR}}, 
-\code{\link{combineBCR}}, or \code{\link{combineExpression}}.}
+\item{input.data}{The product of \code{\link[=combineTCR]{combineTCR()}},
+\code{\link[=combineBCR]{combineBCR()}}, or \code{\link[=combineExpression]{combineExpression()}}.}
 
-\item{cloneCall}{How to call the clone - VDJC gene (\strong{gene}), 
+\item{cloneCall}{How to call the clone - VDJC gene (\strong{gene}),
 CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
-VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable 
+VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable
 in the data.}
 
-\item{chain}{indicate if both or a specific chain should be used - 
+\item{chain}{indicate if both or a specific chain should be used -
 e.g. "both", "TRA", "TRG", "IGH", "IGL"}
 
-\item{scale}{Converts the graphs into density plots in order to show 
+\item{scale}{Converts the graphs into density plots in order to show
 relative distributions.}
 
 \item{group.by}{The variable to use for grouping}
@@ -38,20 +38,20 @@ to plot groups in order}
 \item{exportTable}{Returns the data frame used for forming the graph
 to the visualization.}
 
-\item{palette}{Colors to use in visualization - input any 
-\link[grDevices]{hcl.pals}.}
+\item{palette}{Colors to use in visualization - input any
+\link[grDevices:palettes]{hcl.pals}.}
 }
 \value{
-ggplot of the total or relative abundance of clones 
+ggplot of the total or relative abundance of clones
 across quanta
 }
 \description{
-Displays the number of clones at specific frequencies by sample 
+Displays the number of clones at specific frequencies by sample
 or group. Visualization can either be a line graph (
-\strong{scale} = FALSE) using calculated numbers or density 
-plot (\strong{scale} = TRUE). Multiple sequencing runs can 
-be group together using the group parameter. If a matrix 
-output for the data is preferred, set 
+\strong{scale} = FALSE) using calculated numbers or density
+plot (\strong{scale} = TRUE). Multiple sequencing runs can
+be group together using the group parameter. If a matrix
+output for the data is preferred, set
 \strong{exportTable} = TRUE.
 }
 \examples{

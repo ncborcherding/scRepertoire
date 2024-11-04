@@ -3,7 +3,7 @@
 #' @description A list of 8 `filtered_contig_annotations.csv` files
 #' outputted from 10X Cell Ranger. More information on the 
 #' data can be found in the following
-#'  \href{https://pubmed.ncbi.nlm.nih.gov/33622974/}{manuscript}.
+#'  [manuscript](https://pubmed.ncbi.nlm.nih.gov/33622974/).
 #'  
 #' @docType data
 #' @concept Data
@@ -18,7 +18,7 @@ NULL
 #' from 4 patients with acute respiratory distress, with samples taken
 #' from both the lung and peripheral blood. More information on the 
 #' data can be found in the following
-#'  \href{https://pubmed.ncbi.nlm.nih.gov/33622974/}{manuscript}.
+#'  [manuscript](https://pubmed.ncbi.nlm.nih.gov/33622974/).
 #' 
 #' @name scRep_example
 #' @concept Data
@@ -32,7 +32,7 @@ NULL
 #' `filtered_contig_annotation` files, but subsetted to  365 valid T cells
 #' which correspond to the same barcodes found in `scRep_example`. The
 #' data is originally derived from the following
-#'  \href{https://pubmed.ncbi.nlm.nih.gov/33622974/}{manuscript}.
+#'  [manuscript](https://pubmed.ncbi.nlm.nih.gov/33622974/).
 #'
 #' @usage data("mini_contig_list")
 #'
@@ -42,6 +42,6 @@ NULL
 #' 
 #' @docType data
 #'
-#' @seealso \code{\link{contig_list}}
+#' @seealso [contig_list()]
 #'
 "mini_contig_list"

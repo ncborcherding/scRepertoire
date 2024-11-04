@@ -2,7 +2,7 @@
 % Please edit documentation in R/clonalCompare.R
 \name{clonalCompare}
 \alias{clonalCompare}
-\title{Demonstrate the difference in clonal proportion between clones}
+\title{Demonstrate the difference in clonal proportions / counts between clones}
 \usage{
 clonalCompare(
   input.data,
@@ -16,20 +16,21 @@ clonalCompare(
   group.by = NULL,
   order.by = NULL,
   graph = "alluvial",
+  proportion = TRUE,
   exportTable = FALSE,
   palette = "inferno"
 )
 }
 \arguments{
-\item{input.data}{The product of \code{\link{combineTCR}}, 
+\item{input.data}{The product of \code{\link{combineTCR}},
 \code{\link{combineBCR}}, or \code{\link{combineExpression}}.}
 
-\item{cloneCall}{How to call the clone - VDJC gene (\strong{gene}), 
+\item{cloneCall}{How to call the clone - VDJC gene (\strong{gene}),
 CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
-VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable 
+VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable
 in the data}
 
-\item{chain}{indicate if both or a specific chain should be used - 
+\item{chain}{indicate if both or a specific chain should be used -
 e.g. "both", "TRA", "TRG", "IGH", "IGL"}
 
 \item{samples}{The specific samples to isolate for visualization.}
@@ -39,47 +40,52 @@ e.g. "both", "TRA", "TRG", "IGH", "IGL"}
 \item{top.clones}{The top number of clonal sequences per group.
 (e.g., top.clones = 5)}
 
-\item{highlight.clones}{Clonal sequences to highlight, if present, 
+\item{highlight.clones}{Clonal sequences to highlight, if present,
 all other clones returned will be grey}
 
 \item{relabel.clones}{Simplify the legend of the graph by returning
 clones that are numerically indexed}
 
 \item{group.by}{If using a single-cell object, the column header
-to group the new list. \strong{NULL} will return the active 
+to group the new list. \strong{NULL} will return the active
 identity or cluster}
 
 \item{order.by}{A vector of specific plotting order or "alphanumeric"
 to plot groups in order}
 
-\item{graph}{The type of graph produced, either \strong{"alluvial"} 
+\item{graph}{The type of graph produced, either \strong{"alluvial"}
 or \strong{"area"}}
+
+\item{proportion}{If \strong{TRUE}, the proportion of the total sequencing
+reads will be used for the y-axis. If \strong{FALSE}, the raw count
+will be used}
 
 \item{exportTable}{Returns the data frame used for forming the graph}
 
-\item{palette}{Colors to use in visualization - input any 
+\item{palette}{Colors to use in visualization - input any
 \link[grDevices]{hcl.pals}}
 }
 \value{
-ggplot of the proportion of total sequencing read of 
+ggplot of the proportion of total sequencing read of
 selecting clones
 }
 \description{
-This function produces an alluvial or area graph of the proportion of 
-the indicated clones for all or selected samples (using the 
-\strong{samples} parameter). Individual clones can be selected 
-using the \strong{clones} parameter with the specific sequence of 
-interest or using the \strong{top.clones} parameter with the top 
-n clones by proportion to be visualized.
+This function produces an alluvial or area graph of the proportion or
+count composition of
+the indicated clones for all or selected samples (using the
+\strong{samples} parameter). Individual clones can be selected
+using the \strong{clones} parameter with the specific sequence of
+interest or using the \strong{top.clones} parameter with the top
+n clones by proportion / counts to be visualized.
 }
 \examples{
 #Making combined contig data
-combined <- combineTCR(contig_list, 
-                       samples = c("P17B", "P17L", "P18B", "P18L", 
+combined <- combineTCR(contig_list,
+                       samples = c("P17B", "P17L", "P18B", "P18L",
                                    "P19B","P19L", "P20B", "P20L"))
-clonalCompare(combined, 
-              top.clones = 5, 
-              samples = c("P17B", "P17L"), 
+clonalCompare(combined,
+              top.clones = 5,
+              samples = c("P17B", "P17L"),
               cloneCall="aa")
 
 }

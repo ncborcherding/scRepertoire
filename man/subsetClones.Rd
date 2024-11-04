@@ -7,8 +7,8 @@
 subsetClones(input.data, name, variables = NULL)
 }
 \arguments{
-\item{input.data}{The product of \code{\link{combineTCR}} or 
-\code{\link{combineBCR}}.}
+\item{input.data}{The product of \code{\link[=combineTCR]{combineTCR()}} or
+\code{\link[=combineBCR]{combineBCR()}}.}
 
 \item{name}{The column header/name to use for subsetting.}
 
@@ -18,8 +18,8 @@ subsetClones(input.data, name, variables = NULL)
 list of contigs that have been filtered for the name parameter
 }
 \description{
-This function allows for the subsetting of the product of 
-\code{\link{combineTCR}} or \code{\link{combineBCR}} 
+This function allows for the subsetting of the product of
+\code{\link[=combineTCR]{combineTCR()}} or \code{\link[=combineBCR]{combineBCR()}}
 by the name of the individual list element.
 }
 \examples{

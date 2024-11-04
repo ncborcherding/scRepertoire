@@ -1,30 +1,11 @@
-# scRepertoire objects
+# base R type check functions
 
-isCombineContigsOutput <- function(obj) {
-    is.list(obj) && all(sapply(obj, is.data.frame))
+isListOfNonEmptyDataFrames <- function(obj) {
+    is.list(obj) &&
+        all(sapply(obj, function(x) is.data.frame(x) && sum(dim(x)) > 0))
 }
-assertthat::on_failure(isCombineContigsOutput) <- function(call, env) {
-    paste0(deparse(call$obj), " is not an output of combineTCR or combineBCR")
-}
-
-isListOfTwoCombineContigsOutputs <- function(obj) {
-    is.list(obj) && length(obj) == 2 && all(sapply(obj, isCombineContigsOutput))
-}
-assertthat::on_failure(isListOfTwoCombineContigsOutputs) <- function(call, env) {
-    paste0(
-        deparse(call$obj),
-        " is not a list of two outputs of combineTCR and combineBCR"
-    )
-}
-
-isAnyValidProductOfCombineContigs <- function(obj) {
-    isCombineContigsOutput(obj) || isListOfTwoCombineContigsOutputs(obj)
-}
-assertthat::on_failure(isAnyValidProductOfCombineContigs) <- function(call, env) {
-    paste0(
-        deparse(call$obj),
-        " is not a valid output of combineTCR or combineBCR, nor a list of them"
-    )
+assertthat::on_failure(isListOfNonEmptyDataFrames) <- function(call, env) {
+    paste0(deparse(call$obj), " is not a list of non-empty `data.frame`s")
 }
 
 # bio objects
@@ -53,4 +34,10 @@ is_named_numeric <- function(obj) {
 }
 assertthat::on_failure(is_named_numeric) <- function(call, env) {
     paste0(deparse(call$obj), " is not a named numeric vector")
+}
+
+# functions
+
+assertthat::on_failure(`%in%`) <- function(call, env) {
+    paste0(deparse(call$x), " is not in ", deparse(call$table))
 }

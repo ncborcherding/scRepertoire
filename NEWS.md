@@ -1,10 +1,20 @@
 # scRepertoire VERSION 2.0.8
 
+## NEW FEATURES
+* Added ```getContigDoublets()``` experimental function to identify TCR and BCR doublets as a preprocessing step to ```combineExpression()```
+* Added **proportion** argument to ```clonalCompare()``` so that when set to FALSE, the comparison will be based on frequency normalized by per-sample repertoire diversity.
+
 ## UNDERLYING CHANGES
 * Fixed issue with single chain output for ```clonalLength()```
 * Removed unnecessary code remnant in ```clonalLength()```
 * Allow one sample to be plotted by ```percentVJ()```
 * Fixed issue with ```positionalProperty()``` and exportTable
+* Fixed issue with ```loadContigs()``` edge case when TRUST4 data only has 1 row.
+* convert documentation to use markdown (`roxygen2md`)
+* import `lifecycle`, `purrr`, `withr`
+* suppressed "using discrete variable for alpha is not recommended" warning in alluvialClones unit tests.
+* Fixed issue with ```clonalCluster()``` and exportGraph = TRUE
+* improve performance of ```combineBCR()``` by a constant factor with C++
 * Restructured functions to exportTable before plotting
 
 # scRepertoire VERSION 2.0.7

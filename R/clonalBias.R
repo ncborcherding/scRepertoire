@@ -1,12 +1,12 @@
 #' Examine skew of clones towards a cluster or compartment
 #' 
 #' The metric seeks to quantify how individual clones are skewed towards 
-#' a specific cellular compartment or cluster. A clone bias of \strong{1} - 
+#' a specific cellular compartment or cluster. A clone bias of **1** - 
 #' indicates that a clone is composed of cells from a single 
-#' compartment or cluster, while a clone bias of \strong{0} - matches the 
+#' compartment or cluster, while a clone bias of **0** - matches the 
 #' background subtype distribution. Please read and cite the following
-#' \href{https://pubmed.ncbi.nlm.nih.gov/35829695/}{manuscript} 
-#' if using \code{\link{clonalBias}}.
+#' [manuscript](https://pubmed.ncbi.nlm.nih.gov/35829695/) 
+#' if using [clonalBias()].
 #' 
 #' @examples
 #' #Making combined contig data
@@ -30,10 +30,10 @@
 #'               min.expand = 2)
 #' 
 #' 
-#' @param sc.data The single-cell object after \code{\link{combineExpression}}.
-#' @param cloneCall How to call the clone - VDJC gene (\strong{gene}), 
-#' CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
-#' VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable 
+#' @param sc.data The single-cell object after [combineExpression()].
+#' @param cloneCall How to call the clone - VDJC gene (**gene**), 
+#' CDR3 nucleotide (**nt**), CDR3 amino acid (**aa**),
+#' VDJC gene + CDR3 nucleotide (**strict**) or a custom variable 
 #' in the data. 
 #' @param group.by The variable to use for calculating bias
 #' @param split.by The variable to use for calculating the baseline frequencies.
@@ -42,7 +42,7 @@
 #' @param min.expand clone frequency cut off for the purpose of comparison.
 #' @param exportTable Returns the data frame used for forming the graph.
 #' @param palette Colors to use in visualization - input any 
-#' \link[grDevices]{hcl.pals}.
+#' [hcl.pals][grDevices::hcl.pals].
 #' @import ggplot2
 #' @importFrom quantreg rqss
 #' @importFrom stringr str_sort
