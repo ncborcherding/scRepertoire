@@ -1,4 +1,4 @@
- escape VERSION 2.2.1 
+# scRepertoire VERSION 2.2.1
 
 #VERSION BUMP FOR BIOCONDUCTOR
 
