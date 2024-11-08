@@ -193,8 +193,7 @@ combineTCR <- function(input.data,
 #' @param filterNonproductive This option will allow for the removal of 
 #' nonproductive chains if the variable exists in the contig data. Default
 #' is set to TRUE to remove nonproductive contigs.
-#' @importFrom dplyr %>% mutate
-#' @importFrom assertthat assert_that is.flag
+#'
 #' @export
 #' @concept Loading_and_Processing_Contigs
 #' @return List of clones for individual cell barcodes

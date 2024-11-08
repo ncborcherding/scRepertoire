@@ -27,7 +27,6 @@
 #' @param exportTable Returns the data frame used for forming the graph.
 #' @param palette Colors to use in visualization - input any 
 #' [hcl.pals][grDevices::hcl.pals]
-#' @importFrom reshape2 melt
 #' @importFrom stats mad
 #' @export
 #' @concept Summarize_Repertoire

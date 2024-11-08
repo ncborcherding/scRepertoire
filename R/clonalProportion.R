@@ -31,9 +31,6 @@
 #' @param palette Colors to use in visualization - input any 
 #' [hcl.pals][grDevices::hcl.pals]
 #'
-#' @importFrom reshape2 melt
-#' @importFrom dplyr bind_rows n
-#'
 #' @export
 #' @concept Visualizing_Clones
 #' @return ggplot of the space occupied by the specific rank of clones

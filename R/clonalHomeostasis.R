@@ -30,8 +30,7 @@
 #' environment in addition to the visualization.
 #' @param palette Colors to use in visualization - input any 
 #' [hcl.pals][grDevices::hcl.pals].
-#' @importFrom reshape2 melt
-#' @importFrom dplyr bind_rows
+#'
 #' @export
 #' @concept Visualizing_Clones
 #' @return ggplot of the space occupied by the specific proportion of clones

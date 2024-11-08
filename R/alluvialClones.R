@@ -64,8 +64,7 @@
 #' [hcl.pals][grDevices::hcl.pals].
 #'
 #' @importFrom ggalluvial StatStratum geom_flow geom_stratum to_lodes_form geom_alluvium
-#' @importFrom dplyr %>% mutate
-#' 
+#'
 #' @export
 #' @concept SC_Functions
 #' @return Alluvial ggplot comparing clone distribution.

@@ -57,7 +57,7 @@
   })
 }
 
-#' @importFrom dplyr %>% group_by arrange desc ungroup count mutate
+#' @importFrom dplyr desc ungroup count
 #' @importFrom rlang ensym !!
 .clone.counter <- function(meta,
                            group.by, 
@@ -164,7 +164,6 @@
     df
 }
 
-#' @importFrom dplyr bind_rows
 #' @keywords internal
 .bound.input.return <- function(df) {
   if (is_seurat_or_se_object(df)) {
@@ -264,7 +263,7 @@
 }
 
 #Removing extra clones in barcodes with > 2 productive contigs
-#' @importFrom dplyr group_by %>% slice_max
+#' @importFrom dplyr slice_max
 #' @keywords internal
 .filteringMulti <- function(x) {
     x <- x %>%
@@ -290,7 +289,7 @@
 
 
 #Filtering NA contigs out of single-cell expression object
-#' @importFrom dplyr %>% transmute
+#' @importFrom dplyr transmute
 #' @importFrom SingleCellExperiment colData
 #' @keywords internal
 .filteringNA <- function(sc) {
@@ -312,7 +311,6 @@
 
 #Organizing list of contigs for visualization
 #' @keywords internal
-#' @importFrom dplyr %>% group_by n summarise
 .parseContigs <- function(df, i, names, cloneCall) {
     data <- df[[i]]
     data1 <- data %>% 
@@ -371,7 +369,6 @@
 # but now also constructs Con.df and runs the parseTCR algorithm on it, all in Rcpp
 #' @author Gloria Kraus, Nick Bormann, Nicky de Vrij, Nick Borcherding, Qile Yang
 #' @keywords internal
-#' @importFrom dplyr %>% arrange
 .constructConDfAndParseTCR <- function(data2) {
   rcppConstructConDfAndParseTCR(
     data2 %>% dplyr::arrange(., chain, cdr3_nt),
@@ -488,7 +485,6 @@
 
 #Sorting the V/D/J/C gene sequences for T and B cells
 #' @importFrom stringr str_c str_replace_na
-#' @importFrom dplyr bind_rows mutate %>%
 #' @keywords internal
 .makeGenes <- function(cellType, data2, chain1, chain2) {
     if(cellType %in% c("T")) {
@@ -575,7 +571,6 @@ is_df_or_list_of_df <- function(x) {
 # nucleotide sequence.
 #' @importFrom stringdist stringdist
 #' @importFrom igraph graph_from_data_frame components graph_from_edgelist
-#' @importFrom dplyr bind_rows filter
 #' @keywords internal
 .lvCompare <- function(dictionary, gene, chain, threshold, exportGraph = FALSE) {
   overlap <- NULL

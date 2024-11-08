@@ -33,7 +33,7 @@
 #' @param palette Colors to use in visualization - input any 
 #' [hcl.pals][grDevices::hcl.pals].
 #' @importFrom stats sd
-#' @importFrom dplyr bind_rows %>% group_by mutate ungroup summarise
+#' @importFrom dplyr ungroup
 #' @export
 #' @concept Visualizing_Clones
 #' @return ggplot bar diagram or heatmap of gene usage

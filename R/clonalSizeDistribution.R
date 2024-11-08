@@ -30,34 +30,34 @@
 #' 
 #' @examples
 #' #Making combined contig data
-#' combined <- combineTCR(contig_list, 
-#'                         samples = c("P17B", "P17L", "P18B", "P18L", 
+#' combined <- combineTCR(contig_list,
+#'                         samples = c("P17B", "P17L", "P18B", "P18L",
 #'                                     "P19B","P19L", "P20B", "P20L"))
 #' clonalSizeDistribution(combined, cloneCall = "strict", method="ward.D2")
 #'
-#' @param input.data The product of [combineTCR()], 
+#' @param input.data The product of [combineTCR()],
 #' [combineBCR()], or [combineExpression()].
-#' @param cloneCall How to call the clone - VDJC gene (**gene**), 
+#' @param cloneCall How to call the clone - VDJC gene (**gene**),
 #' CDR3 nucleotide (**nt**), CDR3 amino acid (**aa**),
-#' VDJC gene + CDR3 nucleotide (**strict**) or a custom variable 
-#' in the data. 
-#' @param chain indicate if both or a specific chain should be used - 
+#' VDJC gene + CDR3 nucleotide (**strict**) or a custom variable
+#' in the data.
+#' @param chain indicate if both or a specific chain should be used -
 #' e.g. "both", "TRA", "TRG", "IGH", "IGL".
-#' @param threshold Numerical vector containing the thresholds 
+#' @param threshold Numerical vector containing the thresholds
 #' the grid search was performed over.
 #' @param method The clustering parameter for the dendrogram.
 #' @param group.by The variable to use for grouping.
 #' @param exportTable Returns the data frame used for forming the graph.
-#' @param palette Colors to use in visualization - input any 
+#' @param palette Colors to use in visualization - input any
 #' [hcl.pals][grDevices::hcl.pals].
-#' @importFrom dplyr bind_rows
+#'
 #' @importFrom ggdendro dendro_data segment label
 #' @importFrom stats hclust optim pgamma as.dist
 #' @export
 #' @concept Visualizing_Clones
 #' @return ggplot dendrogram of the clone size distribution
 #' @author Hillary Koch
-
+#'
 clonalSizeDistribution <- function(input.data,
                                    cloneCall ="strict", 
                                    chain = "both", 

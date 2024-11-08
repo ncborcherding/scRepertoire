@@ -35,8 +35,7 @@
 #' environment in addition to the visualization
 #' @param palette Colors to use in visualization - input any 
 #' [hcl.pals][grDevices::hcl.pals]
-#' @importFrom dplyr %>% group_by mutate count
-#' @importFrom reshape2 melt
+#' @importFrom dplyr count
 #' @export
 #' @concept SC_Functions
 #' @return Stacked bar plot of counts of cells by clone frequency group

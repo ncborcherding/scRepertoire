@@ -67,7 +67,7 @@
 #' @param return.boots export boot strapped values calculated - 
 #' will automatically exportTable = TRUE.
 #' @param skip.boots remove down sampling and boot strapping from the calculation.
-#' @importFrom reshape2 melt
+#'
 #' @importFrom dplyr sample_n
 #' @export
 #' @concept Visualizing_Clones

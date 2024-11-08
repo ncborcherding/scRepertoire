@@ -57,7 +57,6 @@
 #' @param palette Colors to use in visualization - input any 
 #' [hcl.pals][grDevices::hcl.pals]
 #' @importFrom stringr str_to_title
-#' @importFrom reshape2 melt
 #' @importFrom stats quantile
 #' @export
 #' @concept Visualizing_Clones

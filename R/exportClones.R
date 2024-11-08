@@ -25,7 +25,6 @@
 #' return a data.frame
 #' @param dir directory location to save the csv
 #' @param file.name the csv file name
-#' @importFrom dplyr bind_rows
 #' @importFrom utils write.csv
 #' @export
 #' @concept Loading_and_Processing_Contigs
@@ -57,8 +56,8 @@ exportClones <- function(input.data,
   write.csv(mat, file = filepath)
 }
 
-#' @importFrom dplyr %>% group_by mutate
-.TCRmatchExport<- function(input.data) {
+
+.TCRmatchExport <- function(input.data) {
 
   input.data <- .data.wrangle(input.data, NULL, "CTgene", "TRB")
   

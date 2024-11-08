@@ -41,7 +41,6 @@
 #' @param exportTable Returns the data frame used for forming the graph
 #' @param palette Colors to use in visualization - input any [hcl.pals][grDevices::hcl.pals]
 #' @importFrom stats qt
-#' @importFrom dplyr %>% summarise n group_by 
 #' @export
 #' @concept Summarize_Repertoire
 #' @return ggplot of line graph of diversity by position
