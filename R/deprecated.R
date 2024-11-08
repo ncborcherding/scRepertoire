@@ -31,7 +31,7 @@
 #'
 expression2List <- function(sc, ..., force = FALSE) {
     warner <- ifelse(
-        force, lifecycle::deprecate_warn, lifecycle::deprecate_stop
+        force, lifecycle::deprecate_soft, lifecycle::deprecate_stop
     )
     warner("2.0.0", "expression2List()")
     .expression2List(sc, list(...)[[1]])
