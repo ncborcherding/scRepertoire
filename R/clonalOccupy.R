@@ -37,7 +37,6 @@
 #' [hcl.pals][grDevices::hcl.pals]
 #' @importFrom dplyr %>% group_by mutate count
 #' @importFrom reshape2 melt
-#' @import ggplot2
 #' @export
 #' @concept SC_Functions
 #' @return Stacked bar plot of counts of cells by clone frequency group

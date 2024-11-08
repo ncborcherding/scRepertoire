@@ -123,7 +123,6 @@ rmAllNaRowsFromLoadContigs <- function(dfList) {
 }
 
 #Formats TRUST4 data
-#' @importFrom stringr str_split
 .parseTRUST4 <- function(df) {
 
     processChain <- function(data, chain_col) {
@@ -153,7 +152,7 @@ rmAllNaRowsFromLoadContigs <- function(dfList) {
         combined_data[combined_data == ""] <- NA
         combined_data
     })
-    # is it necessary to drop rows that are fully NA with an existing barcode?
+
     .chain.parser(formattedDfs)
 }
 
@@ -265,7 +264,6 @@ rmAllNaRowsFromLoadContigs <- function(dfList) {
   return(df)
 }
 
-#' @importFrom stringr str_split
 .parseImmcantation<- function(df) {
   for (i in seq_along(df)) {
     df[[i]][df[[i]] == ""] <- NA

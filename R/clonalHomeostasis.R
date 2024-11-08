@@ -30,8 +30,6 @@
 #' environment in addition to the visualization.
 #' @param palette Colors to use in visualization - input any 
 #' [hcl.pals][grDevices::hcl.pals].
-#' @import ggplot2
-#' @importFrom stringr str_split
 #' @importFrom reshape2 melt
 #' @importFrom dplyr bind_rows
 #' @export

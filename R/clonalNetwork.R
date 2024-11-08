@@ -50,9 +50,6 @@
 #' of clone copies.
 #' @param palette Colors to use in visualization - input any 
 #' [hcl.pals][grDevices::hcl.pals].
-
-#' @import ggplot2
-#' @importFrom stringr str_sort
 #' @importFrom igraph graph_from_data_frame V `V<-`
 #' @importFrom dplyr %>% group_by select summarize_all count n across all_of desc
 #' @importFrom tidygraph as_tbl_graph activate

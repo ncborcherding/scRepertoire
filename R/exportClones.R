@@ -26,7 +26,6 @@
 #' @param dir directory location to save the csv
 #' @param file.name the csv file name
 #' @importFrom dplyr bind_rows
-#' @importFrom stringr str_split
 #' @importFrom utils write.csv
 #' @export
 #' @concept Loading_and_Processing_Contigs

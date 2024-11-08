@@ -40,8 +40,6 @@
 #' "stScales", "tScales", or "VHSE"
 #' @param exportTable Returns the data frame used for forming the graph
 #' @param palette Colors to use in visualization - input any [hcl.pals][grDevices::hcl.pals]
-#' @import ggplot2
-#' @importFrom stringr str_split
 #' @importFrom stats qt
 #' @importFrom dplyr %>% summarise n group_by 
 #' @export

@@ -29,11 +29,9 @@
 #' @param exportTable Returns the data frame used for forming the graph.
 #' @param palette Colors to use in visualization - input any 
 #' [hcl.pals][grDevices::hcl.pals]
-#' @importFrom stringr str_split
-#' @importFrom ggplot2 ggplot
 #' @export
 #' @concept Visualizing_Clones
-#' @return ggplot of the discrete or relative length distributions of 
+#' @return ggplot of the discrete or relative length distributions of
 #' clone sequences
 clonalLength <- function(input.data, 
                          cloneCall = "aa", 

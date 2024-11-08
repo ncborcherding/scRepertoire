@@ -27,8 +27,7 @@
 #' "shannon", "inv.simpson", "norm.entropy"
 #' @param exportTable Returns the data frame used for forming the graph
 #' @param palette Colors to use in visualization - input any [hcl.pals][grDevices::hcl.pals]
-#' @import ggplot2
-#' @importFrom stringr str_split
+#'
 #' @export
 #' @concept Summarize_Repertoire
 #' @return ggplot of line graph of diversity by position

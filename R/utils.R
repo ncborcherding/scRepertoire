@@ -1,7 +1,6 @@
 # readability functions with appropriate assertthat fail messages
 "%!in%" <- Negate("%in%")
 
-#'@importFrom stringr str_sort
 .ordering.function <- function(vector, 
                                group.by,
                                data.frame) {
@@ -14,7 +13,6 @@
 }
 
 #Use to shuffle between chains
-#' @importFrom stringr str_split
 #' @keywords internal
 #' @author Ye-Lin Son, Nick Borcherding
 .off.the.chain <- function(dat, chain, cloneCall, check = TRUE) {
@@ -79,7 +77,6 @@
 }
 
 
-#' @importFrom stringr str_split
 .aa.counter <- function(input.data, cloneCall, aa.length) {
     lapply(input.data, function(x) {
         strings <- x[,cloneCall]
@@ -576,7 +573,6 @@ is_df_or_list_of_df <- function(x) {
 
 # Calculates the normalized Levenshtein Distance between the contig 
 # nucleotide sequence.
-#' @importFrom stringr str_split str_sort
 #' @importFrom stringdist stringdist
 #' @importFrom igraph graph_from_data_frame components graph_from_edgelist
 #' @importFrom dplyr bind_rows filter
