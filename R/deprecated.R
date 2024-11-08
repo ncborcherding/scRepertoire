@@ -30,9 +30,14 @@
 #' @keywords internal
 #'
 expression2List <- function(sc, ..., force = FALSE) {
-    warner <- ifelse(
-        force, lifecycle::deprecate_soft, lifecycle::deprecate_stop
-    )
-    warner("2.0.0", "expression2List()")
+
+    if (!force) {
+        lifecycle::deprecate_stop(
+            "2.0.0", "expression2List()",
+            details = "If you MUST use it, see `?expression2List`"
+        )
+    }
+
+    lifecycle::deprecate_soft("2.0.0", "expression2List()")
     .expression2List(sc, list(...)[[1]])
 }
