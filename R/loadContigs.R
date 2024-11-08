@@ -1,24 +1,24 @@
 #' Loading the contigs derived from single-cell sequencing
 #'
+#' @description
 #' This function generates a contig list and formats the data to allow for
 #' function with  [combineTCR()] or [combineBCR()]. If
 #' using data derived from filtered outputs of 10X Genomics, there is no
 #' need to use this function as the data is already compatible.
 #'
 #' The files that this function parses includes:
-#' \itemize{
-#'   \item 10X =  "filtered_contig_annotations.csv"
-#'   \item AIRR = "airr_rearrangement.tsv"
-#'   \item BD = "Contigs_AIRR.tsv"
-#'   \item Dandelion = "all_contig_dandelion.tsv"
-#'   \item Immcantation = "data.tsv"
-#'   \item JSON = ".json"
-#'   \item ParseBio = "barcode_report.tsv"
-#'   \item MiXCR = "clones.tsv"
-#'   \item Omniscope = ".csv"
-#'   \item TRUST4 = "barcode_report.tsv"
-#'   \item WAT3R = "barcode_results.csv"
-#' }
+#'
+#' - **10X**: `"filtered_contig_annotations.csv"`
+#' - **AIRR**: `"airr_rearrangement.tsv"`
+#' - **BD**: `"Contigs_AIRR.tsv"`
+#' - **Dandelion**: `"all_contig_dandelion.tsv"`
+#' - **Immcantation**: `"data.tsv"`
+#' - **JSON**: `".json"`
+#' - **ParseBio**: `"barcode_report.tsv"`
+#' - **MiXCR**: `"clones.tsv"`
+#' - **Omniscope**: `".csv"`
+#' - **TRUST4**: `"barcode_report.tsv"`
+#' - **WAT3R**: `"barcode_results.csv"`
 #'
 #' @examples
 #' TRUST4 <- read.csv("https://www.borch.dev/uploads/contigs/TRUST4_contigs.csv")
@@ -40,15 +40,19 @@
 #' @export
 #' @concept Loading_and_Processing_Contigs
 #' @return List of contigs for compatibility  with [combineTCR()] or
-#' [combineBCR()]
+#' [combineBCR()]. Note that rows which are fully NA are dropped from the
+#' final output.
+#'
 loadContigs <- function(input, format = "10X") {
 
-    assert_that(is.string(input) || is.list(input) || is.data.frame(input))
-    assert_that(is.string(format))
-    assert_that(format %in% c(
-        "10X", "AIRR", "BD", "Dandelion", "JSON", "MiXCR", "ParseBio",
-        "Omniscope", "TRUST4", "WAT3R", "Immcantation"
-    ))
+    assert_that(
+      is.string(input) || is.list(input) || is.data.frame(input),
+      is.string(format),
+      isIn(format, c(
+          "10X", "AIRR", "BD", "Dandelion", "JSON", "MiXCR", "ParseBio",
+          "Omniscope", "TRUST4", "WAT3R", "Immcantation"
+      ))
+    )
 
     #Loading from directory, recursively
     rawDataDfList <- if (inherits(x = input, what = "character")) {
@@ -107,7 +111,15 @@ loadContigs <- function(input, format = "10X") {
         "ParseBio" = .parseParse
     )
 
-    loadFunc(rawDataDfList)
+    rmAllNaRowsFromLoadContigs(loadFunc(rawDataDfList))
+}
+
+rmAllNaRowsFromLoadContigs <- function(dfList) {
+    cols <- colnames(dfList[[1]])
+    cols <- cols[cols != "barcode"]
+    lapply(dfList, function(x) {
+        x[rowSums(!is.na(x[cols])) > 0, ]
+    })
 }
 
 #Formats TRUST4 data

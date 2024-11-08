@@ -38,6 +38,10 @@ assertthat::on_failure(is_named_numeric) <- function(call, env) {
 
 # functions
 
-assertthat::on_failure(`%in%`) <- function(call, env) {
+isIn <- function(x, table) {
+    x %in% table
+}
+
+assertthat::on_failure(isIn) <- function(call, env) {
     paste0(deparse(call$x), " is not in ", deparse(call$table))
 }
