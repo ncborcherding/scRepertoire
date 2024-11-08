@@ -14,8 +14,8 @@ column header to group the new list by. This should strictly be one argument
 and is an ellipsis for backwards compatibility. Everything after the first
 argument is ignored.}
 
-\item{force}{logical. If \code{TRUE}, the function will run with a deprecation
-warning. Else throws a deprecation error.}
+\item{force}{logical. If not \code{TRUE} (default), a deprecation error will
+be thrown. Otherwise the function will run but not guaranteed to be stable.}
 }
 \value{
 list derived from the meta data of single-cell object with

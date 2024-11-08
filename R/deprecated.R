@@ -21,8 +21,8 @@
 #' column header to group the new list by. This should strictly be one argument
 #' and is an ellipsis for backwards compatibility. Everything after the first
 #' argument is ignored.
-#' @param force logical. If `TRUE`, the function will run with a deprecation
-#' warning. Else throws a deprecation error.
+#' @param force logical. If not `TRUE` (default), a deprecation error will
+#' be thrown. Otherwise the function will run but not guaranteed to be stable.
 #'
 #' @export
 #' @return list derived from the meta data of single-cell object with
