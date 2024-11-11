@@ -56,8 +56,7 @@
 #' @param exportTable Returns the data frame used for forming the graph
 #' @param palette Colors to use in visualization - input any 
 #' [hcl.pals][grDevices::hcl.pals]
-#' @importFrom stringr str_sort str_to_title
-#' @importFrom reshape2 melt
+#' @importFrom stringr str_to_title
 #' @importFrom stats quantile
 #' @export
 #' @concept Visualizing_Clones

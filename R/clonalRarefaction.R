@@ -37,9 +37,8 @@
 #' environment in addition to the visualization.
 #' @param palette Colors to use in visualization - input any 
 #' [hcl.pals][grDevices::hcl.pals].
-#' 
+#'
 #' @importFrom iNEXT iNEXT ggiNEXT
-#' @import ggplot2
 #' @export
 #' @concept Visualizing_Clones
 clonalRarefaction <- function(input.data,

@@ -67,10 +67,8 @@
 #' @param return.boots export boot strapped values calculated - 
 #' will automatically exportTable = TRUE.
 #' @param skip.boots remove down sampling and boot strapping from the calculation.
-#' @importFrom stringr str_sort str_split
-#' @importFrom reshape2 melt
+#'
 #' @importFrom dplyr sample_n
-#' @import ggplot2
 #' @export
 #' @concept Visualizing_Clones
 #' @return ggplot of the diversity of clones by group

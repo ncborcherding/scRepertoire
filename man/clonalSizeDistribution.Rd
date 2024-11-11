@@ -73,8 +73,8 @@ Where:
 }
 \examples{
 #Making combined contig data
-combined <- combineTCR(contig_list, 
-                        samples = c("P17B", "P17L", "P18B", "P18L", 
+combined <- combineTCR(contig_list,
+                        samples = c("P17B", "P17L", "P18B", "P18L",
                                     "P19B","P19L", "P20B", "P20L"))
 clonalSizeDistribution(combined, cloneCall = "strict", method="ward.D2")
 
