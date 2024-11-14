@@ -488,12 +488,14 @@
 #' @keywords internal
 .makeGenes <- function(cellType, data2, chain1, chain2) {
     if(cellType %in% c("T")) {
+        data2 <- data2[data2$chain %in% c("TRA", "TRB", "TRG", "TRD"),]
         data2 <- data2 %>% 
             mutate(TCR1 = ifelse(chain %in% c("TRA", "TRG"), 
                   str_c(str_replace_na(v_gene),  str_replace_na(j_gene), str_replace_na(c_gene), sep = "."), NA)) %>%
             mutate(TCR2 = ifelse(chain %in% c("TRB", "TRD"), 
                   str_c(str_replace_na(v_gene), str_replace_na(d_gene),  str_replace_na(j_gene),  str_replace_na(c_gene), sep = "."), NA))
     } else if (cellType %in% c("B")) {
+        data2 <- data2[data2$chain %in% c("IGH", "IGK", "IGL"),]
         heavy <- data2[data2$chain == "IGH",] %>% 
           mutate(IGHct = str_c(str_replace_na(v_gene), str_replace_na(d_gene),  str_replace_na(j_gene),  str_replace_na(c_gene), sep = "."))
         kappa <- data2[data2$chain == "IGK",] %>% 
