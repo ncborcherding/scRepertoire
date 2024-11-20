@@ -1,3 +1,10 @@
+# scRepertoire VERSION 2.2.1
+
+* Rebasing for the purposes of Bioconductor version 2.2.0
+
+## UNDERLYING CHANGES
+* Added support for BCRs for loading ParseBio sequences.
+
 # scRepertoire VERSION 2.0.8
 
 ## NEW FEATURES

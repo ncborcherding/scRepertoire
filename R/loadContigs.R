@@ -287,21 +287,53 @@ rmAllNaRowsFromLoadContigs <- function(dfList) {
     df[[i]][df[[i]] == "NaN"] <- NA
     df[[i]][df[[i]] == "nan"] <- NA
     df[[i]] <- as.data.frame(df[[i]])
-    TRA.1 <- df[[i]][,c("Barcode", "TRA_V", "TRA_D", "TRA_J", "TRA_C", "TRA_cdr3_aa", "TRA_read_count", "TRA_transcript_count")]
-    TRA.2 <- df[[i]][,c("Barcode", "secondary_TRA_V", "secondary_TRA_D", "secondary_TRA_J", "secondary_TRA_C", "secondary_TRA_cdr3_aa", "secondary_TRA_read_count", "secondary_TRA_transcript_count")]
-    colnames(TRA.1) <- 1:8
-    colnames(TRA.2) <- 1:8
-    TRA <- rbind(TRA.1, TRA.2)
-    TRA$chain <- "TRA"
-   
-    TRB.1 <- df[[i]][,c("Barcode", "TRB_V", "TRB_D", "TRB_J", "TRB_C", "TRB_cdr3_aa", "TRB_read_count", "TRB_transcript_count")]
-    TRB.2 <- df[[i]][,c("Barcode", "secondary_TRB_V", "secondary_TRB_D", "secondary_TRB_J", "secondary_TRB_C", "secondary_TRB_cdr3_aa", "secondary_TRB_read_count", "secondary_TRB_transcript_count")]
-    colnames(TRB.1) <- 1:8
-    colnames(TRB.2) <- 1:8
-    TRB <- rbind(TRB.1, TRB.2)
-    TRB$chain <- "TRB"
-   
-    data2 <- rbind(TRA, TRB)
+    #Detecting type of assay Tcell or not (Bcell)
+    Tcell <- ifelse(any(c("TRA_V", "TRA_D", "TRA_J") %in% colnames(df[[i]])), TRUE, FALSE)
+    if(Tcell) {
+      # TRA
+      TRA.1 <- df[[i]][,c("Barcode", "TRA_V", "TRA_D", "TRA_J", "TRA_C", "TRA_cdr3_aa", "TRA_read_count", "TRA_transcript_count")]
+      TRA.2 <- df[[i]][,c("Barcode", "secondary_TRA_V", "secondary_TRA_D", "secondary_TRA_J", "secondary_TRA_C", "secondary_TRA_cdr3_aa", "secondary_TRA_read_count", "secondary_TRA_transcript_count")]
+      colnames(TRA.1) <- 1:8
+      colnames(TRA.2) <- 1:8
+      TRA <- rbind(TRA.1, TRA.2)
+      TRA$chain <- "TRA"
+      
+      # TRB
+      TRB.1 <- df[[i]][,c("Barcode", "TRB_V", "TRB_D", "TRB_J", "TRB_C", "TRB_cdr3_aa", "TRB_read_count", "TRB_transcript_count")]
+      TRB.2 <- df[[i]][,c("Barcode", "secondary_TRB_V", "secondary_TRB_D", "secondary_TRB_J", "secondary_TRB_C", "secondary_TRB_cdr3_aa", "secondary_TRB_read_count", "secondary_TRB_transcript_count")]
+      colnames(TRB.1) <- 1:8
+      colnames(TRB.2) <- 1:8
+      TRB <- rbind(TRB.1, TRB.2)
+      TRB$chain <- "TRB"
+      data2 <- rbind(TRA, TRB)
+    } else {
+      # IGH (Heavy Chain)
+      IGH.1 <- df[[i]][, c("Barcode", "IGH_V", "IGH_D", "IGH_J", "IGH_C", "IGH_cdr3_aa", "IGH_read_count", "IGH_transcript_count")]
+      IGH.2 <- df[[i]][, c("Barcode", "secondary_IGH_V", "secondary_IGH_D", "secondary_IGH_J", "secondary_IGH_C", "secondary_IGH_cdr3_aa", "secondary_IGH_read_count", "secondary_IGH_transcript_count")]
+      colnames(IGH.1) <- 1:8
+      colnames(IGH.2) <- 1:8
+      IGH <- rbind(IGH.1, IGH.2)
+      IGH$chain <- "IGH"
+      
+      # IGK (Kappa Chain)
+      IGK.1 <- df[[i]][, c("Barcode", "IGK_V", "IGK_D", "IGK_J", "IGK_C", "IGK_cdr3_aa", "IGK_read_count", "IGK_transcript_count")]
+      IGK.2 <- df[[i]][, c("Barcode", "secondary_IGK_V", "secondary_IGK_D", "secondary_IGK_J", "secondary_IGK_C", "secondary_IGK_cdr3_aa", "secondary_IGK_read_count", "secondary_IGK_transcript_count")]
+      colnames(IGK.1) <- 1:8
+      colnames(IGK.2) <- 1:8
+      IGK <- rbind(IGK.1, IGK.2)
+      IGK$chain <- "IGK"
+      
+      # IGL (Lambda Chain)
+      IGL.1 <- df[[i]][, c("Barcode", "IGL_V", "IGL_D", "IGL_J", "IGL_C", "IGL_cdr3_aa", "IGL_read_count", "IGL_transcript_count")]
+      IGL.2 <- df[[i]][, c("Barcode", "secondary_IGL_V", "secondary_IGL_D", "secondary_IGL_J", "secondary_IGL_C", "secondary_IGL_cdr3_aa", "secondary_IGL_read_count", "secondary_IGL_transcript_count")]
+      colnames(IGL.1) <- 1:8
+      colnames(IGL.2) <- 1:8
+      IGL <- rbind(IGL.1, IGL.2)
+      IGL$chain <- "IGL"
+      
+      # Combine IGH, IGK, and IGL
+      data2 <- rbind(IGH, IGK, IGL)
+    }
     data2 <- data2[rowSums(is.na(data2[2:8])) != 7, ]
     colnames(data2) <- c("barcode", "v_gene", "d_gene", "j_gene", "c_gene", "cdr3", "reads", "umis", "chain")
     data2$cdr3_nt <- NA
