@@ -65,7 +65,7 @@ public:
     }
 
     // Rcpp implementation of .parseTCR()
-    &TcrParser parseTCR() {
+    TcrParser& parseTCR() {
         for (int y = 0; y < (int) conDf[0].size(); y++) {
             for (int index : barcodeIndex[y]) {
                 std::string chainType = std::string(data2ChainTypes[index]);
