@@ -371,7 +371,8 @@
 #' @keywords internal
 .constructConDfAndParseTCR <- function(data2) {
   rcppConstructConDfAndParseTCR(
-    data2, uniqueData2Barcodes = unique(data2$barcode)
+    dplyr::arrange(data2, chain, cdr3_nt),
+    uniqueData2Barcodes = unique(data2$barcode)
   )
 }
 
