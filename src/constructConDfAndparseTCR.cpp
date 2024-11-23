@@ -60,7 +60,7 @@ public:
 
         // construct barcodeIndex
         barcodeIndex = constructBarcodeIndex(
-            uniqueData2Barcodes, Rcpp::as<std::vector<std::string>>(data2[data2.findName("barcode")])
+            uniqueData2Barcodes, data2[data2.findName("barcode")]
         );
     }
 
