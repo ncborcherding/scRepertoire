@@ -371,8 +371,7 @@
 #' @keywords internal
 .constructConDfAndParseTCR <- function(data2) {
   rcppConstructConDfAndParseTCR(
-    data2 %>% dplyr::arrange(., chain, cdr3_nt),
-    unique(data2[[1]]) # 1 is the index of the barcode column
+    data2, uniqueData2Barcodes = unique(data2$barcode)
   )
 }
 
@@ -383,7 +382,7 @@
 .parseBCR <- function (Con.df, unique_df, data2) {
   barcodeIndex <- rcppConstructBarcodeIndex(unique_df, data2$barcode)
   for (y in seq_along(unique_df)) {
-    location.i <- barcodeIndex[[y]] # *may* be wrong but should be fine. Test on old version first
+    location.i <- barcodeIndex[[y]]
     
     for (z in seq_along(location.i)) {
       where.chain <- data2[location.i[z],"chain"]
