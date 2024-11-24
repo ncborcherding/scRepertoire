@@ -217,34 +217,26 @@ combineBCR <- function(input.data,
         is.flag(filterMulti)
     )
 
-    input.data <- .checkList(input.data)
-    input.data <- .checkContigs(input.data)
-    out <- NULL
+    input.data <- .checkContigs(.checkList(input.data))
     final <- list()
-    chain1 <- "heavy"
-    chain2 <- "light"
     for (i in seq_along(input.data)) {
         input.data[[i]] <- subset(input.data[[i]], chain %in% c("IGH", "IGK", "IGL"))
         input.data[[i]]$ID <- ID[i]
-        if(c("productive") %in% colnames(input.data[[i]]) & filterNonproductive) {
-          input.data[[i]] <- subset(input.data[[i]], productive %in% c(TRUE, "TRUE", "True", "true"))
+        if ("productive" %in% colnames(input.data[[i]]) & filterNonproductive) {
+            input.data[[i]] <- subset(input.data[[i]], tolower(productive) == "true")
         }
         if (filterMulti) {
-                    # Keep IGH / IGK / IGL info in save_chain
-                    input.data[[i]]$save_chain <- input.data[[i]]$chain
-                    # Collapse IGK and IGL chains
-                    input.data[[i]]$chain <- ifelse(input.data[[i]]$chain=="IGH","IGH","IGLC")
-                    input.data[[i]] <- .filteringMulti(input.data[[i]])
-                    # Get back IGK / IGL distinction
-                    input.data[[i]]$chain <- input.data[[i]]$save_chain
-                    input.data[[i]]$save_chain <- NULL
+            # Keep IGH / IGK / IGL info in save_chain
+            input.data[[i]]$save_chain <- input.data[[i]]$chain
+            # Collapse IGK and IGL chains
+            input.data[[i]]$chain <- ifelse(input.data[[i]]$chain=="IGH","IGH","IGLC")
+            input.data[[i]] <- .filteringMulti(input.data[[i]])
+            # Get back IGK / IGL distinction
+            input.data[[i]]$chain <- input.data[[i]]$save_chain
+            input.data[[i]]$save_chain <- NULL
         }
     }
-    if (!is.null(samples)) {
-        out <- .modifyBarcodes(input.data, samples, ID)
-    } else {
-        out <- input.data
-    }
+    out <- .modifyBarcodes(input.data, samples, ID)
     for (i in seq_along(out)) { 
         data2 <- data.frame(out[[i]])
         data2 <- .makeGenes(cellType = "B", data2)
