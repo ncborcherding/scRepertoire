@@ -6,7 +6,7 @@
 \usage{
 combineBCR(
   input.data,
-  samples = NULL,
+  samples,
   ID = NULL,
   call.related.clones = TRUE,
   threshold = 0.85,
