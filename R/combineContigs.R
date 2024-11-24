@@ -208,7 +208,7 @@ combineBCR <- function(input.data,
                        filterNonproductive = TRUE) {
 
     assert_that(
-        isListOfNonEmptyDataFrames(input.data),
+        isListOfNonEmptyDataFrames(input.data) || isNonEmptyDataFrame(input.data),
         is.character(samples),
         is.flag(call.related.clones),
         is.numeric(threshold),
@@ -217,47 +217,48 @@ combineBCR <- function(input.data,
         is.flag(filterMulti)
     )
 
-    input.data <- .checkContigs(.checkList(input.data))
-
-    input.data <- lapply(input.data, function(x) {
-        x <- subset(x, chain %in% c("IGH", "IGK", "IGL"))
-        if (!is.null(ID)) x$ID <- ID[i]
-        if (filterNonproductive && "productive" %in% colnames(x)) {
-            x <- subset(x, tolower(productive) == "true")
-        }
-        if (filterMulti) {
-            # Keep IGH / IGK / IGL info in save_chain
-            x$save_chain <- x$chain
-            # Collapse IGK and IGL chains
-            x$chain <- ifelse(x$chain=="IGH","IGH","IGLC")
-            x <- .filteringMulti(x)
-            # Get back IGK / IGL distinction
-            x$chain <- x$save_chain
-            x$save_chain <- NULL
-        }
-        x
-    })
-
-    final <- .modifyBarcodes(input.data, samples, ID) %>% lapply(function(x) {
-        data2 <- data.frame(x)
-        data2 <- .makeGenes(cellType = "B", data2)
-        unique_df <- unique(data2$barcode)
-        Con.df <- data.frame(matrix(NA, length(unique_df), 9))
-        colnames(Con.df) <- c("barcode", heavy_lines, light_lines)
-        Con.df$barcode <- unique_df
-        Con.df <- .parseBCR(Con.df, unique_df, data2)
-        Con.df <- .assignCT(cellType = "B", Con.df)
-        Con.df %>% mutate(length1 = nchar(cdr3_nt1)) %>%
-            mutate(length2 = nchar(cdr3_nt2))
-    })
+    final <- input.data %>%
+        .checkList() %>%
+        .checkContigs() %>%
+        lapply(function(x) {
+            x <- subset(x, chain %in% c("IGH", "IGK", "IGL"))
+            if (!is.null(ID)) x$ID <- ID[i]
+            if (filterNonproductive && "productive" %in% colnames(x)) {
+                x <- subset(x, tolower(productive) == "true")
+            }
+            if (filterMulti) {
+                # Keep IGH / IGK / IGL info in save_chain
+                x$save_chain <- x$chain
+                # Collapse IGK and IGL chains
+                x$chain <- ifelse(x$chain=="IGH","IGH","IGLC")
+                x <- .filteringMulti(x)
+                # Get back IGK / IGL distinction
+                x$chain <- x$save_chain
+                x$save_chain <- NULL
+            }
+            x
+        }) %>%
+        .modifyBarcodes(samples, ID) %>%
+        lapply(function(x) {
+            data2 <- data.frame(x)
+            data2 <- .makeGenes(cellType = "B", data2)
+            unique_df <- unique(data2$barcode)
+            Con.df <- data.frame(matrix(NA, length(unique_df), 9))
+            colnames(Con.df) <- c("barcode", heavy_lines, light_lines)
+            Con.df$barcode <- unique_df
+            Con.df <- .parseBCR(Con.df, unique_df, data2)
+            Con.df <- .assignCT(cellType = "B", Con.df)
+            Con.df %>% mutate(length1 = nchar(cdr3_nt1)) %>%
+                mutate(length2 = nchar(cdr3_nt2))
+        })
 
     dictionary <- bind_rows(final)
 
-    if(call.related.clones) {
-      IGH <- .lvCompare(dictionary, "IGH", "cdr3_nt1", threshold)
-      IGLC <- .lvCompare(dictionary, "IGLC", "cdr3_nt2", threshold)
-    } 
-    for(i in seq_along(final)) {
+    if (call.related.clones) {
+        IGH <- .lvCompare(dictionary, "IGH", "cdr3_nt1", threshold)
+        IGLC <- .lvCompare(dictionary, "IGLC", "cdr3_nt2", threshold)
+    }
+    for (i in seq_along(final)) {
       if(call.related.clones) {
         final[[i]]<-merge(final[[i]],IGH,by.x="cdr3_nt1",by.y="clone",all.x=TRUE)
         final[[i]]<-merge(final[[i]],IGLC,by.x="cdr3_nt2",by.y="clone",all.x=TRUE)
