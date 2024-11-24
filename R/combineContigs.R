@@ -218,27 +218,28 @@ combineBCR <- function(input.data,
     )
 
     input.data <- .checkContigs(.checkList(input.data))
-    final <- list()
-    for (i in seq_along(input.data)) {
-        input.data[[i]] <- subset(input.data[[i]], chain %in% c("IGH", "IGK", "IGL"))
-        input.data[[i]]$ID <- ID[i]
-        if ("productive" %in% colnames(input.data[[i]]) & filterNonproductive) {
-            input.data[[i]] <- subset(input.data[[i]], tolower(productive) == "true")
+
+    input.data <- lapply(input.data, function(x) {
+        x <- subset(x, chain %in% c("IGH", "IGK", "IGL"))
+        if (!is.null(ID)) x$ID <- ID[i]
+        if (filterNonproductive && "productive" %in% colnames(x)) {
+            x <- subset(x, tolower(productive) == "true")
         }
         if (filterMulti) {
             # Keep IGH / IGK / IGL info in save_chain
-            input.data[[i]]$save_chain <- input.data[[i]]$chain
+            x$save_chain <- x$chain
             # Collapse IGK and IGL chains
-            input.data[[i]]$chain <- ifelse(input.data[[i]]$chain=="IGH","IGH","IGLC")
-            input.data[[i]] <- .filteringMulti(input.data[[i]])
+            x$chain <- ifelse(x$chain=="IGH","IGH","IGLC")
+            x <- .filteringMulti(x)
             # Get back IGK / IGL distinction
-            input.data[[i]]$chain <- input.data[[i]]$save_chain
-            input.data[[i]]$save_chain <- NULL
+            x$chain <- x$save_chain
+            x$save_chain <- NULL
         }
-    }
-    out <- .modifyBarcodes(input.data, samples, ID)
-    for (i in seq_along(out)) { 
-        data2 <- data.frame(out[[i]])
+        x
+    })
+
+    final <- .modifyBarcodes(input.data, samples, ID) %>% lapply(function(x) {
+        data2 <- data.frame(x)
         data2 <- .makeGenes(cellType = "B", data2)
         unique_df <- unique(data2$barcode)
         Con.df <- data.frame(matrix(NA, length(unique_df), 9))
@@ -246,11 +247,12 @@ combineBCR <- function(input.data,
         Con.df$barcode <- unique_df
         Con.df <- .parseBCR(Con.df, unique_df, data2)
         Con.df <- .assignCT(cellType = "B", Con.df)
-        data3 <- Con.df %>% mutate(length1 = nchar(cdr3_nt1)) %>%
+        Con.df %>% mutate(length1 = nchar(cdr3_nt1)) %>%
             mutate(length2 = nchar(cdr3_nt2))
-        final[[i]] <- data3
-    }
+    })
+
     dictionary <- bind_rows(final)
+
     if(call.related.clones) {
       IGH <- .lvCompare(dictionary, "IGH", "cdr3_nt1", threshold)
       IGLC <- .lvCompare(dictionary, "IGLC", "cdr3_nt2", threshold)
@@ -278,30 +280,21 @@ combineBCR <- function(input.data,
         }
     }
     names <- NULL
-    for (i in seq_along(samples)) { 
-        if (!is.null(samples) & !is.null(ID)) {
+    for (i in seq_along(samples)) {
+        if (!is.null(samples) && !is.null(ID)) {
             c <- paste(samples[i], "_", ID[i], sep="")
-        } else if (!is.null(samples) & is.null(ID)) {
-            c <- paste(samples[i], sep="")
+        } else if (!is.null(samples) && is.null(ID)) {
+            c <- paste(samples[i], sep = "")
         }
         names <- c(names, c)
     }
     names(final) <- names
     for (i in seq_along(final)) {
         final[[i]] <- final[[i]][!duplicated(final[[i]]$barcode),]
-        final[[i]]<-final[[i]][rowSums(is.na(final[[i]])) < 10, ]
+        final[[i]] <- final[[i]][rowSums(is.na(final[[i]])) < 10, ]
         final[[i]][final[[i]] == "NA"] <- NA
     }
-    if (removeNA) { 
-      final <- .removingNA(final) 
-    }
-    if (removeMulti) { 
-      final <- .removingMulti(final) 
-    }
-    #Adding list element names to output if samples NULL
-    if(is.null(samples)) {
-      names(final) <- paste0("S", seq_len(length(final)))
-    }
-    return(final) 
+    if (removeNA) final <- .removingNA(final)
+    if (removeMulti) final <- .removingMulti(final)
+    return(final)
 }
-
