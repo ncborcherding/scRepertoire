@@ -197,27 +197,25 @@ combineTCR <- function(input.data,
 #' @export
 #' @concept Loading_and_Processing_Contigs
 #' @return List of clones for individual cell barcodes
-combineBCR <- function(input.data, 
-                       samples = NULL, 
-                       ID = NULL, 
+combineBCR <- function(input.data,
+                       samples,
+                       ID = NULL,
                        call.related.clones = TRUE,
                        threshold = 0.85,
                        removeNA = FALSE, 
                        removeMulti = FALSE,
                        filterMulti = TRUE,
                        filterNonproductive = TRUE) {
-    if(is.null(samples)) {
-      stop("combineBCR() requires the samples parameter for the calculation of edit distance.")
-    }
 
-    # rudimentary input checking
-    assert_that(is.character(samples) || is.null(samples))
-    assert_that(is.character(ID) || is.null(ID))
-    assert_that(is.flag(call.related.clones))
-    assert_that(is.numeric(threshold))
-    assert_that(is.flag(removeNA))
-    assert_that(is.flag(removeMulti))
-    assert_that(is.flag(filterMulti))
+    assert_that(
+        isListOfNonEmptyDataFrames(input.data),
+        is.character(samples),
+        is.flag(call.related.clones),
+        is.numeric(threshold),
+        is.flag(removeNA),
+        is.flag(removeMulti),
+        is.flag(filterMulti)
+    )
 
     input.data <- .checkList(input.data)
     input.data <- .checkContigs(input.data)
@@ -256,9 +254,9 @@ combineBCR <- function(input.data,
         Con.df$barcode <- unique_df
         Con.df <- .parseBCR(Con.df, unique_df, data2)
         Con.df <- .assignCT(cellType = "B", Con.df)
-        data3<-Con.df %>% mutate(length1 = nchar(cdr3_nt1)) %>%
+        data3 <- Con.df %>% mutate(length1 = nchar(cdr3_nt1)) %>%
             mutate(length2 = nchar(cdr3_nt2))
-        final[[i]] <- data3 
+        final[[i]] <- data3
     }
     dictionary <- bind_rows(final)
     if(call.related.clones) {
