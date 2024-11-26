@@ -223,5 +223,5 @@ getHighBarcodeMismatchWarning <- function() paste(
     "< 1% of barcodes match: Ensure the barcodes in the single-cell object",
     "match the barcodes in the combined immune receptor output from",
     "scRepertoire. If getting this error, please check",
-    "https://www.borch.dev/uploads/screpertoire/articles/faq."
+    "https://www.borch.dev/uploads/screpertoire/articles/faq"
 )
