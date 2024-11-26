@@ -6,7 +6,7 @@
 \usage{
 combineBCR(
   input.data,
-  samples,
+  samples = NULL,
   ID = NULL,
   call.related.clones = TRUE,
   threshold = 0.85,
@@ -64,8 +64,8 @@ CTstrict header.
 \examples{
 #Data derived from the 10x Genomics intratumoral NSCLC B cells
 BCR <- read.csv("https://www.borch.dev/uploads/contigs/b_contigs.csv")
-combined <- combineBCR(BCR, 
-                       samples = "Patient1", 
+combined <- combineBCR(BCR,
+                       samples = "Patient1",
                        threshold = 0.85)
 
 }
