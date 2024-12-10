@@ -214,12 +214,19 @@
 #' @importFrom methods slot
 #' @keywords internal
 .grabMeta <- function(sc) {
+  messString <- c("Meta data contains an 'ident' column and will likely result
+                  in errors downstream.")
     if (is_seurat_object(sc)) {
         meta <- data.frame(sc[[]], slot(sc, "active.ident"))
+        if("ident" %in% colnames(meta)) {
+          message(messString)
+        }
         colnames(meta)[length(meta)] <- "ident"
-        
     } else if (is_se_object(sc)){
         meta <- data.frame(colData(sc))
+        if("ident" %in% colnames(meta)) {
+          message(messString)
+        }
         rownames(meta) <- sc@colData@rownames
         clu <- which(colnames(meta) == "label") # as set by colLabels()
         colnames(meta)[clu] <- "ident"
