@@ -201,6 +201,8 @@ combineExpression <- function(input.data,
       
       combined_col_names <- unique(c(colnames(colData(sc.data)), colnames(PreMeta)))
       full_data <- merge(colData(sc.data), PreMeta[rownames, , drop = FALSE], by = "row.names", all.x = TRUE)
+      # at this point, the rows in full_data are shuffled. match back with the original colData
+      full_data <- full_data[match(rownames, full_data[,1]), ]
       rownames(full_data) <- full_data[, 1]
       full_data  <- full_data[, -1]
       colData(sc.data) <- DataFrame(full_data[, combined_col_names])  
