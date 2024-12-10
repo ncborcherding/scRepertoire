@@ -203,9 +203,7 @@ combineExpression <- function(input.data,
       full_data <- merge(colData(sc.data), PreMeta[rownames, , drop = FALSE], by = "row.names", all.x = TRUE)
       rownames(full_data) <- full_data[, 1]
       full_data  <- full_data[, -1]
-      colData(sc.data) <- DataFrame(full_data[, combined_col_names])
-      
-      rownames(colData(sc.data)) <- rownames  
+      colData(sc.data) <- DataFrame(full_data[, combined_col_names])  
     }
     if (filterNA) { 
       sc.data <- .filteringNA(sc.data) 
