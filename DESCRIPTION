@@ -33,7 +33,6 @@ Imports:
     rjson,
     rlang,
     S4Vectors,
-    Seurat,
     SeuratObject,
     SingleCellExperiment,
     stats,

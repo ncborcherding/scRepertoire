@@ -18,8 +18,8 @@
 #' to use in reduction
 #' @param assay The Seurat assay slot to use to remove immune receptor genes
 #' from, NULL value will default to the default assay
+#' @param ... Placeholder for future arguments
 #'
-#' @importFrom SeuratObject VariableFeatures<-
 #' @export
 #' @return Seurat object or vector list with TCR genes removed.
 quietVDJgenes <- function(sc, ...) {
@@ -47,9 +47,9 @@ quietTCRgenes.default <- function(sc, ...) {
 #' @export
 quietTCRgenes.Seurat <- function(sc, assay = NULL, ...) {
     if (is.null(assay)) {
-        assay <- DefaultAssay(sc)
+        assay <- SeuratObject::DefaultAssay(sc)
     }
-    VariableFeatures(sc, assay = assay) <-
+    SeuratObject::VariableFeatures(sc, assay = assay) <-
         quietTCRgenes.default(SeuratObject::VariableFeatures(sc, assay = assay))
     sc
 }
@@ -75,11 +75,11 @@ quietBCRgenes.default <- function(sc, ...) {
 #' @rdname quietVDJgenes
 #' @method quietBCRgenes Seurat
 #' @export
-quietBCRgenes.Seurat <- function(sc, assay = NULL) {
+quietBCRgenes.Seurat <- function(sc, assay = NULL, ...) {
     if (is.null(assay)) {
-        assay <- DefaultAssay(sc)
+        assay <- SeuratObject::DefaultAssay(sc)
     }
-    VariableFeatures(sc, assay = assay) <-
+    SeuratObject::VariableFeatures(sc, assay = assay) <-
         quietBCRgenes.default(SeuratObject::VariableFeatures(sc, assay = assay))
     sc
 }
