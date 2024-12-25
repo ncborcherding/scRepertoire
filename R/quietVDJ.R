@@ -73,7 +73,7 @@ quietBCRgenes.default <- function(sc, ...) {
 }
 
 #' @rdname quietVDJgenes
-#' @method quietBCRgenes default
+#' @method quietBCRgenes Seurat
 #' @export
 quietBCRgenes.Seurat <- function(sc, assay = NULL) {
     if (is.null(assay)) {

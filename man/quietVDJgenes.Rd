@@ -22,7 +22,7 @@ quietBCRgenes(sc, ...)
 
 \method{quietBCRgenes}{default}(sc, ...)
 
-\method{quietBCRgenes}{default}(sc, assay = NULL)
+\method{quietBCRgenes}{Seurat}(sc, assay = NULL)
 }
 \arguments{
 \item{sc}{Single-cell object in Seurat format or vector of variable genes
