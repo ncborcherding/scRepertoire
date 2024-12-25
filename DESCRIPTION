@@ -33,6 +33,7 @@ Imports:
     rjson,
     rlang,
     S4Vectors,
+    Seurat,
     SeuratObject,
     SingleCellExperiment,
     stats,
@@ -55,7 +56,6 @@ Suggests:
     rmarkdown,
     scales,
     scater,
-    Seurat,
     spelling,
     testthat (>= 3.0.0),
     vdiffr
