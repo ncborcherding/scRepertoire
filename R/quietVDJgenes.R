@@ -142,3 +142,79 @@ getHumanIgPseudoGenes <- function() {
         "IGLVVI-25-1", "IGLVVII-41-1"
     ))
 }
+
+#' Find Variable Non-VDJ Features in a Seurat Object
+#'
+#' @description
+#' `r lifecycle::badge("experimental")`
+#'
+#' This function identifies variable features from a specified assay of a Seurat
+#' object, excluding features associated with V(D)J genes. It is useful for
+#' preprocessing RNA assays in single-cell datasets where TCR or BCR genes
+#' should not be considered like clustering so that the clustering is not
+#' biased by phenotype.
+#'
+#' This is an improvement to first finding variable features then using
+#' [quietVDJgenes()] to filter out variable TCR and BCR genes. This insteads
+#' does the filtering ahead of time and then finds variable features after,
+#' resulting potentially in a more accurate selection.
+#'
+#' @param sc A Seurat object.
+#' @param assay The assay to use. Only supports the default assay is "RNA" or
+#' if the input is "RNA".
+#' @param layer Character. The data layer to use, or NULL to use default data.
+#' @param finder A function used to find variable features. Defaults to
+#' [Seurat::FindVariableFeatures()].
+#' @param ... Additional arguments passed to the `finder` function.
+#'
+#' @details
+#' Currently, this function may be somewhat performance intensive as it
+#' creates a temporary copy of the data in the filtering step.
+#'
+#' @return A modified Seurat object with updated variable features.
+#'
+#' @examples
+#' findVariableNonVdjFeatures(scRep_example, nfeatures = 2000)
+#'
+#' @export
+findVariableNonVdjFeatures <- function(sc, ...) {
+    UseMethod("findVariableNonVdjFeatures")
+}
+
+#' @rdname findVariableNonVdjFeatures
+#' @method findVariableNonVdjFeatures Seurat
+#' @importFrom SeuratObject DefaultAssay
+#' @export
+findVariableNonVdjFeatures.Seurat <- function(
+    sc, assay = NULL, layer = NULL, finder = Seurat::FindVariableFeatures, ...
+) {
+
+    assert_that(
+        is.string(assay) || is.null(assay),
+        is.string(layer) || is.null(layer),
+    )
+
+    if ("RNA" != if (is.null(assay)) DefaultAssay(sc) else assay) {
+        stop("Only RNA assay is supported at this time")
+    }
+    
+    assayObject <- SeuratObject::GetAssay(sc, assay)
+
+    vdjGeneIndices <-
+        shouldQuietBcrGene(rownames(assayObject)) ||
+        shouldQuietTcrGene(rownames(assayObject))
+    
+    findFilteredVariableFeatures(sc, vdjGeneIndices, assay, layer, finder, ...)
+}
+
+findFilteredVariableFeatures <- function(
+    sc, filterVec, assay = NULL, layer = NULL, finder = Seurat::FindVariableFeatures, ...
+) {
+    SeuratObject::VariableFeatures(sc, assay = assay, layer = layer) <- SeuratObject::GetAssay(sc, assay) %>%
+        SeuratObject::GetAssayData(layer = layer) %>%
+        (function(x) {x[!filterVec, , drop = FALSE] <- 0; x}) %>%
+        SeuratObject::CreateAssayObject() %>%
+        finder(...) %>%
+        SeuratObject::VariableFeatures(assay = assay, layer = if (is.null(layer)) NA else layer)
+    sc
+}

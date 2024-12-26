@@ -5,6 +5,7 @@
 ## NEW FEATURES
 * Added support for BCRs for loading ParseBio sequences.
 * Added `quietBCRgenes()` and `quietTCRgenes()` from Ibex and Trex and `quietVDJgenes()` as a convenience that runs both. The functions filter out known TCR and/or BCR gene signatures.
+* Added Experimental `findVariableNonVdjFeatures()` to identify non-VDJ features that are variable across cells using the signatures from `quietVDJgenes()` as a filter before the variable feature selection.
 
 ## UNDERLYING CHANGES
 * Added `Seurat` to the `Suggests` field in the DESCRIPTION file.
