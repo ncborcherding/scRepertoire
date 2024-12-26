@@ -38,8 +38,11 @@ quietTCRgenes <- function(sc, ...) {
 #' @export
 quietTCRgenes.default <- function(sc, ...) {
     assert_that(is.character(sc))
-    unwanted_genes <- grep("^TR[ABDG][VDJ][^D]", x = sc, value = TRUE)
-    sc[sc %!in% unwanted_genes]
+    sc[!shouldQuietTcrGene(sc)]
+}
+
+shouldQuietTcrGene <- function(genes) {
+    grepl("^TR[ABDG][VDJ][^D]", genes)
 }
 
 #' @rdname quietVDJgenes
@@ -65,11 +68,13 @@ quietBCRgenes <- function(sc, ...) {
 #' @export
 quietBCRgenes.default <- function(sc, ...) {
     assert_that(is.character(sc))
-    unwanted_genes <- c(grep("^IG[HLK][VDJCAGM]", sc, value = TRUE), "JCHAIN")
-    unwanted_genes <- unwanted_genes[
-        unwanted_genes %!in% getHumanIgPseudoGenes()
-    ]
-    sc[sc %!in% unwanted_genes]
+    sc[!shouldQuietBcrGene(sc)]
+}
+
+shouldQuietBcrGene <- function(genes) {
+    grepl("^IG[HLK][VDJCAGM]", genes) ||
+        genes == "JCHAIN" ||
+        genes %in% getHumanIgPseudoGenes()
 }
 
 #' @rdname quietVDJgenes
