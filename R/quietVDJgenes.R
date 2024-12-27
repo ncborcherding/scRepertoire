@@ -155,7 +155,7 @@ getHumanIgPseudoGenes <- function() {
 #' biased by phenotype.
 #'
 #' This is an improvement to first finding variable features then using
-#' [quietVDJgenes()] to filter out variable TCR and BCR genes. This insteads
+#' [quietVDJgenes()] to filter out variable TCR and BCR genes. This instead
 #' does the filtering ahead of time and then finds variable features after,
 #' resulting potentially in a more accurate selection.
 #'
