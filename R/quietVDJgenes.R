@@ -160,8 +160,8 @@ getHumanIgPseudoGenes <- function() {
 #' resulting potentially in a more accurate selection.
 #'
 #' @param sc A Seurat object.
-#' @param assay The assay to use. Only supports the default assay is "RNA" or
-#' if the input is "RNA".
+#' @param assay The assay to use. Only supports assays that has RNA feature
+#' names and the behaviour is otherwise undefined.
 #' @param layer Character. The data layer to use, or NULL to use default data.
 #' @param finder A function used to find variable features. Defaults to
 #' [Seurat::FindVariableFeatures()].
@@ -169,7 +169,8 @@ getHumanIgPseudoGenes <- function() {
 #'
 #' @details
 #' Currently, this function may be somewhat performance intensive as it
-#' creates a temporary copy of the data in the filtering step.
+#' creates a temporary copy of the data in the filtering step. Note that
+#' it also requires the Seurat package to be loaded at least via namespace.
 #'
 #' @return A modified Seurat object with updated variable features.
 #'
@@ -189,16 +190,16 @@ findVariableNonVdjFeatures.Seurat <- function(
     sc, assay = NULL, layer = NULL, finder = Seurat::FindVariableFeatures, ...
 ) {
 
-    assert_that(
-        is.string(assay) || is.null(assay),
-        is.string(layer) || is.null(layer),
-    )
-
-    if ("RNA" != if (is.null(assay)) DefaultAssay(sc) else assay) {
-        stop("Only RNA assay is supported at this time")
+    if (!requireNamespace("Seurat")) {
+        stop("Seurat package is required for this function")
     }
 
-    assayObject <- SeuratObject::GetAssay(sc, assay)
+    assert_that(
+        is.string(assay) || is.null(assay),
+        is.string(layer) || is.null(layer)
+    )
+
+    assayObject <- Seurat::GetAssay(sc, assay)
 
     vdjGeneIndices <-
         shouldQuietBcrGene(rownames(assayObject)) |
@@ -211,7 +212,7 @@ findFilteredVariableFeatures <- function(
     sc, filterVec, assay, layer, finder, ...
 ) {
     SeuratObject::VariableFeatures(sc, assay = assay, layer = layer) <-
-        SeuratObject::GetAssay(sc, assay) %>%
+        Seurat::GetAssay(sc, assay) %>%
         SeuratObject::GetAssayData(layer = layer) %>%
         (function(x) {x[!filterVec, , drop = FALSE] <- 0; x}) %>%
         SeuratObject::CreateAssayObject() %>%

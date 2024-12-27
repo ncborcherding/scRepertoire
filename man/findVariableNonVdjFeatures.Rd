@@ -20,8 +20,8 @@ findVariableNonVdjFeatures(sc, ...)
 
 \item{...}{Additional arguments passed to the \code{finder} function.}
 
-\item{assay}{The assay to use. Only supports the default assay is "RNA" or
-if the input is "RNA".}
+\item{assay}{The assay to use. Only supports assays that has RNA feature
+names and the behaviour is otherwise undefined.}
 
 \item{layer}{Character. The data layer to use, or NULL to use default data.}
 
@@ -47,7 +47,8 @@ resulting potentially in a more accurate selection.
 }
 \details{
 Currently, this function may be somewhat performance intensive as it
-creates a temporary copy of the data in the filtering step.
+creates a temporary copy of the data in the filtering step. Note that
+it also requires the Seurat package to be loaded at least via namespace.
 }
 \examples{
 findVariableNonVdjFeatures(scRep_example, nfeatures = 2000)

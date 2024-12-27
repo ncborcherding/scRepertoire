@@ -25,7 +25,6 @@ Imports:
     grDevices,
     igraph,
     iNEXT,
-    methods,
     plyr,
     quantreg,
     Rcpp,
@@ -35,15 +34,12 @@ Imports:
     S4Vectors,
     SeuratObject,
     SingleCellExperiment,
-    stats,
     stringr,
     stringdist,
     SummarizedExperiment,
     tidygraph,
     truncdist,
-    utils,
     VGAM,
-    hash,
     purrr,
     lifecycle
 Suggests: 
