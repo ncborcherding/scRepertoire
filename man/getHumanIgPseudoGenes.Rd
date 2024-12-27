@@ -12,5 +12,5 @@ Character vector of human immunoglobulin pseudogenes.
 \description{
 This function returns a character vector of human immunoglobulin
 pseudogenes. These are also the genes that are removed from the
-variable gene list in \code{\link[=quietBCRgenes]{quietBCRgenes()}} and \code{\link[=quietVDJgenes]{quietVDJgenes()}}.
+variable gene list in \code{\link[=quietVDJgenes]{quietVDJgenes()}}.
 }
