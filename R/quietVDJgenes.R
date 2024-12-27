@@ -208,7 +208,7 @@ findVariableNonVdjFeatures.Seurat <- function(
 }
 
 findFilteredVariableFeatures <- function(
-    sc, filterVec, assay = NULL, layer = NULL, finder = Seurat::FindVariableFeatures, ...
+    sc, filterVec, assay, layer, finder, ...
 ) {
     SeuratObject::VariableFeatures(sc, assay = assay, layer = layer) <-
         SeuratObject::GetAssay(sc, assay) %>%
@@ -217,7 +217,7 @@ findFilteredVariableFeatures <- function(
         SeuratObject::CreateAssayObject() %>%
         finder(...) %>%
         SeuratObject::VariableFeatures(
-            assay = assay, layer = if (is.null(layer)) NA else layer
+            assay = assay, layer = layer %||% NA
         )
     sc
 }
