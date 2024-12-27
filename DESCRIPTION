@@ -41,7 +41,8 @@ Imports:
     truncdist,
     VGAM,
     purrr,
-    lifecycle
+    lifecycle,
+    methods
 Suggests: 
     BiocManager,
     BiocStyle,
