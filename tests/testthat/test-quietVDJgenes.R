@@ -19,3 +19,5 @@ test_that("quietVDJgenes works", {
         character(0)
     )
 })
+
+# TODO test for when the object is used.

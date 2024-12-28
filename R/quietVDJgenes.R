@@ -18,12 +18,12 @@
 #' to use in reduction
 #' @param assay The Seurat assay slot to use to remove immune receptor genes
 #' from, NULL value will default to the default assay
-#' @param ... Placeholder for future arguments
+#' @param ... Reserved for future arguments
 #'
 #' @export
 #' @return Seurat object or vector list with TCR genes removed.
 quietVDJgenes <- function(sc, ...) {
-    quietTCRgenes(quietBCRgenes(sc, ...))
+    quietTCRgenes(quietBCRgenes(sc, ...), ...)
 }
 
 #' @rdname quietVDJgenes
@@ -157,15 +157,11 @@ getHumanIgPseudoGenes <- function() {
 #' This is an improvement to first finding variable features then using
 #' [quietVDJgenes()] to filter out variable TCR and BCR genes. This instead
 #' does the filtering ahead of time and then finds variable features after,
-#' resulting potentially in a more accurate selection.
+#' resulting potentially in a more accurate selection. Note that filtering
+#' in this context is simply setting all the V(D)J genes to a constant value (0)
+#' so they are not considered during variable feature selection.
 #'
 #' @param sc A Seurat object.
-#' @param assay The assay to use. Only supports assays that has RNA feature
-#' names and the behaviour is otherwise undefined.
-#' @param layer Character. The data layer to use, or NULL to use default data.
-#' @param finder A function used to find variable features. Defaults to
-#' [Seurat::FindVariableFeatures()].
-#' @param ... Additional arguments passed to the `finder` function.
 #'
 #' @details
 #' Currently, this function may be somewhat performance intensive as it
@@ -183,11 +179,25 @@ findVariableNonVdjFeatures <- function(sc, ...) {
 }
 
 #' @rdname findVariableNonVdjFeatures
+#'
+#' @param assay The assay to use. Only supports assays that has RNA feature
+#' names and the behaviour is otherwise undefined.
+#' @param layer Character. The data layer to use, or NULL to use default data.
+#' @param finder A function used to find variable features. Defaults to
+#' [Seurat::FindVariableFeatures()].
+#' @param filterVal The value to set the filtered genes to. Defaults to 0.
+#' @param ... Additional arguments passed to the `finder` function.
+#'
 #' @method findVariableNonVdjFeatures Seurat
 #' @importFrom SeuratObject DefaultAssay
 #' @export
 findVariableNonVdjFeatures.Seurat <- function(
-    sc, assay = NULL, layer = NULL, finder = Seurat::FindVariableFeatures, ...
+    sc,
+    assay = NULL,
+    layer = NULL,
+    finder = Seurat::FindVariableFeatures,
+    filterVal = 0,
+    ...
 ) {
 
     if (!requireNamespace("Seurat")) {
@@ -205,16 +215,18 @@ findVariableNonVdjFeatures.Seurat <- function(
         shouldQuietBcrGene(rownames(assayObject)) |
         shouldQuietTcrGene(rownames(assayObject))
 
-    findFilteredVariableFeatures(sc, vdjGeneIndices, assay, layer, finder, ...)
+    findFilteredVariableFeatures(
+        sc, vdjGeneIndices, assay, layer, finder, filterVal, ...
+    )
 }
 
 findFilteredVariableFeatures <- function(
-    sc, filterVec, assay, layer, finder, ...
+    sc, filterVec, assay, layer, finder, filterVal, ...
 ) {
     SeuratObject::VariableFeatures(sc, assay = assay) <- #, layer = layer
         Seurat::GetAssay(sc, assay) %>%
         SeuratObject::GetAssayData(layer = layer) %>%
-        (function(x) {x[filterVec, ] <- 0; x}) %>%
+        (function(x) {x[filterVec, ] <- filterVal; x}) %>%
         SeuratObject::CreateAssayObject() %>%
         finder(...) %>%
         SeuratObject::VariableFeatures(

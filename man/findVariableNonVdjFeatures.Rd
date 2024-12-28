@@ -12,6 +12,7 @@ findVariableNonVdjFeatures(sc, ...)
   assay = NULL,
   layer = NULL,
   finder = Seurat::FindVariableFeatures,
+  filterVal = 0,
   ...
 )
 }
@@ -27,6 +28,8 @@ names and the behaviour is otherwise undefined.}
 
 \item{finder}{A function used to find variable features. Defaults to
 \code{\link[Seurat:FindVariableFeatures]{Seurat::FindVariableFeatures()}}.}
+
+\item{filterVal}{The value to set the filtered genes to. Defaults to 0.}
 }
 \value{
 A modified Seurat object with updated variable features.
@@ -43,7 +46,9 @@ biased by phenotype.
 This is an improvement to first finding variable features then using
 \code{\link[=quietVDJgenes]{quietVDJgenes()}} to filter out variable TCR and BCR genes. This instead
 does the filtering ahead of time and then finds variable features after,
-resulting potentially in a more accurate selection.
+resulting potentially in a more accurate selection. Note that filtering
+in this context is simply setting all the V(D)J genes to a constant value (0)
+so they are not considered during variable feature selection.
 }
 \details{
 Currently, this function may be somewhat performance intensive as it
