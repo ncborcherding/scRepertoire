@@ -51,7 +51,6 @@ Suggests:
     rmarkdown,
     scales,
     scater,
-    Seurat,
     spelling,
     testthat (>= 3.0.0),
     vdiffr,
