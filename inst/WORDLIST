@@ -83,12 +83,15 @@ Morisita's
 Multiomic
 NG
 Nebulosa
+Nicky
+Nikolaj
 Noonan
 OHE
 Omniscope
 PIRD
 PMID
 PWM
+Pagh
 ParseBio
 Pielou
 Preprocessed
@@ -132,6 +135,7 @@ Vgene
 Vishwakarma
 VizGene
 Voigt
+Vrij
 WAT
 WNN
 Zhang
@@ -320,6 +324,7 @@ positionalProperty
 powerTCR
 probabilityMatrix
 propertyEncoder
+pseudogenes
 quantContig
 rda
 readRDS
@@ -341,6 +346,7 @@ scater's
 scatterClonotype
 scatterClonotypes
 scatterEnrichment
+scran
 screp
 sequenceDecoder
 seurat
@@ -367,7 +373,6 @@ trackable
 tran
 transcriptomic
 trex
-tsv
 unreturned
 variational
 variationalSequences
