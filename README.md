@@ -62,8 +62,8 @@ be extremely helpful.
 #### [Pull Requests](https://github.com/ncborcherding/scRepertoire/pulls) are welcome for bug fixes, new features, or enhancements.
 
 ## Please Cite
-We are working on submitting the scRepertoire v2 as a peer review article. For now, please cite scRepertoire using the doi from [Bioconductor](https://www.bioconductor.org/packages/release/bioc/html/scRepertoire.html).
+scRepertoire 2 preprint is available at: [https://www.biorxiv.org/content/10.1101/2024.12.31.630854v1](https://www.biorxiv.org/content/10.1101/2024.12.31.630854v1)
 
-*Borcherding, N, Yang, Q, & Safina, K. (2024). scRepertoire v2: A toolkit for single-cell immune receptor profiling. DOI: 10.18129/B9.bioc.scRepertoire*
+*Yang, Q, Safina, K., Borcherding, N. (2024). scRepertoire 2: Enhanced and Efficient Toolkit for Single-Cell Immune Profiling https://doi.org/10.1101/2024.12.31.630854*
 
-If you are building your own tool based on scRepertoire, reach out, I am happy to help and make things compatible.
+If you are building your own tool based on scRepertoire, reach out, we are happy to help and make things compatible.
