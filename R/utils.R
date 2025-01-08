@@ -345,7 +345,7 @@
 # helper for .theCall # Qile: on second thought - converting to x to lowercase may be a bad idea...
 .convertClonecall <- function(x) {
 
-  clonecall_dictionary <- hash::hash(
+  clonecall_dictionary <- list(
     "gene" = "CTgene",
 		"genes" = "CTgene",
 		"ctgene" = "CTgene",

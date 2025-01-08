@@ -19,6 +19,7 @@ vignette: >
 knitr::opts_chunk$set(error=FALSE, message=FALSE, warning=FALSE)
 library(BiocStyle)
 library(scater)
+library(Seurat)
 ```
 
 # Introduction
