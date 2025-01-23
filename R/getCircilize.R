@@ -87,7 +87,12 @@ getCirclize <- function(sc.data,
     }
     
     if (proportion) {
-      value <- value/length(unique(clone.table[clone.table[,1] == pair2,cloneCall]))
+      denominator <- length(unique(clone.table[clone.table[,1] == pair2, cloneCall]))
+      if (denominator > 0) {
+        value <- value / denominator
+      } else {
+        value <- 0
+      }
     }
     
     group_pairs$value[i] <- value
