@@ -1,3 +1,8 @@
+# scRepertoire VERSION 2.3.2
+
+## UNDERLYING CHANGES
+* Fixed issue with denominator in ```getCirclize()```
+
 # scRepertoire VERSION 2.2.1
 
 * Rebasing for the purposes of Bioconductor version 2.2.0
