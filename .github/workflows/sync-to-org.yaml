@@ -23,4 +23,4 @@ jobs:
         ORG_PAT: ${{ secrets.ORG_PAT }}
       run: |
         git remote add org https://x-access-token:${ORG_PAT}@github.com/BorchLab/scRepertoire.git
-        git push org master --force --verbose
+        git push org master --force 
