@@ -1,0 +1,26 @@
+name: Sync to Organization Repo
+
+on:
+  push:
+    branches:
+      - master  # Replace with your default branch name if different
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Configure Git
+      run: |
+        git config --global user.name "ncborcherding"
+        git config --global user.email "ncborch@gmail.com"
+
+    - name: Push to Organization Repo
+      env:
+        ORG_PAT: ${{ secrets.ORG_PAT }}
+      run: |
+        git remote add org https://x-access-token:${ORG_PAT}@github.com/BorchLab/scRepertoire.git
+        git push org master --force
