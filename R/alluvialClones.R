@@ -62,11 +62,9 @@
 #' environment in addition to the visualization.
 #' @param palette Colors to use in visualization - input any 
 #' [hcl.pals][grDevices::hcl.pals].
-#' 
-#' @import ggplot2
+#'
 #' @importFrom ggalluvial StatStratum geom_flow geom_stratum to_lodes_form geom_alluvium
-#' @importFrom dplyr %>% mutate
-#' 
+#'
 #' @export
 #' @concept SC_Functions
 #' @return Alluvial ggplot comparing clone distribution.

@@ -1,8 +1,14 @@
 # base R type check functions
 
+isNonEmptyDataFrame <- function(obj) {
+    is.data.frame(obj) && sum(dim(obj)) > 0
+}
+assertthat::on_failure(isNonEmptyDataFrame) <- function(call, env) {
+    paste0(deparse(call$obj), " is not a non-empty `data.frame`")
+}
+
 isListOfNonEmptyDataFrames <- function(obj) {
-    is.list(obj) &&
-        all(sapply(obj, function(x) is.data.frame(x) && sum(dim(x)) > 0))
+    is.list(obj) && all(sapply(obj, isNonEmptyDataFrame))
 }
 assertthat::on_failure(isListOfNonEmptyDataFrames) <- function(call, env) {
     paste0(deparse(call$obj), " is not a list of non-empty `data.frame`s")
@@ -38,6 +44,10 @@ assertthat::on_failure(is_named_numeric) <- function(call, env) {
 
 # functions
 
-assertthat::on_failure(`%in%`) <- function(call, env) {
+isIn <- function(x, table) {
+    x %in% table
+}
+
+assertthat::on_failure(isIn) <- function(call, env) {
     paste0(deparse(call$x), " is not in ", deparse(call$table))
 }

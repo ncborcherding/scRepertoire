@@ -1,7 +1,6 @@
 # readability functions with appropriate assertthat fail messages
 "%!in%" <- Negate("%in%")
 
-#'@importFrom stringr str_sort
 .ordering.function <- function(vector, 
                                group.by,
                                data.frame) {
@@ -14,7 +13,6 @@
 }
 
 #Use to shuffle between chains
-#' @importFrom stringr str_split
 #' @keywords internal
 #' @author Ye-Lin Son, Nick Borcherding
 .off.the.chain <- function(dat, chain, cloneCall, check = TRUE) {
@@ -59,7 +57,7 @@
   })
 }
 
-#' @importFrom dplyr %>% group_by arrange desc ungroup count mutate
+#' @importFrom dplyr desc ungroup count
 #' @importFrom rlang ensym !!
 .clone.counter <- function(meta,
                            group.by, 
@@ -79,7 +77,6 @@
 }
 
 
-#' @importFrom stringr str_split
 .aa.counter <- function(input.data, cloneCall, aa.length) {
     lapply(input.data, function(x) {
         strings <- x[,cloneCall]
@@ -167,7 +164,6 @@
     df
 }
 
-#' @importFrom dplyr bind_rows
 #' @keywords internal
 .bound.input.return <- function(df) {
   if (is_seurat_or_se_object(df)) {
@@ -218,12 +214,19 @@
 #' @importFrom methods slot
 #' @keywords internal
 .grabMeta <- function(sc) {
+  messString <- c("Meta data contains an 'ident' column and will likely result
+                  in errors downstream.")
     if (is_seurat_object(sc)) {
         meta <- data.frame(sc[[]], slot(sc, "active.ident"))
+        if("ident" %in% colnames(meta)) {
+          message(messString)
+        }
         colnames(meta)[length(meta)] <- "ident"
-        
     } else if (is_se_object(sc)){
         meta <- data.frame(colData(sc))
+        if("ident" %in% colnames(meta)) {
+          message(messString)
+        }
         rownames(meta) <- sc@colData@rownames
         clu <- which(colnames(meta) == "label") # as set by colLabels()
         colnames(meta)[clu] <- "ident"
@@ -267,7 +270,7 @@
 }
 
 #Removing extra clones in barcodes with > 2 productive contigs
-#' @importFrom dplyr group_by %>% slice_max
+#' @importFrom dplyr slice_max
 #' @keywords internal
 .filteringMulti <- function(x) {
     x <- x %>%
@@ -293,7 +296,7 @@
 
 
 #Filtering NA contigs out of single-cell expression object
-#' @importFrom dplyr %>% transmute
+#' @importFrom dplyr transmute
 #' @importFrom SingleCellExperiment colData
 #' @keywords internal
 .filteringNA <- function(sc) {
@@ -315,7 +318,6 @@
 
 #Organizing list of contigs for visualization
 #' @keywords internal
-#' @importFrom dplyr %>% group_by n summarise
 .parseContigs <- function(df, i, names, cloneCall) {
     data <- df[[i]]
     data1 <- data %>% 
@@ -343,7 +345,7 @@
 # helper for .theCall # Qile: on second thought - converting to x to lowercase may be a bad idea...
 .convertClonecall <- function(x) {
 
-  clonecall_dictionary <- hash::hash(
+  clonecall_dictionary <- list(
     "gene" = "CTgene",
 		"genes" = "CTgene",
 		"ctgene" = "CTgene",
@@ -374,11 +376,10 @@
 # but now also constructs Con.df and runs the parseTCR algorithm on it, all in Rcpp
 #' @author Gloria Kraus, Nick Bormann, Nicky de Vrij, Nick Borcherding, Qile Yang
 #' @keywords internal
-#' @importFrom dplyr %>% arrange
 .constructConDfAndParseTCR <- function(data2) {
   rcppConstructConDfAndParseTCR(
-    data2 %>% dplyr::arrange(., chain, cdr3_nt),
-    unique(data2[[1]]) # 1 is the index of the barcode column
+    dplyr::arrange(data2, chain, cdr3_nt),
+    uniqueData2Barcodes = unique(data2$barcode)
   )
 }
 
@@ -389,7 +390,7 @@
 .parseBCR <- function (Con.df, unique_df, data2) {
   barcodeIndex <- rcppConstructBarcodeIndex(unique_df, data2$barcode)
   for (y in seq_along(unique_df)) {
-    location.i <- barcodeIndex[[y]] # *may* be wrong but should be fine. Test on old version first
+    location.i <- barcodeIndex[[y]]
     
     for (z in seq_along(location.i)) {
       where.chain <- data2[location.i[z],"chain"]
@@ -491,16 +492,17 @@
 
 #Sorting the V/D/J/C gene sequences for T and B cells
 #' @importFrom stringr str_c str_replace_na
-#' @importFrom dplyr bind_rows mutate %>%
 #' @keywords internal
 .makeGenes <- function(cellType, data2, chain1, chain2) {
     if(cellType %in% c("T")) {
+        data2 <- data2[data2$chain %in% c("TRA", "TRB", "TRG", "TRD"),]
         data2 <- data2 %>% 
             mutate(TCR1 = ifelse(chain %in% c("TRA", "TRG"), 
                   str_c(str_replace_na(v_gene),  str_replace_na(j_gene), str_replace_na(c_gene), sep = "."), NA)) %>%
             mutate(TCR2 = ifelse(chain %in% c("TRB", "TRD"), 
                   str_c(str_replace_na(v_gene), str_replace_na(d_gene),  str_replace_na(j_gene),  str_replace_na(c_gene), sep = "."), NA))
     } else if (cellType %in% c("B")) {
+        data2 <- data2[data2$chain %in% c("IGH", "IGK", "IGL"),]
         heavy <- data2[data2$chain == "IGH",] %>% 
           mutate(IGHct = str_c(str_replace_na(v_gene), str_replace_na(d_gene),  str_replace_na(j_gene),  str_replace_na(c_gene), sep = "."))
         kappa <- data2[data2$chain == "IGK",] %>% 
@@ -576,10 +578,8 @@ is_df_or_list_of_df <- function(x) {
 
 # Calculates the normalized Levenshtein Distance between the contig 
 # nucleotide sequence.
-#' @importFrom stringr str_split str_sort
 #' @importFrom stringdist stringdist
 #' @importFrom igraph graph_from_data_frame components graph_from_edgelist
-#' @importFrom dplyr bind_rows filter
 #' @keywords internal
 .lvCompare <- function(dictionary, gene, chain, threshold, exportGraph = FALSE) {
   overlap <- NULL

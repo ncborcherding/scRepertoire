@@ -45,11 +45,10 @@
 #' @param addLabel This will add a label to the frequency header, allowing
 #' the user to try multiple group.by variables or recalculate frequencies after 
 #' subsetting the data.
-#' @importFrom dplyr bind_rows %>% summarise left_join mutate select n all_of coalesce
+#' @importFrom dplyr left_join all_of coalesce
 #' @importFrom  rlang %||% sym :=
 #' @importFrom SummarizedExperiment colData<- colData
 #' @importFrom S4Vectors DataFrame
-#' @importFrom assertthat assert_that is.string is.flag
 #' @export
 #' @concept SC_Functions
 #' @return Single-cell object with clone information added to meta data
@@ -224,5 +223,5 @@ getHighBarcodeMismatchWarning <- function() paste(
     "< 1% of barcodes match: Ensure the barcodes in the single-cell object",
     "match the barcodes in the combined immune receptor output from",
     "scRepertoire. If getting this error, please check",
-    "https://www.borch.dev/uploads/screpertoire/articles/faq."
+    "https://www.borch.dev/uploads/screpertoire/articles/faq"
 )

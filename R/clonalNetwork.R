@@ -48,13 +48,10 @@
 #' @param exportClones Exports a table of clones that are shared
 #' across multiple identity groups and ordered by the total number
 #' of clone copies.
-#' @param palette Colors to use in visualization - input any 
+#' @param palette Colors to use in visualization - input any
 #' [hcl.pals][grDevices::hcl.pals].
-
-#' @import ggplot2
-#' @importFrom stringr str_sort
 #' @importFrom igraph graph_from_data_frame V `V<-`
-#' @importFrom dplyr %>% group_by select summarize_all count n across all_of desc
+#' @importFrom dplyr summarize_all count across all_of desc
 #' @importFrom tidygraph as_tbl_graph activate
 #' @importFrom ggraph ggraph geom_edge_bend  geom_node_point scale_edge_colour_gradientn circle guide_edge_colourbar
 #' @importFrom stats setNames

@@ -21,9 +21,7 @@
 #' @param aa.length The maximum length of the CDR3 amino acid sequence. 
 #' @param exportTable Returns the data frame used for forming the graph.
 #' @param palette Colors to use in visualization - input any [hcl.pals][grDevices::hcl.pals].
-#' @import ggplot2
-#' @importFrom reshape2 melt
-#' @importFrom dplyr mutate_at %>% mutate_if
+#' @importFrom dplyr mutate_at mutate_if
 #' @export
 #' @concept Summarize_Repertoire
 #' @return ggplot of stacked bar graphs of amino acid proportions

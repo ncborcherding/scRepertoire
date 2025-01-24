@@ -37,8 +37,7 @@
 #' @importFrom stringdist stringdist
 #' @importFrom igraph set_vertex_attr V union
 #' @importFrom plyr join
-#' @importFrom dplyr bind_rows summarize
-#' @importFrom stringr str_split str_replace_all
+#' @importFrom stringr str_replace_all
 #' @importFrom rlang %||%
 #' @importFrom SummarizedExperiment colData<- colData
 #' @importFrom stats na.omit

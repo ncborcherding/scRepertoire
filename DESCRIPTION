@@ -1,6 +1,6 @@
 Package: scRepertoire
 Title: A toolkit for single-cell immune receptor profiling
-Version: 2.2.1
+Version: 2.3.2
 Authors@R: c(
     person(given = "Nick", family = "Borcherding", role = c("aut", "cre"), email = "ncborch@gmail.com"), 
     person(given = "Qile", family = "Yang", role = c("aut"), email = "qile.yang@berkeley.edu"), 
@@ -25,7 +25,6 @@ Imports:
     grDevices,
     igraph,
     iNEXT,
-    methods,
     plyr,
     quantreg,
     Rcpp,
@@ -35,17 +34,15 @@ Imports:
     S4Vectors,
     SeuratObject,
     SingleCellExperiment,
-    stats,
     stringr,
     stringdist,
     SummarizedExperiment,
     tidygraph,
     truncdist,
-    utils,
     VGAM,
-    hash,
     purrr,
-    lifecycle
+    lifecycle,
+    methods
 Suggests: 
     BiocManager,
     BiocStyle,
@@ -57,7 +54,8 @@ Suggests:
     Seurat,
     spelling,
     testthat (>= 3.0.0),
-    vdiffr
+    vdiffr,
+    withr
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 Language: en-US
