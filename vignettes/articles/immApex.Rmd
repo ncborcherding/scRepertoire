@@ -168,6 +168,7 @@ Parameters for ```formatGenes()```
 Here, we will use the built-in example from Adaptive Biotechnologies and reformat and simplify the **v** region. ```formatGenes()``` will add 2 columns to the end of the data frame per region selected - 1) **v_IMGT** will be the formatted gene calls and 2) **v_IMGT.check** is a binary for if the formatted region appears in the IMGT database. In the example below, "TRBV2-1" is not recognized as a designation within IMGT.
 
 ```{r tidy = FALSE}
+data("immapex_example.data")
 Adaptive_example <- formatGenes(immapex_example.data[["Adaptive"]],
                                 region = "v",
                                 technology = "Adaptive", 

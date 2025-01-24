@@ -66,7 +66,6 @@
 * Add error message for NULL results in ```clonalCluster()``` with **export.graph = TRUE**
 * Fixed issue with "full.clones" missing in ```combineExpression()``` when using 1 chain
 
-
 # scRepertoire VERSION 2.0.3
 
 ## UNDERLYING CHANGES

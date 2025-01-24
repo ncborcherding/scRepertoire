@@ -1,27 +1,26 @@
-pandoc: 3.1.1
-pkgdown: 2.0.9
+pandoc: 3.1.11
+pkgdown: 2.1.0
 pkgdown_sha: ~
 articles:
-  Attaching_SC: Attaching_SC.html
-  Clonal_Bias: Clonal_Bias.html
-  Clonal_Cluster: Clonal_Cluster.html
-  Clonal_Diversity: Clonal_Diversity.html
-  Clonal_Dynamics: Clonal_Dynamics.html
-  Clonal_Visualizations: Clonal_Visualizations.html
-  Combining_Contigs: Combining_Contigs.html
-  FAQ: FAQ.html
-  Ibex: Ibex.html
-  immApex: immApex.html
-  Installation: Installation.html
-  Loading: Loading.html
-  Processing: Processing.html
-  Repertoire_Summary: Repertoire_Summary.html
-  Running_Escape: Running_Escape.html
-  SC_Visualizations: SC_Visualizations.html
-  Trex: Trex.html
+  articles/Attaching_SC: Attaching_SC.html
+  articles/Clonal_Bias: Clonal_Bias.html
+  articles/Clonal_Cluster: Clonal_Cluster.html
+  articles/Clonal_Diversity: Clonal_Diversity.html
+  articles/Clonal_Dynamics: Clonal_Dynamics.html
+  articles/Clonal_Visualizations: Clonal_Visualizations.html
+  articles/Combining_Contigs: Combining_Contigs.html
+  articles/FAQ: FAQ.html
+  articles/Ibex: Ibex.html
+  articles/immApex: immApex.html
+  articles/Installation: Installation.html
+  articles/Loading: Loading.html
+  articles/Processing: Processing.html
+  articles/Repertoire_Summary: Repertoire_Summary.html
+  articles/Running_Escape: Running_Escape.html
+  articles/SC_Visualizations: SC_Visualizations.html
+  articles/Trex: Trex.html
   vignette: vignette.html
-last_built: 2024-08-09T12:11Z
+last_built: 2024-11-04T18:54Z
 urls:
   reference: https://www.borch.dev/uploads/scRepertoire/reference
   article: https://www.borch.dev/uploads/scRepertoire/articles
-
