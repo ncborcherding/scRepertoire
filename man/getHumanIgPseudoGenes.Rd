@@ -14,3 +14,4 @@ This function returns a character vector of human immunoglobulin
 pseudogenes. These are also the genes that are removed from the
 variable gene list in \code{\link[=quietVDJgenes]{quietVDJgenes()}}.
 }
+\keyword{internal}

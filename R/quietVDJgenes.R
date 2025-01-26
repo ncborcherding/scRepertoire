@@ -96,8 +96,7 @@ quietBCRgenes.Seurat <- function(sc, assay = NULL, ...) {
 #' variable gene list in [quietVDJgenes()].
 #'
 #' @return Character vector of human immunoglobulin pseudogenes.
-#' @export
-#'
+#' @keywords internal
 getHumanIgPseudoGenes <- function() {
     unique(c(
         "IGHJ1P", "IGHJ2P", "IGHJ3P", "IGLC4", "IGLC5", "IGHEP1", "IGHEP2",
