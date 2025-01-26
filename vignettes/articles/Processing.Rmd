@@ -41,7 +41,7 @@ suppressMessages(library(scRepertoire))
 data("contig_list") 
 combined.TCR <- combineTCR(contig_list, 
                            samples = c("P17B", "P17L", "P18B", "P18L", 
-                                            "P19B","P19L", "P20B", "P20L"))
+                                       "P19B","P19L", "P20B", "P20L"))
 ```
 
 ## addVariable
@@ -103,3 +103,15 @@ exportClones(combined,
              file.name = "clones.csv"
 ```
 
+## quietVDJgenes
+
+The ```quietVDJgenes()``` function removes both TCR and BCR genes from the variable features of a Seurat object.
+
+* **sc** A single-cell object or a character vector of variable genes.  
+* **assay** The assay slot within the Seurat object to use. If NULL, it defaults to the default assay.  
+
+```{r, eval = FALSE, tidy = FALSE}
+screp_example <- quietVDJgenes(screp_example)
+```
+
+In addition to ```quietVDJgenes()```, there is also T and B cell specific functions ```quietTCRgene()``` and ```quietBCRgenes()``` that will remove the respective lineage-specific receptor genes from the variable gene list. 

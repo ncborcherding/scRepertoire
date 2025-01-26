@@ -239,7 +239,20 @@ exportClones(combined,
              dir = "~/Documents/MyExperiment/Sample1/"
              file.name = "clones.csv"
 ```
- 
+
+## quietVDJgenes
+
+The ```quietVDJgenes()``` function removes both TCR and BCR genes from the variable features of a Seurat object.
+
+* **sc** A single-cell object or a character vector of variable genes.  
+* **assay** The assay slot within the Seurat object to use. If NULL, it defaults to the default assay.  
+
+```{r, eval = FALSE, tidy = FALSE}
+screp_example <- quietVDJgenes(screp_example)
+```
+
+In addition to ```quietVDJgenes()```, there is also T and B cell specific functions ```quietTCRgene()``` and ```quietBCRgenes()``` that will remove the respective lineage-specific receptor genes from the variable gene list. 
+
 ***
 
 # Basic Clonal Visualizations
