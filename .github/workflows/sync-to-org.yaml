@@ -3,7 +3,7 @@ name: Sync to Organization Repo
 on:
   push:
     branches:
-      - master
+      - master  
 
 jobs:
   sync:
@@ -17,5 +17,5 @@ jobs:
       run: |
         git config --global user.name 'ncborcherding'
         git config --global user.email 'ncborch@gmail.com'
-        git remote add org https://x-access-token:${{ secrets.ORG_PAT }}@github.com/BorchLab/scRepertoire.git'
-        git push org_repo master --force --verbose 
+        git remote add org https://x-access-token:${{ secrets.ORG_PAT }}@github.com/BorchLab/scRepertoire.git
+        git push org master --force --verbose
