@@ -1,5 +1,5 @@
 pandoc: 3.1.11
-pkgdown: 2.1.0
+pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
   articles/Attaching_SC: Attaching_SC.html
@@ -20,7 +20,7 @@ articles:
   articles/SC_Visualizations: SC_Visualizations.html
   articles/Trex: Trex.html
   vignette: vignette.html
-last_built: 2024-11-04T18:54Z
+last_built: 2025-01-29T13:44Z
 urls:
   reference: https://www.borch.dev/uploads/scRepertoire/reference
   article: https://www.borch.dev/uploads/scRepertoire/articles

@@ -109,6 +109,7 @@ reference:
   - combineExpression
   - getCirclize
   - highlightClones
+  - quietVDJgenes
   - StartracDiversity
 - title: Data
   desc: Reference data for package functions.

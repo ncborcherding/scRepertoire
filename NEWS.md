@@ -1,6 +1,18 @@
+# scRepertoire VERSION 2.3.2
+
+## UNDERLYING CHANGES
+* Fixed issue with denominator in ```getCirclize()```
+
 # scRepertoire VERSION 2.2.1
 
-#VERSION BUMP FOR BIOCONDUCTOR
+* Rebasing for the purposes of Bioconductor version 2.2.0
+
+## NEW FEATURES
+* Added support for BCRs for loading ParseBio sequences.
+* Added `quietBCRgenes()` and `quietTCRgenes()` from Ibex and Trex and `quietVDJgenes()` as a convenience that runs both. The functions filter out known TCR and/or BCR gene signatures.
+
+## UNDERLYING CHANGES
+* Added `Seurat` to the `Suggests` field in the DESCRIPTION file.
 
 # scRepertoire VERSION 2.0.8
 

@@ -32,10 +32,8 @@
 #' @param exportTable Returns the data frame used for forming the graph.
 #' @param palette Colors to use in visualization - input any 
 #' [hcl.pals][grDevices::hcl.pals].
-#' @import ggplot2
-#' @importFrom stringr str_split
 #' @importFrom stats sd
-#' @importFrom dplyr bind_rows %>% group_by mutate ungroup summarise
+#' @importFrom dplyr ungroup
 #' @export
 #' @concept Visualizing_Clones
 #' @return ggplot bar diagram or heatmap of gene usage

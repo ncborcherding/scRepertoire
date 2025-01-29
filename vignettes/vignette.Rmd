@@ -19,6 +19,7 @@ vignette: >
 knitr::opts_chunk$set(error=FALSE, message=FALSE, warning=FALSE)
 library(BiocStyle)
 library(scater)
+library(Seurat)
 ```
 
 # Introduction
@@ -238,7 +239,20 @@ exportClones(combined,
              dir = "~/Documents/MyExperiment/Sample1/"
              file.name = "clones.csv"
 ```
- 
+
+## quietVDJgenes
+
+The ```quietVDJgenes()``` function removes both TCR and BCR genes from the variable features of a Seurat object.
+
+* **sc** A single-cell object or a character vector of variable genes.  
+* **assay** The assay slot within the Seurat object to use. If NULL, it defaults to the default assay.  
+
+```{r, eval = FALSE, tidy = FALSE}
+screp_example <- quietVDJgenes(screp_example)
+```
+
+In addition to ```quietVDJgenes()```, there is also T and B cell specific functions ```quietTCRgene()``` and ```quietBCRgenes()``` that will remove the respective lineage-specific receptor genes from the variable gene list. 
+
 ***
 
 # Basic Clonal Visualizations
@@ -1191,7 +1205,7 @@ legend("topleft", legend = levels(color.legend), pch = 16, col = unique(col_samp
 
 # Conclusion  
 
-This has been a general overview of the capabilities of scRepertoire from the initial processing and visualization to attach to the mRNA expression values in a single-cell object. If you have any questions, comments, or suggestions, please visit the [GitHub repository](https://github.com/ncborcherding/scRepertoire).
+This has been a general overview of the capabilities of scRepertoire from the initial processing and visualization to attach to the mRNA expression values in a single-cell object. If you have any questions, comments, or suggestions, please visit the [GitHub repository](https://github.com/BorchLab/scRepertoire).
 
 ### Session Info
 

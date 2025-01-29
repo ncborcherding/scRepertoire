@@ -125,5 +125,4 @@ We are working on submitting the scRepertoire as a peer review article,
 
 ### Bug Reports/New Features
 
-Submit a [GitHub issue](https://github.com/ncborcherding/scRepertoire/issues) - if possible please include a [reproducible example](https://reprex.tidyverse.org/). Alternatively, an example with the internal **scRep_example** and **contig_list** would 
-be extremely helpful.
+Submit a [GitHub issue](https://github.com/BorchLab/scRepertoire/issues) - if possible please include a [reproducible example](https://reprex.tidyverse.org/). Alternatively, an example with the internal **scRep_example** and **contig_list** would be extremely helpful.

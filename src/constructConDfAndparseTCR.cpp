@@ -43,7 +43,7 @@ public:
     TcrParser(
         Rcpp::DataFrame& data2, std::vector<std::string>& uniqueData2Barcodes
     ) {
-        // construct conDf, initializaing the matrix to "NA" *strings*
+        // construct conDf, initializing the matrix to "NA" *strings*
         conDf = scRepHelper::initStringMatrix(
             7, uniqueData2Barcodes.size(), "NA"
         );
@@ -60,12 +60,12 @@ public:
 
         // construct barcodeIndex
         barcodeIndex = constructBarcodeIndex(
-            uniqueData2Barcodes, Rcpp::as<std::vector<std::string>>(data2[data2.findName("barcode")])
+            uniqueData2Barcodes, data2[data2.findName("barcode")]
         );
     }
 
     // Rcpp implementation of .parseTCR()
-    void parseTCR() {
+    TcrParser& parseTCR() {
         for (int y = 0; y < (int) conDf[0].size(); y++) {
             for (int index : barcodeIndex[y]) {
                 std::string chainType = std::string(data2ChainTypes[index]);
@@ -78,6 +78,7 @@ public:
                 }
             }
         }
+        return *this;
     }
 
     // parseTCR() helpers
@@ -122,7 +123,5 @@ public:
 Rcpp::DataFrame rcppConstructConDfAndParseTCR(
     Rcpp::DataFrame& data2, std::vector<std::string> uniqueData2Barcodes
 ) {
-    TcrParser parser = TcrParser(data2, uniqueData2Barcodes);
-    parser.parseTCR();
-    return parser.getConDf();
+    return TcrParser(data2, uniqueData2Barcodes).parseTCR().getConDf();
 }

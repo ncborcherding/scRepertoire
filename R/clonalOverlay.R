@@ -31,8 +31,7 @@
 #' cut.category variable in the meta data of the single-cell object.
 #' @param bins The number of contours to the overlay
 #' @param facet.by meta data variable to facet the comparison
-#' 
-#' @import ggplot2
+#'
 #' @importFrom SeuratObject Embeddings
 #' @export
 #' @concept SC_Functions
