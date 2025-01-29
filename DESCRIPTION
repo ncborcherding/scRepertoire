@@ -62,5 +62,5 @@ Language: en-US
 LinkingTo: 
     Rcpp
 URL: https://www.borch.dev/uploads/scRepertoire/
-BugReports: https://github.com/ncborcherding/scRepertoire/issues
+BugReports: https://github.com/BorchLab/scRepertoire/issues
 Roxygen: list(markdown = TRUE)

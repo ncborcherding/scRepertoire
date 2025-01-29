@@ -47,9 +47,9 @@ set.seed(42)
 
 # Getting Started 
 
-**immApex** is meant to serve as an API for deep-learning models based on immune receptor sequencing. These functions extract or generate amino acid or nucleotide sequences and prepare them for deep learning tasks through [Keras](https://tensorflow.rstudio.com/guides/keras/basics). **immApex** is the underlying structure for the BCR models in [Ibex](https://github.com/ncborcherding/Ibex) and TCR models in [Trex](https://github.com/ncborcherding/Trex). It should be noted that the tools here are created for immune receptor sequences; they will work more generally for nucleotide or amino acid sequences. The package itself supports AIRR, Adaptive, and 10x formats and interacts with the **scRepertoire** R package.
+**immApex** is meant to serve as an API for deep-learning models based on immune receptor sequencing. These functions extract or generate amino acid or nucleotide sequences and prepare them for deep learning tasks through [Keras](https://tensorflow.rstudio.com/guides/keras/basics). **immApex** is the underlying structure for the BCR models in [Ibex](https://github.com/BorchLab/Ibex) and TCR models in [Trex](https://github.com/BorchLab/Trex). It should be noted that the tools here are created for immune receptor sequences; they will work more generally for nucleotide or amino acid sequences. The package itself supports AIRR, Adaptive, and 10x formats and interacts with the **scRepertoire** R package.
 
-More information is available at the [immApex GitHub Repo](https://github.com/ncborcherding/immApex).
+More information is available at the [immApex GitHub Repo](https://github.com/BorchLab/immApex).
 
 ## Loading Libraries
 
@@ -403,7 +403,7 @@ head(OHE.sequences)
 
 ## Autoencoder
 
-For the vignette - we will use an autoencoder for sequence embedding. The code below is based on the [Trex](https://github.com/ncborcherding/Trex) R package. The overall structure of the autoencoder is the same. However, some of the parameters are modified for the sake of the vignette. We will use the **sequence.matrix** we generated above from the ```onehotEncoder()```.
+For the vignette - we will use an autoencoder for sequence embedding. The code below is based on the [Trex](https://github.com/BorchLab/Trex) R package. The overall structure of the autoencoder is the same. However, some of the parameters are modified for the sake of the vignette. We will use the **sequence.matrix** we generated above from the ```onehotEncoder()```.
 
 The steps to train the model include: 
 
@@ -554,7 +554,7 @@ Here, we can achieve a validation accuracy of 98.25%, which is impressive. But t
 ***
 # Conclusion
 
-This has been a general overview of the capabilities of **immApex** for processing immune receptor sequences and making deep learning models. If you have any questions, comments, or suggestions, feel free to visit the [GitHub repository](https://github.com/ncborcherding/immApex).
+This has been a general overview of the capabilities of **immApex** for processing immune receptor sequences and making deep learning models. If you have any questions, comments, or suggestions, feel free to visit the [GitHub repository](https://github.com/BorchLab/immApex).
 
 ## Session Info
 
