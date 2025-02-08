@@ -70,7 +70,7 @@ clonalCompare <- function(input.data,
     isListOfNonEmptyDataFrames(input.data) ||
       is_seurat_or_se_object(input.data),
     is.string(cloneCall),
-    is.string(chain), chain %in% c("both", "TRA", "TRG", "IGH", "IGL"),
+    is.string(chain), chain %in% c("both", "TRA", "TRB", "TRG", "TRD", "IGH", "IGL"),
     is.null(samples) || is.character(samples),
     is.null(clones) || is.character(clones),
     is.null(top.clones) || is.count(top.clones),
