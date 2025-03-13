@@ -24,6 +24,7 @@ Imports:
     ggraph,
     grDevices,
     igraph,
+    immApex,
     iNEXT,
     plyr,
     quantreg,

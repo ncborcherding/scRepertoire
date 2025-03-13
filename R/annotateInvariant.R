@@ -33,6 +33,8 @@
 #' #Using annotateInvariant
 #' annotateInvariant(input.data = seurat.obj, type = "MAIT", species = "human")
 #' annotateInvariant(input.data = seurat.obj, type = "iNKT", species = "human")
+#' 
+#' @importFrom immApex getIR
 #'
 #' @export
 annotateInvariant <- function(input.data, 
@@ -47,7 +49,10 @@ annotateInvariant <- function(input.data,
   type <- match.arg(type)
   species <- match.arg(species)
   
-  TCRS <- getTCR(input.data, chains = "both")
+  TCRS <- lapply(c("TRA", "TRB") function(x) {
+    tmp <- getIR(input.data, chains = x, sequence.type = "aa")
+    tmp
+  })
   
   criteria <- switch(type,
                      "MAIT" = .MAIT.criteria,
