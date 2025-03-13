@@ -49,12 +49,12 @@ suppressMessages(library(dplyr))
 
 The idea behind Ibex is to combine BCR CDR3 amino acid information with phenotypic RNA/protein data to direct the use of single-cell sequencing towards antigen-specific discoveries.  This is a growing field - specifically [TESSA](https://github.com/jcao89757/TESSA) uses amino acid characteristics and autoencoder as a means to get a dimensional reduction. Another option is [CoNGA](https://github.com/phbradley/conga), which produces an embedding using BCR and RNA. Ibex was designed to make a customizable approach to this combined approach using R.
 
-More information is available at the [Ibex GitHub Repo](https://github.com/ncborcherding/Ibex).
+More information is available at the [Ibex GitHub Repo](https://github.com/BorchLab/Ibex).
 
 ## Installation
 
 ```{r, eval = FALSE, tidy = FALSE}
-devtools::install_github("ncborcherding/Ibex")
+devtools::install_github("BorchLab/Ibex")
 ```
 
 ## The Data Set
@@ -133,7 +133,7 @@ SeuratObj <- readRDS(url("https://www.borch.dev/uploads/data/Ibex_FullExample.rd
 
 ## Ibex.matrix Function
 
-Ibex has 2 major functions - the first being ```Ibex.matrix()```, which is the backbone of the algorithm and returns the encoded values based on the selection of variables. Unlike ```runIbex()``` below, ```Ibex.matrix()``` does not filter the input for only B cells with attached BCR data. In addition, ```Ibex.matrix()``` is compatible with the list output from the ```combineBCR()``` function from the [scRepertoire](https://github.com/ncborcherding/scRepertoire) R package, while ```runIbex()``` must be performed on a single-cell object.
+Ibex has 2 major functions - the first being ```Ibex.matrix()```, which is the backbone of the algorithm and returns the encoded values based on the selection of variables. Unlike ```runIbex()``` below, ```Ibex.matrix()``` does not filter the input for only B cells with attached BCR data. In addition, ```Ibex.matrix()``` is compatible with the list output from the ```combineBCR()``` function from the [scRepertoire](https://github.com/BorchLab/scRepertoire) R package, while ```runIbex()``` must be performed on a single-cell object.
 
 **chains**  
 

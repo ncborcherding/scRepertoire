@@ -192,7 +192,7 @@ ggplot(df, aes(x = PC1, y = PC2)) +
 Quantify the proportion of V and J gene usage with `percentVJ()`. Like `percentGenes()`, this function will quantify the percentage of V and J paired together across individual repertoires. The output can be visualized using a heatmap or as input for further dimensional reduction.
 
 ```{r tidy = FALSE}
-percentVJ(combined.TCR, 
+percentVJ(combined.TCR[1:2], #First Two Samples
           chain = "TRB")
 
 df.genes <- percentVJ(combined.TCR, 

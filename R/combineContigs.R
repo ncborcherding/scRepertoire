@@ -251,7 +251,7 @@ combineBCR <- function(input.data,
         (function(x) {
             if (!is.null(samples)) {
                 .modifyBarcodes(x, samples, ID)
-            } else { # https://github.com/ncborcherding/scRepertoire/pull/450
+            } else { # https://github.com/BorchLab/scRepertoire/pull/450
                 x
             }
         }) %>%

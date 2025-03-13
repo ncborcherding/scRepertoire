@@ -48,14 +48,14 @@ A full copy of the changes in each version can be found in the [NEWS/ChangeLog](
 scRepertoire is an active project, that receives a number of changes based on user feedback, the most up-to-date versions are available via the GitHub repositories. These versions can be installed using ```devtools::install_github()``` or ```remotes::install_github()```. The **dev** version is the active development branch and might be less stable than the main branch or bioconductor versions. 
 
 ```
-devtools::install_github(repo = "ncborcherding/scRepertoire")
+devtools::install_github(repo = "BorchLab/scRepertoire")
 
-remotes::install_github(repo = "ncborcherding/scRepertoire", ref = "dev")
+remotes::install_github(repo = "BorchLab/scRepertoire", ref = "dev")
 ```
 
 ## Bioconductor
 
-The current version of scRepertoire is also available in the development version of Bioconductor. 
+The current version of scRepertoire is also available in Bioconductor. 
 
 ```
 BiocManager::install("scRepertoire")

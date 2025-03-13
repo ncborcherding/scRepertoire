@@ -2,6 +2,7 @@
 
 ## UNDERLYING CHANGES
 * Fixed issue with denominator in ```getCirclize()```
+* Fixing chain issue with clonalCompare() - expanded assertthat statement
 
 # scRepertoire VERSION 2.2.1
 

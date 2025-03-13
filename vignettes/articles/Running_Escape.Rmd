@@ -67,7 +67,7 @@ colorblind_vector <- hcl.colors(n=7, palette = "inferno", fixup = TRUE)
 
 *escape* is a R package designed for **E**asy **s**ingle-**c**ell **a**nalysis **p**latform for **e**nrichment. As the tortuous acronym implies, *escape* was designed as a user-friendly package for gene set enrichment analysis that leverages the heterogeneity of single-cell data. 
 
-More information is available at the [GitHub Repo](https://github.com/ncborcherding/escape).
+More information is available at the [GitHub Repo](https://github.com/BorchLab/escape).
 
 ## Citation 
 If using *escape*, please cite the [article](https://www.nature.com/articles/s42003-020-01625-6): Borcherding, N., Vishwakarma, A., Voigt, A.P. et al. Mapping the immune environment in clear cell renal carcinoma by single-cell genomics. Commun Biol 4, 122 (2021). https://doi.org/10.1038/s42003-020-01625-6. 
@@ -77,14 +77,13 @@ If using *escape*, please cite the [article](https://www.nature.com/articles/s42
 *escape* is available via github using:
 
 ```{r eval=FALSE, tidy=FALSE}
-devtools::install_github("ncborcherding/escape")
-remotes::install_github("ncborcherding/escape")
+devtools::install_github("BorchLab/escape")
+remotes::install_github("BorchLab/escape")
 ```
 
-For now, the newest version of *escape* is available in the Bioconductor dev version (3.19).
+Or via Bioconductor with:
 
 ```{r eval = FALSE, tidy=FALSE}
-BiocManager::install(version='devel')
 BiocManager::install("escape")
 ```
 
@@ -294,6 +293,7 @@ heatmapEnrichment(scRep_example,
                   gene.set.use = rownames(scRep_example@assays$escape.ssGSEA@data)[1:12],
                   assay = "escape.ssGSEA")
 ```
+
 Most of the visualizations in *escape* have a defined set of parameters.
 
 **group.by**
@@ -372,6 +372,7 @@ geyserEnrichment(scRep_example,
                  gene.set = "HALLMARK-INTERFERON-GAMMA-RESPONSE", 
                  facet.by = "Type")
 ```
+
 Lastly, we can select the way the color is applied to the plot using the **color.by** parameter. Here we can set it to the gene set of interest *"HALLMARK-INTERFERON-GAMMA-RESPONSE"*.
 
 ```{r tidy=FALSE}
