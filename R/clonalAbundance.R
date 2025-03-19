@@ -63,7 +63,7 @@ clonalAbundance <- function(input.data,
   			.parseContigs(x, names, cloneCall) %>%
   			mutate("{group.by}" := input.data[[x]][[group.by]])
   	})) %>% 
-  		distinct() %>%
+  		dplyr::distinct() %>%
   	  as.data.frame()
   	col <- length(unique(Con.df[[group.by]]))
     fill <- group.by
@@ -95,7 +95,7 @@ clonalAbundance <- function(input.data,
     for (i in seq_along(input.data)) {
       data1 <- .parseContigs(input.data, i, names, cloneCall) 
       Con.df<- rbind.data.frame(Con.df, data1) %>%
-                  distinct() %>%
+                  dplyr::distinct() %>%
                   as.data.frame()
     }
     Con.df <- data.frame(Con.df)
