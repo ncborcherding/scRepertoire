@@ -35,6 +35,7 @@
 #' @param palette Colors to use in visualization - input any 
 #' [hcl.pals][grDevices::hcl.pals].
 #' @importFrom ggplot2 ggplot
+#' @importFrom dplyr distinct
 #' @export
 #' @concept Visualizing_Clones
 #' @author Nick Borcherding, Justin Reimertz
