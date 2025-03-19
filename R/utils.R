@@ -318,14 +318,17 @@
 
 #Organizing list of contigs for visualization
 #' @keywords internal
+#' @author Justin Reimertz
 .parseContigs <- function(df, i, names, cloneCall) {
-    data <- df[[i]]
-    data1 <- data %>% 
-              group_by(data[,cloneCall]) %>%
-              summarise(Abundance=n())
-    colnames(data1)[1] <- cloneCall
-    data1$values <- names[i]
-    return(data1)
+	data <- df[[i]] %>% 
+		# Count the abundance of each clone per specified cloneCall category and
+		# cell type
+		group_by("{cloneCall}" := df[[i]][[cloneCall]]) %>%
+		# Add sample ids to df
+		mutate(values = names[i], Abundance = n()) %>%
+		select(all_of(cloneCall), values, Abundance) %>%
+		ungroup() 
+	return(data)
 }
 
 # This is to help sort the type of clone data to use

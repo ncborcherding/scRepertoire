@@ -47,9 +47,33 @@ combined.TCR <- combineTCR(contig_list,
                                             "P19B","P19L", "P20B", "P20L"))
 ```
 
-The data in the scRepertoire package is derived from a [study](https://pubmed.ncbi.nlm.nih.gov/33622974/) of acute respiratory stress disorder in the context of bacterial and COVID-19 infections. The internal single cell data (`scRep_example()`) built in to scRepertoire is randomly sampled 500 cells from the fully integrated Seurat object to minimize the package size. However, for the purpose of the vignette we will use the full single-cell object with 30,000 cells. We will use both Seurat and Single-Cell Experiment (SCE) with scater to perform further visualizations in tandem. 
+## Note on Dimensional Reduction
+
+In single-cell RNA sequencing workflows, dimensional reduction is typically performed by first identifying highly variable features. These features are then used directly for UMAP/tSNE projection or as inputs for principal component analysis. The same approach is commonly applied to clustering as well.
+
+However, in immune-focused datasets, VDJ genes from TCR and BCR are often among the most variable genes. This variability arises naturally due to clonal expansion and diversity within lymphocytes. As a result, UMAP projections and clustering outcomes may be influenced by clonal information rather than broader transcriptional differences across cell types.
+
+To mitigate this issue, a common strategy is to exclude VDJ genes from the set of highly variable features before proceeding with clustering and dimensional reduction. We introduce a set of functions that facilitate this process by removing VDJ-related genes from either a Seurat Object or a vector of gene names (useful for SCE-based workflows):
+
+* ```quietVDJgenes()``` – Removes both TCR and BCR VDJ genes.
+* ```quietTCRgenes()``` – Removes only TCR VDJ genes.
+* ```quietBCRgenes()``` – Removes only BCR VDJ genes, but retains BCR VDJ pseudogenes in the variable features.
+
+```{r tidy = FALSE}
+# Check the first 10 variable features before removal
+VariableFeatures(scRep_example)[1:10]
+
+# Remove TCR VDJ genes
+scRep_example <- quietTCRgenes(scRep_example)
+
+# Check the first 10 variable features after removal
+VariableFeatures(scRep_example)[1:10]
+```
+By applying these functions, you can ensure that clustering and dimensional reduction are driven by broader transcriptomic differences rather than clonal expansion artifacts. 
 
 ## Preprocessed Single-Cell Object
+
+The data in the scRepertoire package is derived from a [study](https://pubmed.ncbi.nlm.nih.gov/33622974/) of acute respiratory stress disorder in the context of bacterial and COVID-19 infections. The internal single cell data (`scRep_example()`) built in to scRepertoire is randomly sampled 500 cells from the fully integrated Seurat object to minimize the package size. However, for the purpose of the vignette we will use the full single-cell object with 30,000 cells. We will use both Seurat and Single-Cell Experiment (SCE) with scater to perform further visualizations in tandem. 
 
 ```{r tidy = FALSE}
 scRep_example <- readRDS("scRep_example_full.rds")
@@ -57,7 +81,6 @@ scRep_example <- readRDS("scRep_example_full.rds")
 #Making a Single-Cell Experiment object
 sce <- Seurat::as.SingleCellExperiment(scRep_example)
 ```
-
 
 ## combineExpression
 

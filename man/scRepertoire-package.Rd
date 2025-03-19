@@ -25,5 +25,10 @@ Authors:
   \item Ksenia Safina \email{safina@broadinstitute.org}
 }
 
+Other contributors:
+\itemize{
+  \item Justin Reimertz \email{justin.reimertz@childrens.harvard.edu} [contributor]
+}
+
 }
 \keyword{internal}

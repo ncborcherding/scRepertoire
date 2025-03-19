@@ -64,4 +64,7 @@ clonalAbundance(combined,
                 scale = FALSE)
 
 }
+\author{
+Nick Borcherding, Justin Reimertz
+}
 \concept{Visualizing_Clones}

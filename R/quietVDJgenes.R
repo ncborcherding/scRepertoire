@@ -1,8 +1,5 @@
 #' Remove TCR and BCR genes from variable gene results
 #'
-#' @description
-#' `r lifecycle::badge("experimental")`
-#'
 #' Most single-cell workflows use highly-expressed and highly-variable
 #' genes for the initial calculation of PCA and subsequent dimensional
 #' reduction. This function will remove the TCR and/or BCR genes from the
@@ -11,10 +8,10 @@
 #'
 #' @examples
 #' example <- quietVDJgenes(scRep_example)
-#' trex_example <- quietTCRgenes(scRep_example)
+#' scRep <- quietTCRgenes(scRep_example)
 #' ibex_example <- quietBCRgenes(scRep_example)
 #'
-#' @param sc Single-cell object in Seurat format or vector of variable genes
+#' @param input.data Single-cell object in Seurat format or vector of variable genes
 #' to use in reduction
 #' @param assay The Seurat assay slot to use to remove immune receptor genes
 #' from, NULL value will default to the default assay
@@ -22,23 +19,23 @@
 #'
 #' @export
 #' @return Seurat object or vector list with TCR genes removed.
-quietVDJgenes <- function(sc, ...) {
-    quietTCRgenes(quietBCRgenes(sc, ...), ...)
+quietVDJgenes <- function(input.data, ...) {
+    quietTCRgenes(quietBCRgenes(input.data, ...), ...)
 }
 
 #' @rdname quietVDJgenes
 #' @export
 #' @author Nicky de Vrij, Nikolaj Pagh, Nick Borcherding, Qile Yang
-quietTCRgenes <- function(sc, ...) {
+quietTCRgenes <- function(input.data, ...) {
     UseMethod("quietTCRgenes")
 }
 
 #' @rdname quietVDJgenes
 #' @method quietTCRgenes default
 #' @export
-quietTCRgenes.default <- function(sc, ...) {
-    assert_that(is.character(sc))
-    sc[!shouldQuietTcrGene(sc)]
+quietTCRgenes.default <- function(input.data, ...) {
+    assert_that(is.character(input.data))
+    input.data[!shouldQuietTcrGene(input.data)]
 }
 
 shouldQuietTcrGene <- function(genes) {
@@ -48,27 +45,27 @@ shouldQuietTcrGene <- function(genes) {
 #' @rdname quietVDJgenes
 #' @method quietTCRgenes Seurat
 #' @export
-quietTCRgenes.Seurat <- function(sc, assay = NULL, ...) {
+quietTCRgenes.Seurat <- function(input.data, assay = NULL, ...) {
     if (is.null(assay)) {
-        assay <- SeuratObject::DefaultAssay(sc)
+        assay <- SeuratObject::DefaultAssay(input.data)
     }
-    SeuratObject::VariableFeatures(sc, assay = assay) <-
-        quietTCRgenes.default(SeuratObject::VariableFeatures(sc, assay = assay))
-    sc
+    SeuratObject::VariableFeatures(input.data, assay = assay) <-
+        quietTCRgenes.default(SeuratObject::VariableFeatures(input.data, assay = assay))
+    input.data
 }
 
 #' @rdname quietVDJgenes
 #' @export
-quietBCRgenes <- function(sc, ...) {
+quietBCRgenes <- function(input.data, ...) {
     UseMethod("quietBCRgenes")
 }
 
 #' @rdname quietVDJgenes
 #' @method quietBCRgenes default
 #' @export
-quietBCRgenes.default <- function(sc, ...) {
-    assert_that(is.character(sc))
-    sc[!shouldQuietBcrGene(sc)]
+quietBCRgenes.default <- function(input.data, ...) {
+    assert_that(is.character(input.data))
+    input.data[!shouldQuietBcrGene(input.data)]
 }
 
 shouldQuietBcrGene <- function(genes) {
@@ -80,13 +77,13 @@ shouldQuietBcrGene <- function(genes) {
 #' @rdname quietVDJgenes
 #' @method quietBCRgenes Seurat
 #' @export
-quietBCRgenes.Seurat <- function(sc, assay = NULL, ...) {
+quietBCRgenes.Seurat <- function(input.data, assay = NULL, ...) {
     if (is.null(assay)) {
-        assay <- SeuratObject::DefaultAssay(sc)
+        assay <- SeuratObject::DefaultAssay(input.data)
     }
-    SeuratObject::VariableFeatures(sc, assay = assay) <-
-        quietBCRgenes.default(SeuratObject::VariableFeatures(sc, assay = assay))
-    sc
+    SeuratObject::VariableFeatures(input.data, assay = assay) <-
+        quietBCRgenes.default(SeuratObject::VariableFeatures(input.data, assay = assay))
+    input.data
 }
 
 #' Get Human Immunoglobulin pseudogenes

@@ -99,8 +99,6 @@ scRep_example <- subset(scRep_example, Patient %in% c("P17", "P18"))
 
 ## Option 1: Molecular Signature Database
 
-## Option 1: Molecular Signature Database
-
 Gene set enrichment analysis begins by identifying the appropriate gene sets for your study. The ```getGeneSets()``` function simplifies this process by extracting one or more gene set libraries from the Molecular Signature Database (MSigDB) and returning them as a GSEABase GeneSetCollection object. Note that the first time you run ```getGeneSets()```, it downloads a complete local copy of the gene sets, which may take a little while. Future calls will use the cached version, greatly improving performance.
 
 To retrieve gene set collections from MSigDB, specify the library or libraries of interest using the library parameter. For example, to select multiple libraries, use:
@@ -108,9 +106,6 @@ To retrieve gene set collections from MSigDB, specify the library or libraries o
 ```{r eval=FALSE, include=FALSE}
 gs <- getGeneSets(library = c("Library1", "Library2"))
 ```
-
-In addition, the function supports further subsetting through these parameters:
-
 * **subcategory**: Narrow down your selection by specifying subcategories within a library. Examples include "CGN", "CGP", "CP:BIOCARTA", "CP:KEGG", "GO:BP", "IMMUNESIGDB", etc.
 * **gene.sets:** Isolate individual pathways or gene sets by providing their specific names.
 

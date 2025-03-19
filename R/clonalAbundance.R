@@ -35,8 +35,10 @@
 #' @param palette Colors to use in visualization - input any 
 #' [hcl.pals][grDevices::hcl.pals].
 #' @importFrom ggplot2 ggplot
+#' @importFrom dplyr distinct
 #' @export
 #' @concept Visualizing_Clones
+#' @author Nick Borcherding, Justin Reimertz
 #' @return ggplot of the total or relative abundance of clones 
 #' across quanta
 clonalAbundance <- function(input.data, 
@@ -57,14 +59,14 @@ clonalAbundance <- function(input.data,
   
   names <- names(input.data)
   if (!is.null(group.by)) {
-    for (i in seq_along(input.data)) {
-      data1 <- .parseContigs(input.data, i, names, cloneCall)
-      label <- input.data[[i]][1,group.by]
-      data1[,paste(group.by)] <- label
-      Con.df<- rbind.data.frame(Con.df, data1) 
-    }
-    Con.df <- data.frame(Con.df)
-    col <- length(unique(Con.df[,group.by]))
+  	Con.df <- bind_rows(lapply(seq_along(input.data), function(x) {
+  		input.data %>%
+  			.parseContigs(x, names, cloneCall) %>%
+  			mutate("{group.by}" := input.data[[x]][[group.by]])
+  	})) %>% 
+  		dplyr::distinct() %>%
+  	  as.data.frame()
+  	col <- length(unique(Con.df[[group.by]]))
     fill <- group.by
     if(!is.null(order.by)) {
         Con.df <- .ordering.function(vector = order.by,
@@ -73,7 +75,8 @@ clonalAbundance <- function(input.data,
     }
     if (scale == TRUE) { 
         ylab <- "Density of Clones"
-        plot <- ggplot(Con.df, aes(x=Abundance, fill=Con.df[,group.by])) +
+        plot <- ggplot(Con.df, aes(x=Abundance, 
+                                   fill=Con.df[,group.by])) +
                       geom_density(aes(y=after_stat(scaled)), 
                                    alpha=0.5, 
                                    lwd=0.25, 
@@ -91,8 +94,10 @@ clonalAbundance <- function(input.data,
     }
   } else {
     for (i in seq_along(input.data)) {
-      data1 <- .parseContigs(input.data, i, names, cloneCall)
-      Con.df<- rbind.data.frame(Con.df, data1) 
+      data1 <- .parseContigs(input.data, i, names, cloneCall) 
+      Con.df<- rbind.data.frame(Con.df, data1) %>%
+                  dplyr::distinct() %>%
+                  as.data.frame()
     }
     Con.df <- data.frame(Con.df)
     if(!is.null(order.by)) {
