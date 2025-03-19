@@ -4,7 +4,7 @@ author:
   name: Nick Borcherding
   email: ncborch@gmail.com
   affiliation: Washington University in St. Louis, School of Medicine, St. Louis, MO, USA
-date: "November 17th, 2023"
+date: 'Compiled: `r format(Sys.Date(), "%B %d, %Y")`'
 output:
   BiocStyle::html_document:
     toc_float: true
@@ -815,6 +815,28 @@ scRep_example <- get(data("scRep_example"))
 sce <- Seurat::as.SingleCellExperiment(scRep_example)
 ```
 
+## Note on Dimensional Reduction
+
+In single-cell RNA sequencing workflows, dimensional reduction is typically performed by first identifying highly variable features. These features are then used directly for UMAP/tSNE projection or as inputs for principal component analysis. The same approach is commonly applied to clustering as well.
+
+However, in immune-focused datasets, VDJ genes from TCR and BCR are often among the most variable genes. This variability arises naturally due to clonal expansion and diversity within lymphocytes. As a result, UMAP projections and clustering outcomes may be influenced by clonal information rather than broader transcriptional differences across cell types.
+
+To mitigate this issue, a common strategy is to exclude VDJ genes from the set of highly variable features before proceeding with clustering and dimensional reduction. We introduce a set of functions that facilitate this process by removing VDJ-related genes from either a Seurat Object or a vector of gene names (useful for SCE-based workflows):
+
+* ```quietVDJgenes()``` – Removes both TCR and BCR VDJ genes.
+* ```quietTCRgenes()``` – Removes only TCR VDJ genes.
+* ```quietBCRgenes()``` – Removes only BCR VDJ genes, but retains BCR VDJ pseudogenes in the variable features.
+
+```{r tidy = FALSE}
+# Check the first 10 variable features before removal
+VariableFeatures(scRep_example)[1:10]
+
+# Remove TCR VDJ genes
+scRep_example <- quietTCRgenes(scRep_example)
+
+# Check the first 10 variable features after removal
+VariableFeatures(scRep_example)[1:10]
+```
 
 ## combineExpression
 
