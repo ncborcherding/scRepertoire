@@ -1,3 +1,12 @@
+# scRepertoire VERSION 2.3.4
+
+## UNDERLYING CHANGES
+* Update internal ```.parseContigs``` to function with more complex groupings
+* Add ```annotateInvariant()``` functionality for mouse and human TCRs
+* Add ```quietTCRgenes()```, ```quietBCRgenes()```, ```quietVDJgenes()```
+* Fixed issue with ```clonalCompare()``` assertthat statements
+* Started integration with immApex API package
+
 # scRepertoire VERSION 2.3.2
 
 ## UNDERLYING CHANGES
