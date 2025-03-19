@@ -100,18 +100,23 @@ the csv file name
 exportClones(combined, 
              write.file = TRUE,
              dir = "~/Documents/MyExperiment/Sample1/"
-             file.name = "clones.csv"
+             file.name = "clones.csv")
 ```
 
-## quietVDJgenes
+## annotateInvariant
 
-The ```quietVDJgenes()``` function removes both TCR and BCR genes from the variable features of a Seurat object.
+The ```annotateInvariant()``` function enables the identification of mucosal-associated invariant T (**MAIT**) cells and invariant natural killer T (**iNKT**) cells in single-cell sequencing datasets. These specialized T-cell subsets are defined by their characteristic TCR usage, making them distinguishable within single-cell immune profiling data. The function extracts TCR chain information from the provided single-cell dataset and evaluates it against known invariant TCR criteria for either MAIT or iNKT cells. Each cell is assigned a score indicating the presence (1) or absence (0) of the specified invariant T-cell population.
 
-* **sc** A single-cell object or a character vector of variable genes.  
-* **assay** The assay slot within the Seurat object to use. If NULL, it defaults to the default assay.  
+* input.data – A data object from ```combineTCR()``` or ```combineExpression()```.
+* type – Character string specifying the type of invariant T cell to annotate ("MAIT" or "iNKT").
+* species – Character string specifying the species ("mouse" or "human").
 
 ```{r, eval = FALSE, tidy = FALSE}
-screp_example <- quietVDJgenes(screp_example)
-```
+combined <- annotateInvariant(combined, 
+                              type = "MAIT", 
+                              species = "human")
 
-In addition to ```quietVDJgenes()```, there is also T and B cell specific functions ```quietTCRgene()``` and ```quietBCRgenes()``` that will remove the respective lineage-specific receptor genes from the variable gene list. 
+combined <- annotateInvariant(combined, 
+                              type = "iNKT", 
+                              species = "human")
+```
