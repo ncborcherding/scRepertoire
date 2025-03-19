@@ -1,23 +1,24 @@
 #' Annotate invariant T cells (MAIT or iNKT) in single-cell TCR data
 #' 
-#' The [scoreInvariant()] function identifies mucosal-associated invariant T (MAIT) 
-#' cells or invariant natural killer T (iNKT) cells from single-cell sequencing 
-#' datasets based on their characteristic T-cell receptor (TCR) usage. It 
-#' extracts TCR chain information from the provided single-cell data, checks 
-#' it against known invariant T-cell receptor criteria for either MAIT or iNKT 
-#' cells, and returns a score indicating the presence (1) or absence (0) of 
-#' these invariant cell populations for each individual cell. The function 
-#' supports data from mouse and human samples, providing a convenient method 
-#' to annotate specialized T-cell subsets within single-cell analyses.
+#' The [annotateInvariant()] function identifies potential mucosal-associated 
+#' invariant T (MAIT) cells or invariant natural killer T (iNKT) cells from 
+#' single-cell sequencing datasets based on their characteristic  TCR usage. 
+#' It extracts TCR chain information from the provided single-cell 
+#' data, checks it against known invariant T-cell receptor criteria for either 
+#' MAIT or iNKT cells, and returns a score indicating the presence (1) or 
+#' absence (0) of these invariant cell populations for each individual cell. 
+#' The function supports data from mouse and human samples, providing a 
+#' convenient method to annotate specialized T-cell subsets within single-cell 
+#' analyses.
 #'
-#' @param input.data The single-cell object after [combineExpression()]
+#' @param input.data The product of [combineTCR()] or [combineExpression()].
 #' @param type Character specifying the type of invariant cells to
 #'annotate ('MAIT' or 'iNKT').
 #' @param species Character specifying the species 
 #' ('mouse' or 'human').
 #' 
-#' @return A data.frame with barcode identifiers and corresponding annotation 
-#' scores (0 or 1).
+#' @return A single-cell object or list with the corresponding annotation 
+#' scores (0 or 1) added.
 #' @examples
 #' #Getting the combined contigs
 #' combined <- combineTCR(contig_list, 
@@ -31,25 +32,26 @@
 #' scRep_example <- combineExpression(combined, scRep_example)
 #' 
 #' #Using annotateInvariant
-#' annotateInvariant(input.data = seurat.obj, type = "MAIT", species = "human")
-#' annotateInvariant(input.data = seurat.obj, type = "iNKT", species = "human")
+#' annotateInvariant(input.data = scRep_example, type = "MAIT", species = "human")
+#' annotateInvariant(input.data = scRep_example, type = "iNKT", species = "human")
 #' 
 #' @importFrom immApex getIR
+#' @importFrom  rlang %||%
 #'
 #' @export
 annotateInvariant <- function(input.data, 
                               type = c("MAIT", "iNKT"), 
                               species = c("mouse", "human")) {
   
-  if(!is_seurat_or_se_object(input.data)) {
-    stop("Please ensure input.data is a single-cell object after 
-         combineExpression()")
-  }
-  
   type <- match.arg(type)
   species <- match.arg(species)
   
-  TCRS <- lapply(c("TRA", "TRB") function(x) {
+  if(!is_seurat_or_se_object(input.data) & !inherits(input.data, "list")) {
+    stop("Please use the output of combineTCR() or combineExpression() as input.data")
+  }
+
+  
+  TCRS <- lapply(c("TRA", "TRB"), function(x) {
     tmp <- getIR(input.data, chains = x, sequence.type = "aa")
     tmp
   })
@@ -60,8 +62,8 @@ annotateInvariant <- function(input.data,
   
   species.criteria <- criteria[[species]]
   
-  TRA.data <- TCRS[[1]]
-  TRB.data <- TCRS[[2]]
+  TRA.data <- TCRS[[1]][[1]]
+  TRB.data <- TCRS[[2]][[1]]
   
   barcode.ids <- unique(TRA.data$barcode)
   
@@ -88,10 +90,30 @@ annotateInvariant <- function(input.data,
     
   }, integer(1))
   
-  output <- data.frame(barcode = barcode.ids, score = scores)
-  colnames(output)[2] <- paste0(type, ".score")
+  output <- data.frame(row.names = barcode.ids, score = scores)
+  new.variable.name <- paste0(type, ".score")
+  colnames(output)[1] <- new.variable.name
   
-  return(output)
+  if(is_seurat_or_se_object(input.data)) {
+    if (is_seurat_object(input.data)) { 
+      input.data[[new.variable.name]] <- output
+    } else {
+      combined_col_names <- unique(c(colnames(colData(input.data)), new.variable.name))
+      full_data <- merge(colData(input.data), output, by = "row.names", all.x = TRUE)
+      # at this point, the rows in full_data are shuffled. match back with the original colData
+      full_data <- full_data[match(colnames(input.data), full_data[,1]), ]
+      rownames(full_data) <- full_data[, 1]
+      full_data  <- full_data[, -1]
+      colData(input.data) <- DataFrame(full_data[, combined_col_names])  
+    }
+  } else {
+    input.data <- lapply(input.data, function(x) {
+      merged_x <- merge(x, output, by.x = "barcode", by.y = "row.names", all.x = TRUE)  
+      return(merged_x)
+    })
+  }
+  
+  return(input.data)
 }
 
 # Internal criteria definitions
