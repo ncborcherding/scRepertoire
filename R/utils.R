@@ -327,7 +327,7 @@
 		# Add sample ids to df
 		mutate(values = names[i], Abundance = n()) %>%
 		select(all_of(cloneCall), values, Abundance) %>%
-		ungroup()
+		ungroup() 
 	return(data)
 }
 

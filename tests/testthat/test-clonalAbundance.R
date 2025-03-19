@@ -18,7 +18,7 @@ test_that("clonalAbundance works", {
   )
   
   combined <- getCombined()
-  combined <- addVariable(getCombined(), 
+  combined <- addVariable(combined, 
                           variable.name = "Type", 
                           variables = rep(c("B", "L"), 4))
   expect_doppelganger(

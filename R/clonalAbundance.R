@@ -63,7 +63,8 @@ clonalAbundance <- function(input.data,
   			.parseContigs(x, names, cloneCall) %>%
   			mutate("{group.by}" := input.data[[x]][[group.by]])
   	})) %>% 
-  		distinct()
+  		distinct() %>%
+  	  as.data.frame()
   	col <- length(unique(Con.df[[group.by]]))
     fill <- group.by
     if(!is.null(order.by)) {
@@ -73,7 +74,8 @@ clonalAbundance <- function(input.data,
     }
     if (scale == TRUE) { 
         ylab <- "Density of Clones"
-        plot <- ggplot(Con.df, aes(x=Abundance, fill=Con.df[,group.by])) +
+        plot <- ggplot(Con.df, aes(x=Abundance, 
+                                   fill=Con.df[,group.by])) +
                       geom_density(aes(y=after_stat(scaled)), 
                                    alpha=0.5, 
                                    lwd=0.25, 
@@ -91,8 +93,10 @@ clonalAbundance <- function(input.data,
     }
   } else {
     for (i in seq_along(input.data)) {
-      data1 <- .parseContigs(input.data, i, names, cloneCall)
-      Con.df<- rbind.data.frame(Con.df, data1) 
+      data1 <- .parseContigs(input.data, i, names, cloneCall) 
+      Con.df<- rbind.data.frame(Con.df, data1) %>%
+                  distinct() %>%
+                  as.data.frame()
     }
     Con.df <- data.frame(Con.df)
     if(!is.null(order.by)) {

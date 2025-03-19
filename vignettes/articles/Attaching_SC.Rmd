@@ -47,17 +47,6 @@ combined.TCR <- combineTCR(contig_list,
                                             "P19B","P19L", "P20B", "P20L"))
 ```
 
-The data in the scRepertoire package is derived from a [study](https://pubmed.ncbi.nlm.nih.gov/33622974/) of acute respiratory stress disorder in the context of bacterial and COVID-19 infections. The internal single cell data (`scRep_example()`) built in to scRepertoire is randomly sampled 500 cells from the fully integrated Seurat object to minimize the package size. However, for the purpose of the vignette we will use the full single-cell object with 30,000 cells. We will use both Seurat and Single-Cell Experiment (SCE) with scater to perform further visualizations in tandem. 
-
-## Preprocessed Single-Cell Object
-
-```{r tidy = FALSE}
-scRep_example <- readRDS("scRep_example_full.rds")
-
-#Making a Single-Cell Experiment object
-sce <- Seurat::as.SingleCellExperiment(scRep_example)
-```
-
 ## Note on Dimensional Reduction
 
 In single-cell RNA sequencing workflows, dimensional reduction is typically performed by first identifying highly variable features. These features are then used directly for UMAP/tSNE projection or as inputs for principal component analysis. The same approach is commonly applied to clustering as well.
@@ -80,8 +69,18 @@ scRep_example <- quietTCRgenes(scRep_example)
 # Check the first 10 variable features after removal
 VariableFeatures(scRep_example)[1:10]
 ```
-
 By applying these functions, you can ensure that clustering and dimensional reduction are driven by broader transcriptomic differences rather than clonal expansion artifacts. 
+
+## Preprocessed Single-Cell Object
+
+The data in the scRepertoire package is derived from a [study](https://pubmed.ncbi.nlm.nih.gov/33622974/) of acute respiratory stress disorder in the context of bacterial and COVID-19 infections. The internal single cell data (`scRep_example()`) built in to scRepertoire is randomly sampled 500 cells from the fully integrated Seurat object to minimize the package size. However, for the purpose of the vignette we will use the full single-cell object with 30,000 cells. We will use both Seurat and Single-Cell Experiment (SCE) with scater to perform further visualizations in tandem. 
+
+```{r tidy = FALSE}
+scRep_example <- readRDS("scRep_example_full.rds")
+
+#Making a Single-Cell Experiment object
+sce <- Seurat::as.SingleCellExperiment(scRep_example)
+```
 
 ## combineExpression
 
