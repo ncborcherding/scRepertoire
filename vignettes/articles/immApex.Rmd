@@ -36,12 +36,6 @@ knitr::opts_chunk$set(
   warning = FALSE,
   time_it = TRUE
 )
-
-suppressMessages(library(immApex))
-suppressMessages(library(keras))
-suppressMessages(library(ggplot2))
-suppressMessages(library(viridis))
-suppressMessages(library(dplyr))
 set.seed(42)
 ```
 
@@ -59,6 +53,8 @@ suppressMessages(library(keras))
 suppressMessages(library(ggplot2))
 suppressMessages(library(viridis))
 suppressMessages(library(dplyr))
+suppressMessages(library(tidygraph))
+suppressMessages(library(ggraph))
 ```
 
 # Getting and Manipulating Sequences
@@ -359,6 +355,43 @@ Similar to the positional probability, we can also summarize a given set of sequ
 adj.matrix <- adjacencyMatrix(sequences, 
                               normalize = FALSE)
 adj.matrix
+```
+
+## buildNetwork
+
+The function ```buildNetwork()``` constructs a weighted similarity network from nucleotide or amino acid sequences sequences provided either as a character vector or a data frame with gene annotations. It accepts an edit distance threshold and optional logical parameters (**filter.v** and **filter.j**) to restrict comparisons to sequences with matching V or J gene annotations. Internally, it uses a symmetric deletion lookup combined with a banded edit-distance algorithm.
+
+```{r tidy = FALSE}
+# Generating similar sequences
+set.seed(42)
+sequences <- generateSequences(prefix.motif = "CASSRT",
+                               suffix.motif = "YF",
+                               number.of.sequences = 1000,
+                               min.length = 8,
+                               max.length = 12)
+
+# Building Edit-distance-based Network
+g1 <- buildNetwork(sequences, 
+                   threshold = 2)
+
+# Remove isolated nodes
+g1 <- delete.vertices(g1, which(degree(g1) == 0))
+
+# Convert to tidygraph for use with ggraph
+g_tidy <- as_tbl_graph(g1)
+
+# Plot the network
+ggraph(g_tidy, 
+       layout = "fr") + 
+  geom_edge_link(aes(width = weight), 
+                 color = "black") + 
+  geom_node_point(aes(size = degree(g1, mode = "all")),
+                  fill = "steelblue", 
+                  color= "black", 
+                  shape = 21) +
+  theme_void() + 
+  scale_edge_width(range = c(0.1, 0.5)) + 
+  theme(legend.position = "none")
 ```
 
 # Extracting Sequences
