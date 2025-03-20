@@ -55,6 +55,7 @@ suppressMessages(library(viridis))
 suppressMessages(library(dplyr))
 suppressMessages(library(tidygraph))
 suppressMessages(library(ggraph))
+suppressMessages(library(igraph))
 ```
 
 # Getting and Manipulating Sequences
@@ -375,7 +376,7 @@ g1 <- buildNetwork(sequences,
                    threshold = 2)
 
 # Remove isolated nodes
-g1 <- delete.vertices(g1, which(degree(g1) == 0))
+g1 <- delete_vertices(g1, which(degree(g1) == 0))
 
 # Convert to tidygraph for use with ggraph
 g_tidy <- as_tbl_graph(g1)
