@@ -1,3 +1,12 @@
+# scRepertoire VERSION 2.5.0
+
+* Rebasing for the purposes of Bioconductor version 3.21
+
+## UNDERLYING CHANGES
+* Update/Improve code for ```loadContigs()```
+* Removed support for Omniscope format
+
+
 # scRepertoire VERSION 2.3.4
 
 ## UNDERLYING CHANGES
@@ -15,7 +24,7 @@
 
 # scRepertoire VERSION 2.2.1
 
-* Rebasing for the purposes of Bioconductor version 2.2.0
+* Rebasing for the purposes of Bioconductor version 3.20
 
 ## NEW FEATURES
 * Added support for BCRs for loading ParseBio sequences.

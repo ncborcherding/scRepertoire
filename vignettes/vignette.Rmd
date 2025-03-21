@@ -59,7 +59,6 @@ Beyond the default 10x Genomic Cell Ranger pipeline outputs, scRepertoire suppor
 * [Immcantation](https://immcantation.readthedocs.io/en/stable/index.html)  
 * JSON-formatted contig data  
 * [MiXCR](https://pubmed.ncbi.nlm.nih.gov/25924071/)  
-* [Omniscope](https://www.omniscope.ai/)  
 * [TRUST4](https://pubmed.ncbi.nlm.nih.gov/33986545/)  
 * [WAT3R](https://pubmed.ncbi.nlm.nih.gov/35674381/)  
 
