@@ -7,42 +7,48 @@
 loadContigs(input, format = "10X")
 }
 \arguments{
-\item{input}{A directory path containing contig files or a list/data frame of pre-loaded contig data.}
+\item{input}{A directory path containing contig files or a list/data frame
+of pre-loaded contig data.}
 
 \item{format}{A string specifying the data format. Must be one of:
-"10X", "AIRR", "BD", "Dandelion", "JSON", "MiXCR", "ParseBio", "Omniscope", "TRUST4", "WAT3R", or "Immcantation".}
+"auto", "10X", "AIRR", "BD", "Dandelion", "JSON", "MiXCR", "ParseBio",
+"TRUST4", "WAT3R", or "Immcantation".If "auto", the function attempts
+automatic format detection.}
 }
 \value{
-A list of contigs formatted for use with \code{\link[=combineTCR]{combineTCR()}} or \code{\link[=combineBCR]{combineBCR()}}. Rows containing only NA values
-(aside from the barcode) are dropped.
+A list of contigs formatted for use with \code{\link[=combineTCR]{combineTCR()}} or
+\code{\link[=combineBCR]{combineBCR()}}. Rows containing only NA values (aside from the barcode)
+are dropped.
 }
 \description{
-This function loads and processes contig data from various single-cell immune receptor sequencing formats.
-It reads data from a directory (recursively) or from an already loaded list/data frame, transforms it to a common structure,
-and returns a list of contigs ready for downstream analysis with \code{\link[=combineTCR]{combineTCR()}} or \code{\link[=combineBCR]{combineBCR()}}.
+This function loads and processes contig data from various single-cell
+immune receptor sequencing formats. It reads data from a directory
+(recursively) or from an already loaded list/data frame, transforms it to a
+common structure, and returns a list of contigs ready for downstream analysis
+with \code{\link[=combineTCR]{combineTCR()}} or \code{\link[=combineBCR]{combineBCR()}}.
 
 Supported file formats and their expected file names:
 \itemize{
-\item \strong{10X}: \code{"filtered_contig_annotations.csv"}
-\item \strong{AIRR}: \code{"airr_rearrangement.tsv"}
-\item \strong{BD}: \code{"Contigs_AIRR.tsv"}
-\item \strong{Dandelion}: \code{"all_contig_dandelion.tsv"}
-\item \strong{Immcantation}: \code{"data.tsv"} (or similar)
-\item \strong{JSON}: \code{".json"}
-\item \strong{ParseBio}: \code{"barcode_report.tsv"}
-\item \strong{MiXCR}: \code{"clones.tsv"}
-\item \strong{TRUST4}: \code{"barcode_report.tsv"}
-\item \strong{WAT3R}: \code{"barcode_results.csv"}
+\item \strong{10X}: "filtered_contig_annotations.csv"
+\item \strong{AIRR}: "airr_rearrangement.tsv"
+\item \strong{BD}: "Contigs_AIRR.tsv"
+\item \strong{Dandelion}: "all_contig_dandelion.tsv"
+\item \strong{Immcantation}: "_data.tsv" (or similar)
+\item \strong{JSON}: ".json"
+\item \strong{ParseBio}: "barcode_report.tsv"
+\item \strong{MiXCR}: "clones.tsv"
+\item \strong{TRUST4}: "barcode_report.tsv"
+\item \strong{WAT3R}: "barcode_results.csv"
 }
 }
 \examples{
 TRUST4 <- read.csv("https://www.borch.dev/uploads/contigs/TRUST4_contigs.csv")
-contig_list <- loadContigs(TRUST4, format = "TRUST4")
+contig.list <- loadContigs(TRUST4, format = "auto")
 
 BD <- read.csv("https://www.borch.dev/uploads/contigs/BD_contigs.csv")
-contig_list <- loadContigs(BD, format = "BD")
+contig.list <- loadContigs(BD, format = "BD")
 
 WAT3R <- read.csv("https://www.borch.dev/uploads/contigs/WAT3R_contigs.csv")
-contig_list <- loadContigs(WAT3R, format = "WAT3R")
+contig.list <- loadContigs(WAT3R, format = "auto")
 
 }
