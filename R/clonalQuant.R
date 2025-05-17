@@ -102,7 +102,7 @@ clonalQuant <- function(input.data,
   
   if(!is.null(order.by)) {
     mat <- .ordering.function(vector = order.by,
-                              group.by = "values", 
+                              group.by = x, 
                               data.frame = mat)
   }
   
