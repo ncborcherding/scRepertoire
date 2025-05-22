@@ -1,3 +1,4 @@
+
 test_that("loadContigs works for BD, WAT3R, 10X, MiXCR, Immcantation, ParseBio, and Dandelion formats", {
   
   # BD format
