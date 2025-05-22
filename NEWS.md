@@ -1,3 +1,8 @@
+# scRepertoire VERSION 2.5.1
+
+## UNDERLYING CHANGES
+* update unit testing
+
 # scRepertoire VERSION 2.3.4
 
 ## UNDERLYING CHANGES

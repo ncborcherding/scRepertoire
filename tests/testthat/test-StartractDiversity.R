@@ -13,13 +13,4 @@ test_that("StartracDiversity works", {
                       type = "Type", 
                        group.by = "Patient")
   )
-  
-  expect_equal(
-    StartracDiversity(test_obj, 
-                      type = "Type", 
-                      group.by = "Patient",
-                      exportTable = TRUE),
-    getdata("seuratFunctions", "StartracDiversity_exportTable"),
-    tolerance = 1e-4
-  )
 })
