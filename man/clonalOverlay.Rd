@@ -10,6 +10,8 @@ clonalOverlay(
   cut.category = "clonalFrequency",
   cutpoint = 30,
   bins = 25,
+  pt.size = 0.5,
+  pt.alpha = 1,
   facet.by = NULL
 )
 }
@@ -25,6 +27,10 @@ filtering.}
 cut.category variable in the meta data of the single-cell object.}
 
 \item{bins}{The number of contours to the overlay}
+
+\item{pt.size}{The point size for plotting (default is 0.5)}
+
+\item{pt.alpha}{The alpha value for plotting (default is 1)}
 
 \item{facet.by}{meta data variable to facet the comparison}
 }
