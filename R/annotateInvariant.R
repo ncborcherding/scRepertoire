@@ -72,21 +72,15 @@ annotateInvariant <- function(input.data,
     TRA.subset <- TRA.data[TRA.data$barcode == barcode,]
     TRB.subset <- TRB.data[TRB.data$barcode == barcode,]
     
-    if (nrow(TRA.subset) == 0 | nrow(TRB.subset) == 0) return(0)
-    
     TRA.v <- TRA.subset$v
     TRA.j <- TRA.subset$j
     TRB.v <- TRB.subset$v
-    TRA.length <- nchar(TRA.subset$cdr3_aa)
-    
-    if (is.null(TRA.v) | is.null(TRA.j) | is.null(TRB.v) | is.null(TRA.length)) return(0)
     
     TRA.v.match <- grepl(paste(species.criteria$TRA.v, collapse = "|"), TRA.v)
     TRA.j.match <- grepl(paste(species.criteria$TRA.j, collapse = "|"), TRA.j)
-    TRA.length.match <- any(TRA.length %in% species.criteria$TRA.length)
     TRB.v.match <- ifelse(is.null(species.criteria$TRB.v), TRUE, grepl(paste(species.criteria$TRB.v, collapse = "|"), TRB.v))
     
-    as.integer(TRA.v.match & TRA.j.match & TRA.length.match & TRB.v.match)
+    as.integer(TRA.v.match) + as.integer(TRA.j.match) + as.integer(TRB.v.match)
     
   }, integer(1))
   
@@ -120,21 +114,17 @@ annotateInvariant <- function(input.data,
 .MAIT.criteria <- list(
   mouse = list(TRA.v = "TRAV1", 
                TRA.j = "TRAJ33", 
-               TRA.length = 12, 
                TRB.v = c("TRBV13", "TRBV19")), 
   human = list(TRA.v = "TRAV1-2", 
                TRA.j = c("TRAJ33", "TRAJ20", "TRAJ12"), 
-               TRA.length = 12,
                TRB.v = c("TRBV6", "TRBV20"))
 )
 
 .iNKT.criteria <- list(
   mouse = list(TRA.v = "TRAV11", 
                TRA.j = "TRAJ18", 
-               TRA.length = 15,
                TRB.v = NULL),
   human = list(TRA.v = "TRAV10", 
                TRA.j = "TRAJ18",
-               TRA.length = c(14, 15, 16),
                TRB.v = "TRBV25-1")
 )
