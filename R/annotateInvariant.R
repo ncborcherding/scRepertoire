@@ -18,7 +18,7 @@
 #' ('mouse' or 'human').
 #' 
 #' @return A single-cell object or list with the corresponding annotation 
-#' scores (0 or 1) added.
+#' scores (0, 1, 2, 3) added.
 #' @examples
 #' #Getting the combined contigs
 #' combined <- combineTCR(contig_list, 
