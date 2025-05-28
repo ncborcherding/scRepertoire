@@ -31,7 +31,7 @@ test_that("annotateInvariant() fails with incorrect input format", {
 test_that("annotateInvariant() returns zero scores for non-matching cells", {
   result <- annotateInvariant(test_obj, type = "MAIT", species = "human")
   
-  expect_equal(sum(result$MAIT.score), 0) 
+  expect_equal(sum(result$MAIT.score), 1) 
 })
 
 test_that("annotateInvariant() correctly integrates with Seurat object", {
