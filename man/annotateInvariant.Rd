@@ -21,7 +21,7 @@ annotate ('MAIT' or 'iNKT').}
 }
 \value{
 A single-cell object or list with the corresponding annotation
-scores (0, 1, 2, 3) added.
+scores (0 or 1) added.
 }
 \description{
 The \code{\link[=annotateInvariant]{annotateInvariant()}} function identifies potential mucosal-associated
