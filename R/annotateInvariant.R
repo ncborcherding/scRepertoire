@@ -81,10 +81,10 @@ annotateInvariant <- function(input.data,
     
     if (is.null(TRA.v) | is.null(TRA.j) | is.null(TRB.v) | is.null(TRA.length)) return(0)
     
-    TRA.v.match <- any(TRA.v %in% species.criteria$TRA.v)
-    TRA.j.match <- any(TRA.j %in% species.criteria$TRA.j)
+    TRA.v.match <- grepl(paste(species.criteria$TRA.v, collapse = "|"), TRA.v)
+    TRA.j.match <- grepl(paste(species.criteria$TRA.j, collapse = "|"), TRA.j)
     TRA.length.match <- any(TRA.length %in% species.criteria$TRA.length)
-    TRB.v.match <- ifelse(is.null(species.criteria$TRB.v), TRUE, any(TRB.v %in% species.criteria$TRB.v))
+    TRB.v.match <- ifelse(is.null(species.criteria$TRB.v), TRUE, grepl(paste(species.criteria$TRB.v, collapse = "|"), TRB.v))
     
     as.integer(TRA.v.match & TRA.j.match & TRA.length.match & TRB.v.match)
     
