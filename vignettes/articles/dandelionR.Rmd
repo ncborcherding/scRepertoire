@@ -33,25 +33,25 @@ knitr::opts_chunk$set(
 )
 ```
 
-# Introduction
+# Overview
 
 `dandelionR` is an R package for performing single-cell immune repertoire trajectory analysis, based on the original python implementation in [dandelion](https://www.github.com/zktuong/dandelion). 
 
 It provides all the necessary tools to interface with [scRepertoire](https://github.com/ncborcherding/scRepertoire) and a custom implementation of absorbing markov chain for pseudotime inference, inspired based on the [palantir](https://github.com/dpeerlab/Palantir) python package.
 
-## Installation
+## Citation 
+
+If using *dandelionR*, please cite the [article](https://www.biorxiv.org/content/10.1101/2025.02.04.636146v1): Yu, J., et al., dandelionR: Single-cell immune repertoire trajectory analysis in R. BioRxiv 2025.
+
+# Installation 
 
 ```{r, eval = FALSE}
-if (!requireNamespace("devtools", quietly = TRUE)) {
-    install.packages("devtools")
-}
-if (!requireNamespace("BiocManager", quietly = TRUE)) {
+if (!require("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
-}
-if (!requireNamespace("scater", quietly = TRUE)) { # only for the tutorial
-    BiocManager::install("scater")
-}
-devtools::install_github("tuonglab/dandelionR", dependencies = TRUE)
+
+BiocManager::install("dandelionR")
+
+remotes::install_github("tuonglab/dandelionR", dependencies = TRUE)
 ```
 
 ## Usage

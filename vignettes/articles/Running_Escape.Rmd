@@ -77,6 +77,7 @@ The core workflow is:
 More information is available at the [GitHub Repo](https://github.com/BorchLab/escape).
 
 ## Citation 
+
 If using *escape*, please cite the [article](https://www.nature.com/articles/s42003-020-01625-6): Borcherding, N., Vishwakarma, A., Voigt, A.P. et al. Mapping the immune environment in clear cell renal carcinoma by single-cell genomics. Commun Biol 4, 122 (2021).
 
 # Installation 

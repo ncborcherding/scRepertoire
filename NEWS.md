@@ -1,11 +1,12 @@
 # scRepertoire VERSION 2.5.0
 
-* Rebasing for the purposes of Bioconductor version 3.21
-
 ## UNDERLYING CHANGES
 * Update/Improve code for ```loadContigs()```
-* Removed support for Omniscope format
-
+* Consolidated support for discrete AIRR formats under the umbrella of AIRR
+* Added "tcrpheno" to ```exportClones()```
+* Converted ```exportClones()``` to base R to reduce dependencies
+* Added dandelionR vignette to pkgdown site
+* Added tcrpheno vignette to pkgdown site
 
 # scRepertoire VERSION 2.3.4
 

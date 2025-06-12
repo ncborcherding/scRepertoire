@@ -58,6 +58,8 @@ navbar:
     - text: '-------'
     - text: Immune Repertoire Trajectory Analysis
       href: articles/dandelionR.html
+    - text: TCRpheno applied to T cell fate
+      href: articles/tcrpheno.html
   - text: News/Changelog
     href: news/index.html
   - text: Reference
