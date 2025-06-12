@@ -62,8 +62,8 @@ annotateInvariant <- function(input.data,
   
   species.criteria <- criteria[[species]]
   
-  TRA.data <- TCRS[[1]][[1]]
-  TRB.data <- TCRS[[2]][[1]]
+  TRA.data <- TCRS[[1]]
+  TRB.data <- TCRS[[2]]
   
   barcode.ids <- unique(TRA.data$barcode)
   
