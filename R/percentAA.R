@@ -16,12 +16,12 @@
 #'  [combineExpression()].
 #' @param chain "TRA", "TRB", "TRG", "TRG", "IGH", "IGL".
 #' @param group.by The variable to use for grouping.
-#' @param order.by A vector of specific plotting order or "alphanumeric"
-#' to plot groups in order
+#' @param order.by A vector of specific plotting order for `group.by` or 
+#' "alphanumeric" to plot groups in order
 #' @param aa.length The maximum length of the CDR3 amino acid sequence. 
 #' @param exportTable Returns the data frame used for forming the graph.
 #' @param palette Colors to use in visualization - input any [hcl.pals][grDevices::hcl.pals].
-#' @importFrom dplyr mutate_at mutate_if
+#' @importFrom immApex calculateFrequency
 #' @export
 #' @concept Summarize_Repertoire
 #' @return ggplot of stacked bar graphs of amino acid proportions
@@ -39,37 +39,49 @@ percentAA <- function(input.data,
     input.data <- .groupList(input.data, group.by)
   }
   
-  #Getting AA Counts
-  aa.count.list <- .aa.counter(input.data, "CTaa", aa.length)
-  
-  #Calculating proportion and melting data
-  lapply(seq_along(aa.count.list), function(x) {
-    aa.count.list[[x]] <- aa.count.list[[x]] %>% mutate_if(is.numeric, list(~ ./sum(.)))
-    melt.res <- suppressMessages(melt(aa.count.list[[x]]))
-    melt.res$group <- names(input.data)[x]
-    melt.res
+  # Calculating proportion 
+  lapply(seq_along(input.data), function(x) {
+    strings <- .process.strings(input.data[[x]][["CTaa"]], aa.length)
+    freqs <- calculateFrequency(strings)    
+    freqs_df <- as.data.frame(freqs)
+    freqs_df$AminoAcid <- rownames(freqs_df)
+    long_df <- reshape(
+      freqs_df,
+      varying = list(colnames(freqs)), 
+      v.names = "Frequency",           
+      timevar = "Position",            
+      times = colnames(freqs),         
+      direction = "long",              
+      idvar = "AminoAcid"              
+    )
+    rownames(long_df) <- NULL # Remove the messy row names
+    long_df$Position <- as.integer(gsub("Pos.", "", long_df$Position))
+    long_df$AminoAcid[long_df$AminoAcid == "."] <- NA
+    long_df$group <- names(input.data)[x]
+    long_df
   }) -> res.list
   
   mat_melt <- do.call(rbind, res.list)
   if(!is.null(order.by)) {
     mat_melt <- .ordering.function(vector = order.by,
-                                   group.by = "variable", 
+                                   group.by = "group", 
                                    mat_melt)
   }
+  if (exportTable == TRUE) { 
+    return(mat_melt) 
+  }
   
-  plot <- ggplot(mat_melt, aes(x=as.factor(variable), y = value, fill=AA)) +
+  # Plotting the result
+  plot <- ggplot(mat_melt, aes(x=as.factor(Position), y = Frequency, fill=AminoAcid)) +
     geom_bar(stat = "identity", position="fill", lwd= 0.25, color = "black") +
     scale_fill_manual(name = "Amino Acid", 
-                      values = rev(.colorizer(palette,21))) +
+                      values = rev(.colorizer(palette,20))) +
     xlab("Amino Acid Residues") +
     ylab("Relative Percent") +
     theme_classic() + 
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
   if(length(res.list) > 1) {
     plot <- plot + facet_grid(group~.)
-  }
-  if (exportTable == TRUE) { 
-    return(mat_melt) 
   }
   return(plot)
 }    

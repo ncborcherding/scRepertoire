@@ -22,8 +22,8 @@ percentAA(
 
 \item{group.by}{The variable to use for grouping.}
 
-\item{order.by}{A vector of specific plotting order or "alphanumeric"
-to plot groups in order}
+\item{order.by}{A vector of specific plotting order for \code{group.by} or
+"alphanumeric" to plot groups in order}
 
 \item{aa.length}{The maximum length of the CDR3 amino acid sequence.}
 
