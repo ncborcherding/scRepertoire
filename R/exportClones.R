@@ -202,7 +202,7 @@ exportClones <- function(input.data,
 
 .tcrphenoExport <- function(input.data, group.by) {
   input.data <- .data.wrangle(input.data, NULL, "CTgene", "both")
-  dat <- do.call(rbind, input.data)
+  dat <- do.call(rbind, unname(input.data))
   
   # split strings into a matrix with a fixed number of columns
   split_to_fixed_matrix <- function(x, split_char, num_cols) {
@@ -215,7 +215,7 @@ exportClones <- function(input.data,
   gene_split <- split_to_fixed_matrix(dat$CTgene, "_", 2)
   
   tcr1_genes <- split_to_fixed_matrix(gene_split[, 1], "[.]", 2)
-  tcr2_genes <- split_to_fixed_matrix(gene_split[, 2], "[.]", 2)
+  tcr2_genes <- split_to_fixed_matrix(gene_split[, 2], "[.]", 3)[,c(1,3)]
   
   contigs <- data.frame(
     cell = rownames(dat),
@@ -228,6 +228,11 @@ exportClones <- function(input.data,
     TCRB_jgene = tcr2_genes[, 2],
     TCRB_cdr3nt = nt_split[, 2]
   )
+  # Clean multichains
+  columns_to_clean <- c("TCRA_cdr3aa", "TCRA_cdr3nt", "TCRB_cdr3aa", "TCRB_cdr3nt")
+  contigs[columns_to_clean] <- lapply(contigs[columns_to_clean], function(x) {
+    gsub(";.*", "", x)
+  })
   
   contigs[contigs == ""] <- NA
   contigs[contigs == "NA"] <- NA
