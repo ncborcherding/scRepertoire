@@ -77,24 +77,13 @@
 }
 
 
-.aa.counter <- function(input.data, cloneCall, aa.length) {
-    lapply(input.data, function(x) {
-        strings <- x[,cloneCall]
-        strings <- do.call(c,str_split(strings, ";"))
-        strings <- strings[strings != "NA"]
-        strings <- na.omit(strings)
-        strings <- strings[nchar(strings) < aa.length]
-        strings <- .padded_strings(strings, aa.length)
-        strings <- do.call(rbind, strings)
-        aa.output <- apply(strings, 2, function(z) {
-          summary <- as.data.frame(table(z, useNA = "always"))
-        })
-        res <- suppressWarnings(Reduce(function(...) merge(..., all = TRUE, by="z"), aa.output))
-        colnames(res) <- c("AA", paste0("pos.", seq_len(aa.length)))
-        res[which(!is.na(res$AA)),][is.na(res[which(!is.na(res$AA)),])] <- 0
-        res
-    }) -> res.list
-  return(res.list)
+# QC of the strings before proportion calculation
+.process.strings <- function(seq, aa.length) {
+  strings <- do.call(c,str_split(seq, ";"))
+  strings <- strings[strings != "NA"]
+  strings <- na.omit(strings)
+  strings <- strings[nchar(strings) <= aa.length]
+  strings
 }
 
 #Pulling a color palette for visualizations

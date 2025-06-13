@@ -23,20 +23,21 @@ positionalEntropy(
 
 \item{group.by}{The variable to use for grouping}
 
-\item{order.by}{A vector of specific plotting order or "alphanumeric"
-to plot groups in order}
+\item{order.by}{A vector of specific plotting order for \code{group.by} or
+"alphanumeric" to plot groups in order}
 
 \item{aa.length}{The maximum length of the CDR3 amino acid sequence.}
 
 \item{method}{The method to calculate the entropy/diversity -
-"shannon", "inv.simpson", "norm.entropy"}
+\code{"shannon"}, \code{"inv.simpson"}, \code{"gini.simpson"}, \code{"norm.entropy"},
+\code{"pielou"}, \code{"hill0"}, \code{"hill1"}, \code{"hill2"}}
 
 \item{exportTable}{Returns the data frame used for forming the graph}
 
 \item{palette}{Colors to use in visualization - input any \link[grDevices:palettes]{hcl.pals}}
 }
 \value{
-ggplot of line graph of diversity by position
+ggplot of line graph of diversity by amino acid residue position
 }
 \description{
 This function the diversity amino acids along the residues
