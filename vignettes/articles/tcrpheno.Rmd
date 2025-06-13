@@ -88,7 +88,7 @@ The `tcrpheno` package requires TCR data in a specific format. The ```exportClon
 exported_clones <- exportClones(scRep_example,
                                 write.file = FALSE,
                                 format = "tcrpheno") 
-exported_cloness <- na.omit(exported_clones)
+exported_clones <- na.omit(exported_clones)
 head(exported_clones)
 ```
 
@@ -114,27 +114,17 @@ scRep_example <- AddMetaData(scRep_example, tcrpheno.results)
 Now that the phenotype scores are part of the Seurat object, we can visualize them on dimensionality reduction plots, such as UMAPs. This helps to see if cells with particular TCR-derived phenotype scores cluster together or co-localize with known cell populations.
 
 ```{r}
-p1 <- FeaturePlot(scRep_example, 
-                  features = "TCRmem", 
-                  order = TRUE) +
-        scale_color_viridis(option = "B") 
+tcrpheno.plots <- FeaturePlot(scRep_example, 
+                              features = c("TCR.mem", 
+                                           "TCR.reg", 
+                                           "TCR.CD8", 
+                                           "TCR.innate"))
 
-p2 <- FeaturePlot(scRep_example, 
-                  features = "TCRreg", 
-                  order = TRUE) +
-        scale_color_viridis(option = "B") 
+lapply(tcrpheno.plots, function(x) {
+  x + scale_color_viridis(option = "B") 
+}) -> tcrpheno.plots
 
-p3 <- FeaturePlot(scRep_example, 
-                  features = "TCR.8", 
-                  order = TRUE) +
-        scale_color_viridis(option = "B") 
-
-p4 <- FeaturePlot(scRep_example, 
-                  features = "TCRinnate", 
-                  order = TRUE) +
-        scale_color_viridis(option = "B") 
-
-(p1 + p2) / (p3 + p4)
+wrap_plots(tcrpheno.plots)
 ```
 
 ## Comparing With Gene Expression
@@ -142,9 +132,15 @@ p4 <- FeaturePlot(scRep_example,
 A key aspect of integrating TCR phenotype scores is to compare them with the expression of known marker genes associated with different T cell states. This can help validate or provide biological context to the `tcrpheno` predictions.
 
 ```{r}
-FeaturePlot(scRep_example, 
-            features = c("CD4","CD8A", "FOXP3", "KLRB1"), 
-            cols = viridis_pal(option = "B")(50))
+RNA.plots <- FeaturePlot(scRep_example, 
+                          features = c("CD4","CD8A", "FOXP3", "KLRB1"), 
+                          combine = FALSE) 
+
+lapply(RNA.plots, function(x) {
+  x + scale_color_viridis(option = "B") 
+}) -> RNA.plots
+
+wrap_plots(RNA.plots)
 ```
 
 ## Comparing Innate Scores with TCR-based annotation
@@ -164,12 +160,12 @@ scRep_example <- annotateInvariant(scRep_example,
 
 # Visualize the TCRinnate score from tcrpheno
 p_innate_tcrpheno <- FeaturePlot(scRep_example, 
-                                 features = "TCRinnate", 
+                                 features = "TCR.innate", 
                                  pt.size = 0.5, 
                                  order = TRUE) +
                      scale_color_viridis(option = "B")
 
-
+# Visualize the MAIT score from scRepertoire (0 or 1)
 p_mait_screpertoire <- FeaturePlot(scRep_example, 
                                    features = "MAIT.score", 
                                    pt.size = 0.5, 
