@@ -7,6 +7,8 @@
 * Converted ```exportClones()``` to base R to reduce dependencies
 * Added dandelionR vignette to pkgdown site
 * Added tcrpheno vignette to pkgdown site
+* ```percentAA()``` refactored to minimize dependencies and use immApex
+* ```positionalEntropy()``` refactored to minimize dependencies and use immApex
 
 # scRepertoire VERSION 2.3.4
 

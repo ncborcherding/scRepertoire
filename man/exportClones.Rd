@@ -2,7 +2,7 @@
 % Please edit documentation in R/exportClones.R
 \name{exportClones}
 \alias{exportClones}
-\title{Exporting clones}
+\title{Exporting clonal information}
 \usage{
 exportClones(
   input.data,
@@ -17,7 +17,8 @@ exportClones(
 \item{input.data}{The product of \code{\link[=combineTCR]{combineTCR()}},
 \code{\link[=combineBCR]{combineBCR()}}, or \code{\link[=combineExpression]{combineExpression()}}.}
 
-\item{format}{The format to export the clones - "paired", "airr", or "TCRMatch".}
+\item{format}{The format to export the clones - "paired", "airr", "TCRMatch",
+or "tcrpheno".}
 
 \item{group.by}{The variable to use for grouping.}
 
@@ -34,10 +35,13 @@ CSV file of the paired sequences.
 \description{
 This function saves a csv file of clones (genes, amino acid, and
 nucleotide sequences) by barcodes. \strong{format} determines
-the structure of the csv file - \emph{paired} will export sequences
-by barcodes and include multiple chains, \emph{airr} will export a data
-frame that is consistent with the AIRR format, and \emph{TCRMatch} will
-export a data frame that has the TRB chain with count information.
+the structure of the csv file.
+\itemize{
+\item{"paired"} will export sequences by barcodes and include multiple chains.
+\item{"airr"} will export a data frame that is consistent with the AIRR format.
+\item{"TCRMatch"} will export a data frame that has the TRB chain with count information.
+\item{"tcrpheno"} will export a data frame with TCR-alpha and TCR-beta chains in separate columns.
+}
 }
 \examples{
 \dontrun{
