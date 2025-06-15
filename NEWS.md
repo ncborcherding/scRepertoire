@@ -3,7 +3,7 @@
 ## UNDERLYING CHANGES
 * Update/Improve code for ```loadContigs()```
 * Consolidated support for discrete AIRR formats under the umbrella of AIRR
-* Added "tcrpheno" to ```exportClones()```
+* Added `"tcrpheno"` and `immunarch` to ```exportClones()```
 * Converted ```exportClones()``` to base R to reduce dependencies
 * Added dandelionR vignette to pkgdown site
 * Added tcrpheno vignette to pkgdown site
