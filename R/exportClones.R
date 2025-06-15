@@ -1,241 +1,337 @@
-#' Exporting clonal information
+#' Export Clonal Data in Various Formats
 #'
-#' This function saves a csv file of clones (genes, amino acid, and 
-#' nucleotide sequences) by barcodes. **format** determines 
-#' the structure of the csv file.
+#' Exports clonal information (gene sequences, amino acids, nucleotides) from
+#' scRepertoire objects into a file or a data frame. The output format can be
+#' tailored for compatibility with different analysis workflows.
+#'
+#' @details
+#' The `format` parameter determines the structure of the output:
 #' \itemize{
-#'   \item{"paired"} will export sequences by barcodes and include multiple chains.
-#'   \item{"airr"} will export a data frame that is consistent with the AIRR format.
-#'   \item{"TCRMatch"} will export a data frame that has the TRB chain with count information.
-#'   \item{"tcrpheno"} will export a data frame with TCR-alpha and TCR-beta chains in separate columns.
+#'   \item{"paired"}: Exports a data frame where each row represents a barcode,
+#'     with paired chain information (amino acid, nucleotide, genes) in separate
+#'     columns.
+#'   \item{"airr"}: Exports a data frame that adheres to the Adaptive Immune
+#'     Receptor Repertoire (AIRR) Community format, with each row representing
+#'     a single receptor chain.
+#'   \item{"TCRMatch"}: Exports a data frame specifically for the TCRMatch
+#'     algorithm, containing the TRB chain amino acid sequence and clonal
+#'     frequency.
+#'   \item{"tcrpheno"}: Exports a data frame compatible with the tcr-pgen
+#'     pipeline, with TRA and TRB chains in separate columns.
+#'   \item{"immunarch"}: Exports a list containing a data frame and metadata
+#'     formatted for use with the immunarch package.
 #' }
-#' 
-#' @examples
-#' \dontrun{
-#' #Making combined contig data
-#' combined <- combineTCR(contig_list, 
-#'                         samples = c("P17B", "P17L", "P18B", "P18L", 
-#'                                     "P19B","P19L", "P20B", "P20L"))
-#' exportClones(combined, 
-#'              format = "paired")
-#' }
-#'                                    
-#' @param input.data The product of [combineTCR()], 
-#' [combineBCR()], or [combineExpression()].
-#' @param format The format to export the clones - "paired", "airr", "TCRMatch",
-#' or "tcrpheno".
-#' @param group.by The variable to use for grouping.
-#' @param write.file **TRUE**, save the file or **FALSE**, 
-#' return a data.frame
-#' @param dir directory location to save the csv
-#' @param file.name the csv file name
+#'
+#' @param input.data The product of `combineTCR()`, `combineBCR()`, or
+#'   `combineExpression()`.
+#' @param format The format for exporting clones.
+#'   Options are: "paired", "airr", "TCRMatch", "tcrpheno", "immunarch".
+#' @param group.by The variable in the metadata to use for grouping. If `NULL`,
+#'   data will be grouped by the sample names.
+#' @param write.file If `TRUE` (default), saves the output to a CSV file. If
+#'   `FALSE`, returns the data frame or list to the R environment.
+#' @param dir The directory where the output file will be saved.
+#'   Defaults to the current working directory.
+#' @param file.name The name of the file to be saved.
+#'
+#' @return A data frame or list in the specified format, either returned to the
+#'   R environment or saved as a CSV file.
+#'
+#' @author Jonathan Noonan, Nick Borcherding
+#'
 #' @importFrom utils write.csv
 #' @export
 #' @concept Loading_and_Processing_Contigs
-#' @return CSV file of the paired sequences.
-#' @author Jonathan Noonan, Nick Borcherding
+#'
+#' @examples
+#' \dontrun{
+#' #Making combined contig data
+#' combined <- combineTCR(contig_list,
+#'                        samples = c("P17B", "P17L", "P18B", "P18L",
+#'                                    "P19B", "P19L", "P20B", "P20L"))
+#'
+#' # Export as a paired data frame and save to a file
+#' exportClones(combined, format = "paired", file.name = "paired_clones.csv")
+#'
+#' # Return an AIRR-formatted data frame to the environment
+#' airr_df <- exportClones(combined, format = "airr", write.file = FALSE)
+#' }
 exportClones <- function(input.data,
                          format = "paired",
                          group.by = NULL,
                          write.file = TRUE,
-                         dir = NULL, 
+                         dir = NULL,
                          file.name = "clones.csv") {
   
-  summaryFunc <- switch(format,
-                       "paired"     = .PairedExport,
-                       "airr"       = .AIRRExport,
-                       "TCRMatch"   = .TCRmatchExport,
-                       "tcrpheno"   = .tcrphenoExport,
-                       stop("Invalid format provided. Options are: 'paired', 'airr', 'TCRMatch', 'tcrpheno'"))
-  mat <- summaryFunc(input.data)
+  # Validate format parameter
+  format <- match.arg(format, c("paired", "airr", "TCRMatch", "tcrpheno", "immunarch"))
   
-  mat[mat == "NA"] <- NA
-  if(!write.file) {
-    return(mat)
+  # Select the appropriate internal export function
+  exportFunc <- switch(format,
+                       "paired"     = .pairedExport,
+                       "airr"       = .airrExport,
+                       "TCRMatch"   = .tcrMatchExport,
+                       "tcrpheno"   = .tcrPhenoExport,
+                       "immunarch"  = .immunarchExport
+  )
+  
+  # Generate the data matrix/list
+  output_data <- exportFunc(input.data, group.by)
+  
+  # Replace string "NA" with actual NA values
+  if (is.data.frame(output_data)) {
+    output_data[output_data == "NA"] <- NA
   }
   
-  if(is.null(dir)) {
+  if (!write.file) {
+    return(output_data)
+  }
+  
+  # Handle file writing
+  if (is.null(dir)) {
     dir <- "."
   }
   filepath <- file.path(dir, file.name)
-  write.csv(mat, file = filepath)
+  
+  # Immunarch format returns a list of data frames. To save as a single CSV,
+  # we bind them together and add a 'Sample' identifier column.
+  if (format == "immunarch") {
+    bound_data <- dplyr::bind_rows(output_data$data, .id = "Sample")
+    write.csv(bound_data, file = filepath, row.names = FALSE)
+  } else {
+    write.csv(output_data, file = filepath)
+  }
 }
 
 
-#' @importFrom stats na.omit
-.TCRmatchExport <- function(input.data, group.by) {
-  input.data <- .data.wrangle(input.data, NULL, "CTgene", "TRB")
-  
-  for(i in seq_along(input.data)) {
-    input.data[[i]] <- .off.the.chain(input.data[[i]], "TRB", "CTaa", check = FALSE)
-    input.data[[i]] <- .off.the.chain(input.data[[i]], "TRB", "CTnt", check = FALSE)
-  }
-  
-  list_names <- names(input.data)
+#' Split String and Pad to a Fixed-Width Matrix
+._split_and_pad <- function(x, split, n_cols) {
+  s <- strsplit(x, split)
+  # Create a matrix by safely subsetting each list element up to n_cols
+  mat <- t(sapply(s, `[`, seq_len(n_cols)))
+  return(mat)
+}
+
+#' Bind a List of Contig Data Frames and Add Grouping Variable
+._bind_contig_list <- function(contig_list) {
+  list_names <- names(contig_list)
   if (is.null(list_names)) {
-    list_names <- as.character(seq_along(input.data))
+    list_names <- as.character(seq_along(contig_list))
   }
-  input.data <- mapply(function(df, name) transform(df, group = name), 
-                       input.data, list_names, SIMPLIFY = FALSE)
-  input.data <- do.call(rbind, input.data)
+  # Efficiently add group names before binding
+  contig_list <- mapply(function(df, name) transform(df, group = name),
+                        contig_list, list_names, SIMPLIFY = FALSE)
+  # Combine all data frames
+  return(do.call(rbind, contig_list))
+}
+
+
+# Format-Specific Export Functions 
+.tcrMatchExport <- function(input.data, group.by) {
+  # Wrangle data to get TRB chain information
+  input.data.list <- .data.wrangle(input.data, group.by, "CTgene", "TRB")
   
-  #Remove cells without TRB
-  if(any(c("IGH", "IGL", "IGK", "TRG", "TRA", "TRD") %in% unique(substr(input.data$CTgene, 1,3)))) {
-    input.data <-  input.data[-grep("IGH|TRG|IGL|IGK|TRA|TRD", substr(input.data$CTgene, 1,3)),]
-  }
+  # Process each list element to ensure proper chain format
+  input.data.list <- lapply(input.data.list, function(df) {
+    df <- .off.the.chain(df, "TRB", "CTaa", check = FALSE)
+    .off.the.chain(df, "TRB", "CTnt", check = FALSE)
+  })
   
-  mat <- data.frame(chain2_aa = substring(input.data[,"CTaa"], 2, nchar(input.data[,"CTaa"])),
-                    group = input.data[,"group"])
+  bound_data <- ._bind_contig_list(input.data.list)
+  # Ensure only TRB chains are included
+  bound_data <- bound_data[substr(bound_data$CTgene, 1, 3) == "TRB", ]
+  
+  # Format for TCRMatch: remove leading character from CDR3 sequence
+  mat <- data.frame(
+    chain2_aa = substring(bound_data[, "CTaa"], 2),
+    group = bound_data[, "group"]
+  )
   mat <- na.omit(mat)
   
-  mat$clonalFrequency <- ave(rep(1, nrow(mat)), mat[,c("group", "chain2_aa")], FUN = sum)
+  # Calculate clonal frequency within each group
+  mat$clonalFrequency <- ave(rep(1, nrow(mat)), mat[, c("group", "chain2_aa")], FUN = sum)
   mat <- unique(mat)
   
   return(mat)
 }
 
-.PairedExport <- function(input.data, group.by) {
-  input.data <- .data.wrangle(input.data, group.by, "CTgene", "both")
+#' @noRd
+.pairedExport <- function(input.data, group.by) {
+  input.data.list <- .data.wrangle(input.data, group.by, "CTgene", "both")
+  bound_data <- ._bind_contig_list(input.data.list)
   
-  list_names <- names(input.data)
-  if (is.null(list_names)) {
-    list_names <- as.character(seq_along(input.data))
-  }
-  input.data <- mapply(function(df, name) transform(df, group = name), 
-                       input.data, list_names, SIMPLIFY = FALSE)
-  input.data <- do.call(rbind, input.data)
+  # Split concatenated strings into separate columns
+  genes <- ._split_and_pad(bound_data[, "CTgene"], "_", 2)
+  aa    <- ._split_and_pad(bound_data[, "CTaa"], "_", 2)
+  nt    <- ._split_and_pad(bound_data[, "CTnt"], "_", 2)
   
-  str_to_matrix <- function(x) {
-    s <- strsplit(x, "_")
-    t(sapply(s, `[`, 1:2))
-  }
-  genes <- str_to_matrix(input.data[,"CTgene"])
-  aa <- str_to_matrix(input.data[,"CTaa"])
-  nt <- str_to_matrix(input.data[,"CTnt"])
-  
-  mat <- data.frame(row.names = input.data[,"barcode"], 
-                    chain1_aa = aa[,1], 
-                    chain1_nt = nt[,1], 
-                    chain1_genes = genes[,1], 
-                    chain2_aa = aa[,2],
-                    chain2_nt = nt[,2], 
-                    chain2_genes = genes[,2],
-                    group = input.data[,"group"])
+  mat <- data.frame(
+    row.names    = bound_data[, "barcode"],
+    chain1_aa    = aa[, 1],
+    chain1_nt    = nt[, 1],
+    chain1_genes = genes[, 1],
+    chain2_aa    = aa[, 2],
+    chain2_nt    = nt[, 2],
+    chain2_genes = genes[, 2],
+    group        = bound_data[, "group"]
+  )
   return(mat)
 }
 
-.AIRRExport <- function(input.data, group.by) {
-  input.data <- .data.wrangle(input.data, group.by, "CTgene", "both")
+#' @noRd
+.tcrPhenoExport <- function(input.data, group.by) {
+  input.data.list <- .data.wrangle(input.data, NULL, "CTgene", "both")
+  dat <- do.call(rbind, unname(input.data.list))
   
-  list_names <- names(input.data)
-  if (is.null(list_names)) {
-    list_names <- as.character(seq_along(input.data))
-  }
-  input.data <- mapply(function(df, name) transform(df, group = name), 
-                       input.data, list_names, SIMPLIFY = FALSE)
-  input.data <- do.call(rbind, input.data)
+  # Split sequence and gene columns
+  aa_split   <- ._split_and_pad(dat$CTaa, "_", 2)
+  nt_split   <- ._split_and_pad(dat$CTnt, "_", 2)
+  gene_split <- ._split_and_pad(dat$CTgene, "_", 2)
   
-  mat <- list()
-  
-  str_to_matrix <- function(x, split) {
-    s <- strsplit(x, split)
-    t(sapply(s, `[`, 1:max(sapply(s, length))))
-  }
-  
-  .process_row <- function(row) {
-    genes <- str_to_matrix(row$CTgene, "_")
-    aa <- str_to_matrix(row$CTaa, "_")
-    nt <- str_to_matrix(row$CTnt, "_")
-    
-    if (any(grepl(";", aa))) {
-      multi.chain.pos <- grep(";", aa)
-      genes[, multi.chain.pos] <- sapply(genes[, multi.chain.pos], function(x) strsplit(x, ";")[[1]][1])
-      aa[, multi.chain.pos] <- sapply(aa[, multi.chain.pos], function(x) strsplit(x, ";")[[1]][1])
-      nt[, multi.chain.pos] <- sapply(nt[, multi.chain.pos], function(x) strsplit(x, ";")[[1]][1])
-    }
-    
-    chain1_gene <- str_to_matrix(genes[, 1], "[.]")
-    chain2_gene <- str_to_matrix(genes[, 2], "[.]")
-    locus1 <- substr(chain1_gene[, 1], 1, 3)
-    locus2 <- substr(chain2_gene[, 1], 1, 3)
-    
-    .sort_gene_calls <- function(gene) {
-      if (ncol(gene) == 3) {
-        gene <- cbind(gene, NA)
-        colnames(gene) <- c("v_call", "j_call", "c_call", "d_call")
-      } else if (ncol(gene) == 4) {
-        colnames(gene) <- c("v_call", "d_call", "j_call", "c_call")
-      } else if (all(is.na(gene))) {
-        gene <- matrix(ncol = 4, nrow = 1, NA)
-        colnames(gene) <- c("v_call", "j_call", "c_call", "d_call")
-      }
-      return(gene)
-    }
-    
-    chain1_gene <- .sort_gene_calls(chain1_gene)
-    chain2_gene <- .sort_gene_calls(chain2_gene)
-    
-    tmp.out <- data.frame(
-      cell_id = row$barcode,
-      locus = c(locus1, locus2),
-      v_call = c(chain1_gene[,"v_call"], chain2_gene[,"v_call"]),
-      d_call = c(chain1_gene[,"d_call"], chain2_gene[,"d_call"]),
-      j_call = c(chain1_gene[,"j_call"], chain2_gene[,"j_call"]),
-      c_call = c(chain1_gene[,"c_call"], chain2_gene[,"c_call"]),
-      junction = c(nt[, 1], nt[, 2]),
-      junction_aa = c(aa[, 1], aa[, 2])
-    )
-    
-    tmp.out[tmp.out == "NA"] <- NA
-    na.to.remove <- which(rowSums(is.na(tmp.out)) > 4)
-    if (length(na.to.remove) >= 1) {
-      tmp.out <- tmp.out[-na.to.remove, ]
-    }
-    
-    return(tmp.out)
-  }
-  
-  mat <- lapply(seq_len(nrow(input.data)), function(i) .process_row(input.data[i,]))
-  mat <- do.call(rbind, mat)
-  return(mat)
-}
-
-.tcrphenoExport <- function(input.data, group.by) {
-  input.data <- .data.wrangle(input.data, NULL, "CTgene", "both")
-  dat <- do.call(rbind, unname(input.data))
-  
-  # split strings into a matrix with a fixed number of columns
-  split_to_fixed_matrix <- function(x, split_char, num_cols) {
-    s <- strsplit(x, split_char)
-    t(sapply(s, `[`, seq_len(num_cols)))
-  }
-  
-  aa_split <- split_to_fixed_matrix(dat$CTaa, "_", 2)
-  nt_split <- split_to_fixed_matrix(dat$CTnt, "_", 2)
-  gene_split <- split_to_fixed_matrix(dat$CTgene, "_", 2)
-  
-  tcr1_genes <- split_to_fixed_matrix(gene_split[, 1], "[.]", 2)
-  tcr2_genes <- split_to_fixed_matrix(gene_split[, 2], "[.]", 3)[,c(1,3)]
+  # Further split gene segments
+  tcr1_genes <- ._split_and_pad(gene_split[, 1], "[.]", 2)
+  tcr2_genes <- ._split_and_pad(gene_split[, 2], "[.]", 3)[, c(1, 3)]
   
   contigs <- data.frame(
-    cell = rownames(dat),
+    cell        = rownames(dat),
     TCRA_cdr3aa = aa_split[, 1],
-    TCRA_vgene = tcr1_genes[, 1],
-    TCRA_jgene = tcr1_genes[, 2],
+    TCRA_vgene  = tcr1_genes[, 1],
+    TCRA_jgene  = tcr1_genes[, 2],
     TCRA_cdr3nt = nt_split[, 1],
     TCRB_cdr3aa = aa_split[, 2],
-    TCRB_vgene = tcr2_genes[, 1],
-    TCRB_jgene = tcr2_genes[, 2],
+    TCRB_vgene  = tcr2_genes[, 1],
+    TCRB_jgene  = tcr2_genes[, 2],
     TCRB_cdr3nt = nt_split[, 2]
   )
-  # Clean multichains
+  
+  # Remove multi-chain artifacts (keep first sequence)
   columns_to_clean <- c("TCRA_cdr3aa", "TCRA_cdr3nt", "TCRB_cdr3aa", "TCRB_cdr3nt")
   contigs[columns_to_clean] <- lapply(contigs[columns_to_clean], function(x) {
     gsub(";.*", "", x)
   })
   
-  contigs[contigs == ""] <- NA
-  contigs[contigs == "NA"] <- NA
-  
+  # Clean up empty or "NA" strings
+  contigs[contigs == "" | contigs == "NA"] <- NA
   return(contigs)
+}
+
+
+#' @noRd
+.airrExport <- function(input.data, group.by) {
+  input.data.list <- .data.wrangle(input.data, group.by, "CTgene", "both")
+  bound_data <- ._bind_contig_list(input.data.list)
+  
+  # Helper to clean multi-chain entries by taking the first one
+  clean_multichain <- function(x) {
+    gsub(";.*", "", x)
+  }
+  
+  # Split combined fields for both chains at once
+  genes <- ._split_and_pad(bound_data$CTgene, "_", 2)
+  aa <- ._split_and_pad(clean_multichain(bound_data$CTaa), "_", 2)
+  nt <- ._split_and_pad(clean_multichain(bound_data$CTnt), "_", 2)
+  
+  # Process chain 1 and chain 2 gene calls
+  genes1 <- ._split_and_pad(genes[, 1], "[.]", 4)
+  genes2 <- ._split_and_pad(genes[, 2], "[.]", 4)
+  
+  # Function to create a data frame for a single chain
+  format_chain_df <- function(cell_ids, locus_prefix, genes_mat, nt_seq, aa_seq) {
+    # Determine if chain is heavy/beta (has D gene)
+    is_heavy_or_beta <- locus_prefix %in% c("IGH", "TRB", "TRD")
+    is_heavy_or_beta <- names(table(is_heavy_or_beta))[1]
+    
+    df <- data.frame(
+      locus = paste0(locus_prefix, "1"),
+      v_call = genes_mat[, 1],
+      d_call = if (is_heavy_or_beta) genes_mat[, 2] else NA,
+      j_call = if (is_heavy_or_beta) genes_mat[, 3] else genes_mat[, 2],
+      c_call = if (is_heavy_or_beta) genes_mat[, 4] else genes_mat[, 3],
+      junction = nt_seq,
+      junction_aa = aa_seq
+    )
+    return(df)
+  }
+  
+  # Locus prefixes for chain 1 and 2
+  locus1_prefix <- substr(genes[, 1], 1, 3)
+  locus2_prefix <- substr(genes[, 2], 1, 3)
+  
+  # Create data frames for each chain
+  df1 <- format_chain_df(bound_data$barcode, locus1_prefix, genes1, nt[, 1], aa[, 1])
+  df2 <- format_chain_df(bound_data$barcode, locus2_prefix, genes2, nt[, 2], aa[, 2])
+  
+  # Add cell_id to both
+  df1$cell_id <- bound_data$barcode
+  df2$cell_id <- bound_data$barcode
+  
+  # Combine chain data frames
+  mat <- rbind(df1, df2)
+  
+  # Reorder columns to AIRR standard
+  airr_cols <- c("cell_id", "locus", "v_call", "d_call", "j_call", "c_call", "junction", "junction_aa")
+  mat <- mat[, airr_cols]
+  
+  # Remove rows that are entirely NA except for cell_id
+  mat <- mat[rowSums(is.na(mat[, -1])) < (ncol(mat) - 1), ]
+  
+  return(mat)
+}
+
+
+#' @noRd
+.immunarchExport <- function(input.data, group.by) {
+  # This function requires the dplyr package.
+  if (!requireNamespace("dplyr", quietly = TRUE)) {
+    stop("Package 'dplyr' is required for the 'immunarch' export format. Please install it.", call. = FALSE)
+  }
+  
+  df_list <- .data.wrangle(input.data, group.by, "CTgene", "both")
+  meta <- data.frame(Sample = names(df_list))
+  
+  data_out <- lapply(df_list, function(x) {
+    # Summarize by clonotype (CTstrict)
+    result <- x %>%
+      dplyr::group_by(CTstrict) %>%
+      dplyr::summarise(
+        Clones = dplyr::n(),
+        barcode = paste(barcode, collapse = ";"),
+        CTaa = dplyr::first(CTaa),
+        CTnt = dplyr::first(CTnt),
+        CTgene = dplyr::first(CTgene),
+        .groups = 'drop'
+      ) %>%
+      dplyr::mutate(Proportion = Clones / sum(Clones))
+    
+    # Determine chain order (e.g., TRA/TRB)
+    first_genes <- ._split_and_pad(result$CTgene, "_", 2)[, 1]
+    chain_type <- substr(first_genes, 1, 3)
+    # Default to TRB/TRA order
+    pos <- ifelse(chain_type %in% c("TRA", "TRG", "IGK", "IGL"), c(1, 2), c(2, 1))
+    
+    # Split sequence/gene info
+    aa_split <- ._split_and_pad(result$CTaa, "_", 2)
+    nt_split <- ._split_and_pad(result$CTnt, "_", 2)
+    gene_split <- ._split_and_pad(result$CTgene, "_", 2)
+    
+    genes1 <- ._split_and_pad(gene_split[, pos[1]], "[.]", 4)
+    genes2 <- ._split_and_pad(gene_split[, pos[2]], "[.]", 4)
+    
+    # Format into immunarch structure
+    data.frame(
+      Clones = result[["Clones"]],
+      Proportion = result[["Proportion"]],
+      CDR3.nt = paste(nt_split[, pos[1]], nt_split[, pos[2]], sep = ";"),
+      CDR3.aa = paste(aa_split[, pos[1]], aa_split[, pos[2]], sep = ";"),
+      V.name = paste(genes1[, 1], genes2[, 1], sep = ";"),
+      D.name = paste(genes1[, 2], genes2[, 2], sep = ";"),
+      J.name = paste(genes1[, 3], genes2[, 3], sep = ";"),
+      C.name = paste(genes1[, 4], genes2[, 4], sep = ";"),
+      Barcode = result[["barcode"]],
+      stringsAsFactors = FALSE
+    )
+  })
+  
+  names(data_out) <- names(df_list)
+  return(list(data = data_out, meta = meta))
 }
