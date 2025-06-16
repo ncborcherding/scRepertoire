@@ -2,16 +2,16 @@
 % Please edit documentation in R/clonalDiversity.R
 \name{clonalDiversity}
 \alias{clonalDiversity}
-\title{Calculate the clonal diversity for samples or groupings}
+\title{Calculate Clonal Diversity}
 \usage{
 clonalDiversity(
   input.data,
   cloneCall = "strict",
+  metric = "shannon",
   chain = "both",
   group.by = NULL,
   order.by = NULL,
   x.axis = NULL,
-  metrics = c("shannon", "inv.simpson", "norm.entropy", "gini.simpson", "chao1", "ACE"),
   exportTable = FALSE,
   palette = "inferno",
   n.boots = 100,
@@ -25,86 +25,100 @@ clonalDiversity(
 
 \item{cloneCall}{How to call the clone - VDJC gene (\strong{gene}),
 CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
-VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable
-in the data}
+VDJC gene + CDR3 nucleotide (\strong{strict}), or a custom variable
+in the data.}
 
-\item{chain}{indicate if both or a specific chain should be used -
-e.g. "both", "TRA", "TRG", "IGH", "IGL"}
+\item{metric}{The diversity metric to calculate. Must be a single string from
+the list of available metrics (see Details).}
 
-\item{group.by}{Variable in which to combine for the diversity calculation}
+\item{chain}{Indicate if both or a specific chain should be used -
+e.g. "both", "TRA", "TRG", "IGH", "IGL".}
 
-\item{order.by}{A vector of specific plotting order or "alphanumeric"
-to plot groups in order}
+\item{group.by}{Variable in the metadata to group samples for calculation.}
 
-\item{x.axis}{Additional variable grouping that will space the sample along the x-axis}
+\item{order.by}{A vector of specific plotting order for the \code{group.by} variable,
+or "alphanumeric" to plot groups in that order.}
 
-\item{metrics}{The indices to use in diversity calculations -
-"shannon", "inv.simpson", "norm.entropy", "gini.simpson", "chao1", "ACE"}
+\item{x.axis}{An additional metadata variable to group samples along the x-axis.}
 
-\item{exportTable}{Exports a table of the data into the global environment
-in addition to the visualization}
+\item{exportTable}{If TRUE, returns a data frame of the results instead of a plot.}
 
 \item{palette}{Colors to use in visualization - input any
-\link[grDevices:palettes]{hcl.pals}}
+\link[grDevices:palettes]{hcl.pals}.}
 
-\item{n.boots}{number of bootstraps to down sample in order to
-get mean diversity}
+\item{n.boots}{The number of bootstrap iterations to perform (default is 100).}
 
-\item{return.boots}{export boot strapped values calculated -
-will automatically exportTable = TRUE.}
+\item{return.boots}{If TRUE, returns all bootstrap values instead of the mean.
+Automatically sets \code{exportTable = TRUE}.}
 
-\item{skip.boots}{remove down sampling and boot strapping from the calculation.}
+\item{skip.boots}{If TRUE, disables downsampling and bootstrapping. The metric
+will be calculated on the full dataset for each group.}
 }
 \value{
-ggplot of the diversity of clones by group
+A ggplot object visualizing the diversity metric, or a data.frame if
+\code{exportTable = TRUE}.
 }
 \description{
-This function calculates traditional measures of diversity - \strong{Shannon},
-\strong{inverse Simpson}, \strong{normalized entropy}, \strong{Gini-Simpson}, \strong{Chao1 index}, and
-\strong{abundance-based coverage estimators (ACE)} measure of species evenness by sample or group.
-The function automatically down samples the diversity metrics using
-100 boot straps (\strong{n.boots = 100}) and outputs the mean of the values.
-The group parameter can be used to condense the individual
-samples. If a matrix output for the data is preferred, set \strong{exportTable} = TRUE.
+This function calculates a specified diversity metric for samples or groups
+within a dataset. To control for variations in library size, the function
+can perform bootstrapping with downsampling. It resamples each group to the
+size of the smallest group and calculates the diversity metric across
+multiple iterations, returning the mean value.
 }
 \details{
-The formulas for the indices and estimators are as follows:
+The function operates by first splitting the dataset by the specified \code{group.by}
+variable.
 
-\strong{Shannon Index:}
-\deqn{Index = - \sum p_i * \log(p_i)}
+\strong{Downsampling and Bootstrapping:}
+To make a fair comparison between groups of different sizes, diversity metrics
+often require normalization. This function implements this by downsampling.
+\enumerate{
+\item It determines the number of clones in the smallest group.
+\item For each group, it performs \code{n.boots} iterations (default = 100).
+\item In each iteration, it randomly samples the clones (with replacement) down to
+the size of the smallest group.
+\item It calculates the selected diversity metric on this downsampled set.
+\item The final reported diversity value is the mean of the results from all
+bootstrap iterations.
+}
 
-\strong{Inverse Simpson Index:}
-\deqn{Index = \frac{1}{(\sum_{i=1}^{S} p_i^2)}}
+This process can be disabled by setting \code{skip.boots = TRUE}.
 
-\strong{Normalized Entropy:}
-\deqn{Index = -\frac{\sum_{i=1}^{S} p_i \ln(p_i)}{\ln(S)}}
-
-\strong{Gini-Simpson Index:}
-\deqn{Index = 1 - \sum_{i=1}^{S} p_i^2}
-
-\strong{Chao1 Index:}
-\deqn{Index = S_{obs} + \frac{n_1(n_1-1)}{2*n_2+1}}
-
-\strong{Abundance-based Coverage Estimator (ACE):}
-\deqn{Index = S_{abund} + \frac{S_{rare}}{C_{ace}} + \frac{F_1}{C_{ace}}}
-
-Where:
+Available Diversity Metrics (metric):
+The function uses a registry of metrics imported from the immApex package.
+You can select one of the following:
 \itemize{
-\item{\eqn{p_i}{p[i]} is the proportion of species \eqn{i}{i} in the dataset.}
-\item{\eqn{S}{S} is the total number of species.}
-\item{\eqn{n_1}{n[1]} and \eqn{n_2}{n[2]} are the number of singletons and doubletons, respectively.}
-\item{\eqn{S_{abund}}{S[abund]}, \eqn{S_{rare}}{S[rare]}, \eqn{C_{ace}}{C[ace]}, and \eqn{F_1}{F[1]} are parameters derived from the data.}
+\item{\code{"shannon"}: Shannon's Entropy. See \code{\link[immApex]{shannon_entropy}}.}
+\item{\code{"inv.simpson"}: Inverse Simpson Index. See \code{\link[immApex]{inv_simpson}}.}
+\item{\code{"gini.simpson"}: Gini-Simpson Index. See \code{\link[immApex]{gini_simpson}}.}
+\item{\code{"norm.entropy"}: Normalized Shannon Entropy. See \code{\link[immApex]{norm_entropy}}.}
+\item{\code{"pielou"}: Pielou's Evenness (same as norm.entropy). See \code{\link[immApex]{pielou_evenness}}.}
+\item{\code{"ace"}: Abundance-based Coverage Estimator. See \code{\link[immApex]{ace_richness}}.}
+\item{\code{"chao1"}: Chao1 Richness Estimator. See \code{\link[immApex]{chao1_richness}}.}
+\item{\code{"gini"}: Gini Coefficient for inequality. See \code{\link[immApex]{gini_coef}}.}
+\item{\code{"d50"}: The number of top clones making up 50\% of the library. See \code{\link[immApex]{d50_dom}}.}
+\item{\code{"hill0"}, \code{"hill1"}, \code{"hill2"}: Hill numbers of order 0, 1, and 2. See \code{\link[immApex]{hill_q}}.}
 }
 }
 \examples{
-#Making combined contig data
-combined <- combineTCR(contig_list, 
-                        samples = c("P17B", "P17L", "P18B", "P18L", 
-                                    "P19B","P19L", "P20B", "P20L"))
-clonalDiversity(combined, cloneCall = "gene")
+# Making combined contig data
+combined <- combineTCR(contig_list,
+                       samples = c("P17B", "P17L", "P18B", "P18L",
+                                   "P19B","P19L", "P20B", "P20L"))
+
+# Calculate Shannon diversity, grouped by sample
+clonalDiversity(combined, 
+                cloneCall = "gene", 
+                metric = "shannon")
+
+# Calculate Inverse Simpson without bootstrapping
+clonalDiversity(combined, 
+                cloneCall = "aa", 
+                metric = "inv.simpson", 
+                skip.boots = TRUE)
 
 }
 \author{
-Andrew Malone, Nick Borcherding
+Andrew Malone, Nick Borcherding, Nathan Vanderkraan
 }
 \concept{Visualizing_Clones}

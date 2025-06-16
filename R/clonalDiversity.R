@@ -1,261 +1,230 @@
-#' Calculate the clonal diversity for samples or groupings
+#' Calculate Clonal Diversity
 #'
-#' This function calculates traditional measures of diversity - **Shannon**, 
-#' **inverse Simpson**, **normalized entropy**, **Gini-Simpson**, **Chao1 index**, and
-#' **abundance-based coverage estimators (ACE)** measure of species evenness by sample or group. 
-#' The function automatically down samples the diversity metrics using 
-#' 100 boot straps (**n.boots = 100**) and outputs the mean of the values.
-#'The group parameter can be used to condense the individual 
-#' samples. If a matrix output for the data is preferred, set **exportTable** = TRUE.
+#' This function calculates a specified diversity metric for samples or groups
+#' within a dataset. To control for variations in library size, the function
+#' can perform bootstrapping with downsampling. It resamples each group to the
+#' size of the smallest group and calculates the diversity metric across
+#' multiple iterations, returning the mean value.
 #' 
 #' @details
-#' The formulas for the indices and estimators are as follows:
+#' The function operates by first splitting the dataset by the specified `group.by`
+#' variable.
+#'
+#' **Downsampling and Bootstrapping:**
+#' To make a fair comparison between groups of different sizes, diversity metrics
+#' often require normalization. This function implements this by downsampling.
+#' 1.  It determines the number of clones in the smallest group.
+#' 2.  For each group, it performs `n.boots` iterations (default = 100).
+#' 3.  In each iteration, it randomly samples the clones (with replacement) down to
+#'     the size of the smallest group.
+#' 4.  It calculates the selected diversity metric on this downsampled set.
+#' 5.  The final reported diversity value is the mean of the results from all
+#'     bootstrap iterations.
+#'
+#' This process can be disabled by setting `skip.boots = TRUE`.
 #' 
-#' **Shannon Index:**
-#' \deqn{Index = - \sum p_i * \log(p_i)}
-#' 
-#' **Inverse Simpson Index:**
-#' \deqn{Index = \frac{1}{(\sum_{i=1}^{S} p_i^2)}}
-#' 
-#' **Normalized Entropy:**
-#' \deqn{Index = -\frac{\sum_{i=1}^{S} p_i \ln(p_i)}{\ln(S)}}
-#' 
-#' **Gini-Simpson Index:**
-#' \deqn{Index = 1 - \sum_{i=1}^{S} p_i^2}
-#' 
-#' **Chao1 Index:**
-#' \deqn{Index = S_{obs} + \frac{n_1(n_1-1)}{2*n_2+1}}
-#' 
-#' **Abundance-based Coverage Estimator (ACE):**
-#' \deqn{Index = S_{abund} + \frac{S_{rare}}{C_{ace}} + \frac{F_1}{C_{ace}}} 
-#' 
-#' Where:
+#' Available Diversity Metrics (metric):
+#' The function uses a registry of metrics imported from the immApex package.
+#' You can select one of the following:
 #' \itemize{
-#'   \item{\eqn{p_i}{p[i]} is the proportion of species \eqn{i}{i} in the dataset.}
-#'   \item{\eqn{S}{S} is the total number of species.}
-#'   \item{\eqn{n_1}{n[1]} and \eqn{n_2}{n[2]} are the number of singletons and doubletons, respectively.}
-#'   \item{\eqn{S_{abund}}{S[abund]}, \eqn{S_{rare}}{S[rare]}, \eqn{C_{ace}}{C[ace]}, and \eqn{F_1}{F[1]} are parameters derived from the data.}
+#'   \item{\code{"shannon"}: Shannon's Entropy. See \code{\link[immApex]{shannon_entropy}}.}
+#'   \item{\code{"inv.simpson"}: Inverse Simpson Index. See \code{\link[immApex]{inv_simpson}}.}
+#'   \item{\code{"gini.simpson"}: Gini-Simpson Index. See \code{\link[immApex]{gini_simpson}}.}
+#'   \item{\code{"norm.entropy"}: Normalized Shannon Entropy. See \code{\link[immApex]{norm_entropy}}.}
+#'   \item{\code{"pielou"}: Pielou's Evenness (same as norm.entropy). See \code{\link[immApex]{pielou_evenness}}.}
+#'   \item{\code{"ace"}: Abundance-based Coverage Estimator. See \code{\link[immApex]{ace_richness}}.}
+#'   \item{\code{"chao1"}: Chao1 Richness Estimator. See \code{\link[immApex]{chao1_richness}}.}
+#'   \item{\code{"gini"}: Gini Coefficient for inequality. See \code{\link[immApex]{gini_coef}}.}
+#'   \item{\code{"d50"}: The number of top clones making up 50% of the library. See \code{\link[immApex]{d50_dom}}.}
+#'   \item{\code{"hill0"}, \code{"hill1"}, \code{"hill2"}: Hill numbers of order 0, 1, and 2. See \code{\link[immApex]{hill_q}}.}
 #' }
 #'
 #' @examples
-#' #Making combined contig data
-#' combined <- combineTCR(contig_list, 
-#'                         samples = c("P17B", "P17L", "P18B", "P18L", 
-#'                                     "P19B","P19L", "P20B", "P20L"))
-#' clonalDiversity(combined, cloneCall = "gene")
+#' # Making combined contig data
+#' combined <- combineTCR(contig_list,
+#'                        samples = c("P17B", "P17L", "P18B", "P18L",
+#'                                    "P19B","P19L", "P20B", "P20L"))
 #'
-#' @param input.data The product of [combineTCR()], 
+#' # Calculate Shannon diversity, grouped by sample
+#' clonalDiversity(combined, 
+#'                 cloneCall = "gene", 
+#'                 metric = "shannon")
+#'
+#' # Calculate Inverse Simpson without bootstrapping
+#' clonalDiversity(combined, 
+#'                 cloneCall = "aa", 
+#'                 metric = "inv.simpson", 
+#'                 skip.boots = TRUE)
+#'
+#' @param input.data The product of [combineTCR()],
 #' [combineBCR()], or [combineExpression()].
-#' @param cloneCall How to call the clone - VDJC gene (**gene**), 
+#' @param cloneCall How to call the clone - VDJC gene (**gene**),
 #' CDR3 nucleotide (**nt**), CDR3 amino acid (**aa**),
-#' VDJC gene + CDR3 nucleotide (**strict**) or a custom variable 
-#' in the data
-#' @param chain indicate if both or a specific chain should be used - 
-#' e.g. "both", "TRA", "TRG", "IGH", "IGL"
-#' @param group.by Variable in which to combine for the diversity calculation
-#' @param order.by A vector of specific plotting order or "alphanumeric"
-#' to plot groups in order
-#' @param x.axis Additional variable grouping that will space the sample along the x-axis
-#' @param metrics The indices to use in diversity calculations - 
-#' "shannon", "inv.simpson", "norm.entropy", "gini.simpson", "chao1", "ACE"
-#' @param exportTable Exports a table of the data into the global environment 
-#' in addition to the visualization
-#' @param palette Colors to use in visualization - input any 
-#' [hcl.pals][grDevices::hcl.pals]
-#' @param n.boots number of bootstraps to down sample in order to 
-#' get mean diversity
-#' @param return.boots export boot strapped values calculated - 
-#' will automatically exportTable = TRUE.
-#' @param skip.boots remove down sampling and boot strapping from the calculation.
+#' VDJC gene + CDR3 nucleotide (**strict**), or a custom variable
+#' in the data.
+#' @param metric The diversity metric to calculate. Must be a single string from
+#' the list of available metrics (see Details).
+#' @param chain Indicate if both or a specific chain should be used -
+#' e.g. "both", "TRA", "TRG", "IGH", "IGL".
+#' @param group.by Variable in the metadata to group samples for calculation.
+#' @param order.by A vector of specific plotting order for the `group.by` variable,
+#' or "alphanumeric" to plot groups in that order.
+#' @param x.axis An additional metadata variable to group samples along the x-axis.
+#' @param exportTable If TRUE, returns a data frame of the results instead of a plot.
+#' @param return.boots If TRUE, returns all bootstrap values instead of the mean.
+#' Automatically sets `exportTable = TRUE`.
+#' @param skip.boots If TRUE, disables downsampling and bootstrapping. The metric
+#' will be calculated on the full dataset for each group.
+#' @param n.boots The number of bootstrap iterations to perform (default is 100).
+#' @param palette Colors to use in visualization - input any
+#' [hcl.pals][grDevices::hcl.pals].
 #'
-#' @importFrom dplyr sample_n
+#' @import ggplot2
 #' @export
 #' @concept Visualizing_Clones
-#' @return ggplot of the diversity of clones by group
-#' @author Andrew Malone, Nick Borcherding
-clonalDiversity <- function(input.data, 
-                            cloneCall = "strict", 
+#' @return A ggplot object visualizing the diversity metric, or a data.frame if
+#' `exportTable = TRUE`.
+#' @author Andrew Malone, Nick Borcherding, Nathan Vanderkraan
+clonalDiversity <- function(input.data,
+                            cloneCall = "strict",
+                            metric = "shannon",
                             chain = "both",
-                            group.by = NULL, 
+                            group.by = NULL,
                             order.by = NULL,
-                            x.axis = NULL, 
-                            metrics = c("shannon", "inv.simpson", "norm.entropy", "gini.simpson", "chao1", "ACE"),
-                            exportTable = FALSE, 
+                            x.axis = NULL,
+                            exportTable = FALSE,
                             palette = "inferno",
-                            n.boots = 100, 
-                            return.boots = FALSE, 
+                            n.boots = 100,
+                            return.boots = FALSE,
                             skip.boots = FALSE) {
+  
+  #Argument and Data Validation 
+  if (length(metric) != 1 || !is.character(metric)) {
+    stop("`metric` must be a single string.")
+  }
+  if (!metric %in% names(.div.registry)) {
+    stop("Invalid `metric`. Please choose from: ", paste(names(.div.registry), collapse = ", "))
+  }
   if(return.boots) {
     exportTable <- TRUE
   }
+  
+  # Data Wrangling 
   sco <- is_seurat_object(input.data) | is_se_object(input.data)
-  input.data <- .data.wrangle(input.data, 
-                              group.by, 
-                              .theCall(input.data, cloneCall, check.df = FALSE), 
-                              chain)
-  cloneCall <- .theCall(input.data, cloneCall)
-
-  mat <- NULL
-  sample <- c()
-  if(!is.null(group.by) & !sco) {
+  cloneCall <- .theCall(input.data, cloneCall, check.df = FALSE)
+  input.data <- .data.wrangle(input.data, group.by, cloneCall, chain)
+  
+  if(!is.null(group.by) && !sco) {
     input.data <- .groupList(input.data, group.by)
   }
-  min <- .short.check(input.data, cloneCall)
-  for (i in seq_along(input.data)) {
-      data <- as.data.frame(table(input.data[[i]][,cloneCall]))
-      mat_a <- NULL
-      sample <- c()
-      if(skip.boots == TRUE) {
-        sample <- .diversityCall(data)
-        mat_a <- rbind(mat_a, sample)
-        mat_a[is.na(mat_a)] <- 0
-        mat <- rbind(mat, mat_a)
-        mat <- as.data.frame(mat)
-      } else {
-        for (j in seq(seq_len(n.boots))) {
-          x <- sample_n(data, min)
-          sample <- .diversityCall(x)
-          mat_a <- rbind(mat_a, sample)
-        }
-        mat_a[is.na(mat_a)] <- 0
-        if(return.boots) {
-          mat_a <- as.data.frame(mat_a)
-          mat_a$sample <- names(input.data)[i]
-          mat <- rbind(mat, mat_a)
-        } else {
-          mat_b<- colMeans(mat_a)
-          mat_b<-as.data.frame(t(mat_b))
-          mat <- rbind(mat, mat_b)
-        }
-      }
-    }
-    colnames(mat) <- c("shannon", "inv.simpson", "norm.entropy", "gini.simpson", "chao1", "ACE")
-    mat <- mat[,colnames(mat) %in% metrics,drop=FALSE]
-    if (is.null(group.by)) {
-      group.by <- "Group"
-    }
-    mat[,group.by] <- names(input.data)
-    if (!is.null(x.axis)) {
-      x.variable <- lapply(input.data, function(x) {
-        unique(x[,x.axis])[1]
-      })
-      x.variable <- as.data.frame(do.call(rbind, x.variable))
-      colnames(x.variable) <- x.axis
-      mat <- merge(mat, x.variable, by.x = ncol(mat), by.y = 0)
-    } else {
-      x.axis <- "x.axis"
-      mat[,x.axis] <- 1
-    }
-    if (exportTable) { 
-      return(mat) 
-    }
-    rownames(mat) <- names(input.data)
   
-    mat_melt <- suppressMessages(melt(mat, id.vars = c(group.by, x.axis)))
-    if(!is.null(order.by)) {
-      mat_melt <- .ordering.function(vector = order.by,
-                                     group.by = names(mat_melt)[1], 
-                                     mat_melt)
+  # Core Calculation --
+  div_func <- .div.registry[[metric]]
+  min_size <- min(sapply(input.data, function(x) nrow(x)))
+  
+  # Efficiently process each group using lapply
+  results_list <- lapply(names(input.data), function(group_name) {
+    sub_data <- input.data[[group_name]]
+    clones <- sub_data[[cloneCall]]
+    
+    if (skip.boots) {
+      diversity_scores <- div_func(table(clones))
+    } else {
+      # Use replicate for efficient bootstrapping
+      diversity_scores <- replicate(n.boots, {
+        resampled_clones <- sample(clones, size = min_size, replace = TRUE)
+        div_func(table(resampled_clones))
+      })
     }
     
-    if (x.axis == "x.axis") {
-        plot <- ggplot(mat_melt, aes(x=1, y=as.numeric(value)))
+    if (return.boots) {
+      data.frame(
+        group = group_name,
+        value = diversity_scores,
+        metric = metric
+      )
     } else {
-      plot <- ggplot(mat_melt, aes(x=mat_melt[,x.axis], y=as.numeric(value)))
+      data.frame(
+        group = group_name,
+        value = mean(diversity_scores, na.rm = TRUE),
+        metric = metric
+      )
     }
-    plot <- plot +
-      geom_boxplot(outlier.alpha = 0) +
-      geom_jitter(aes(fill = mat_melt[,group.by]), 
-                  size = 3, 
-                  shape = 21, 
-                  stroke = 0.25, 
-                  color = "black") + 
-      labs(fill = "Group") +
-      ylab("Index Score") +
-      scale_fill_manual(values = .colorizer(palette,length(unique(mat_melt[,group.by])))) +
-      facet_wrap(~variable, scales = "free", ncol = length(metrics)) +
-      theme_classic() + 
-      theme(axis.title.x = element_blank())
-    if (x.axis == "x.axis") { 
-      plot <- plot + theme(axis.text.x = element_blank(),
-            axis.ticks.x = element_blank())
-      }
+  })
   
-  return(plot) 
-}
-
-
-.diversityCall <- function(data) {
-  shannon <- .shannon(data[,"Freq"])
-  inv_simpson <- .invsimpson(data[,"Freq"])
-  norm_entropy <- .normentropy(data[,"Freq"]) 
-  gini_simpson <- .ginisimpson(data[,"Freq"]) 
-  chao1 <- .chao1(data[,"Freq"])
-  ACE <- .ACE(data[,"Freq"])
-  out <- c(shannon, inv_simpson, norm_entropy, gini_simpson, chao1,ACE)
-  return(out)
-}
-
-
-.shannon <- function(p){
-  p <- p[which(p > 0)]
-  p <- p / sum(p)
-  p <- p[which(p > 0)]
-  return(-sum(p * log(p)))
-}
-.normentropy <- function(p){
-  p <- p[which(p > 0)]
-  p <- p / sum(p)
-  p <- p[which(p > 0)]
-  return(-sum(p * log(p)) / log(length(p)))
-}
-.invsimpson <- function(p){
-  p <- p[which(p > 0)]
-  p <- p / sum(p)
-  p <- p[which(p > 0)]
-  return(1 / sum(p^2))
-}
-.ginisimpson <- function(p){
-  p <- p[which(p > 0)]
-  p <- p / sum(p)
-  p <- p[which(p > 0)]
-  return(1 - sum(p^2))
-}
-
-.chao1 <- function(p){
-  n1 <- sum(p == 1)
-  n2 <- sum(p == 2)
-  S_obs <- length(p)
-  # Chao1 index calculation
-  if(n1 > 1 && n2 > 0) {
-    chao1 <- S_obs + (n1 * (n1 - 1)) / (2 * (n2 + 1))
+  # Combine results into a single data frame using base R
+  output_df <- do.call(rbind, results_list)
+  colnames(output_df)[colnames(output_df) == "group"] <- group.by %||% "Group"
+  
+  # Prepare for plotting or export 
+  if (!is.null(x.axis)) {
+    x.variable <- lapply(input.data, function(x) {
+      unique(x[,x.axis])[1]
+    })
+    x.variable <- do.call(rbind, x.variable)
+    x.variable <- as.data.frame(x.variable)
+    colnames(x.variable) <- x.axis
+    output_df <- merge(output_df, x.variable, by.x = group.by %||% "Group", by.y = "row.names")
   } else {
-    # In cases where n1 <= 1 or n2 == 0, Chao1 is undefined
-    chao1 <- NA
-  }
-  return(chao1)
-}
-
-.ACE <- function(p) {
-  q <- 10
-  S_abund <- sum(p > q)
-  rare_data <- p[p <= q]
-  S_rare <- length(rare_data)
-  n_rare <- sum(rare_data)
-  
-  # Calculate C_ACE
-  C_ACE <- sum(p) / n_rare
-  
-  # Calculate gamma
-  gamma <- 0
-  for(i in seq_len(q)) {
-    f_i <- sum(rare_data == i)
-    gamma <- gamma + (1 - i / q)^f_i
+    x.axis <- "x.axis"
+    output_df[,x.axis] <- 1
   }
   
-  # Calculate ACE
-  ACE <- S_abund + (S_rare / C_ACE) + (1 - C_ACE) * gamma
-  return(ACE)
+  if (exportTable) {
+    return(output_df)
+  }
+  
+  # Arranging order if using order.by
+  if(!is.null(order.by)) {
+    output_df <- .ordering.function(
+    vector = order.by,
+    group.by = names(output_df)[1],
+    mat_melt = output_df
+    )
+  }
+  
+  # Plotting 
+  metric.name <- gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", metric, perl=TRUE)
+  plot <- ggplot(output_df, aes(x = .data[[x.axis]], y = as.numeric(value))) +
+    geom_boxplot(outlier.alpha = 0) +
+    geom_jitter(aes(fill = .data[[group.by %||% "Group"]]),
+                size = 3,
+                shape = 21,
+                stroke = 0.25,
+                color = "black") +
+    labs(fill = "Group", y = paste(metric.name, "Index Score")) +
+    scale_fill_manual(values = .colorizer(palette, length(unique(output_df[[group.by %||% "Group"]])))) +
+    theme_classic() +
+    theme(axis.title.x = element_blank())
+  
+  if (x.axis == "x.axis") {
+    plot <- plot + theme(
+      axis.text.x = element_blank(),
+      axis.ticks.x = element_blank()
+    )
+  }
+  
+  return(plot)
 }
 
+# Helper for null default
+`%||%` <- function(a, b) {
+  if (is.null(a)) b else a
+}
 
+#' @importFrom immApex ace_richness chao1_richness gini_coef d50_dom 
+#' shannon_entropy inv_simpson gini_simpson norm_entropy pielou_evenness hill_q
+.div.registry <- list(
+  ace          = ace_richness,
+  chao1        = chao1_richness,
+  gini         = gini_coef,
+  d50          = d50_dom,
+  shannon      = shannon_entropy,
+  inv.simpson  = inv_simpson,
+  gini.simpson = gini_simpson,
+  norm.entropy = norm_entropy,
+  pielou       = pielou_evenness,
+  hill0        = hill_q(0),   # richness
+  hill1        = hill_q(1),   # exp(H)
+  hill2        = hill_q(2)    # 1/Simpson
+)
