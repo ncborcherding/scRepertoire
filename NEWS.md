@@ -9,6 +9,7 @@
 * Added tcrpheno vignette to pkgdown site
 * ```percentAA()``` refactored to minimize dependencies and use immApex
 * ```positionalEntropy()``` refactored to minimize dependencies and use immApex
+* ```clonalDiversity()``` has been completely refactored for  performance -  it now calculates a single diversity metric at a time and includes new estimators like "gini", "d50", and supports hill numbers).
 
 # scRepertoire VERSION 2.3.4
 

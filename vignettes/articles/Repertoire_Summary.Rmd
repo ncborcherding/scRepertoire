@@ -56,13 +56,16 @@ percentAA(combined.TCR,
 
 ## positionalEntropy
 
-We can also quantify the level of entropy/diversity across amino acid residues along the cdr3 sequence. `positionalEntropy()` combines the quantification by residue of ``percentAA()`` with the diversity calls in ```clonalDiversity()```. 
+We can also quantify the level of entropy/diversity across amino acid residues along the CDR3 sequence. `positionalEntropy()` combines the quantification by residue of ``percentAA()`` with the diversity calls in ```clonalDiversity()```. 
 
 **method**  
 
-* "shannon" - Shannon Diversity  
-* "inv.simpson" - Inverse Simpson Diversity 
-* "norm.entropy" - Normalized Entropy  
+* "shannon" - Shannon Index
+* "inv.simpson" - Inverse Simpson Index
+* "gini.simpson" - Gini-Simpson Index
+* "norm.entropy" - Normalized Entropy 
+* "pielou" - pielou's Eveness
+* "hill1", "hill2", "hill3" - Hill Numbers 
 
 ```{r tidy = FALSE}
 positionalEntropy(combined.TCR, 
