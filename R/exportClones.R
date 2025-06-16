@@ -16,7 +16,7 @@
 #'   \item{"TCRMatch"}: Exports a data frame specifically for the TCRMatch
 #'     algorithm, containing the TRB chain amino acid sequence and clonal
 #'     frequency.
-#'   \item{"tcrpheno"}: Exports a data frame compatible with the tcr-pgen
+#'   \item{"tcrpheno"}: Exports a data frame compatible with the tcrpheno
 #'     pipeline, with TRA and TRB chains in separate columns.
 #'   \item{"immunarch"}: Exports a list containing a data frame and metadata
 #'     formatted for use with the immunarch package.
