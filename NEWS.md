@@ -7,9 +7,15 @@
 * Converted ```exportClones()``` to base R to reduce dependencies
 * Added dandelionR vignette to pkgdown site
 * Added tcrpheno vignette to pkgdown site
-* ```percentAA()``` refactored to minimize dependencies and use immApex
+* ```percentAA()``` refactored to minimize dependencies and use immApex 
+```calculateFrequency()```
 * ```positionalEntropy()``` refactored to minimize dependencies and use immApex
-* ```clonalDiversity()``` has been completely refactored for  performance -  it now calculates a single diversity metric at a time and includes new estimators like "gini", "d50", and supports hill numbers).
+```calculateEntropy()```
+* ```clonalDiversity()``` refactored for performance -  it now calculates a 
+single diversity metric at a time and includes new  estimators like "gini", 
+"d50", and supports hill numbers).
+* ```percentKmer()``` refactored to use immApex ```calculateMotif``` for both aa and
+nt sequences. No longer calculates all possible motifs, but only motifs present. 
 
 # scRepertoire VERSION 2.3.4
 

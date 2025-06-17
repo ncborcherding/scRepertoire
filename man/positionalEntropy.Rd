@@ -19,7 +19,8 @@ positionalEntropy(
 \item{input.data}{The product of \code{\link[=combineTCR]{combineTCR()}},
 \code{\link[=combineBCR]{combineBCR()}}, or \code{\link[=combineExpression]{combineExpression()}}}
 
-\item{chain}{"TRA", "TRB", "TRG", "TRG", "IGH", "IGL"}
+\item{chain}{indicate a specific chain should be used -
+e.g."TRA", "TRG", "IGH", "IGL", etc}
 
 \item{group.by}{The variable to use for grouping}
 

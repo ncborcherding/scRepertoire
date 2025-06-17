@@ -2,7 +2,7 @@
 % Please edit documentation in R/percentKmer.R
 \name{percentKmer}
 \alias{percentKmer}
-\title{Examining the relative composition of kmer motifs in clones.}
+\title{Analyze K-mer Motif Composition}
 \usage{
 percentKmer(
   input.data,
@@ -11,6 +11,7 @@ percentKmer(
   group.by = NULL,
   order.by = NULL,
   motif.length = 3,
+  min.depth = 3,
   top.motifs = 30,
   exportTable = FALSE,
   palette = "inferno"
@@ -20,17 +21,21 @@ percentKmer(
 \item{input.data}{The product of \code{\link[=combineTCR]{combineTCR()}},
 \code{\link[=combineBCR]{combineBCR()}}, or \code{\link[=combineExpression]{combineExpression()}}}
 
-\item{chain}{"TRA", "TRB", "TRG", "TRG", "IGH", "IGL"}
+\item{chain}{indicate a specific chain should be used -
+e.g. "TRA", "TRG", "IGH", "IGL", etc}
 
 \item{cloneCall}{How to call the clone - CDR3 nucleotide (\strong{nt}) or
 CDR3 amino acid (\strong{aa})}
 
 \item{group.by}{The variable to use for grouping}
 
-\item{order.by}{A vector of specific plotting order or "alphanumeric"
-to plot groups in order}
+\item{order.by}{A vector of specific plotting order for \code{group.by} or
+"alphanumeric" to plot groups in order}
 
 \item{motif.length}{The length of the kmer to analyze}
+
+\item{min.depth}{Minimum count a motif must reach to be retained in the
+output (\verb{>= 1}). \strong{Default:} \code{3}.}
 
 \item{top.motifs}{Return the n most variable motifs as a function of
 median absolute deviation}
@@ -41,15 +46,23 @@ median absolute deviation}
 \link[grDevices:palettes]{hcl.pals}}
 }
 \value{
-ggplot of percentage of kmers as a heatmap
+A ggplot object displaying a heatmap of motif percentages.
+If \code{exportTable = TRUE}, a matrix of the raw data is returned.
 }
 \description{
-This function the of kmer for nucleotide (\strong{nt}) or
-amino acid (\strong{aa}) sequences. Select the length of the
-kmer to quantify using the \strong{motif.length} parameter.
+This function calculates and visualizes the frequency of k-mer
+motifs for either nucleotide (nt) or amino acid (aa) sequences. It produces
+a heatmap showing the relative composition of the most variable motifs across
+samples or groups.
+}
+\details{
+The function first calculates k-mer frequencies for each sample/group.
+By default, it then identifies the 30 most variable motifs based on the Median
+Absolute Deviation (MAD) across all samples and displays their frequencies
+in a heatmap.
 }
 \examples{
-#Making combined contig data
+# Making combined contig data
 combined <- combineTCR(contig_list, 
                         samples = c("P17B", "P17L", "P18B", "P18L", 
                                     "P19B","P19L", "P20B", "P20L"))
