@@ -46,7 +46,6 @@
 #' 
 #' @return A ggplot object displaying a heatmap of motif percentages.
 #' If `exportTable = TRUE`, a matrix of the raw data is returned.
-#' 
 percentKmer <- function(input.data, 
                         chain = "TRB", 
                         cloneCall = "aa",

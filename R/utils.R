@@ -1,6 +1,10 @@
 # readability functions with appropriate assertthat fail messages
 "%!in%" <- Negate("%in%")
 
+.to.capitilize <- function(name) {
+  gsub("([\\w])([\\w]+)", "\\U\\1\\L\\2", name, perl = TRUE)
+}
+
 .ordering.function <- function(vector, 
                                group.by,
                                data.frame) {
@@ -136,7 +140,7 @@
       },
       error = function(e) {
           stop(
-              "Please ensure that the input consists of at least one dataframe"
+              "Please ensure that the input consists of at least one data frame"
           )
       }
     )
