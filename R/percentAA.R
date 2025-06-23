@@ -14,7 +14,8 @@
   
 #' @param input.data The product of [combineTCR()], [combineBCR()], or
 #'  [combineExpression()].
-#' @param chain "TRA", "TRB", "TRG", "TRG", "IGH", "IGL".
+#' @param chain indicate a specific chain should be used - 
+#' e.g. "TRA", "TRG", "IGH", "IGL", etc
 #' @param group.by The variable to use for grouping.
 #' @param order.by A vector of specific plotting order for `group.by` or 
 #' "alphanumeric" to plot groups in order
