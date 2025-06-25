@@ -43,12 +43,12 @@ clonalHomeostasis <- function(input.data,
                               exportTable = FALSE, 
                               palette = "inferno") {
     cloneSize <- c(None = 0, cloneSize)
-    input.data <- .data.wrangle(input.data, 
-                                group.by, 
-                                .theCall(input.data, cloneCall, check.df = FALSE), 
-                                chain)
+    input.data <- .dataWrangle(input.data, 
+                               group.by, 
+                               .theCall(input.data, cloneCall, check.df = FALSE), 
+                               chain)
     cloneCall <- .theCall(input.data, cloneCall)
-    sco <- is_seurat_object(input.data) | is_se_object(input.data)
+    sco <- .is.seurat.or.se.object(input.data)
     if(!is.null(group.by) & !sco) {
       input.data <- .groupList(input.data, group.by)
     }
@@ -77,9 +77,9 @@ clonalHomeostasis <- function(input.data,
     mat_melt <- melt(mat)
     
     if(!is.null(order.by)) {
-      mat_melt <- .ordering.function(vector = order.by,
-                                     group.by = "Var1", 
-                                     data.frame = mat_melt)
+      mat_melt <- .orderingFunction(vector = order.by,
+                                    group.by = "Var1", 
+                                    data.frame = mat_melt)
     }
     
     

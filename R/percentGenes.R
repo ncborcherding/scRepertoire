@@ -45,9 +45,9 @@ percentGenes <- function(input.data,
                          summary.fun = c("percent", "proportion", "count"),
                          palette = "inferno") {
   
-  sco <- is_seurat_object(input.data) | is_se_object(input.data)
+  sco <- .is.seurat.or.se.object(input.data)
   summary.fun <- match.arg(summary.fun)
-  input.data <- .data.wrangle(input.data, group.by, "CTgene", chain)
+  input.data <- .dataWrangle(input.data, group.by, "CTgene", chain)
   if(!is.null(group.by) & !sco) {
     input.data <- .groupList(input.data, group.by)
   }
@@ -99,14 +99,14 @@ percentGenes <- function(input.data,
                           KEEP.OUT.ATTRS = FALSE)
   mat_melt$value <- as.vector(mat)
   if(!is.null(order.by)) {
-    mat_melt <- .ordering.function(vector = order.by,
-                                   group.by = "Var1", 
-                                   mat_melt)
+    mat_melt <- .orderingFunction(vector = order.by,
+                                  group.by = "Var1", 
+                                  mat_melt)
   }
   
   plot <- ggplot(mat_melt, aes(y=Var1, x = Var2, fill=value)) +
     geom_tile(lwd= 0.25, color = "black") +
-    scale_fill_gradientn(name = .to.capitilize(summary.fun), 
+    scale_fill_gradientn(name = .toCapitilize(summary.fun), 
                          colors = .colorizer(palette,21)) +
     theme_classic() + 
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1), 

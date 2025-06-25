@@ -63,7 +63,7 @@ clonalCluster <- function(input.data,
   if(!is.list && !inherits(x = input.data, what = c("Seurat", "SummarizedExperiment"))) {
     input.data <- .checkList(input.data)
   }
-  dat <- .data.wrangle(input.data, group.by, "CTgene", chain)
+  dat <- .dataWrangle(input.data, group.by, "CTgene", chain)
   
   if (inherits(x = input.data, what = c("Seurat", "SummarizedExperiment"))) {
     for (y in seq_along(dat)) {

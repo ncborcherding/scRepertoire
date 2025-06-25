@@ -70,7 +70,7 @@ quietBCRgenes.default <- function(input.data, ...) {
 
 shouldQuietBcrGene <- function(genes) {
     grepl("^IG[HLK][VDJCAGM]", genes) &
-        genes %!in% getHumanIgPseudoGenes() |
+        !genes %in% getHumanIgPseudoGenes() |
         genes == "JCHAIN"
 }
 

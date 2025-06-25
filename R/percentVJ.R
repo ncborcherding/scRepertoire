@@ -31,8 +31,8 @@ percentVJ <- function(input.data,
                       exportTable = FALSE, 
                       palette = "inferno") {
   
-  sco <- is_seurat_object(input.data) | is_se_object(input.data)
-  input.data <- .data.wrangle(input.data, group.by, "CTgene", chain)
+  sco <- .is.seurat.or.se.object(input.data)
+  input.data <- .dataWrangle(input.data, group.by, "CTgene", chain)
   if(!is.null(group.by) & !sco) {
     input.data <- .groupList(input.data, group.by)
   }
@@ -59,7 +59,7 @@ percentVJ <- function(input.data,
   #Summarizing the gene usage across the list
   summary <- lapply(gene_counts, function(x) {
                  percentages <- unlist(prop.table(table(x)))
-                 genes.to.add <- gene.dictionary [which(gene.dictionary  %!in% names(percentages))]
+                 genes.to.add <- gene.dictionary [which(!gene.dictionary  %in% names(percentages))]
                  if(length(genes.to.add) >= 1) {
                    percentages.to.add <- rep(0, length(genes.to.add))
                    names(percentages.to.add) <- genes.to.add
@@ -87,9 +87,9 @@ percentVJ <- function(input.data,
   #Melting matrix and Visualizing
   mat_melt <- melt(mat)
   if(!is.null(order.by)) {
-    mat_melt <- .ordering.function(vector = order.by,
-                                   group.by = "L1", 
-                                   mat_melt)
+    mat_melt <- .orderingFunction(vector = order.by,
+                                  group.by = "L1", 
+                                  mat_melt)
   }
   
   plot <- ggplot(mat_melt, aes(y=Var1, x = Var2, fill=round(value*100,2))) +

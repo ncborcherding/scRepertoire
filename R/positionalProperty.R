@@ -70,16 +70,16 @@ positionalProperty <- function(input.data,
                                palette = "inferno")  {
   factors <- c("atchleyFactors", "crucianiProperties", "FASGAI", "kideraFactors", 
   "MSWHIM", "ProtFP", "stScales", "tScales", "VHSE", "zScales")
-  if (method %!in% c(factors)) {
+  if (!method %in% c(factors)) {
     stop("Please select a compatible method:", paste0(factors, collapse = ", "))
   }
   
   
-  sco <- is_seurat_object(input.data) | is_se_object(input.data)
-  input.data <- .data.wrangle(input.data, 
-                              group.by, 
-                              .theCall(input.data, "CTaa", check.df = FALSE), 
-                              chain)
+  sco <- .is.seurat.or.se.object(input.data)
+  input.data <- .dataWrangle(input.data, 
+                             group.by, 
+                             .theCall(input.data, "CTaa", check.df = FALSE), 
+                             chain)
   cloneCall <- .theCall(input.data, "CTaa")
   
   .aa.property.matrix <- getFromNamespace(".aa.property.matrix", "immApex")
@@ -152,7 +152,7 @@ positionalProperty <- function(input.data,
   }
   
   if (!is.null(order.by)) {
-    mat <- .ordering.function(mat, order.by, "group")
+    mat <- .orderingFunction(mat, order.by, "group")
   }
   mat$position <- as.integer(mat$position)
   

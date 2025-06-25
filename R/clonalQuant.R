@@ -43,13 +43,13 @@ clonalQuant <- function(input.data,
   if (length(group.by) > 1) { 
     stop("Only one item in the group.by variable can be listed.")
   }
-  input.data <- .data.wrangle(input.data, 
-                              group.by, 
-                              .theCall(input.data, cloneCall, check.df = FALSE), 
-                              chain)
+  input.data <- .dataWrangle(input.data, 
+                             group.by, 
+                             .theCall(input.data, cloneCall, check.df = FALSE), 
+                             chain)
   cloneCall <- .theCall(input.data, cloneCall)
   
-  sco <- is_seurat_object(input.data) | is_se_object(input.data)
+  sco <- .is.seurat.or.se.object(input.data)
   if(!is.null(group.by) & !sco) {
     input.data <- .groupList(input.data, group.by)
   }
@@ -101,9 +101,9 @@ clonalQuant <- function(input.data,
   mat[,x] = factor(mat[,x], levels = names(input.data))
   
   if(!is.null(order.by)) {
-    mat <- .ordering.function(vector = order.by,
-                              group.by = "values", 
-                              data.frame = mat)
+    mat <- .orderingFunction(vector = order.by,
+                             group.by = "values", 
+                             data.frame = mat)
   }
   
   #Plotting

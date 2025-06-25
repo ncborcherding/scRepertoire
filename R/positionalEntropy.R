@@ -43,8 +43,8 @@ positionalEntropy <- function(input.data,
                               exportTable = FALSE, 
                               palette = "inferno")  {
   
-  sco <- is_seurat_object(input.data) | is_se_object(input.data)
-  input.data <- .data.wrangle(input.data, 
+  sco <- .is.seurat.or.se.object(input.data)
+  input.data <- .dataWrangle(input.data, 
                               group.by, 
                               .theCall(input.data, "CTaa", check.df = FALSE), 
                               chain)
@@ -68,9 +68,9 @@ positionalEntropy <- function(input.data,
   mat_melt <- do.call(rbind, group.results)
   
   if(!is.null(order.by)) {
-    mat_melt <- .ordering.function(vector = order.by,
-                                   group.by = "group", 
-                                   mat_melt)
+    mat_melt <- .orderingFunction(vector = order.by,
+                                  group.by = "group", 
+                                  mat_melt)
   }
     
   plot <- ggplot(mat_melt, aes(x=as.factor(Position), 

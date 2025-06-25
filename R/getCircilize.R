@@ -66,7 +66,7 @@ getCirclize <- function(sc.data,
   }
   
   #Count clones across all identities
-  clone.table <- .clone.counter(meta, group.by, cloneCall)
+  clone.table <- .cloneCounter(meta, group.by, cloneCall)
   
   group_pairs$value <- NA
   

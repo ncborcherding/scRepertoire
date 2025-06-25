@@ -87,7 +87,7 @@ clonalNetwork <- function(sc.data,
         }
         #Filtering clones based on the minimum value
         min_val <- min(min)
-        table <- .clone.counter(meta, group.by, cloneCall)
+        table <- .cloneCounter(meta, group.by, cloneCall)
         cut <- which.min(abs(table$clone.sum - min_val))
         clones.to.filter <- table[,1][seq_len(cut)]
       } else if (is.numeric(filter.clones)) {

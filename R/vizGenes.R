@@ -48,7 +48,7 @@ vizGenes <- function(input.data,
                      exportTable = FALSE,
                      palette = "inferno") {
   element.names <- NULL
-  sco <- is_seurat_object(input.data) | is_se_object(input.data)
+  sco <- .is.seurat.or.se.object(input.data)
   
   #Extracting group.by in case of null
   if(!grepl("TRA|TRB|TRG|TRD|IGH|IGL|IGK", y.axis) && !is.null(y.axis)) {
@@ -66,7 +66,7 @@ vizGenes <- function(input.data,
   
   input.data <- .bound.input.return(input.data)
   #Parsing x.axis if gene used
-  if (x.axis %!in% colnames(input.data)) {
+  if (!x.axis %in% colnames(input.data)) {
     if (grepl("TRA|TRB|TRG|TRD|IGH|IGL|IGK", x.axis)) {
       input.data <- .select.gene(input.data, x.axis, x.axis)
       colnames(input.data)[ncol(input.data)] <- x.axis ######## Check if need this
@@ -74,7 +74,7 @@ vizGenes <- function(input.data,
   }
   
   #Parsing y.axis if gene used
-  if (any(y.axis %!in% colnames(input.data)) | !is.null(y.axis)) {
+  if (any(!y.axis %in% colnames(input.data)) | !is.null(y.axis)) {
     if (grepl("TRA|TRB|TRG|TRD|IGH|IGL|IGK", y.axis)) {
       input.data <- .select.gene(input.data, y.axis, y.axis)
       colnames(input.data)[ncol(input.data)] <- y.axis ######## Check if need this

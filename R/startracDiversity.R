@@ -58,7 +58,7 @@ StartracDiversity <- function(sc.data,
     colnames(df)[ncol(df)] <- "majorCluster"
     
     if (is.null(group.by)) {
-       if("orig.ident" %!in% colnames(df)) {
+       if(!"orig.ident" %in% colnames(df)) {
          stop("Please select a group.by variable")
        }
        group.by <- "orig.ident"
@@ -66,7 +66,7 @@ StartracDiversity <- function(sc.data,
     group.levels <- unique(df[,group.by])
     
     if (chain != "both") {
-      df <- .off.the.chain(df, chain, cloneCall)
+      df <- .offTheChain(df, chain, cloneCall)
     }
 
     df <- df %>%

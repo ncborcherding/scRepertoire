@@ -67,12 +67,12 @@ clonalSizeDistribution <- function(input.data,
                                    exportTable = FALSE, 
                                    palette = "inferno") {
   x <- xend <- yend <- mpg_div_hp <- NULL
-  input.data <- .data.wrangle(input.data, 
-                              group.by, 
-                              .theCall(input.data, cloneCall, check.df = FALSE), 
-                              chain)
+  input.data <- .dataWrangle(input.data, 
+                             group.by, 
+                             .theCall(input.data, cloneCall, check.df = FALSE), 
+                             chain)
   cloneCall <- .theCall(input.data, cloneCall)
-  sco <- is_seurat_object(input.data) | is_se_object(input.data)
+  sco <- .is.seurat.or.se.object(input.data)
   if(!is.null(group.by) & !sco) {
     input.data <- .groupList(input.data, group.by)
   }

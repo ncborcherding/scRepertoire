@@ -50,7 +50,7 @@ clonalOverlay <- function(sc.data,
   #Forming the data frame to plot
   tmp <- data.frame(.grabMeta(sc.data), .get.coord(sc.data, reduction))
   
-  if(cut.category %!in% colnames(tmp)) {
+  if(!cut.category %in% colnames(tmp)) {
     stop("If filtering the data using a cutpoint, ensure the cut.category correspond to a variable in the meta data.")
   }
   #Add facet variable if present

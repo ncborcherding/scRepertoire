@@ -129,7 +129,7 @@ exportClones <- function(input.data,
 # Format-Specific Export Functions 
 .tcrMatchExport <- function(input.data, group.by) {
   # Wrangle data to get TRB chain information
-  input.data.list <- .data.wrangle(input.data, group.by, "CTgene", "TRB")
+  input.data.list <- .dataWrangle(input.data, group.by, "CTgene", "TRB")
   
   # Process each list element to ensure proper chain format
   input.data.list <- lapply(input.data.list, function(df) {
@@ -157,7 +157,7 @@ exportClones <- function(input.data,
 
 #' @noRd
 .pairedExport <- function(input.data, group.by) {
-  input.data.list <- .data.wrangle(input.data, group.by, "CTgene", "both")
+  input.data.list <- .dataWrangle(input.data, group.by, "CTgene", "both")
   bound_data <- ._bind_contig_list(input.data.list)
   
   # Split concatenated strings into separate columns
@@ -180,7 +180,7 @@ exportClones <- function(input.data,
 
 #' @noRd
 .tcrPhenoExport <- function(input.data, group.by) {
-  input.data.list <- .data.wrangle(input.data, NULL, "CTgene", "both")
+  input.data.list <- .dataWrangle(input.data, NULL, "CTgene", "both")
   dat <- do.call(rbind, unname(input.data.list))
   
   # Split sequence and gene columns
@@ -218,7 +218,7 @@ exportClones <- function(input.data,
 
 #' @noRd
 .airrExport <- function(input.data, group.by) {
-  input.data.list <- .data.wrangle(input.data, group.by, "CTgene", "both")
+  input.data.list <- .dataWrangle(input.data, group.by, "CTgene", "both")
   bound_data <- ._bind_contig_list(input.data.list)
   
   # Helper to clean multi-chain entries by taking the first one
@@ -286,7 +286,7 @@ exportClones <- function(input.data,
     stop("Package 'dplyr' is required for the 'immunarch' export format. Please install it.", call. = FALSE)
   }
   
-  df_list <- .data.wrangle(input.data, group.by, "CTgene", "both")
+  df_list <- .dataWrangle(input.data, group.by, "CTgene", "both")
   meta <- data.frame(Sample = names(df_list))
   
   data_out <- lapply(df_list, function(x) {

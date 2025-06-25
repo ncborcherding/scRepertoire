@@ -176,11 +176,9 @@ clonalDiversity <- function(input.data,
   
   # Arranging order if using order.by
   if(!is.null(order.by)) {
-    output_df <- .ordering.function(
-    vector = order.by,
-    group.by = names(output_df)[1],
-    mat_melt = output_df
-    )
+    output_df <- .orderingFunction(vector = order.by,
+                                   group.by = names(output_df)[1],
+                                   mat_melt = output_df)
   }
   
   # Plotting 

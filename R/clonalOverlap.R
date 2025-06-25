@@ -74,10 +74,10 @@ clonalOverlap <- function(input.data,
     } else {
       return_type <- "unique"
     }
-    input.data <- .data.wrangle(input.data, 
-                              group.by, 
-                              .theCall(input.data, cloneCall, check.df = FALSE), 
-                              chain)
+    input.data <- .dataWrangle(input.data, 
+                               group.by, 
+                               .theCall(input.data, cloneCall, check.df = FALSE), 
+                               chain)
     if(!is.null(order.by)) {
       if(length(order.by) == 1 && order.by == "alphanumeric") {
         input.data <- input.data[str_sort(names(input.data), numeric = TRUE)]
@@ -89,7 +89,7 @@ clonalOverlap <- function(input.data,
     
     cloneCall <- .theCall(input.data, cloneCall)
     
-    sco <- is_seurat_object(input.data) | is_se_object(input.data)
+    sco <- .is.seurat.or.se.object(input.data)
     if(!is.null(group.by) & !sco) {
       input.data <- .groupList(input.data, group.by)
     }

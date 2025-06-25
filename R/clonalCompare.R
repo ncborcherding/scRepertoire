@@ -66,24 +66,6 @@ clonalCompare <- function(input.data,
                           exportTable = FALSE,
                           palette = "inferno") {
 
-  assert_that(
-    isListOfNonEmptyDataFrames(input.data) ||
-      is_seurat_or_se_object(input.data),
-    is.string(cloneCall),
-    is.string(chain), chain %in% c("both", "TRA", "TRB", "TRG", "TRD", "IGH", "IGL", "IGK"),
-    is.null(samples) || is.character(samples),
-    is.null(clones) || is.character(clones),
-    is.null(top.clones) || is.count(top.clones),
-    is.null(highlight.clones) || is.character(highlight.clones),
-    is.flag(relabel.clones),
-    is.null(group.by) || is.string(group.by),
-    is.null(order.by) || is.character(order.by),
-    is.string(graph), graph %in% c("alluvial", "area"),
-    is.flag(proportion),
-    is.flag(exportTable),
-    is.string(palette)
-  )
-
   #Tie goes to indicated clones over top clones
   if(!is.null(top.clones) && !is.null(clones)) {
     top.clones <- NULL
@@ -94,7 +76,7 @@ clonalCompare <- function(input.data,
                               chain)
   cloneCall <- .theCall(input.data, cloneCall)
 
-  sco <- is_seurat_object(input.data) | is_se_object(input.data)
+  sco <- .is.seurat.or.se.object(input.data)
   if(!is.null(group.by) && !sco) {
     input.data <- .groupList(input.data, group.by)
   }
@@ -151,9 +133,9 @@ clonalCompare <- function(input.data,
   }
 
   if(!is.null(order.by)) {
-    Con.df <- .ordering.function(vector = order.by,
-                                 group.by = "Sample",
-                                 data.frame = Con.df)
+    Con.df <- .orderingFunction(vector = order.by,
+                                group.by = "Sample",
+                                data.frame = Con.df)
   }
 
   if (exportTable) {

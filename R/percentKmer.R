@@ -57,15 +57,15 @@ percentKmer <- function(input.data,
                         exportTable = FALSE, 
                         palette = "inferno") {
   
-  if(cloneCall %!in% c("aa", "nt")) {
+  if(!cloneCall %in% c("aa", "nt")) {
     stop("Please select either nucleotide (nt) or amino acid (aa) sequences for cloneCall")
   }
   motifs.to.save <- NULL
-  sco <- is_seurat_object(input.data) | is_se_object(input.data)
-  input.data <- .data.wrangle(input.data, 
-                              group.by, 
-                              .theCall(input.data, cloneCall, check.df = FALSE), 
-                              chain)
+  sco <- .is.seurat.or.se.object(input.data)
+  input.data <- .dataWrangle(input.data, 
+                             group.by, 
+                             .theCall(input.data, cloneCall, check.df = FALSE), 
+                             chain)
   cloneCall <- .theCall(input.data, cloneCall)
   if(!is.null(group.by) && !sco) {
     input.data <- .groupList(input.data, group.by)
@@ -114,9 +114,9 @@ percentKmer <- function(input.data,
   
   # Ordering group is order.by is not NULL
   if(!is.null(order.by)) {
-    mat_melt <- .ordering.function(vector = order.by,
-                                   group.by = "Var1", 
-                                   mat_melt)
+    mat_melt <- .orderingFunction(vector = order.by,
+                                  group.by = "Var1", 
+                                  mat_melt)
   }
   
   #Plotting
