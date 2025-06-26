@@ -125,7 +125,6 @@ reference:
   desc: Reference data for package functions.
 - contents:
   - contig_list
-  - mini_contig_list
   - scRep_example
 deploy:
   install_metadata: yes

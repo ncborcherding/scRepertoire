@@ -26,22 +26,4 @@ NULL
 #'
 NULL
 
-#' Processed subset of `contig_list`
-#' 
-#' @description A list of 8 data frames of T cell contigs outputted from the
-#' `filtered_contig_annotation` files, but subsetted to  365 valid T cells
-#' which correspond to the same barcodes found in `scRep_example`. The
-#' data is originally derived from the following
-#'  [manuscript](https://pubmed.ncbi.nlm.nih.gov/33622974/).
-#'
-#' @usage data("mini_contig_list")
-#'
-#' @format An R `list` of `data.frame` objects
-#' 
-#' @concept Data
-#' 
-#' @docType data
-#'
-#' @seealso [contig_list()]
-#'
-"mini_contig_list"
+
