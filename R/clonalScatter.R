@@ -47,11 +47,17 @@ clonalScatter <- function(input.data,
                           graph = "proportion", 
                           exportTable = FALSE,
                           palette = "inferno") {
+  sco <- .is.seurat.or.se.object(input.data)
   input.data <- .dataWrangle(input.data, 
                              group.by, 
                              .theCall(input.data, cloneCall, check.df = FALSE), 
                              chain)
   cloneCall <- .theCall(input.data, cloneCall)
+  
+  if(!is.null(group.by) & !sco) {
+    input.data <- .groupList(input.data, group.by)
+  }
+  
   axes <- which(names(input.data) %in% c(x.axis, y.axis, dot.size))
   
   #Making new data frame and adding variables to graph
