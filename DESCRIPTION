@@ -16,7 +16,6 @@ Depends:
      ggplot2, 
      R (>= 4.0)
 Imports: 
-    assertthat,
     cubature,
     dplyr,
     evmix,
