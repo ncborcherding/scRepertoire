@@ -48,12 +48,6 @@ loadContigs <- function(input,
   valid_formats <- c("auto", "10X", "AIRR", "BD", "Dandelion", "JSON",
                      "MiXCR", "ParseBio", "TRUST4", "WAT3R", "Immcantation")
   
-  assert_that(
-    is.string(input) || is.list(input) || is.data.frame(input),
-    is.string(format),
-    isTRUE(format %in% valid_formats)
-  )
-  
   # Define mapping from formats to file patterns (for directory inputs)
   format_patterns <- list(
     "WAT3R"       = "barcode_results.csv",
