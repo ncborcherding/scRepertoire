@@ -34,7 +34,6 @@
 #' @param exportGraph Return an igraph object of connected 
 #' sequences (**TRUE**) or the amended input with a
 #' new cluster-based variable (**FALSE**).
-#' @importFrom stringdist stringdist
 #' @importFrom igraph set_vertex_attr V union
 #' @importFrom plyr join
 #' @importFrom stringr str_replace_all

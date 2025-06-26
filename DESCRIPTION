@@ -37,7 +37,6 @@ Imports:
     SeuratObject,
     SingleCellExperiment,
     stringr,
-    stringdist,
     SummarizedExperiment,
     tidygraph,
     truncdist,
