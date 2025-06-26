@@ -70,7 +70,7 @@ clonalCompare <- function(input.data,
   if(!is.null(top.clones) && !is.null(clones)) {
     top.clones <- NULL
   }
-  input.data <- .data.wrangle(input.data,
+  input.data <- .dataWrangle(input.data,
                               group.by,
                               .theCall(input.data, cloneCall, check.df = FALSE),
                               chain)
@@ -112,7 +112,7 @@ clonalCompare <- function(input.data,
       )
     Con.df <- Con.df[Con.df$clones %in% top$clones,]
   }
-  if (nrow(Con.df) < length(unique(Con.df$Sample))) {
+  if (nrow(Con.df) < length(unique(Con.df$Sample)) || nrow(Con.df) == 0) {
     stop("Please reasses the filtering strategies here, there are not
             enough clones to examine.")
   }
