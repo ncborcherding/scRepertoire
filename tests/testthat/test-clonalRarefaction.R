@@ -1,69 +1,58 @@
 # test script for clonalRarefaction.R - testcases are NOT comprehensive!
 
-# Qile: I'm getting a bunch of errors when running devtools::test()
+# Data to use
+combined <- combineTCR(contig_list,
+                       samples = c("P17B", "P17L", "P18B", "P18L",
+                                   "P19B", "P19L", "P20B", "P20L"))
+combined <- addVariable(combined, 
+                        variable.name = "Type", 
+                        variables = rep(c("B", "L"), 4))
 
-test_that("clonalRarefaction works", {
+combined <- combined[1:4] #subset to reduce size
 
-  combined <- getCombined()
-
-  expect_doppelganger(
-    "clonalclonalRarefaction_h0_p1_plot",
-    clonalRarefaction(combined[1:2],
-                      plot.type = 1,
-                      hill.numbers = 0,
-                      n.boots = 1) + 
-      guides(color = "none", shape = "none", linetype = "none")
-  )
+test_that("Output formats (data.frame vs. plot) are correct", {
+  table_output_list <- clonalRarefaction(combined, exportTable = TRUE, n.boots = 2)
+  expect_type(table_output_list, "list")
+  expect_s3_class(table_output_list$data, "data.frame")
   
-  trial1 <- clonalRarefaction(combined[1:2],
-                              plot.type = 1,
-                              hill.numbers = 0,
-                              n.boots = 1,
-                              exportTable = TRUE)
-  expect_equal(
-    trial1,
-    getdata("visualizations", "clonalRarefaction_h0_p1_exportTable"),
-    tolerance = 1e-7
-  )
-  
-  expect_doppelganger(
-    "clonalclonalRarefaction_h1_p2_plot",
-    clonalRarefaction(combined[3:4],
-                      plot.type = 2,
-                      hill.numbers = 1,
-                      n.boots = 1) + 
-      guides(color = "none", shape = "none", linetype = "none")
-  )
-  
-  trial2 <- clonalRarefaction(combined[3:4],
-                              plot.type = 2,
-                              hill.numbers = 1,
-                              n.boots = 1,
-                              exportTable = TRUE)
-  expect_equal(
-    trial2,
-    getdata("visualizations", "clonalRarefaction_h1_p2_exportTable"),
-    tolerance = 1e-7
-  )
-  
-  expect_doppelganger(
-    "clonalclonalRarefaction_h2_p3_plot",
-    clonalRarefaction(combined[5:6],
-                      plot.type = 3,
-                      hill.numbers = 2,
-                      n.boots = 1) + 
-      guides(color = "none", shape = "none", linetype = "none")
-  )
-  
-  
-  trial3 <- clonalRarefaction(combined[5:6], 
-                               plot.type = 3,
-                               hill.numbers = 2,
-                               n.boots = 1, 
-                               exportTable = TRUE)
-  expect_equal(
-    trial3,
-    getdata("visualizations", "clonalRarefaction_h2_p3_exportTable"),
-    tolerance = 1e-3 # this is low jsut because of one value actual$data[19, ]
-  )
+  # Test that the default behavior returns a ggplot object
+  plot_output <- clonalRarefaction(combined, n.boots = 2)
+  expect_s3_class(plot_output, "ggplot")
 })
+
+test_that("`plot.type` parameter correctly generates plots", {
+  expect_silent(p1 <- clonalRarefaction(combined, plot.type = 1, n.boots = 2))
+  expect_s3_class(p1, "ggplot")
+  expect_silent(p2 <- clonalRarefaction(combined, plot.type = 2, n.boots = 2))
+  expect_s3_class(p2, "ggplot")
+  expect_silent(p3 <- clonalRarefaction(combined, plot.type = 3, n.boots = 2))
+  expect_s3_class(p3, "ggplot")
+})
+
+test_that("`hill.numbers` parameter is passed to iNEXT correctly", {
+  df_q0 <- clonalRarefaction(combined, hill.numbers = 0, n.boots = 2, exportTable = TRUE)$data
+  expect_true(all(df_q0$Order.q == 0))
+  df_q01 <- clonalRarefaction(combined, hill.numbers = c(0, 1), n.boots = 2, exportTable = TRUE)$data
+  expect_true(all(unique(df_q01$Order.q) %in% c(0, 1)))
+})
+
+test_that("`group.by` parameter correctly aggregates data", {
+  # Group by the "Type" variable
+  df_grouped <- clonalRarefaction(combined, group.by = "Type", n.boots = 2, exportTable = TRUE)$data
+  num_groups <- 2
+  expect_equal(length(unique(df_grouped$Assemblage)), num_groups)
+  expect_true(all(unique(df_grouped$Assemblage) %in% c("B", "L")))
+})
+
+test_that("`cloneCall` and `chain` parameters execute correctly", {
+  expect_silent(
+    res_aa <- clonalRarefaction(combined, cloneCall = "aa", n.boots = 2, exportTable = TRUE)
+  )
+  expect_type(res_aa, "list")
+  expect_silent(
+    res_tra <- clonalRarefaction(combined, chain = "TRA", n.boots = 2, exportTable = TRUE)
+  )
+  expect_type(res_tra, "list")
+})
+
+

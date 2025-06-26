@@ -144,16 +144,14 @@ StartracDiversity <- function(sc.data,
 }
 
 # entropy of each row of the input matrix
-.mrow.entropy <- function(x)
-{
+.mrow.entropy <- function(x) {
     freqs <- sweep(x,1,rowSums(x),"/")
     H <- - rowSums(ifelse(freqs>0,freqs* log2(freqs),0))
     return(H)
 }
 
 # entropy of each column of the input matrix
-.mcol.entropy <- function(x)
-{
+.mcol.entropy <- function(x) {
     freqs <- sweep(x,2,colSums(x),"/")
     H <- - colSums(ifelse(freqs>0,freqs* log2(freqs),0))
     return(H)

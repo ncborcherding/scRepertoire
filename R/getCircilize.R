@@ -42,7 +42,7 @@
 #' 
 #' @export
 #' @concept SC_Functions
-#' @return A data frame of shared clones between groups formated for [chordDiagram][circlize::chordDiagram]
+#' @return A data frame of shared clones between groups formatted for [chordDiagram][circlize::chordDiagram]
 #' @author Dillon Corvino, Nick Borcherding
 getCirclize <- function(sc.data, 
                         cloneCall = "strict", 

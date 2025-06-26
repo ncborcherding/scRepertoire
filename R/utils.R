@@ -1,3 +1,8 @@
+#-------------------------------------------
+#-------------Background Functions-----------
+#-------------------------------------------
+# utility functions use camelCase 
+
 .toCapitilize <- function(name) {
   gsub("([\\w])([\\w]+)", "\\U\\1\\L\\2", name, perl = TRUE)
 }
@@ -53,7 +58,7 @@
     chain.check[is.na(chain.check)] <- NA #
     chain.check[chain.check == "Non"] <- NA
     
-    any.alt.chains <- which(!is.na(chain.check) & chain.check != chain1)
+    any.alt.chains <- which(!is.na(chain.check) & chain.check != chain)
     
     if (length(any.alt.chains) > 0) {
       dat <- dat[-any.alt.chains, ]
@@ -181,13 +186,19 @@
 #Get UMAP or other coordinates
 #' @importFrom SingleCellExperiment reducedDim
 #' @keywords internal
-.get.coord <- function(sc, reduction) { 
+.getCoord <- function(sc, reduction) { 
   if (is.null(reduction)) {
     reduction <- "pca"
   }
   if (.is.seurat.object(sc)) {
+    if (!reduction %in% names(sc@reductions)) {
+      stop(paste("Reduction", reduction, "not found in Seurat object."))
+    }
     coord <- sc@reductions[[reduction]]@cell.embeddings
-  } else if (is.se.object(sc)) {
+  } else if (.is.se.object(sc)) {
+    if (!reduction %in% reducedDimNames(sc)) {
+      stop(paste("Reduction", reduction, "not found in SingleCellExperiment object."))
+    }
     coord <- reducedDim(sc, reduction)
   }
   return(coord)
@@ -607,10 +618,41 @@
   df <- .checkBlanks(df, cloneCall)
   for (i in seq_along(df)) {
     if (chain != "both") {
-      df[[i]] <- .off.the.chain(df[[i]], chain, cloneCall)
+      df[[i]] <- .offTheChain(df[[i]], chain, cloneCall)
     }
   }
   return(df)
 }
+
+
+#-------------------------------------------
+#-----------------Type Checks---------------
+#-------------------------------------------
+# Separate from utility functions with dot designations
+.is.seurat.object <- function(obj) inherits(obj, "Seurat")
+
+.is.se.object <- function(obj) inherits(obj, "SummarizedExperiment")
+
+.is.seurat.or.se.object <- function(obj) {
+  .is.seurat.object(obj) || .is.se.object(obj)
+}
+
+.is.named.numeric <- function(obj) {
+  is.numeric(obj) && !is.null(names(obj))
+}
+
+.is.df.or.list.of.df <- function(x) {
+  if (is.data.frame(x)) {
+    return(TRUE)
+  } else if (is.list(x)) {
+    if (length(x) == 0) {
+      return(FALSE)
+    }
+    return(all(sapply(x, is.data.frame)))
+  } else {
+    return(FALSE)
+  }
+}
+
 
 

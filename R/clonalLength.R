@@ -55,8 +55,7 @@ clonalLength <- function(input.data,
   } else if (cloneCall == "CTaa") { 
     ylab <- "CDR3 (AA)"
   } else { 
-    stop("Please make a selection of the type of
-          CDR3 sequence to analyze by using `cloneCall`")
+    stop("Please make a selection of the type of CDR3 sequence to analyze by using `cloneCall`")
   }
   
   #Calculating Length

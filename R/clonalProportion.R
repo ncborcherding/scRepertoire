@@ -85,10 +85,10 @@ clonalProportion <- function(input.data,
     plot <- ggplot(mat_melt, aes(x=as.factor(Var1), y=value, fill=Var2)) +
         geom_bar(stat = "identity", position="fill", 
                     color = "black", lwd= 0.25) +
-        scale_fill_manual(name = "Clonal Indices", 
-                        values = rev(.colorizer(palette,col))) +
-        xlab("Samples") +
-        ylab("Occupied Repertoire Space") +
+        scale_fill_manual(values = rev(.colorizer(palette,col))) +
+        labs(x = "Samples",
+             y = "Occupied Repertoire Space", 
+             fill = "Clonal Indices") +
         theme_classic()
     return(plot)
 }

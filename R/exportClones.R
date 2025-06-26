@@ -133,8 +133,8 @@ exportClones <- function(input.data,
   
   # Process each list element to ensure proper chain format
   input.data.list <- lapply(input.data.list, function(df) {
-    df <- .off.the.chain(df, "TRB", "CTaa", check = FALSE)
-    .off.the.chain(df, "TRB", "CTnt", check = FALSE)
+    df <- .offTheChain(df, "TRB", "CTaa", check = FALSE)
+    .offTheChain(df, "TRB", "CTnt", check = FALSE)
   })
   
   bound_data <- ._bind_contig_list(input.data.list)

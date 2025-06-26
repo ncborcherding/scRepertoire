@@ -49,26 +49,3 @@ test_that("clonalCluster works", {
   )
   
 })
-
-# test_that("clonalCluster works with custom threshold", { # fails atm
-
-#   test_obj <- getTestCombinedSeuratObj()
-#   withr::local_seed(42)
-
-#   colorblind_vector <- hcl.colors(n=7, palette = "inferno", fixup = TRUE)
-
-# test_obj <- clonalCluster(test_obj, 
-#                                chain = "TRA", 
-#                                sequence = "aa", 
-#                                threshold = 0.85, 
-#                                group.by = "Patient")
-
-# Seurat::DimPlot(scRep_example, group.by = "TRA_cluster") +
-#     scale_color_manual(values =  hcl.colors(n=length(unique(scRep_example@meta.data[,"TRA_cluster"])), "inferno")) + 
-#   Seurat::NoLegend() + 
-#   theme(plot.title = element_blank()) %>%
-#   print()
-
-# })
-
-#TODO Add exportgraph test

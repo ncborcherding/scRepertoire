@@ -6,18 +6,18 @@
 #' [ProjectTIL](https://github.com/carmonalab/ProjecTILs).
 #'
 #' @examples
-#' #Getting the combined contigs
+#' # Getting the combined contigs
 #' combined <- combineTCR(contig_list, 
 #'                         samples = c("P17B", "P17L", "P18B", "P18L", 
 #'                                     "P19B","P19L", "P20B", "P20L"))
-#' #Getting a sample of a Seurat object
+#' # Getting a sample of a Seurat object
 #' scRep_example <- get(data("scRep_example"))
 #' 
-#' #Using combineExpresion()
+#' # Using combineExpresion()
 #' scRep_example <- combineExpression(combined, 
 #'                                    scRep_example)
 #' 
-#' #Using clonalOverlay()
+#' # Using clonalOverlay()
 #' clonalOverlay(scRep_example, 
 #'               reduction = "umap", 
 #'               cutpoint = 3, 
@@ -48,7 +48,7 @@ clonalOverlay <- function(sc.data,
   .checkSingleObject(sc.data)
 
   #Forming the data frame to plot
-  tmp <- data.frame(.grabMeta(sc.data), .get.coord(sc.data, reduction))
+  tmp <- data.frame(.grabMeta(sc.data), .getCoord(sc.data, reduction))
   
   if(!cut.category %in% colnames(tmp)) {
     stop("If filtering the data using a cutpoint, ensure the cut.category correspond to a variable in the meta data.")

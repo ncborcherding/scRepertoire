@@ -17,6 +17,11 @@ single diversity metric at a time and includes new  estimators like "gini",
 * ```percentKmer()``` refactored to use immApex ```calculateMotif``` for both aa and
 nt sequences. No longer calculates all possible motifs, but only motifs present. 
 
+## BUG FIXES
+* ```clonalCompare()``` issue with plotting a 0 row data frame now errors with message
+* ```clonalScatter()``` group.by/axes call now works for non-single-cell objects
+* Fixed issue with NULL and "none" group.by in ```combineExpression()```
+
 # scRepertoire VERSION 2.3.4
 
 ## UNDERLYING CHANGES
