@@ -110,15 +110,16 @@ clonalDiversity <- function(input.data,
   }
   
   # Data Wrangling 
-  sco <- is_seurat_object(input.data) | is_se_object(input.data)
+  sco <- .is.seurat.or.se.object(input.data)
   cloneCall <- .theCall(input.data, cloneCall, check.df = FALSE)
-  input.data <- .data.wrangle(input.data, group.by, cloneCall, chain)
+  input.data <- .dataWrangle(input.data, group.by, cloneCall, chain)
   
   if(!is.null(group.by) && !sco) {
-    input.data <- .groupList(input.data, group.by)
+    grouping <- c(group.by, x.axis)
+    input.data <- .groupList(input.data, grouping)
   }
   
-  # Core Calculation --
+  # Core Calculation 
   div_func <- .div.registry[[metric]]
   min_size <- min(sapply(input.data, function(x) nrow(x)))
   
@@ -152,7 +153,7 @@ clonalDiversity <- function(input.data,
     }
   })
   
-  # Combine results into a single data frame using base R
+  # Combine results into a single data frame 
   output_df <- do.call(rbind, results_list)
   colnames(output_df)[colnames(output_df) == "group"] <- group.by %||% "Group"
   
@@ -165,6 +166,7 @@ clonalDiversity <- function(input.data,
     x.variable <- as.data.frame(x.variable)
     colnames(x.variable) <- x.axis
     output_df <- merge(output_df, x.variable, by.x = group.by %||% "Group", by.y = "row.names")
+    output_df[,1] <- gsub("\\..*", "", output_df[,1]) #removing the x.axis grouping
   } else {
     x.axis <- "x.axis"
     output_df[,x.axis] <- 1
