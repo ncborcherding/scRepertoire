@@ -31,6 +31,7 @@
 #' used for clustering.
 #' @param group.by The column header used for to group contigs.
 #' If (**NULL**), clusters will be calculated across samples.
+#' @param use.v,use.j Logical; require identical V/J when `TRUE`
 #' @param exportGraph Return an igraph object of connected 
 #' sequences (**TRUE**) or the amended input with a
 #' new cluster-based variable (**FALSE**).
@@ -53,78 +54,86 @@ clonalCluster <- function(input.data,
                           samples = NULL,
                           threshold = 0.85, 
                           group.by = NULL, 
+                          use.V = TRUE,
+                          use.J = FALSE,
+                          exportAdjMatrix = FALSE,
                           exportGraph = FALSE) {
-  if(chain == "both") {
-    stop("Please select an individual chain for clustering")
-  }
+  
   #Prepping any single-cell object
   is.list <- inherits(input.data, "list")
-  if(!is.list && !inherits(x = input.data, what = c("Seurat", "SummarizedExperiment"))) {
+  if(!is.list && !.is.seurat.or.se.object(input.data)) {
     input.data <- .checkList(input.data)
   }
-  dat <- .dataWrangle(input.data, group.by, "CTgene", chain)
-  
-  if (inherits(x = input.data, what = c("Seurat", "SummarizedExperiment"))) {
-    for (y in seq_along(dat)) {
-      cdr3_aa <- str_split(dat[[y]]$CTaa, "_", simplify = TRUE)
-      cdr3_nt <- str_split(dat[[y]]$CTnt, "_", simplify = TRUE)
-      
-      dat[[y]]$cdr3_aa1 <- cdr3_aa[, 1]
-      dat[[y]]$cdr3_aa2 <- cdr3_aa[, 2]
-      dat[[y]]$cdr3_nt1 <- cdr3_nt[, 1]
-      dat[[y]]$cdr3_nt2 <- cdr3_nt[, 2]
+  #TODO Handle NAs
+  if(chain == "both") {
+    chains <- c("TRA", "TRB")
+    test <- lapply(chains, function(x) {
+      getIR(input.data, chains = x, sequence.type = sequence, group.by = group.by)
+    })
+    if (is.data.frame(test[[1]])) {
+      detected_chain <- lapply(test, function(df) {
+        names(sort(table(substring(df$v, 1, 3))))[1]
+      })
+    } else {
+      detected_chain <- lapply(test, function(inner_list) {
+        lapply(inner_list, function(df) {
+          names(sort(table(substring(df$v, 1, 3))))[1]
+        })
+      })
     }
-  }
-  if (!is.null(samples)) {
-    dat <- dat[which(names(dat) %in% samples)]
-  }
-  
-  #Getting column labels to pull from
-  if (grepl("TRA|TRG", chain)) {
-    gene <- "TCR"
-    ref <- 1
-  } else if (grepl("TRB|TRD", chain)) {
-    gene <- "TCR"
-    ref <- 2
-  } else if (grepl("IGH", chain)) {
-    gene <- "BCR"
-    ref <- 1
-  } else if (grepl("IGL", chain)) {
-    gene <- "BCR"
-    ref <- 2
-  }
-  ref2 <- paste0("cdr3_", sequence, ref)
-  
-  if (!is.null(group.by)) {
-    bound <- bind_rows(dat, .id = "group.by")
-    bound <- bound[!is.na(bound[,ref2]),]
-    retain.ref <- data.frame(old = bound[,ref2], new = str_split(bound[,ref2], ";", simplify = TRUE)[,1])
-    bound[,ref2] <- str_split(bound[,ref2], ";", simplify = TRUE)[,1]
-    graph.variables <- bound %>%
-                          group_by(bound[,ref2]) %>%
-                          dplyr::summarize(sample_count = n(),
-                                    unique_samples = paste0(unique(group.by), collapse = ","))
   } else {
-    bound <- bind_rows(dat)
-    bound <- bound[!is.na(bound[,ref2]),]
-    retain.ref <- data.frame(old = bound[,ref2], new = str_split(bound[,ref2], ";", simplify = TRUE)[,1])
-    bound[,ref2] <- str_split(bound[,ref2], ";", simplify = TRUE)[,1]
-    graph.variables <- bound %>%
-                          group_by(bound[,ref2]) %>%
-                          dplyr::summarize(sample_count = n())
+    test <- getIR(input.data, chains = chain, sequence.type = sequence)
   }
-  dictionary <- dat
-  #Generating Connected Component
-  output.list <- lapply(dictionary, function(x) {
-    cluster <- .lvCompare(x, 
-                          gene = "CTgene", 
-                          chain = ref2, 
-                          threshold = threshold,  
-                          exportGraph = exportGraph)
-    cluster
-  })
-  #Grabbing column order for later return
-  column.order <- colnames(bound)
+  
+  if (is.data.frame(test[[1]])) {
+    network_list <- lapply(test, function(df) {
+          tmp <- buildNetwork(df,
+                              seq_col   = "cdr3_aa",
+                              v_col     = "v",
+                              j_col     = "j",
+                              filter.v  = use.V,
+                              filter.j  = use.J,
+                              threshold = threshold)
+       
+          tmp$from <- df$barcode[as.numeric(tmp$from)]
+          tmp$to <- df$barcode[as.numeric(tmp$to)]
+          if (threshold < 1) {
+            tmp <- tmp[tmp$dist >= threshold, ]
+          } else if (threshold %% 1 == 0) {
+            tmp <- tmp[tmp$dist <= threshold, ]
+          }
+        tmp
+    })
+  } else {
+    network_list <- lapply(test, function(inner_list) {
+      larger.tmp <- lapply(inner_list, function(df) {
+                  tmp <- buildNetwork(df,
+                                      seq_col   = "cdr3_aa",
+                                      v_col     = "v",
+                                      j_col     = "j",
+                                      filter.v  = use.V,
+                                      filter.j  = use.J,
+                                      threshold = threshold)
+                  tmp$from <- df$barcode[match(tmp$from, rownames(df))]
+                  tmp$to   <- df$barcode[match(tmp$to, rownames(df))]
+                  if (threshold < 1) {
+                    tmp <- tmp[tmp$dist >= threshold, ]
+                  } else if (threshold %% 1 == 0) {
+                    tmp <- tmp[tmp$dist <= threshold, ]
+                  }
+                  tmp
+      })
+    })
+  }
+  
+  if (is.list(network_list[[1]]) && !is.data.frame(network_list[[1]])) {
+    flat_list <- unlist(network_list, recursive = FALSE)
+    final_df <- do.call(rbind, flat_list)
+  } else {
+    final_df <- do.call(rbind, network_list)
+  }
+  
+  graph <- igraph::graph_from_edgelist(as.matrix(final_df[,1:2]))
   
   #Returning the igraph object if exportGraph = TRUE
   if(exportGraph) {
