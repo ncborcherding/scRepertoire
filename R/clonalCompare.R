@@ -128,7 +128,7 @@ clonalCompare <- function(input.data,
     Con.df[,"original.clones"] <- Con.df[, "clones"]
     Con.df[,"clones"] <- new.clones[as.vector(Con.df[, "clones"])]
     Con.df[,"clones"] <- factor(Con.df[, "clones"],
-                                levels = str_sort(unique(Con.df[, "clones"]), numeric = TRUE))
+                                levels = .alphanumericalSort(unique(Con.df[, "clones"])))
     clones.returned <- as.vector(unique(Con.df[, "clones"]))
   }
 

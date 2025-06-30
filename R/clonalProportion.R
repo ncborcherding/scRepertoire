@@ -73,8 +73,12 @@ clonalProportion <- function(input.data,
     if (exportTable == TRUE) {
         return(mat)
     }
-    #Plotting
-    mat_melt <- melt(mat)
+    # Plotting
+    mat_melt <- data.frame(
+      Var1 = rep(rownames(mat), ncol(mat)),
+      Var2 = rep(colnames(mat), each = nrow(mat)),
+      value = as.vector(mat)
+    )
     
     if(!is.null(order.by)) {
       mat_melt <- .orderingFunction(vector = order.by,

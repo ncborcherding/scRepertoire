@@ -3,6 +3,25 @@
 #-------------------------------------------
 # utility functions use camelCase 
 
+.alphanumericalSort <- function(x, ignore.case = TRUE) {
+  if (!is.character(x)) {
+    message("Input 'x' is not a character vector. Attempting to convert.")
+    x <- as.character(x)
+  }
+  unique_elements <- unique(x)
+  alpha_part <- gsub("[0-9]+", "", unique_elements, perl = TRUE)
+  if (ignore.case) {
+    alpha_part <- tolower(alpha_part)
+  }
+  numeric_part <- suppressWarnings(as.numeric(gsub("[^0-9]", "", unique_elements)))
+  sorted_levels <- unique_elements[
+    order(alpha_part, numeric_part)
+  ]
+  
+  return(sorted_levels)
+}
+
+
 .toCapitilize <- function(name) {
   gsub("([\\w])([\\w]+)", "\\U\\1\\L\\2", name, perl = TRUE)
 }

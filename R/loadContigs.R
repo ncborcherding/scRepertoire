@@ -201,11 +201,29 @@ loadContigs <- function(input,
 # (Parsing functions below remain unchanged for completeness)
 
 .parseTRUST4 <- function(df_list) {
+  split_and_pad <- function(x, n) {
+    parts <- unlist(strsplit(x, ","))
+    if (length(parts) < n) {
+      c(parts, rep("", n - length(parts)))
+    } 
+    else if (length(parts) > n) {
+      parts[seq_len(n)]
+    } 
+    else {
+      parts
+    }
+  }
   processChain <- function(data, chain_col) {
     if (all(is.na(data[[chain_col]]))) {
       chain <- matrix(NA, ncol = 7, nrow = length(data[[chain_col]]))
     } else {
-      chain <- str_split(data[[chain_col]], ",", simplify = TRUE)[, seq_len(7), drop = FALSE]
+      chain <- vapply(
+        data[[chain_col]], 
+        split_and_pad, 
+        FUN.VALUE = character(7), 
+        n = num_cols,
+        USE.NAMES = FALSE
+      )
       chain[chain == "*"] <- "None"
     }
     colnames(chain) <- c("v_gene", "d_gene", "j_gene", "c_gene", "cdr3_nt", "cdr3", "reads")
@@ -339,7 +357,7 @@ loadContigs <- function(input,
       colnames(df) <- c("barcode", "chain", "reads", "v_gene", "d_gene", "j_gene", "cdr3_nt", "cdr3", "productive")
       df$c_gene <- NA
     }
-    df$barcode <- str_split(df$barcode, "_", simplify = TRUE)[, 1]
+    df$barcode <- vapply(strsplit(df$barcode, "_"), `[`, 1, FUN.VALUE = character(1))
     df
   })
 }

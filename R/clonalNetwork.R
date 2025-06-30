@@ -186,7 +186,7 @@ clonalNetwork <- function(sc.data,
     }
     #Remove reciprocals 
     if (filter.graph) {
-        unique.id <- str_sort(unique.id, numeric = TRUE)
+        unique.id <- .alphanumericalSort(unique.id)
         edge.list <- edge.list[edge.list[,1] %in% unique.id[seq_len(length(unique.id)/2)],]
     }
     #Removing any clones below proportion threshold

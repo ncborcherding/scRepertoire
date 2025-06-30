@@ -8,7 +8,7 @@
 #' output for the data is preferred, set **exportTable** = TRUE.
 #'
 #' @examples
-#' #Making combined contig data
+#' # Making combined contig data
 #' combined <- combineTCR(contig_list, 
 #'                         samples = c("P17B", "P17L", "P18B", "P18L", 
 #'                                     "P19B","P19L", "P20B", "P20L"))
@@ -32,6 +32,7 @@
 #' [hcl.pals][grDevices::hcl.pals].
 #'
 #' @export
+#' @importFrom utils stack
 #' @concept Visualizing_Clones
 #' @return ggplot of the space occupied by the specific proportion of clones
 clonalHomeostasis <- function(input.data, 
@@ -74,7 +75,9 @@ clonalHomeostasis <- function(input.data,
     }
     
     #Plotting
-    mat_melt <- melt(mat)
+    mat_df <- as.data.frame(mat) 
+    mat_df$Var1 <- rownames(mat_df)
+    mat_melt <- stack(mat_df, select = -Var1) 
     
     if(!is.null(order.by)) {
       mat_melt <- .orderingFunction(vector = order.by,

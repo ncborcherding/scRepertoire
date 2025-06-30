@@ -57,7 +57,7 @@ getCirclize <- function(sc.data,
   
   #Making exhaustive group.by dat frame
   group_pairs <- expand.grid(group1 = unique(meta[,group.by]), group2 = unique(meta[,group.by]))
-  group_pairs <- unique(t(apply(group_pairs, 1, function(x) str_sort(x, numeric = TRUE))))
+  group_pairs <- unique(t(apply(group_pairs, 1, function(x) .alphanumericalSort(x))))
   group_pairs <- as.data.frame(group_pairs)
   colnames(group_pairs) <- c("from", "to")
   

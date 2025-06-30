@@ -84,7 +84,7 @@ clonalBias <- function(sc.data,
   
   corrected_p <- 1-(0.05/nrow(bias))
   bias$Top_state <- factor(bias$Top_state, 
-                           str_sort(unique(bias$Top_state), numeric = TRUE))
+                           .alphanumericalSort(unique(bias$Top_state)))
   
   #Calculating Bias Z-score
   bias$Z.score <- NA

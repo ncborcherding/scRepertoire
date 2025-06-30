@@ -56,19 +56,19 @@
 #' @param exportTable Returns the data frame used for forming the graph
 #' @param palette Colors to use in visualization - input any 
 #' [hcl.pals][grDevices::hcl.pals]
-#' @importFrom stringr str_to_title
 #' @importFrom stats quantile
 #' @export
 #' @concept Visualizing_Clones
 #' @return ggplot of the overlap of clones by group
 clonalOverlap <- function(input.data, 
                           cloneCall = "strict", 
-                          method = NULL, 
+                          method = c("overlap", "morisita", "jaccard", "cosine", "raw"),
                           chain = "both", 
                           group.by = NULL,
                           order.by = NULL,
                           exportTable = FALSE,
                           palette = "inferno"){
+    method <- match.arg(method)
     if(method == "morisita") {
       return_type <- "freq"
     } else {
@@ -80,7 +80,7 @@ clonalOverlap <- function(input.data,
                                chain)
     if(!is.null(order.by)) {
       if(length(order.by) == 1 && order.by == "alphanumeric") {
-        input.data <- input.data[str_sort(names(input.data), numeric = TRUE)]
+        input.data <- input.data[.alphanumericalSort(names(input.data))]
         
       } else {
         input.data <- input.data[order.by]
@@ -123,7 +123,14 @@ clonalOverlap <- function(input.data,
     if (exportTable == TRUE) { 
       return(coef_matrix) 
     }
-    mat_melt <- suppressMessages(melt(as.matrix(coef_matrix)))
+    
+    coef_matrix_as_matrix <- as.matrix(coef_matrix)
+    
+    mat_melt <- data.frame(
+      Var1 = rep(rownames(coef_matrix_as_matrix), ncol(coef_matrix_as_matrix)),
+      Var2 = rep(colnames(coef_matrix_as_matrix), each = nrow(coef_matrix_as_matrix)),
+      value = as.vector(coef_matrix_as_matrix)
+    )
     
     mean_value <- mean(na.omit(mat_melt[,"value"]))
     
@@ -133,7 +140,7 @@ clonalOverlap <- function(input.data,
                           fill = NA, 
                           lwd= 0.25, 
                           color = "black") +
-                labs(fill = str_to_title(method)) +
+                labs(fill = .toCapitilize(method)) +
                 geom_text(aes(label = round(value, digits = 3), 
                               color = ifelse(value <= mean_value,
                                              "white", "black")), 
