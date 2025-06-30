@@ -62,8 +62,7 @@ be extremely helpful.
 #### [Pull Requests](https://github.com/BorchLab/scRepertoire/pulls) are welcome for bug fixes, new features, or enhancements.
 
 ## Please Cite
-scRepertoire 2 preprint is available at: [https://www.biorxiv.org/content/10.1101/2024.12.31.630854v1](https://www.biorxiv.org/content/10.1101/2024.12.31.630854v1)
-
-*Yang, Q, Safina, K., Borcherding, N. (2024). scRepertoire 2: Enhanced and Efficient Toolkit for Single-Cell Immune Profiling https://doi.org/10.1101/2024.12.31.630854*
+* **Version 2**: Yang, Q, & Safina, K., Nguyen, K., Tuong, Z.K., & Borcherding, N.  (2025). "scRepertoire 2: Enhanced and efficient toolkit for single-cell immune profiling." *PLoS Computational Biology* https://doi.org/10.1371/journal.pcbi.1012760
+* **Version 1**: Borcherding, Nicholas, Nicholas L. Bormann, and Gloria Kraus. "scRepertoire: An R-based toolkit for single-cell immune receptor analysis." *F1000Research* https://doi.org/10.12688/f1000research.22139.2
 
 If you are building your own tool based on scRepertoire, reach out, we are happy to help and make things compatible.

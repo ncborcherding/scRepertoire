@@ -41,9 +41,8 @@ Unfortunately, Github limits the size of individual files. In order to access th
 
 ## Please Cite
 
-We are working on submitting the scRepertoire v2 as a peer review article. For now, please cite scRepertoire using the doi from [Bioconductor](https://www.bioconductor.org/packages/release/bioc/html/scRepertoire.html).
-
-*Borcherding, N, Yang, Q, & Safina, K. (2024). scRepertoire v2: A toolkit for single-cell immune receptor profiling. DOI: 10.18129/B9.bioc.scRepertoire*
+* **Version 2**: Yang, Q, & Safina, K., Nguyen, K., Tuong, Z.K., & Borcherding, N.  (2025). "scRepertoire 2: Enhanced and efficient toolkit for single-cell immune profiling." *PLoS Computational Biology* https://doi.org/10.1371/journal.pcbi.1012760
+* **Version 1**: Borcherding, Nicholas, Nicholas L. Bormann, and Gloria Kraus. "scRepertoire: An R-based toolkit for single-cell immune receptor analysis." *F1000Research* https://doi.org/10.12688/f1000research.22139.2
 
 ## Bug Reports/New Features
 
