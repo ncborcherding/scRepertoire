@@ -16,6 +16,10 @@ single diversity metric at a time and includes new  estimators like "gini",
 "d50", and supports hill numbers).
 * ```percentKmer()``` refactored to use immApex ```calculateMotif``` for both aa and
 nt sequences. No longer calculates all possible motifs, but only motifs present. 
+* ```clonalCluster()``` now allows for dual-chain clustering, V/J filtering, 
+normalized or straight edit distance calculations, and return of clusters, 
+igraph objects or adjacencency matrix
+* ```combineBCR()``` offers single/dual chain clustering, aa or nt sequences, adaptive filtering of V and J genes and normalized or straight edit distance calculations
 
 ## BUG FIXES
 * ```clonalCompare()``` issue with plotting a 0 row data frame now errors with message

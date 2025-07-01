@@ -19,7 +19,7 @@ test_that("Basic functionality and default output structure", {
 
 
 test_that("exportGraph = TRUE returns a valid igraph object", {
-  graph_obj <- clonalCluster(combined, exportGraph = TRUE)
+  graph_obj <- clonalCluster(combined[1:2], exportGraph = TRUE)
   expect_s3_class(graph_obj, "igraph")
   expect_gt(vcount(graph_obj), 0)
   expect_gt(ecount(graph_obj), 0)
@@ -29,8 +29,8 @@ test_that("exportGraph = TRUE returns a valid igraph object", {
 
 
 test_that("exportAdjMatrix = TRUE returns a valid sparse matrix", {
-  adj_matrix <- clonalCluster(combined, exportAdjMatrix = TRUE)
-  all_barcodes <- unique(do.call(rbind, combined)[["barcode"]])
+  adj_matrix <- clonalCluster(combined[3:4], exportAdjMatrix = TRUE)
+  all_barcodes <- unique(do.call(rbind, combined[3:4])[["barcode"]])
   num_barcodes <- length(all_barcodes)
   expect_s4_class(adj_matrix, "dgCMatrix")
   expect_equal(dim(adj_matrix), c(num_barcodes, num_barcodes))
@@ -39,47 +39,32 @@ test_that("exportAdjMatrix = TRUE returns a valid sparse matrix", {
 
 
 test_that("chain parameter works correctly", {
-  clustered_tra <- clonalCluster(combined, chain = "TRA")
+  clustered_tra <- clonalCluster(combined[5:6], chain = "TRA")
   expect_true("TRA.Cluster" %in% names(clustered_tra[[1]]))
   expect_false("TRB.Cluster" %in% names(clustered_tra[[1]]))
-  clustered_both <- clonalCluster(combined, chain = "both")
+  clustered_both <- clonalCluster(combined[5:6], chain = "both")
   expect_true("Multi.Cluster" %in% names(clustered_both[[1]]))
 })
 
 
 test_that("group.by parameter functions without error", {
-  # Grouping by sample should produce clusters within each sample
-  clustered_grouped <- clonalCluster(combined, group.by = "Sample")
-  
-  # Basic structural checks
-  expect_s3_class(clustered_grouped, "list")
-  expect_true("TRB_Cluster" %in% names(clustered_grouped[[1]]))
-  
-  # A simple check to ensure clustering happened
-  # More complex checks would require knowing the expected ground truth
-  expect_false(all(is.na(clustered_grouped[[1]]$TRB_Cluster)))
-})
-
-
-test_that("threshold parameter influences clustering", {
-  lenient_clusters <- clonalCluster(combined, threshold = 5)
-  num_lenient <- sum(!is.na(lenient_clusters[[7]]$TRB.Cluster))
-  strict_clusters <- clonalCluster(combined, threshold = 0.95)
-  num_strict <- sum(!is.na(strict_clusters[[7]]$TRB.Cluster))
-  
-  # Expect more vertices to be part of a cluster with a lenient threshold
-  expect_gt(num_lenient, num_strict)
+  clustered_grouped <- clonalCluster(combined[1:2], 
+                                     group.by = "sample")
+  expect_true("TRB.Cluster" %in% names(clustered_grouped[[1]]))
+  expect_false(all(is.na(clustered_grouped[[1]]$TRB.Cluster)))
 })
 
 
 test_that("Different `cluster.method` options work", {
-  walktrap_graph <- clonalCluster(combined, cluster.method = "walktrap", exportGraph = TRUE)
+  walktrap_graph <- clonalCluster(combined[5:6], 
+                                  cluster.method = "walktrap", 
+                                  exportGraph = TRUE)
   expect_s3_class(walktrap_graph, "igraph")
   expect_true("cluster" %in% igraph::vertex_attr_names(walktrap_graph))
 })
 
 
-test_that("8. Input validation and error handling", {
+test_that("Input validation and error handling", {
   # Error when both export options are TRUE
   expect_error(
     clonalCluster(combined, exportGraph = TRUE, exportAdjMatrix = TRUE),

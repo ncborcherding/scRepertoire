@@ -138,10 +138,6 @@ clonalCluster <- function(input.data,
     return(input.data)
   }
   
-  if (threshold < 1) {
-    full_edge_list$dist <- 1 / full_edge_list$dist
-  }
-  
   # Create the graph object
   full_g <- igraph::graph_from_edgelist(as.matrix(full_edge_list[, c("from", "to")]), directed = FALSE)
   igraph::E(full_g)$weight <- full_edge_list$dist
@@ -167,7 +163,9 @@ clonalCluster <- function(input.data,
   
   # Returning Adjacency Matrix
   if (exportAdjMatrix) {
-    adj_from_graph <- igraph::as_adjacency_matrix(full_g, sparse = TRUE)
+    adj_from_graph <- igraph::as_adjacency_matrix(full_g, 
+                                                  sparse = TRUE,
+                                                  attr = "weight")
     barcodes_in_graph <- rownames(adj_from_graph)
     
     adjacency_matrix <- Matrix::sparseMatrix(
@@ -251,15 +249,14 @@ clusterGraph <- function(clustering.method, graph, ...) {
                             threshold = threshold)
   
   # Map numeric indices from buildNetwork back to actual barcodes
-  edge_list$from <- df$barcode[as.numeric(edge_list$from)]
-  edge_list$to   <- df$barcode[as.numeric(edge_list$to)]
+  edge_list$from <- df$barcode[match(edge_list$from, rownames(df))] 
+  edge_list$to   <- df$barcode[match(edge_list$to, rownames(df))] 
   
   # Filter edges based on the threshold logic
   if (threshold < 1) {
-    # Normalized distance: higher is more similar, so we keep >=
+    edge_list$dist[edge_list$dist == 0] <- 1 #Same Clone
     edge_list <- edge_list[edge_list$dist >= threshold, ]
   } else {
-    # Raw distance: lower is more similar, so we keep <=
     edge_list <- edge_list[edge_list$dist <= threshold, ]
   }
   return(edge_list)

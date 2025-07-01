@@ -87,25 +87,45 @@ head(combined.TCR[[1]])
 
 ## combineBCR
 
-`combineBCR()` is analogous to `combineTCR()` with 2 major changes: **1)** Each barcode can only have a maximum of 2 sequences, if greater exists, the 2 with the highest reads are selected; **2)** The **strict** definition of a clone is based on the normalized Levenshtein edit distance of CDR3 nucleotide sequences and V-gene usage. For more information on this approach, please see the respective [citation](https://pubmed.ncbi.nlm.nih.gov/34161770/). This definition allows for the grouping of BCRs derived from the same progenitor that have undergone mutation as part of somatic hypermutation and affinity maturation.
+The ```combineBCR()``` function is the primary tool for processing raw B cell receptor contig data into a format ready for analysis. It is analogous to ```combineTCR()``` but includes specialized logic for handling the complexities of BCRs, such as somatic hypermutation. The function consolidates contigs into a single data frame per sample, with each row representing a unique cell.
 
-**threshold**  
-The level of similarity in sequences to group together. **Default** is 0.85.
+By default `(call.related.clones = TRUE)`, ```combineBCR()``` groups B cells into clones based on the similarity of their CDR3 sequences.
 
-\[
-\text{threshold}(s, t) = 1-\frac{\text{Levenshtein}(s, t)}{\frac{\text{length}(s) + \text{length}(t)}{2}}
-\]
+This process works by:
 
-**call.related.clones**  
-Calculate the normalized edit distance (**TRUE**) or skip the calculation (**FALSE**). Skipping the edit distance calculation may save time, especially in the context of large data sets, but is not recommended. 
+* Internally calling ```clonalCluster()``` to build a network of related sequences.
+* Using the `threshold` parameter to define connections. The `threshold` is a normalized Levenshtein distance, where a value closer to 1.0 requires higher sequence similarity. The default of 0.85 is a good starting point.
+* Assigning a cluster-based ID to the CTstrict column.
 
+Additionally, the `group.by` argument allows you to constrain the clustering analysis to only occur within distinct categories in your metadata. For example, using `group.by = "sample"` ensures that sequences from different samples are never compared or clustered together, even if they are identical.
 
 ```{r tidy = FALSE}
+# Load example BCR contig data
 BCR.contigs <- read.csv("https://www.borch.dev/uploads/contigs/b_contigs.csv")
-combined.BCR <- combineBCR(BCR.contigs, 
-                           samples = "P1", 
-                           threshold = 0.85)
 
-head(combined.BCR[[1]])
+# Combine using the default similarity clustering
+combined.BCR.clustered <- combineBCR(BCR.contigs, 
+                                     samples = "Patient1", 
+                                     threshold = 0.85)
+
+# The CTstrict column contains cluster IDs (e.g., "cluster.1")
+head(combined.BCR.clustered[[1]][, c("barcode", "CTstrict", "v_gene1", "cdr3_aa1")])
+```
+
+### Filtering and Cleaning Data
+
+```combineBCR()``` includes several arguments to filter and clean the contig data during processing.
+* `filterNonproductive = TRUE` (Default): Removes any contigs that are not classified as productive, ensuring that only functional receptor chains are included in the analysis.
+* `filterMulti = TRUE (Default)`: For cells with more than one heavy or light chain detected, this automatically selects the chain with the highest UMI count (read abundance) and discards the others. This helps resolve cellular multiplets or technical artifacts.
+
+Here is an example applying these filters (though they are on by default):
+
+```{r}
+cleaned.BCR <- combineBCR(BCR.contigs,
+                          samples = "Patient1",
+                          filterNonproductive = TRUE,
+                          filterMulti = TRUE)
+
+head(cleaned.BCR[[1]])
 ```
 

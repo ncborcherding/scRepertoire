@@ -175,39 +175,56 @@ combineTCR <- function(input.data,
 #'
 #' @param input.data List of filtered contig annotations or outputs from
 #' [loadContigs()].
-#' @param samples The labels of samples (required).
-#' @param ID The additional sample labeling (optional).
-#' @param call.related.clones Use the nucleotide sequence and V gene
-#' to call related clones. Default is set to TRUE. FALSE will return
-#' a CTstrict or strict clone as V gene + amino acid sequence.
-#' @param threshold The normalized edit distance to consider. The higher
-#' the number the more similarity of sequence will be used for clustering.
-#' @param removeNA This will remove any chain without values.
-#' @param removeMulti This will remove barcodes with greater than 2 chains.
-#' @param filterMulti This option will allow for the selection of the
-#' highest-expressing light and heavy chains, if not calling related clones.
-#' @param filterNonproductive This option will allow for the removal of
-#' nonproductive chains if the variable exists in the contig data. Default
-#' is set to TRUE to remove nonproductive contigs.
+#' @param samples A character vector of sample labels. Must be the same length
+#' as the input list.
+#' @param ID An optional character vector for additional sample identifiers.
+#' @param call.related.clones Logical. If `TRUE`, uses `clonalCluster()` to
+#' identify related clones based on sequence similarity. If `FALSE`, defines
+#' clones by the exact V-gene and CDR3 amino acid sequence.
+#' @param group.by The column header used for to group clones.
+#' If (**NULL**), clusters will be calculated across samples.
+#' @param threshold The similarity threshold passed to `clonalCluster()` if
+#' `call.related.clones = TRUE`. See `?clonalCluster` for details.
+#' @param chain The chain to use for clustering when `call.related.clones = TRUE`.
+#' Passed to `clonalCluster()`. Default is `"both"`.
+#' @param sequence The sequence type (`"nt"` or `"aa"`) to use for clustering.
+#' Passed to `clonalCluster()`. Default is `"nt"`.
+#' @param use.V Logical. If `TRUE`, sequences must share the same V gene to be
+#' clustered together.
+#' @param use.J Logical. If `TRUE`, sequences must share the same J gene to be
+#' clustered together.
+#' @param cluster.method The clustering algorithm to use. Defaults to `"components"`, 
+#' which finds connected subgraphs.
+#' @param removeMulti Logical. If `TRUE`, removes cells that have more than
+#' one distinct heavy or light chain after processing.
+#' @param filterMulti Logical. If `TRUE`, filters multi-chain cells to retain
+#' only the most abundant IGH and IGL/IGK chains.
+#' @param filterNonproductive Logical. If `TRUE`, removes non-productive contigs
+#' from the analysis.
 #'
 #' @export
 #' @concept Loading_and_Processing_Contigs
-#' @return List of clones for individual cell barcodes
+#' @return A list of data frames, where each data frame represents a sample.
+#' Each row corresponds to a unique cell barcode, with columns detailing the
+#' BCR chains and the assigned clone ID.
 combineBCR <- function(input.data,
                        samples = NULL,
                        ID = NULL,
+                       chain = "both",
+                       sequence = "nt",
                        call.related.clones = TRUE,
+                       group.by = NULL,
                        threshold = 0.85,
+                       cluster.method = "components",
+                       use.V = TRUE,
+                       use.J = FALSE,
                        removeNA = FALSE,
                        removeMulti = FALSE,
                        filterMulti = TRUE,
                        filterNonproductive = TRUE) {
 
-    if (is.null(samples)) {
-        stop("combineBCR() requires the samples parameter for the calculation of edit distance.")
-    }
-
-    final <- input.data %>%
+    # Initial Contig Processing and Filtering 
+    processed_list <- input.data %>%
         .checkList() %>%
         .checkContigs() %>%
         unname() %>%
@@ -229,6 +246,7 @@ combineBCR <- function(input.data,
             }
             x
         }) %>%
+        # Add sample/ID prefixes
         (function(x) {
             if (!is.null(samples)) {
                 .modifyBarcodes(x, samples, ID)
@@ -236,6 +254,7 @@ combineBCR <- function(input.data,
                 x
             }
         }) %>%
+        # Reshape data to one row per barcode with columns for each chain
         lapply(function(x) {
             data2 <- data.frame(x)
             data2 <- .makeGenes(cellType = "B", data2)
@@ -248,48 +267,58 @@ combineBCR <- function(input.data,
             Con.df %>% mutate(length1 = nchar(cdr3_nt1)) %>%
                 mutate(length2 = nchar(cdr3_nt2))
         })
-
-    dictionary <- bind_rows(final)
-
+    
+    # Getting CTstrict based on clusters
     if (call.related.clones) {
-        IGH <- .lvCompare(dictionary, "IGH", "cdr3_nt1", threshold)
-        IGLC <- .lvCompare(dictionary, "IGLC", "cdr3_nt2", threshold)
+      clusters <- clonalCluster(final, 
+                                sequence = sequence,
+                                chain = chain, 
+                                threshold = threshold, 
+                                group.by = group.by, 
+                                use.V = use.V, 
+                                use.J = use.J, 
+                                cluster.method = cluster.method)
     }
-    for (i in seq_along(final)) {
-      if(call.related.clones) {
-        final[[i]]<-merge(final[[i]],IGH,by.x="cdr3_nt1",by.y="clone",all.x=TRUE)
-        final[[i]]<-merge(final[[i]],IGLC,by.x="cdr3_nt2",by.y="clone",all.x=TRUE)
-        num <- ncol(final[[i]])
-        final[[i]][,"CTstrict"] <- paste0(final[[i]][,num-1],".",
-              final[[i]][,"vgene1"],"_",final[[i]][,num],".",final[[i]][,"vgene2"])
-      } else {
-        final[[i]][,"CTstrict"] <- paste0(final[[i]][,"vgene1"], ".", final[[i]][,"cdr3_aa1"], "_", final[[i]][,"vgene2"], ".", final[[i]][,"cdr3_aa2"])
-      }
-        final[[i]]$sample <- samples[i]
-        final[[i]]$ID <- ID[i]
-        final[[i]][final[[i]] == "NA_NA" | final[[i]] == "NA;NA_NA;NA"] <- NA
-        if (!is.null(sample) & !is.null(ID)) {
-          final[[i]]<- final[[i]][, c("barcode", "sample", "ID",
-              heavy_lines[c(1,2,3)], light_lines[c(1,2,3)], CT_lines)]
-        }
-        else if (!is.null(sample) & is.null(ID)) {
-          final[[i]]<- final[[i]][, c("barcode", "sample",
-                    heavy_lines[c(1,2,3)], light_lines[c(1,2,3)], CT_lines)]
-        }
-    }
-
-    names(final) <- if (!is.null(samples)) {
-        if (is.null(ID)) samples else paste0(samples, "_", ID)
+    
+    # Defining element names for the final output
+    list_names <- if (!is.null(samples)) {
+      if (is.null(ID)) samples else paste0(samples, "_", ID)
     } else {
-        paste0("S", seq_along(final))
+      paste0("S", seq_along(processed_list))
     }
-
-    for (i in seq_along(final)) {
-        final[[i]] <- final[[i]][!duplicated(final[[i]]$barcode),]
-        final[[i]] <- final[[i]][rowSums(is.na(final[[i]])) < 10, ]
-        final[[i]][final[[i]] == "NA"] <- NA
-    }
-    if (removeNA) final <- .removingNA(final)
-    if (removeMulti) final <- .removingMulti(final)
-    return(final)
+    
+    final_list <- purrr::map2(processed_list, seq_along(processed_list), function(df, i) {
+      # Assigning CTstrict
+      if (call.related.clones) {
+        cluster_col <- clusters[[i]][, ncol(clusters[[i]])]
+        df[, "CTstrict"] <- cluster_col
+      } else {
+        df[, "CTstrict"] <- paste0(df[, "vgene1"], ".", df[, "cdr3_aa1"], "_",
+                                   df[, "vgene2"], ".", df[, "cdr3_aa2"])
+      }
+      # Adding samples/ID if applicable
+      if (!is.null(samples)) df$sample <- samples[i]
+      if (!is.null(ID)) df$ID <- ID[i]
+      
+      # Cleaning up the "NA"
+      df[df == "NA_NA" | df == "NA.NA_NA.NA" | df == "NA;NA_NA;NA" | df == "NA"] <- NA
+      
+      # Select, reorder, and filter final columns
+      col_selection <- c("barcode", "sample", "ID",
+                         heavy_lines[c(1, 2, 3)], light_lines[c(1, 2, 3)], CT_lines)
+      col_selection <- col_selection[col_selection %in% names(df)] # Keep only existing cols
+      df <- df[, col_selection]
+      df <- df[!duplicated(df$barcode), ]
+      df <- df[rowSums(is.na(df)) < (ncol(df) - 1), ] 
+      return(df)
+    })
+    
+    # Set the names of the final list
+    names(final_list) <- list_names
+    
+    # Final Optional Filtering
+    if (removeNA) final_list <- .removingNA(final_list)
+    if (removeMulti) final_list <- .removingMulti(final_list)
+    
+    return(final_list)
 }

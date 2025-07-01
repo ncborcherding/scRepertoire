@@ -144,7 +144,7 @@ The output of `combineTCR()` will be a list of contig data frames that will be r
 ```{r tidy = FALSE}
 combined.TCR <- combineTCR(contig_list, 
                            samples = c("P17B", "P17L", "P18B", "P18L", 
-                                            "P19B","P19L", "P20B", "P20L"),
+                                       "P19B","P19L", "P20B", "P20L"),
                            removeNA = FALSE, 
                            removeMulti = FALSE, 
                            filterMulti = FALSE)
@@ -152,28 +152,21 @@ combined.TCR <- combineTCR(contig_list,
 head(combined.TCR[[1]])
 ```
 
-## combineBCR
+### Filtering and Cleaning Data
 
-`combineBCR()` is analogous to `combineTCR()` with 2 major changes: **1)** Each barcode can only have a maximum of 2 sequences, if greater exists, the 2 with the highest reads are selected; **2)** The **strict** definition of a clone is based on the normalized Levenshtein edit distance of CDR3 nucleotide sequences and V-gene usage. For more information on this approach, please see the respective [citation](https://pubmed.ncbi.nlm.nih.gov/34161770/). This definition allows for the grouping of BCRs derived from the same progenitor that have undergone mutation as part of somatic hypermutation and affinity maturation.
+```combineBCR()``` includes several arguments to filter and clean the contig data during processing.
+* `filterNonproductive = TRUE` (Default): Removes any contigs that are not classified as productive, ensuring that only functional receptor chains are included in the analysis.
+* `filterMulti = TRUE (Default)`: For cells with more than one heavy or light chain detected, this automatically selects the chain with the highest UMI count (read abundance) and discards the others. This helps resolve cellular multiplets or technical artifacts.
 
-**threshold**  
-The level of similarity in sequences to group together. **Default** is 0.85.
+Here is an example applying these filters (though they are on by default):
 
-\[
-\text{threshold}(s, t) = 1-\frac{\text{Levenshtein}(s, t)}{\frac{\text{length}(s) + \text{length}(t)}{2}}
-\]
+```{r}
+cleaned.BCR <- combineBCR(BCR.contigs,
+                          samples = "Patient1",
+                          filterNonproductive = TRUE,
+                          filterMulti = TRUE)
 
-**call.related.clones**  
-Calculate the normalized edit distance (**TRUE**) or skip the calculation (**FALSE**). Skipping the edit distance calculation may save time, especially in the context of large data sets, but is not recommended. 
-
-
-```{r tidy = FALSE}
-BCR.contigs <- read.csv("https://www.borch.dev/uploads/contigs/b_contigs.csv")
-combined.BCR <- combineBCR(BCR.contigs, 
-                           samples = "P1", 
-                           threshold = 0.85)
-
-head(combined.BCR[[1]])
+head(cleaned.BCR[[1]])
 ```
 
 ***
@@ -1218,49 +1211,72 @@ clonalBias(scRep_example,
 
 ## clonalCluster
 
-The nucleotide or amino acid sequences of the chains can be used to cluster clonotypes by examining the edit distance of the sequences. This approach is underlying the `combineBCR()` function but now can be applied to the B or T cell receptors at the level of nucleotides (**sequence = "nt"**) or amino acids (**sequence = "aa"**). It will add a cluster to the end of each list element by generating a network connected by the similarity in sequence. This network is directed by the **threshold** variable, where 0.85 is the normalized mean edit distance.
+The ```clonalCluster()``` function provides a powerful method to group clonotypes based on sequence similarity. It calculates the edit distance between CDR3 sequences and uses this information to build a network, identifying closely related clusters of T or B cell receptors. This functionality allows for a more nuanced definition of a "clone" that extends beyond identical sequence matches.
 
-Edit-distance based clusters will have the following format: 
+### Core Concepts
 
-* [chain:] + :Cluster + [number]  e.g., TRA:Cluster.1
+The clustering process follows these key steps:
 
-**Cluster** denotes if the cluster was called using the normalized Levenshtein distance, which takes the edit distance calculated between 2 sequences and divides that by the mean of the sequence lengths. Unconnected sequences will have *NA* values.
+* **Sequence Selection**: The function selects either the nucleotide (`sequence = "nt"`) or amino acid (`sequence = "aa"`) CDR3 sequences for a specified chain.
+* **Distance Calculation**: It calculates the edit distance between all pairs of sequences. By default, it also requires sequences to share the same V gene (`use.v = TRUE`).
+* **Network Construction**: An edge is created between any two sequences that meet the similarity threshold, forming a network graph.
+* **Clustering**: A graph-based clustering algorithm is run to identify connected components or communities within the network. By default, it identifies all directly or indirectly connected sequences as a single cluster (cluster.method = "components").
+* **Output**: The function can either add the resulting cluster IDs to the input object, return an `igraph` object for network analysis, or export a sparse adjacency matrix.
+
+### Understanding the threshold Parameter
+
+The behavior of the threshold parameter is critical for controlling cluster granularity:
+
+* **Normalized Similarity (threshold < 1)**: When the threshold is a value between 0 and 1 (e.g., `0.85`), it represents the normalized edit distance (Levenshtein distance / mean sequence length). A higher value corresponds to a stricter similarity requirement. This is useful for comparing sequences of varying lengths.
+* **Raw Edit Distance (threshold >= 1)**: When the threshold is a whole number (e.g., 2), it represents the maximum raw edit distance allowed. A lower value corresponds to a stricter similarity requirement. This is useful when you want to allow a specific number of mutations.
 
 ### Basic use
 
 ```{r tidy = FALSE}
-sub_combined <- clonalCluster(combined.TCR[[2]], 
+# Run clustering on the first two samples for the TRA chain
+sub_combined <- clonalCluster(combined.TCR[c(1,2)], 
                               chain = "TRA", 
                               sequence = "aa", 
-                              threshold = 0.85, 
-                              group.by = NULL)
+                              threshold = 0.85)
 
-head(sub_combined[,c(1,2,13)])
+# View the new cluster column
+head(sub_combined[[1]][, c("barcode", "TCR1", "TRA.Cluster")])
 ```
 
 ### Clustering with a single-cell object
 
-If performed over the number of samples, such as the list elements, **group.by** can used to calculate only the clusters on the setting of patient sample (**group.by** = "Patient") or tissue type (**group.by** = "Type"). This will add the selected group to the beginning of the cluster designation. We can also call ```clonalCluster()``` directly on a Single-Cell Object.
+If performed over the number of samples, such as the list elements, **group.by** can used to calculate only the clusters on the setting of patient sample (**group.by** = "Patient") or tissue type (**group.by** = "Type"). This is useful for analyzing clusters on a per-sample or per-patient basis without subsetting the data first.
 
 ```{r tidy = FALSE}
-#Define color palette 
-colorblind_vector <- hcl.colors(n=7, palette = "inferno", fixup = TRUE)
+#Adding patient information
+scRep_example$Patient <- substr(scRep_example$orig.ident, 1,3)
 
+#Adding type information
+scRep_example$Type <- substr(scRep_example$orig.ident, 4,4)
+
+
+
+# Run clustering, but group calculations by "Patient"
 scRep_example <- clonalCluster(scRep_example, 
                                chain = "TRA", 
                                sequence = "aa", 
                                threshold = 0.85, 
                                group.by = "Patient")
 
-Seurat::DimPlot(scRep_example, group.by = "TRA_cluster") +
-    scale_color_manual(values =  hcl.colors(n=length(unique(scRep_example@meta.data[,"TRA_cluster"])), "inferno")) + 
-  Seurat::NoLegend() + 
-  theme(plot.title = element_blank())
+#Define color palette 
+num_clusters <- length(unique(na.omit(scRep_example$TRA.Cluster)))
+cluster_colors <- hcl.colors(n = num_clusters, palette = "inferno")
+
+DimPlot(scRep_example, group.by = "TRA.Cluster") +
+  scale_color_manual(values = cluster_colors, na.value = "grey") + 
+  NoLegend()
 ```
 
-Using ```clonalCluster()```, we can also return an igraph object of all the related sequences using **exportGraph** = TRUE. The returned igraph object contains only the sequences that have at least one connection with another sequence. The igraph can then be directly visualized (below) or used for downstream analysis (see the igraph [website](https://r.igraph.org/)). 
+Instead of modifying the input object, ```clonalCluster()``` can export the underlying network structure for advanced analysis. 
 
 ### Returning an igraph object:
+
+Set `exportGraph = TRUE` to get an igraph object containing only the sequences with at least one connection. This is ideal for network visualization and analysis.
 
 ```{r tidy = FALSE}
 #Clustering Patient 19 samples
@@ -1285,6 +1301,49 @@ plot(
   vertex.color    = col_samples
 )
 legend("topleft", legend = levels(color.legend), pch = 16, col = unique(col_samples), bty = "n")
+```
+
+### Returning a Sparse Adjacency Matrix
+
+For computational applications, you can export a sparse adjacency matrix using `exportAdjMatrix = TRUE`. This matrix represents the connections between all barcodes in the input data, with the edit distance that meet the threshold in places of connection.
+
+```{r}
+# Generate the sparse matrix
+adj.matrix <- clonalCluster(combined.TCR[c(1,2)],
+                            chain = "TRB",
+                            exportAdjMatrix = TRUE)
+
+# View the dimensions and a snippet of the matrix
+dim(adj.matrix)
+print(adj.matrix[1:10, 1:10])
+```
+
+### Using Both Chains
+
+You can analyze the combined network of both TRA/TRB or IGH/IGL chains by setting chain = "both". This will create a single cluster column named Multi_Cluster.
+
+```{r}
+# Cluster using both TRB and TRA chains simultaneously
+clustered_both <- clonalCluster(combined.TCR[c(1,2)], 
+                                chain = "both")
+
+# View the new "Multi.Cluster" column
+head(clustered_both[[1]][, c("barcode", "TCR1", "TCR2", "Multi.Cluster")])
+```
+
+### Using Different Clustering Algorithms
+
+While the default `cluster.method = "components"` is robust, you can use other algorithms from the igraph package, such as `walktrap` or `louvain`, to potentially uncover different community structures.
+
+```{r}
+# Cluster using the walktrap algorithm
+graph_walktrap <- clonalCluster(combined.TCR[c(1,2)],
+                                cluster.method = "walktrap",
+                                exportGraph = TRUE)
+
+# Compare the number of clusters found
+length(unique(V(graph_walktrap)$cluster))
+
 ```
 
 ***
