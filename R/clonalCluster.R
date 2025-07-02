@@ -153,11 +153,43 @@ clonalCluster <- function(input.data,
   renamed_membership <- name_map[as.character(cluster_membership)]
   names(renamed_membership) <- names(cluster_membership)
   
-  # Add cluster info as a vertex attribute
+  # Add vertex communities 
   igraph::V(full_g)$cluster <- renamed_membership
   
   # Returning Graph
   if(exportGraph) {
+    # Adding additional vertex information if graph being exported
+    vertex_df <- igraph::as_data_frame(full_g, what = "vertices")
+    colnames(vertex_df)[1] <- "barcode" 
+    full_meta_long <- do.call(rbind, chain_data)
+    
+    if (nrow(full_meta_long) > 0) {
+      meta_to_process <- unique(full_meta_long[, c("barcode", "cdr3_aa", "v", "j")])
+      
+      # Collapsing incase > 1 chain
+      meta_indexed <- meta_to_process %>% 
+                          group_by(barcode) %>%
+                          mutate(chain_num = dplyr::row_number()) %>%
+                          ungroup() %>%
+                          as.data.frame()
+      original_meta <- reshape(
+        data = meta_indexed, 
+        idvar = "barcode",
+        timevar = "chain_num",
+        direction = "wide",
+        v.names = c("cdr3_aa", "v", "j"),
+        sep = "" )
+      # Loop to add more vertex info
+      vertex_names <- V(full_g)$name
+      match_indices <- match(vertex_names, original_meta$barcode)
+      for (col in colnames(original_meta)) {
+        if (col == "barcode") next 
+        full_g <- set_vertex_attr(
+          graph = full_g,
+          name = col,
+          value = original_meta[[col]][match_indices])
+      }
+    }
     return(full_g)
   }
   
@@ -246,19 +278,9 @@ clusterGraph <- function(clustering.method, graph, ...) {
                             j_col     = "j",
                             filter.v  = use.V,
                             filter.j  = use.J,
+                            ids = df[["barcode"]],
                             threshold = threshold)
   
-  # Map numeric indices from buildNetwork back to actual barcodes
-  edge_list$from <- df$barcode[match(edge_list$from, rownames(df))] 
-  edge_list$to   <- df$barcode[match(edge_list$to, rownames(df))] 
-  
-  # Filter edges based on the threshold logic
-  if (threshold < 1) {
-    edge_list$dist[edge_list$dist == 0] <- 1 #Same Clone
-    edge_list <- edge_list[edge_list$dist >= threshold, ]
-  } else {
-    edge_list <- edge_list[edge_list$dist <= threshold, ]
-  }
   return(edge_list)
 }
   
