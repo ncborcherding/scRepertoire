@@ -199,7 +199,7 @@ combineExpression <- function(input.data,
     }
     sc.data$cloneSize <- factor(sc.data$cloneSize, levels = rev(names(cloneSize)))
     
-    if(is_seurat_object(sc.data)) {
+    if(.is.seurat.object(sc.data)) {
         sc.data@commands[["combineExpression"]] <- make_screp_seurat_cmd(
             call_time, sc.data@active.assay
         )

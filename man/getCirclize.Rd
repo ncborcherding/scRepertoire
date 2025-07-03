@@ -32,7 +32,7 @@ proportion (proportion = TRUE)}
 comparison}
 }
 \value{
-A data frame of shared clones between groups formated for \link[circlize:chordDiagram]{chordDiagram}
+A data frame of shared clones between groups formatted for \link[circlize:chordDiagram]{chordDiagram}
 }
 \description{
 This function will take the meta data from the product of

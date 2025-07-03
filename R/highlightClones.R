@@ -4,7 +4,7 @@
 #' reduction in single-cell object.
 #'
 #' @examples
-#' #G etting the combined contigs
+#' # Getting the combined contigs
 #' combined <- combineTCR(contig_list, 
 #'                         samples = c("P17B", "P17L", "P18B", "P18L", 
 #'                                     "P19B","P19L", "P20B", "P20L"))
@@ -36,7 +36,7 @@
 highlightClones <- function(sc.data, 
                             cloneCall = c("gene", "nt", "aa", "strict"), 
                             sequence = NULL){
-  if (!is_seurat_or_se_object(sc.data)) {
+  if (!.is.seurat.or.se.object(sc.data)) {
     stop("Please select a single-cell object") 
   }
   
@@ -50,7 +50,7 @@ highlightClones <- function(sc.data,
   
   meta <- meta[,-(which(colnames(meta) == "ident"))]
   
-  if(is_se_object(sc.data)) {
+  if(.is.se.object(sc.data)) {
     colData(sc.data) <- DataFrame(meta)
   } else {
     col.name <- names(meta) %||% colnames(meta)

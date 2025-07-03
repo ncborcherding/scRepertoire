@@ -53,7 +53,7 @@ change the number or labeling of the cloneSize parameter. If a matrix
 output for the data is preferred, set \strong{exportTable} = TRUE.
 }
 \examples{
-#Making combined contig data
+# Making combined contig data
 combined <- combineTCR(contig_list, 
                         samples = c("P17B", "P17L", "P18B", "P18L", 
                                     "P19B","P19L", "P20B", "P20L"))

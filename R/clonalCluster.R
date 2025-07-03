@@ -130,7 +130,8 @@ clonalCluster <- function(input.data,
   all_barcodes <- unique(do.call(rbind, chain_data)[["barcode"]])
   
   # Apply the network function to each data frame and combine into one edge list
-  full_edge_list <- do.call(rbind, lapply(chain_data, .buildNetwork))
+  full_edge_list <- do.call(rbind, lapply(chain_data, function(y) {
+                            .buildNetwork(y, use.V, use.J, threshold) }))
   full_edge_list <- unique(full_edge_list) 
   
   if (nrow(full_edge_list) == 0) {
@@ -139,7 +140,8 @@ clonalCluster <- function(input.data,
   }
   
   # Create the graph object
-  full_g <- igraph::graph_from_edgelist(as.matrix(full_edge_list[, c("from", "to")]), directed = FALSE)
+  full_g <- igraph::graph_from_edgelist(as.matrix(full_edge_list[, c("from", "to")]), 
+                                        directed = FALSE)
   igraph::E(full_g)$weight <- full_edge_list$dist
   
   # Perform clustering using the specified method
@@ -166,7 +168,7 @@ clonalCluster <- function(input.data,
     if (nrow(full_meta_long) > 0) {
       meta_to_process <- unique(full_meta_long[, c("barcode", "cdr3_aa", "v", "j")])
       
-      # Collapsing incase > 1 chain
+      # Collapsing incase > 1 chain 
       meta_indexed <- meta_to_process %>% 
                           group_by(barcode) %>%
                           mutate(chain_num = dplyr::row_number()) %>%
@@ -216,7 +218,7 @@ clonalCluster <- function(input.data,
   #Adding to potential single-cell object
   if(.is.seurat.or.se.object(input.data)) {
     PreMeta <- bound[,-1, drop = FALSE]
-    if (.is_seurat_object(input.data)) { 
+    if (.is.seurat.object(input.data)) { 
       col.name <- names(PreMeta) %||% colnames(PreMeta)
       input.data[[col.name]] <- PreMeta
     } else {
@@ -238,7 +240,7 @@ clonalCluster <- function(input.data,
 # Handling clustering options
 #' @importFrom igraph cluster_fast_greedy cluster_walktrap cluster_louvain 
 #' cluster_leiden cluster_spinglass cluster_edge_betweenness components
-clusterGraph <- function(clustering.method, graph, ...) {
+.clusterGraph <- function(clustering.method, graph, ...) {
   if (!igraph::is_igraph(graph)) {
     stop("The 'graph' argument must be a valid 'igraph' object.", call. = FALSE)
   }
@@ -271,7 +273,7 @@ clusterGraph <- function(clustering.method, graph, ...) {
 }
 
 #' @importFrom immApex buildNetwork
-.buildNetwork <- function(df) {
+.buildNetwork <- function(df, use.V, use.J, threshold) {
   edge_list <- buildNetwork(df,
                             seq_col   = "cdr3_aa",
                             v_col     = "v",

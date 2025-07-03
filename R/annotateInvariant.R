@@ -46,7 +46,7 @@ annotateInvariant <- function(input.data,
   type <- match.arg(type)
   species <- match.arg(species)
   
-  if(!is_seurat_or_se_object(input.data) & !inherits(input.data, "list")) {
+  if(!.is.seurat.or.se.object(input.data) & !inherits(input.data, "list")) {
     stop("Please use the output of combineTCR() or combineExpression() as input.data")
   }
 
@@ -94,8 +94,8 @@ annotateInvariant <- function(input.data,
   new.variable.name <- paste0(type, ".score")
   colnames(output)[1] <- new.variable.name
   
-  if(is_seurat_or_se_object(input.data)) {
-    if (is_seurat_object(input.data)) { 
+  if(.is.seurat.or.se.object(input.data)) {
+    if (.is.seurat.object(input.data)) { 
       input.data[[new.variable.name]] <- output
     } else {
       combined_col_names <- unique(c(colnames(colData(input.data)), new.variable.name))

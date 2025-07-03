@@ -11,6 +11,7 @@ percentGenes(
   group.by = NULL,
   order.by = NULL,
   exportTable = FALSE,
+  summary.fun = c("percent", "proportion", "count"),
   palette = "inferno"
 )
 }
@@ -18,7 +19,8 @@ percentGenes(
 \item{input.data}{The product of \code{\link[=combineTCR]{combineTCR()}},
 \code{\link[=combineBCR]{combineBCR()}}, or \code{\link[=combineExpression]{combineExpression()}}.}
 
-\item{chain}{"TRA", "TRB", "TRG", "TRG", "IGH", "IGL".}
+\item{chain}{indicate a specific chain should be used -
+e.g. "TRA", "TRG", "IGH", "IGL", etc}
 
 \item{gene}{"V", "D" or "J"}
 
@@ -29,20 +31,24 @@ to plot groups in order}
 
 \item{exportTable}{Returns the data frame used for forming the graph.}
 
+\item{summary.fun}{Character string choosing the summary statistic -
+\code{"percent"} (default), \code{"proportion"}, or \code{"count"}}
+
 \item{palette}{Colors to use in visualization - input any
 \link[grDevices:palettes]{hcl.pals}.}
 }
 \value{
-ggplot of percentage of indicated genes as a heatmap
+A ggplot object displaying a heatmap of gene percentages.
+If \code{exportTable = TRUE}, a matrix of the raw data is returned.
 }
 \description{
-This function the proportion V or J genes used by
-grouping variables. This function only quantifies
-single gene loci for indicated \strong{chain}. For
-examining VJ pairing, please see \code{\link[=percentVJ]{percentVJ()}}.
+This function the proportion, percent, or counts of V, D, or J genes used by
+grouping variables. This function only quantifies single gene loci for
+indicated \strong{chain}. For examining VJ or other gene parings, please
+see \code{\link[=percentVJ]{percentVJ()}} or \code{\link[=vizGenes]{vizGenes()}}.
 }
 \examples{
-#Making combined contig data
+# Making combined contig data
 combined <- combineTCR(contig_list, 
                         samples = c("P17B", "P17L", "P18B", "P18L", 
                                     "P19B","P19L", "P20B", "P20L"))

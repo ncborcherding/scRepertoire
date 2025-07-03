@@ -38,18 +38,18 @@ Credit to the idea goes to Drs Andreatta and Carmona and their work with
 \href{https://github.com/carmonalab/ProjecTILs}{ProjectTIL}.
 }
 \examples{
-#Getting the combined contigs
+# Getting the combined contigs
 combined <- combineTCR(contig_list, 
                         samples = c("P17B", "P17L", "P18B", "P18L", 
                                     "P19B","P19L", "P20B", "P20L"))
-#Getting a sample of a Seurat object
+# Getting a sample of a Seurat object
 scRep_example <- get(data("scRep_example"))
 
-#Using combineExpresion()
+# Using combineExpresion()
 scRep_example <- combineExpression(combined, 
                                    scRep_example)
 
-#Using clonalOverlay()
+# Using clonalOverlay()
 clonalOverlay(scRep_example, 
               reduction = "umap", 
               cutpoint = 3, 

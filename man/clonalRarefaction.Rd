@@ -58,7 +58,7 @@ if using this function. The input into the iNEXT calculation is abundance,
 incidence-based calculations are not supported.
 }
 \examples{
-#Making combined contig data
+# Making combined contig data
 combined <- combineTCR(contig_list, 
                         samples = c("P17B", "P17L", "P18B", "P18L", 
                                     "P19B","P19L", "P20B", "P20L"))

@@ -8,8 +8,14 @@ combineBCR(
   input.data,
   samples = NULL,
   ID = NULL,
+  chain = "both",
+  sequence = "nt",
   call.related.clones = TRUE,
+  group.by = NULL,
   threshold = 0.85,
+  cluster.method = "components",
+  use.V = TRUE,
+  use.J = FALSE,
   removeNA = FALSE,
   removeMulti = FALSE,
   filterMulti = TRUE,
@@ -20,30 +26,49 @@ combineBCR(
 \item{input.data}{List of filtered contig annotations or outputs from
 \code{\link[=loadContigs]{loadContigs()}}.}
 
-\item{samples}{The labels of samples (required).}
+\item{samples}{A character vector of sample labels. Must be the same length
+as the input list.}
 
-\item{ID}{The additional sample labeling (optional).}
+\item{ID}{An optional character vector for additional sample identifiers.}
 
-\item{call.related.clones}{Use the nucleotide sequence and V gene
-to call related clones. Default is set to TRUE. FALSE will return
-a CTstrict or strict clone as V gene + amino acid sequence.}
+\item{chain}{The chain to use for clustering when \code{call.related.clones = TRUE}.
+Passed to \code{clonalCluster()}. Default is \code{"both"}.}
 
-\item{threshold}{The normalized edit distance to consider. The higher
-the number the more similarity of sequence will be used for clustering.}
+\item{sequence}{The sequence type (\code{"nt"} or \code{"aa"}) to use for clustering.
+Passed to \code{clonalCluster()}. Default is \code{"nt"}.}
 
-\item{removeNA}{This will remove any chain without values.}
+\item{call.related.clones}{Logical. If \code{TRUE}, uses \code{clonalCluster()} to
+identify related clones based on sequence similarity. If \code{FALSE}, defines
+clones by the exact V-gene and CDR3 amino acid sequence.}
 
-\item{removeMulti}{This will remove barcodes with greater than 2 chains.}
+\item{group.by}{The column header used for to group clones.
+If (\strong{NULL}), clusters will be calculated across samples.}
 
-\item{filterMulti}{This option will allow for the selection of the
-highest-expressing light and heavy chains, if not calling related clones.}
+\item{threshold}{The similarity threshold passed to \code{clonalCluster()} if
+\code{call.related.clones = TRUE}. See \code{?clonalCluster} for details.}
 
-\item{filterNonproductive}{This option will allow for the removal of
-nonproductive chains if the variable exists in the contig data. Default
-is set to TRUE to remove nonproductive contigs.}
+\item{cluster.method}{The clustering algorithm to use. Defaults to \code{"components"},
+which finds connected subgraphs.}
+
+\item{use.V}{Logical. If \code{TRUE}, sequences must share the same V gene to be
+clustered together.}
+
+\item{use.J}{Logical. If \code{TRUE}, sequences must share the same J gene to be
+clustered together.}
+
+\item{removeMulti}{Logical. If \code{TRUE}, removes cells that have more than
+one distinct heavy or light chain after processing.}
+
+\item{filterMulti}{Logical. If \code{TRUE}, filters multi-chain cells to retain
+only the most abundant IGH and IGL/IGK chains.}
+
+\item{filterNonproductive}{Logical. If \code{TRUE}, removes non-productive contigs
+from the analysis.}
 }
 \value{
-List of clones for individual cell barcodes
+A list of data frames, where each data frame represents a sample.
+Each row corresponds to a unique cell barcode, with columns detailing the
+BCR chains and the assigned clone ID.
 }
 \description{
 This function consolidates a list of BCR sequencing results to the level

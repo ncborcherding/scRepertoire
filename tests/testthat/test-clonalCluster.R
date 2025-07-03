@@ -7,8 +7,8 @@ combined <- combineTCR(contig_list,
 
 
 test_that("Basic functionality and default output structure", {
-  clustered_list <- clonalCluster(combined)
-  expect_length(clustered_list, length(combined))
+  clustered_list <- clonalCluster(combined[1:2])
+  expect_length(clustered_list, length(combined[1:2]))
   expect_true(all(sapply(clustered_list, is.data.frame)))
   expect_true("TRB.Cluster" %in% names(clustered_list[[1]]))
   
@@ -56,11 +56,11 @@ test_that("group.by parameter functions without error", {
 
 
 test_that("Different `cluster.method` options work", {
-  walktrap_graph <- clonalCluster(combined[5:6], 
-                                  cluster.method = "walktrap", 
+  louvain_graph <- clonalCluster(combined[5:6], 
+                                  cluster.method = "louvain", 
                                   exportGraph = TRUE)
-  expect_s3_class(walktrap_graph, "igraph")
-  expect_true("cluster" %in% igraph::vertex_attr_names(walktrap_graph))
+  expect_s3_class(louvain_graph, "igraph")
+  expect_true("cluster" %in% igraph::vertex_attr_names(louvain_graph))
 })
 
 

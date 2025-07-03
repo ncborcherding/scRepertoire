@@ -48,6 +48,7 @@
 #' @param palette Colors to use in visualization - input any
 #' \link[grDevices]{hcl.pals}
 #' @export
+#' @importFrom dplyr slice_max
 #' @concept Visualizing_Clones
 #' @return ggplot of the proportion of total sequencing read of
 #' selecting clones

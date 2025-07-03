@@ -7,7 +7,7 @@
 clonalOverlap(
   input.data,
   cloneCall = "strict",
-  method = NULL,
+  method = c("overlap", "morisita", "jaccard", "cosine", "raw"),
   chain = "both",
   group.by = NULL,
   order.by = NULL,

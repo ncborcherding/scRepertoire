@@ -1,6 +1,8 @@
 # test script for annotateInvariant.R - testcases are NOT comprehensive!
-data("scRep_example")
-test_obj <- combineExpression(getdata("combineContigs", "combined"), scRep_example)
+
+# Data to use
+combined_real <- combineTCR(contig_list, samples = c("P17B", "P17L", "P18B", "P18L"))
+test_obj <- suppressMessages(combineExpression(combined_real, scRep_example, cloneCall = "aa"))
 
 test_that("annotateInvariant() handles correct input format", {
   # Mocking input data with required structure
