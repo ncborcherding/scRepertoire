@@ -73,7 +73,7 @@
 #' sequences (**TRUE**) or the amended input with a
 #' new cluster-based variable (**FALSE**).
 #' @importFrom igraph graph_from_edgelist E E<- V V<- as_data_frame 
-#' as_adjacency_matrix membership
+#' as_adjacency_matrix membership set_vertex_attr
 #' @importFrom dplyr left_join
 #' @importFrom rlang %||%
 #' @importFrom SummarizedExperiment colData colData<-
