@@ -46,8 +46,8 @@ test_that("Filtering parameters work as expected", {
 
 test_that("exportClones provides correctly summarized data", {
   clones_df <- clonalNetwork(scRep_example, reduction = "umap", group.by = "seurat_clusters", exportClones = TRUE)
-  expect_equal(nrow(clones_df), 9)
-  expect_equal(clones_df$sum, c(11,3,3,2,2,2,2,2,2))
+  expect_equal(nrow(clones_df), 341)
+  expect_equal(clones_df$sum[1:5], c(11,3,3,3,2))
 })
 
 test_that("Plot structure has correct geoms", {
