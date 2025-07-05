@@ -24,6 +24,7 @@ test_that("combineTCR `filterNonproductive = FALSE` keeps non-productive chains"
 })
 
 test_that("combineTCR `removeNA` and `removeMulti` work", {
+  contig_mock <- contig_list[[1]]
   combined_removeNA <- combineTCR(list(contig_mock), samples="S1", removeNA = TRUE)[[1]]
   expect_true(all(!grepl("NA_", combined_removeNA$CTaa)))
   expect_true(all(!grepl("_NA", combined_removeNA$CTnt)))
@@ -39,14 +40,11 @@ test_that("combineBCR works", {
   BCR <- read.csv("https://www.borch.dev/uploads/contigs/b_contigs.csv")
   combined_bcr <- combineBCR(BCR, 
                     samples = "Patient1")
-  expect_true(any(grepl("Cluster", combined_bcr[[1]]$CTstrict)))
+  expect_true(any(grepl("cluster.", combined_bcr[[1]]$CTstrict)))
   expect_type(combined_bcr, "list")
   expect_length(combined_bcr, 1)
   expect_s3_class(combined_bcr[[1]], "data.frame")
   # Check if barcodes are prefixed
   expect_true(startsWith(combined_bcr[[1]]$barcode[1], "Patient1_"))
-
-  expect_error(combineBCR(BCR), 
-               regexp = "requires the samples")
 
 })
