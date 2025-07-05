@@ -270,7 +270,7 @@ combineBCR <- function(input.data,
     
     # Getting CTstrict based on clusters
     if (call.related.clones) {
-      clusters <- clonalCluster(final, 
+      clusters <- clonalCluster(processed_list, 
                                 sequence = sequence,
                                 chain = chain, 
                                 threshold = threshold, 
