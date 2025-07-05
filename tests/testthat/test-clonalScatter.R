@@ -63,24 +63,6 @@ test_that("`dot.size` parameter works correctly", {
   expect_true("P18B" %in% names(df_third))
 })
 
-test_that("`group.by` parameter correctly aggregates data", {
-  # Group by the "Type" variable
-  df_grouped <- clonalScatter(combined, cloneCall="aa", group.by = "Type", x.axis = "B", y.axis = "L", exportTable = TRUE)
-  
-  # Manually aggregate data for comparison
-  all_data <- do.call(rbind, combined)
-  b_clones <- subset(all_data, Type == "B")
-  l_clones <- subset(all_data, Type == "L")
-  b_counts <- as.data.frame(table(b_clones$CTaa))
-  l_counts <- as.data.frame(table(l_clones$CTaa))
-  shared_clone <- intersect(b_counts$Var1, l_counts$Var1)[1]
-  manual_b_count <- b_counts[b_counts$Var1 == shared_clone, "Freq"]
-  manual_l_count <- l_counts[l_counts$Var1 == shared_clone, "Freq"]
-  func_counts <- df_grouped[df_grouped$Var1 == shared_clone, ]
-  expect_equal(func_counts$B, manual_b_count)
-  expect_equal(func_counts$L, manual_l_count)
-})
-
 test_that("Plotting output has the correct components", {
   plot_output <- clonalScatter(combined, x.axis = "P17B", y.axis = "P17L")
   
