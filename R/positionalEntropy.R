@@ -56,7 +56,7 @@ positionalEntropy <- function(input.data,
   
   #Selecting Diversity Function
   lapply(seq_along(input.data), function(x){
-    strings <- .process.strings(input.data[[x]][["CTaa"]], aa.length)
+    strings <- .processStrings(input.data[[x]][["CTaa"]], aa.length)
     entropy <- calculateEntropy(strings, method = method)
     entropy_df <- as.data.frame(entropy)
     entropy_df$Position <- 1:nrow(entropy_df)

@@ -42,7 +42,7 @@ percentAA <- function(input.data,
   
   # Calculating proportion 
   lapply(seq_along(input.data), function(x) {
-    strings <- .process.strings(input.data[[x]][["CTaa"]], aa.length)
+    strings <- .processStrings(input.data[[x]][["CTaa"]], aa.length)
     freqs <- calculateFrequency(strings)    
     freqs_df <- as.data.frame(freqs)
     freqs_df$AminoAcid <- rownames(freqs_df)

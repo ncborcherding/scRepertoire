@@ -4,6 +4,14 @@
 # utility functions use camelCase 
 
 
+.processStrings <- function(seq, aa.length) {
+  strings <- unlist(strsplit(seq, ";"))
+  strings <- strings[!is.na(strings)]
+  strings <- strings[strings != "NA"]
+  strings <- strings[nchar(strings) <= aa.length]
+  return(strings)
+}
+
 # function needed for makeScrepSeurat
 #' @keywords internal
 .seuratExtractField <- function(string, field = 1, delim = "_") {
