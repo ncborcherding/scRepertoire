@@ -79,7 +79,7 @@ test_that("group.by correctly groups the data", {
 
 test_that("relabel.clones = TRUE renames clones numerically", {
   table_relabel <- clonalCompare(combined, top.clones = 4, relabel.clones = TRUE, exportTable = TRUE)
-  expect_true(all(str_detect(unique(table_relabel$clones), "^Clone: \\d+$")))
+  expect_true(all(grepl("^Clone: \\d+$", unique(table_relabel$clones))))
   expect_true("original.clones" %in% names(table_relabel))
 })
 
