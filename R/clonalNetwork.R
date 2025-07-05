@@ -74,7 +74,7 @@ clonalNetwork <- function(sc.data,
     to <- from <- weight <- y <- NULL
     meta <- .grabMeta(sc.data)
     cloneCall <- .theCall(meta, cloneCall)
-    coord <- data.frame(.get.coord(sc.data, reduction), group.by = meta[,group.by])
+    coord <- data.frame(.getCoord(sc.data, reduction), group.by = meta[,group.by])
     min <- c()
     meta <- .grabMeta(sc.data)
     if (!is.null(filter.clones))  {
