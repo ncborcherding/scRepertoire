@@ -9,6 +9,7 @@ combined <- addVariable(combined,
                         variables = rep(c("B", "L"), 4))
 
 
+
 test_that("Output formats (distance matrix vs. plot) are correct", {
   # Test that exportTable = TRUE returns a matrix
   dist_matrix <- clonalSizeDistribution(combined[1:2], exportTable = TRUE)

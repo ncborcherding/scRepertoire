@@ -1,13 +1,17 @@
 # testcases are NOT comprehensive
 
 getTestTcrList <- function() {
-    getdata("combineContigs", "combined")[1:3]
+  combined <- combineTCR(contig_list,
+                         samples = c("P17B", "P17L", "P18B", "P18L",
+                                     "P19B", "P19L", "P20B", "P20L"))[1:3]
 }
 
 #' Generate a [combineBCR()] output example with matching sample names
 #' as the output of [getTestTcrList()] above and no doublets.
 getTestBcrListNoDoublets <- function() {
-    bcr <- getdata("combineContigs", "combineBCR_list_expected")
+    BCR <- read.csv("https://www.borch.dev/uploads/contigs/b_contigs.csv")
+    bcr <- combineBCR(BCR, 
+                      samples = "Patient1")
     bcr <- list(bcr[[1]][1:10, ], bcr[[1]][20:30, ], bcr[[1]][100:110, ])
     names(bcr) <- names(getTestTcrList())
     purrr::imap(bcr, function(df, sampleName) {

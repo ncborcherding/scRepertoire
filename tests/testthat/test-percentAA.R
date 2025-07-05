@@ -1,6 +1,8 @@
 # test script for percentAA.R - testcases are NOT comprehensive!
 
-combined <- getCombined()
+combined <- combineTCR(contig_list,
+                       samples = c("P17B", "P17L", "P18B", "P18L",
+                                   "P19B", "P19L", "P20B", "P20L"))
 combined <- addVariable(combined, 
                         variable.name = "Type", 
                         variables = rep(c("B", "L"), 4))
