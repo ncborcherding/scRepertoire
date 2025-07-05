@@ -74,6 +74,8 @@ positionalProperty <- function(input.data,
     stop("Please select a compatible method:", paste0(factors, collapse = ", "))
   }
   
+  amino.acids <- c("A", "R", "N", "D", "C", "Q", "E", "G", "H", "I", "L", "K", 
+                   "M", "F", "P", "S", "T", "W", "Y", "V")
   
   sco <- .is.seurat.or.se.object(input.data)
   input.data <- .dataWrangle(input.data, 
@@ -83,7 +85,7 @@ positionalProperty <- function(input.data,
   cloneCall <- .theCall(input.data, "CTaa")
   
   .aa.property.matrix <- getFromNamespace(".aa.property.matrix", "immApex")
-  
+  .padded.strings <- getFromNamespace(".padded.strings", "immApex")
   
   if(!is.null(group.by) & !sco) {
     input.data <- .groupList(input.data, group.by)
@@ -111,7 +113,9 @@ positionalProperty <- function(input.data,
     k <- nrow(S)
     
     # Vectorized profile creation
-    padded_seqs <- .padded.strings(input.sequences, aa.length, pad = ".")
+    padded_seqs <- .padded.strings(input.sequences, 
+                                   max.length =  aa.length, 
+                                   pad = ".")
     char_matrix <- do.call(rbind, strsplit(padded_seqs, ""))
     index_matrix <- matrix(match(char_matrix, colnames(S)), nrow = n_seq)
     profile_array <- array(NA_real_, dim = c(k, aa.length, n_seq), dimnames = list(rownames(S), 1:aa.length, NULL))
