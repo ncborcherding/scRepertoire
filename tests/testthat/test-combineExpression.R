@@ -24,7 +24,7 @@ test_that("Function correctly adds metadata to Seurat object", {
 test_that("`proportion = FALSE` uses frequency for `cloneSize` binning", {
   sc_new <- combineExpression(combined, scRep_example, cloneCall = "strict", proportion = FALSE,
                               cloneSize = c(Small = 1, Medium = 2, Large = 3))
-  expectEqual(levels(sc_new$cloneSize), c("Large (2 < X <= 11)", 
+  expect_equal(levels(sc_new$cloneSize), c("Large (2 < X <= 11)", 
                                           "Medium (1 < X <= 2)", "Small (0 < X <= 1)",  
                                           "None ( < X <= 0)"))
 })
