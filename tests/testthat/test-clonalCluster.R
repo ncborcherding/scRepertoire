@@ -5,6 +5,13 @@ combined <- combineTCR(contig_list,
                       samples = c("P17B", "P17L", "P18B", "P18L",
                                   "P19B", "P19L", "P20B", "P20L"))
 
+set.seed(42)
+combined <- lapply(combined, function(x) {
+                      x <- x[sample(nrow(x), nrow(x) * .25),]
+                      x
+})
+
+library(igraph)
 
 test_that("Basic functionality and default output structure", {
   clustered_list <- clonalCluster(combined[1:2])
