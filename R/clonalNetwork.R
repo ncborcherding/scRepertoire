@@ -106,7 +106,7 @@ clonalNetwork <- function(sc.data,
     
     if(exportClones) {
       #Summarizing all the clones by group.by
-      table <- .clone.counter(meta, group.by, cloneCall)[,seq_len(3)]
+      table <- .cloneCounter(meta, group.by, cloneCall)[,seq_len(3)]
       #Identifying the clones across the group by
       clones.across.identities <- names(which(table(table[,2]) > 1))
       if(length(clones.across.identities) < 1) {
