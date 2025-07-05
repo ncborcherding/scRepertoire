@@ -63,7 +63,8 @@ combineExpression <- function(input.data,
                               filterNA = FALSE,
                               cloneSize = c(Rare = 1e-4,Small = 0.001,Medium = 0.01,Large = 0.1,Hyperexpanded = 1),
                               addLabel = FALSE) {
-  
+    
+  call_time <- Sys.time()
     options( dplyr.summarise.inform = FALSE )
     if (!proportion && any(cloneSize < 1)) {
         stop("Adjust the cloneSize parameter - there are groupings < 1")
@@ -200,9 +201,8 @@ combineExpression <- function(input.data,
     sc.data$cloneSize <- factor(sc.data$cloneSize, levels = rev(names(cloneSize)))
     
     if(.is.seurat.object(sc.data)) {
-        sc.data@commands[["combineExpression"]] <- make_screp_seurat_cmd(
-            call_time, sc.data@active.assay
-        )
+        sc.data@commands[["combineExpression"]] <- .makeScrepSeurat(
+              call_time, sc.data@active.assay)
     }
     return(sc.data)
 }
