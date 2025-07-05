@@ -141,7 +141,7 @@ clonalBias <- function(sc.data,
                          group.by=group.by, 
                          cloneCall=cloneCall, 
                          min.expand=10) {
-  df <- .data.wrangle(df, split.by, cloneCall, "both")
+  df <- .dataWrangle(df, split.by, cloneCall, "both")
   
   bg <- list()
   for (s in seq_along(df)) {
@@ -166,7 +166,7 @@ clonalBias <- function(sc.data,
                            cloneCall=cloneCall, 
                            min.expand=10,
                            do.shuffle=FALSE, 
-                           seed=123) {
+                           seed=42) {
   
   dat <- data.frame(Sample=character(),
                     Clone_i=character(),
