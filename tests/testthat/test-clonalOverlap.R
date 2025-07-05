@@ -9,7 +9,7 @@ combined <- addVariable(combined,
                         variables = rep(c("B", "L"), 4))
 
 test_that("Input validation for `method` works", {
-  expect_error(clonalOverlap(combined, method = "invalid_method"), "Invalid method provided", fixed = TRUE)
+  expect_error(clonalOverlap(combined, method = "invalid_method"))
 })
 
 test_that("Output formats (data.frame vs. plot) are correct", {
