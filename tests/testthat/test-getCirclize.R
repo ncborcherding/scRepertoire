@@ -1,7 +1,9 @@
 # test script for getCirclize.R - testcases are NOT comprehensive!
 
 # Data to use
-combined <- combineTCR(contig_list, samples = c("P17B", "P17L", "P18B", "P18L", "P19B", "P19L", "P20B", "P20L"))
+combined <- combineTCR(contig_list, 
+                       samples = c("P17B", "P17L", "P18B", "P18L", 
+                                   "P19B", "P19L", "P20B", "P20L"))
 scRep_example <- combineExpression(combined, scRep_example)
 
 test_that("Output has the correct format", {
