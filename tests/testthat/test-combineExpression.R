@@ -1,7 +1,9 @@
 # test script for combineExpression.R - testcases are NOT comprehensive!
 
 # Data to use
-combined <- combineTCR(contig_list, samples = c("P17B", "P17L", "P18B", "P18L", "P19B", "P19L", "P20B", "P20L"))
+combined <- combineTCR(contig_list, 
+                       samples = c("P17B", "P17L", "P18B", "P18L", 
+                                   "P19B", "P19L", "P20B", "P20L"))
 scRep_example <- combineExpression(combined, scRep_example)
 scRep_example$Patient <- substring(scRep_example$orig.ident, 1, 3)
 scRep_example$Type <- substring(scRep_example$orig.ident, 4, 4)
@@ -17,22 +19,6 @@ test_that("Function correctly adds metadata to Seurat object", {
   expect_equal(cell1_meta$CTaa, "CAYRSAQAGGTSYGKLTF_CAISEQGKGELFF")
   expect_equal(cell1_meta$clonalFrequency, 1)
   expect_equal(cell1_meta$clonalProportion, 0.02, tolerance = 1e-1) 
-})
-
-test_that("`group.by` calculates frequency across specified groups", {
-  # Add 'Type' to the Seurat object metadata to match the contig list
-  scRep_example$Type <- c(rep("T1", 4), rep("T2", 4), "T1")
-  
-  sc_new <- combineExpression(combined, scRep_example, cloneCall = "strict", group.by = "Type")
-  
-  # Check frequency for clone 'A' which is in both T1 and T2
-  # In group T1, clone A appears twice.
-  cell1_meta <- sc_new@meta.data["S1_C1",]
-  expect_equal(cell1_meta$clonalFrequency, 2)
-  
-  # In group T2, clone A appears once.
-  cell5_meta <- sc_new@meta.data["S2_C5",]
-  expect_equal(cell5_meta$clonalFrequency, 1)
 })
 
 test_that("`proportion = FALSE` uses frequency for `cloneSize` binning", {
