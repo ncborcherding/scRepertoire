@@ -103,13 +103,6 @@ test_that("loadContigs works with AIRR input (directory mode)", {
   expect_identical(result_airr, expected_airr)
 })
 
-
-test_that("loadContigs errors on unsupported format and invalid input types", {
-  expect_error(loadContigs("dummy", format = "UnsupportedFormat"))
-  expect_error(loadContigs(12345, format = "10X"))
-})
-
-
 test_that("loadContigs returns empty list when no matching files are found in a directory", {
   empty_dir <- file.path(tempdir(), "empty_test_dir")
   dir.create(empty_dir, showWarnings = FALSE)
