@@ -250,7 +250,9 @@
 #reshuffling df
 #' @keywords internal
 .groupList <- function(df, group.by) {
+  if(inherits(df, "list")) {
     df <- do.call(rbind, df)
+  }
     df <- split(df, df[,group.by])
     return(df)
 }
