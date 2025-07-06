@@ -109,7 +109,7 @@ combined.BCR.clustered <- combineBCR(BCR.contigs,
                                      threshold = 0.85)
 
 # The CTstrict column contains cluster IDs (e.g., "cluster.1")
-head(combined.BCR.clustered[[1]][, c("barcode", "CTstrict", "v_gene1", "cdr3_aa1")])
+head(combined.BCR.clustered[[1]][, c("barcode", "CTstrict", "IGH", "cdr3_aa1")])
 ```
 
 ### Filtering and Cleaning Data
