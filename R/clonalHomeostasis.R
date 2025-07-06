@@ -77,7 +77,16 @@ clonalHomeostasis <- function(input.data,
     #Plotting
     mat_df <- as.data.frame(mat) 
     mat_df$Var1 <- rownames(mat_df)
-    mat_melt <- stack(mat_df, select = -Var1) 
+    
+    varying_cols <- names(mat_df)[grep("<", names(mat_df))]
+    
+    mat_melt <- reshape(mat_df,
+                        varying = varying_cols,
+                        v.names = "value",
+                        timevar = "category",
+                        times = varying_cols,
+                        idvar = "Var1",
+                        direction = "long")
     
     if(!is.null(order.by)) {
       mat_melt <- .orderingFunction(vector = order.by,
@@ -85,8 +94,8 @@ clonalHomeostasis <- function(input.data,
                                     data.frame = mat_melt)
     }
     
-    col <- length(unique(mat_melt$Var2))
-    plot <- ggplot(mat_melt, aes(x=as.factor(Var1), y=value, fill=Var2)) +
+    col <- length(unique(mat_melt$category))
+    plot <- ggplot(mat_melt, aes(x=as.factor(Var1), y=value, fill=category)) +
         geom_bar(stat = "identity", position="fill", 
                     color = "black", lwd= 0.25) +
         scale_fill_manual(values = .colorizer(palette,col)) +
