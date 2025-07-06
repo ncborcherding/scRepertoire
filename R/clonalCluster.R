@@ -93,7 +93,6 @@
 clonalCluster <- function(input.data, 
                           chain = "TRB", 
                           sequence = "aa",
-                          samples = NULL,
                           threshold = 0.85, 
                           group.by = NULL, 
                           cluster.method = "components",
@@ -130,8 +129,28 @@ clonalCluster <- function(input.data,
   all_barcodes <- unique(do.call(rbind, chain_data)[["barcode"]])
   
   # Apply the network function to each data frame and combine into one edge list
-  full_edge_list <- do.call(rbind, lapply(chain_data, function(y) {
-                            .buildNetwork(y, use.V, use.J, threshold) }))
+  result_list <- lapply(chain_data, function(y) {
+    y <- y[!is.na(y[,1]),]
+    .buildNetwork(y, use.V, use.J, threshold)
+  })
+  full_edge_list <- do.call(rbind, result_list)
+  
+  # if group.by is invoked
+  if (length(chain_data) > 1 && !is.null(names(chain_data))) {
+    row_counts <- sapply(result_list, NROW)
+    full_edge_list$group <- rep(names(chain_data), times = row_counts)
+  }
+  
+  # pseudocount for same sequences
+  full_edge_list$dist[full_edge_list$dist == 0] <- 1e-6
+  
+  # Add filtering
+  if(threshold >= 1) {
+    full_edge_list <- full_edge_list[full_edge_list$dist >= 1 & full_edge_list$dist <= threshold,]
+  } else {
+    max_ned <- 1-threshold
+    full_edge_list <- full_edge_list[full_edge_list$dist <= max_ned, ]
+  }
   full_edge_list <- unique(full_edge_list) 
   
   if (nrow(full_edge_list) == 0) {
@@ -140,9 +159,18 @@ clonalCluster <- function(input.data,
   }
   
   # Create the graph object
-  full_g <- igraph::graph_from_edgelist(as.matrix(full_edge_list[, c("from", "to")]), 
+  full_g <- igraph::graph_from_data_frame(full_edge_list, 
                                         directed = FALSE)
   igraph::E(full_g)$weight <- full_edge_list$dist
+  if (!is.null(group.by)) {
+    vertex_map_df <- data.frame(
+      name = c(full_edge_list$from, full_edge_list$to),
+      group = rep(full_edge_list[["group"]], 2))
+    unique_vertex_map <- vertex_map_df[!duplicated(vertex_map_df$name), ]
+    vertex_group_lookup <- setNames(unique_vertex_map$group, unique_vertex_map$name)
+    graph_vertex_names <- igraph::V(full_g)$name
+    igraph::V(full_g)$group <- vertex_group_lookup[graph_vertex_names]
+  }
   
   # Perform clustering using the specified method
   clusters <- .clusterGraph(cluster.method, full_g)
@@ -167,8 +195,6 @@ clonalCluster <- function(input.data,
     
     if (nrow(full_meta_long) > 0) {
       meta_to_process <- unique(full_meta_long[, c("barcode", "cdr3_aa", "v", "j")])
-      
-      # Collapsing incase > 1 chain 
       meta_indexed <- meta_to_process %>% 
                           group_by(barcode) %>%
                           mutate(chain_num = dplyr::row_number()) %>%
@@ -256,7 +282,7 @@ clonalCluster <- function(input.data,
     "leiden" = igraph::cluster_leiden(graph, ...),
     "spinglass" = igraph::cluster_spinglass(graph, ...),
     "edge_betweenness" = igraph::cluster_edge_betweenness(graph, ...),
-    "components" = igraph::components(graph, ...),
+    "components" = igraph::components(graph, mode = "weak", ...),
     
     # Default case: Handle unsupported methods
     stop(
