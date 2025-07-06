@@ -26,7 +26,6 @@ Imports:
     igraph,
     immApex,
     iNEXT,
-    plyr,
     quantreg,
     Rcpp,
     rjson,
