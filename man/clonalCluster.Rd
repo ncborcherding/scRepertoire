@@ -8,7 +8,6 @@ clonalCluster(
   input.data,
   chain = "TRB",
   sequence = "aa",
-  samples = NULL,
   threshold = 0.85,
   group.by = NULL,
   cluster.method = "components",

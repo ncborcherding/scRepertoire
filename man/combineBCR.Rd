@@ -15,7 +15,7 @@ combineBCR(
   threshold = 0.85,
   cluster.method = "components",
   use.V = TRUE,
-  use.J = FALSE,
+  use.J = TRUE,
   removeNA = FALSE,
   removeMulti = FALSE,
   filterMulti = TRUE,

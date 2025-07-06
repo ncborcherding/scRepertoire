@@ -45,12 +45,12 @@ Suggests:
     BiocStyle,
     circlize,
     knitr,
-    Peptides,
     rmarkdown,
     scales,
     scater,
     Seurat,
     spelling,
+    tidygraph,
     testthat (>= 3.0.0)
 VignetteBuilder: knitr
 Config/testthat/edition: 3
