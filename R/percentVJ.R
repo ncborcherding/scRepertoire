@@ -45,10 +45,15 @@ percentVJ <- function(input.data,
   
   #Getting indicated genes across list
   gene_counts <- lapply(input.data, function(x) {
-      tmp <- unlist(str_split(x[,"CTgene"], ";"))
-      tmp <- str_split(tmp, "[.]", simplify = TRUE)
-      strings <- paste0(tmp[,positions[1]], ";", tmp[,positions[2]])
-      strings <- strings[-which(strings == "NA;")]
+      tmp_vec <- unlist(strsplit(x[, "CTgene"], split = ";"))
+      split_list <- strsplit(tmp_vec, split = "\\.")
+      max_len <- max(sapply(split_list, length))
+      padded_list <- lapply(split_list, function(vec) {
+        c(vec, rep("", max_len - length(vec)))
+      })
+      tmp_matrix <- do.call(rbind, padded_list)
+      strings <- paste(tmp_matrix[, positions[1]], tmp_matrix[, positions[2]], sep = ";")
+      strings <- strings[strings != "NA;"]
   })
   #Need total unique genes
   gene.dictionary <- unique(unlist(gene_counts))
@@ -65,7 +70,7 @@ percentVJ <- function(input.data,
                    names(percentages.to.add) <- genes.to.add
                    percentages <- c(percentages, percentages.to.add)
                  }
-                 percentages <- percentages[match(str_sort(names(percentages), numeric = TRUE), names(percentages))]
+                 percentages <- percentages[match(.alphanumericalSort(names(percentages)), names(percentages))]
   })
   if (exportTable == TRUE) { 
     summary.matrix <- do.call(rbind,summary)
