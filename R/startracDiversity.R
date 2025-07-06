@@ -119,7 +119,6 @@ StartracDiversity <- function(sc.data,
 
 
 # Calculate cluster level indices
-#' @importFrom plyr llply
 .calIndex <- function(processed){
     clonotype.dist.cluster <- table(processed[,c("clone.id","majorCluster")])
     clonotype.dist.loc <- unclass(table(processed[,c("clone.id","loc")]))
