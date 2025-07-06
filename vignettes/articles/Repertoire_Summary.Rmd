@@ -38,6 +38,7 @@ knitr::opts_chunk$set(
 )
 
 suppressMessages(library(scRepertoire))
+suppressMessages(library(Peptides))
 data("contig_list") 
 combined.TCR <- combineTCR(contig_list, 
                            samples = c("P17B", "P17L", "P18B", "P18L", 

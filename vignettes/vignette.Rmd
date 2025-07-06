@@ -20,6 +20,7 @@ knitr::opts_chunk$set(error=FALSE, message=FALSE, warning=FALSE)
 library(BiocStyle)
 library(scater)
 library(Seurat)
+library(Peptides)
 ```
 
 # Introduction
@@ -62,7 +63,7 @@ Beyond the default 10x Genomic Cell Ranger pipeline outputs, scRepertoire suppor
 * [TRUST4](https://pubmed.ncbi.nlm.nih.gov/33986545/)  
 * [WAT3R](https://pubmed.ncbi.nlm.nih.gov/35674381/)  
 
-```loadContigs()``` can be given a directory where the sequencing experiments are located and it will recursively load and process the contig data based on the file names. Alternatively, ```loadContigs()``` can be given a list of data frames and process the contig data
+``loadContigs()`` can be given a directory where the sequencing experiments are located and it will recursively load and process the contig data based on the file names. Alternatively, ```loadContigs()``` can be given a list of data frames and process the contig data
 
 
 ```{r, eval=FALSE, tidy = FALSE}
@@ -152,21 +153,31 @@ combined.TCR <- combineTCR(contig_list,
 head(combined.TCR[[1]])
 ```
 
-### Filtering and Cleaning Data
+## combineBCR
 
-```combineBCR()``` includes several arguments to filter and clean the contig data during processing.
-* `filterNonproductive = TRUE` (Default): Removes any contigs that are not classified as productive, ensuring that only functional receptor chains are included in the analysis.
-* `filterMulti = TRUE (Default)`: For cells with more than one heavy or light chain detected, this automatically selects the chain with the highest UMI count (read abundance) and discards the others. This helps resolve cellular multiplets or technical artifacts.
+The ```combineBCR()``` function is the primary tool for processing raw B cell receptor contig data into a format ready for analysis. It is analogous to ```combineTCR()``` but includes specialized logic for handling the complexities of BCRs, such as somatic hypermutation. The function consolidates contigs into a single data frame per sample, with each row representing a unique cell.
 
-Here is an example applying these filters (though they are on by default):
+By default `(call.related.clones = TRUE)`, ```combineBCR()``` groups B cells into clones based on the similarity of their CDR3 sequences.
 
-```{r}
-cleaned.BCR <- combineBCR(BCR.contigs,
-                          samples = "Patient1",
-                          filterNonproductive = TRUE,
-                          filterMulti = TRUE)
+This process works by:
 
-head(cleaned.BCR[[1]])
+* Internally calling ```clonalCluster()``` to build a network of related sequences.
+* Using the `threshold` parameter to define connections. The `threshold` is a normalized Levenshtein distance, where a value closer to 1.0 requires higher sequence similarity. The default of 0.85 is a good starting point.
+* Assigning a cluster-based ID to the CTstrict column.
+
+Additionally, the `group.by` argument allows you to constrain the clustering analysis to only occur within distinct categories in your metadata. For example, using `group.by = "sample"` ensures that sequences from different samples are never compared or clustered together, even if they are identical.
+
+```{r tidy = FALSE}
+# Load example BCR contig data
+BCR.contigs <- read.csv("https://www.borch.dev/uploads/contigs/b_contigs.csv")
+
+# Combine using the default similarity clustering
+combined.BCR.clustered <- combineBCR(BCR.contigs, 
+                                     samples = "Patient1", 
+                                     threshold = 0.85)
+
+# The CTstrict column contains cluster IDs (e.g., "cluster.1")
+head(combined.BCR.clustered[[1]][, c("barcode", "CTstrict", "IGH", "cdr3_aa1")])
 ```
 
 ***
@@ -395,7 +406,7 @@ clonalCompare(combined.TCR,
 
 ## clonalScatter
 
-```clonalScatter()``` will organize two repertoires, quantify the relative clone sizes, and produce a scatter plot comparing the two samples. 
+`clonalScatter()` will organize two repertoires, quantify the relative clone sizes, and produce a scatter plot comparing the two samples. 
 
 **x.axis** and **y.axis** 
 
@@ -439,7 +450,6 @@ By examining the clonal space, we effectively look at the relative space occupie
 ```{r tidy = FALSE}
 clonalHomeostasis(combined.TCR, 
                   cloneCall = "gene")
-
 ```
 
 We can reassign the proportional cut points for cloneSize, which can drastically alter the visualization and analysis. 
@@ -454,7 +464,6 @@ clonalHomeostasis(combined.TCR,
 In addition, we can use the **group.by** parameter to look at the relative proportion of clones between groups - such as tissue.
 
 ```{r tidy = FALSE}
-
 combined.TCR <- addVariable(combined.TCR, 
                             variable.name = "Type", 
                             variables = rep(c("B", "L"), 4))
@@ -605,7 +614,7 @@ Like ```positionalEntropy()```, we can also examine a series of amino acid prope
 positionalProperty(combined.TCR[c(1,2)], 
                   chain = "TRB", 
                   aa.length = 20, 
-                  method = "Atchley") + 
+                  method = "atchleyFactors") + 
   scale_color_manual(values = hcl.colors(5, "inferno")[c(2,4)])
 ```
 
@@ -1295,7 +1304,6 @@ color.legend <- factor(unique(igraph::V(igraph.object)$group))
 #Plotting
 plot(
   igraph.object,
-  vertex.size     = sqrt(igraph::V(igraph.object)$size),
   vertex.label    = NA,
   edge.arrow.size = .25,
   vertex.color    = col_samples
