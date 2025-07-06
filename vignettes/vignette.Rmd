@@ -20,7 +20,7 @@ knitr::opts_chunk$set(error=FALSE, message=FALSE, warning=FALSE)
 library(BiocStyle)
 library(scater)
 library(Seurat)
-library(Peptides)
+library(igraph)
 ```
 
 # Introduction
@@ -1285,9 +1285,10 @@ Instead of modifying the input object, ```clonalCluster()``` can export the unde
 
 ### Returning an igraph object:
 
-Set `exportGraph = TRUE` to get an igraph object containing only the sequences with at least one connection. This is ideal for network visualization and analysis.
+Set `exportGraph = TRUE` to get an igraph object consisting of the networks of barcodes by the indicated clustering scheme. 
 
 ```{r tidy = FALSE}
+set.seed(42)
 #Clustering Patient 19 samples
 igraph.object <- clonalCluster(combined.TCR[c(5,6)],
                                chain = "TRB",
@@ -1298,17 +1299,30 @@ igraph.object <- clonalCluster(combined.TCR[c(5,6)],
 
 #Setting color scheme
 col_legend <- factor(igraph::V(igraph.object)$group)
-col_samples <- hcl.colors(3,"inferno")[as.numeric(col_legend)]
+col_samples <- hcl.colors(2,"inferno")[as.numeric(col_legend)]
 color.legend <- factor(unique(igraph::V(igraph.object)$group))
+sample.vertices <- V(igraph.object)[sample(length(igraph.object), 500)]
+
+subgraph.object <- induced_subgraph(igraph.object, vids = sample.vertices)
+V(subgraph.object)$degrees <- igraph::degree(subgraph.object)
+edge_alpha_color <- adjustcolor("gray", alpha.f = 0.3)
 
 #Plotting
-plot(
-  igraph.object,
-  vertex.label    = NA,
-  edge.arrow.size = .25,
-  vertex.color    = col_samples
-)
-legend("topleft", legend = levels(color.legend), pch = 16, col = unique(col_samples), bty = "n")
+plot(subgraph.object,
+     layout = layout_nicely(subgraph.object),
+     vertex.label = NA,
+     vertex.size = sqrt(igraph::V(subgraph.object)$degrees), 
+     vertex.color = col_samples[sample.vertices],
+     vertex.frame.color = "white", 
+     edge.color = edge_alpha_color,
+     edge.arrow.size = 0.05,
+     edge.curved = 0.05, 
+     margin = -0.1)
+legend("topleft", 
+       legend = levels(color.legend), 
+       pch = 16, 
+       col = unique(col_samples), 
+       bty = "n")
 ```
 
 ### Returning a Sparse Adjacency Matrix
@@ -1351,7 +1365,6 @@ graph_walktrap <- clonalCluster(combined.TCR[c(1,2)],
 
 # Compare the number of clusters found
 length(unique(V(graph_walktrap)$cluster))
-
 ```
 
 ***
