@@ -149,7 +149,7 @@ vizGenes <- function(input.data,
   if (order == "variance") {
     varOrder <- unique(mat[order(mat$varcount, decreasing = TRUE),"x.axis"])
   } else {
-    varOrder <- str_sort(unique(mat$x.axis), numeric = TRUE)
+    varOrder <- .alphanumericalSort(unique(mat$x.axis))
   }
     mat[,"x.axis"] <- factor(mat[,"x.axis"], levels = varOrder)
   if (plot == "barplot") {
@@ -187,19 +187,20 @@ vizGenes <- function(input.data,
 
 #Parsing the CTgene
 .select.gene <- function(df, position, label) {
-  chains <- c("TRAV" = 1, "TRBV" = 1, "TRGV" = 1, "TRDV" = 1, 
+  chains <- c("TRAV" = 1, "TRBV" = 1, "TRGV" = 1, "TRDV" = 1,
               "IGHV" = 1, "IGLV" = 1, "IGKV" = 1,
               "TRAJ" = 2, "TRGJ" = 2, "IGKJ" = 2, "IKLJ" = 2,
-              "TRBD" = 2, "TRDD" = 2, "IGHV" = 2, 
+              "TRBD" = 2, "TRDD" = 2, "IGHD" = 2,
               "TRBJ" = 3, "TRDJ" = 2, "IGHJ" = 3)
+  
   chain.poisiton <- chains[position]
-  if(substring(position,3,3) %in% c("A", "G", "H")) {
-    chain.gene <- str_split(df[,"CTgene"], "_", simplify = TRUE)[,1]
+  if (substring(position, 3, 3) %in% c("A", "G", "H")) {
+    chain.gene <- sapply(strsplit(df[, "CTgene"], split = "_"), `[`, 1)
   } else {
-    chain.gene <- str_split(df[,"CTgene"], "_", simplify = TRUE)[,2]
+    chain.gene <- sapply(strsplit(df[, "CTgene"], split = "_"), `[`, 2)
   }
-  genes <- str_split(chain.gene, "[.]", simplify = TRUE)[,chain.poisiton] 
-  df[,label] <- NA
-  df[,label] <- genes
+  genes <- sapply(strsplit(chain.gene, split = "\\."), `[`, chain.poisiton)
+  df[, label] <- NA
+  df[, label] <- genes
   return(df)
 }
