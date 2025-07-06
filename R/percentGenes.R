@@ -68,13 +68,13 @@ percentGenes <- function(input.data,
   
   #Getting genes counts across list
   gene.counts <- lapply(input.data, function(x) {
-    tmp <- unlist(str_split(x[,"CTgene"], ";"))
-    tmp <- str_split(tmp, "[.]", simplify = TRUE)
-    tmp <- tmp[!is.na(tmp[,1]),]
-    colnames(tmp) <- c("V", "D", "J", "C")
-    counts <- immApex::calculateGeneUsage(as.data.frame(tmp), 
-                                          loci = gene_type, 
-                                          summary = summary.fun)
+    tmp_vec <- unlist(strsplit(x[, "CTgene"], split = ";"))
+    split_list <- strsplit(tmp_vec, split = "\\.")
+    tmp_matrix <- do.call(rbind, lapply(split_list, `length<-`, 4))
+    tmp_matrix <- tmp_matrix[!is.na(tmp_matrix[, 1]), , drop = FALSE]
+    colnames(tmp_matrix) <- c("V", "D", "J", "C")
+    counts <- table(tmp_matrix[, gene_type])
+    return(counts)
   })
   
   unique.genes <- unique(unlist(lapply(gene.counts, names)))
