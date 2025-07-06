@@ -90,7 +90,15 @@ percentVJ <- function(input.data,
   })
   
   #Melting matrix and Visualizing
-  mat_melt <- melt(mat)
+  melted_list <- mapply(function(df_matrix, name) {
+    df <- as.data.frame(as.table(df_matrix)) 
+    df$L1 <- name                             
+    return(df)
+  }, mat, names(mat), SIMPLIFY = FALSE)
+  mat_melt <- do.call(rbind, melted_list)
+  colnames(mat_melt) <- c("Var1", "Var2", "value", "L1")
+  rownames(mat_melt) <- NULL
+  
   if(!is.null(order.by)) {
     mat_melt <- .orderingFunction(vector = order.by,
                                   group.by = "L1", 

@@ -95,11 +95,17 @@ StartracDiversity <- function(sc.data,
     }
     names(mat.list) <- group.levels
     mat <- bind_rows(mat.list, .id = "group")
+    rownames(mat) <- NULL
     if (exportTable) { 
       return(mat) 
     } 
-    
-    mat_melt <- melt(mat, id = c("group", "majorCluster"))
+    metrics_to_pivot <- c("migr", "tran", "expa")
+    mat_melt <- reshape(mat,
+                        varying = metrics_to_pivot,
+                        v.names = "value",
+                        timevar = "variable",
+                        times = metrics_to_pivot,
+                        direction = "long")
     values <-  .alphanumericalSort(unique(mat_melt$majorCluster))
     mat_melt$majorCluster <- factor(mat_melt$majorCluster, levels = values)
     mat_melt$value <- as.numeric(mat_melt$value)
