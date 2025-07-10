@@ -9,19 +9,19 @@
 #' if using [clonalBias()].
 #' 
 #' @examples
-#' #Making combined contig data
+#' # Making combined contig data
 #' combined <- combineTCR(contig_list, 
 #'                         samples = c("P17B", "P17L", "P18B", "P18L", 
 #'                                     "P19B","P19L", "P20B", "P20L"))
 #' 
-#' #Getting a sample of a Seurat object
+#' # Getting a sample of a Seurat object
 #' scRep_example <- get(data("scRep_example"))
 #' 
-#' #Using combineExpresion()
+#' # Using combineExpresion()
 #' scRep_example <- combineExpression(combined, scRep_example)
 #' scRep_example$Patient <- substring(scRep_example$orig.ident,1,3)
 #' 
-#' #Using clonalBias()
+#' # Using clonalBias()
 #' clonalBias(scRep_example, 
 #'               cloneCall = "aa", 
 #'               split.by = "Patient", 

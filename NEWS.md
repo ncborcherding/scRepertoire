@@ -18,8 +18,10 @@ single diversity metric at a time and includes new  estimators like "gini",
 nt sequences. No longer calculates all possible motifs, but only motifs present. 
 * ```clonalCluster()``` now allows for dual-chain clustering, V/J filtering, 
 normalized or straight edit distance calculations, and return of clusters, 
-igraph objects or adjacencency matrix
+igraph objects or adjacency matrix
 * ```combineBCR()``` offers single/dual chain clustering, aa or nt sequences, adaptive filtering of V and J genes and normalized or straight edit distance calculations
+* ```percentGeneUsage()``` now is the underlying function for ```percentGenes()```, ```percentVJ()```, 
+and ```vizGenes()``` and allows for percent, proportion and raw count quantification.
 
 ## BUG FIXES
 * ```clonalCompare()``` issue with plotting a 0 row data frame now errors with message

@@ -2,8 +2,6 @@
 #-------------Background Functions-----------
 #-------------------------------------------
 # utility functions use camelCase 
-
-
 .processStrings <- function(seq, aa.length) {
   strings <- unlist(strsplit(seq, ";"))
   strings <- strings[!is.na(strings)]
