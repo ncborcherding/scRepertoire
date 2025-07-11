@@ -589,10 +589,10 @@ df.genes <- percentGenes(combined.TCR,
                          summary.fun = "proportion") 
 
 # Performing PCA on the gene usage matrix
-pc <- prcomp(df.genes, scale. = TRUE) 
+pc <- prcomp(t(df.genes) )
 
 # Getting data frame to plot from
-df_plot <- as.data.frame(cbind(pc$x[,1:2], rownames(df.genes)))
+df_plot <- as.data.frame(cbind(pc$x[,1:2], colnames(df.genes)))
 colnames(df_plot) <- c("PC1", "PC2", "Sample")
 df_plot$PC1 <- as.numeric(df_plot$PC1)
 df_plot$PC2 <- as.numeric(df_plot$PC2)
@@ -632,10 +632,10 @@ df.vj <- percentVJ(combined.TCR,
                    summary.fun = "proportion") # Export proportions for PCA
 
 # Performing PCA on the V-J pairing matrix
-pc.vj <- prcomp(df.vj, scale. = TRUE) # Scale the data for PCA
+pc.vj <- prcomp(t(df.vj))
 
 # Getting data frame to plot from
-df_plot_vj <- as.data.frame(cbind(pc.vj$x[,1:2], rownames(df.vj)))
+df_plot_vj <- as.data.frame(cbind(pc.vj$x[,1:2], colnames(df.vj)))
 colnames(df_plot_vj) <- c("PC1", "PC2", "Sample")
 df_plot_vj$PC1 <- as.numeric(df_plot_vj$PC1)
 df_plot_vj$PC2 <- as.numeric(df_plot_vj$PC2)

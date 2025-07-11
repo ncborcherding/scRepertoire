@@ -45,9 +45,6 @@ percentGeneUsage <- function(input.data,
   
   sco <- .is.seurat.or.se.object(input.data)
   
-  #TODO: Handle group.by for new data pull
-
-  
   summary.fun <- match.arg(summary.fun)
   if (!is.character(genes) || !(length(genes) %in% 1:2)) {
     stop("Parameter 'genes' must be a character vector of length 1 or 2, specifying gene loci.")
@@ -81,6 +78,20 @@ percentGeneUsage <- function(input.data,
   })
   
   gene.data <- ir_data_list[[1]]
+  
+  if(is.null(group.by)) {
+    if(sco) {
+      group.by <- "ident"
+      groupings <- .bound.input.return(input.data)[,group.by, drop = FALSE]
+    } else {
+      group.by <- "element.names" 
+      groupings <- .bound.input.return(input.data)[,c("barcode", group.by), drop = FALSE]
+      rownames(groupings) <- groupings[["barcode"]]
+      groupings <- groupings[,-which(colnames(groupings) == "barcode"), drop = FALSE]
+      
+    }
+    gene.data <- merge(gene.data, groupings, by.x = "barcode", by.y = 0)
+  }
   
   # If second chain is being used
   if (length(chains_to_extract) == 2 && length(genes) == 2) {
