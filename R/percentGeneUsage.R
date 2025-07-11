@@ -119,8 +119,7 @@ percentGeneUsage <- function(input.data,
     return(dfs)
   })
   
-  gene.data <- ir_data_list[[1]]
-  
+  # Handling NULL group.by
   if(is.null(group.by)) {
     if(sco) {
       group.by <- "ident"
@@ -132,8 +131,12 @@ percentGeneUsage <- function(input.data,
       groupings <- groupings[,-which(colnames(groupings) == "barcode"), drop = FALSE]
       
     }
-    gene.data <- merge(gene.data, groupings, by.x = "barcode", by.y = 0)
+    ir_data_list <- lapply(ir_data_list, function(x) {
+      merge(x, groupings, by.x = "barcode", by.y = 0)
+    })
   }
+  gene.data <- ir_data_list[[1]]
+
   
   # If second chain is being used
   if (length(chains_to_extract) == 2 && length(genes) == 2) {
