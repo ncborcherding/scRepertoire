@@ -43,12 +43,12 @@ Supported file formats and their expected file names:
 }
 \examples{
 TRUST4 <- read.csv("https://www.borch.dev/uploads/contigs/TRUST4_contigs.csv")
-contig.list <- loadContigs(TRUST4, format = "auto")
+contig.list <- loadContigs(TRUST4, format = "TRUST4")
 
 BD <- read.csv("https://www.borch.dev/uploads/contigs/BD_contigs.csv")
 contig.list <- loadContigs(BD, format = "BD")
 
 WAT3R <- read.csv("https://www.borch.dev/uploads/contigs/WAT3R_contigs.csv")
-contig.list <- loadContigs(WAT3R, format = "auto")
+contig.list <- loadContigs(WAT3R, format = "WAT3R")
 
 }

@@ -105,6 +105,7 @@ exportClones <- function(input.data,
 
 
 #' Split String and Pad to a Fixed-Width Matrix
+#' @keywords internal
 ._split_and_pad <- function(x, split, n_cols) {
   s <- strsplit(x, split)
   # Create a matrix by safely subsetting each list element up to n_cols
@@ -113,6 +114,7 @@ exportClones <- function(input.data,
 }
 
 #' Bind a List of Contig Data Frames and Add Grouping Variable
+#' @keywords internal
 ._bind_contig_list <- function(contig_list) {
   list_names <- names(contig_list)
   if (is.null(list_names)) {

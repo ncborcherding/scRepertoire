@@ -584,7 +584,7 @@ What does the result look like?
 * **geneRatio** – (core hits)/(size), useful for dot plots
 * **leadingEdge** – semi-colon-separated genes driving the signal
 
-### Visualising the enrichment table
+### Visualizing the enrichment table
 
 The companion ```enrichItPlot()``` gives three quick chart types.
 
@@ -592,7 +592,7 @@ The companion ```enrichItPlot()``` gives three quick chart types.
 ## (1) Bar plot –20 most significant per database
 enrichItPlot(GSEA.results)               
 
-## (2) Dot plot – coloured by –log10 padj, sized by core-hits
+## (2) Dot plot – colored by –log10 padj, sized by core-hits
 enrichItPlot(GSEA.results, "dot", top = 10) 
 
 ## (3) C-net plot – network of pathways ↔ leading-edge genes

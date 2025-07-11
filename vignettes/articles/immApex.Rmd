@@ -375,7 +375,7 @@ head(enc_onehot$flattened[, 1:10])
 
 ## propertyEncoder
 
-Instead of a binary vector, this method represents each amino acid using a set of continuous numerical values based on physicochemical properties (e.g., kideraFactors, FSGAI, etc). This can capture the biochemical similarity between amino acids. Access this method by setting **mode** = `"property"` or using the ```propertyEncoder()``` alias.
+Instead of a binary vector, this method represents each amino acid using a set of continuous numerical values based on physicochemical properties (e.g., kideraFactors, FASGAI, etc). This can capture the biochemical similarity between amino acids. Access this method by setting **mode** = `"property"` or using the ```propertyEncoder()``` alias.
 
 **Mode-Specific Arguments**:
 

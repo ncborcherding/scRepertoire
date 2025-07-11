@@ -65,7 +65,7 @@ We can also quantify the level of entropy/diversity across amino acid residues a
 * "inv.simpson" - Inverse Simpson Index
 * "gini.simpson" - Gini-Simpson Index
 * "norm.entropy" - Normalized Entropy 
-* "pielou" - pielou's Eveness
+* "pielou" - pielou's Evenness
 * "hill1", "hill2", "hill3" - Hill Numbers 
 
 ```{r tidy = FALSE}

@@ -119,7 +119,7 @@ The main output of this function is a `SingleCellExperiment` object with the rel
 head(colData(sce))[,1:10]
 ```
 
-Visualise the UMAP of the filtered data.
+Visualize the UMAP of the filtered data.
 
 ```{r}
 plotUMAP(sce, color_by = "anno_lvl_2_final_clean")

@@ -109,7 +109,7 @@ To visualize and analyze these TCR-derived phenotype scores in conjunction with 
 scRep_example <- AddMetaData(scRep_example, tcrpheno.results)
 ```
 
-## Visualizaing Predictions
+## Visualizing Predictions
 
 Now that the phenotype scores are part of the Seurat object, we can visualize them on dimensionality reduction plots, such as UMAPs. This helps to see if cells with particular TCR-derived phenotype scores cluster together or co-localize with known cell populations.
 

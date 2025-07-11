@@ -9,3 +9,4 @@
 \description{
 Split String and Pad to a Fixed-Width Matrix
 }
+\keyword{internal}

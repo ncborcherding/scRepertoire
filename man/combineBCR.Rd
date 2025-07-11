@@ -56,6 +56,8 @@ clustered together.}
 \item{use.J}{Logical. If \code{TRUE}, sequences must share the same J gene to be
 clustered together.}
 
+\item{removeNA}{This will remove any chain without values.}
+
 \item{removeMulti}{Logical. If \code{TRUE}, removes cells that have more than
 one distinct heavy or light chain after processing.}
 

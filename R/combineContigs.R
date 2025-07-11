@@ -199,6 +199,7 @@ combineTCR <- function(input.data,
 #' one distinct heavy or light chain after processing.
 #' @param filterMulti Logical. If `TRUE`, filters multi-chain cells to retain
 #' only the most abundant IGH and IGL/IGK chains.
+#' @param removeNA This will remove any chain without values.
 #' @param filterNonproductive Logical. If `TRUE`, removes non-productive contigs
 #' from the analysis.
 #'
