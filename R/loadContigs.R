@@ -201,29 +201,29 @@ loadContigs <- function(input,
 # (Parsing functions below remain unchanged for completeness)
 
 .parseTRUST4 <- function(df_list) {
-  split_and_pad <- function(x, n) {
+  split_and_pad <- function(x, n = NULL) {
     parts <- unlist(strsplit(x, ","))
+    if (is.null(n)) return(parts)
     if (length(parts) < n) {
-      c(parts, rep("", n - length(parts)))
-    } 
-    else if (length(parts) > n) {
-      parts[seq_len(n)]
-    } 
-    else {
-      parts
+      return(c(parts, rep("", n - length(parts))))
+    } else if (length(parts) > n) {
+      return(parts[seq_len(n)])
+    } else {
+      return(parts)
     }
   }
+  
   processChain <- function(data, chain_col) {
     if (all(is.na(data[[chain_col]]))) {
       chain <- matrix(NA, ncol = 7, nrow = length(data[[chain_col]]))
     } else {
-      chain <- vapply(
+      chain <- t(vapply(
         data[[chain_col]], 
         split_and_pad, 
         FUN.VALUE = character(7), 
-        n = num_cols,
+        n = 7,
         USE.NAMES = FALSE
-      )
+      ))
       chain[chain == "*"] <- "None"
     }
     colnames(chain) <- c("v_gene", "d_gene", "j_gene", "c_gene", "cdr3_nt", "cdr3", "reads")
