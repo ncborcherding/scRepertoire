@@ -85,5 +85,91 @@ If \code{exportTable = TRUE}, a matrix or data frame of the raw data is returned
 This function quantifies and visualizes the usage of V, D, or J genes,
 or gene pairings across T or B cell clones.
 }
+\examples{
+# Making combined contig data
+combined <- combineTCR(contig_list, 
+                        samples = c("P17B", "P17L", "P18B", "P18L", 
+                                    "P19B","P19L", "P20B", "P20L"))
+                                    
+# Visualize single gene (TRBV) usage as a heatmap, grouped by sample
+percentGeneUsage(combined.TCR,
+                 genes = "TRBV",
+                 group.by = "sample",
+                 plot.type = "heatmap",
+                 summary.fun = "percent")
+
+# Visualize single gene (TRBV) usage as a barplot, grouped by sample
+percentGeneUsage(combined.TCR,
+                 genes = "TRBV",
+                 group.by = "sample",
+                 plot.type = "barplot",
+                 summary.fun = "count")
+
+# Visualize paired gene (TRBV-TRBJ) usage as a heatmap
+percentGeneUsage(combined.TCR,
+                 genes = c("TRBV", "TRBJ"),
+                 group.by = "sample",
+                 plot.type = "heatmap",
+                 summary.fun = "proportion")
+
+# Export the raw data table for single gene usage
+trbv_usage_table <- percentGeneUsage(combined.TCR,
+                                     genes = "TRBV",
+                                     group.by = "sample",
+                                     exportTable = TRUE,
+                                     summary.fun = "count")
+
+# Export the raw data table for paired gene usage
+trbv_trbj_usage_table <- percentGeneUsage(combined.TCR,
+                                          genes = c("TRBV", "TRBJ"),
+                                          group.by = "sample",
+                                          exportTable = TRUE,
+                                          summary.fun = "percent")
+
+
+# Visualize paired gene (TRBV-TRBJ) usage as a heatmap
+vizGenes(combined.TCR,
+         x.axis = "TRBV",
+         y.axis = "TRBJ",
+         group.by = "sample",
+         summary.fun = "count")
+
+# Visualize cross-chain gene pairing (TRBV-TRAV)
+vizGenes(combined.TCR,
+         x.axis = "TRBV",
+         y.axis = "TRAV",
+         group.by = "sample",
+         summary.fun = "percent")
+
+
+# Quantify and visualize TRA V-gene usage as a heatmap
+percentGenes(combined.TCR,
+             chain = "TRA",
+             gene = "Vgene",
+             group.by = "sample",
+             summary.fun = "percent")
+
+# Quantify TRA J-gene usage and export the table
+ighj_usage_table <- percentGenes(combined.TCR,
+                                 chain = "TRA",
+                                 gene = "Jgene",
+                                 group.by = "sample",
+                                 exportTable = TRUE,
+                                 summary.fun = "count")
+
+# Quantify and visualize TRB V-J gene pairings as a heatmap
+percentVJ(combined.TCR,
+          chain = "TRB",
+          group.by = "sample",
+          summary.fun = "percent")
+
+# 2. Quantify TRA V-J gene pairings and export the table
+trav_traj_table <- percentVJ(combined.TCR,
+                             chain = "TRA",
+                             group.by = "sample",
+                             exportTable = TRUE,
+                             summary.fun = "proportion")
+
+}
 \concept{Summarize_Repertoire}
 \concept{Visualizing_Clones}
