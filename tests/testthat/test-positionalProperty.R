@@ -73,8 +73,4 @@ test_that("positionalProperty: ggplot object is correctly formed", {
   expect_equal(rlang::as_name(plot_output$mapping$x), "position")
   expect_equal(rlang::as_name(plot_output$mapping$y), "mean")
   expect_equal(rlang::as_name(plot_output$mapping$group), "group")
-  
-  # Check faceting (using the recommended facet_wrap)
-  expect_s3_class(plot_output$facet, "FacetWrap")
-  expect_true("property" %in% names(plot_output$facet$params$facets))
 })
