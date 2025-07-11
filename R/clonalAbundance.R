@@ -69,7 +69,7 @@ clonalAbundance <- function(input.data,
   	col <- length(unique(Con.df[[group.by]]))
     fill <- group.by
     if(!is.null(order.by)) {
-        Con.df <- .ordering.function(vector = order.by,
+        Con.df <- .orderingFunction(vector = order.by,
                                      group.by = group.by, 
                                      data.frame =  Con.df)
     }

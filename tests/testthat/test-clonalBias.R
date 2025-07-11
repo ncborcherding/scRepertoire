@@ -1,8 +1,8 @@
 # test script for clonalBias.R - testcases are NOT comprehensive!
 
 # Data to use
-combined_real <- combineTCR(contig_list, samples = c("P17B", "P17L", "P18B", "P18L"))
-scRep_example <- suppressMessages(combineExpression(combined_real, scRep_example, cloneCall = "aa"))
+combined <- combineTCR(contig_list, samples = c("P17B", "P17L", "P18B", "P18L"))
+scRep_example <- suppressMessages(combineExpression(combined, scRep_example, cloneCall = "aa"))
 scRep_example$Patient <- substring(scRep_example$orig.ident, 1, 3)
 scRep_example$Type <- substring(scRep_example$orig.ident, 4, 4)
 
@@ -49,3 +49,4 @@ test_that("Plot structure is correct", {
   expect_equal(plot_obj$labels$fill, "Group")
   expect_equal(plot_obj$labels$size, "cloneSize")
 })
+

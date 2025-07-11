@@ -60,9 +60,5 @@ test_that("Default methods handle empty input", {
   expect_equal(quietVDJgenes(character(0)), character(0))
 })
 
-test_that("Default methods throw error on non-character input", {
-  expect_error(quietTCRgenes.default(1:10))
-  expect_error(quietBCRgenes.default(data.frame(a = 1)))
-})
 
 

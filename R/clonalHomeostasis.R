@@ -33,6 +33,7 @@
 #'
 #' @export
 #' @importFrom utils stack
+#' @importFrom stats reshape
 #' @concept Visualizing_Clones
 #' @return ggplot of the space occupied by the specific proportion of clones
 clonalHomeostasis <- function(input.data, 
@@ -95,7 +96,7 @@ clonalHomeostasis <- function(input.data,
     }
     
     col <- length(unique(mat_melt$category))
-    plot <- ggplot(mat_melt, aes(x=as.factor(Var1), y=value, fill=category)) +
+    plot <- ggplot(mat_melt, aes(x=as.factor(Var1), y=value, fill=.data[["category"]])) +
         geom_bar(stat = "identity", position="fill", 
                     color = "black", lwd= 0.25) +
         scale_fill_manual(values = .colorizer(palette,col)) +

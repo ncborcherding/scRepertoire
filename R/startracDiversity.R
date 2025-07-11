@@ -39,7 +39,7 @@
 #' @param group.by The variable in the meta data to group by, often samples.
 #' @param exportTable Returns the data frame used for forming the graph.
 #' @param palette Colors to use in visualization - input any [hcl.pals][grDevices::hcl.pals].
-#'
+#' @importFrom stats reshape
 #' @export
 #' @concept SC_Functions
 #' @return ggplot object of Startrac diversity metrics

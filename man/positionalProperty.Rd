@@ -78,7 +78,7 @@ combined <- combineTCR(contig_list,
                                     "P19B","P19L", "P20B", "P20L"))
 positionalProperty(combined, 
                    chain = "TRB",
-                   method = "Atchley", 
+                   method = "atchleyFactors", 
                    aa.length = 20)
 }
 \author{

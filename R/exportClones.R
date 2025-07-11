@@ -283,10 +283,6 @@ exportClones <- function(input.data,
 
 #' @noRd
 .immunarchExport <- function(input.data, group.by) {
-  # This function requires the dplyr package.
-  if (!requireNamespace("dplyr", quietly = TRUE)) {
-    stop("Package 'dplyr' is required for the 'immunarch' export format. Please install it.", call. = FALSE)
-  }
   
   df_list <- .dataWrangle(input.data, group.by, "CTgene", "both")
   meta <- data.frame(Sample = names(df_list))
@@ -294,13 +290,13 @@ exportClones <- function(input.data,
   data_out <- lapply(df_list, function(x) {
     # Summarize by clonotype (CTstrict)
     result <- x %>%
-      dplyr::group_by(CTstrict) %>%
+      dplyr::group_by(.data[["CTstrict"]]) %>%
       dplyr::summarise(
         Clones = dplyr::n(),
         barcode = paste(barcode, collapse = ";"),
-        CTaa = dplyr::first(CTaa),
-        CTnt = dplyr::first(CTnt),
-        CTgene = dplyr::first(CTgene),
+        CTaa = dplyr::first(.data[["CTaa"]]),
+        CTnt = dplyr::first(.data[["CTnt"]]),
+        CTgene = dplyr::first(.data[["CTgene"]]),
         .groups = 'drop'
       ) %>%
       dplyr::mutate(Proportion = Clones / sum(Clones))

@@ -8,7 +8,7 @@ citEntry(
  		      as.person("Kieu Diem Quynh Nguyen"),
 		      as.person("Zeweb Kelvin Tuong"),
 		      as.person("Nicholas Borcherding")),
-  journal = "PLOS Computational Biology"
+  journal = "PLOS Computational Biology",
   doi = "10.1371/journal.pcbi.1012760",
   year = "2025",
   textVersion = "Yang, Q. (2025) ScRepertoire 2: Enhanced and efficient toolkit for single-cell immune profiling. PLOS Computational Biology.")

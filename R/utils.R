@@ -126,8 +126,8 @@
 }
 
 .orderingFunction <- function(vector,
-                               group.by,
-                               data.frame) {
+                              group.by,
+                              data.frame) {
   if (length(vector) == 1 && vector == "alphanumeric") {
     unique_elements <- as.character(unique(data.frame[, group.by]))
     sorted_levels <- unique_elements[
@@ -198,6 +198,7 @@
   return(dat)
 }
 
+#' @importFrom stats na.omit ave
 .cloneCounter <- function(meta,
                            group.by,
                            cloneCall) {
@@ -304,7 +305,7 @@
 }
 
 #Get UMAP or other coordinates
-#' @importFrom SingleCellExperiment reducedDim
+#' @importFrom SingleCellExperiment reducedDim reducedDimNames
 #' @keywords internal
 .getCoord <- function(sc, reduction) { 
   if (is.null(reduction)) {
@@ -381,6 +382,7 @@
 
 #Removing barcodes with NA recovered
 #' @keywords internal
+#' @importFrom stats na.omit
 .removingNA <- function(final) {
     for(i in seq_along(final)) {
         final[[i]] <- na.omit(final[[i]])}
@@ -396,6 +398,7 @@
 }
 
 #Removing extra clones in barcodes with > 2 productive contigs
+#' @importFrom stats ave
 #' @keywords internal
 .filteringMulti <- function(x) {
   x <- as.data.frame(x)
@@ -552,6 +555,7 @@
 
 # Producing a data frame to visualize for lengthContig()
 #' @keywords internal
+#' @importFrom stats na.omit
 .lengthDF <- function(df, cloneCall, chain, group) {
   Con.df <- NULL
   names <- names(df)

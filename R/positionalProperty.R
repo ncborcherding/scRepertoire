@@ -38,7 +38,7 @@
 #'                                     "P19B","P19L", "P20B", "P20L"))
 #' positionalProperty(combined, 
 #'                    chain = "TRB",
-#'                    method = "Atchley", 
+#'                    method = "atchleyFactors", 
 #'                    aa.length = 20)
 
 #' @param input.data The product of [combineTCR()], 
@@ -54,7 +54,8 @@
 #' `"tScales"`, `"VHSE"`, `"zScales"`
 #' @param exportTable Returns the data frame used for forming the graph
 #' @param palette Colors to use in visualization - input any [hcl.pals][grDevices::hcl.pals]
-#' @importFrom stats qt
+#' @importFrom stats qt sd
+#' @importFrom utils getFromNamespace
 #' @export
 #' @concept Summarize_Repertoire
 #' @return ggplot of line graph of diversity by position
@@ -71,7 +72,7 @@ positionalProperty <- function(input.data,
   factors <- c("atchleyFactors", "crucianiProperties", "FASGAI", "kideraFactors", 
   "MSWHIM", "ProtFP", "stScales", "tScales", "VHSE", "zScales")
   if (!method %in% c(factors)) {
-    stop("Please select a compatible method:", paste0(factors, collapse = ", "))
+    stop("Please select a compatible method: ", paste0(factors, collapse = ", "))
   }
   
   amino.acids <- c("A", "R", "N", "D", "C", "Q", "E", "G", "H", "I", "L", "K", 

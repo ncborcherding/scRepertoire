@@ -10,35 +10,35 @@
 #'                                     "P19B","P19L", "P20B", "P20L"))
 #'                                     
 #' # Visualize single gene (TRBV) usage as a heatmap, grouped by sample
-#' percentGeneUsage(combined.TCR,
+#' percentGeneUsage(combined,
 #'                  genes = "TRBV",
 #'                  group.by = "sample",
 #'                  plot.type = "heatmap",
 #'                  summary.fun = "percent")
 #'
 #' # Visualize single gene (TRBV) usage as a barplot, grouped by sample
-#' percentGeneUsage(combined.TCR,
+#' percentGeneUsage(combined,
 #'                  genes = "TRBV",
 #'                  group.by = "sample",
 #'                  plot.type = "barplot",
 #'                  summary.fun = "count")
 #'
 #' # Visualize paired gene (TRBV-TRBJ) usage as a heatmap
-#' percentGeneUsage(combined.TCR,
+#' percentGeneUsage(combined,
 #'                  genes = c("TRBV", "TRBJ"),
 #'                  group.by = "sample",
 #'                  plot.type = "heatmap",
 #'                  summary.fun = "proportion")
 #'
 #' # Export the raw data table for single gene usage
-#' trbv_usage_table <- percentGeneUsage(combined.TCR,
+#' trbv_usage_table <- percentGeneUsage(combined,
 #'                                      genes = "TRBV",
 #'                                      group.by = "sample",
 #'                                      exportTable = TRUE,
 #'                                      summary.fun = "count")
 #'
 #' # Export the raw data table for paired gene usage
-#' trbv_trbj_usage_table <- percentGeneUsage(combined.TCR,
+#' trbv_trbj_usage_table <- percentGeneUsage(combined,
 #'                                           genes = c("TRBV", "TRBJ"),
 #'                                           group.by = "sample",
 #'                                           exportTable = TRUE,
@@ -205,7 +205,7 @@ percentGeneUsage <- function(input.data,
   
   if (length(genes) == 1) {
     if (plot.type == "barplot") {
-      plot <- ggplot(mat_melt, aes(x = Var1, y = Weight)) +
+      plot <- ggplot(mat_melt, aes(x = Var1, y = .data[["Weight"]])) +
         geom_bar(stat = "identity", color = "black", lwd = 0.25) +
         theme_classic() +
         labs(y = col.lab) + 
@@ -214,11 +214,11 @@ percentGeneUsage <- function(input.data,
               axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size=rel(0.8)))
       
       if (length(unique(mat_melt$Group)) > 1) {
-        plot <- plot + facet_grid(Group ~ .)
+        plot <- plot + facet_grid(.data[["Group"]] ~ .)
       }
       
     } else { 
-      plot <- ggplot(mat_melt, aes(y = Var1, x = Group, fill = Weight)) +
+      plot <- ggplot(mat_melt, aes(y = Var1, x = .data[["Group"]], fill = .data[["Weight"]])) +
         geom_tile(lwd = 0.1, color = "black") +
         scale_fill_gradientn(colors = .colorizer(palette, 21)) +
         labs(fill = col.lab) + 
@@ -227,7 +227,7 @@ percentGeneUsage <- function(input.data,
               axis.title = element_blank())
     }
   } else { # Paired genes (heatmap only)
-    plot <- ggplot(mat_melt, aes(y = Var1, x = Var2, fill = round(Weight, 2))) +
+    plot <- ggplot(mat_melt, aes(y = Var1, x = Var2, fill = round(.data[["Weight"]], 2))) +
       geom_tile(lwd = 0.1, color = "black") +
       scale_fill_gradientn(colors = .colorizer(palette, 21)) +
       labs(fill = col.lab) + 
@@ -242,16 +242,21 @@ percentGeneUsage <- function(input.data,
 }
 
 #' @rdname percentGeneUsage
+#' @param x.axis Gene segments to separate the x-axis, such as "TRAV", 
+#' "TRBD", "IGKJ".
+#' @param y.axis Variable to separate the y-axis, can be both categorical 
+#' or other gene gene segments, such as "TRAV", "TRBD", "IGKJ".
+#' @param plot The type of plot to return - heatmap or barplot. 
 #' @examples
 #' # Visualize paired gene (TRBV-TRBJ) usage as a heatmap
-#' vizGenes(combined.TCR,
+#' vizGenes(combined,
 #'          x.axis = "TRBV",
 #'          y.axis = "TRBJ",
 #'          group.by = "sample",
 #'          summary.fun = "count")
 #'
 #' # Visualize cross-chain gene pairing (TRBV-TRAV)
-#' vizGenes(combined.TCR,
+#' vizGenes(combined,
 #'          x.axis = "TRBV",
 #'          y.axis = "TRAV",
 #'          group.by = "sample",
@@ -298,17 +303,19 @@ vizGenes <- function(input.data,
 }
 
 #' @rdname percentGeneUsage
+#' @param chain "TRA", "TRB", "TRG", "TRG", "IGH", "IGL" description
+#' @param gene "Vgene", "Dgene" or "Jgene"
 #' @examples
 #' 
 #' # Quantify and visualize TRA V-gene usage as a heatmap
-#' percentGenes(combined.TCR,
+#' percentGenes(combined,
 #'              chain = "TRA",
 #'              gene = "Vgene",
 #'              group.by = "sample",
 #'              summary.fun = "percent")
 #'
 #' # Quantify TRA J-gene usage and export the table
-#' ighj_usage_table <- percentGenes(combined.TCR,
+#' ighj_usage_table <- percentGenes(combined,
 #'                                  chain = "TRA",
 #'                                  gene = "Jgene",
 #'                                  group.by = "sample",
@@ -355,21 +362,21 @@ percentGenes <- function(input.data,
 }
 
 #' @rdname percentGeneUsage
+#' @param chain "TRA", "TRB", "TRG", "TRG", "IGH", "IGL" description
 #' @examples
 
 #' # Quantify and visualize TRB V-J gene pairings as a heatmap
-#' percentVJ(combined.TCR,
+#' percentVJ(combined,
 #'           chain = "TRB",
 #'           group.by = "sample",
 #'           summary.fun = "percent")
 #'
 #' # 2. Quantify TRA V-J gene pairings and export the table
-#' trav_traj_table <- percentVJ(combined.TCR,
+#' trav_traj_table <- percentVJ(combined,
 #'                              chain = "TRA",
 #'                              group.by = "sample",
 #'                              exportTable = TRUE,
 #'                              summary.fun = "proportion")
-#' 
 #' @export
 percentVJ <- function(input.data,
                       chain = "TRB",

@@ -35,6 +35,7 @@ Imports:
     SeuratObject,
     SingleCellExperiment,
     SummarizedExperiment,
+    tidygraph,
     truncdist,
     VGAM,
     purrr,
@@ -50,7 +51,6 @@ Suggests:
     scater,
     Seurat,
     spelling,
-    tidygraph,
     testthat (>= 3.0.0)
 VignetteBuilder: knitr
 Config/testthat/edition: 3

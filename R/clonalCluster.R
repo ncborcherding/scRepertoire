@@ -79,6 +79,7 @@
 #' @importFrom SummarizedExperiment colData colData<-
 #' @importFrom S4Vectors DataFrame
 #' @importFrom Matrix sparseMatrix
+#' @importFrom stats reshape
 #' 
 #' @export
 #' @concept Visualizing_Clones

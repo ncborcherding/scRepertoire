@@ -44,6 +44,7 @@
 #' @param palette Colors to use in visualization - input any 
 #' [hcl.pals][grDevices::hcl.pals].
 #' @importFrom quantreg rqss
+#' @importFrom stats sd
 #' @export
 #' @concept SC_Functions
 #' @return ggplot scatter plot with clone bias
@@ -120,11 +121,11 @@ clonalBias <- function(sc.data,
                shape = 21, 
                stroke = 0.25) + 
     stat_quantile(data=df_shuffle, 
-                         quantiles = c(corrected_p), 
-                         method = "rqss", 
-                         lambda = 3, 
-                         color = "black", 
-                         lty = 2) + 
+                  quantiles = c(corrected_p), 
+                  method = "rqss", 
+                  lambda = 3, 
+                  color = "black", 
+                  lty = 2) + 
     #This is ridiculous way to get around the internal ggplot "style"-based warnings
     scale_size_continuous(breaks = as.vector(unique(bias$dotSize)), 
                           labels = as.vector(unique(bias$cloneSize))) + 
@@ -155,7 +156,7 @@ clonalBias <- function(sc.data,
       bg[[s]] <- table(expanded) / sum(table(expanded))
     }
   }
-  names(bg) <- names(df)
+  names(bg) <- names(df)[seq_len(length(bg))]
   return(bg)
 }
 

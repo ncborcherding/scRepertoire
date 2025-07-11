@@ -74,7 +74,7 @@ positionalEntropy <- function(input.data,
   }
     
   plot <- ggplot(mat_melt, aes(x=as.factor(Position), 
-                               y = entropy, 
+                               y = .data[["entropy"]], 
                                group= group, 
                                color = group)) +
           geom_line(stat = "identity") +

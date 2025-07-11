@@ -23,6 +23,7 @@
 #' @param exportTable Returns the data frame used for forming the graph.
 #' @param palette Colors to use in visualization - input any [hcl.pals][grDevices::hcl.pals].
 #' @importFrom immApex calculateFrequency
+#' @importFrom stats reshape
 #' @export
 #' @concept Summarize_Repertoire
 #' @return ggplot of stacked bar graphs of amino acid proportions
@@ -73,7 +74,7 @@ percentAA <- function(input.data,
   }
   
   # Plotting the result
-  plot <- ggplot(mat_melt, aes(x=as.factor(Position), y = Frequency, fill=AminoAcid)) +
+  plot <- ggplot(mat_melt, aes(x=as.factor(Position), y = .data[["Frequency"]], fill=.data[["AminoAcid"]])) +
     geom_bar(stat = "identity", position="fill", lwd= 0.25, color = "black") +
     scale_fill_manual(name = "Amino Acid", 
                       values = rev(.colorizer(palette,20))) +
