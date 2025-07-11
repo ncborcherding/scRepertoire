@@ -86,8 +86,8 @@ S2 <- read.csv("~/Documents/MyExperiment/Sample2/outs/barcode_results.csv")
 S3 <- read.csv("~/Documents/MyExperiment/Sample3/outs/barcode_results.csv")
 S4 <- read.csv("~/Documents/MyExperiment/Sample4/outs/barcode_results.csv")
 
-contig_list <- list(S1, S2, S3, S4)
-contig.list <- loadContigs(input = contig.output, 
+contig.list <- list(S1, S2, S3, S4)
+contig.list <- loadContigs(input = contig.list, 
                            format = "WAT3R")
 ```
 

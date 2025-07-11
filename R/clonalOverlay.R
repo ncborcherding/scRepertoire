@@ -30,6 +30,8 @@
 #' @param cutpoint The overlay cut point to include, this corresponds to the 
 #' cut.category variable in the meta data of the single-cell object.
 #' @param bins The number of contours to the overlay
+#' @param pt.size The point size for plotting (default is 0.5)
+#' @param pt.alpha The alpha value for plotting (default is 1)
 #' @param facet.by meta data variable to facet the comparison
 #'
 #' @importFrom SeuratObject Embeddings
@@ -44,6 +46,8 @@ clonalOverlay <- function(sc.data,
                           cut.category = "clonalFrequency",
                           cutpoint = 30, 
                           bins = 25, 
+                          pt.size = 0.5,
+                          pt.alpha = 1,
                           facet.by = NULL) {
   .checkSingleObject(sc.data)
 
@@ -70,7 +74,8 @@ clonalOverlay <- function(sc.data,
     geom_point(tmp, mapping = aes(x = as.numeric(tmp[,(ncol(tmp)-2)]), 
                                   y = as.numeric(tmp[,(ncol(tmp)-1)]), 
                                   color = tmp[,"ident"]), 
-               size= 0.5) +
+               size = pt.size,
+               alpha = pt.alpha) +
     geom_density_2d(color = "black", lwd=0.25, bins = bins) + 
     theme_classic() +
     labs(color = "Active Identity") +

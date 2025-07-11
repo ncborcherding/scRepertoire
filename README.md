@@ -23,9 +23,10 @@ scRepertoire has a comprehensive [website](https://www.borch.dev/uploads/screper
 ## Installation
 
 ### Installation of Master Branch
+[immApex](https://github.com/BorchLab/immApex) is now required for the underlying processes of scRepertoire make sure if not using bioconductor, to call both during installation.
 
 ```R
-devtools::install_github("BorchLab/scRepertoire")
+remotes::install_github(c("BorchLab/immApex", "BorchLab/scRepertoire"))
 ```
 
 ### Installing from Bioconductor
