@@ -67,6 +67,7 @@ getCirclize <- function(sc.data,
   
   #Count clones across all identities
   clone.table <- .cloneCounter(meta, group.by, cloneCall)
+  clone.table[[cloneCall]] <- as.character(clone.table[[cloneCall]])
   
   group_pairs$value <- NA
   
@@ -74,8 +75,8 @@ getCirclize <- function(sc.data,
     pair1 <- group_pairs[i,1]
     pair2 <- group_pairs[i,2]
     
-    clone1 <- clone.table[clone.table[,1] == pair1, cloneCall]
-    clone2 <- clone.table[clone.table[,1] == pair2, cloneCall]
+    clone1 <- clone.table[clone.table[,1] == pair1 & clone.table[["n"]] > 0,][[cloneCall]]
+    clone2 <- clone.table[clone.table[,1] == pair2 & clone.table[["n"]] > 0,][[cloneCall]]
     
     common <- intersect(clone1, clone2)
     value <- length(common)

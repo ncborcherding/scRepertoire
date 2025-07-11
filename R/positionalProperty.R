@@ -40,7 +40,7 @@
 #'                    chain = "TRB",
 #'                    method = "atchleyFactors", 
 #'                    aa.length = 20)
-
+#'                    
 #' @param input.data The product of [combineTCR()], 
 #' [combineBCR()], or [combineExpression()]
 #' @param chain "TRA", "TRB", "TRG", "TRG", "IGH", "IGL"
@@ -172,9 +172,8 @@ positionalProperty <- function(input.data,
     scale_color_manual(name = "Group", values = .colorizer(palette, length(unique(mat$group)))) +
     scale_fill_manual(name = "Group", values = .colorizer(palette, length(unique(mat$group)))) +
     labs(x = "Amino Acid Position", y = "Mean Property Value") +
+    facet_grid(property~., scales = "free_y") +
     theme_classic() +
-    # This is a more robust faceting strategy
-    facet_wrap(~ property, scales = "free_y", ncol = 1) +
     theme(
       axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
       strip.background = element_rect(fill="lightgrey", color = "grey"),

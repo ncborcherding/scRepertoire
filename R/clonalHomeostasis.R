@@ -99,7 +99,7 @@ clonalHomeostasis <- function(input.data,
     plot <- ggplot(mat_melt, aes(x=as.factor(Var1), y=value, fill=.data[["category"]])) +
         geom_bar(stat = "identity", position="fill", 
                     color = "black", lwd= 0.25) +
-        scale_fill_manual(values = .colorizer(palette,col)) +
+        scale_fill_manual(values = rev(.colorizer(palette,col))) +
         labs(x = "Samples", 
              y = "Relative Abundance", 
              fill = "Clonal Group") +

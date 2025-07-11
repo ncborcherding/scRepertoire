@@ -79,6 +79,8 @@ clonalProportion <- function(input.data,
       Var2 = rep(colnames(mat), each = nrow(mat)),
       value = as.vector(mat)
     )
+    mat_melt[["Var2"]] <- factor(mat_melt[["Var2"]], 
+                                 levels = colnames(mat))
     
     if(!is.null(order.by)) {
       mat_melt <- .orderingFunction(vector = order.by,

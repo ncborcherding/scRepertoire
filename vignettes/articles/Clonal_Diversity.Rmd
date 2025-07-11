@@ -110,7 +110,7 @@ clonalDiversity(combined.TCR,
 ```
 
 
-## clonaRarefaction
+## clonalRarefaction
 
 We can also use Hill numbers to estimate the rarefaction, or estimating species richness, using the the abundance of clones across groupings. Underlying the rarefaction calculation is the use of observed receptor of **abundance** to compute diversity. 
 
