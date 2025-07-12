@@ -15,8 +15,9 @@ scRepertoire is compatible and integrated with the R packages [Trex](https://git
 ## Installation
 
 #### Installation of Master Branch
-```
-devtools::install_github("ncborcherding/scRepertoire")
+[immApex](https://github.com/BorchLab/immApex) is now required for the underlying processes of scRepertoire make sure if not using bioconductor, to call both during installation.
+```R
+remotes::install_github(c("BorchLab/immApex", "BorchLab/scRepertoire"))
 ```
 
 ### Installing from Bioconductor
