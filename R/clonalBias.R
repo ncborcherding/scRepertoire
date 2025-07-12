@@ -119,8 +119,8 @@ clonalBias <- function(sc.data,
   bias$dotSize <- as.numeric(bias$cloneSize)
   
   #else, return the plot 
-  ggplot(bias, aes(x=ncells,y=bias)) + 
-    geom_point(aes(fill=Top_state, size = dotSize), 
+  ggplot(bias, aes(x=.data[["ncells"]],y=bias)) + 
+    geom_point(aes(fill=.data[["Top_state"]], size = .data[["dotSize"]]), 
                shape = 21, 
                stroke = 0.25) + 
     stat_quantile(data=df_shuffle, 

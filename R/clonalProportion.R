@@ -90,7 +90,7 @@ clonalProportion <- function(input.data,
                                     data.frame = mat_melt)
     }
     col <- length(unique(mat_melt$Var2))
-    plot <- ggplot(mat_melt, aes(x=as.factor(Var1), y=value, fill=Var2)) +
+    plot <- ggplot(mat_melt, aes(x=as.factor(.data[["Var1"]]), y=.data[["value"]], fill=.data[["Var2"]])) +
         geom_bar(stat = "identity", position="fill", 
                     color = "black", lwd= 0.25) +
         scale_fill_manual(values = rev(.colorizer(palette,col))) +

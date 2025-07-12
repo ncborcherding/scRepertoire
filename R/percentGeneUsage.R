@@ -207,7 +207,7 @@ percentGeneUsage <- function(input.data,
   
   if (length(genes) == 1) {
     if (plot.type == "barplot") {
-      plot <- ggplot(mat_melt, aes(x = Var1, y = .data[["Weight"]])) +
+      plot <- ggplot(mat_melt, aes(x = .data[["Var1"]], y = .data[["Weight"]])) +
         geom_bar(stat = "identity", color = "black", lwd = 0.25) +
         .themeRepertoire(...) + 
         labs(y = col.lab) + 
@@ -220,7 +220,7 @@ percentGeneUsage <- function(input.data,
       }
       
     } else { 
-      plot <- ggplot(mat_melt, aes(y = Var1, x = .data[["Group"]], fill = .data[["Weight"]])) +
+      plot <- ggplot(mat_melt, aes(y = .data[["Var1"]], x = .data[["Group"]], fill = .data[["Weight"]])) +
         geom_tile(lwd = 0.1, color = "black") +
         scale_fill_gradientn(colors = .colorizer(palette, 21)) +
         labs(fill = col.lab) + 
@@ -229,7 +229,7 @@ percentGeneUsage <- function(input.data,
               axis.title = element_blank())
     }
   } else { # Paired genes (heatmap only)
-    plot <- ggplot(mat_melt, aes(y = Var1, x = Var2, fill = round(.data[["Weight"]], 2))) +
+    plot <- ggplot(mat_melt, aes(y = .data[["Var1"]], x = .data[["Var2"]], fill = round(.data[["Weight"]], 2))) +
       geom_tile(lwd = 0.1, color = "black") +
       scale_fill_gradientn(colors = .colorizer(palette, 21)) +
       labs(fill = col.lab) + 

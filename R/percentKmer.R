@@ -122,7 +122,7 @@ percentKmer <- function(input.data,
   }
   
   #Plotting
-  plot <- ggplot(mat_melt, aes(x=Var2, y = Var1, fill=value)) +
+  plot <- ggplot(mat_melt, aes(x=.data[["Var2"]], y = .data[["Var1"]], fill=.data[["value"]])) +
             geom_tile(lwd = 0.1, color = "black") + 
             scale_fill_gradientn(name = "Proportion", colors = .colorizer(palette,21)) +
             .themeRepertoire(...) + 

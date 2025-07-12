@@ -137,7 +137,7 @@ clonalOverlap <- function(input.data,
     
     mean_value <- mean(na.omit(mat_melt[,"value"]))
     
-    plot <- ggplot(mat_melt, aes(x=Var1, y=Var2, fill=value)) +
+    plot <- ggplot(mat_melt, aes(x=.data[["Var1"]], y=.data[["Var2"]], fill=.data[["value"]])) +
                 geom_tile() + 
                 geom_tile(data = mat_melt[!is.na(mat_melt[,"value"]),], 
                           fill = NA, 

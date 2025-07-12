@@ -113,7 +113,7 @@ StartracDiversity <- function(sc.data,
     mat_melt$value <- as.numeric(mat_melt$value)
     col <- length(unique(mat_melt[,"majorCluster"]))
         
-    plot <- ggplot(mat_melt, aes(x=majorCluster, y=value)) +
+    plot <- ggplot(mat_melt, aes(x=majorCluster, y=.data[["value"]])) +
                 geom_boxplot(aes(fill = majorCluster), outlier.alpha = 0, na.rm = TRUE) +
                 facet_grid(variable ~.) +
                 .themeRepertoire(...) + 

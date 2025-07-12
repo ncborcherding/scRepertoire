@@ -146,6 +146,7 @@ clonalSizeDistribution <- function(input.data,
 #This is to reduce dependency footprint of scRepertoire
 #and ensure compatibility going forward.
 #' @importFrom evmix fgpd
+#' @importFrom methods is
 .fdiscgammagpd <- function(x, useq, shift = NULL, pvector=NULL,
                           std.err = TRUE, method = "Nelder-Mead", ...){
   if(!is(x, "numeric")){
@@ -268,7 +269,7 @@ clonalSizeDistribution <- function(input.data,
 ## Density, distribution, and quantile functions, random number generation
 ## for discrete truncated gamma and discrete gpd
 ##-----------------------------------------------------------------------------
-
+#' @importFrom methods is
 .ddiscgamma <- function(x, shape, rate, thresh, phiu, shift = 0, log = FALSE){
   if(any(x != floor(x))){
     stop("x must be an integer")
@@ -370,6 +371,7 @@ pdiscgpd <- function(q, thresh, sigma, xi, phiu){
   opt
 }
 
+#' @importFrom methods is
 .get_distances <- function(fits, grid, modelType = "Spliced"){
   if(!is(grid, "numeric")){
     stop("grid must be numeric.")
@@ -453,6 +455,7 @@ pdiscgpd <- function(q, thresh, sigma, xi, phiu){
 }
 
 #' @importFrom evmix dgpd
+#' @importFrom methods is
 .JS_spliced <- function(grid, shiftp, shiftq, phip, phiq, shapep, shapeq, ratep,
                        rateq, threshp, threshq, sigmap, sigmaq, xip, xiq){
   if(!is(grid, "numeric")){
@@ -542,6 +545,7 @@ pdiscgpd <- function(q, thresh, sigma, xi, phiu){
 
 
 #' @importFrom cubature adaptIntegrate
+#' @importFrom methods is
 .JS_desponds <- function(grid, Cminp, Cminq, alphap, alphaq){
   if(!is(grid, "numeric")){
     stop("grid must be numeric.")

@@ -147,7 +147,7 @@ clonalCompare <- function(input.data,
   }
 
   #Plotting Functions
-  plot <- ggplot(Con.df, aes(x = Sample,
+  plot <- ggplot(Con.df, aes(x = .data[["Sample"]],
                              fill = clones,
                              group = clones,
                              stratum = clones,

@@ -187,7 +187,7 @@ clonalDiversity <- function(input.data,
   
   # Plotting 
   metric.name <- gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", metric, perl=TRUE)
-  plot <- ggplot(output_df, aes(x = .data[[x.axis]], y = as.numeric(value))) +
+  plot <- ggplot(output_df, aes(x = .data[[x.axis]], y = as.numeric(.data[["value"]]))) +
     geom_boxplot(outlier.alpha = 0) +
     geom_jitter(aes(fill = .data[[group.by %||% "Group"]]),
                 size = 3,
