@@ -12,7 +12,8 @@ clonalOverlay(
   bins = 25,
   pt.size = 0.5,
   pt.alpha = 1,
-  facet.by = NULL
+  facet.by = NULL,
+  ...
 )
 }
 \arguments{
@@ -33,6 +34,8 @@ cut.category variable in the meta data of the single-cell object.}
 \item{pt.alpha}{The alpha value for plotting (default is 1)}
 
 \item{facet.by}{meta data variable to facet the comparison}
+
+\item{...}{Additional arguments passed to the ggplot theme}
 }
 \value{
 ggplot object

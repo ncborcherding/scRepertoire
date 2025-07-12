@@ -56,6 +56,8 @@
 #' @param exportTable Returns the data frame used for forming the graph
 #' @param palette Colors to use in visualization - input any 
 #' [hcl.pals][grDevices::hcl.pals]
+#' @param ... Additional arguments passed to the ggplot theme
+#' 
 #' @importFrom stats quantile
 #' @export
 #' @concept Visualizing_Clones
@@ -67,7 +69,8 @@ clonalOverlap <- function(input.data,
                           group.by = NULL,
                           order.by = NULL,
                           exportTable = FALSE,
-                          palette = "inferno"){
+                          palette = "inferno",
+                          ...){
     method <- match.arg(method)
     if(method == "morisita") {
       return_type <- "freq"
@@ -147,7 +150,7 @@ clonalOverlap <- function(input.data,
                           na.rm = TRUE) +
                 scale_fill_gradientn(colors = .colorizer(palette, 7), na.value = "white") +
                 scale_color_identity() +
-                theme_classic() + 
+                .themeRepertoire() + 
                 theme(axis.title = element_blank())
     return(plot) 
 }

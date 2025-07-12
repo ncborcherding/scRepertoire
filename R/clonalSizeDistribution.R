@@ -50,6 +50,7 @@
 #' @param exportTable Returns the data frame used for forming the graph.
 #' @param palette Colors to use in visualization - input any
 #' [hcl.pals][grDevices::hcl.pals].
+#' @param ... Additional arguments passed to the ggplot theme
 #'
 #' @importFrom ggdendro dendro_data segment label
 #' @importFrom stats hclust optim pgamma as.dist
@@ -65,7 +66,8 @@ clonalSizeDistribution <- function(input.data,
                                    threshold = 1, 
                                    group.by = NULL,
                                    exportTable = FALSE, 
-                                   palette = "inferno") {
+                                   palette = "inferno",
+                                   ...) {
   x <- xend <- yend <- mpg_div_hp <- NULL
   input.data <- .dataWrangle(input.data, 
                              group.by, 
@@ -126,7 +128,7 @@ clonalSizeDistribution <- function(input.data,
             coord_flip() +
             scale_y_reverse(expand = c(0.2, 0)) + 
             scale_color_manual(values = .colorizer(palette, nrow(label(mat_melt)))) + 
-            theme_classic() + 
+            .themeRepertoire(...) + 
             guides(color = "none") + 
             theme(axis.title = element_blank(), 
                   axis.ticks.y = element_blank(), 

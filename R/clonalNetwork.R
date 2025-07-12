@@ -50,6 +50,8 @@
 #' of clone copies.
 #' @param palette Colors to use in visualization - input any
 #' [hcl.pals][grDevices::hcl.pals].
+#' @param ... Additional arguments passed to the ggplot theme
+#' 
 #' @importFrom igraph graph_from_data_frame V `V<-`
 #' @importFrom dplyr summarize_all count across all_of desc
 #' @importFrom tidygraph as_tbl_graph activate
@@ -70,7 +72,8 @@ clonalNetwork <- function(sc.data,
                           chain = "both", 
                           exportClones = FALSE,
                           exportTable = FALSE,
-                          palette = "inferno") {
+                          palette = "inferno",
+                          ...) {
     to <- from <- weight <- y <- NULL
     meta <- .grabMeta(sc.data)
     cloneCall <- .theCall(meta, cloneCall)
@@ -225,6 +228,7 @@ clonalNetwork <- function(sc.data,
                   scale_edge_colour_gradientn(colors  = .colorizer(palette,13), trans = "log10") + 
                   labs(size = "Unique Clones", 
                        edge_color = "Relative Proportion of \nClones of Starting Node") + 
+                  .themeRepertoire(...) + 
                   theme(
                       panel.background = element_blank(),
                       panel.border = element_blank(), 

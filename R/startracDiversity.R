@@ -39,6 +39,7 @@
 #' @param group.by The variable in the meta data to group by, often samples.
 #' @param exportTable Returns the data frame used for forming the graph.
 #' @param palette Colors to use in visualization - input any [hcl.pals][grDevices::hcl.pals].
+#' @param ... Additional arguments passed to the ggplot theme
 #' @importFrom stats reshape
 #' @export
 #' @concept SC_Functions
@@ -50,7 +51,8 @@ StartracDiversity <- function(sc.data,
                               type = NULL,
                               group.by = NULL, 
                               exportTable = FALSE, 
-                              palette = "inferno") {
+                              palette = "inferno",
+                              ...) {
     majorCluster <- NULL
     df <- .grabMeta(sc.data)
     cloneCall <- .theCall(df, cloneCall)
@@ -114,7 +116,7 @@ StartracDiversity <- function(sc.data,
     plot <- ggplot(mat_melt, aes(x=majorCluster, y=value)) +
                 geom_boxplot(aes(fill = majorCluster), outlier.alpha = 0, na.rm = TRUE) +
                 facet_grid(variable ~.) +
-                theme_classic() +
+                .themeRepertoire(...) + 
                 ylab("Index Score") +
                 guides(fill="none") +
                 scale_fill_manual(values = .colorizer(palette, col)) +

@@ -12,7 +12,8 @@ positionalProperty(
   aa.length = 20,
   method = "atchleyFactors",
   exportTable = FALSE,
-  palette = "inferno"
+  palette = "inferno",
+  ...
 )
 }
 \arguments{
@@ -36,6 +37,8 @@ Defaults to \code{"atchleyFactors"}, but includes: \code{"crucianiProperties"},
 \item{exportTable}{Returns the data frame used for forming the graph}
 
 \item{palette}{Colors to use in visualization - input any \link[grDevices:palettes]{hcl.pals}}
+
+\item{...}{Additional arguments passed to the ggplot theme}
 }
 \value{
 ggplot of line graph of diversity by position
@@ -80,6 +83,7 @@ positionalProperty(combined,
                    chain = "TRB",
                    method = "atchleyFactors", 
                    aa.length = 20)
+                   
 }
 \author{
 Florian Bach, Nick Borcherding

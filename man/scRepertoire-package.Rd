@@ -23,14 +23,11 @@ Authors:
 \itemize{
   \item Qile Yang \email{qile.yang@berkeley.edu}
   \item Ksenia Safina \email{safina@broadinstitute.org}
-  \item Nicholas Bormann \email{bormann.nicholas@mayo.edu}
-  \item Gloria Kraus \email{gloria.kraus@tu-dresden.de}
 }
 
 Other contributors:
 \itemize{
   \item Justin Reimertz \email{justin.reimertz@childrens.harvard.edu} [contributor]
-  \item Michael Heming \email{michaeloleg.heming@ukmuenster.de} [contributor]
 }
 
 }

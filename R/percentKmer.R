@@ -36,6 +36,7 @@
 #' @param exportTable Returns the data frame used for forming the graph.
 #' @param palette Colors to use in visualization - input any 
 #' [hcl.pals][grDevices::hcl.pals]
+#' @param ... Additional arguments passed to the ggplot theme
 #' 
 #' @importFrom stats mad
 #' @importFrom immApex calculateMotif
@@ -55,7 +56,8 @@ percentKmer <- function(input.data,
                         min.depth = 3,
                         top.motifs = 30,
                         exportTable = FALSE, 
-                        palette = "inferno") {
+                        palette = "inferno",
+                        ...) {
   
   if(!cloneCall %in% c("aa", "nt")) {
     stop("Please select either nucleotide (nt) or amino acid (aa) sequences for cloneCall")
@@ -123,7 +125,7 @@ percentKmer <- function(input.data,
   plot <- ggplot(mat_melt, aes(x=Var2, y = Var1, fill=value)) +
             geom_tile(lwd = 0.1, color = "black") + 
             scale_fill_gradientn(name = "Proportion", colors = .colorizer(palette,21)) +
-            theme_classic() + 
+            .themeRepertoire(...) + 
             coord_flip() + 
             theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
                   axis.title = element_blank())

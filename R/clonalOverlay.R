@@ -33,6 +33,7 @@
 #' @param pt.size The point size for plotting (default is 0.5)
 #' @param pt.alpha The alpha value for plotting (default is 1)
 #' @param facet.by meta data variable to facet the comparison
+#' @param ... Additional arguments passed to the ggplot theme
 #'
 #' @importFrom SeuratObject Embeddings
 #' @export
@@ -48,7 +49,8 @@ clonalOverlay <- function(sc.data,
                           bins = 25, 
                           pt.size = 0.5,
                           pt.alpha = 1,
-                          facet.by = NULL) {
+                          facet.by = NULL,
+                          ...) {
   .checkSingleObject(sc.data)
 
   #Forming the data frame to plot
@@ -77,7 +79,7 @@ clonalOverlay <- function(sc.data,
                size = pt.size,
                alpha = pt.alpha) +
     geom_density_2d(color = "black", lwd=0.25, bins = bins) + 
-    theme_classic() +
+    .themeRepertoire() + 
     labs(color = "Active Identity") +
     xlab("Dimension 1") + 
     ylab("Dimension 2")

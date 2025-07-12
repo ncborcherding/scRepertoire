@@ -30,6 +30,7 @@
 #' environment in addition to the visualization
 #' @param palette Colors to use in visualization - input any 
 #' [hcl.pals][grDevices::hcl.pals]
+#' @param ... Additional arguments passed to the ggplot theme
 #'
 #' @export
 #' @concept Visualizing_Clones
@@ -41,7 +42,8 @@ clonalProportion <- function(input.data,
                              group.by = NULL,
                              order.by = NULL,
                              exportTable = FALSE, 
-                             palette = "inferno") {
+                             palette = "inferno",
+                             ...) {
     Con.df <- NULL
     input.data <- .dataWrangle(input.data, 
                                group.by, 
@@ -95,6 +97,6 @@ clonalProportion <- function(input.data,
         labs(x = "Samples",
              y = "Occupied Repertoire Space", 
              fill = "Clonal Indices") +
-        theme_classic()
+      .themeRepertoire(...)
     return(plot)
 }

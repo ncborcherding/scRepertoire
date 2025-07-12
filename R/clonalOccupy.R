@@ -35,6 +35,8 @@
 #' environment in addition to the visualization
 #' @param palette Colors to use in visualization - input any 
 #' [hcl.pals][grDevices::hcl.pals]
+#' @param ... Additional arguments passed to the ggplot theme
+#' 
 #' @importFrom dplyr count
 #' @export
 #' @concept SC_Functions
@@ -48,7 +50,8 @@ clonalOccupy <- function(sc.data,
                          proportion = FALSE, 
                          na.include = FALSE,
                          exportTable = FALSE, 
-                         palette = "inferno") {
+                         palette = "inferno",
+                         ...) {
   .checkSingleObject(sc.data)
   meta <- .grabMeta(sc.data)
   
@@ -105,7 +108,7 @@ clonalOccupy <- function(sc.data,
             theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
             scale_fill_manual(values = rev(c(.colorizer(palette,col)))) + 
             ylab(lab) + 
-            theme_classic() + 
+            .themeRepertoire(...) + 
             theme(axis.title.x = element_blank())
   if (!is.null(facet.by)) {
     plot <- plot + 

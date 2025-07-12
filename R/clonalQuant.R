@@ -28,6 +28,8 @@
 #' @param exportTable Returns the data frame used for forming the graph
 #' @param palette Colors to use in visualization - input any 
 #' [hcl.pals][grDevices::hcl.pals]
+#' @param ... Additional arguments passed to the ggplot theme
+#' 
 #' @export
 #' @concept Visualizing_Clones
 #' @return ggplot of the total or relative unique clones
@@ -38,7 +40,8 @@ clonalQuant <- function(input.data,
                         group.by = NULL,
                         order.by = NULL,
                         exportTable = FALSE, 
-                        palette = "inferno") {
+                        palette = "inferno",
+                        ...) {
   
   if (length(group.by) > 1) { 
     stop("Only one item in the group.by variable can be listed.")
@@ -116,7 +119,8 @@ clonalQuant <- function(input.data,
               labs(fill = labs) +
               ylab(ylab) +
               stat_summary(fun=mean, geom="bar", color="black", lwd=0.25)+
-              theme_classic() + xlab("Samples") + 
+              .themeRepertoire(...) + 
+              xlab("Samples") + 
               scale_fill_manual(values = .colorizer(palette, col))
   
   # if it is a single run, remove x axis labels if sample name missing

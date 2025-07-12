@@ -14,7 +14,8 @@ clonalScatter(
   group.by = NULL,
   graph = "proportion",
   exportTable = FALSE,
-  palette = "inferno"
+  palette = "inferno",
+  ...
 )
 }
 \arguments{
@@ -44,6 +45,8 @@ use for size of dots.}
 
 \item{palette}{Colors to use in visualization - input any
 \link[grDevices:palettes]{hcl.pals}.}
+
+\item{...}{Additional arguments passed to the ggplot theme}
 }
 \value{
 ggplot of the relative clone numbers between two sequencing runs or groups
