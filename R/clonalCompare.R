@@ -47,6 +47,8 @@
 #' @param exportTable Returns the data frame used for forming the graph
 #' @param palette Colors to use in visualization - input any
 #' \link[grDevices]{hcl.pals}
+#' @param ... Additional arguments passed to the ggplot theme
+#' 
 #' @export
 #' @importFrom dplyr slice_max
 #' @concept Visualizing_Clones
@@ -65,7 +67,8 @@ clonalCompare <- function(input.data,
                           graph = "alluvial",
                           proportion = TRUE,
                           exportTable = FALSE,
-                          palette = "inferno") {
+                          palette = "inferno",
+                          ...) {
 
   #Tie goes to indicated clones over top clones
   if(!is.null(top.clones) && !is.null(clones)) {
@@ -151,7 +154,7 @@ clonalCompare <- function(input.data,
                              alluvium = clones,
                              y = !!sym(compareColname),
                              label = clones)) +
-    theme_classic() +
+    .themeRepertoire(...) +
     theme(axis.title.x = element_blank(),
           legend.text=element_text(size=rel(0.5)),
           legend.key.size = unit(0.5,"line"))

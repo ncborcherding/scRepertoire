@@ -61,6 +61,7 @@
 #' for forming the graph instead of the plot.
 #' @param palette Colors to use in visualization - input any
 #' [hcl.pals][grDevices::hcl.pals].
+#' @param ... Additional arguments passed to the ggplot theme
 #'
 #' @importFrom immApex calculateGeneUsage getIR
 #' @importFrom graphics plot
@@ -83,7 +84,8 @@ percentGeneUsage <- function(input.data,
                              summary.fun = c("percent", "proportion", "count"),
                              plot.type = "heatmap", 
                              exportTable = FALSE,
-                             palette = "inferno") {
+                             palette = "inferno",
+                             ...) {
   
   sco <- .is.seurat.or.se.object(input.data)
   
@@ -207,7 +209,7 @@ percentGeneUsage <- function(input.data,
     if (plot.type == "barplot") {
       plot <- ggplot(mat_melt, aes(x = Var1, y = .data[["Weight"]])) +
         geom_bar(stat = "identity", color = "black", lwd = 0.25) +
-        theme_classic() +
+        .themeRepertoire(...) + 
         labs(y = col.lab) + 
         theme(axis.title.x = element_blank(),,
               axis.ticks.x = element_blank(),
@@ -222,7 +224,7 @@ percentGeneUsage <- function(input.data,
         geom_tile(lwd = 0.1, color = "black") +
         scale_fill_gradientn(colors = .colorizer(palette, 21)) +
         labs(fill = col.lab) + 
-        theme_classic() +
+        .themeRepertoire(...)
         theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
               axis.title = element_blank())
     }
@@ -231,7 +233,7 @@ percentGeneUsage <- function(input.data,
       geom_tile(lwd = 0.1, color = "black") +
       scale_fill_gradientn(colors = .colorizer(palette, 21)) +
       labs(fill = col.lab) + 
-      theme_classic() +
+      .themeRepertoire(...) + 
       theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
             axis.title = element_blank())
     if (length(unique(mat_melt$Group)) > 1) {

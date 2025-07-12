@@ -30,6 +30,7 @@
 #' environment in addition to the visualization.
 #' @param palette Colors to use in visualization - input any 
 #' [hcl.pals][grDevices::hcl.pals].
+#' @param ... Additional arguments passed to the ggplot theme
 #'
 #' @export
 #' @importFrom utils stack
@@ -43,7 +44,8 @@ clonalHomeostasis <- function(input.data,
                               group.by = NULL,
                               order.by = NULL,
                               exportTable = FALSE, 
-                              palette = "inferno") {
+                              palette = "inferno",
+                              ...) {
     cloneSize <- c(None = 0, cloneSize)
     input.data <- .dataWrangle(input.data, 
                                group.by, 
@@ -103,6 +105,6 @@ clonalHomeostasis <- function(input.data,
         labs(x = "Samples", 
              y = "Relative Abundance", 
              fill = "Clonal Group") +
-        theme_classic()
+        .themeRepertoire(...)
     return(plot)
 }

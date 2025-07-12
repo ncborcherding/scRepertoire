@@ -32,6 +32,7 @@
 #' @param exportTable Returns the data frame used for forming the graph.
 #' @param palette Colors to use in visualization - input any 
 #' [hcl.pals][grDevices::hcl.pals].
+#' @param ... Additional arguments passed to the ggplot theme
 #'
 #' @export
 #' @concept Visualizing_Clones
@@ -46,7 +47,8 @@ clonalScatter <- function(input.data,
                           group.by = NULL,
                           graph = "proportion", 
                           exportTable = FALSE,
-                          palette = "inferno") {
+                          palette = "inferno",
+                          ...) {
   sco <- .is.seurat.or.se.object(input.data)
   input.data <- .dataWrangle(input.data, 
                              group.by, 
@@ -124,7 +126,7 @@ clonalScatter <- function(input.data,
   }
   
   plot <- ggplot(mat, aes(x=x, y = y, fill = class)) + 
-                theme_classic() + 
+                .themeRepertoire(...) + 
                 scale_fill_manual(values = .colorizer(palette,length(unique(mat$class)))) + 
                 xlab(x.axis) + 
                 ylab(y.axis) + 

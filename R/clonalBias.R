@@ -43,6 +43,8 @@
 #' @param exportTable Returns the data frame used for forming the graph.
 #' @param palette Colors to use in visualization - input any 
 #' [hcl.pals][grDevices::hcl.pals].
+#' @param ... Additional arguments passed to the ggplot theme
+#' 
 #' @importFrom quantreg rqss
 #' @importFrom stats sd
 #' @export
@@ -55,7 +57,8 @@ clonalBias <- function(sc.data,
                        n.boots = 20,
                        min.expand=10,
                        exportTable = FALSE, 
-                       palette = "inferno") {
+                       palette = "inferno",
+                       ...) {
   .checkSingleObject(sc.data)
   cloneCall <- .theCall(.grabMeta(sc.data), cloneCall)
   #Calculating bias
@@ -130,7 +133,7 @@ clonalBias <- function(sc.data,
     scale_size_continuous(breaks = as.vector(unique(bias$dotSize)), 
                           labels = as.vector(unique(bias$cloneSize))) + 
     scale_fill_manual(values = .colorizer(palette,  length(unique(bias[,"Top_state"])))) + 
-    theme_classic() +
+    .themeRepertoire(...) + 
     labs(size = "cloneSize", fill = "Group") + 
     xlab("Clonal Size") +
     ylab("Clonal Bias")

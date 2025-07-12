@@ -16,7 +16,8 @@ percentGeneUsage(
   summary.fun = c("percent", "proportion", "count"),
   plot.type = "heatmap",
   exportTable = FALSE,
-  palette = "inferno"
+  palette = "inferno",
+  ...
 )
 
 vizGenes(
@@ -78,6 +79,8 @@ for forming the graph instead of the plot.}
 
 \item{palette}{Colors to use in visualization - input any
 \link[grDevices:palettes]{hcl.pals}.}
+
+\item{...}{Additional arguments passed to the ggplot theme}
 
 \item{x.axis}{Gene segments to separate the x-axis, such as "TRAV",
 "TRBD", "IGKJ".}

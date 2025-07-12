@@ -79,17 +79,38 @@ For all visualizations in scRepertoire, there are 2 ways to adjust the color sch
 * Add a ggplot layer with a new color scheme.  
 
 ```{r tidy = FALSE}
+# Internal Palette Selection
 clonalQuant(combined.TCR, 
             cloneCall="strict", 
             chain = "both", 
             scale = TRUE, 
             palette = "Zissou 1")
 
+# Using gg System
 clonalQuant(combined.TCR, 
             cloneCall="strict", 
             chain = "both", 
             scale = TRUE) + 
   scale_fill_manual(values = hcl.colors(8,"geyser"))
+```
+
+### Adjusting Plot Theme
+
+As scRepertoire returns a ggplot object, changing the general appearance of the plot itself is similar to the above, adding a gglayer with the desired theme.
+
+```{r}
+# Original clonalQuant plot
+clonalQuant(combined.TCR, 
+            cloneCall="strict", 
+            chain = "both", 
+            scale = TRUE)
+
+# Modifying the theme of the clonalQuant plot
+clonalQuant(combined.TCR, 
+            cloneCall="strict", 
+            chain = "both", 
+            scale = TRUE) + 
+  theme_classic()
 ```
 
 ### Adjusting Order of Plotting

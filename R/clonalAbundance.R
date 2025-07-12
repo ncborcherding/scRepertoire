@@ -34,6 +34,8 @@
 #' to the visualization.
 #' @param palette Colors to use in visualization - input any 
 #' [hcl.pals][grDevices::hcl.pals].
+#' @param ... Additional arguments passed to the ggplot theme
+#' 
 #' @importFrom ggplot2 ggplot
 #' @importFrom dplyr distinct
 #' @export
@@ -48,7 +50,8 @@ clonalAbundance <- function(input.data,
                             group.by = NULL, 
                             order.by = NULL,
                             exportTable = FALSE,
-                            palette = "inferno") {
+                            palette = "inferno",
+                            ...) {
   Con.df <- NULL
   xlab <- "Abundance"
   input.data <- .dataWrangle(input.data, 
@@ -130,6 +133,6 @@ clonalAbundance <- function(input.data,
     return(Con.df) 
   }
   plot <- plot + scale_x_log10() + ylab(ylab) + xlab(xlab) +
-    theme_classic()
+    .themeRepertoire(...)
   return(plot) 
 }

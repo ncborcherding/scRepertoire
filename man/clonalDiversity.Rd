@@ -16,7 +16,8 @@ clonalDiversity(
   palette = "inferno",
   n.boots = 100,
   return.boots = FALSE,
-  skip.boots = FALSE
+  skip.boots = FALSE,
+  ...
 )
 }
 \arguments{
@@ -53,6 +54,8 @@ Automatically sets \code{exportTable = TRUE}.}
 
 \item{skip.boots}{If TRUE, disables downsampling and bootstrapping. The metric
 will be calculated on the full dataset for each group.}
+
+\item{...}{Additional arguments passed to the ggplot theme}
 }
 \value{
 A ggplot object visualizing the diversity metric, or a data.frame if

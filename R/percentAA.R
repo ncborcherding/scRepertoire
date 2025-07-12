@@ -22,6 +22,7 @@
 #' @param aa.length The maximum length of the CDR3 amino acid sequence. 
 #' @param exportTable Returns the data frame used for forming the graph.
 #' @param palette Colors to use in visualization - input any [hcl.pals][grDevices::hcl.pals].
+#' @param ... Additional arguments passed to the ggplot theme
 #' @importFrom immApex calculateFrequency
 #' @importFrom stats reshape
 #' @export
@@ -33,7 +34,8 @@ percentAA <- function(input.data,
                       order.by = NULL,
                       aa.length = 20,
                       exportTable = FALSE, 
-                      palette = "inferno")  {
+                      palette = "inferno",
+                      ...)  {
   
   sco <- .is.seurat.or.se.object(input.data)
   input.data <- .dataWrangle(input.data, group.by, "CTaa", chain)
@@ -80,7 +82,7 @@ percentAA <- function(input.data,
                       values = rev(.colorizer(palette,20))) +
     xlab("Amino Acid Residues") +
     ylab("Relative Percent") +
-    theme_classic() + 
+    .themeRepertoire(...) + 
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
   if(length(res.list) > 1) {
     plot <- plot + facet_grid(group~.)

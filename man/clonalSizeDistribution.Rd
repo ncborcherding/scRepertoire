@@ -12,7 +12,8 @@ clonalSizeDistribution(
   threshold = 1,
   group.by = NULL,
   exportTable = FALSE,
-  palette = "inferno"
+  palette = "inferno",
+  ...
 )
 }
 \arguments{
@@ -38,6 +39,8 @@ the grid search was performed over.}
 
 \item{palette}{Colors to use in visualization - input any
 \link[grDevices:palettes]{hcl.pals}.}
+
+\item{...}{Additional arguments passed to the ggplot theme}
 }
 \value{
 ggplot dendrogram of the clone size distribution

@@ -28,8 +28,9 @@
 #' `"shannon"`, `"inv.simpson"`, `"gini.simpson"`, `"norm.entropy"`, 
 #' `"pielou"`, `"hill0"`, `"hill1"`, `"hill2"`
 #' @param exportTable Returns the data frame used for forming the graph
-#' @param palette Colors to use in visualization - input any [hcl.pals][grDevices::hcl.pals]
-#'
+#' @param palette Colors to use in visualization - input any [hcl.pals][grDevices::hcl.pals
+#' @param ... Additional arguments passed to the ggplot theme
+#' 
 #' @export
 #' @importFrom immApex calculateEntropy
 #' @concept Summarize_Repertoire
@@ -41,7 +42,8 @@ positionalEntropy <- function(input.data,
                               aa.length = 20,
                               method = "norm.entropy",
                               exportTable = FALSE, 
-                              palette = "inferno")  {
+                              palette = "inferno",
+                              ...)  {
   
   sco <- .is.seurat.or.se.object(input.data)
   input.data <- .dataWrangle(input.data, 
@@ -83,7 +85,7 @@ positionalEntropy <- function(input.data,
                             values = rev(.colorizer(palette,length(input.data)))) +
           xlab("Amino Acid Residues") +
           ylab("Relative Diversity") +
-          theme_classic() + 
+          .themeRepertoire(...) + 
           theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
     if (exportTable == TRUE) { 
       return(mat_melt) 

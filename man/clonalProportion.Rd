@@ -12,7 +12,8 @@ clonalProportion(
   group.by = NULL,
   order.by = NULL,
   exportTable = FALSE,
-  palette = "inferno"
+  palette = "inferno",
+  ...
 )
 }
 \arguments{
@@ -39,6 +40,8 @@ environment in addition to the visualization}
 
 \item{palette}{Colors to use in visualization - input any
 \link[grDevices:palettes]{hcl.pals}}
+
+\item{...}{Additional arguments passed to the ggplot theme}
 }
 \value{
 ggplot of the space occupied by the specific rank of clones
