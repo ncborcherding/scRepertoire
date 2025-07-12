@@ -59,7 +59,7 @@ clonalOccupy <- function(sc.data,
   colnames(meta)[1] <- x.axis
   
   if(!is.null(order.by)) {
-    meta <- .ordering.function(vector = order.by,
+    meta <- .orderingFunction(vector = order.by,
                                group.by = x.axis, 
                                data.frame = meta)
   } else {

@@ -45,12 +45,10 @@ A full copy of the changes in each version can be found in the [NEWS/ChangeLog](
 
 
 ## GitHub Branches
-scRepertoire is an active project, that receives a number of changes based on user feedback, the most up-to-date versions are available via the GitHub repositories. These versions can be installed using ```devtools::install_github()``` or ```remotes::install_github()```. The **dev** version is the active development branch and might be less stable than the main branch or bioconductor versions. 
+scRepertoire is an active project, that receives a number of changes based on user feedback, the most up-to-date versions are available via the GitHub repositories. These versions can be installed using ```devtools::install_github()``` or ```remotes::install_github()```. [immApex](https://github.com/BorchLab/immApex) is now required for the underlying processes of scRepertoire make sure if not using bioconductor, to call both during installation.
 
 ```
-devtools::install_github(repo = "BorchLab/scRepertoire")
-
-remotes::install_github(repo = "BorchLab/scRepertoire", ref = "dev")
+remotes::install_github(c("BorchLab/immApex", "BorchLab/scRepertoire"))
 ```
 
 ## Bioconductor

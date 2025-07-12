@@ -2,7 +2,7 @@
 % Please edit documentation in R/positionalProperty.R
 \name{positionalProperty}
 \alias{positionalProperty}
-\title{Examining the mean property of amino acids by position}
+\title{Positional physicochemical property analysis}
 \usage{
 positionalProperty(
   input.data,
@@ -10,7 +10,7 @@ positionalProperty(
   group.by = NULL,
   order.by = NULL,
   aa.length = 20,
-  method = "Atchley",
+  method = "atchleyFactors",
   exportTable = FALSE,
   palette = "inferno"
 )
@@ -28,8 +28,10 @@ to plot groups in order}
 
 \item{aa.length}{The maximum length of the CDR3 amino acid sequence.}
 
-\item{method}{The method to calculate the property - "Atchley", "Kidera",
-"stScales", "tScales", or "VHSE"}
+\item{method}{Character string (one of the supported names)
+Defaults to \code{"atchleyFactors"}, but includes: \code{"crucianiProperties"},
+\code{"FASGAI"}, \code{"kideraFactors"}, \code{"MSWHIM"}, \code{"ProtFP"}, \code{"stScales"},
+\code{"tScales"}, \code{"VHSE"}, \code{"zScales"}}
 
 \item{exportTable}{Returns the data frame used for forming the graph}
 
@@ -39,32 +41,44 @@ to plot groups in order}
 ggplot of line graph of diversity by position
 }
 \description{
-This function calculates the mean selected property for
-amino acids along the residues of the CDR3 amino acid sequence.
-The ribbon surrounding the individual line represents the 95\%
-confidence interval.
+This function analyzes the physicochemical properties of amino acids at each
+position along the CDR3 sequence. It calculates the mean property value and
+the 95\% confidence interval for each position across one or more groups,
+visualizing the results as a line plot with a confidence ribbon.
 }
 \details{
-More information for the individual methods can be found at the following citations:
+The function uses one of several established physicochemical property scales
+to convert amino acid sequences into numerical vectors. More information for
+the individual methods can be found at the following citations:
 
-\strong{Atchley:} \href{https://pubmed.ncbi.nlm.nih.gov/15851683/}{citation}
+\strong{atchleyFactors:} \href{https://pubmed.ncbi.nlm.nih.gov/15851683/}{citation}
 
-\strong{Kidera:} \href{https://link.springer.com/article/10.1007/BF01025492}{citation}
+\strong{crucianiProperties:} \href{https://analyticalsciencejournals.onlinelibrary.wiley.com/doi/abs/10.1002/cem.856}{citation}
+
+\strong{FASGAI:} \href{https://pubmed.ncbi.nlm.nih.gov/18318694/}{citation}
+
+\strong{kideraFactors:} \href{https://link.springer.com/article/10.1007/BF01025492}{citation}
+
+\strong{MSWHIM:} \href{https://pubs.acs.org/doi/10.1021/ci980211b}{citation}
+
+\strong{ProtFP:} \href{https://pubmed.ncbi.nlm.nih.gov/24059694/}{citation}
 
 \strong{stScales:} \href{https://pubmed.ncbi.nlm.nih.gov/19373543/}{citation}
 
-\strong{tScales:} \href{https://www.sciencedirect.com/science/article/pii/S0022286006006314?casa_token=uDj97DwXDDEAAAAA:VZfahldPRwU1WObySJlohudtMSDwF7nJSUzcEGwPhvkY13ALLKhs08Cf0_FyyfYZjxJlj-fVf0SM}{citation}
+\strong{tScales:} \href{https://www.sciencedirect.com/science/article/abs/pii/S0022286006006314}{citation}
 
 \strong{VHSE:} \href{https://pubmed.ncbi.nlm.nih.gov/15895431/}{citation}
+
+\strong{zScales:} \href{https://pubmed.ncbi.nlm.nih.gov/9651153/}{citation}
 }
 \examples{
-#Making combined contig data
+# Making combined contig data
 combined <- combineTCR(contig_list, 
                         samples = c("P17B", "P17L", "P18B", "P18L", 
                                     "P19B","P19L", "P20B", "P20L"))
 positionalProperty(combined, 
                    chain = "TRB",
-                   method = "Atchley", 
+                   method = "atchleyFactors", 
                    aa.length = 20)
 }
 \author{

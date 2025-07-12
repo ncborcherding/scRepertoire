@@ -42,10 +42,10 @@ clonalLength <- function(input.data,
                          exportTable = FALSE, 
                          palette = "inferno") {
   
-  input.data <- .data.wrangle(input.data, 
-                              group.by, 
-                              .theCall(input.data, cloneCall, check.df = FALSE), 
-                              chain)
+  input.data <- .dataWrangle(input.data, 
+                             group.by, 
+                             .theCall(input.data, cloneCall, check.df = FALSE), 
+                             chain)
   cloneCall <- .theCall(input.data, cloneCall)
   
   #Sorting out graphing parameters
@@ -55,8 +55,7 @@ clonalLength <- function(input.data,
   } else if (cloneCall == "CTaa") { 
     ylab <- "CDR3 (AA)"
   } else { 
-    stop("Please make a selection of the type of
-          CDR3 sequence to analyze by using `cloneCall`")
+    stop("Please make a selection of the type of CDR3 sequence to analyze by using `cloneCall`")
   }
   
   #Calculating Length
@@ -72,13 +71,13 @@ clonalLength <- function(input.data,
   
   if(!is.null(order.by)) {
     if (!is.null(group.by)) { 
-      Con.df <- .ordering.function(vector = order.by,
-                                   group.by = group.by, 
-                                   data.frame = Con.df)
+      Con.df <- .orderingFunction(vector = order.by,
+                                  group.by = group.by, 
+                                  data.frame = Con.df)
     } else {
-      Con.df <- .ordering.function(vector = order.by,
-                                   group.by = "values", 
-                                   data.frame = Con.df)
+      Con.df <- .orderingFunction(vector = order.by,
+                                  group.by = "values", 
+                                  data.frame = Con.df)
     }
   }
   

@@ -10,18 +10,18 @@
 #' read and cite the linked manuscript. 
 #' 
 #' @examples
-#' #Getting the combined contigs
+#' # Getting the combined contigs
 #' combined <- combineTCR(contig_list, 
 #'                         samples = c("P17B", "P17L", "P18B", "P18L", 
 #'                                     "P19B","P19L", "P20B", "P20L"))
 #' 
-#' #Getting a sample of a Seurat object
+#' # Getting a sample of a Seurat object
 #' scRep_example  <- get(data("scRep_example"))
 #' scRep_example  <- combineExpression(combined, scRep_example)
 #' scRep_example$Patient <- substring(scRep_example$orig.ident,1,3)
 #' scRep_example$Type <- substring(scRep_example$orig.ident,4,4) 
 #' 
-#' #Using StartracDiversity()
+#' # Using StartracDiversity()
 #' StartracDiversity(scRep_example, 
 #'                   type = "Type", 
 #'                   group.by = "Patient")
@@ -39,7 +39,7 @@
 #' @param group.by The variable in the meta data to group by, often samples.
 #' @param exportTable Returns the data frame used for forming the graph.
 #' @param palette Colors to use in visualization - input any [hcl.pals][grDevices::hcl.pals].
-#'
+#' @importFrom stats reshape
 #' @export
 #' @concept SC_Functions
 #' @return ggplot object of Startrac diversity metrics
@@ -58,7 +58,7 @@ StartracDiversity <- function(sc.data,
     colnames(df)[ncol(df)] <- "majorCluster"
     
     if (is.null(group.by)) {
-       if("orig.ident" %!in% colnames(df)) {
+       if(!"orig.ident" %in% colnames(df)) {
          stop("Please select a group.by variable")
        }
        group.by <- "orig.ident"
@@ -66,7 +66,7 @@ StartracDiversity <- function(sc.data,
     group.levels <- unique(df[,group.by])
     
     if (chain != "both") {
-      df <- .off.the.chain(df, chain, cloneCall)
+      df <- .offTheChain(df, chain, cloneCall)
     }
 
     df <- df %>%
@@ -95,12 +95,18 @@ StartracDiversity <- function(sc.data,
     }
     names(mat.list) <- group.levels
     mat <- bind_rows(mat.list, .id = "group")
+    rownames(mat) <- NULL
     if (exportTable) { 
       return(mat) 
     } 
-    
-    mat_melt <- melt(mat, id = c("group", "majorCluster"))
-    values <-  str_sort(unique(mat_melt$majorCluster), numeric = TRUE)
+    metrics_to_pivot <- c("migr", "tran", "expa")
+    mat_melt <- reshape(mat,
+                        varying = metrics_to_pivot,
+                        v.names = "value",
+                        timevar = "variable",
+                        times = metrics_to_pivot,
+                        direction = "long")
+    values <-  .alphanumericalSort(unique(mat_melt$majorCluster))
     mat_melt$majorCluster <- factor(mat_melt$majorCluster, levels = values)
     mat_melt$value <- as.numeric(mat_melt$value)
     col <- length(unique(mat_melt[,"majorCluster"]))
@@ -119,7 +125,6 @@ StartracDiversity <- function(sc.data,
 
 
 # Calculate cluster level indices
-#' @importFrom plyr llply
 .calIndex <- function(processed){
     clonotype.dist.cluster <- table(processed[,c("clone.id","majorCluster")])
     clonotype.dist.loc <- unclass(table(processed[,c("clone.id","loc")]))
@@ -144,16 +149,14 @@ StartracDiversity <- function(sc.data,
 }
 
 # entropy of each row of the input matrix
-.mrow.entropy <- function(x)
-{
+.mrow.entropy <- function(x) {
     freqs <- sweep(x,1,rowSums(x),"/")
     H <- - rowSums(ifelse(freqs>0,freqs* log2(freqs),0))
     return(H)
 }
 
 # entropy of each column of the input matrix
-.mcol.entropy <- function(x)
-{
+.mcol.entropy <- function(x) {
     freqs <- sweep(x,2,colSums(x),"/")
     H <- - colSums(ifelse(freqs>0,freqs* log2(freqs),0))
     return(H)

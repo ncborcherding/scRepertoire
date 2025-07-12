@@ -1,7 +1,33 @@
-# scRepertoire VERSION 2.5.2
+# scRepertoire VERSION 2.5.0
 
 ## UNDERLYING CHANGES
-* update unit testing
+* Update/Improve code for ```loadContigs()```
+* Consolidated support for discrete AIRR formats under the umbrella of AIRR
+* Added `"tcrpheno"` and `immunarch` to ```exportClones()```
+* Converted ```exportClones()``` to base R to reduce dependencies
+* Added dandelionR vignette to pkgdown site
+* Added tcrpheno vignette to pkgdown site
+* ```percentAA()``` refactored to minimize dependencies and use immApex 
+```calculateFrequency()```
+* ```positionalEntropy()``` refactored to minimize dependencies and use immApex
+```calculateEntropy()```
+* ```clonalDiversity()``` refactored for performance -  it now calculates a 
+single diversity metric at a time and includes new  estimators like "gini", 
+"d50", and supports hill numbers).
+* ```percentKmer()``` refactored to use immApex ```calculateMotif``` for both aa and
+nt sequences. No longer calculates all possible motifs, but only motifs present. 
+* ```clonalCluster()``` now allows for dual-chain clustering, V/J filtering, 
+normalized or straight edit distance calculations, and return of clusters, 
+igraph objects or adjacency matrix
+* ```combineBCR()``` offers single/dual chain clustering, aa or nt sequences, adaptive filtering of V and J genes and normalized or straight edit distance calculations
+* ```percentGeneUsage()``` now is the underlying function for ```percentGenes()```, ```percentVJ()```, 
+and ```vizGenes()``` and allows for percent, proportion and raw count quantification.
+
+## BUG FIXES
+* ```clonalCompare()``` issue with plotting a 0 row data frame now errors with message
+* ```clonalScatter()``` group.by/axes call now works for non-single-cell objects
+* Fixed issue with NULL and "none" group.by in ```combineExpression()```
+* Allowing multi groupings via x.axis and group.by in ```clonalDiversity()```
 
 # scRepertoire VERSION 2.3.4
 
@@ -20,7 +46,7 @@
 
 # scRepertoire VERSION 2.2.1
 
-* Rebasing for the purposes of Bioconductor version 2.2.0
+* Rebasing for the purposes of Bioconductor version 3.20
 
 ## NEW FEATURES
 * Added support for BCRs for loading ParseBio sequences.

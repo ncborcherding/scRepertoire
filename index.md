@@ -7,7 +7,7 @@
 <!-- badges: end -->
 
 ### Introduction
-Single-cell sequencing is an emerging technology in the field of immunology and oncology that allows researchers to couple RNA quantification and other modalities, like immune cell receptor profiling at the level of an individual cell. A number of workflows and software packages have been created to process and analyze single-cell transcriptomic data. These packages allow users to take the vast dimensionality of the data generated in single-cell-based experiments and distill the data into novel insights. Unlike the transcriptomic field, there is a lack of options for software that allow for single-cell immune receptor profiling. Enabling users to easily combine RNA and immune profiling, the scRepertoire framework supports use of 10x, AIRR, BD, MiXCR, Omniscope, TRUST4, and WAT3R single-cell clonal formats and interaction with popular R-based single-cell data pipelines. 
+Single-cell sequencing is an emerging technology in the field of immunology and oncology that allows researchers to couple RNA quantification and other modalities, like immune cell receptor profiling at the level of an individual cell. A number of workflows and software packages have been created to process and analyze single-cell transcriptomic data. These packages allow users to take the vast dimensionality of the data generated in single-cell-based experiments and distill the data into novel insights. Unlike the transcriptomic field, there is a lack of options for software that allow for single-cell immune receptor profiling. Enabling users to easily combine RNA and immune profiling, the scRepertoire framework supports use of 10x, AIRR, BD, MiXCR, TRUST4, and WAT3R single-cell clonal formats and interaction with popular R-based single-cell data pipelines. 
 
 ### Applying Deep Learning to VDJ data
 scRepertoire is compatible and integrated with the R packages [Trex](https://github.com/ncborcherding/Trex) for convolutional-neural-network-based autoencoding of the T cell receptor and [Ibex](https://github.com/ncborcherding/Ibex) for the B cell receptor. If you are interested in making your own deep-learning models with immune receptors, please see [immApex](https://github.com/ncborcherding/immApex).
@@ -41,9 +41,8 @@ Unfortunately, Github limits the size of individual files. In order to access th
 
 ## Please Cite
 
-We are working on submitting the scRepertoire v2 as a peer review article. For now, please cite scRepertoire using the doi from [Bioconductor](https://www.bioconductor.org/packages/release/bioc/html/scRepertoire.html).
-
-*Borcherding, N, Yang, Q, & Safina, K. (2024). scRepertoire v2: A toolkit for single-cell immune receptor profiling. DOI: 10.18129/B9.bioc.scRepertoire*
+* **Version 2**: Yang, Q, & Safina, K., Nguyen, K., Tuong, Z.K., & Borcherding, N.  (2025). "scRepertoire 2: Enhanced and efficient toolkit for single-cell immune profiling." *PLoS Computational Biology* https://doi.org/10.1371/journal.pcbi.1012760
+* **Version 1**: Borcherding, Nicholas, Nicholas L. Bormann, and Gloria Kraus. "scRepertoire: An R-based toolkit for single-cell immune receptor analysis." *F1000Research* https://doi.org/10.12688/f1000research.22139.2
 
 ## Bug Reports/New Features
 

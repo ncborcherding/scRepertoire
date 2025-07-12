@@ -38,6 +38,7 @@ knitr::opts_chunk$set(
 )
 
 suppressMessages(library(scRepertoire))
+suppressMessages(library(Peptides))
 data("contig_list") 
 combined.TCR <- combineTCR(contig_list, 
                            samples = c("P17B", "P17L", "P18B", "P18L", 
@@ -56,13 +57,16 @@ percentAA(combined.TCR,
 
 ## positionalEntropy
 
-We can also quantify the level of entropy/diversity across amino acid residues along the cdr3 sequence. `positionalEntropy()` combines the quantification by residue of ``percentAA()`` with the diversity calls in ```clonalDiversity()```. 
+We can also quantify the level of entropy/diversity across amino acid residues along the CDR3 sequence. `positionalEntropy()` combines the quantification by residue of ``percentAA()`` with the diversity calls in ```clonalDiversity()```. 
 
 **method**  
 
-* "shannon" - Shannon Diversity  
-* "inv.simpson" - Inverse Simpson Diversity 
-* "norm.entropy" - Normalized Entropy  
+* "shannon" - Shannon Index
+* "inv.simpson" - Inverse Simpson Index
+* "gini.simpson" - Gini-Simpson Index
+* "norm.entropy" - Normalized Entropy 
+* "pielou" - pielou's Evenness
+* "hill1", "hill2", "hill3" - Hill Numbers 
 
 ```{r tidy = FALSE}
 positionalEntropy(combined.TCR, 
@@ -76,11 +80,16 @@ Like ```positionalEntropy()```, we can also examine a series of amino acid prope
 
 **method**  
 
-* "Atchley" - Atchley Factors 
-* "Kidera" - Kidera Factors 
-* "stScales" - stScales Vectors
-* "tScales" - tScales Vectors
-* "VHSE" - Vectors of Hydrophobic, Steric, and Electronic properties
+* **atchleyFactors:** [citation](https://pubmed.ncbi.nlm.nih.gov/15851683/)
+* **crucianiProperties:** [citation](https://analyticalsciencejournals.onlinelibrary.wiley.com/doi/abs/10.1002/cem.856)
+* **FASGAI:** [citation](https://pubmed.ncbi.nlm.nih.gov/18318694/)
+* **kideraFactors:** [citation](https://link.springer.com/article/10.1007/BF01025492)
+* **MSWHIM:** [citation](https://pubs.acs.org/doi/10.1021/ci980211b)
+* **ProtFP:** [citation](https://pubmed.ncbi.nlm.nih.gov/24059694/)
+*  **stScales:** [citation](https://pubmed.ncbi.nlm.nih.gov/19373543/)
+*  **tScales:** [citation](https://www.sciencedirect.com/science/article/abs/pii/S0022286006006314)
+*  **VHSE:** [citation](https://pubmed.ncbi.nlm.nih.gov/15895431/)
+*  **zScales:** [citation](https://pubmed.ncbi.nlm.nih.gov/9651153/)
 
 ```{r tidy = FALSE}
 positionalProperty(combined.TCR[c(1,2)], 
@@ -90,129 +99,153 @@ positionalProperty(combined.TCR[c(1,2)],
   scale_color_manual(values = hcl.colors(5, "inferno")[c(2,4)])
 ```
 
-## vizGenes
 
-A visualization of the relative usage of genes of the TCR or BCR, using `vizGenes()`. There is some functional crossover between `vizGenes()` and two functions below called  `percentGenes()` and `percentVJ()`. But `vizGenes()` is more adaptable to allow for comparisons across chains, scaling, etc. 
+## percentGeneUsage
 
-**x.axis**  
+Gene quantification and visualization has been redesigned to offer a more robust and translatable function under `percentGeneUsage()`. We have maintained the functionality of the previous functions for gene-level quantification under the aliases `vizGenes()`, `percentGenes()`, and `percentVJ()`.
 
-* Gene segment to separate the x-axis, such as "TRAV", "TRBD", "IGKJ"
+### vizGenes: Flexible Gene Usage Visualization
 
-**y.axis** 
+The `vizGenes()` function offers a highly adaptable approach to visualizing the relative usage of TCR or BCR genes. It acts as a versatile alias for `percentGeneUsage()`, allowing for comparisons across different chains, scaling of values, and selection between bar charts and heatmaps.
 
-* Gene segment or categorical variable to visualize along the y-axis
-
-**plot**  
-
-* "barplot" for a bar chart  
-* "heatmap" for a heatmap  
-
-**scale**  
-
-* TRUE to scale the graph by number of genes per sample  
-* FALSE to report raw numbers  
-
-**order**  
-
-* "gene" to order by gene name  
-* "variance" to order by variance between the separate variable categories  
+* `x.axis`: Specifies the gene segment to display along the x-axis (e.g., "TRBV", "TRBD", "IGKJ").
+* `y.axis`
+  * Another gene segment (e.g., "TRAV", "TRBJ") for paired gene analysis. When x.axis and y.axis are both gene segments, vizGenes() internally calls percentGeneUsage() with genes = c(x.axis, y.axis), resulting in a heatmap.
+  * A categorical variable (e.g., "sample", "orig.ident") to visualize gene usage across different groups. When y.axis is a categorical variable, vizGenes() maps it to the group.by parameter of percentGeneUsage(), creating facets for each category.
+* `plot`: Determines the visualization type:
+  * "barplot": Ideal for visualizing the distribution of a single gene segment.
+  * "heatmap": Suitable for single gene usage (with a group.by or y.axis categorical variable) or for paired gene analysis.
+* `summary.fun`: (Inherited from `percentGeneUsage`) Defines the statistic to display: "percent" (default), "proportion", or "count". This implicitly handles the scaling of values.
 
 ```{r tidy = FALSE}
-vizGenes(combined.TCR, 
+vizGenes(combined.TCR,
          x.axis = "TRBV",
-         y.axis = NULL,
-         plot = "barplot",  
-         scale = TRUE)
+         y.axis = NULL, # No specific y-axis variable, will group all samples
+         plot = "barplot",
+         summary.fun = "proportion") 
 ```
 
-`vizGenes()` can also be used to look at the usage of genes in a single chain. For example, say we are interested in the difference in TRB V and J usage between lung and peripheral blood samples - we can easily take a look at this using the following code:
+This plot shows the proportion of each *TRBV* gene segment observed across the entire combined.TCR dataset. Since `y.axis` is NULL, samples are grouped by the list element of the combined.TCR data.
+
+`vizGenes()` is particularly useful for examining gene pairings. Let's look at the differences in *TRBV* and *TRBJ* usage between peripheral blood and lung samples from your dataset. We'll subset combined.TCR for this analysis.
 
 ```{r tidy = FALSE}
-#Peripheral Blood
-vizGenes(combined.TCR[c(1,3,5,7)], 
+# Peripheral Blood Samples
+vizGenes(combined.TCR[c("P17B", "P18B", "P19B", "P20B")],
          x.axis = "TRBV",
          y.axis = "TRBJ",
-         plot = "heatmap",  
-         scale = TRUE)
+         plot = "heatmap",
+         summary.fun = "percent") # Display percentages
 
-#Lung
-vizGenes(combined.TCR[c(2,4,6,8)], 
+# Lung Samples
+vizGenes(combined.TCR[c("P17L", "P18L", "P19L", "P20L")],
          x.axis = "TRBV",
          y.axis = "TRBJ",
-         plot = "heatmap",  
-         scale = TRUE)
+         plot = "heatmap",
+         summary.fun = "percent") # Display percentages
 ```
 
-For the P17 patient samples, what if we are interested in chain pairings, we can look at TRBV and TRAV at the same time using them as inputs to **x.axis** and **y.axis**. 
+In these examples, by providing both `x.axis` and `y.axis` as gene segments ("TRBV" and "TRBJ"), `vizGenes()` automatically performs a paired gene analysis, generating a heatmap where the intensity reflects the percentage of each V-J pairing.
+
+Beyond V-J pairings within a single chain, `vizGenes()` can also visualize gene usage across different chains. For instance, to examine *TRBV* and *TRAV* pairings for patient P17's samples:
 
 ```{r tidy = FALSE}
-vizGenes(combined.TCR[c(1,2)], 
+vizGenes(combined.TCR[c("P17B", "P17L")],
          x.axis = "TRBV",
          y.axis = "TRAV",
-         plot = "heatmap", 
-         scale = FALSE)
+         plot = "heatmap",
+         summary.fun = "count") 
 ```
 
-## percentGenes
+### percentGenes: Quantifying Single Gene Usage
 
-Quantify the proportion of V or J gene usage with `percentGenes()`. Like `percentAA()`, we select the chain of interest and then indicate the gene of interest with the **gene** parameter. Two major limitations of `percentGenes()` are, 1) the function quantifies only V or J genes, and 2) the quantification of the genes are limited to all the V or J genes seen across the samples, not all possible V or J genes. 
+The `percentGenes()` function is a specialized alias for `percentGeneUsage()` designed to quantify the usage of a single V, D, or J gene locus for a specified immune receptor chain. By default, it returns a heatmap visualization.
 
-```{r tidy = FALSE}
-percentGenes(combined.TCR, 
-             chain = "TRB", 
-             gene = "Vgene")
+Key Parameters for `percentGenes()`:
+
+* `chain`: Specifies the immune receptor chain (e.g., "TRB", "TRA", "IGH", "IGL"). 
+* `gene`: Indicates the gene locus to quantify: "Vgene", "Dgene", or "Jgene".
+* `group.by`, `order.by`, `summary.fun`, `exportTable`, `palette`: These parameters are directly passed to `percentGeneUsage()`.
+
+To quantify and visualize the percentage of TRBV gene usage across your samples:
+
+```{r}
+percentGenes(combined.TCR,
+             chain = "TRB",
+             gene = "Vgene",
+             summary.fun = "percent")
 ```
 
-We can also use the output `percentGenes()` for dimensional reduction to summarise the gene usage by sample. This can be done with a simple principal component analysis (below) or even more complex reductions. 
+This generates a heatmap showing the percentage of each TRBV gene segment within each sample, allowing for easy visual comparison of gene usage profiles across your samples.
 
-```{r tidy = FALSE}
-df.genes <- percentGenes(combined.TCR, 
-                         chain = "TRB", 
-                         gene = "Vgene", 
-                         exportTable = TRUE)
+The raw data returned by `percentGenes()` (when `exportTable` = TRUE) can be a powerful input for further downstream analysis, such as dimensionality reduction techniques like Principal Component Analysis. This allows you to summarize the complex gene usage patterns and identify samples with similar or distinct repertoires.
 
-#Performing PCA
-pc <- prcomp(df.genes)
+```{r}
+df.genes <- percentGenes(combined.TCR,
+                         chain = "TRB",
+                         gene = "Vgene",
+                         exportTable = TRUE,
+                         summary.fun = "proportion") 
 
-#Getting data frame to plot from
-df <- as.data.frame(cbind(pc$x[,1:2], rownames(df.genes)))
-df$PC1 <- as.numeric(df$PC1)
-df$PC2 <- as.numeric(df$PC2)
+# Performing PCA on the gene usage matrix
+pc <- prcomp(t(df.genes))
 
-#Plotting
-ggplot(df, aes(x = PC1, y = PC2)) + 
-  geom_point(aes(fill =df[,3]), shape = 21, size = 5) + 
-  guides(fill=guide_legend(title="Samples")) + 
-  scale_fill_manual(values = hcl.colors(nrow(df), "inferno")) + 
-  theme_classic() 
+# Getting data frame to plot from
+df_plot <- as.data.frame(cbind(pc$x[,1:2], colnames(df.genes)))
+colnames(df_plot) <- c("PC1", "PC2", "Sample")
+df_plot$PC1 <- as.numeric(df_plot$PC1)
+df_plot$PC2 <- as.numeric(df_plot$PC2)
+
+ggplot(df_plot, aes(x = PC1, y = PC2)) +
+  geom_point(aes(fill = Sample), shape = 21, size = 5) +
+  guides(fill=guide_legend(title="Samples")) +
+  scale_fill_manual(values = hcl.colors(nrow(df_plot), "inferno")) +
+  theme_classic() +
+  labs(title = "PCA of TRBV Gene Usage")
 ```
 
-## percentVJ
+This PCA plot visually clusters samples based on their *TRBV* gene usage profiles, helping to identify underlying patterns or relationships between samples.
 
-Quantify the proportion of V and J gene usage with `percentVJ()`. Like `percentGenes()`, this function will quantify the percentage of V and J paired together across individual repertoires. The output can be visualized using a heatmap or as input for further dimensional reduction.
+### percentVJ: Quantifying V-J Gene Pairings
 
-```{r tidy = FALSE}
-percentVJ(combined.TCR[1:2], #First Two Samples
-          chain = "TRB")
+The `percentVJ()` function is another specialized alias for `percentGeneUsage()`, specifically designed to quantify the proportion or percentage of V and J gene segments paired together within individual repertoires. It always produces a heatmap visualization.
 
-df.genes <- percentVJ(combined.TCR, 
-                      chain = "TRB", 
-                      exportTable = TRUE)
+Key Parameters for `percenVJ()`:
 
-#Performing PCA
-pc <- prcomp(df.genes)
+* `chain`: Specifies the immune receptor chain (e.g., **"TRB"**, **"TRA"**, **"IGH"**, **"IGL"**). This dictates which V and J gene segments are analyzed (e.g., **TRBV** and **TRBJ** for `chain` = "TRB")
 
-#Getting data frame to plot from
-df <- as.data.frame(cbind(pc$x[,1:2], rownames(df.genes))) 
-df$PC1 <- as.numeric(df$PC1)
-df$PC2 <- as.numeric(df$PC2)
+```{r}
+percentVJ(combined.TCR[1:2],
+          chain = "TRB",
+          summary.fun = "percent")
+```
 
-#Plotting
-ggplot(df, aes(x = PC1, y = PC2)) + 
-  geom_point(aes(fill =df[,3]), shape = 21, size = 5) + 
-  guides(fill=guide_legend(title="Samples")) + 
-  scale_fill_manual(values = hcl.colors(nrow(df), "inferno")) + 
-  theme_classic() 
+This heatmap displays the percentage of each *TRBV-TRBJ* pairing for each sample, providing a detailed view of the V-J recombination landscape.
+
+Similar to `percentGenes()`, the quantitative output of `percentVJ()` can be used for dimensionality reduction to summarize V-J pairing patterns across samples.
+
+```{r}
+df.vj <- percentVJ(combined.TCR,
+                   chain = "TRB",
+                   exportTable = TRUE,
+                   summary.fun = "proportion") # Export proportions for PCA
+
+# Performing PCA on the V-J pairing matrix
+pc.vj <- prcomp(t(df.vj)) 
+
+# Getting data frame to plot from
+df_plot_vj <- as.data.frame(cbind(pc.vj$x[,1:2], colnames(df.vj)))
+colnames(df_plot_vj) <- c("PC1", "PC2", "Sample")
+df_plot_vj$PC1 <- as.numeric(df_plot_vj$PC1)
+df_plot_vj$PC2 <- as.numeric(df_plot_vj$PC2)
+
+# Plotting the PCA results
+ggplot(df_plot_vj, aes(x = PC1, y = PC2)) +
+  geom_point(aes(fill = Sample), shape = 21, size = 5) +
+  guides(fill=guide_legend(title="Samples")) +
+  scale_fill_manual(values = hcl.colors(nrow(df_plot_vj), "inferno")) +
+  theme_classic() +
+  labs(title = "PCA of TRBV-TRBJ Gene Pairings")
 ```
 
 ## percentKmer

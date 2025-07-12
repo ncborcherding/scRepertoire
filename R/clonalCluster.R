@@ -1,185 +1,251 @@
-#' Clustering adaptive receptor sequences by edit distance
+#' Cluster Clones by sequence similarity
 #'
-#' This function uses edit distances of either the nucleotide or amino acid 
-#' sequences of the CDR3 and V genes to cluster similar TCR/BCRs together. 
-#' As a default, the function takes the input from [combineTCR()], 
-#' [combineBCR()] or [combineExpression()] and amends a 
-#' cluster to the data frame or meta data. If **exportGraph** is set 
-#' to TRUE, the function returns an igraph object of the connected sequences. 
-#' If multiple sequences per chain are present, this function only compares
-#' the first sequence.
+#' This function clusters TCRs or BCRs based on the edit distance of their CDR3
+#' sequences. It can operate on either nucleotide ("nt") or amino acid ("aa")
+#' sequences and can optionally enforce that clones share the same V gene.
+#' The output can be the input object with an added metadata column for cluster
+#' IDs, a sparse adjacency matrix, or an `igraph` graph object representing the
+#' cluster network.
+#' 
+#' @details
+#' The clustering process is as follows:
+#' 1.  The function retrieves the relevant chain data from the input object.
+#' 2.  It calculates the edit distance between all sequences within each group
+#'     (or across the entire dataset if `group.by` is `NULL`).
+#' 3.  An edge list is constructed, connecting sequences that meet the similarity
+#'     `threshold`.
+#' 4.  The `threshold` parameter behaves differently based on its value:
+#'     - **`threshold` < 1 (e.g., 0.85):** Interpreted as a *normalized* edit
+#'       distance or sequence similarity. A higher value means greater
+#'       similarity is required. This is the default behavior.
+#'     - **`threshold` >= 1 (e.g., 2):** Interpreted as a maximum *raw* edit
+#'       distance. A lower value means greater similarity is required.
+#' 5.  An `igraph` graph is built from the edge list.
+#' 6.  A clustering algorithm is run on the graph. The default 
+#'     `cluster.method = "components"` simply identifies the connected 
+#'     components (i.e., each cluster is a group of sequences connected by 
+#'     edges). Other methods from `igraph` can be used.
+#' 7.  The resulting cluster information is formatted and returned in the
+#'     specified format.
 #' 
 #' @examples
 #' # Getting the combined contigs
-#' combined <- combineTCR(contig_list, 
-#'                         samples = c("P17B", "P17L", "P18B", "P18L", 
-#'                                     "P19B","P19L", "P20B", "P20L"))
-#' 
-#' sub_combined <- clonalCluster(combined[c(1,2)], 
-#'                               chain = "TRA", 
-#'                               sequence = "aa")
+#' combined <- combineTCR(contig_list,
+#'                        samples = c("P17B", "P17L", "P18B", "P18L",
+#'                                    "P19B","P19L", "P20B", "P20L"))
+#'
+#' # Add cluster information to the list
+#' sub_combined <- clonalCluster(combined[c(1,2)],
+#'                               chain = "TRA",
+#'                               sequence = "aa",
+#'                               threshold = 0.85)
+#'
+#' # Export the graph object instead
+#' graph_obj <- clonalCluster(combined[c(1,2)],
+#'                            chain = "TRA",
+#'                            exportGraph = TRUE)
 #' 
 #' @param input.data The product of [combineTCR()], 
 #' [combineBCR()] or [combineExpression()].
-#' @param chain Indicate if both or a specific chain should be used - 
-#' e.g. "both", "TRA", "TRG", "IGH", "IGL".
+#' @param chain The TCR/BCR chain to use for clustering. Use "both" to combine
+#' networks from TRA/TRB or IGH/IGL. Valid options: "both", "TRA", "TRB",
+#' "TRD", "TRG", "IGH", "IGK", "IGL".
 #' @param sequence Clustering based on either **"aa"** or 
 #' **"nt"**.
-#' @param samples The specific samples to isolate for visualization.
-#' @param threshold The normalized edit distance to consider. 
-#' The higher the number the more similarity of sequence will be 
-#' used for clustering.
-#' @param group.by The column header used for to group contigs.
+#' @param threshold The similarity threshold. If < 1, treated as normalized
+#' similarity (higher is stricter). If >= 1, treated as raw edit distance
+#' (lower is stricter).
+#' @param group.by The column header used for to group clones.
 #' If (**NULL**), clusters will be calculated across samples.
+#' @param use.V Logical. If `TRUE`, sequences must share the same V gene to be
+#' clustered together.
+#' @param use.J Logical. If `TRUE`, sequences must share the same J gene to be
+#' clustered together.
+#' @param cluster.method The clustering algorithm to use. Defaults to `"components"`, 
+#' which finds connected subgraphs.
+#' @param cluster.prefix A character prefix to add to the cluster names (e.g.,
+#' "cluster.").
+#' @param exportGraph Logical. If `TRUE`, the function returns an `igraph`
+#' object of the sequence network.
+#' @param exportAdjMatrix Logical. If `TRUE`, the function returns a sparse
+#' adjacency matrix (`dgCMatrix`) of the network.
 #' @param exportGraph Return an igraph object of connected 
 #' sequences (**TRUE**) or the amended input with a
 #' new cluster-based variable (**FALSE**).
-#' @importFrom stringdist stringdist
-#' @importFrom igraph set_vertex_attr V union
-#' @importFrom plyr join
-#' @importFrom stringr str_replace_all
+#' @importFrom igraph graph_from_edgelist E E<- V V<- as_data_frame 
+#' as_adjacency_matrix membership set_vertex_attr
+#' @importFrom dplyr left_join
 #' @importFrom rlang %||%
-#' @importFrom SummarizedExperiment colData<- colData
-#' @importFrom stats na.omit
+#' @importFrom SummarizedExperiment colData colData<-
 #' @importFrom S4Vectors DataFrame
+#' @importFrom Matrix sparseMatrix
+#' @importFrom stats reshape
 #' 
 #' @export
 #' @concept Visualizing_Clones
-#' @return Either amended input with edit-distanced clusters added 
-#' or igraph object of connect sequences
+#' @return 
+#' Depending on the export parameters, one of the following:
+#' \itemize{
+#'   \item An amended `input.data` object with a new metadata column containing cluster IDs (default).
+#'   \item An `igraph` object if `exportGraph = TRUE`.
+#'   \item A sparse `dgCMatrix` object if `exportAdjMatrix = TRUE`.
+#' }
 
 clonalCluster <- function(input.data, 
                           chain = "TRB", 
                           sequence = "aa",
-                          samples = NULL,
                           threshold = 0.85, 
                           group.by = NULL, 
+                          cluster.method = "components",
+                          cluster.prefix = "cluster.",
+                          use.V = TRUE,
+                          use.J = FALSE,
+                          exportAdjMatrix = FALSE,
                           exportGraph = FALSE) {
-  if(chain == "both") {
-    stop("Please select an individual chain for clustering")
+  
+  if (exportGraph && exportAdjMatrix) {
+    stop("Please set only one of `exportGraph` or `exportAdjMatrix` to TRUE.")
   }
+  
   #Prepping any single-cell object
   is.list <- inherits(input.data, "list")
-  if(!is.list && !inherits(x = input.data, what = c("Seurat", "SummarizedExperiment"))) {
+  if(!is.list && !.is.seurat.or.se.object(input.data)) {
     input.data <- .checkList(input.data)
   }
-  dat <- .data.wrangle(input.data, group.by, "CTgene", chain)
-  
-  if (inherits(x = input.data, what = c("Seurat", "SummarizedExperiment"))) {
-    for (y in seq_along(dat)) {
-      cdr3_aa <- str_split(dat[[y]]$CTaa, "_", simplify = TRUE)
-      cdr3_nt <- str_split(dat[[y]]$CTnt, "_", simplify = TRUE)
-      
-      dat[[y]]$cdr3_aa1 <- cdr3_aa[, 1]
-      dat[[y]]$cdr3_aa2 <- cdr3_aa[, 2]
-      dat[[y]]$cdr3_nt1 <- cdr3_nt[, 1]
-      dat[[y]]$cdr3_nt2 <- cdr3_nt[, 2]
-    }
-  }
-  if (!is.null(samples)) {
-    dat <- dat[which(names(dat) %in% samples)]
-  }
-  
-  #Getting column labels to pull from
-  if (grepl("TRA|TRG", chain)) {
-    gene <- "TCR"
-    ref <- 1
-  } else if (grepl("TRB|TRD", chain)) {
-    gene <- "TCR"
-    ref <- 2
-  } else if (grepl("IGH", chain)) {
-    gene <- "BCR"
-    ref <- 1
-  } else if (grepl("IGL", chain)) {
-    gene <- "BCR"
-    ref <- 2
-  }
-  ref2 <- paste0("cdr3_", sequence, ref)
-  
-  if (!is.null(group.by)) {
-    bound <- bind_rows(dat, .id = "group.by")
-    bound <- bound[!is.na(bound[,ref2]),]
-    retain.ref <- data.frame(old = bound[,ref2], new = str_split(bound[,ref2], ";", simplify = TRUE)[,1])
-    bound[,ref2] <- str_split(bound[,ref2], ";", simplify = TRUE)[,1]
-    graph.variables <- bound %>%
-                          group_by(bound[,ref2]) %>%
-                          dplyr::summarize(sample_count = n(),
-                                    unique_samples = paste0(unique(group.by), collapse = ","))
+  if (chain == "both") {
+    # Use a placeholder to grab both alpha/beta or heavy/light chains
+    chains_to_get <- c("TRA", "TRB")
+    chain_data <- lapply(chains_to_get, function(x) {
+      getIR(input.data, chains = x, sequence.type = sequence, group.by = group.by)
+    })
   } else {
-    bound <- bind_rows(dat)
-    bound <- bound[!is.na(bound[,ref2]),]
-    retain.ref <- data.frame(old = bound[,ref2], new = str_split(bound[,ref2], ";", simplify = TRUE)[,1])
-    bound[,ref2] <- str_split(bound[,ref2], ";", simplify = TRUE)[,1]
-    graph.variables <- bound %>%
-                          group_by(bound[,ref2]) %>%
-                          dplyr::summarize(sample_count = n())
+    chain_data <- getIR(input.data, chains = chain, sequence.type = sequence, group.by = group.by)
+    chain_data <- list(chain_data)
   }
-  dictionary <- dat
-  #Generating Connected Component
-  output.list <- lapply(dictionary, function(x) {
-    cluster <- .lvCompare(x, 
-                          gene = "CTgene", 
-                          chain = ref2, 
-                          threshold = threshold,  
-                          exportGraph = exportGraph)
-    cluster
-  })
-  #Grabbing column order for later return
-  column.order <- colnames(bound)
   
-  #Returning the igraph object if exportGraph = TRUE
+  # Flatten the list if nested and get all barcodes
+  if (is.list(chain_data[[1]]) && !is.data.frame(chain_data[[1]])) {
+    chain_data <- unlist(chain_data, recursive = FALSE)
+  }
+  all_barcodes <- unique(do.call(rbind, chain_data)[["barcode"]])
+  
+  # Apply the network function to each data frame and combine into one edge list
+  result_list <- lapply(chain_data, function(y) {
+    y <- y[!is.na(y[,1]),]
+    .buildNetwork(y, use.V, use.J, threshold)
+  })
+  full_edge_list <- do.call(rbind, result_list)
+  
+  # if group.by is invoked
+  if (length(chain_data) > 1 && !is.null(names(chain_data))) {
+    row_counts <- sapply(result_list, NROW)
+    full_edge_list$group <- rep(names(chain_data), times = row_counts)
+  }
+  
+  # pseudocount for same sequences
+  full_edge_list$dist[full_edge_list$dist == 0] <- 1e-6
+  
+  # Add filtering
+  if(threshold >= 1) {
+    full_edge_list <- full_edge_list[full_edge_list$dist >= 1 & full_edge_list$dist <= threshold,]
+  } else {
+    max_ned <- 1-threshold
+    full_edge_list <- full_edge_list[full_edge_list$dist <= max_ned, ]
+  }
+  full_edge_list <- unique(full_edge_list) 
+  
+  if (nrow(full_edge_list) == 0) {
+    warning("No clusters found, returning original data.")
+    return(input.data)
+  }
+  
+  # Create the graph object
+  full_g <- igraph::graph_from_data_frame(full_edge_list, 
+                                        directed = FALSE)
+  igraph::E(full_g)$weight <- full_edge_list$dist
+  if (!is.null(group.by)) {
+    vertex_map_df <- data.frame(
+      name = c(full_edge_list$from, full_edge_list$to),
+      group = rep(full_edge_list[["group"]], 2))
+    unique_vertex_map <- vertex_map_df[!duplicated(vertex_map_df$name), ]
+    vertex_group_lookup <- setNames(unique_vertex_map$group, unique_vertex_map$name)
+    graph_vertex_names <- igraph::V(full_g)$name
+    igraph::V(full_g)$group <- vertex_group_lookup[graph_vertex_names]
+  }
+  
+  # Perform clustering using the specified method
+  clusters <- .clusterGraph(cluster.method, full_g)
+  cluster_membership <- igraph::membership(clusters)
+  
+  # Rename clusters sequentially with the specified prefix
+  unique_clusters <- unique(cluster_membership)
+  cluster_names <- paste0(cluster.prefix, seq_along(unique_clusters))
+  name_map <- setNames(cluster_names, unique_clusters)
+  renamed_membership <- name_map[as.character(cluster_membership)]
+  names(renamed_membership) <- names(cluster_membership)
+  
+  # Add vertex communities 
+  igraph::V(full_g)$cluster <- renamed_membership
+  
+  # Returning Graph
   if(exportGraph) {
-    output.list <- output.list[lapply(output.list,length)>0]
-    cluster <- do.call(igraph::union, output.list)
-    if(length(is.null(cluster)) == length(cluster)) {
-      stop("No clusters detected with current parameters.")
-    } else {
-      vertex <- names(V(cluster))
-      data_df <- unique(data.frame(
-        id = vertex
-      ))
-      data_df <- merge(data_df, graph.variables, by = 1)
-      cluster <- set_vertex_attr(cluster, 
-                                 name = "size", 
-                                 index = data_df$id, 
-                                 value = data_df[,2])
-      if(ncol(data_df) == 3) { #add grouping variable
-        cluster <- set_vertex_attr(cluster, 
-                                   name = "group", 
-                                   index = data_df$id, 
-                                   value = data_df[,3])
+    # Adding additional vertex information if graph being exported
+    vertex_df <- igraph::as_data_frame(full_g, what = "vertices")
+    colnames(vertex_df)[1] <- "barcode" 
+    full_meta_long <- do.call(rbind, chain_data)
+    
+    if (nrow(full_meta_long) > 0) {
+      meta_to_process <- unique(full_meta_long[, c("barcode", "cdr3_aa", "v", "j")])
+      meta_indexed <- meta_to_process %>% 
+                          group_by(barcode) %>%
+                          mutate(chain_num = dplyr::row_number()) %>%
+                          ungroup() %>%
+                          as.data.frame()
+      original_meta <- reshape(
+        data = meta_indexed, 
+        idvar = "barcode",
+        timevar = "chain_num",
+        direction = "wide",
+        v.names = c("cdr3_aa", "v", "j"),
+        sep = "" )
+      # Loop to add more vertex info
+      vertex_names <- V(full_g)$name
+      match_indices <- match(vertex_names, original_meta$barcode)
+      for (col in colnames(original_meta)) {
+        if (col == "barcode") next 
+        full_g <- set_vertex_attr(
+          graph = full_g,
+          name = col,
+          value = original_meta[[col]][match_indices])
       }
-      return(cluster)
     }
+    return(full_g)
   }
   
-  cluster.list <- lapply(seq_len(length(output.list)), function(x) {
-                        output.list[[x]][,1] <- str_replace_all(output.list[[x]][,1], "CTgene", chain)
-                        if(!is.null(group.by)) {
-                          output.list[[x]][,1] <- paste0(names(dat)[x], ":", output.list[[x]][,1])
-                        }
-                        colnames(output.list[[x]]) <- c(paste0(chain, "_cluster"), ref2)
-                        output.list[[x]]
+  # Returning Adjacency Matrix
+  if (exportAdjMatrix) {
+    adj_from_graph <- igraph::as_adjacency_matrix(full_g, 
+                                                  sparse = TRUE,
+                                                  attr = "weight")
+    barcodes_in_graph <- rownames(adj_from_graph)
+    
+    adjacency_matrix <- Matrix::sparseMatrix(
+      i = {}, j = {}, x = 0.0,
+      dims = c(length(all_barcodes), length(all_barcodes)),
+      dimnames = list(all_barcodes, all_barcodes)
+    )
+    adjacency_matrix[barcodes_in_graph, barcodes_in_graph] <- adj_from_graph
+    return(adjacency_matrix)
+  }
 
-  })
-  cluster <- bind_rows(cluster.list) # the TRA_cluster isnt assigned in the failing test
-  
-  #Merging with contig info
-  tmp <- bound
-  tmp[,ref2] <- str_split(tmp[,ref2], ";", simplify = TRUE)[,1]
-  output2 <- cluster[cluster[,2] %in% tmp[,ref2],]
-  bound <-  suppressMessages(join(tmp,  output2, match = "first"))
-  
-  #Removing unconnected calls
-  bound[!grepl(".Cluster", bound[,colnames(cluster)[1]]), colnames(cluster)[1]] <- NA
+ # Attaching to input.data
+ bound <- igraph::as_data_frame(full_g, what = "vertices")
+ colnames(bound)[2] <- ifelse(chain == "both", "Multi.Cluster", paste0(chain, ".Cluster"))
   
   #Adding to potential single-cell object
-  if(inherits(x=input.data, what ="Seurat") | inherits(x=input.data, what ="SummarizedExperiment")) {
-    PreMeta <- bound
-    x <- colnames(PreMeta)[ncol(PreMeta)]
-    PreMeta <- as.data.frame(PreMeta[,x], row.names = rownames(bound))
-    colnames(PreMeta) <- x
-    if (inherits(x=input.data, what ="Seurat")) { 
+  if(.is.seurat.or.se.object(input.data)) {
+    PreMeta <- bound[,-1, drop = FALSE]
+    if (.is.seurat.object(input.data)) { 
       col.name <- names(PreMeta) %||% colnames(PreMeta)
       input.data[[col.name]] <- PreMeta
     } else {
@@ -190,20 +256,60 @@ clonalCluster <- function(input.data,
       colData(sc.data) <- DataFrame(full_data[, combined_col_names])
     }
   } else {
-    #Reorder columns
-    bound <- bound[,c(column.order, colnames(cluster)[1])]
-    #Split back into list
-    if(is.list) {
-      if(!is.null(group.by)) {
-        bound <- split(bound, bound[,group.by])
-      } else {
-        bound <- split(bound, bound[,"sample"])
-      }
-    }
-    input.data <- bound
+    colnames(bound)[1] <- "barcode"
+    input.data <- lapply(input.data, function(df) {
+      dplyr::left_join(df, bound, by = "barcode")
+    })
   }
   return(input.data)
 }  
 
+# Handling clustering options
+#' @importFrom igraph cluster_fast_greedy cluster_walktrap cluster_louvain 
+#' cluster_leiden cluster_spinglass cluster_edge_betweenness components
+.clusterGraph <- function(clustering.method, graph, ...) {
+  if (!igraph::is_igraph(graph)) {
+    stop("The 'graph' argument must be a valid 'igraph' object.", call. = FALSE)
+  }
+  
+  if (!is.character(clustering.method) || length(clustering.method) != 1) {
+    stop("The 'clustering.method' argument must be a single character string.", call. = FALSE)
+  }
+  result <- switch(
+    clustering.method,
+    "fast_greedy" = igraph::cluster_fast_greedy(graph, ...),
+    "walktrap" = igraph::cluster_walktrap(graph, ...),
+    "louvain" = igraph::cluster_louvain(graph, ...),
+    "leiden" = igraph::cluster_leiden(graph, ...),
+    "spinglass" = igraph::cluster_spinglass(graph, ...),
+    "edge_betweenness" = igraph::cluster_edge_betweenness(graph, ...),
+    "components" = igraph::components(graph, mode = "weak", ...),
+    
+    # Default case: Handle unsupported methods
+    stop(
+      paste0(
+        "Unsupported clustering.method: '", clustering.method, "'. ",
+        "Supported methods are: 'fast_greedy', 'walktrap', 'louvain', ",
+        "'leiden', 'spinglass', 'edge_betweenness', and 'components'."
+      ),
+      call. = FALSE
+    )
+  )
+  
+  return(result)
+}
 
+#' @importFrom immApex buildNetwork
+.buildNetwork <- function(df, use.V, use.J, threshold) {
+  edge_list <- buildNetwork(df,
+                            seq_col   = "cdr3_aa",
+                            v_col     = "v",
+                            j_col     = "j",
+                            filter.v  = use.V,
+                            filter.j  = use.J,
+                            ids = df[["barcode"]],
+                            threshold = threshold)
+  
+  return(edge_list)
+}
   

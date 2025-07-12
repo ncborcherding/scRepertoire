@@ -18,12 +18,13 @@ percentAA(
 \item{input.data}{The product of \code{\link[=combineTCR]{combineTCR()}}, \code{\link[=combineBCR]{combineBCR()}}, or
 \code{\link[=combineExpression]{combineExpression()}}.}
 
-\item{chain}{"TRA", "TRB", "TRG", "TRG", "IGH", "IGL".}
+\item{chain}{indicate a specific chain should be used -
+e.g. "TRA", "TRG", "IGH", "IGL", etc}
 
 \item{group.by}{The variable to use for grouping.}
 
-\item{order.by}{A vector of specific plotting order or "alphanumeric"
-to plot groups in order}
+\item{order.by}{A vector of specific plotting order for \code{group.by} or
+"alphanumeric" to plot groups in order}
 
 \item{aa.length}{The maximum length of the CDR3 amino acid sequence.}
 
@@ -39,7 +40,7 @@ This function the proportion of amino acids along the residues
 of the CDR3 amino acid sequence.
 }
 \examples{
-#Making combined contig data
+# Making combined contig data
 combined <- combineTCR(contig_list, 
                         samples = c("P17B", "P17L", "P18B", "P18L", 
                                     "P19B","P19L", "P20B", "P20L"))

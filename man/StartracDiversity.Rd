@@ -49,18 +49,18 @@ to understand the underlying analyses of the outputs please
 read and cite the linked manuscript.
 }
 \examples{
-#Getting the combined contigs
+# Getting the combined contigs
 combined <- combineTCR(contig_list, 
                         samples = c("P17B", "P17L", "P18B", "P18L", 
                                     "P19B","P19L", "P20B", "P20L"))
 
-#Getting a sample of a Seurat object
+# Getting a sample of a Seurat object
 scRep_example  <- get(data("scRep_example"))
 scRep_example  <- combineExpression(combined, scRep_example)
 scRep_example$Patient <- substring(scRep_example$orig.ident,1,3)
 scRep_example$Type <- substring(scRep_example$orig.ident,4,4) 
 
-#Using StartracDiversity()
+# Using StartracDiversity()
 StartracDiversity(scRep_example, 
                   type = "Type", 
                   group.by = "Patient")

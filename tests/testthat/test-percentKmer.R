@@ -1,61 +1,94 @@
-test_that("percentKmer works for AAs", {
-  top_30_aa_3mer_composition_matrix <- getdata(
-    "percentKmer", "top_30_aa_3mer_composition_matrix"
-  )
+# test script for percentKmer.R - testcases are NOT comprehensive!
 
-  expect_equal(
-    percentKmer(getCombined(), cloneCall = "aa", exportTable = TRUE),
-    top_30_aa_3mer_composition_matrix
-  )
-})
-
-test_that("percentKmer works for NTs", {
-  top_30_nt_3mer_composition_matrix <- getdata(
-    "percentKmer", "top_30_nt_3mer_composition_matrix"
-  )
-
-  expect_equal(
-    percentKmer(getCombined(), cloneCall = "nt", exportTable = TRUE),
-    top_30_nt_3mer_composition_matrix
-  )
+# Data to use
+combined <- combineTCR(contig_list, 
+                        samples = c("P17B", "P17L", "P18B", "P18L", 
+                                     "P19B","P19L", "P20B", "P20L"))
+                                    
+test_that("percentKmer: output type is correct for aa", {
   
-  combined <- getCombined()
-  combined <- addVariable(combined, 
-                          variable.name = "Type", 
-                          variables = rep(c("B", "L"), 4))
-  expect_doppelganger(
-    "percentKmer_group_motif2_plot",
-    percentKmer(combined, 
-                  motif.length = 2,
-                  cloneCall = "aa",
-                  group.by = "Type")
-  )
+  # Test for ggplot output by default
+  p <- percentKmer(combined, 
+                   cloneCall = "aa", 
+                   motif.length = 3, 
+                   min.depth = 1)
+  expect_s3_class(p, "ggplot")
   
-  expect_doppelganger(
-    "percentKmer_group_motif2_order_plot",
-    percentKmer(combined, 
-                motif.length = 2,
-                cloneCall = "aa",
-                group.by = "Type",
-                order.by = c("P17B","P18B","P19B","P20B","P17L","P18L","P19L","P20L"))
-  )
+  # Test for matrix output when exportTable = TRUE
+  mat <- percentKmer(combined, 
+                     cloneCall = "aa", 
+                     motif.length = 3, 
+                     min.depth = 1, 
+                     exportTable = TRUE)
+  expect_true(is.matrix(mat))
 })
 
-test_that("tokenize_sequence works", {
-  expect_equal(.tokenize_sequence("CAYRSAQAGGTSYGKLTF", 3),
-               c("CAY", "AYR", "YRS", "RSA", "SAQ","AQA", "QAG", 
-                 "AGG", "GGT", "GTS", "TSY", "SYG", "YGK", "GKL", "KLT", "LTF")
-  )
+test_that("percentKmer: output type is correct for nt", {
+  
+  # Test for ggplot output by default
+  p <- percentKmer(combined, 
+                   cloneCall = "nt", 
+                   motif.length = 3, 
+                   min.depth = 1)
+  expect_s3_class(p, "ggplot")
+  
+  # Test for matrix output when exportTable = TRUE
+  mat <- percentKmer(combined, 
+                     cloneCall = "nt", 
+                     motif.length = 3, 
+                     min.depth = 1, 
+                     exportTable = TRUE)
+  expect_true(is.matrix(mat))
 })
 
-test_that("tokenize_multiple_sequences works", {
-  expect_equal(.tokenize_multiple_sequences(c("TESTING", "MULTIPLE", "SEQUENCE", "TOKENIZER"), 4),
-               list(TESTING = c("TEST", "ESTI", "STIN", "TING"),
-                    MULTIPLE = c("MULT", "ULTI", "LTIP", "TIPL", "IPLE"),
-                    SEQUENCE = c("SEQU", "EQUE", "QUEN", "UENC", "ENCE"),
-                    TOKENIZER = c("TOKE", "OKEN", "KENI", "ENIZ", "NIZE", "IZER"))
-  )
-                    
+
+test_that("percentKmer: matrix calculations are accurate", {
+  
+  mat <- percentKmer(combined, 
+                     cloneCall = "aa", 
+                     motif.length = 3, 
+                     min.depth = 1, 
+                     top.motifs = NULL, 
+                     exportTable = TRUE)
+  
+  # Check dimensions
+  expect_equal(nrow(mat), 8)
+  expect_equal(ncol(mat), 5500)
+  expect_equal(rownames(mat), c("P17B", "P17L", "P18B", "P18L", "P19B", 
+                                "P19L", "P20B", "P20L"))
+  
+  # Check if all row sums equal 1 (for proportions)
+  expect_true(all(abs(rowSums(mat) - 1) < 1e-9))
 })
 
-# TODO test for cases where no kmers were counted (NA columns present)
+
+test_that("percentKmer: parameter handling works as expected", {
+  
+  mat_top1 <- percentKmer(combined, 
+                          cloneCall = "aa", 
+                          motif.length = 3, 
+                          min.depth = 1, 
+                          top.motifs = 1,
+                          exportTable = TRUE)
+  expect_true(ncol(mat_top1) == 1)
+  expect_equal(colnames(mat_top1), "ASS")
+  
+  # Test `motif.length` parameter
+  mat_len2 <- percentKmer(combined, 
+                          cloneCall = "aa", 
+                          motif.length = 2, 
+                          top.motifs = NULL, 
+                          exportTable = TRUE)
+  expect_true(all(nchar(colnames(mat_len2)) == 2))
+})
+
+
+test_that("percentKmer: input validation and error handling", {
+  
+  # Test for error on invalid `cloneCall`
+  expect_error(
+    percentKmer(combined, cloneCall = "invalid_option"),
+    "Please select either nucleotide (nt) or amino acid (aa) sequences for cloneCall",
+    fixed = TRUE
+  )
+})

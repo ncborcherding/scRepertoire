@@ -55,6 +55,13 @@ navbar:
       href: articles/Ibex.html
     - text: Single-cell Gene Set Enrichment Analysis
       href: articles/Running_Escape.html
+    - text: '-------'
+    - text: Immune Repertoire Trajectory Analysis
+      href: articles/dandelionR.html
+    - text: Using scRepertoire with immunarch
+      href: articles/immunarch.html
+    - text: TCRpheno applied to T cell fate
+      href: articles/tcrpheno.html
   - text: News/Changelog
     href: news/index.html
   - text: Reference
@@ -118,7 +125,6 @@ reference:
   desc: Reference data for package functions.
 - contents:
   - contig_list
-  - mini_contig_list
   - scRep_example
 deploy:
   install_metadata: yes

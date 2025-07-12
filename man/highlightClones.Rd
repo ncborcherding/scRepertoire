@@ -14,9 +14,10 @@ highlightClones(
 \item{sc.data}{The single-cell object to attach after
 \code{\link[=combineExpression]{combineExpression()}}}
 
-\item{cloneCall}{How to call the clone - VDJC gene (gene),
-CDR3 nucleotide (nt), CDR3 amino acid (aa),
-VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data.}
+\item{cloneCall}{How to call the clone - VDJC gene (\strong{gene}),
+CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
+VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable
+in the data}
 
 \item{sequence}{The specific sequence or sequence to highlight}
 }
@@ -29,19 +30,19 @@ Use a specific clonal sequence to highlight on top of the dimensional
 reduction in single-cell object.
 }
 \examples{
-#Getting the combined contigs
+# Getting the combined contigs
 combined <- combineTCR(contig_list, 
                         samples = c("P17B", "P17L", "P18B", "P18L", 
                                     "P19B","P19L", "P20B", "P20L"))
 
-#Getting a sample of a Seurat object
+# Getting a sample of a Seurat object
 scRep_example  <- get(data("scRep_example"))
 
-#Using combineExpresion()
+# Using combineExpresion()
 scRep_example  <- combineExpression(combined, 
                                     scRep_example)
 
-#Using highlightClones()
+# Using highlightClones()
 scRep_example   <- highlightClones(scRep_example, 
                                    cloneCall= "aa", 
                                    sequence = c("CVVSDNTGGFKTIF_CASSVRRERANTGELFF"))

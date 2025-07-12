@@ -42,7 +42,7 @@
 #' 
 #' @export
 #' @concept SC_Functions
-#' @return A data frame of shared clones between groups formated for [chordDiagram][circlize::chordDiagram]
+#' @return A data frame of shared clones between groups formatted for [chordDiagram][circlize::chordDiagram]
 #' @author Dillon Corvino, Nick Borcherding
 getCirclize <- function(sc.data, 
                         cloneCall = "strict", 
@@ -57,7 +57,7 @@ getCirclize <- function(sc.data,
   
   #Making exhaustive group.by dat frame
   group_pairs <- expand.grid(group1 = unique(meta[,group.by]), group2 = unique(meta[,group.by]))
-  group_pairs <- unique(t(apply(group_pairs, 1, function(x) str_sort(x, numeric = TRUE))))
+  group_pairs <- unique(t(apply(group_pairs, 1, function(x) sort(x))))
   group_pairs <- as.data.frame(group_pairs)
   colnames(group_pairs) <- c("from", "to")
   
@@ -66,7 +66,8 @@ getCirclize <- function(sc.data,
   }
   
   #Count clones across all identities
-  clone.table <- .clone.counter(meta, group.by, cloneCall)
+  clone.table <- .cloneCounter(meta, group.by, cloneCall)
+  clone.table[[cloneCall]] <- as.character(clone.table[[cloneCall]])
   
   group_pairs$value <- NA
   
@@ -74,8 +75,8 @@ getCirclize <- function(sc.data,
     pair1 <- group_pairs[i,1]
     pair2 <- group_pairs[i,2]
     
-    clone1 <- clone.table[clone.table[,1] == pair1, cloneCall]
-    clone2 <- clone.table[clone.table[,1] == pair2, cloneCall]
+    clone1 <- clone.table[clone.table[,1] == pair1 & clone.table[["n"]] > 0,][[cloneCall]]
+    clone2 <- clone.table[clone.table[,1] == pair2 & clone.table[["n"]] > 0,][[cloneCall]]
     
     common <- intersect(clone1, clone2)
     value <- length(common)

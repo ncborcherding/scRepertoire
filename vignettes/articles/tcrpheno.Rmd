@@ -1,0 +1,187 @@
+---
+title: "T Cell Fate Prediction by TCR sequences"
+date: 'Compiled: `r format(Sys.Date(), "%B %d, %Y")`'
+output: rmarkdown::html_vignette
+theme: united
+df_print: kable
+vignette: >
+  %\VignetteIndexEntry{TCRpheno applied to T cell fate}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r include = FALSE}
+all_times <- list()  # store the time for each chunk
+knitr::knit_hooks$set(time_it = local({
+  now <- NULL
+  function(before, options) {
+    if (before) {
+      now <<- Sys.time()
+    } else {
+      res <- difftime(Sys.time(), now, units = "secs")
+      all_times[[options$label]] <<- res
+    }
+  }
+}))
+
+knitr::opts_chunk$set(
+  tidy = TRUE,
+  tidy.opts = list(width.cutoff = 95),
+  message = FALSE,
+  warning = FALSE,
+  time_it = TRUE
+)
+
+suppressMessages(library(scRepertoire))
+suppressMessages(library(tcrpheno))
+suppressMessages(library(Seurat))
+
+data("contig_list") 
+combined.TCR <- combineTCR(contig_list, 
+                           samples = c("P17B", "P17L", "P18B", "P18L", 
+                                            "P19B","P19L", "P20B", "P20L"))
+```
+
+# Overview
+
+`tcrpheno` is an R package that applies a logistic regression model to the amino acid sequences of T-cell receptor complementarity-determining regions (CDRs) 1, 2, and 3. This model produces phenotype scores associated with specific T cell fates, providing insights into the potential functional trajectory of T cells based on their TCR sequences.
+
+## More information on individual phenotypes:
+
+The tcrpheno package calculates four distinct scores, each linked to a potential T cell phenotype 
+
+* **TCRinnate**: Higher scores suggest a greater likelihood of the T cell adopting an innate-like, *PLZF*-high phenotype, characteristic of mucosal-associated invariant T (MAIT) cells or invariant natural killer T (iNKT). This score is strongly influenced by features in CDR2α and specific TRAV gene usage.  
+* **TCR.8**: Higher scores indicate a predisposition towards a CD8+ T cell fate over a CD4+ fate. TCRs with high TCR.8 scores tend to have a depletion of positive charge in the mid-region of their CDR3 loops.  
+* **TCRreg**: Higher scores point to an increased probability of the T cell becoming a regulatory T cell (Treg), encompassing both CD4+ and CD8+ Treg populations. This is associated with increased hydrophobicity in CDR3β and CDR3α residues.  
+* **TCRmem**: Higher scores suggest a T cell is more likely to differentiate into a memory cell rather than remaining naive. This score reflects a general propensity for T-cell activation and is influenced by features in both CDR3α and CDR3β. Notably, higher TCRmem scores correlate with increased T-cell activation even among T cells recognizing the same antigen and correspond to the strength of positive selection in the thymus.
+
+## Citation 
+
+If using *tcrpheno*, please cite the [article](https://pubmed.ncbi.nlm.nih.gov/39731734/): Lagattuta, K. et al. The T cell receptor sequence influences the likelihood of T cell memory formation. Cell Reports. 2025 Jan 28;44(1)
+
+# Installation 
+
+```{r, eval = FALSE}
+# Ensure 'remotes' is installed: install.packages("remotes")
+remotes::install_github("kalaga27/tcrpheno")
+```
+
+# Loading Data
+
+his vignette uses example data provided by the scRepertoire package to demonstrate the workflow. For more details on scRepertoire's example data and loading mechanisms, refer [here](https://www.borch.dev/uploads/screpertoire/articles/loading#example-data-in-screpertoire). 
+
+```{r}
+scRep_example <- readRDS("scRep_example_full.rds")
+
+scRep_example  <- combineExpression(combined.TCR, 
+                                    scRep_example , 
+                                    cloneCall="aa", 
+                                    group.by = "sample", 
+                                    proportion = TRUE)
+```
+
+# Exporting Clonal Information for tcrpheno
+
+The `tcrpheno` package requires TCR data in a specific format. The ```exportClones()``` function from scRepertoire can now output data directly in this `tcrpheno` format. This format includes separate columns for TRA V gene, TRA J gene, TRA CDR3 sequence, TRB V gene, TRB J gene, and TRB CDR3 sequence, along with a cell identifier.
+
+```{r}
+exported_clones <- exportClones(scRep_example,
+                                write.file = FALSE,
+                                format = "tcrpheno") 
+exported_clones <- na.omit(exported_clones)
+head(exported_clones)
+```
+
+# Generating Phenotype Scores
+
+With the TCR data correctly formatted, we can use the ```score_tcrs()``` function from the ```tcrpheno``` package to calculate the phenotype scores.
+
+```{r}
+tcrpheno.results <- score_tcrs(exported_clones, "ab")
+head(tcrpheno.results)
+```
+
+# Adding to Single Cell Object
+
+To visualize and analyze these TCR-derived phenotype scores in conjunction with gene expression data, we add them to the metadata of our Seurat object.
+
+```{r}
+scRep_example <- AddMetaData(scRep_example, tcrpheno.results)
+```
+
+## Visualizing Predictions
+
+Now that the phenotype scores are part of the Seurat object, we can visualize them on dimensionality reduction plots, such as UMAPs. This helps to see if cells with particular TCR-derived phenotype scores cluster together or co-localize with known cell populations.
+
+```{r}
+tcrpheno.plots <- FeaturePlot(scRep_example, 
+                              features = c("TCR.mem", 
+                                           "TCR.reg", 
+                                           "TCR.CD8", 
+                                           "TCR.innate"))
+
+lapply(tcrpheno.plots, function(x) {
+  x + scale_color_viridis(option = "B") 
+}) -> tcrpheno.plots
+
+wrap_plots(tcrpheno.plots)
+```
+
+## Comparing With Gene Expression
+
+A key aspect of integrating TCR phenotype scores is to compare them with the expression of known marker genes associated with different T cell states. This can help validate or provide biological context to the `tcrpheno` predictions.
+
+```{r}
+RNA.plots <- FeaturePlot(scRep_example, 
+                          features = c("CD4","CD8A", "FOXP3", "KLRB1"), 
+                          combine = FALSE) 
+
+lapply(RNA.plots, function(x) {
+  x + scale_color_viridis(option = "B") 
+}) -> RNA.plots
+
+wrap_plots(RNA.plots)
+```
+
+## Comparing Innate Scores with TCR-based annotation
+
+`scRepertoire` provides the ```annotateInvariant()``` function to identify potential MAIT or iNKT cells based on their canonical TCR chain usage. This offers a VDJ gene-centric way to identify innate-like T cells, which can be compared to the TCRinnate score from `tcrpheno`, which is derived from a broader set of TCR sequence features.
+
+```{r}
+# Annotate MAIT cells (human species assumed for example data)
+scRep_example <- annotateInvariant(scRep_example, 
+                                   type = "MAIT", 
+                                   species = "human")
+
+# Annotate iNKT cells (human species assumed for example data)
+scRep_example <- annotateInvariant(scRep_example, 
+                                   type = "iNKT", 
+                                   species = "human")
+
+# Visualize the TCRinnate score from tcrpheno
+p_innate_tcrpheno <- FeaturePlot(scRep_example, 
+                                 features = "TCR.innate", 
+                                 pt.size = 0.5, 
+                                 order = TRUE) +
+                     scale_color_viridis(option = "B")
+
+# Visualize the MAIT score from scRepertoire (0 or 1)
+p_mait_screpertoire <- FeaturePlot(scRep_example, 
+                                   features = "MAIT.score", 
+                                   pt.size = 0.5, 
+                                   order = TRUE) +
+                       scale_color_viridis(discrete = TRUE, option = "B") 
+
+# Visualize the iNKT score from scRepertoire (0 or 1)
+p_inkt_screpertoire <- FeaturePlot(scRep_example, 
+                                   features = "iNKT.score", 
+                                   pt.size = 0.5, 
+                                   order = TRUE) +
+                       scale_color_viridis(discrete = TRUE, option = "B")
+
+p_innate_tcrpheno + p_mait_screpertoire + p_inkt_screpertoire
+```
+
+This comparison allows you to see how well the `tcrpheno` model's prediction for innate-like phenotypes aligns with classifications based on canonical TCR gene usage. Differences can arise because `tcrpheno` considers a wider range of sequence features beyond just the V-J gene pairing for MAIT/iNKT identification.  
+
+This concludes the vignette on applying `tcrpheno` to predict T cell fate from TCR sequences and integrating these predictions with single-cell RNA sequencing data.

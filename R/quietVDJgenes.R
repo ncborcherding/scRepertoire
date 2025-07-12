@@ -34,7 +34,6 @@ quietTCRgenes <- function(input.data, ...) {
 #' @method quietTCRgenes default
 #' @export
 quietTCRgenes.default <- function(input.data, ...) {
-    assert_that(is.character(input.data))
     input.data[!shouldQuietTcrGene(input.data)]
 }
 
@@ -64,13 +63,12 @@ quietBCRgenes <- function(input.data, ...) {
 #' @method quietBCRgenes default
 #' @export
 quietBCRgenes.default <- function(input.data, ...) {
-    assert_that(is.character(input.data))
     input.data[!shouldQuietBcrGene(input.data)]
 }
 
 shouldQuietBcrGene <- function(genes) {
     grepl("^IG[HLK][VDJCAGM]", genes) &
-        genes %!in% getHumanIgPseudoGenes() |
+        !genes %in% getHumanIgPseudoGenes() |
         genes == "JCHAIN"
 }
 

@@ -37,8 +37,9 @@ coverage-based rarefaction/extrapolation curve (\code{type = 3}).}
 \item{hill.numbers}{The Hill numbers to be plotted out
 (0 - species richness, 1 - Shannon, 2 - Simpson)}
 
-\item{n.boots}{The number of bootstraps to downsample in order
-to get mean diversity.}
+\item{n.boots}{The number of bootstrap replicates used to derive confidence
+intervals for the diversity estimates. More replicates can provide a more
+reliable measure of statistical variability.}
 
 \item{exportTable}{Exports a table of the data into the global
 environment in addition to the visualization.}
@@ -57,7 +58,7 @@ if using this function. The input into the iNEXT calculation is abundance,
 incidence-based calculations are not supported.
 }
 \examples{
-#Making combined contig data
+# Making combined contig data
 combined <- combineTCR(contig_list, 
                         samples = c("P17B", "P17L", "P18B", "P18L", 
                                     "P19B","P19L", "P20B", "P20L"))

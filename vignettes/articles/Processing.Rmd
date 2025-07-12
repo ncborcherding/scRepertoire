@@ -84,6 +84,8 @@ After assigning the clone by barcode, we can export the paired clonotypes using 
 * "paired" - Export the paired sequences **(default)**.  
 * "airr" - Export data in an AIRR-compliant format.  
 * "TCRMatch" - Export TCRB chain information. 
+* "tcrpheno": Exports a data frame compatible with the `tcrpheno` pipeline, with TRA and TRB chains in separate columns.
+* "immunarch": Exports a list containing a data frame and metadata formatted for use with the `immunarch` package.   
     
 **write.file**    
 

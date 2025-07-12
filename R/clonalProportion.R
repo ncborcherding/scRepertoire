@@ -43,12 +43,12 @@ clonalProportion <- function(input.data,
                              exportTable = FALSE, 
                              palette = "inferno") {
     Con.df <- NULL
-    input.data <- .data.wrangle(input.data, 
-                                group.by, 
-                                .theCall(input.data, cloneCall, check.df = FALSE), 
-                                chain)
+    input.data <- .dataWrangle(input.data, 
+                               group.by, 
+                               .theCall(input.data, cloneCall, check.df = FALSE), 
+                               chain)
     cloneCall <- .theCall(input.data, cloneCall)
-    sco <- is_seurat_object(input.data) | is_se_object(input.data)
+    sco <- .is.seurat.or.se.object(input.data)
     
     if(!is.null(group.by) & !sco) {
       input.data <- .groupList(input.data, group.by)
@@ -73,22 +73,28 @@ clonalProportion <- function(input.data,
     if (exportTable == TRUE) {
         return(mat)
     }
-    #Plotting
-    mat_melt <- melt(mat)
+    # Plotting
+    mat_melt <- data.frame(
+      Var1 = rep(rownames(mat), ncol(mat)),
+      Var2 = rep(colnames(mat), each = nrow(mat)),
+      value = as.vector(mat)
+    )
+    mat_melt[["Var2"]] <- factor(mat_melt[["Var2"]], 
+                                 levels = colnames(mat))
     
     if(!is.null(order.by)) {
-      mat_melt <- .ordering.function(vector = order.by,
-                                     group.by = "Var1", 
-                                     data.frame = mat_melt)
+      mat_melt <- .orderingFunction(vector = order.by,
+                                    group.by = "Var1", 
+                                    data.frame = mat_melt)
     }
     col <- length(unique(mat_melt$Var2))
     plot <- ggplot(mat_melt, aes(x=as.factor(Var1), y=value, fill=Var2)) +
         geom_bar(stat = "identity", position="fill", 
                     color = "black", lwd= 0.25) +
-        scale_fill_manual(name = "Clonal Indices", 
-                        values = rev(.colorizer(palette,col))) +
-        xlab("Samples") +
-        ylab("Occupied Repertoire Space") +
+        scale_fill_manual(values = rev(.colorizer(palette,col))) +
+        labs(x = "Samples",
+             y = "Occupied Repertoire Space", 
+             fill = "Clonal Indices") +
         theme_classic()
     return(plot)
 }

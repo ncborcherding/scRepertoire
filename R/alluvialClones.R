@@ -86,7 +86,7 @@ alluvialClones <- function(sc.data,
   }
   meta <- .grabMeta(sc.data)
   if (chain != "both") {
-    meta <- .off.the.chain(meta, chain, cloneCall)
+    meta <- .offTheChain(meta, chain, cloneCall)
   }
   meta$barcodes <- rownames(meta)
   meta <- meta[!is.na(meta[,cloneCall]),]

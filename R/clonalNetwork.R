@@ -74,7 +74,7 @@ clonalNetwork <- function(sc.data,
     to <- from <- weight <- y <- NULL
     meta <- .grabMeta(sc.data)
     cloneCall <- .theCall(meta, cloneCall)
-    coord <- data.frame(.get.coord(sc.data, reduction), group.by = meta[,group.by])
+    coord <- data.frame(.getCoord(sc.data, reduction), group.by = meta[,group.by])
     min <- c()
     meta <- .grabMeta(sc.data)
     if (!is.null(filter.clones))  {
@@ -87,7 +87,7 @@ clonalNetwork <- function(sc.data,
         }
         #Filtering clones based on the minimum value
         min_val <- min(min)
-        table <- .clone.counter(meta, group.by, cloneCall)
+        table <- .cloneCounter(meta, group.by, cloneCall)
         cut <- which.min(abs(table$clone.sum - min_val))
         clones.to.filter <- table[,1][seq_len(cut)]
       } else if (is.numeric(filter.clones)) {
@@ -106,7 +106,7 @@ clonalNetwork <- function(sc.data,
     
     if(exportClones) {
       #Summarizing all the clones by group.by
-      table <- .clone.counter(meta, group.by, cloneCall)[,seq_len(3)]
+      table <- .cloneCounter(meta, group.by, cloneCall)[,seq_len(3)]
       #Identifying the clones across the group by
       clones.across.identities <- names(which(table(table[,2]) > 1))
       if(length(clones.across.identities) < 1) {
@@ -186,7 +186,7 @@ clonalNetwork <- function(sc.data,
     }
     #Remove reciprocals 
     if (filter.graph) {
-        unique.id <- str_sort(unique.id, numeric = TRUE)
+        unique.id <- .alphanumericalSort(unique.id)
         edge.list <- edge.list[edge.list[,1] %in% unique.id[seq_len(length(unique.id)/2)],]
     }
     #Removing any clones below proportion threshold

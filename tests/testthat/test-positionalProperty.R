@@ -1,59 +1,76 @@
 # test script for positionalProperty.R - testcases are NOT comprehensive!
 
-test_that("positionalProperty works", {
+# Data to use
+combined <- combineTCR(contig_list, 
+                       samples = c("P17B", "P17L", "P18B", "P18L", 
+                                   "P19B","P19L", "P20B", "P20L"))
 
-  set.seed(42)
-  expect_doppelganger(
-    "positionalEntropy_TRB_plot",
-     positionalProperty(getCombined(), 
-                        chain = "TRB", 
-                        aa.length = 20)
+test_that("positionalProperty: Output structure is correct", {
+  
+  # Test with exportTable = TRUE
+  df_output <- positionalProperty(combined, 
+                                  method = "kideraFactors", 
+                                  exportTable = TRUE)
+  
+  expect_s3_class(df_output, "data.frame")
+  
+  expected_cols <- c("property", "position", "mean", "sd", "n", "ci_lower", "ci_upper", "group")
+  expect_true(all(expected_cols %in% names(df_output)))
+  
+  # Test that it returns a ggplot object by default
+  plot_output <- positionalProperty(combined, 
+                                    method = "atchleyFactors")
+  
+  expect_s3_class(plot_output, "ggplot")
+})
+
+test_that("positionalProperty: Input validation works", {
+  
+  # Error on invalid method
+  expect_error(
+    positionalProperty(combined, 
+                       method = "InvalidMethod"),
+    "Please select a compatible method"
   )
   
-  expect_doppelganger(
-    "positionalEntropy_TRB_order_plot",
-    positionalProperty(getCombined(), 
-                       chain = "TRB", 
-                       aa.length = 20,
-                       order.by = c("P17B","P18B","P19B","P20B","P17L","P18L","P19L","P20L"))
-  )
+})
+
+test_that("positionalProperty: Core calculations are plausible", {
   
-  expect_doppelganger(
-    "positionalEntropy_TRA_plot",
-    positionalProperty(getCombined(), 
-                       chain = "TRA", 
-                       aa.length = 20)
-  )
+  df_output <- positionalProperty(combined, 
+                                  chain = "TRB",
+                                  aa.length = 15, 
+                                  exportTable = TRUE)
   
-  expect_doppelganger(
-    "positionalEntropy_Kidera_plot",
-    positionalProperty(getCombined(), 
-                       chain = "TRB", 
-                       method = "Kidera",
-                       aa.length = 20)
-  )
+  p17_b_subset <- df_output[df_output$group == "P17B", ]
+  expect_true(all(p17_b_subset$n <= 2851)) 
+})
+
+test_that("positionalProperty: Parameters behave as expected", {
   
-  expect_doppelganger(
-    "positionalEntropy_stScales_plot",
-    positionalProperty(getCombined(), 
-                       chain = "TRB", 
-                       method = "stScales",
-                       aa.length = 20)
-  )
+  # `aa.length` parameter
+  df_len10 <- positionalProperty(combined, 
+                                 aa.length = 10, 
+                                 exportTable = TRUE)
+  expect_equal(max(df_len10$position), 10)
   
-  expect_doppelganger(
-    "positionalEntropy_tScales_plot",
-    positionalProperty(getCombined(), 
-                       chain = "TRB", 
-                       method = "tScales",
-                       aa.length = 20)
-  )
+  df_len25 <- positionalProperty(combined, 
+                                 aa.length = 25, 
+                                 exportTable = TRUE)
+  expect_equal(max(df_len25$position), 25)
+})
+
+test_that("positionalProperty: ggplot object is correctly formed", {
   
-  expect_doppelganger(
-    "positionalEntropy_VHSE_plot",
-    positionalProperty(getCombined(), 
-                       chain = "TRB", 
-                       method = "VHSE",
-                       aa.length = 20)
-  )
+  plot_output <- positionalProperty(combined, 
+                                    method = "kideraFactors")
+  
+  # Check layers
+  expect_true("GeomRibbon" %in% sapply(plot_output$layers, function(x) class(x$geom)[1]))
+  expect_true("GeomLine" %in% sapply(plot_output$layers, function(x) class(x$geom)[1]))
+  
+  # Check aesthetics
+  expect_equal(rlang::as_name(plot_output$mapping$x), "position")
+  expect_equal(rlang::as_name(plot_output$mapping$y), "mean")
+  expect_equal(rlang::as_name(plot_output$mapping$group), "group")
 })

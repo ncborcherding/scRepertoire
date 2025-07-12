@@ -18,19 +18,22 @@
 
 #' @param input.data The product of [combineTCR()], 
 #' [combineBCR()], or [combineExpression()]
-#' @param chain "TRA", "TRB", "TRG", "TRG", "IGH", "IGL"
+#' @param chain indicate a specific chain should be used - 
+#' e.g."TRA", "TRG", "IGH", "IGL", etc
 #' @param group.by The variable to use for grouping
-#' @param order.by A vector of specific plotting order or "alphanumeric"
-#' to plot groups in order
+#' @param order.by A vector of specific plotting order for `group.by` or 
+#' "alphanumeric" to plot groups in order
 #' @param aa.length The maximum length of the CDR3 amino acid sequence. 
 #' @param method The method to calculate the entropy/diversity - 
-#' "shannon", "inv.simpson", "norm.entropy"
+#' `"shannon"`, `"inv.simpson"`, `"gini.simpson"`, `"norm.entropy"`, 
+#' `"pielou"`, `"hill0"`, `"hill1"`, `"hill2"`
 #' @param exportTable Returns the data frame used for forming the graph
 #' @param palette Colors to use in visualization - input any [hcl.pals][grDevices::hcl.pals]
 #'
 #' @export
+#' @importFrom immApex calculateEntropy
 #' @concept Summarize_Repertoire
-#' @return ggplot of line graph of diversity by position
+#' @return ggplot of line graph of diversity by amino acid residue position
 positionalEntropy <- function(input.data, 
                               chain = "TRB", 
                               group.by = NULL, 
@@ -40,11 +43,8 @@ positionalEntropy <- function(input.data,
                               exportTable = FALSE, 
                               palette = "inferno")  {
   
-  if(method %!in% c("shannon", "inv.simpson", "norm.entropy")) {
-    stop("Please select a compatible method.")
-  }
-  sco <- is_seurat_object(input.data) | is_se_object(input.data)
-  input.data <- .data.wrangle(input.data, 
+  sco <- .is.seurat.or.se.object(input.data)
+  input.data <- .dataWrangle(input.data, 
                               group.by, 
                               .theCall(input.data, "CTaa", check.df = FALSE), 
                               chain)
@@ -55,34 +55,32 @@ positionalEntropy <- function(input.data,
   }
   
   #Selecting Diversity Function
-  diversityFunc <- switch(method,
-                          "norm.entropy" = .normentropy,
-                          "inv.simpson" = .invsimpson,
-                          "shannon" = .shannon,
-                          stop("Invalid method provided"))
-  
-  aa.count.list <- .aa.counter(input.data, "CTaa", aa.length)
-  
-  lapply(aa.count.list, function(x){
-      diversity <- sapply(x[,2:ncol(x)], diversityFunc)
-      diversity[is.nan(diversity)] <- 0
-      diversity
+  lapply(seq_along(input.data), function(x){
+    strings <- .processStrings(input.data[[x]][["CTaa"]], aa.length)
+    entropy <- calculateEntropy(strings, method = method)
+    entropy_df <- as.data.frame(entropy)
+    entropy_df$Position <- 1:nrow(entropy_df)
+    entropy_df$group <- names(input.data)[x]
+    rownames(entropy_df) <- NULL # Remove the messy row names
+    entropy_df
   }) -> group.results
-
-  mat <- do.call(rbind, group.results)
-  mat_melt <- suppressMessages(melt(mat))
+  
+  mat_melt <- do.call(rbind, group.results)
   
   if(!is.null(order.by)) {
-    mat_melt <- .ordering.function(vector = order.by,
-                                   group.by = "Var1", 
-                                   mat_melt)
+    mat_melt <- .orderingFunction(vector = order.by,
+                                  group.by = "group", 
+                                  mat_melt)
   }
     
-  plot <- ggplot(mat_melt, aes(x=Var2, y = value, group= Var1, color = Var1)) +
+  plot <- ggplot(mat_melt, aes(x=as.factor(Position), 
+                               y = .data[["entropy"]], 
+                               group= group, 
+                               color = group)) +
           geom_line(stat = "identity") +
           geom_point() + 
           scale_color_manual(name = "Groups", 
-                            values = rev(.colorizer(palette,nrow(mat)))) +
+                            values = rev(.colorizer(palette,length(input.data)))) +
           xlab("Amino Acid Residues") +
           ylab("Relative Diversity") +
           theme_classic() + 

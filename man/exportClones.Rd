@@ -2,7 +2,7 @@
 % Please edit documentation in R/exportClones.R
 \name{exportClones}
 \alias{exportClones}
-\title{Exporting clones}
+\title{Export Clonal Data in Various Formats}
 \usage{
 exportClones(
   input.data,
@@ -14,41 +14,63 @@ exportClones(
 )
 }
 \arguments{
-\item{input.data}{The product of \code{\link[=combineTCR]{combineTCR()}},
-\code{\link[=combineBCR]{combineBCR()}}, or \code{\link[=combineExpression]{combineExpression()}}.}
+\item{input.data}{The product of \code{combineTCR()}, \code{combineBCR()}, or
+\code{combineExpression()}.}
 
-\item{format}{The format to export the clones - "paired", "airr", or "TCRMatch".}
+\item{format}{The format for exporting clones.
+Options are: "paired", "airr", "TCRMatch", "tcrpheno", "immunarch".}
 
-\item{group.by}{The variable to use for grouping.}
+\item{group.by}{The variable in the metadata to use for grouping. If \code{NULL},
+data will be grouped by the sample names.}
 
-\item{write.file}{\strong{TRUE}, save the file or \strong{FALSE},
-return a data.frame}
+\item{write.file}{If \code{TRUE} (default), saves the output to a CSV file. If
+\code{FALSE}, returns the data frame or list to the R environment.}
 
-\item{dir}{directory location to save the csv}
+\item{dir}{The directory where the output file will be saved.
+Defaults to the current working directory.}
 
-\item{file.name}{the csv file name}
+\item{file.name}{The name of the file to be saved.}
 }
 \value{
-CSV file of the paired sequences.
+A data frame or list in the specified format, either returned to the
+R environment or saved as a CSV file.
 }
 \description{
-This function saves a csv file of clones (genes, amino acid, and
-nucleotide sequences) by barcodes. \strong{format} determines
-the structure of the csv file - \emph{paired} will export sequences
-by barcodes and include multiple chains, \emph{airr} will export a data
-frame that is consistent with the AIRR format, and \emph{TCRMatch} will
-export a data frame that has the TRB chain with count information.
+Exports clonal information (gene sequences, amino acids, nucleotides) from
+scRepertoire objects into a file or a data frame. The output format can be
+tailored for compatibility with different analysis workflows.
+}
+\details{
+The \code{format} parameter determines the structure of the output:
+\itemize{
+\item{"paired"}: Exports a data frame where each row represents a barcode,
+with paired chain information (amino acid, nucleotide, genes) in separate
+columns.
+\item{"airr"}: Exports a data frame that adheres to the Adaptive Immune
+Receptor Repertoire (AIRR) Community format, with each row representing
+a single receptor chain.
+\item{"TCRMatch"}: Exports a data frame specifically for the TCRMatch
+algorithm, containing the TRB chain amino acid sequence and clonal
+frequency.
+\item{"tcrpheno"}: Exports a data frame compatible with the tcrpheno
+pipeline, with TRA and TRB chains in separate columns.
+\item{"immunarch"}: Exports a list containing a data frame and metadata
+formatted for use with the immunarch package.
+}
 }
 \examples{
 \dontrun{
 #Making combined contig data
-combined <- combineTCR(contig_list, 
-                        samples = c("P17B", "P17L", "P18B", "P18L", 
-                                    "P19B","P19L", "P20B", "P20L"))
-exportClones(combined, 
-             format = "paired")
+combined <- combineTCR(contig_list,
+                       samples = c("P17B", "P17L", "P18B", "P18L",
+                                   "P19B", "P19L", "P20B", "P20L"))
+
+# Export as a paired data frame and save to a file
+exportClones(combined, format = "paired", file.name = "paired_clones.csv")
+
+# Return an AIRR-formatted data frame to the environment
+airr_df <- exportClones(combined, format = "airr", write.file = FALSE)
 }
-                                   
 }
 \author{
 Jonathan Noonan, Nick Borcherding

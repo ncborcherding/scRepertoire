@@ -48,6 +48,7 @@
 #' @param palette Colors to use in visualization - input any
 #' \link[grDevices]{hcl.pals}
 #' @export
+#' @importFrom dplyr slice_max
 #' @concept Visualizing_Clones
 #' @return ggplot of the proportion of total sequencing read of
 #' selecting clones
@@ -66,35 +67,17 @@ clonalCompare <- function(input.data,
                           exportTable = FALSE,
                           palette = "inferno") {
 
-  assert_that(
-    isListOfNonEmptyDataFrames(input.data) ||
-      is_seurat_or_se_object(input.data),
-    is.string(cloneCall),
-    is.string(chain), chain %in% c("both", "TRA", "TRB", "TRG", "TRD", "IGH", "IGL", "IGK"),
-    is.null(samples) || is.character(samples),
-    is.null(clones) || is.character(clones),
-    is.null(top.clones) || is.count(top.clones),
-    is.null(highlight.clones) || is.character(highlight.clones),
-    is.flag(relabel.clones),
-    is.null(group.by) || is.string(group.by),
-    is.null(order.by) || is.character(order.by),
-    is.string(graph), graph %in% c("alluvial", "area"),
-    is.flag(proportion),
-    is.flag(exportTable),
-    is.string(palette)
-  )
-
   #Tie goes to indicated clones over top clones
   if(!is.null(top.clones) && !is.null(clones)) {
     top.clones <- NULL
   }
-  input.data <- .data.wrangle(input.data,
+  input.data <- .dataWrangle(input.data,
                               group.by,
                               .theCall(input.data, cloneCall, check.df = FALSE),
                               chain)
   cloneCall <- .theCall(input.data, cloneCall)
 
-  sco <- is_seurat_object(input.data) | is_se_object(input.data)
+  sco <- .is.seurat.or.se.object(input.data)
   if(!is.null(group.by) && !sco) {
     input.data <- .groupList(input.data, group.by)
   }
@@ -130,7 +113,7 @@ clonalCompare <- function(input.data,
       )
     Con.df <- Con.df[Con.df$clones %in% top$clones,]
   }
-  if (nrow(Con.df) < length(unique(Con.df$Sample))) {
+  if (nrow(Con.df) < length(unique(Con.df$Sample)) || nrow(Con.df) == 0) {
     stop("Please reasses the filtering strategies here, there are not
             enough clones to examine.")
   }
@@ -146,14 +129,14 @@ clonalCompare <- function(input.data,
     Con.df[,"original.clones"] <- Con.df[, "clones"]
     Con.df[,"clones"] <- new.clones[as.vector(Con.df[, "clones"])]
     Con.df[,"clones"] <- factor(Con.df[, "clones"],
-                                levels = str_sort(unique(Con.df[, "clones"]), numeric = TRUE))
+                                levels = .alphanumericalSort(unique(Con.df[, "clones"])))
     clones.returned <- as.vector(unique(Con.df[, "clones"]))
   }
 
   if(!is.null(order.by)) {
-    Con.df <- .ordering.function(vector = order.by,
-                                 group.by = "Sample",
-                                 data.frame = Con.df)
+    Con.df <- .orderingFunction(vector = order.by,
+                                group.by = "Sample",
+                                data.frame = Con.df)
   }
 
   if (exportTable) {

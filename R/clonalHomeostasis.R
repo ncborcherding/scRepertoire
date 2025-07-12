@@ -8,7 +8,7 @@
 #' output for the data is preferred, set **exportTable** = TRUE.
 #'
 #' @examples
-#' #Making combined contig data
+#' # Making combined contig data
 #' combined <- combineTCR(contig_list, 
 #'                         samples = c("P17B", "P17L", "P18B", "P18L", 
 #'                                     "P19B","P19L", "P20B", "P20L"))
@@ -32,6 +32,8 @@
 #' [hcl.pals][grDevices::hcl.pals].
 #'
 #' @export
+#' @importFrom utils stack
+#' @importFrom stats reshape
 #' @concept Visualizing_Clones
 #' @return ggplot of the space occupied by the specific proportion of clones
 clonalHomeostasis <- function(input.data, 
@@ -43,12 +45,12 @@ clonalHomeostasis <- function(input.data,
                               exportTable = FALSE, 
                               palette = "inferno") {
     cloneSize <- c(None = 0, cloneSize)
-    input.data <- .data.wrangle(input.data, 
-                                group.by, 
-                                .theCall(input.data, cloneCall, check.df = FALSE), 
-                                chain)
+    input.data <- .dataWrangle(input.data, 
+                               group.by, 
+                               .theCall(input.data, cloneCall, check.df = FALSE), 
+                               chain)
     cloneCall <- .theCall(input.data, cloneCall)
-    sco <- is_seurat_object(input.data) | is_se_object(input.data)
+    sco <- .is.seurat.or.se.object(input.data)
     if(!is.null(group.by) & !sco) {
       input.data <- .groupList(input.data, group.by)
     }
@@ -74,23 +76,33 @@ clonalHomeostasis <- function(input.data,
     }
     
     #Plotting
-    mat_melt <- melt(mat)
+    mat_df <- as.data.frame(mat) 
+    mat_df$Var1 <- rownames(mat_df)
+    
+    varying_cols <- names(mat_df)[grep("<", names(mat_df))]
+    
+    mat_melt <- reshape(mat_df,
+                        varying = varying_cols,
+                        v.names = "value",
+                        timevar = "category",
+                        times = varying_cols,
+                        idvar = "Var1",
+                        direction = "long")
     
     if(!is.null(order.by)) {
-      mat_melt <- .ordering.function(vector = order.by,
-                                     group.by = "Var1", 
-                                     data.frame = mat_melt)
+      mat_melt <- .orderingFunction(vector = order.by,
+                                    group.by = "Var1", 
+                                    data.frame = mat_melt)
     }
     
-    
-    col <- length(unique(mat_melt$Var2))
-    plot <- ggplot(mat_melt, aes(x=as.factor(Var1), y=value, fill=Var2)) +
+    col <- length(unique(mat_melt$category))
+    plot <- ggplot(mat_melt, aes(x=as.factor(Var1), y=value, fill=.data[["category"]])) +
         geom_bar(stat = "identity", position="fill", 
                     color = "black", lwd= 0.25) +
-        scale_fill_manual(name = "Clonal Group", 
-                    values = .colorizer(palette,col)) +
-        xlab("Samples") +
-        ylab("Relative Abundance") +
+        scale_fill_manual(values = rev(.colorizer(palette,col))) +
+        labs(x = "Samples", 
+             y = "Relative Abundance", 
+             fill = "Clonal Group") +
         theme_classic()
     return(plot)
 }

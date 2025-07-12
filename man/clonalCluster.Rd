@@ -2,15 +2,19 @@
 % Please edit documentation in R/clonalCluster.R
 \name{clonalCluster}
 \alias{clonalCluster}
-\title{Clustering adaptive receptor sequences by edit distance}
+\title{Cluster Clones by sequence similarity}
 \usage{
 clonalCluster(
   input.data,
   chain = "TRB",
   sequence = "aa",
-  samples = NULL,
   threshold = 0.85,
   group.by = NULL,
+  cluster.method = "components",
+  cluster.prefix = "cluster.",
+  use.V = TRUE,
+  use.J = FALSE,
+  exportAdjMatrix = FALSE,
   exportGraph = FALSE
 )
 }
@@ -18,48 +22,96 @@ clonalCluster(
 \item{input.data}{The product of \code{\link[=combineTCR]{combineTCR()}},
 \code{\link[=combineBCR]{combineBCR()}} or \code{\link[=combineExpression]{combineExpression()}}.}
 
-\item{chain}{Indicate if both or a specific chain should be used -
-e.g. "both", "TRA", "TRG", "IGH", "IGL".}
+\item{chain}{The TCR/BCR chain to use for clustering. Use "both" to combine
+networks from TRA/TRB or IGH/IGL. Valid options: "both", "TRA", "TRB",
+"TRD", "TRG", "IGH", "IGK", "IGL".}
 
 \item{sequence}{Clustering based on either \strong{"aa"} or
 \strong{"nt"}.}
 
-\item{samples}{The specific samples to isolate for visualization.}
+\item{threshold}{The similarity threshold. If < 1, treated as normalized
+similarity (higher is stricter). If >= 1, treated as raw edit distance
+(lower is stricter).}
 
-\item{threshold}{The normalized edit distance to consider.
-The higher the number the more similarity of sequence will be
-used for clustering.}
-
-\item{group.by}{The column header used for to group contigs.
+\item{group.by}{The column header used for to group clones.
 If (\strong{NULL}), clusters will be calculated across samples.}
+
+\item{cluster.method}{The clustering algorithm to use. Defaults to \code{"components"},
+which finds connected subgraphs.}
+
+\item{cluster.prefix}{A character prefix to add to the cluster names (e.g.,
+"cluster.").}
+
+\item{use.V}{Logical. If \code{TRUE}, sequences must share the same V gene to be
+clustered together.}
+
+\item{use.J}{Logical. If \code{TRUE}, sequences must share the same J gene to be
+clustered together.}
+
+\item{exportAdjMatrix}{Logical. If \code{TRUE}, the function returns a sparse
+adjacency matrix (\code{dgCMatrix}) of the network.}
 
 \item{exportGraph}{Return an igraph object of connected
 sequences (\strong{TRUE}) or the amended input with a
 new cluster-based variable (\strong{FALSE}).}
 }
 \value{
-Either amended input with edit-distanced clusters added
-or igraph object of connect sequences
+Depending on the export parameters, one of the following:
+\itemize{
+\item An amended \code{input.data} object with a new metadata column containing cluster IDs (default).
+\item An \code{igraph} object if \code{exportGraph = TRUE}.
+\item A sparse \code{dgCMatrix} object if \code{exportAdjMatrix = TRUE}.
+}
 }
 \description{
-This function uses edit distances of either the nucleotide or amino acid
-sequences of the CDR3 and V genes to cluster similar TCR/BCRs together.
-As a default, the function takes the input from \code{\link[=combineTCR]{combineTCR()}},
-\code{\link[=combineBCR]{combineBCR()}} or \code{\link[=combineExpression]{combineExpression()}} and amends a
-cluster to the data frame or meta data. If \strong{exportGraph} is set
-to TRUE, the function returns an igraph object of the connected sequences.
-If multiple sequences per chain are present, this function only compares
-the first sequence.
+This function clusters TCRs or BCRs based on the edit distance of their CDR3
+sequences. It can operate on either nucleotide ("nt") or amino acid ("aa")
+sequences and can optionally enforce that clones share the same V gene.
+The output can be the input object with an added metadata column for cluster
+IDs, a sparse adjacency matrix, or an \code{igraph} graph object representing the
+cluster network.
+}
+\details{
+The clustering process is as follows:
+\enumerate{
+\item The function retrieves the relevant chain data from the input object.
+\item It calculates the edit distance between all sequences within each group
+(or across the entire dataset if \code{group.by} is \code{NULL}).
+\item An edge list is constructed, connecting sequences that meet the similarity
+\code{threshold}.
+\item The \code{threshold} parameter behaves differently based on its value:
+\itemize{
+\item \strong{\code{threshold} < 1 (e.g., 0.85):} Interpreted as a \emph{normalized} edit
+distance or sequence similarity. A higher value means greater
+similarity is required. This is the default behavior.
+\item \strong{\code{threshold} >= 1 (e.g., 2):} Interpreted as a maximum \emph{raw} edit
+distance. A lower value means greater similarity is required.
+}
+\item An \code{igraph} graph is built from the edge list.
+\item A clustering algorithm is run on the graph. The default
+\code{cluster.method = "components"} simply identifies the connected
+components (i.e., each cluster is a group of sequences connected by
+edges). Other methods from \code{igraph} can be used.
+\item The resulting cluster information is formatted and returned in the
+specified format.
+}
 }
 \examples{
 # Getting the combined contigs
-combined <- combineTCR(contig_list, 
-                        samples = c("P17B", "P17L", "P18B", "P18L", 
-                                    "P19B","P19L", "P20B", "P20L"))
+combined <- combineTCR(contig_list,
+                       samples = c("P17B", "P17L", "P18B", "P18L",
+                                   "P19B","P19L", "P20B", "P20L"))
 
-sub_combined <- clonalCluster(combined[c(1,2)], 
-                              chain = "TRA", 
-                              sequence = "aa")
+# Add cluster information to the list
+sub_combined <- clonalCluster(combined[c(1,2)],
+                              chain = "TRA",
+                              sequence = "aa",
+                              threshold = 0.85)
+
+# Export the graph object instead
+graph_obj <- clonalCluster(combined[c(1,2)],
+                           chain = "TRA",
+                           exportGraph = TRUE)
 
 }
 \concept{Visualizing_Clones}

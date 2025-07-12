@@ -51,10 +51,10 @@ clonalAbundance <- function(input.data,
                             palette = "inferno") {
   Con.df <- NULL
   xlab <- "Abundance"
-  input.data <- .data.wrangle(input.data, 
-                              group.by, 
-                              .theCall(input.data, cloneCall, check.df = FALSE), 
-                              chain)
+  input.data <- .dataWrangle(input.data, 
+                             group.by, 
+                             .theCall(input.data, cloneCall, check.df = FALSE), 
+                             chain)
   cloneCall <- .theCall(input.data, cloneCall)
   
   names <- names(input.data)
@@ -69,7 +69,7 @@ clonalAbundance <- function(input.data,
   	col <- length(unique(Con.df[[group.by]]))
     fill <- group.by
     if(!is.null(order.by)) {
-        Con.df <- .ordering.function(vector = order.by,
+        Con.df <- .orderingFunction(vector = order.by,
                                      group.by = group.by, 
                                      data.frame =  Con.df)
     }
@@ -101,9 +101,9 @@ clonalAbundance <- function(input.data,
     }
     Con.df <- data.frame(Con.df)
     if(!is.null(order.by)) {
-      Con.df <- .ordering.function(vector = order.by,
-                                   group.by = "values", 
-                                   data.frame = Con.df)
+      Con.df <- .orderingFunction(vector = order.by,
+                                  group.by = "values", 
+                                  data.frame = Con.df)
     }
     
     col <- length(unique(Con.df$values))

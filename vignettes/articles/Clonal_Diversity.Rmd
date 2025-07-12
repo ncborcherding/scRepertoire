@@ -46,7 +46,21 @@ combined.TCR <- combineTCR(contig_list,
 
 ## clonalDiversity
 
-Diversity can also be measured for samples or by other variables. Diversity **metrics** calculated, include: **"shannon"**, **"inv.simpson"**, **"norm.entropy"**, **"gini.simpson"**, **"chao1"**, and **"ACE"**. Please see the manual for more information on each metric and the underlying calculations. 
+Diversity can also be measured for samples or by other variables. Diversity **metrics** calculated include: **"shannon"**, **"inv.simpson"**, **"gini.simpson"**, **"chao1"**, **"ace"**, **"gini"**, **"d50"**, and Hill numbers (**"hill0"**, **"hill1"**, **"hill2"**). Please see the manual for more information on each metric and the underlying calculations, but a simple breakdown of the metrics is as follows:
+
+| **Metric** | **What it measures** | **Typical scale** | **Higher value indicates…** |
+| :------------- | :---------------------------------------------------------------------------------------------------------------- | :---------------- | :--------------------------------------------------------------------------------- |
+| `shannon`      | Joint *richness + evenness* of clonotypes; moderately sensitive to rare clones (entropy of the frequency distribution). | 0 → ∞             | **More distinct clonotypes** *and* a more even clone-size distribution.            |
+| `inv.simpson`  | Evenness-weighted diversity (inverse Simpson’s D); heavily penalises dominance by a few large clones.             | 1 → ∞             | **Few highly dominant clones**; diversity spread across many mid-abundance clones. |
+| `norm.entropy` | Shannon entropy divided by ln *S* (where *S* = no. clonotypes); removes library-size dependence.                   | 0 → 1             | Same interpretation as `shannon`, but **comparable across samples of different depths**. |
+| `gini.simpson` | 1 – Simpson’s D; probability that two reads drawn at random come from **different** clonotypes.                     | 0 → 1             | **Greater heterogeneity** (higher chance the two reads represent distinct clones). |
+| `chao1`        | Estimated *richness only* (number of clonotypes), correcting for unseen singletons/doubletons.                    | 0 → ∞             | **More unique clonotypes**, regardless of their relative abundances.               |
+| `ACE`          | Abundance-based Coverage Estimator—alternative richness estimator robust when many clones are rare.               | 0 → ∞             | **More unique clonotypes**, especially when the repertoire contains many low-frequency clones. |
+| `gini`         | Inequality of clone size distribution (Gini Coefficient); measures how unevenly clone sizes are distributed.      | 0 → 1             | **Greater inequality**; a few highly abundant clones dominate the repertoire.      |
+| `d50`          | Repertoire dominance; how many of the top clones are needed to constitute 50% of the total library.               | 1 → ∞             | **Less dominance** by top clones; the repertoire is more evenly distributed.       |
+| `hill0`        | Richness (Hill number q=0); the total number of unique clonotypes observed in the sample.                         | 0 → ∞             | **More unique clonotypes** (greater raw richness).                                 |
+| `hill1`        | Effective number of abundant clonotypes (Hill number q=1); the exponential of Shannon entropy.                    | 1 → ∞             | **Higher diversity** of common clonotypes, balancing richness and evenness.        |
+| `hill2`        | Effective number of dominant clonotypes (Hill number q=2); equivalent to the inverse Simpson index.              | 1 → ∞             | **Higher diversity** among the most dominant clonotypes in the repertoire.       |
 
 Inherent in diversity calculations is a bias for increasing diversity with increasing repertoire size. ```clonalDiversity()``` will automatically downsample to the smallest repertoire size and perform bootstrapping to return the mean diversity estimates. If the output of diversity values are strange or minimally variable, it is likely due to a sample with small repertoire size.
 
@@ -86,24 +100,17 @@ combined.TCR <- addVariable(combined.TCR,
 
 clonalDiversity(combined.TCR, 
                 cloneCall = "gene", 
-                group.by = "Patient")
+                group.by = "Patient", 
+                metric = "inv.simpson")
 
 clonalDiversity(combined.TCR, 
                 cloneCall = "gene", 
-                x.axis = "Patient")
+                x.axis = "Patient", 
+                metric = "inv.simpson")
 ```
 
-As a default, ```clonalDiversity()``` will return all the metrics calculated - **"shannon"**, **"inv.simpson"**, **"norm.entropy"**, **"gini.simpson"**, **"chao1"**, and **"ACE"**. Selecting a single or a subset of these methods using the **metrics** parameter.
 
-```{r tidy=FALSE}
-#Return only a subset of metrics
-clonalDiversity(combined.TCR, 
-                metrics = c("shannon", "ACE"),
-                cloneCall = "gene", 
-                n.boots = 20)
-```
-
-## clonaRarefaction
+## clonalRarefaction
 
 We can also use Hill numbers to estimate the rarefaction, or estimating species richness, using the the abundance of clones across groupings. Underlying the rarefaction calculation is the use of observed receptor of **abundance** to compute diversity. 
 

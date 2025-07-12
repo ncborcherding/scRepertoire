@@ -9,19 +9,19 @@
 #' if using [clonalBias()].
 #' 
 #' @examples
-#' #Making combined contig data
+#' # Making combined contig data
 #' combined <- combineTCR(contig_list, 
 #'                         samples = c("P17B", "P17L", "P18B", "P18L", 
 #'                                     "P19B","P19L", "P20B", "P20L"))
 #' 
-#' #Getting a sample of a Seurat object
+#' # Getting a sample of a Seurat object
 #' scRep_example <- get(data("scRep_example"))
 #' 
-#' #Using combineExpresion()
+#' # Using combineExpresion()
 #' scRep_example <- combineExpression(combined, scRep_example)
 #' scRep_example$Patient <- substring(scRep_example$orig.ident,1,3)
 #' 
-#' #Using clonalBias()
+#' # Using clonalBias()
 #' clonalBias(scRep_example, 
 #'               cloneCall = "aa", 
 #'               split.by = "Patient", 
@@ -44,6 +44,7 @@
 #' @param palette Colors to use in visualization - input any 
 #' [hcl.pals][grDevices::hcl.pals].
 #' @importFrom quantreg rqss
+#' @importFrom stats sd
 #' @export
 #' @concept SC_Functions
 #' @return ggplot scatter plot with clone bias
@@ -84,7 +85,7 @@ clonalBias <- function(sc.data,
   
   corrected_p <- 1-(0.05/nrow(bias))
   bias$Top_state <- factor(bias$Top_state, 
-                           str_sort(unique(bias$Top_state), numeric = TRUE))
+                           .alphanumericalSort(unique(bias$Top_state)))
   
   #Calculating Bias Z-score
   bias$Z.score <- NA
@@ -120,11 +121,11 @@ clonalBias <- function(sc.data,
                shape = 21, 
                stroke = 0.25) + 
     stat_quantile(data=df_shuffle, 
-                         quantiles = c(corrected_p), 
-                         method = "rqss", 
-                         lambda = 3, 
-                         color = "black", 
-                         lty = 2) + 
+                  quantiles = c(corrected_p), 
+                  method = "rqss", 
+                  lambda = 3, 
+                  color = "black", 
+                  lty = 2) + 
     #This is ridiculous way to get around the internal ggplot "style"-based warnings
     scale_size_continuous(breaks = as.vector(unique(bias$dotSize)), 
                           labels = as.vector(unique(bias$cloneSize))) + 
@@ -141,7 +142,7 @@ clonalBias <- function(sc.data,
                          group.by=group.by, 
                          cloneCall=cloneCall, 
                          min.expand=10) {
-  df <- .data.wrangle(df, split.by, cloneCall, "both")
+  df <- .dataWrangle(df, split.by, cloneCall, "both")
   
   bg <- list()
   for (s in seq_along(df)) {
@@ -155,7 +156,7 @@ clonalBias <- function(sc.data,
       bg[[s]] <- table(expanded) / sum(table(expanded))
     }
   }
-  names(bg) <- names(df)
+  names(bg) <- names(df)[seq_len(length(bg))]
   return(bg)
 }
 
@@ -166,7 +167,7 @@ clonalBias <- function(sc.data,
                            cloneCall=cloneCall, 
                            min.expand=10,
                            do.shuffle=FALSE, 
-                           seed=123) {
+                           seed=42) {
   
   dat <- data.frame(Sample=character(),
                     Clone_i=character(),

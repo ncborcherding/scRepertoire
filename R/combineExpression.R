@@ -63,19 +63,8 @@ combineExpression <- function(input.data,
                               filterNA = FALSE,
                               cloneSize = c(Rare = 1e-4,Small = 0.001,Medium = 0.01,Large = 0.1,Hyperexpanded = 1),
                               addLabel = FALSE) {
-    call_time <- Sys.time()
-
-    # rudimentary type checking
-    assert_that(isListOfNonEmptyDataFrames(input.data))
-    assert_that(is_seurat_or_se_object(sc.data))
-    assert_that(is.string(cloneCall))
-    assert_that(is.string(chain))
-    assert_that(is.string(group.by) || is.null(group.by))
-    assert_that(is.flag(proportion))
-    assert_that(is.flag(filterNA))
-    assert_that(is_named_numeric(cloneSize))
-    assert_that(is.flag(addLabel))
-  
+    
+  call_time <- Sys.time()
     options( dplyr.summarise.inform = FALSE )
     if (!proportion && any(cloneSize < 1)) {
         stop("Adjust the cloneSize parameter - there are groupings < 1")
@@ -90,7 +79,7 @@ combineExpression <- function(input.data,
       })
       full.clone <- bind_rows(full.clone)
       for(i in seq_along(input.data)) {
-        input.data[[i]] <- .off.the.chain(input.data[[i]], chain, cloneCall)
+        input.data[[i]] <- .offTheChain(input.data[[i]], chain, cloneCall)
       }
     }
     input.data <- .checkList(input.data)
@@ -165,7 +154,7 @@ combineExpression <- function(input.data,
     #Formating the meta data to add and removing any duplicate barcodes
     PreMeta <- unique(Con.df[, c(conDfColnamesNoCloneSize, "cloneSize")])
     dup <- PreMeta$barcode[which(duplicated(PreMeta$barcode))]
-    PreMeta <- PreMeta[PreMeta$barcode %!in% dup,]
+    PreMeta <- PreMeta[!PreMeta$barcode %in% dup,]
     
     #Re-adding full clones 
     if (chain != "both") {
@@ -173,19 +162,19 @@ combineExpression <- function(input.data,
       PreMeta <- PreMeta %>%
         left_join(full.clone, by = "barcode", suffix = c("", ".from_full_clones")) %>%
         mutate(!!clone_sym := coalesce(!!sym(paste0(cloneCall, ".from_full_clones")), !!clone_sym)) %>%
-        select(-all_of(paste0(cloneCall, ".from_full_clones")))
+        dplyr::select(-all_of(paste0(cloneCall, ".from_full_clones")))
     }
     barcodes <- PreMeta$barcode
     PreMeta <- PreMeta[,-1]
     rownames(PreMeta) <- barcodes
-    if (group.by != "none" && addLabel) {
+    if (!is.null(group.by) && group.by != "none" && addLabel) {
       location <- which(colnames(PreMeta) %in% c("clonalProportion", 
                           "clonalFrequency"))
       colnames(PreMeta)[location] <- paste0(c("clonalProportion", 
                                             "clonalFrequency"), group.by)
     }
     
-    if (is_seurat_object(sc.data)) { 
+    if (.is.seurat.object(sc.data)) { 
         if (length(which(rownames(PreMeta) %in% 
                          rownames(sc.data[[]])))/length(rownames(sc.data[[]])) < 0.01) {
           warning(getHighBarcodeMismatchWarning())
@@ -211,10 +200,9 @@ combineExpression <- function(input.data,
     }
     sc.data$cloneSize <- factor(sc.data$cloneSize, levels = rev(names(cloneSize)))
     
-    if(is_seurat_object(sc.data)) {
-        sc.data@commands[["combineExpression"]] <- make_screp_seurat_cmd(
-            call_time, sc.data@active.assay
-        )
+    if(.is.seurat.object(sc.data)) {
+        sc.data@commands[["combineExpression"]] <- .makeScrepSeurat(
+              call_time, sc.data@active.assay)
     }
     return(sc.data)
 }

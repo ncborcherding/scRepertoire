@@ -25,11 +25,6 @@
 #' @export
 getContigDoublets <- function(tcrOutput, bcrOutput) {
 
-    assert_that(isListOfNonEmptyDataFrames(tcrOutput))
-    assert_that(all(sapply(tcrOutput, function(d) "barcode" %in% colnames(d))))
-    assert_that(isListOfNonEmptyDataFrames(bcrOutput))
-    assert_that(all(sapply(bcrOutput, function(d) "barcode" %in% colnames(d))))
-
     doubletBarcodes <- getContigDoubletBarcodes(tcrOutput, bcrOutput)
 
     if (length(doubletBarcodes) == 0) {

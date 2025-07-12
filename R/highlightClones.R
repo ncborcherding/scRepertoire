@@ -4,28 +4,29 @@
 #' reduction in single-cell object.
 #'
 #' @examples
-#' #Getting the combined contigs
+#' # Getting the combined contigs
 #' combined <- combineTCR(contig_list, 
 #'                         samples = c("P17B", "P17L", "P18B", "P18L", 
 #'                                     "P19B","P19L", "P20B", "P20L"))
 #' 
-#' #Getting a sample of a Seurat object
+#' # Getting a sample of a Seurat object
 #' scRep_example  <- get(data("scRep_example"))
 #' 
-#' #Using combineExpresion()
+#' # Using combineExpresion()
 #' scRep_example  <- combineExpression(combined, 
 #'                                     scRep_example)
 #' 
-#' #Using highlightClones()
+#' # Using highlightClones()
 #' scRep_example   <- highlightClones(scRep_example, 
 #'                                    cloneCall= "aa", 
 #'                                    sequence = c("CVVSDNTGGFKTIF_CASSVRRERANTGELFF"))
 #' 
 #' @param sc.data The single-cell object to attach after 
 #' [combineExpression()]
-#' @param cloneCall How to call the clone - VDJC gene (gene), 
-#' CDR3 nucleotide (nt), CDR3 amino acid (aa),
-#' VDJC gene + CDR3 nucleotide (strict) or a custom variable in the data. 
+#' @param cloneCall How to call the clone - VDJC gene (**gene**), 
+#' CDR3 nucleotide (**nt**), CDR3 amino acid (**aa**),
+#' VDJC gene + CDR3 nucleotide (**strict**) or a custom variable 
+#' in the data
 #' @param sequence The specific sequence or sequence to highlight
 #' @importFrom S4Vectors DataFrame
 #' @export
@@ -35,7 +36,7 @@
 highlightClones <- function(sc.data, 
                             cloneCall = c("gene", "nt", "aa", "strict"), 
                             sequence = NULL){
-  if (!is_seurat_or_se_object(sc.data)) {
+  if (!.is.seurat.or.se.object(sc.data)) {
     stop("Please select a single-cell object") 
   }
   
@@ -49,7 +50,7 @@ highlightClones <- function(sc.data,
   
   meta <- meta[,-(which(colnames(meta) == "ident"))]
   
-  if(is_se_object(sc.data)) {
+  if(.is.se.object(sc.data)) {
     colData(sc.data) <- DataFrame(meta)
   } else {
     col.name <- names(meta) %||% colnames(meta)
