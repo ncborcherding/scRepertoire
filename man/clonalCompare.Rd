@@ -18,7 +18,8 @@ clonalCompare(
   graph = "alluvial",
   proportion = TRUE,
   exportTable = FALSE,
-  palette = "inferno"
+  palette = "inferno",
+  ...
 )
 }
 \arguments{
@@ -64,6 +65,8 @@ will be used}
 
 \item{palette}{Colors to use in visualization - input any
 \link[grDevices]{hcl.pals}}
+
+\item{...}{Additional arguments passed to the ggplot theme}
 }
 \value{
 ggplot of the proportion of total sequencing read of

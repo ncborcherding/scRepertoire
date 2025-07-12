@@ -29,6 +29,8 @@
 #' @param exportTable Returns the data frame used for forming the graph.
 #' @param palette Colors to use in visualization - input any 
 #' [hcl.pals][grDevices::hcl.pals]
+#' @param ... Additional arguments passed to the ggplot theme
+#' 
 #' @export
 #' @concept Visualizing_Clones
 #' @return ggplot of the discrete or relative length distributions of
@@ -40,7 +42,8 @@ clonalLength <- function(input.data,
                          order.by = NULL,
                          scale = FALSE, 
                          exportTable = FALSE, 
-                         palette = "inferno") {
+                         palette = "inferno",
+                         ...) {
   
   input.data <- .dataWrangle(input.data, 
                              group.by, 
@@ -122,7 +125,7 @@ clonalLength <- function(input.data,
           labs(fill = fill) + 
           ylab(paste(yplus, ylab, sep="")) +
           xlab(xlab) + 
-          theme_classic()
+          .themeRepertoire(...)
   
   return(plot)
 }

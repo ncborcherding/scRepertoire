@@ -11,7 +11,8 @@ StartracDiversity(
   type = NULL,
   group.by = NULL,
   exportTable = FALSE,
-  palette = "inferno"
+  palette = "inferno",
+  ...
 )
 }
 \arguments{
@@ -34,6 +35,8 @@ e.g. "both", "TRA", "TRG", "IGH", "IGL".}
 \item{exportTable}{Returns the data frame used for forming the graph.}
 
 \item{palette}{Colors to use in visualization - input any \link[grDevices:palettes]{hcl.pals}.}
+
+\item{...}{Additional arguments passed to the ggplot theme}
 }
 \value{
 ggplot object of Startrac diversity metrics

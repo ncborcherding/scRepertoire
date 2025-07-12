@@ -13,7 +13,8 @@ clonalRarefaction(
   hill.numbers = 0,
   n.boots = 20,
   exportTable = FALSE,
-  palette = "inferno"
+  palette = "inferno",
+  ...
 )
 }
 \arguments{
@@ -46,6 +47,8 @@ environment in addition to the visualization.}
 
 \item{palette}{Colors to use in visualization - input any
 \link[grDevices:palettes]{hcl.pals}.}
+
+\item{...}{Additional arguments passed to the ggplot theme}
 }
 \description{
 This functions uses the Hill numbers of order q: species richness (\strong{q = 0}),

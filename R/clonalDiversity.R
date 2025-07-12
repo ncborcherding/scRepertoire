@@ -78,6 +78,7 @@
 #' @param n.boots The number of bootstrap iterations to perform (default is 100).
 #' @param palette Colors to use in visualization - input any
 #' [hcl.pals][grDevices::hcl.pals].
+#' @param ... Additional arguments passed to the ggplot theme
 #'
 #' @import ggplot2
 #' @export
@@ -96,7 +97,8 @@ clonalDiversity <- function(input.data,
                             palette = "inferno",
                             n.boots = 100,
                             return.boots = FALSE,
-                            skip.boots = FALSE) {
+                            skip.boots = FALSE,
+                            ...) {
   
   #Argument and Data Validation 
   if (length(metric) != 1 || !is.character(metric)) {
@@ -194,7 +196,7 @@ clonalDiversity <- function(input.data,
                 color = "black") +
     labs(fill = "Group", y = paste(metric.name, "Index Score")) +
     scale_fill_manual(values = .colorizer(palette, length(unique(output_df[[group.by %||% "Group"]])))) +
-    theme_classic() +
+    .themeRepertoire(...) + 
     theme(axis.title.x = element_blank())
   
   if (x.axis == "x.axis") {

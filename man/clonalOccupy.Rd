@@ -13,7 +13,8 @@ clonalOccupy(
   proportion = FALSE,
   na.include = FALSE,
   exportTable = FALSE,
-  palette = "inferno"
+  palette = "inferno",
+  ...
 )
 }
 \arguments{
@@ -37,6 +38,8 @@ environment in addition to the visualization}
 
 \item{palette}{Colors to use in visualization - input any
 \link[grDevices:palettes]{hcl.pals}}
+
+\item{...}{Additional arguments passed to the ggplot theme}
 }
 \value{
 Stacked bar plot of counts of cells by clone frequency group

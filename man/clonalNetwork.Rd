@@ -16,7 +16,8 @@ clonalNetwork(
   chain = "both",
   exportClones = FALSE,
   exportTable = FALSE,
-  palette = "inferno"
+  palette = "inferno",
+  ...
 )
 }
 \arguments{
@@ -56,6 +57,8 @@ of clone copies.}
 
 \item{palette}{Colors to use in visualization - input any
 \link[grDevices:palettes]{hcl.pals}.}
+
+\item{...}{Additional arguments passed to the ggplot theme}
 }
 \value{
 ggplot object

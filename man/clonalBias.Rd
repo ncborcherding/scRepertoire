@@ -12,7 +12,8 @@ clonalBias(
   n.boots = 20,
   min.expand = 10,
   exportTable = FALSE,
-  palette = "inferno"
+  palette = "inferno",
+  ...
 )
 }
 \arguments{
@@ -36,6 +37,8 @@ For example, "Type" for lung vs peripheral blood comparison}
 
 \item{palette}{Colors to use in visualization - input any
 \link[grDevices:palettes]{hcl.pals}.}
+
+\item{...}{Additional arguments passed to the ggplot theme}
 }
 \value{
 ggplot scatter plot with clone bias

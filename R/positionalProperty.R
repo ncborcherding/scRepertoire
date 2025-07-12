@@ -54,6 +54,7 @@
 #' `"tScales"`, `"VHSE"`, `"zScales"`
 #' @param exportTable Returns the data frame used for forming the graph
 #' @param palette Colors to use in visualization - input any [hcl.pals][grDevices::hcl.pals]
+#' @param ... Additional arguments passed to the ggplot theme
 #' @importFrom stats qt sd
 #' @importFrom utils getFromNamespace
 #' @export
@@ -68,7 +69,8 @@ positionalProperty <- function(input.data,
                                aa.length = 20,
                                method = "atchleyFactors",
                                exportTable = FALSE, 
-                               palette = "inferno")  {
+                               palette = "inferno",
+                               ...)  {
   factors <- c("atchleyFactors", "crucianiProperties", "FASGAI", "kideraFactors", 
   "MSWHIM", "ProtFP", "stScales", "tScales", "VHSE", "zScales")
   if (!method %in% c(factors)) {
@@ -173,7 +175,7 @@ positionalProperty <- function(input.data,
     scale_fill_manual(name = "Group", values = .colorizer(palette, length(unique(mat$group)))) +
     labs(x = "Amino Acid Position", y = "Mean Property Value") +
     facet_grid(property~., scales = "free_y") +
-    theme_classic() +
+    .themeRepertoire(...) + 
     theme(
       axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
       strip.background = element_rect(fill="lightgrey", color = "grey"),

@@ -14,7 +14,8 @@ percentKmer(
   min.depth = 3,
   top.motifs = 30,
   exportTable = FALSE,
-  palette = "inferno"
+  palette = "inferno",
+  ...
 )
 }
 \arguments{
@@ -44,6 +45,8 @@ median absolute deviation}
 
 \item{palette}{Colors to use in visualization - input any
 \link[grDevices:palettes]{hcl.pals}}
+
+\item{...}{Additional arguments passed to the ggplot theme}
 }
 \value{
 A ggplot object displaying a heatmap of motif percentages.

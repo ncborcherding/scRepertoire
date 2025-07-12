@@ -12,7 +12,8 @@ clonalLength(
   order.by = NULL,
   scale = FALSE,
   exportTable = FALSE,
-  palette = "inferno"
+  palette = "inferno",
+  ...
 )
 }
 \arguments{
@@ -37,6 +38,8 @@ relative distributions.}
 
 \item{palette}{Colors to use in visualization - input any
 \link[grDevices:palettes]{hcl.pals}}
+
+\item{...}{Additional arguments passed to the ggplot theme}
 }
 \value{
 ggplot of the discrete or relative length distributions of

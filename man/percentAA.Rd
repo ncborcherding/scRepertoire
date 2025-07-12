@@ -11,7 +11,8 @@ percentAA(
   order.by = NULL,
   aa.length = 20,
   exportTable = FALSE,
-  palette = "inferno"
+  palette = "inferno",
+  ...
 )
 }
 \arguments{
@@ -31,6 +32,8 @@ e.g. "TRA", "TRG", "IGH", "IGL", etc}
 \item{exportTable}{Returns the data frame used for forming the graph.}
 
 \item{palette}{Colors to use in visualization - input any \link[grDevices:palettes]{hcl.pals}.}
+
+\item{...}{Additional arguments passed to the ggplot theme}
 }
 \value{
 ggplot of stacked bar graphs of amino acid proportions

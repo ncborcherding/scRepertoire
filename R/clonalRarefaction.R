@@ -38,6 +38,7 @@
 #' environment in addition to the visualization.
 #' @param palette Colors to use in visualization - input any 
 #' [hcl.pals][grDevices::hcl.pals].
+#' @param ... Additional arguments passed to the ggplot theme
 #'
 #' @importFrom iNEXT iNEXT ggiNEXT
 #' @export
@@ -50,7 +51,8 @@ clonalRarefaction <- function(input.data,
                               hill.numbers = 0,
                               n.boots = 20,
                               exportTable = FALSE,
-                              palette = "inferno") {
+                              palette = "inferno",
+                              ...) {
   input.data <- .dataWrangle(input.data, 
                              group.by, 
                              .theCall(input.data, cloneCall, check.df = FALSE), 
@@ -74,8 +76,9 @@ clonalRarefaction <- function(input.data,
             scale_shape_manual(values = rep(16,col)) + 
             scale_fill_manual(values = c(.colorizer(palette,col))) + 
             scale_color_manual(values = c(.colorizer(palette,col)))  + 
-            theme_classic())
-  if (exportTable == TRUE) { 
+            .themeRepertoire(...))
+  
+  if (exportTable) { 
     return(plot["data"]) 
   } else {
     return(plot)

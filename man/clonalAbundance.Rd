@@ -12,7 +12,8 @@ clonalAbundance(
   group.by = NULL,
   order.by = NULL,
   exportTable = FALSE,
-  palette = "inferno"
+  palette = "inferno",
+  ...
 )
 }
 \arguments{
@@ -40,6 +41,8 @@ to the visualization.}
 
 \item{palette}{Colors to use in visualization - input any
 \link[grDevices:palettes]{hcl.pals}.}
+
+\item{...}{Additional arguments passed to the ggplot theme}
 }
 \value{
 ggplot of the total or relative abundance of clones

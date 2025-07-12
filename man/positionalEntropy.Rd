@@ -12,7 +12,8 @@ positionalEntropy(
   aa.length = 20,
   method = "norm.entropy",
   exportTable = FALSE,
-  palette = "inferno"
+  palette = "inferno",
+  ...
 )
 }
 \arguments{
@@ -35,7 +36,9 @@ e.g."TRA", "TRG", "IGH", "IGL", etc}
 
 \item{exportTable}{Returns the data frame used for forming the graph}
 
-\item{palette}{Colors to use in visualization - input any \link[grDevices:palettes]{hcl.pals}}
+\item{palette}{Colors to use in visualization - input any [hcl.pals][grDevices::hcl.pals}
+
+\item{...}{Additional arguments passed to the ggplot theme}
 }
 \value{
 ggplot of line graph of diversity by amino acid residue position

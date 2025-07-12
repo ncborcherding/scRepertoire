@@ -62,6 +62,7 @@
 #' environment in addition to the visualization.
 #' @param palette Colors to use in visualization - input any 
 #' [hcl.pals][grDevices::hcl.pals].
+#' @param ... Additional arguments passed to the ggplot theme
 #'
 #' @importFrom ggalluvial StatStratum geom_flow geom_stratum to_lodes_form geom_alluvium
 #'
@@ -76,7 +77,8 @@ alluvialClones <- function(sc.data,
                            alpha = NULL, 
                            facet = NULL, 
                            exportTable = FALSE,
-                           palette = "inferno") {
+                           palette = "inferno",
+                           ...) {
   
   x <- alluvium <- stratum <- NULL
   .checkSingleObject(sc.data)
@@ -155,7 +157,7 @@ alluvialClones <- function(sc.data,
                       size = 2) + 
             scale_fill_manual(values = .colorizer(palette,  length(unique(lodes[,color])))) + 
             scale_x_discrete(expand = c(0.025,0.025)) + 
-            theme_classic() +
+            .themeRepertoire(...) + 
             theme(axis.title.x = element_blank(), 
                   axis.ticks.x = element_blank(), 
                   line = element_blank())  
