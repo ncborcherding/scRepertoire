@@ -2,7 +2,7 @@
 % Please edit documentation in R/alluvialClones.R
 \name{alluvialClones}
 \alias{alluvialClones}
-\title{Alluvial plotting for single-cell object meta data}
+\title{Alluvial Plotting for Single-Cell Object}
 \usage{
 alluvialClones(
   sc.data,
@@ -18,16 +18,15 @@ alluvialClones(
 )
 }
 \arguments{
-\item{sc.data}{The single-cell object to visualize
-after \code{\link[=combineExpression]{combineExpression()}}.}
+\item{sc.data}{The product of \code{\link[=combineExpression]{combineExpression()}}.}
 
-\item{cloneCall}{How to call the clone - VDJC gene (\strong{gene}),
-CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
-VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable
-in the data.}
+\item{cloneCall}{Defines the clonal sequence grouping. Accepted values
+are: \code{gene} (VDJC genes), \code{nt} (CDR3 nucleotide sequence), \code{aa} (CDR3 amino
+acid sequence), or \code{strict} (VDJC). A custom column header can also be used.}
 
-\item{chain}{indicate if both or a specific chain should be used -
-e.g. "both", "TRA", "TRG", "IGH", "IGL".}
+\item{chain}{The TCR/BCR chain to use. Use \code{both} to include both chains
+(e.g., TRA/TRB). Accepted values: \code{TRA}, \code{TRB}, \code{TRG}, \code{TRD}, \code{IGH}, \code{IGL}
+(for both light chains), \code{both}.}
 
 \item{y.axes}{The columns that will separate the proportional .
 visualizations.}
@@ -38,8 +37,8 @@ visualizations.}
 
 \item{facet}{The column label to separate.}
 
-\item{exportTable}{Exports a table of the data into the global
-environment in addition to the visualization.}
+\item{exportTable}{If \code{TRUE}, returns a data frame or matrix of the results
+instead of a plot.}
 
 \item{palette}{Colors to use in visualization - input any
 \link[grDevices:palettes]{hcl.pals}.}
@@ -47,7 +46,8 @@ environment in addition to the visualization.}
 \item{...}{Additional arguments passed to the ggplot theme}
 }
 \value{
-Alluvial ggplot comparing clone distribution.
+A ggplot object visualizing categorical distribution of clones, or a
+data.frame if \code{exportTable = TRUE}.
 }
 \description{
 View the proportional contribution of clones by Seurat or SCE object
@@ -58,19 +58,19 @@ and color should be part of the the axes you wish to view or will
 add an additional stratum/column to the end of the graph.
 }
 \examples{
-#Getting the combined contigs
+# Getting the combined contigs
 combined <- combineTCR(contig_list, 
                         samples = c("P17B", "P17L", "P18B", "P18L", 
                                     "P19B","P19L", "P20B", "P20L"))
 
-#Getting a sample of a Seurat object
+# Getting a sample of a Seurat object
 scRep_example <- get(data("scRep_example"))
 
-#Using combineExpresion()
+# Using combineExpresion()
 scRep_example <- combineExpression(combined, scRep_example)
 scRep_example$Patient <- substring(scRep_example$orig.ident, 1,3)
 
-#Using alluvialClones()
+# Using alluvialClones()
 alluvialClones(scRep_example, 
                    cloneCall = "gene", 
                    y.axes = c("Patient", "ident"), 

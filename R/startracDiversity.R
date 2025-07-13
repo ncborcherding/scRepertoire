@@ -1,5 +1,5 @@
-#' Startrac-based diversity indices for single-cell RNA-seq
-#'
+#' Calculate Startrac-based Diversity Indices 
+#' 
 #' @description This function utilizes the Startrac approach derived from 
 #' [PMID: 30479382](https://pubmed.ncbi.nlm.nih.gov/30479382/).
 #' Required to run the function, the "type" variable needs to include the 
@@ -29,21 +29,25 @@
 #' @param sc.data The single-cell object after [combineExpression()].
 #' For SCE objects, the cluster variable must be in the meta data under 
 #' "cluster".
-#' @param cloneCall How to call the clone - VDJC gene (**gene**), 
-#' CDR3 nucleotide (**nt**), CDR3 amino acid (**aa**),
-#' VDJC gene + CDR3 nucleotide (**strict**) or a custom variable 
-#' in the data. 
-#' @param chain indicate if both or a specific chain should be used - 
-#' e.g. "both", "TRA", "TRG", "IGH", "IGL".
+#' @param cloneCall Defines the clonal sequence grouping. Accepted values 
+#' are: `gene` (VDJC genes), `nt` (CDR3 nucleotide sequence), `aa` (CDR3 amino 
+#' acid sequence), or `strict` (VDJC). A custom column header can also be used.
+#' @param chain The TCR/BCR chain to use. Use `both` to include both chains 
+#' (e.g., TRA/TRB). Accepted values: `TRA`, `TRB`, `TRG`, `TRD`, `IGH`, `IGL` 
+#' (for both light chains), `both`.
 #' @param type The variable in the meta data that provides tissue type.
-#' @param group.by The variable in the meta data to group by, often samples.
-#' @param exportTable Returns the data frame used for forming the graph.
+#' @param group.by A column header in the metadata or lists to group the analysis 
+#' by (e.g., "sample", "treatment"). If `NULL`, data will be analyzed as 
+#' by list element or active identity in the case of single-cell objects.
+#' @param exportTable If `TRUE`, returns a data frame or matrix of the results 
+#' instead of a plot.
 #' @param palette Colors to use in visualization - input any [hcl.pals][grDevices::hcl.pals].
 #' @param ... Additional arguments passed to the ggplot theme
 #' @importFrom stats reshape
 #' @export
 #' @concept SC_Functions
-#' @return ggplot object of Startrac diversity metrics
+#' @return A ggplot object visualizing STARTRAC diversity metrics or data.frame if
+#'`exportTable = TRUE`.
 #' @author Liangtao Zheng
 StartracDiversity <- function(sc.data,
                               cloneCall = "strict", 

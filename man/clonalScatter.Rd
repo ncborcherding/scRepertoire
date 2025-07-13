@@ -2,7 +2,7 @@
 % Please edit documentation in R/clonalScatter.R
 \name{clonalScatter}
 \alias{clonalScatter}
-\title{Scatter plot comparing the clonal expansion of two samples}
+\title{Scatter Plot Comparing Clones Across Two Samples}
 \usage{
 clonalScatter(
   input.data,
@@ -22,26 +22,29 @@ clonalScatter(
 \item{input.data}{The product of \code{\link[=combineTCR]{combineTCR()}},
 \code{\link[=combineBCR]{combineBCR()}}, or \code{\link[=combineExpression]{combineExpression()}}.}
 
-\item{cloneCall}{How to call the clone - VDJC gene (\strong{gene}),
-CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
-VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable
-in the data.}
+\item{cloneCall}{Defines the clonal sequence grouping. Accepted values
+are: \code{gene} (VDJC genes), \code{nt} (CDR3 nucleotide sequence), \code{aa} (CDR3 amino
+acid sequence), or \code{strict} (VDJC). A custom column header can also be used.}
 
 \item{x.axis}{name of the list element to appear on the x.axis.}
 
 \item{y.axis}{name of the list element to appear on the y.axis.}
 
-\item{chain}{indicate if both or a specific chain should be used -
-e.g. "both", "TRA", "TRG", "IGH", "IGL".}
+\item{chain}{The TCR/BCR chain to use. Use \code{both} to include both chains
+(e.g., TRA/TRB). Accepted values: \code{TRA}, \code{TRB}, \code{TRG}, \code{TRD}, \code{IGH}, \code{IGL}
+(for both light chains), \code{both}.}
 
 \item{dot.size}{either total or the name of the list element to
 use for size of dots.}
 
-\item{group.by}{The variable to use for grouping.}
+\item{group.by}{A column header in the metadata or lists to group the analysis
+by (e.g., "sample", "treatment"). If \code{NULL}, data will be analyzed
+by list element or active identity in the case of single-cell objects.}
 
 \item{graph}{graph either the clonal "proportion" or "count".}
 
-\item{exportTable}{Returns the data frame used for forming the graph.}
+\item{exportTable}{If \code{TRUE}, returns a data frame or matrix of the results
+instead of a plot.}
 
 \item{palette}{Colors to use in visualization - input any
 \link[grDevices:palettes]{hcl.pals}.}
@@ -49,7 +52,8 @@ use for size of dots.}
 \item{...}{Additional arguments passed to the ggplot theme}
 }
 \value{
-ggplot of the relative clone numbers between two sequencing runs or groups
+A ggplot object visualizing clonal dynamics between two groupings or
+a data.frame if \code{exportTable = TRUE}.
 }
 \description{
 This function produces a scatter plot directly comparing
@@ -62,6 +66,8 @@ exclusive or shared between the selected samples.
 combined <- combineTCR(contig_list, 
                         samples = c("P17B", "P17L", "P18B", "P18L", 
                                     "P19B","P19L", "P20B", "P20L"))
+
+# Using clonalScatter()
 clonalScatter(combined, 
               x.axis = "P17B", 
               y.axis = "P17L",

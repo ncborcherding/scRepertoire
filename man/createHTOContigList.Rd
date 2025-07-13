@@ -2,7 +2,7 @@
 % Please edit documentation in R/createHTOContigList.R
 \name{createHTOContigList}
 \alias{createHTOContigList}
-\title{Generate a contig list from a multiplexed experiment}
+\title{Deconvolute Contig Information from Multiplexed Experiments}
 \usage{
 createHTOContigList(contig, sc.data, group.by = NULL, multi.run = NULL)
 }

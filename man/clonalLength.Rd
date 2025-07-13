@@ -2,7 +2,7 @@
 % Please edit documentation in R/clonalLength.R
 \name{clonalLength}
 \alias{clonalLength}
-\title{Demonstrate the distribution of clonal length}
+\title{Plot the Distribution of Sequence Lengths}
 \usage{
 clonalLength(
   input.data,
@@ -20,21 +20,26 @@ clonalLength(
 \item{input.data}{The product of \code{\link[=combineTCR]{combineTCR()}},
 \code{\link[=combineBCR]{combineBCR()}}, or \code{\link[=combineExpression]{combineExpression()}}}
 
-\item{cloneCall}{How to call the clone - CDR3 nucleotide (\strong{nt})
-or CDR3 amino acid (\strong{aa})}
+\item{cloneCall}{Defines the clonal sequence grouping. Accepted values
+are: \code{nt} (CDR3 nucleotide sequence) or \code{aa} (CDR3 amino acid sequence)}
 
-\item{chain}{indicate if both or a specific chain should be used -
-e.g. "both", "TRA", "TRG", "IGH", "IGL"}
+\item{chain}{The TCR/BCR chain to use. Use \code{both} to include both chains
+(e.g., TRA/TRB). Accepted values: \code{TRA}, \code{TRB}, \code{TRG}, \code{TRD}, \code{IGH}, \code{IGL}
+(for both light chains), \code{both}.}
 
-\item{group.by}{The variable to use for grouping}
+\item{group.by}{A column header in the metadata or lists to group the analysis
+by (e.g., "sample", "treatment"). If \code{NULL}, data will be analyzed
+by list element or active identity in the case of single-cell objects.}
 
-\item{order.by}{A vector of specific plotting order or "alphanumeric"
-to plot groups in order description}
+\item{order.by}{A character vector defining the desired order of elements
+of the \code{group.by} variable. Alternatively, use \code{alphanumeric} to sort groups
+automatically.}
 
 \item{scale}{Converts the graphs into density plots in order to show
 relative distributions.}
 
-\item{exportTable}{Returns the data frame used for forming the graph.}
+\item{exportTable}{If \code{TRUE}, returns a data frame or matrix of the results
+instead of a plot.}
 
 \item{palette}{Colors to use in visualization - input any
 \link[grDevices:palettes]{hcl.pals}}
@@ -42,20 +47,20 @@ relative distributions.}
 \item{...}{Additional arguments passed to the ggplot theme}
 }
 \value{
-ggplot of the discrete or relative length distributions of
-clone sequences
+A ggplot object visualizing the distributions by length, or a data.frame if
+\code{exportTable = TRUE}.
 }
 \description{
-This function displays either the nucleotide (\strong{nt}) or amino
-acid (\strong{aa}) sequence length. The sequence length visualized
+This function displays either the nucleotide \code{nt} or amino
+acid \code{aa} sequence length. The sequence length visualized
 can be selected using the chains parameter, either the combined clone
 (both chains) or across all single chains. Visualization can either
-be a histogram or if \strong{scale} = TRUE, the output will
+be a histogram or if \code{scale} = TRUE, the output will
 be a density plot. Multiple sequencing runs can be group together
 using the group.by parameter.
 }
 \examples{
-#Making combined contig data
+# Making combined contig data
 combined <- combineTCR(contig_list, 
                         samples = c("P17B", "P17L", "P18B", "P18L", 
                                     "P19B","P19L", "P20B", "P20L"))

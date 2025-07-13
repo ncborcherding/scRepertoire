@@ -2,7 +2,7 @@
 % Please edit documentation in R/positionalProperty.R
 \name{positionalProperty}
 \alias{positionalProperty}
-\title{Positional physicochemical property analysis}
+\title{Plot Positional Physicochemical Property Analysis}
 \usage{
 positionalProperty(
   input.data,
@@ -20,12 +20,16 @@ positionalProperty(
 \item{input.data}{The product of \code{\link[=combineTCR]{combineTCR()}},
 \code{\link[=combineBCR]{combineBCR()}}, or \code{\link[=combineExpression]{combineExpression()}}}
 
-\item{chain}{"TRA", "TRB", "TRG", "TRG", "IGH", "IGL"}
+\item{chain}{The TCR/BCR chain to use. Use Accepted values: \code{TRA}, \code{TRB},
+\code{TRG}, \code{TRD}, \code{IGH}, or \code{IGL} (for both light chains)..}
 
-\item{group.by}{The variable to use for grouping}
+\item{group.by}{A column header in the metadata or lists to group the analysis
+by (e.g., "sample", "treatment"). If \code{NULL}, data will be analyzed
+by list element or active identity in the case of single-cell objects.}
 
-\item{order.by}{A vector of specific plotting order or "alphanumeric"
-to plot groups in order}
+\item{order.by}{A character vector defining the desired order of elements
+of the \code{group.by} variable. Alternatively, use \code{alphanumeric} to sort groups
+automatically.}
 
 \item{aa.length}{The maximum length of the CDR3 amino acid sequence.}
 
@@ -34,14 +38,16 @@ Defaults to \code{"atchleyFactors"}, but includes: \code{"crucianiProperties"},
 \code{"FASGAI"}, \code{"kideraFactors"}, \code{"MSWHIM"}, \code{"ProtFP"}, \code{"stScales"},
 \code{"tScales"}, \code{"VHSE"}, \code{"zScales"}}
 
-\item{exportTable}{Returns the data frame used for forming the graph}
+\item{exportTable}{If \code{TRUE}, returns a data frame or matrix of the results
+instead of a plot.}
 
 \item{palette}{Colors to use in visualization - input any \link[grDevices:palettes]{hcl.pals}}
 
 \item{...}{Additional arguments passed to the ggplot theme}
 }
 \value{
-ggplot of line graph of diversity by position
+A ggplot object displaying property by amino acid position.
+If \code{exportTable = TRUE}, a matrix of the raw data is returned.
 }
 \description{
 This function analyzes the physicochemical properties of amino acids at each
@@ -79,6 +85,8 @@ the individual methods can be found at the following citations:
 combined <- combineTCR(contig_list, 
                         samples = c("P17B", "P17L", "P18B", "P18L", 
                                     "P19B","P19L", "P20B", "P20L"))
+
+# Using positionalProperty()
 positionalProperty(combined, 
                    chain = "TRB",
                    method = "atchleyFactors", 

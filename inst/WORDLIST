@@ -51,6 +51,7 @@ Convolutional
 Corvino
 Cruciani
 DESeq
+Deconvolute
 Dgene
 Directionality
 Downsampling
@@ -85,7 +86,6 @@ ImMunoGeneTics
 Immcantation
 Inv
 JC
-JSON
 Jaccard
 Jgene
 KEGG
@@ -121,16 +121,14 @@ PMID
 PWM
 Pagh
 ParseBio
+Physicochemical
 Pielou
 Pielou's
-Precomputed
-Preprocessed
 ProjectTIL
 ProtFP
 Readded
 Rebasing
 Rebumping
-Repo
 SCE
 STARTRAC
 SampleType
@@ -196,7 +194,6 @@ addVariable
 adjacencyMatrix
 airr
 al
-allelic
 alluvialClones
 alluvialClonotype
 alluvialClonotypes
@@ -222,7 +219,6 @@ chao
 checkBlanks
 checkContigs
 circlize
-clonaRarefaction
 clonalAbundance
 clonalBias
 clonalCluster
@@ -237,6 +233,7 @@ clonalOverlap
 clonalOverlay
 clonalProportion
 clonalQuant
+clonalRarefaction
 clonalScatter
 clonalSizeDistribution
 clonalSplit
@@ -261,10 +258,10 @@ combineSeurat
 combineTCR
 combineTRUST
 combinedContig
-comparators
 compareClonotype
 compareClonotypes
 complementarity
+compositional
 constructConDFAndparseTCR
 contig
 contigs
@@ -273,13 +270,11 @@ cpp
 createHTOContigList
 crucianiProperties
 csv
-customizable
 dandelionR
 de
 densityEnrichment
 dev
 df
-dir
 doubletons
 downsample
 downsampled
@@ -315,6 +310,7 @@ geyserEnrichment
 ggalluvial
 ggdendrogram
 ggfittext
+gglayer
 ggplot
 gini
 github
@@ -326,6 +322,7 @@ greyed
 groupBy
 gseaEnrichment
 hammingCompare
+hcl
 heatmapEnrichment
 hexbin
 highlightClones
@@ -404,7 +401,6 @@ percentGenes
 percentKmer
 percentVJ
 performNormalization
-phenotypes
 physicochemical
 pielou
 pielou's
@@ -429,7 +425,6 @@ regressClonotype
 relevel
 removeMulti
 removeNA
-repo
 ridgeEnrichment
 runEscape
 runIbex
@@ -477,7 +472,6 @@ trex
 tsv
 unreturned
 variational
-viridis
 visVgene
 visualise
 vizGene

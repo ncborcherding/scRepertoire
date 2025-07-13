@@ -2,7 +2,7 @@
 % Please edit documentation in R/positionalEntropy.R
 \name{positionalEntropy}
 \alias{positionalEntropy}
-\title{Examining the diversity of amino acids by position}
+\title{Examining the Diversity of Amino Acids by Position}
 \usage{
 positionalEntropy(
   input.data,
@@ -20,13 +20,16 @@ positionalEntropy(
 \item{input.data}{The product of \code{\link[=combineTCR]{combineTCR()}},
 \code{\link[=combineBCR]{combineBCR()}}, or \code{\link[=combineExpression]{combineExpression()}}}
 
-\item{chain}{indicate a specific chain should be used -
-e.g."TRA", "TRG", "IGH", "IGL", etc}
+\item{chain}{The TCR/BCR chain to use. Accepted values: \code{TRA}, \code{TRB}, \code{TRG},
+\code{TRD}, \code{IGH}, or \code{IGL} (for both light chains).}
 
-\item{group.by}{The variable to use for grouping}
+\item{group.by}{A column header in the metadata or lists to group the analysis
+by (e.g., "sample", "treatment"). If \code{NULL}, data will be analyzed as
+by list element or active identity in the case of single-cell objects.}
 
-\item{order.by}{A vector of specific plotting order for \code{group.by} or
-"alphanumeric" to plot groups in order}
+\item{order.by}{A character vector defining the desired order of elements
+of the \code{group.by} variable. Alternatively, use \code{alphanumeric} to sort groups
+automatically.}
 
 \item{aa.length}{The maximum length of the CDR3 amino acid sequence.}
 
@@ -34,30 +37,34 @@ e.g."TRA", "TRG", "IGH", "IGL", etc}
 \code{"shannon"}, \code{"inv.simpson"}, \code{"gini.simpson"}, \code{"norm.entropy"},
 \code{"pielou"}, \code{"hill0"}, \code{"hill1"}, \code{"hill2"}}
 
-\item{exportTable}{Returns the data frame used for forming the graph}
+\item{exportTable}{If \code{TRUE}, returns a data frame or matrix of the results
+instead of a plot.}
 
-\item{palette}{Colors to use in visualization - input any [hcl.pals][grDevices::hcl.pals}
+\item{palette}{Colors to use in visualization - input any
+\link[grDevices:palettes]{hcl.pals}}
 
 \item{...}{Additional arguments passed to the ggplot theme}
 }
 \value{
-ggplot of line graph of diversity by amino acid residue position
+A ggplot object displaying entropy or diversity by amino acid position.
+If \code{exportTable = TRUE}, a matrix of the raw data is returned.
 }
 \description{
-This function the diversity amino acids along the residues
-of the CDR3 amino acid sequence. Please see
-\code{\link[=clonalDiversity]{clonalDiversity()}} for more information on
-the underlying methods for diversity/entropy calculations.
-Positions without variance will have a value reported as 0
-for the purposes of comparison.
+This function the diversity amino acids along the residues of the CDR3
+amino acid sequence. Please see \code{\link[=clonalDiversity]{clonalDiversity()}} for more information
+on the underlying methods for diversity/entropy calculations. Positions
+without variance will have a value reported as 0 for the purposes of comparison.
 }
 \examples{
 #Making combined contig data
 combined <- combineTCR(contig_list, 
                         samples = c("P17B", "P17L", "P18B", "P18L", 
                                     "P19B","P19L", "P20B", "P20L"))
+
+# Using positionalEntropy()
 positionalEntropy(combined, 
                   chain = "TRB", 
                   aa.length = 20)
+                  
 }
 \concept{Summarize_Repertoire}

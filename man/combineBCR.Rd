@@ -2,7 +2,7 @@
 % Please edit documentation in R/combineContigs.R
 \name{combineBCR}
 \alias{combineBCR}
-\title{Combining the list of B cell receptor contigs into clones}
+\title{Combine B Cell Receptor Contig Data}
 \usage{
 combineBCR(
   input.data,
@@ -79,17 +79,11 @@ the function will add the strings as prefixes to prevent issues with
 repeated barcodes. The resulting new barcodes will need to match the
 Seurat or SCE object in order to use, \code{\link[=combineExpression]{combineExpression()}}.
 Unlike \code{\link[=combineTCR]{combineTCR()}}, combineBCR produces a column
-\strong{CTstrict} of an index of nucleotide sequence and the
-corresponding V gene. This index automatically calculates the
-Levenshtein distance between sequences with the same V gene and will
-index sequences using a normalized Levenshtein distance with the same
-ID. After which, clone clusters are called using the
-\code{\link[igraph:components]{igraph::components()}} function. Clones that are clustered
-across multiple sequences will then be labeled with "Cluster" in the
-CTstrict header.
+\code{CTstrict} of an index of nucleotide sequence and the
+corresponding V and J genes using \code{\link[=clonalCluster]{clonalCluster()}}.
 }
 \examples{
-#Data derived from the 10x Genomics intratumoral NSCLC B cells
+# Data derived from the 10x Genomics intratumoral NSCLC B cells
 BCR <- read.csv("https://www.borch.dev/uploads/contigs/b_contigs.csv")
 combined <- combineBCR(BCR,
                        samples = "Patient1",

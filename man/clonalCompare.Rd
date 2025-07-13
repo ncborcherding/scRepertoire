@@ -2,7 +2,7 @@
 % Please edit documentation in R/clonalCompare.R
 \name{clonalCompare}
 \alias{clonalCompare}
-\title{Demonstrate the difference in clonal proportions / counts between clones}
+\title{Compare Clonal Abundance Across Variables}
 \usage{
 clonalCompare(
   input.data,
@@ -26,13 +26,13 @@ clonalCompare(
 \item{input.data}{The product of \code{\link{combineTCR}},
 \code{\link{combineBCR}}, or \code{\link{combineExpression}}.}
 
-\item{cloneCall}{How to call the clone - VDJC gene (\strong{gene}),
-CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
-VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable
-in the data}
+\item{cloneCall}{Defines the clonal sequence grouping. Accepted values
+are: \code{gene} (VDJC genes), \code{nt} (CDR3 nucleotide sequence), \code{aa} (CDR3 amino
+acid sequence), or \code{strict} (VDJC). A custom column header can also be used.}
 
-\item{chain}{indicate if both or a specific chain should be used -
-e.g. "both", "TRA", "TRG", "IGH", "IGL"}
+\item{chain}{The TCR/BCR chain to use. Use \code{both} to include both chains
+(e.g., TRA/TRB). Accepted values: \code{TRA}, \code{TRB}, \code{TRG}, \code{TRD}, \code{IGH}, \code{IGL}
+(for both light chains), \code{both}.}
 
 \item{samples}{The specific samples to isolate for visualization.}
 
@@ -47,21 +47,23 @@ all other clones returned will be grey}
 \item{relabel.clones}{Simplify the legend of the graph by returning
 clones that are numerically indexed}
 
-\item{group.by}{If using a single-cell object, the column header
-to group the new list. \strong{NULL} will return the active
-identity or cluster}
+\item{group.by}{A column header in the metadata or lists to group the analysis
+by (e.g., "sample", "treatment"). If \code{NULL}, data will be analyzed
+by list element or active identity in the case of single-cell objects.}
 
-\item{order.by}{A vector of specific plotting order or "alphanumeric"
-to plot groups in order}
+\item{order.by}{A character vector defining the desired order of elements
+of the \code{group.by} variable. Alternatively, use \code{alphanumeric} to sort groups
+automatically.}
 
-\item{graph}{The type of graph produced, either \strong{"alluvial"}
-or \strong{"area"}}
+\item{graph}{The type of plot to generate. Accepted values are \code{alluvial}
+(default) or \code{area}}
 
-\item{proportion}{If \strong{TRUE}, the proportion of the total sequencing
-reads will be used for the y-axis. If \strong{FALSE}, the raw count
-will be used}
+\item{proportion}{If \code{TRUE} (default), the y-axis will represent the
+proportional abundance of clones. If \code{FALSE}, the y-axis will represent
+raw clone counts.`}
 
-\item{exportTable}{Returns the data frame used for forming the graph}
+\item{exportTable}{If \code{TRUE}, returns a data frame or matrix of the results
+instead of a plot.}
 
 \item{palette}{Colors to use in visualization - input any
 \link[grDevices]{hcl.pals}}
@@ -69,23 +71,22 @@ will be used}
 \item{...}{Additional arguments passed to the ggplot theme}
 }
 \value{
-ggplot of the proportion of total sequencing read of
-selecting clones
+A ggplot object visualizing proportions of clones by groupings, or a
+data.frame if \code{exportTable = TRUE}.
 }
 \description{
-This function produces an alluvial or area graph of the proportion or
-count composition of
-the indicated clones for all or selected samples (using the
-\strong{samples} parameter). Individual clones can be selected
-using the \strong{clones} parameter with the specific sequence of
-interest or using the \strong{top.clones} parameter with the top
-n clones by proportion / counts to be visualized.
+This function visualizes the relative abundance of specific clones across
+different samples or groups. It is useful for tracking how the proportions
+of top clones change between conditions. The output can be an alluvial plot
+to trace clonal dynamics or an area plot to show compositional changes.
 }
 \examples{
-#Making combined contig data
+# Making combined contig data
 combined <- combineTCR(contig_list,
                        samples = c("P17B", "P17L", "P18B", "P18L",
                                    "P19B","P19L", "P20B", "P20L"))
+
+# Using clonalCompares()
 clonalCompare(combined,
               top.clones = 5,
               samples = c("P17B", "P17L"),

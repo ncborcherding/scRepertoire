@@ -1,10 +1,9 @@
-#' Generate data frame to be used with circlize R package to visualize
-#' clones as a chord diagram. 
+#' Generate Data Frame to Plot Cord Diagram
 #' 
 #' This function will take the meta data from the product of 
 #' [combineExpression()] and generate a relational data frame to 
 #' be used for a chord diagram. Each cord will represent the number of 
-#' clone unique and shared across the multiple **group.by** variable. 
+#' clone unique and shared across the multiple `group.by` variable. 
 #' If using the downstream circlize R package, please read and cite the
 #' following [manuscript](https://pubmed.ncbi.nlm.nih.gov/24930139/).
 #' If looking for more advance ways for circular visualizations, there
@@ -12,28 +11,28 @@
 #' for the circlize package.
 #' 
 #' @examples
-#' #Getting the combined contigs
+#' # Getting the combined contigs
 #' combined <- combineTCR(contig_list, 
 #'                         samples = c("P17B", "P17L", "P18B", "P18L", 
 #'                                     "P19B","P19L", "P20B", "P20L"))
 #' 
-#' #Getting a sample of a Seurat object
+#' # Getting a sample of a Seurat object
 #' scRep_example <- get(data("scRep_example"))
 #' scRep_example <- combineExpression(combined, 
 #'                                    scRep_example)
 #' 
-#' #Getting data frame output for Circlize
+#' # Getting data frame output for Circlize
 #' circles <- getCirclize(scRep_example, 
 #'                        group.by = "seurat_clusters")
 #' 
 #' 
 #' @param sc.data The single-cell object after [combineExpression()].
-#' @param cloneCall How to call the clone - VDJC gene (**gene**), 
-#' CDR3 nucleotide (**nt**), CDR3 amino acid (**aa**),
-#' VDJC gene + CDR3 nucleotide (**strict**) or a custom variable 
-#' in the data.  
-#' @param group.by The group header for which you would like to analyze 
-#' the data.
+#' @param cloneCall Defines the clonal sequence grouping. Accepted values 
+#' are: `gene` (VDJC genes), `nt` (CDR3 nucleotide sequence), `aa` (CDR3 amino 
+#' acid sequence), or `strict` (VDJC). A custom column header can also be used.
+#' @param group.by A column header in the metadata  to group the analysis 
+#' by (e.g., "sample", "treatment"). If `NULL`, data will be analyzed by active 
+#' identity.
 #' @param proportion Calculate the relationship unique 
 #' clones (proportion = FALSE) or normalized by 
 #' proportion (proportion = TRUE)
@@ -42,7 +41,8 @@
 #' 
 #' @export
 #' @concept SC_Functions
-#' @return A data frame of shared clones between groups formatted for [chordDiagram][circlize::chordDiagram]
+#' @return A data frame of shared clones between groups formatted for 
+#' [chordDiagram][circlize::chordDiagram]
 #' @author Dillon Corvino, Nick Borcherding
 getCirclize <- function(sc.data, 
                         cloneCall = "strict", 

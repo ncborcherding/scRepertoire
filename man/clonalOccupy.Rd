@@ -2,7 +2,7 @@
 % Please edit documentation in R/clonalOccupy.R
 \name{clonalOccupy}
 \alias{clonalOccupy}
-\title{Visualize the number of single cells with cloneSizes by cluster}
+\title{Plot cloneSize by Variable in Single-Cell Objects}
 \usage{
 clonalOccupy(
   sc.data,
@@ -26,15 +26,16 @@ clonalOccupy(
 
 \item{facet.by}{The column header used for faceting the graph}
 
-\item{order.by}{A vector of specific plotting order or "alphanumeric"
-to plot groups in order description}
+\item{order.by}{A character vector defining the desired order of elements
+of the \code{group.by} variable. Alternatively, use \code{alphanumeric} to sort groups
+automatically.}
 
 \item{proportion}{Convert the stacked bars into relative proportion}
 
 \item{na.include}{Visualize NA values or not}
 
-\item{exportTable}{Exports a table of the data into the global
-environment in addition to the visualization}
+\item{exportTable}{If \code{TRUE}, returns a data frame or matrix of the results
+instead of a plot.}
 
 \item{palette}{Colors to use in visualization - input any
 \link[grDevices:palettes]{hcl.pals}}
@@ -53,18 +54,18 @@ variable, like cluster. Credit to the idea goes to Drs. Carmona
 and Andreatta and their work with \href{https://github.com/carmonalab/ProjecTILs}{ProjectTIL}.
 }
 \examples{
-#Getting the combined contigs
+# Getting the combined contigs
 combined <- combineTCR(contig_list, 
                         samples = c("P17B", "P17L", "P18B", "P18L", 
                                     "P19B","P19L", "P20B", "P20L"))
 
-#Getting a sample of a Seurat object
+# Getting a sample of a Seurat object
 scRep_example <- get(data("scRep_example"))
 
-#Using combineExpresion()
+# Using combineExpresion()
 scRep_example <- combineExpression(combined, scRep_example)
 
-#Using clonalOccupy
+# Using clonalOccupy
 clonalOccupy(scRep_example, x.axis = "ident")
 table <- clonalOccupy(scRep_example, x.axis = "ident", exportTable = TRUE)
 

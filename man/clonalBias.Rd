@@ -2,7 +2,7 @@
 % Please edit documentation in R/clonalBias.R
 \name{clonalBias}
 \alias{clonalBias}
-\title{Examine skew of clones towards a cluster or compartment}
+\title{Calculate Clonal Bias Towards a Cluster or Compartment}
 \usage{
 clonalBias(
   sc.data,
@@ -19,21 +19,21 @@ clonalBias(
 \arguments{
 \item{sc.data}{The single-cell object after \code{\link[=combineExpression]{combineExpression()}}.}
 
-\item{cloneCall}{How to call the clone - VDJC gene (\strong{gene}),
-CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
-VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable
-in the data.}
+\item{cloneCall}{Defines the clonal sequence grouping. Accepted values
+are: \code{gene} (VDJC genes), \code{nt} (CDR3 nucleotide sequence), \code{aa} (CDR3 amino
+acid sequence), or \code{strict} (VDJC). A custom column header can also be used.}
 
 \item{split.by}{The variable to use for calculating the baseline frequencies.
 For example, "Type" for lung vs peripheral blood comparison}
 
-\item{group.by}{The variable to use for calculating bias}
+\item{group.by}{A column header in the metadata that bias will be based on.}
 
 \item{n.boots}{number of bootstraps to downsample.}
 
 \item{min.expand}{clone frequency cut off for the purpose of comparison.}
 
-\item{exportTable}{Returns the data frame used for forming the graph.}
+\item{exportTable}{If \code{TRUE}, returns a data frame or matrix of the results
+instead of a plot.}
 
 \item{palette}{Colors to use in visualization - input any
 \link[grDevices:palettes]{hcl.pals}.}
@@ -45,9 +45,9 @@ ggplot scatter plot with clone bias
 }
 \description{
 The metric seeks to quantify how individual clones are skewed towards
-a specific cellular compartment or cluster. A clone bias of \strong{1} -
+a specific cellular compartment or cluster. A clone bias of \code{1} -
 indicates that a clone is composed of cells from a single
-compartment or cluster, while a clone bias of \strong{0} - matches the
+compartment or cluster, while a clone bias of \code{0} - matches the
 background subtype distribution. Please read and cite the following
 \href{https://pubmed.ncbi.nlm.nih.gov/35829695/}{manuscript}
 if using \code{\link[=clonalBias]{clonalBias()}}.

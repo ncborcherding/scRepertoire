@@ -2,17 +2,18 @@
 % Please edit documentation in R/addVariable.R
 \name{addVariable}
 \alias{addVariable}
-\title{Adding variables after combineTCR() or combineBCR()}
+\title{Adding Variables After combineTCR() or combineBCR()}
 \usage{
 addVariable(input.data, variable.name = NULL, variables = NULL)
 }
 \arguments{
-\item{input.data}{The product of \code{\link[=combineTCR]{combineTCR()}} or
+\item{input.data}{The product of \code{\link[=combineTCR]{combineTCR()}} or \code{\link[=combineBCR]{combineBCR()}}.}
+
+\item{variable.name}{A character string that defines the new variable to add.}
+
+\item{variables}{A character vector defining the desired column value for
+each list element. Must match the length of the product of \code{\link[=combineTCR]{combineTCR()}} or
 \code{\link[=combineBCR]{combineBCR()}}.}
-
-\item{variable.name}{The new column name/header.}
-
-\item{variables}{The exact values to add to each element of the list.}
 }
 \value{
 input.data list with the variable column added to each element.

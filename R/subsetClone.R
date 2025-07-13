@@ -1,4 +1,4 @@
-#' Subset the product of combineTCR() or combineBCR()
+#' Subset The Product of combineTCR() or combineBCR()
 #'
 #' This function allows for the subsetting of the product of 
 #' [combineTCR()] or [combineBCR()] 

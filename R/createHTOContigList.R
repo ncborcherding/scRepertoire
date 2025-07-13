@@ -1,4 +1,4 @@
-#' Generate a contig list from a multiplexed experiment
+#' Deconvolute Contig Information from Multiplexed Experiments
 #'
 #' This function reprocess and forms a list of contigs for downstream analysis 
 #' in scRepertoire, [createHTOContigList()] take the filtered contig 

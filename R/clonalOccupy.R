@@ -1,4 +1,4 @@
-#' Visualize the number of single cells with cloneSizes by cluster
+#' Plot cloneSize by Variable in Single-Cell Objects
 #'
 #' View the count of clones frequency group in Seurat or SCE object 
 #' meta data after [combineExpression()]. The visualization 
@@ -8,18 +8,18 @@
 #' and Andreatta and their work with [ProjectTIL](https://github.com/carmonalab/ProjecTILs).
 #'
 #' @examples
-#' #Getting the combined contigs
+#' # Getting the combined contigs
 #' combined <- combineTCR(contig_list, 
 #'                         samples = c("P17B", "P17L", "P18B", "P18L", 
 #'                                     "P19B","P19L", "P20B", "P20L"))
 #' 
-#' #Getting a sample of a Seurat object
+#' # Getting a sample of a Seurat object
 #' scRep_example <- get(data("scRep_example"))
 #' 
-#' #Using combineExpresion()
+#' # Using combineExpresion()
 #' scRep_example <- combineExpression(combined, scRep_example)
 #' 
-#' #Using clonalOccupy
+#' # Using clonalOccupy
 #' clonalOccupy(scRep_example, x.axis = "ident")
 #' table <- clonalOccupy(scRep_example, x.axis = "ident", exportTable = TRUE)
 #' 
@@ -27,12 +27,13 @@
 #' @param x.axis The variable in the meta data to graph along the x.axis.
 #' @param label Include the number of clone in each category by x.axis variable
 #' @param facet.by The column header used for faceting the graph
-#' @param order.by A vector of specific plotting order or "alphanumeric"
-#' to plot groups in order description
+#' @param order.by A character vector defining the desired order of elements 
+#' of the `group.by` variable. Alternatively, use `alphanumeric` to sort groups 
+#' automatically.
 #' @param proportion Convert the stacked bars into relative proportion
 #' @param na.include Visualize NA values or not
-#' @param exportTable Exports a table of the data into the global 
-#' environment in addition to the visualization
+#' @param exportTable If `TRUE`, returns a data frame or matrix of the results 
+#' instead of a plot.
 #' @param palette Colors to use in visualization - input any 
 #' [hcl.pals][grDevices::hcl.pals]
 #' @param ... Additional arguments passed to the ggplot theme

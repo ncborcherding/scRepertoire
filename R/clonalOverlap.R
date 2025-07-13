@@ -2,10 +2,10 @@
 #'
 #' This functions allows for the calculation and visualizations of 
 #' various overlap metrics for clones. The methods include overlap 
-#' coefficient (**overlap**), Morisita's overlap index 
-#' (**morisita**), Jaccard index (**jaccard**), cosine 
-#' similarity (**cosine**) or the exact number of clonal 
-#' overlap (**raw**).
+#' coefficient (`overlap`), Morisita's overlap index 
+#' (`morisita`), Jaccard index (`jaccard`), cosine 
+#' similarity (`cosine`) or the exact number of clonal 
+#' overlap (`raw`).
 #' 
 #' @details
 #' The formulas for the indices are as follows:
@@ -42,18 +42,22 @@
 #'
 #' @param input.data The product of [combineTCR()], 
 #' [combineBCR()], or [combineExpression()]
-#' @param cloneCall How to call the clone - VDJC gene (**gene**), 
-#' CDR3 nucleotide (**nt**), CDR3 amino acid (**aa**),
-#' VDJC gene + CDR3 nucleotide (**strict**) or a custom variable 
-#' in the data
-#' @param chain indicate if both or a specific chain should be used - 
-#' e.g. "both", "TRA", "TRG", "IGH", "IGL"
+#' @param cloneCall Defines the clonal sequence grouping. Accepted values 
+#' are: `gene` (VDJC genes), `nt` (CDR3 nucleotide sequence), `aa` (CDR3 amino 
+#' acid sequence), or `strict` (VDJC). A custom column header can also be used.
+#' @param chain The TCR/BCR chain to use. Use `both` to include both chains 
+#' (e.g., TRA/TRB). Accepted values: `TRA`, `TRB`, `TRG`, `TRD`, `IGH`, `IGL` 
+#' (for both light chains), `both`.
 #' @param method The method to calculate the "overlap", "morisita", 
 #' "jaccard", "cosine" indices or "raw" for the base numbers
-#' @param group.by The variable to use for grouping
-#' @param order.by A vector of specific plotting order or "alphanumeric"
-#' to plot groups in order
-#' @param exportTable Returns the data frame used for forming the graph
+#' @param group.by A column header in the metadata or lists to group the analysis 
+#' by (e.g., "sample", "treatment"). If `NULL`, data will be analyzed 
+#' by list element or active identity in the case of single-cell objects.
+#' @param order.by A character vector defining the desired order of elements 
+#' of the `group.by` variable. Alternatively, use `alphanumeric` to sort groups 
+#' automatically.
+#' @param exportTable If `TRUE`, returns a data frame or matrix of the results 
+#' instead of a plot.
 #' @param palette Colors to use in visualization - input any 
 #' [hcl.pals][grDevices::hcl.pals]
 #' @param ... Additional arguments passed to the ggplot theme
@@ -61,7 +65,8 @@
 #' @importFrom stats quantile
 #' @export
 #' @concept Visualizing_Clones
-#' @return ggplot of the overlap of clones by group
+#' @return A ggplot object visualizing clonal overlap or a data.frame if
+#'`exportTable = TRUE`.
 clonalOverlap <- function(input.data, 
                           cloneCall = "strict", 
                           method = c("overlap", "morisita", "jaccard", "cosine", "raw"),

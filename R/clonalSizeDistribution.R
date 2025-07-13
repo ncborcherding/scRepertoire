@@ -1,4 +1,4 @@
-#' Hierarchical clustering of clones using Gamma-GPD spliced threshold model
+#' Plot powerTCR Clustering Based on Clonal Size
 #'
 #' This function produces a hierarchical clustering of clones by sample 
 #' using discrete gamma-GPD spliced threshold model. If using this 
@@ -29,25 +29,30 @@
 #' }
 #' 
 #' @examples
-#' #Making combined contig data
+#' # Making combined contig data
 #' combined <- combineTCR(contig_list,
 #'                         samples = c("P17B", "P17L", "P18B", "P18L",
 #'                                     "P19B","P19L", "P20B", "P20L"))
+#' 
+#' # Using clonalSizeDistribution()
 #' clonalSizeDistribution(combined, cloneCall = "strict", method="ward.D2")
 #'
 #' @param input.data The product of [combineTCR()],
 #' [combineBCR()], or [combineExpression()].
-#' @param cloneCall How to call the clone - VDJC gene (**gene**),
-#' CDR3 nucleotide (**nt**), CDR3 amino acid (**aa**),
-#' VDJC gene + CDR3 nucleotide (**strict**) or a custom variable
-#' in the data.
-#' @param chain indicate if both or a specific chain should be used -
-#' e.g. "both", "TRA", "TRG", "IGH", "IGL".
+#' @param cloneCall Defines the clonal sequence grouping. Accepted values 
+#' are: `gene` (VDJC genes), `nt` (CDR3 nucleotide sequence), `aa` (CDR3 amino 
+#' acid sequence), or `strict` (VDJC). A custom column header can also be used.
+#' @param chain The TCR/BCR chain to use. Use `both` to include both chains 
+#' (e.g., TRA/TRB). Accepted values: `TRA`, `TRB`, `TRG`, `TRD`, `IGH`, `IGL` 
+#' (for both light chains), `both`.
 #' @param threshold Numerical vector containing the thresholds
 #' the grid search was performed over.
 #' @param method The clustering parameter for the dendrogram.
-#' @param group.by The variable to use for grouping.
-#' @param exportTable Returns the data frame used for forming the graph.
+#' @param group.by A column header in the metadata or lists to group the analysis 
+#' by (e.g., "sample", "treatment"). If `NULL`, data will be analyzed as 
+#' by list element or active identity in the case of single-cell objects.
+#' @param exportTable If `TRUE`, returns a data frame or matrix of the results 
+#' instead of a plot.
 #' @param palette Colors to use in visualization - input any
 #' [hcl.pals][grDevices::hcl.pals].
 #' @param ... Additional arguments passed to the ggplot theme
@@ -56,7 +61,8 @@
 #' @importFrom stats hclust optim pgamma as.dist
 #' @export
 #' @concept Visualizing_Clones
-#' @return ggplot dendrogram of the clone size distribution
+#' @return A ggplot object visualizing dendrogram of clonal size distribution
+#'  or a data.frame if `exportTable = TRUE`.
 #' @author Hillary Koch
 #'
 clonalSizeDistribution <- function(input.data,

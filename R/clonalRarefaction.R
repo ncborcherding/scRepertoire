@@ -1,8 +1,8 @@
 #' Calculate rarefaction based on the abundance of clones
 #' 
-#' This functions uses the Hill numbers of order q: species richness (**q = 0**), 
-#' Shannon diversity (**q = 1**), the exponential of Shannon entropy and Simpson 
-#' diversity (**q = 2**, the inverse of Simpson concentration) to compute diversity 
+#' This functions uses the Hill numbers of order q: species richness (`q = 0`), 
+#' Shannon diversity (`q = 1`), the exponential of Shannon entropy and Simpson 
+#' diversity (`q = 2`, the inverse of Simpson concentration) to compute diversity 
 #' estimates for rarefaction and extrapolation. The function relies on the
 #' [iNEXT::iNEXT()] R package. Please read and cite the 
 #' [manuscript](https://besjournals.onlinelibrary.wiley.com/doi/10.1111/2041-210X.12613) 
@@ -17,15 +17,17 @@
 #' clonalRarefaction(combined[c(1,2)], cloneCall = "gene", n.boots = 3)
 #'
 #'
-#' @param input.data The product of [combineTCR()], 
-#' [combineBCR()], or [combineExpression()].
-#' @param cloneCall How to call the clone - VDJC gene (**gene**), 
-#' CDR3 nucleotide (**nt**), CDR3 amino acid (**aa**),
-#' VDJC gene + CDR3 nucleotide (**strict**) or a custom variable 
-#' in the data. 
-#' @param chain indicate if both or a specific chain should be used - 
-#' e.g. "both", "TRA", "TRG", "IGH", "IGL".
-#' @param group.by The variable to use for grouping.
+#' @param input.data The product of [combineTCR()], [combineBCR()], or 
+#' [combineExpression()].
+#' @param cloneCall Defines the clonal sequence grouping. Accepted values 
+#' are: `gene` (VDJC genes), `nt` (CDR3 nucleotide sequence), `aa` (CDR3 amino 
+#' acid sequence), or `strict` (VDJC). A custom column header can also be used.
+#' @param chain The TCR/BCR chain to use. Use `both` to include both chains 
+#' (e.g., TRA/TRB). Accepted values: `TRA`, `TRB`, `TRG`, `TRD`, `IGH`, `IGL` 
+#' (for both light chains), `both`.
+#' @param group.by A column header in the metadata or lists to group the analysis 
+#' by (e.g., "sample", "treatment"). If `NULL`, data will be analyzed 
+#' by list element or active identity in the case of single-cell objects.
 #' @param plot.type sample-size-based rarefaction/extrapolation curve 
 #' (`type = 1`); sample completeness curve (`type = 2`); 
 #' coverage-based rarefaction/extrapolation curve (`type = 3`).   
@@ -34,8 +36,8 @@
 #' @param n.boots The number of bootstrap replicates used to derive confidence 
 #' intervals for the diversity estimates. More replicates can provide a more 
 #' reliable measure of statistical variability.
-#' @param exportTable Exports a table of the data into the global 
-#' environment in addition to the visualization.
+#' @param exportTable If `TRUE`, returns a data frame or matrix of the results 
+#' instead of a plot.
 #' @param palette Colors to use in visualization - input any 
 #' [hcl.pals][grDevices::hcl.pals].
 #' @param ... Additional arguments passed to the ggplot theme

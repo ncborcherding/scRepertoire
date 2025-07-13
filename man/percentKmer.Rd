@@ -22,16 +22,19 @@ percentKmer(
 \item{input.data}{The product of \code{\link[=combineTCR]{combineTCR()}},
 \code{\link[=combineBCR]{combineBCR()}}, or \code{\link[=combineExpression]{combineExpression()}}}
 
-\item{chain}{indicate a specific chain should be used -
-e.g. "TRA", "TRG", "IGH", "IGL", etc}
+\item{chain}{The TCR/BCR chain to use. Accepted values: \code{TRA}, \code{TRB}, \code{TRG},
+\code{TRD}, \code{IGH}, or \code{IGL} (for both light chains).}
 
-\item{cloneCall}{How to call the clone - CDR3 nucleotide (\strong{nt}) or
-CDR3 amino acid (\strong{aa})}
+\item{cloneCall}{Defines the clonal sequence grouping. Accepted values
+are: \code{nt} (CDR3 nucleotide sequence) or \code{aa} (CDR3 amino acid sequence).}
 
-\item{group.by}{The variable to use for grouping}
+\item{group.by}{A column header in the metadata or lists to group the analysis
+by (e.g., "sample", "treatment"). If \code{NULL}, data will be analyzed as
+by list element or active identity in the case of single-cell objects.}
 
-\item{order.by}{A vector of specific plotting order for \code{group.by} or
-"alphanumeric" to plot groups in order}
+\item{order.by}{A character vector defining the desired order of elements
+of the \code{group.by} variable. Alternatively, use \code{alphanumeric} to sort groups
+automatically.}
 
 \item{motif.length}{The length of the kmer to analyze}
 
@@ -41,7 +44,8 @@ output (\verb{>= 1}). \strong{Default:} \code{3}.}
 \item{top.motifs}{Return the n most variable motifs as a function of
 median absolute deviation}
 
-\item{exportTable}{Returns the data frame used for forming the graph.}
+\item{exportTable}{If \code{TRUE}, returns a data frame or matrix of the results
+instead of a plot.}
 
 \item{palette}{Colors to use in visualization - input any
 \link[grDevices:palettes]{hcl.pals}}
@@ -69,6 +73,8 @@ in a heatmap.
 combined <- combineTCR(contig_list, 
                         samples = c("P17B", "P17L", "P18B", "P18L", 
                                     "P19B","P19L", "P20B", "P20L"))
+
+# Using percentKmer()
 percentKmer(combined, 
             chain = "TRB", 
             motif.length = 3)

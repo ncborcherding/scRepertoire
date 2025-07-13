@@ -2,7 +2,7 @@
 % Please edit documentation in R/combineContigs.R
 \name{combineTCR}
 \alias{combineTCR}
-\title{Combining the list of T cell receptor contigs into clones}
+\title{Combine T Cell Receptor Contig Data}
 \usage{
 combineTCR(
   input.data,

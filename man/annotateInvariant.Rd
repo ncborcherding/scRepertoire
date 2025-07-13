@@ -36,18 +36,18 @@ convenient method to annotate specialized T-cell subsets within single-cell
 analyses.
 }
 \examples{
-#Getting the combined contigs
+# Getting the combined contigs
 combined <- combineTCR(contig_list, 
                         samples = c("P17B", "P17L", "P18B", "P18L", 
                                     "P19B","P19L", "P20B", "P20L"))
 
-#Getting a sample of a Seurat object
+# Getting a sample of a Seurat object
 scRep_example <- get(data("scRep_example"))
 
-#Using combineExpresion()
+# Using combineExpresion()
 scRep_example <- combineExpression(combined, scRep_example)
 
-#Using annotateInvariant
+# Using annotateInvariant()
 annotateInvariant(input.data = scRep_example, type = "MAIT", species = "human")
 annotateInvariant(input.data = scRep_example, type = "iNKT", species = "human")
 

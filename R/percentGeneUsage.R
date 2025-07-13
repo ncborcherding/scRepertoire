@@ -50,15 +50,18 @@
 #' @param genes A character vector specifying the gene loci to analyze.
 #' Can be a single gene e.g., "TRBV" or "IGHJ" or a pair for genes analysis 
 #' (e.g., c("TRBV", "TRAV"), or "TRBV", "TRBJ").
-#' @param group.by The variable to use for grouping (e.g., "sample", "orig.ident").
-#' @param order.by A vector of specific plotting order or "alphanumeric"
-#' to plot groups in order.
+#' @param group.by A column header in the metadata or lists to group the analysis 
+#' by (e.g., "sample", "treatment"). If `NULL`, data will be analyzed as 
+#' by list element or active identity in the case of single-cell objects.
+#' @param order.by A character vector defining the desired order of elements 
+#' of the `group.by` variable. Alternatively, use `alphanumeric` to sort groups 
+#' automatically.
 #' @param summary.fun Character string choosing the summary statistic -
 #' `"percent"` (default), `"proportion"`, or `"count"`.
 #' @param plot.type The type of plot to return: `"heatmap"` (default for paired loci,
 #' also available for single loci), or `"barplot"` (for single loci).
-#' @param exportTable Logical. If `TRUE`, returns the data frame or matrix used
-#' for forming the graph instead of the plot.
+#' @param exportTable If `TRUE`, returns a data frame or matrix of the results 
+#' instead of a plot.
 #' @param palette Colors to use in visualization - input any
 #' [hcl.pals][grDevices::hcl.pals].
 #' @param ... Additional arguments passed to the ggplot theme

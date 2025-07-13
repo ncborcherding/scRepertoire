@@ -1,4 +1,4 @@
-#' Highlighting specific clones in Seurat
+#' Highlighting Specific Clones
 #'
 #' Use a specific clonal sequence to highlight on top of the dimensional 
 #' reduction in single-cell object.
@@ -23,10 +23,9 @@
 #' 
 #' @param sc.data The single-cell object to attach after 
 #' [combineExpression()]
-#' @param cloneCall How to call the clone - VDJC gene (**gene**), 
-#' CDR3 nucleotide (**nt**), CDR3 amino acid (**aa**),
-#' VDJC gene + CDR3 nucleotide (**strict**) or a custom variable 
-#' in the data
+#' @param cloneCall Defines the clonal sequence grouping. Accepted values 
+#' are: `gene` (VDJC genes), `nt` (CDR3 nucleotide sequence), `aa` (CDR3 amino 
+#' acid sequence), or `strict` (VDJC). A custom column header can also be used.
 #' @param sequence The specific sequence or sequence to highlight
 #' @importFrom S4Vectors DataFrame
 #' @export
