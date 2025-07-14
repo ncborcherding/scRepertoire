@@ -2,7 +2,7 @@
 % Please edit documentation in R/subsetClone.R
 \name{subsetClones}
 \alias{subsetClones}
-\title{Subset the product of combineTCR() or combineBCR()}
+\title{Subset The Product of combineTCR() or combineBCR()}
 \usage{
 subsetClones(input.data, name, variables = NULL)
 }

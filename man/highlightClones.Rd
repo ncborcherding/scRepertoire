@@ -2,7 +2,7 @@
 % Please edit documentation in R/highlightClones.R
 \name{highlightClones}
 \alias{highlightClones}
-\title{Highlighting specific clones in Seurat}
+\title{Highlighting Specific Clones}
 \usage{
 highlightClones(
   sc.data,
@@ -14,10 +14,9 @@ highlightClones(
 \item{sc.data}{The single-cell object to attach after
 \code{\link[=combineExpression]{combineExpression()}}}
 
-\item{cloneCall}{How to call the clone - VDJC gene (\strong{gene}),
-CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
-VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable
-in the data}
+\item{cloneCall}{Defines the clonal sequence grouping. Accepted values
+are: \code{gene} (VDJC genes), \code{nt} (CDR3 nucleotide sequence), \code{aa} (CDR3 amino
+acid sequence), or \code{strict} (VDJC). A custom column header can also be used.}
 
 \item{sequence}{The specific sequence or sequence to highlight}
 }

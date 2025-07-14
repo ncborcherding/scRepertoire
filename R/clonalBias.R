@@ -1,9 +1,9 @@
-#' Examine skew of clones towards a cluster or compartment
+#' Calculate Clonal Bias Towards a Cluster or Compartment
 #' 
 #' The metric seeks to quantify how individual clones are skewed towards 
-#' a specific cellular compartment or cluster. A clone bias of **1** - 
+#' a specific cellular compartment or cluster. A clone bias of `1` - 
 #' indicates that a clone is composed of cells from a single 
-#' compartment or cluster, while a clone bias of **0** - matches the 
+#' compartment or cluster, while a clone bias of `0` - matches the 
 #' background subtype distribution. Please read and cite the following
 #' [manuscript](https://pubmed.ncbi.nlm.nih.gov/35829695/) 
 #' if using [clonalBias()].
@@ -31,16 +31,16 @@
 #' 
 #' 
 #' @param sc.data The single-cell object after [combineExpression()].
-#' @param cloneCall How to call the clone - VDJC gene (**gene**), 
-#' CDR3 nucleotide (**nt**), CDR3 amino acid (**aa**),
-#' VDJC gene + CDR3 nucleotide (**strict**) or a custom variable 
-#' in the data. 
-#' @param group.by The variable to use for calculating bias
+#' @param cloneCall Defines the clonal sequence grouping. Accepted values 
+#' are: `gene` (VDJC genes), `nt` (CDR3 nucleotide sequence), `aa` (CDR3 amino 
+#' acid sequence), or `strict` (VDJC). A custom column header can also be used.
+#' @param group.by A column header in the metadata that bias will be based on.
 #' @param split.by The variable to use for calculating the baseline frequencies.
 #' For example, "Type" for lung vs peripheral blood comparison 
 #' @param n.boots number of bootstraps to downsample.
 #' @param min.expand clone frequency cut off for the purpose of comparison.
-#' @param exportTable Returns the data frame used for forming the graph.
+#' @param exportTable If `TRUE`, returns a data frame or matrix of the results 
+#' instead of a plot.
 #' @param palette Colors to use in visualization - input any 
 #' [hcl.pals][grDevices::hcl.pals].
 #' @param ... Additional arguments passed to the ggplot theme
@@ -61,26 +61,26 @@ clonalBias <- function(sc.data,
                        ...) {
   .checkSingleObject(sc.data)
   cloneCall <- .theCall(.grabMeta(sc.data), cloneCall)
-  #Calculating bias
+  # Calculating bias
   bias <- .get_clono_bias(sc.data, 
                          split.by = split.by, 
                          group.by = group.by , 
                          cloneCall=cloneCall, 
                          min.expand=min.expand)
   df_shuffle.list <- list()
-  #Bootstrapping
+  # Bootstrapping
   for (ii in seq_len(n.boots)) {
     df_shuffle.list[[ii]] <- .get_clono_bias(sc.data, 
-                                             split.by = split.by,
-                                             group.by = group.by, 
-                                             cloneCall=cloneCall, 
-                                             min.expand=min.expand, 
+                                             split.by   = split.by,
+                                             group.by   = group.by, 
+                                             cloneCall  = cloneCall, 
+                                             min.expand = min.expand, 
                                              do.shuffle = TRUE, 
-                                             seed=ii)
+                                             seed       = ii)
   }
   df_shuffle <- Reduce(rbind, df_shuffle.list)
   
-  #Sumarrising boot straps
+  # Summarizing boot straps
   stat.summary <- df_shuffle %>%
     group_by(ncells) %>%
     summarise(mean = mean(bias), 
@@ -90,7 +90,7 @@ clonalBias <- function(sc.data,
   bias$Top_state <- factor(bias$Top_state, 
                            .alphanumericalSort(unique(bias$Top_state)))
   
-  #Calculating Bias Z-score
+  # Calculating Bias Z-score
   bias$Z.score <- NA
   for(i in seq_len(nrow(bias))) {
     stat.pos <- bias[i,]$ncells
@@ -99,7 +99,7 @@ clonalBias <- function(sc.data,
     bias$Z.score[i] <- z.score
   }
   
-  #Attaching the cloneSize of original combineExpression()
+  # Attaching the cloneSize of original combineExpression()
   meta <- .grabMeta(sc.data)
   meta <- meta[meta[,cloneCall] %in% bias[,"Clone"],]
   meta <- unique(meta[,c(cloneCall, split.by, "cloneSize")])
@@ -119,8 +119,8 @@ clonalBias <- function(sc.data,
   bias$dotSize <- as.numeric(bias$cloneSize)
   
   #else, return the plot 
-  ggplot(bias, aes(x=ncells,y=bias)) + 
-    geom_point(aes(fill=Top_state, size = dotSize), 
+  ggplot(bias, aes(x=.data[["ncells"]],y=bias)) + 
+    geom_point(aes(fill=.data[["Top_state"]], size = .data[["dotSize"]]), 
                shape = 21, 
                stroke = 0.25) + 
     stat_quantile(data=df_shuffle, 

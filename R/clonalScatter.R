@@ -1,4 +1,4 @@
-#' Scatter plot comparing the clonal expansion of two samples
+#' Scatter Plot Comparing Clones Across Two Samples
 #'
 #' This function produces a scatter plot directly comparing 
 #' the specific clones between two samples. The clones will 
@@ -10,6 +10,8 @@
 #' combined <- combineTCR(contig_list, 
 #'                         samples = c("P17B", "P17L", "P18B", "P18L", 
 #'                                     "P19B","P19L", "P20B", "P20L"))
+#' 
+#' # Using clonalScatter()
 #' clonalScatter(combined, 
 #'               x.axis = "P17B", 
 #'               y.axis = "P17L",
@@ -17,26 +19,30 @@
 #' 
 #' @param input.data The product of [combineTCR()], 
 #' [combineBCR()], or [combineExpression()].
-#' @param cloneCall How to call the clone - VDJC gene (**gene**), 
-#' CDR3 nucleotide (**nt**), CDR3 amino acid (**aa**),
-#' VDJC gene + CDR3 nucleotide (**strict**) or a custom variable 
-#' in the data. 
-#' @param chain indicate if both or a specific chain should be used - 
-#' e.g. "both", "TRA", "TRG", "IGH", "IGL".
+#' @param cloneCall Defines the clonal sequence grouping. Accepted values 
+#' are: `gene` (VDJC genes), `nt` (CDR3 nucleotide sequence), `aa` (CDR3 amino 
+#' acid sequence), or `strict` (VDJC). A custom column header can also be used.
+#' @param chain The TCR/BCR chain to use. Use `both` to include both chains 
+#' (e.g., TRA/TRB). Accepted values: `TRA`, `TRB`, `TRG`, `TRD`, `IGH`, `IGL` 
+#' (for both light chains), `both`.
 #' @param x.axis name of the list element to appear on the x.axis.
 #' @param y.axis name of the list element to appear on the y.axis.
 #' @param dot.size either total or the name of the list element to 
 #' use for size of dots.
-#' @param group.by The variable to use for grouping.
+#' @param group.by A column header in the metadata or lists to group the analysis 
+#' by (e.g., "sample", "treatment"). If `NULL`, data will be analyzed 
+#' by list element or active identity in the case of single-cell objects.
 #' @param graph graph either the clonal "proportion" or "count".
-#' @param exportTable Returns the data frame used for forming the graph.
+#' @param exportTable If `TRUE`, returns a data frame or matrix of the results 
+#' instead of a plot.
 #' @param palette Colors to use in visualization - input any 
 #' [hcl.pals][grDevices::hcl.pals].
 #' @param ... Additional arguments passed to the ggplot theme
 #'
 #' @export
 #' @concept Visualizing_Clones
-#' @return ggplot of the relative clone numbers between two sequencing runs or groups
+#' @return A ggplot object visualizing clonal dynamics between two groupings or
+#'  a data.frame if `exportTable = TRUE`.
 
 clonalScatter <- function(input.data, 
                           cloneCall ="strict", 

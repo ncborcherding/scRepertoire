@@ -1,40 +1,45 @@
-#' Examining the clonal space occupied by specific clones
+#' Plot the Clonal Space Occupied by Specific Clones
 #'
 #' This function calculates the relative clonal space occupied by the 
 #' clones. The grouping of these clones is based on the parameter 
-#' **clonalSplit**, at default, **clonalSplit** will group the clones 
+#' `clonalSplit`, at default, `clonalSplit` will group the clones 
 #' into bins of 1:10, 11:100, 101:1001, etc. To adjust the clones 
 #' selected, change the numbers in the variable split. If a matrix output 
-#' for the data is preferred, set **exportTable** = TRUE.
+#' for the data is preferred, set `exportTable` = TRUE.
 #'
 #' @examples
-#' #Making combined contig data
+#' # Making combined contig data
 #' combined <- combineTCR(contig_list, 
 #'                         samples = c("P17B", "P17L", "P18B", "P18L", 
 #'                                     "P19B","P19L", "P20B", "P20L"))
+#' # Using clonalProportion()
 #' clonalProportion(combined, cloneCall = "gene")
 #'
 #' @param input.data The product of [combineTCR()], 
 #' [combineBCR()], or [combineExpression()].
 #' @param clonalSplit The cut points for the specific clones
-#' @param cloneCall How to call the clone - VDJC gene (**gene**), 
-#' CDR3 nucleotide (**nt**), CDR3 amino acid (**aa**),
-#' VDJC gene + CDR3 nucleotide (**strict**) or a custom variable 
-#' in the data
-#' @param chain indicate if both or a specific chain should be used - 
-#' e.g. "both", "TRA", "TRG", "IGH", "IGL"
-#' @param group.by The variable to use for grouping
-#' @param order.by A vector of specific plotting order or "alphanumeric"
-#' to plot groups in order
-#' @param exportTable Exports a table of the data into the global.
-#' environment in addition to the visualization
+#' @param cloneCall Defines the clonal sequence grouping. Accepted values 
+#' are: `gene` (VDJC genes), `nt` (CDR3 nucleotide sequence), `aa` (CDR3 amino 
+#' acid sequence), or `strict` (VDJC). A custom column header can also be used.
+#' @param chain The TCR/BCR chain to use. Use `both` to include both chains 
+#' (e.g., TRA/TRB). Accepted values: `TRA`, `TRB`, `TRG`, `TRD`, `IGH`, `IGL` 
+#' (for both light chains), `both`.
+#' @param group.by A column header in the metadata or lists to group the analysis 
+#' by (e.g., "sample", "treatment"). If `NULL`, data will be analyzed 
+#' by list element or active identity in the case of single-cell objects.
+#' @param order.by A character vector defining the desired order of elements 
+#' of the `group.by` variable. Alternatively, use `alphanumeric` to sort groups 
+#' automatically.
+#' @param exportTable If `TRUE`, returns a data frame or matrix of the results 
+#' instead of a plot.
 #' @param palette Colors to use in visualization - input any 
 #' [hcl.pals][grDevices::hcl.pals]
 #' @param ... Additional arguments passed to the ggplot theme
 #'
 #' @export
 #' @concept Visualizing_Clones
-#' @return ggplot of the space occupied by the specific rank of clones
+#' @return A ggplot object dividing space occupied by ranks of clones or a 
+#' data.frame if `exportTable = TRUE`.
 clonalProportion <- function(input.data,
                              clonalSplit = c(10, 100, 1000, 10000, 30000, 100000), 
                              cloneCall = "strict", 
@@ -90,7 +95,7 @@ clonalProportion <- function(input.data,
                                     data.frame = mat_melt)
     }
     col <- length(unique(mat_melt$Var2))
-    plot <- ggplot(mat_melt, aes(x=as.factor(Var1), y=value, fill=Var2)) +
+    plot <- ggplot(mat_melt, aes(x=as.factor(.data[["Var1"]]), y=.data[["value"]], fill=.data[["Var2"]])) +
         geom_bar(stat = "identity", position="fill", 
                     color = "black", lwd= 0.25) +
         scale_fill_manual(values = rev(.colorizer(palette,col))) +

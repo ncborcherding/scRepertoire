@@ -2,7 +2,7 @@
 % Please edit documentation in R/combineContigs.R
 \name{combineBCR}
 \alias{combineBCR}
-\title{Combining the list of B cell receptor contigs into clones}
+\title{Combine B Cell Receptor Contig Data}
 \usage{
 combineBCR(
   input.data,
@@ -42,7 +42,7 @@ identify related clones based on sequence similarity. If \code{FALSE}, defines
 clones by the exact V-gene and CDR3 amino acid sequence.}
 
 \item{group.by}{The column header used for to group clones.
-If (\strong{NULL}), clusters will be calculated across samples.}
+If (`NULL``), clusters will be calculated across samples.}
 
 \item{threshold}{The similarity threshold passed to \code{clonalCluster()} if
 \code{call.related.clones = TRUE}. See \code{?clonalCluster} for details.}
@@ -79,17 +79,11 @@ the function will add the strings as prefixes to prevent issues with
 repeated barcodes. The resulting new barcodes will need to match the
 Seurat or SCE object in order to use, \code{\link[=combineExpression]{combineExpression()}}.
 Unlike \code{\link[=combineTCR]{combineTCR()}}, combineBCR produces a column
-\strong{CTstrict} of an index of nucleotide sequence and the
-corresponding V gene. This index automatically calculates the
-Levenshtein distance between sequences with the same V gene and will
-index sequences using a normalized Levenshtein distance with the same
-ID. After which, clone clusters are called using the
-\code{\link[igraph:components]{igraph::components()}} function. Clones that are clustered
-across multiple sequences will then be labeled with "Cluster" in the
-CTstrict header.
+\code{CTstrict} of an index of nucleotide sequence and the
+corresponding V and J genes using \code{\link[=clonalCluster]{clonalCluster()}}.
 }
 \examples{
-#Data derived from the 10x Genomics intratumoral NSCLC B cells
+# Data derived from the 10x Genomics intratumoral NSCLC B cells
 BCR <- read.csv("https://www.borch.dev/uploads/contigs/b_contigs.csv")
 combined <- combineBCR(BCR,
                        samples = "Patient1",

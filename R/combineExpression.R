@@ -1,43 +1,42 @@
-#' Adding clone information to a single-cell object
+#' Adding Clonal Information to Single-Cell Object
 #'
 #' This function adds the immune receptor information to the Seurat or 
 #' SCE object to the meta data. By default this function also calculates 
 #' the frequencies and proportion of the clones by sequencing 
-#' run (**group.by** = NULL). To change how the frequencies/proportions
-#' are calculated, select a column header for the **group.by** variable. 
+#' run (`group.by` = NULL). To change how the frequencies/proportions
+#' are calculated, select a column header for the `group.by` variable. 
 #' Importantly, before using [combineExpression()] ensure the 
 #' barcodes of the single-cell object object match the barcodes in the output 
 #' of the [combineTCR()] or [combineBCR()]. 
 #'
 #' @examples
-#' #Getting the combined contigs
+#' # Getting the combined contigs
 #' combined <- combineTCR(contig_list, 
 #'                         samples = c("P17B", "P17L", "P18B", "P18L", 
 #'                                     "P19B","P19L", "P20B", "P20L"))
 #' 
-#' #Getting a sample of a Seurat object
+#' # Getting a sample of a Seurat object
 #' scRep_example <- get(data("scRep_example"))
 #' 
-#' #Using combineExpresion()
+#' # Using combineExpresion()
 #' scRep_example <- combineExpression(combined, scRep_example)
 #' 
 #' @param input.data The product of [combineTCR()], 
 #' [combineBCR()] or a list of 
 #' both c([combineTCR()], [combineBCR()]).
 #' @param sc.data The Seurat or Single-Cell Experiment (SCE) object to attach
-#' @param cloneCall How to call the clone - VDJC gene (**gene**), 
-#' CDR3 nucleotide (**nt**), CDR3 amino acid (**aa**),
-#' VDJC gene + CDR3 nucleotide (**strict**) or a custom variable 
-#' in the data. 
-#' @param chain indicate if both or a specific chain should be used - 
-#' e.g. "both", "TRA", "TRG", "IGH", "IGL".
-#' @param group.by The column label in the combined clones in which 
-#' clone frequency will be calculated. **NULL** or **"none"** will 
-#' keep the format of input.data.
-#' @param proportion Whether to proportion (**TRUE**) or total 
-#' frequency (**FALSE**) of the clone based on the group.by variable. 
+#' @param cloneCall Defines the clonal sequence grouping. Accepted values 
+#' are: `gene` (VDJC genes), `nt` (CDR3 nucleotide sequence), `aa` (CDR3 amino 
+#' acid sequence), or `strict` (VDJC). A custom column header can also be used.
+#' @param chain The TCR/BCR chain to use. Use `both` to include both chains 
+#' (e.g., TRA/TRB). Accepted values: `TRA`, `TRB`, `TRG`, `TRD`, `IGH`, `IGL` 
+#' (for both light chains), `both`.
+#' @param group.by A column header in lists to group the analysis 
+#' by (e.g., "sample", "treatment"). If `NULL`, will be based on the list element.
+#' @param proportion Whether to proportion (`TRUE`) or total 
+#' frequency (`FALSE`) of the clone based on the group.by variable. 
 #' @param cloneSize The bins for the grouping based on proportion or frequency. 
-#' If proportion is **FALSE** and the cloneSizes are not set high enough
+#' If proportion is `FALSE` and the cloneSizes are not set high enough
 #' based on frequency, the upper limit of cloneSizes will be automatically
 #' updated.S
 #' @param filterNA Method to subset Seurat/SCE object of barcodes without 

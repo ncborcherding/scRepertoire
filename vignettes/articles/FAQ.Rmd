@@ -44,39 +44,46 @@ combined.TCR <- combineTCR(contig_list,
                                             "P19B","P19L", "P20B", "P20L"))
 ```
 
-### Barcode Mismatch
+## Barcode Mismatch
 
-Depending on the pipeline used to generate the single-cell object, there may be inherent mismatches in the barcodes in the single-cell object and the output of ```combineBCR()``` or ```combineTCR()```. In particular, by default, Seurat will amend the suffix of the barcodes with _X, so the barcodes change like:
+Depending on the pipeline used to generate the single-cell object, there may be inherent mismatches in the barcodes in the single-cell object and the output of ```combineBCR()``` or ```combineTCR()```. 
 
-```
-original: ACGTACGTACGTACGT-1
-seurat-modified: ACGTACGTACGTACGT-1_1
-```
+### Common Barcode Modification Examples
 
-scRepertoire uses the samples in ```combineTCR()``` or ```combineBCR()``` to add a prefix to the barcodes (using the **samples** and/or **ID** parameters):
+**Seurat-modified barcodes**: By default, Seurat will append _X to the suffix of the barcodes.
 
-```
-original: ACGTACGTACGTACGT-1
-scRepertoire-modified: Sample1_ACGTACGTACGTACGT-1
-```
+* `original: ACGTACGTACGTACGT-1`
+* `seurat-modified: ACGTACGTACGTACGT-1_1`
 
-The easiest way to make these compatible is to rename the cell barcodes in the Seurat object by using the `RenameCells()` from the SeuratObject package.
+**scRepertoire-modified barcodes**: `scRepertoire` uses the samples and/or ID parameters in `combineTCR()` or `combineBCR()` to add a prefix to the barcodes.
+
+* `original: ACGTACGTACGTACGT-1`
+* `scRepertoire-modified: Sample1_ACGTACGTACGTACGT-1`
+    
+### Solution: Renaming Cell Barcodes in Seurat
+
+The easiest way to make these compatible is to rename the cell barcodes in the Seurat object using `RenameCells()` from the `SeuratObject` package
 
 ```{r, eval=FALSE}
+# Assuming 'seuratObj' is your Seurat object
 cell.barcodes <- rownames(seuratObj[[]])
-#removing the _1 at the end of the barcodes)
-cell.barcodes <- stringr::str_split(cell.barcodes, "_", simplify = TRUE)[,1] 
-#adding the prefix of the orig.ident to the barcodes, assuming that is the sample ids
-cell.barcodes <- paste0(seuratObj$orig.ident, "_", cell.barcodes) 
+# removing the _1 at the end of the barcodes (adjust regex if your suffix differs)
+cell.barcodes <- stringr::str_split(cell.barcodes, "_", simplify = TRUE)[,1]
+# adding the prefix of the orig.ident to the barcodes, assuming that is the sample IDs
+cell.barcodes <- paste0(seuratObj$orig.ident, "_", cell.barcodes)
 seuratObj <- RenameCells(seuratObj, new.names = cell.barcodes)
 ```
 
-### Adjusting Color Palettes
+## Adjusting Color Palettes
 
-For all visualizations in scRepertoire, there are 2 ways to adjust the color scheme:  
+For all visualizations in `scRepertoire`, you have two primary ways to adjust the color scheme.
 
-* Change the **palette** parameter to the desired color scheme. This approach uses the built-in palettes of grDevices and we can access the list of color schemes using ``hcl.pals()``.  
-* Add a ggplot layer with a new color scheme.  
+Methods for Color Adjustment
+
+* **Internal Palette Selection**: Change the `palette` parameter within `scRepertoire` functions to the desired color scheme. This approach uses the built-in palettes of `grDevices`, and you can access the list of available color schemes using `hcl.pals()`. 
+* **Adding a ggplot Layer**: Extend the `scRepertoire` plot (which is a ggplot object) by adding a `ggplot2` layer with a new color scheme using `scale_fill_manual()` or similar functions.  
+
+### Using Internal Palette Selection
 
 ```{r tidy = FALSE}
 # Internal Palette Selection
@@ -85,7 +92,11 @@ clonalQuant(combined.TCR,
             chain = "both", 
             scale = TRUE, 
             palette = "Zissou 1")
+```
 
+### Using ggplot2 System:
+
+```{r}
 # Using gg System
 clonalQuant(combined.TCR, 
             cloneCall="strict", 
@@ -96,7 +107,7 @@ clonalQuant(combined.TCR,
 
 ### Adjusting Plot Theme
 
-As scRepertoire returns a ggplot object, changing the general appearance of the plot itself is similar to the above, adding a gglayer with the desired theme.
+Since `scRepertoire` functions return `ggplot` objects, modifying the general appearance or theme of the plot is straightforward, similar to adjusting color palettes—by adding a `ggplot2` theme layer.
 
 ```{r}
 # Original clonalQuant plot
@@ -115,9 +126,11 @@ clonalQuant(combined.TCR,
 
 ### Adjusting Order of Plotting
 
-The order of the group plotting (whether along an axis or in color) can be directly ordered using the **order.by** parameter in functions. Here we can place a vector of strings that will set the exact plotting order. If using **order.by** it is important to make sure your vectors match the **group.by** strings exactly. 
+The order of grouping/group.by variables in `scRepertoire` plots (whether along an axis or in color legends) can be precisely controlled using the order.by parameter.
 
-Alternatively, we can set **order.by** = "alphanumeric", if we would like the plots sorted in order of the **group.by** variable.
+Key Parameter for Plot Order
+
+* `order.by`: A character vector defining the desired order of elements for the `group.by` variable. It's crucial that the strings in this vector exactly match the `group.by` strings. Alternatively, setting `order.by = "alphanumeric"` will automatically sort groups alphanumerically.
 
 ```{r}
 clonalQuant(combined.TCR, 
@@ -130,7 +143,11 @@ clonalQuant(combined.TCR,
 
 ### Getting Data Used in Plots
 
-Within each of the general analysis functions, there is the ability to export the data frame used to create the visualization. To get the exported values, use **exportTable** = TRUE. It will return the data frame used to make the graph instead of the visual output.  
+Within each of the general analysis functions in `scRepertoire`, there's an option to export the underlying data frame used to create the visualization.
+
+Key Parameter for Data Export
+
+* `exportTable`: Set this parameter to `TRUE` to return the data frame used to generate the graph instead of the visual output.
 
 ```{r tidy = FALSE}
 clonalQuant_output <- clonalQuant(combined.TCR, 
@@ -142,9 +159,15 @@ clonalQuant_output
 
 ###  Citing scRepertoire
 
+When using `scRepertoire` in your research, please cite the appropriate version of the package.
+
+Citation Details
+
 * **Version 2**: Yang, Q, & Safina, K., Nguyen, K., Tuong, Z.K., & Borcherding, N.  (2025). "scRepertoire 2: Enhanced and efficient toolkit for single-cell immune profiling." *PLoS Computational Biology* https://doi.org/10.1371/journal.pcbi.1012760
 * **Version 1**: Borcherding, Nicholas, Nicholas L. Bormann, and Gloria Kraus. "scRepertoire: An R-based toolkit for single-cell immune receptor analysis." *F1000Research* https://doi.org/10.12688/f1000research.22139.2
 
 ### Bug Reports/New Features
+
+Your feedback is valuable for improving scRepertoire! If you encounter a bug or have a suggestion for a new feature, please report it.
 
 Submit a [GitHub issue](https://github.com/BorchLab/scRepertoire/issues) - if possible please include a [reproducible example](https://reprex.tidyverse.org/). Alternatively, an example with the internal **scRep_example** and **contig_list** would be extremely helpful.

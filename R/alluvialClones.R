@@ -17,7 +17,7 @@
                          diffuse = if(length(diffuse_elements) > 0) diffuse_elements else NULL)
   return(lodes)
 }
-#' Alluvial plotting for single-cell object meta data
+#' Alluvial Plotting for Single-Cell Object
 #'
 #' View the proportional contribution of clones by Seurat or SCE object 
 #' meta data after [combineExpression()]. The visualization 
@@ -27,39 +27,38 @@
 #' add an additional stratum/column to the end of the graph.
 #'
 #' @examples
-#' #Getting the combined contigs
+#' # Getting the combined contigs
 #' combined <- combineTCR(contig_list, 
 #'                         samples = c("P17B", "P17L", "P18B", "P18L", 
 #'                                     "P19B","P19L", "P20B", "P20L"))
 #' 
-#' #Getting a sample of a Seurat object
+#' # Getting a sample of a Seurat object
 #' scRep_example <- get(data("scRep_example"))
 #' 
-#' #Using combineExpresion()
+#' # Using combineExpresion()
 #' scRep_example <- combineExpression(combined, scRep_example)
 #' scRep_example$Patient <- substring(scRep_example$orig.ident, 1,3)
 #' 
-#' #Using alluvialClones()
+#' # Using alluvialClones()
 #' alluvialClones(scRep_example, 
 #'                    cloneCall = "gene", 
 #'                    y.axes = c("Patient", "ident"), 
 #'                    color = "ident")
 #' 
-#' @param sc.data The single-cell object to visualize 
-#' after [combineExpression()]. 
-#' @param cloneCall How to call the clone - VDJC gene (**gene**), 
-#' CDR3 nucleotide (**nt**), CDR3 amino acid (**aa**),
-#' VDJC gene + CDR3 nucleotide (**strict**) or a custom variable 
-#' in the data. 
-#' @param chain indicate if both or a specific chain should be used - 
-#' e.g. "both", "TRA", "TRG", "IGH", "IGL".
+#' @param sc.data The product of [combineExpression()]. 
+#' @param cloneCall Defines the clonal sequence grouping. Accepted values 
+#' are: `gene` (VDJC genes), `nt` (CDR3 nucleotide sequence), `aa` (CDR3 amino 
+#' acid sequence), or `strict` (VDJC). A custom column header can also be used.
+#' @param chain The TCR/BCR chain to use. Use `both` to include both chains 
+#' (e.g., TRA/TRB). Accepted values: `TRA`, `TRB`, `TRG`, `TRD`, `IGH`, `IGL` 
+#' (for both light chains), `both`.
 #' @param y.axes The columns that will separate the proportional .
 #' visualizations.
 #' @param color The column header or clone(s) to be highlighted.
 #' @param facet The column label to separate.
 #' @param alpha The column header to have gradated opacity.
-#' @param exportTable Exports a table of the data into the global 
-#' environment in addition to the visualization.
+#' @param exportTable If `TRUE`, returns a data frame or matrix of the results 
+#' instead of a plot.
 #' @param palette Colors to use in visualization - input any 
 #' [hcl.pals][grDevices::hcl.pals].
 #' @param ... Additional arguments passed to the ggplot theme
@@ -68,7 +67,8 @@
 #'
 #' @export
 #' @concept SC_Functions
-#' @return Alluvial ggplot comparing clone distribution.
+#' @return A ggplot object visualizing categorical distribution of clones, or a
+#' data.frame if `exportTable = TRUE`.
 alluvialClones <- function(sc.data, 
                            cloneCall = "strict", 
                            chain = "both",

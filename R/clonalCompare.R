@@ -1,18 +1,17 @@
-#' Demonstrate the difference in clonal proportions / counts between clones
+#' Compare Clonal Abundance Across Variables
 #'
-#' This function produces an alluvial or area graph of the proportion or
-#' count composition of
-#' the indicated clones for all or selected samples (using the
-#' \strong{samples} parameter). Individual clones can be selected
-#' using the \strong{clones} parameter with the specific sequence of
-#' interest or using the \strong{top.clones} parameter with the top
-#' n clones by proportion / counts to be visualized.
+#' This function visualizes the relative abundance of specific clones across 
+#' different samples or groups. It is useful for tracking how the proportions 
+#' of top clones change between conditions. The output can be an alluvial plot 
+#' to trace clonal dynamics or an area plot to show compositional changes.
 #'
 #' @examples
-#' #Making combined contig data
+#' # Making combined contig data
 #' combined <- combineTCR(contig_list,
 #'                        samples = c("P17B", "P17L", "P18B", "P18L",
 #'                                    "P19B","P19L", "P20B", "P20L"))
+#' 
+#' # Using clonalCompares()
 #' clonalCompare(combined,
 #'               top.clones = 5,
 #'               samples = c("P17B", "P17L"),
@@ -20,12 +19,12 @@
 #'
 #' @param input.data The product of \code{\link{combineTCR}},
 #' \code{\link{combineBCR}}, or \code{\link{combineExpression}}.
-#' @param cloneCall How to call the clone - VDJC gene (\strong{gene}),
-#' CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
-#' VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable
-#' in the data
-#' @param chain indicate if both or a specific chain should be used -
-#' e.g. "both", "TRA", "TRG", "IGH", "IGL"
+#' @param cloneCall Defines the clonal sequence grouping. Accepted values 
+#' are: `gene` (VDJC genes), `nt` (CDR3 nucleotide sequence), `aa` (CDR3 amino 
+#' acid sequence), or `strict` (VDJC). A custom column header can also be used.
+#' @param chain The TCR/BCR chain to use. Use `both` to include both chains 
+#' (e.g., TRA/TRB). Accepted values: `TRA`, `TRB`, `TRG`, `TRD`, `IGH`, `IGL` 
+#' (for both light chains), `both`.
 #' @param samples The specific samples to isolate for visualization.
 #' @param clones The specific clonal sequences of interest
 #' @param top.clones The top number of clonal sequences per group.
@@ -34,17 +33,19 @@
 #' all other clones returned will be grey
 #' @param relabel.clones Simplify the legend of the graph by returning
 #' clones that are numerically indexed
-#' @param group.by If using a single-cell object, the column header
-#' to group the new list. \strong{NULL} will return the active
-#' identity or cluster
-#' @param order.by A vector of specific plotting order or "alphanumeric"
-#' to plot groups in order
-#' @param graph The type of graph produced, either \strong{"alluvial"}
-#' or \strong{"area"}
-#' @param proportion If \strong{TRUE}, the proportion of the total sequencing
-#' reads will be used for the y-axis. If \strong{FALSE}, the raw count
-#' will be used
-#' @param exportTable Returns the data frame used for forming the graph
+#' @param group.by A column header in the metadata or lists to group the analysis 
+#' by (e.g., "sample", "treatment"). If `NULL`, data will be analyzed 
+#' by list element or active identity in the case of single-cell objects.
+#' @param order.by A character vector defining the desired order of elements 
+#' of the `group.by` variable. Alternatively, use `alphanumeric` to sort groups 
+#' automatically.
+#' @param graph The type of plot to generate. Accepted values are `alluvial` 
+#' (default) or `area`
+#' @param proportion If `TRUE` (default), the y-axis will represent the 
+#' proportional abundance of clones. If `FALSE`, the y-axis will represent 
+#' raw clone counts.`
+#' @param exportTable If `TRUE`, returns a data frame or matrix of the results 
+#' instead of a plot.
 #' @param palette Colors to use in visualization - input any
 #' \link[grDevices]{hcl.pals}
 #' @param ... Additional arguments passed to the ggplot theme
@@ -52,8 +53,8 @@
 #' @export
 #' @importFrom dplyr slice_max
 #' @concept Visualizing_Clones
-#' @return ggplot of the proportion of total sequencing read of
-#' selecting clones
+#' @return A ggplot object visualizing proportions of clones by groupings, or a
+#' data.frame if `exportTable = TRUE`.
 clonalCompare <- function(input.data,
                           cloneCall = "strict",
                           chain = "both",
@@ -147,7 +148,7 @@ clonalCompare <- function(input.data,
   }
 
   #Plotting Functions
-  plot <- ggplot(Con.df, aes(x = Sample,
+  plot <- ggplot(Con.df, aes(x = .data[["Sample"]],
                              fill = clones,
                              group = clones,
                              stratum = clones,

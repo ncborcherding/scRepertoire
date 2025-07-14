@@ -56,7 +56,7 @@ navbar:
     - text: Single-cell Gene Set Enrichment Analysis
       href: articles/Running_Escape.html
     - text: '-------'
-    - text: Immune Repertoire Trajectory Analysis
+    - text: VDJ Trajectory Analysis with dandelionR
       href: articles/dandelionR.html
     - text: Using scRepertoire with immunarch
       href: articles/immunarch.html

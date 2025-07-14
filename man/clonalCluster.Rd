@@ -2,7 +2,7 @@
 % Please edit documentation in R/clonalCluster.R
 \name{clonalCluster}
 \alias{clonalCluster}
-\title{Cluster Clones by sequence similarity}
+\title{Cluster clones by sequence similarity}
 \usage{
 clonalCluster(
   input.data,
@@ -22,19 +22,19 @@ clonalCluster(
 \item{input.data}{The product of \code{\link[=combineTCR]{combineTCR()}},
 \code{\link[=combineBCR]{combineBCR()}} or \code{\link[=combineExpression]{combineExpression()}}.}
 
-\item{chain}{The TCR/BCR chain to use for clustering. Use "both" to combine
-networks from TRA/TRB or IGH/IGL. Valid options: "both", "TRA", "TRB",
-"TRD", "TRG", "IGH", "IGK", "IGL".}
+\item{chain}{The TCR/BCR chain to use. Use \code{both} to include both chains
+(e.g., TRA/TRB). Accepted values: \code{TRA}, \code{TRB}, \code{TRG}, \code{TRD}, \code{IGH}, \code{IGL}
+(for both light chains), \code{both}.}
 
-\item{sequence}{Clustering based on either \strong{"aa"} or
-\strong{"nt"}.}
+\item{sequence}{Clustering based on either \code{aa} or \code{nt} sequences.}
 
 \item{threshold}{The similarity threshold. If < 1, treated as normalized
 similarity (higher is stricter). If >= 1, treated as raw edit distance
 (lower is stricter).}
 
-\item{group.by}{The column header used for to group clones.
-If (\strong{NULL}), clusters will be calculated across samples.}
+\item{group.by}{A column header in the metadata or lists to group the analysis
+by (e.g., "sample", "treatment"). If \code{NULL}, clusters will be calculated across
+all sequences.}
 
 \item{cluster.method}{The clustering algorithm to use. Defaults to \code{"components"},
 which finds connected subgraphs.}
@@ -42,18 +42,17 @@ which finds connected subgraphs.}
 \item{cluster.prefix}{A character prefix to add to the cluster names (e.g.,
 "cluster.").}
 
-\item{use.V}{Logical. If \code{TRUE}, sequences must share the same V gene to be
+\item{use.V}{If \code{TRUE}, sequences must share the same V gene to be
 clustered together.}
 
-\item{use.J}{Logical. If \code{TRUE}, sequences must share the same J gene to be
+\item{use.J}{If \code{TRUE}, sequences must share the same J gene to be
 clustered together.}
 
-\item{exportAdjMatrix}{Logical. If \code{TRUE}, the function returns a sparse
+\item{exportAdjMatrix}{If \code{TRUE}, the function returns a sparse
 adjacency matrix (\code{dgCMatrix}) of the network.}
 
-\item{exportGraph}{Return an igraph object of connected
-sequences (\strong{TRUE}) or the amended input with a
-new cluster-based variable (\strong{FALSE}).}
+\item{exportGraph}{If \code{TRUE} returns an igraph object of connected
+sequences  or the amended \code{input.data} with a new cluster-based variable}
 }
 \value{
 Depending on the export parameters, one of the following:
@@ -65,11 +64,11 @@ Depending on the export parameters, one of the following:
 }
 \description{
 This function clusters TCRs or BCRs based on the edit distance of their CDR3
-sequences. It can operate on either nucleotide ("nt") or amino acid ("aa")
-sequences and can optionally enforce that clones share the same V gene.
-The output can be the input object with an added metadata column for cluster
-IDs, a sparse adjacency matrix, or an \code{igraph} graph object representing the
-cluster network.
+sequences. It can operate on either nucleotide (\code{nt}) or amino acid (\code{aa})
+sequences and can optionally enforce that clones share the same V and/or J
+genes. The output can be the input object with an added metadata column for
+cluster IDs, a sparse adjacency matrix, or an \code{igraph} graph object
+representing the cluster network.
 }
 \details{
 The clustering process is as follows:

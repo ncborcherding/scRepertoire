@@ -1,4 +1,4 @@
-#' Generate a contig list from a multiplexed experiment
+#' Deconvolute Contig Information from Multiplexed Experiments
 #'
 #' This function reprocess and forms a list of contigs for downstream analysis 
 #' in scRepertoire, [createHTOContigList()] take the filtered contig 
@@ -6,7 +6,7 @@
 #' If using an integrated single-cell object, it is recommended to split the 
 #' object by sequencing run and remove extra prefixes and suffixes on the 
 #' barcode before using [createHTOContigList()]. Alternatively, 
-#' the variable **multi.run** can be used to separate a list of contigs
+#' the variable `multi.run` can be used to separate a list of contigs
 #' by a meta data variable. This may have issues with the repeated barcodes.
 #' 
 #' @examples

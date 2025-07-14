@@ -1,4 +1,4 @@
-#' Visualize distribution of clonal frequency overlaid on dimensional reduction plots
+#' Visualize Distribution of Clonal Frequency
 #'
 #' This function allows the user to visualize the clonal expansion by overlaying the 
 #' cells with specific clonal frequency onto the dimensional reduction plots in Seurat.
@@ -40,7 +40,8 @@
 #' @concept SC_Functions
 #' @author Francesco Mazziotta, Nick Borcherding
 #' 
-#' @return ggplot object
+#' @return A ggplot object visualizing distributions of clones along a 
+#' dimensional reduction within the single-cell object
 
 clonalOverlay <- function(sc.data, 
                           reduction = NULL, 

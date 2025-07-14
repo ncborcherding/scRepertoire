@@ -14,6 +14,7 @@ BIOCARTA
 BLOSUM
 BPPARAM
 Barcode
+Barcodes
 BioC
 BioRxiv
 BiocParallel
@@ -32,8 +33,6 @@ CMD
 CNNs
 COVID
 CTaa
-CTgene
-CTnt
 CTstrict
 CVVSDNTGGFKTIF
 Carmona
@@ -51,12 +50,11 @@ Convolutional
 Corvino
 Cruciani
 DESeq
+Deconvolute
 Dgene
 Directionality
 Downsampling
 Drs
-Eveness
-Evercode
 FASGAI
 FilteringMulti
 Florian
@@ -72,6 +70,7 @@ Genomics’
 Gini
 Github
 HEL
+HTO
 Hyperexpanded
 IGH
 IGHJ
@@ -105,7 +104,6 @@ McPAS
 MiXCR
 Morisita
 Morisita's
-Multiomic
 NES
 NG
 Nebulosa
@@ -113,6 +111,7 @@ Nicky
 Nikolaj
 Noonan
 OHE
+Oligo
 Omniscope
 PIRD
 PLZF
@@ -121,6 +120,7 @@ PMID
 PWM
 Pagh
 ParseBio
+Physicochemical
 Pielou
 Pielou's
 Precomputed
@@ -136,7 +136,6 @@ STARTRAC
 SampleType
 Satija's
 Schattgen
-SeuratObject
 SingleCellExperiment
 Startrac
 StartracDiversity
@@ -155,7 +154,6 @@ TRB
 TRBD
 TRBJ
 TRBV
-TRD
 TRG
 TRI
 TUST
@@ -209,6 +207,7 @@ autoencoding
 barcode
 barcodes
 bioconductor
+bioinformatics
 bronchoalveolar
 buildNetwork
 calculateEntropy
@@ -216,13 +215,10 @@ calculateFrequency
 calculateGeneUsage
 calculateMotif
 calculateProperty
-cdr
 centric
-chao
 checkBlanks
 checkContigs
 circlize
-clonaRarefaction
 clonalAbundance
 clonalBias
 clonalCluster
@@ -237,9 +233,9 @@ clonalOverlap
 clonalOverlay
 clonalProportion
 clonalQuant
+clonalRarefaction
 clonalScatter
 clonalSizeDistribution
-clonalSplit
 clonally
 cloneCall
 cloneSize
@@ -261,10 +257,10 @@ combineSeurat
 combineTCR
 combineTRUST
 combinedContig
-comparators
 compareClonotype
 compareClonotypes
 complementarity
+compositional
 constructConDFAndparseTCR
 contig
 contigs
@@ -279,7 +275,9 @@ de
 densityEnrichment
 dev
 df
+dgCMatrix
 dir
+distanc
 doubletons
 downsample
 downsampled
@@ -292,13 +290,11 @@ epitope
 epitopes
 erroring
 et
-expa
 explainability
 exportClones
 exportGraph
 exportTable
 fgsea
-filterMulti
 filterNonproductive
 filteringMulti
 formatGenes
@@ -319,7 +315,6 @@ ggplot
 gini
 github
 gp
-grDevices
 grabMeta
 grey
 greyed
@@ -330,6 +325,7 @@ heatmapEnrichment
 hexbin
 highlightClones
 highlightClonotypes
+humoral
 hydrophobicity
 hypermutation
 iNEXT
@@ -370,8 +366,6 @@ makeGenes
 markov
 matric
 mer
-migr
-migra
 milo
 miloR
 morisita
@@ -407,7 +401,6 @@ performNormalization
 phenotypes
 physicochemical
 pielou
-pielou's
 pkgdown
 positionalEntropy
 positionalProperty
@@ -427,8 +420,6 @@ readRDS
 reclustering
 regressClonotype
 relevel
-removeMulti
-removeNA
 repo
 ridgeEnrichment
 runEscape
@@ -470,11 +461,11 @@ theCall
 tokenizeSequences
 tokenizing
 trackable
-tran
 transcriptional
 transcriptomic
 trex
 tsv
+umap
 unreturned
 variational
 viridis

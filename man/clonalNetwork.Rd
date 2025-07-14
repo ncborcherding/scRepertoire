@@ -2,18 +2,18 @@
 % Please edit documentation in R/clonalNetwork.R
 \name{clonalNetwork}
 \alias{clonalNetwork}
-\title{Visualize clonal network along reduced dimensions}
+\title{Visualize Clonal Network in Dimensional Reductions}
 \usage{
 clonalNetwork(
   sc.data,
+  cloneCall = "strict",
+  chain = "both",
   reduction = "umap",
   group.by = "ident",
   filter.clones = NULL,
   filter.identity = NULL,
   filter.proportion = NULL,
   filter.graph = FALSE,
-  cloneCall = "strict",
-  chain = "both",
   exportClones = FALSE,
   exportTable = FALSE,
   palette = "inferno",
@@ -23,14 +23,21 @@ clonalNetwork(
 \arguments{
 \item{sc.data}{The single-cell object after \code{\link[=combineExpression]{combineExpression()}}.}
 
+\item{cloneCall}{Defines the clonal sequence grouping. Accepted values
+are: \code{gene} (VDJC genes), \code{nt} (CDR3 nucleotide sequence), \code{aa} (CDR3 amino
+acid sequence), or \code{strict} (VDJC). A custom column header can also be used.}
+
+\item{chain}{The TCR/BCR chain to use. Use \code{both} to include both chains
+(e.g., TRA/TRB). Accepted values: \code{TRA}, \code{TRB}, \code{TRG}, \code{TRD}, \code{IGH}, \code{IGL}
+(for both light chains), \code{both}.}
+
 \item{reduction}{The name of the dimensional reduction of the
 single-cell object.}
 
-\item{group.by}{The variable to use for the nodes.}
+\item{group.by}{A column header in the metadata or lists to group the analysis
+by (e.g., "sample", "treatment"). This will be the nodes overlaid onto the graph.}
 
-\item{filter.clones}{Use to select the top n clones (e.g., \strong{filter.clones}
-= 2000) or n of clones based on the minimum number of all the comparators
-(e.g., \strong{filter.clone} = "min").}
+\item{filter.clones}{Use to select the top n clones (e.g., \verb{filter.clones`**`  = 2000) or n of clones based on the minimum number of all the comparators  (e.g., `filter.clone} = "min").}
 
 \item{filter.identity}{Display the network for a specific level of the
 indicated identity.}
@@ -41,19 +48,12 @@ proportion.}
 \item{filter.graph}{Remove the reciprocal edges from the half of the graph,
 allowing for cleaner visualization.}
 
-\item{cloneCall}{How to call the clone - VDJC gene (\strong{gene}),
-CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
-VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable
-in the data.}
-
-\item{chain}{indicate if both or a specific chain should be used -
-e.g. "both", "TRA", "TRG", "IGH", "IGL".}
-
 \item{exportClones}{Exports a table of clones that are shared
 across multiple identity groups and ordered by the total number
 of clone copies.}
 
-\item{exportTable}{Exports a table of the data into the global}
+\item{exportTable}{If \code{TRUE}, returns a data frame or matrix of the results
+instead of a plot.}
 
 \item{palette}{Colors to use in visualization - input any
 \link[grDevices:palettes]{hcl.pals}.}
@@ -71,18 +71,18 @@ plot.
 }
 \examples{
 \dontrun{
-#Getting the combined contigs
+# Getting the combined contigs
 combined <- combineTCR(contig_list, 
                         samples = c("P17B", "P17L", "P18B", "P18L", 
                                     "P19B","P19L", "P20B", "P20L"))
 
-#Getting a sample of a Seurat object
+# Getting a sample of a Seurat object
 scRep_example  <- get(data("scRep_example"))
 
-#Using combineExpresion()
+# Using combineExpresion()
 scRep_example  <- combineExpression(combined, scRep_example)
 
-#Using clonalNetwork()
+# Using clonalNetwork()
 clonalNetwork(scRep_example, 
               reduction = "umap",
               group.by = "seurat_clusters")

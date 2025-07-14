@@ -50,15 +50,18 @@
 #' @param genes A character vector specifying the gene loci to analyze.
 #' Can be a single gene e.g., "TRBV" or "IGHJ" or a pair for genes analysis 
 #' (e.g., c("TRBV", "TRAV"), or "TRBV", "TRBJ").
-#' @param group.by The variable to use for grouping (e.g., "sample", "orig.ident").
-#' @param order.by A vector of specific plotting order or "alphanumeric"
-#' to plot groups in order.
+#' @param group.by A column header in the metadata or lists to group the analysis 
+#' by (e.g., "sample", "treatment"). If `NULL`, data will be analyzed as 
+#' by list element or active identity in the case of single-cell objects.
+#' @param order.by A character vector defining the desired order of elements 
+#' of the `group.by` variable. Alternatively, use `alphanumeric` to sort groups 
+#' automatically.
 #' @param summary.fun Character string choosing the summary statistic -
 #' `"percent"` (default), `"proportion"`, or `"count"`.
 #' @param plot.type The type of plot to return: `"heatmap"` (default for paired loci,
 #' also available for single loci), or `"barplot"` (for single loci).
-#' @param exportTable Logical. If `TRUE`, returns the data frame or matrix used
-#' for forming the graph instead of the plot.
+#' @param exportTable If `TRUE`, returns a data frame or matrix of the results 
+#' instead of a plot.
 #' @param palette Colors to use in visualization - input any
 #' [hcl.pals][grDevices::hcl.pals].
 #' @param ... Additional arguments passed to the ggplot theme
@@ -207,7 +210,7 @@ percentGeneUsage <- function(input.data,
   
   if (length(genes) == 1) {
     if (plot.type == "barplot") {
-      plot <- ggplot(mat_melt, aes(x = Var1, y = .data[["Weight"]])) +
+      plot <- ggplot(mat_melt, aes(x = .data[["Var1"]], y = .data[["Weight"]])) +
         geom_bar(stat = "identity", color = "black", lwd = 0.25) +
         .themeRepertoire(...) + 
         labs(y = col.lab) + 
@@ -220,7 +223,7 @@ percentGeneUsage <- function(input.data,
       }
       
     } else { 
-      plot <- ggplot(mat_melt, aes(y = Var1, x = .data[["Group"]], fill = .data[["Weight"]])) +
+      plot <- ggplot(mat_melt, aes(y = .data[["Var1"]], x = .data[["Group"]], fill = .data[["Weight"]])) +
         geom_tile(lwd = 0.1, color = "black") +
         scale_fill_gradientn(colors = .colorizer(palette, 21)) +
         labs(fill = col.lab) + 
@@ -229,7 +232,7 @@ percentGeneUsage <- function(input.data,
               axis.title = element_blank())
     }
   } else { # Paired genes (heatmap only)
-    plot <- ggplot(mat_melt, aes(y = Var1, x = Var2, fill = round(.data[["Weight"]], 2))) +
+    plot <- ggplot(mat_melt, aes(y = .data[["Var1"]], x = .data[["Var2"]], fill = round(.data[["Weight"]], 2))) +
       geom_tile(lwd = 0.1, color = "black") +
       scale_fill_gradientn(colors = .colorizer(palette, 21)) +
       labs(fill = col.lab) + 

@@ -8,16 +8,16 @@
 #' with [combineTCR()] or [combineBCR()].
 #'
 #' Supported file formats and their expected file names:
-#' - **10X**: "filtered_contig_annotations.csv"
-#' - **AIRR**: "airr_rearrangement.tsv"
-#' - **BD**: "Contigs_AIRR.tsv"
-#' - **Dandelion**: "all_contig_dandelion.tsv"
-#' - **Immcantation**: "_data.tsv" (or similar)
-#' - **JSON**: ".json"
-#' - **ParseBio**: "barcode_report.tsv"
-#' - **MiXCR**: "clones.tsv"
-#' - **TRUST4**: "barcode_report.tsv"
-#' - **WAT3R**: "barcode_results.csv"
+#' - `10X`: "filtered_contig_annotations.csv"
+#' - `AIRR`: "airr_rearrangement.tsv"
+#' - `BD`: "Contigs_AIRR.tsv"
+#' - `Dandelion`: "all_contig_dandelion.tsv"
+#' - `Immcantation`: "_data.tsv" (or similar)
+#' - ``JSON`: ".json"
+#' - `ParseBio`: "barcode_report.tsv"
+#' - `MiXCR`: "clones.tsv"
+#' - `TRUST4`: "barcode_report.tsv"
+#' - *`WAT3R`: "barcode_results.csv"
 #'
 #' @param input A directory path containing contig files or a list/data frame 
 #' of pre-loaded contig data.

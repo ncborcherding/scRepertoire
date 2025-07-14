@@ -2,7 +2,7 @@
 % Please edit documentation in R/combineExpression.R
 \name{combineExpression}
 \alias{combineExpression}
-\title{Adding clone information to a single-cell object}
+\title{Adding Clonal Information to Single-Cell Object}
 \usage{
 combineExpression(
   input.data,
@@ -24,26 +24,25 @@ both c(\code{\link[=combineTCR]{combineTCR()}}, \code{\link[=combineBCR]{combine
 
 \item{sc.data}{The Seurat or Single-Cell Experiment (SCE) object to attach}
 
-\item{cloneCall}{How to call the clone - VDJC gene (\strong{gene}),
-CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
-VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable
-in the data.}
+\item{cloneCall}{Defines the clonal sequence grouping. Accepted values
+are: \code{gene} (VDJC genes), \code{nt} (CDR3 nucleotide sequence), \code{aa} (CDR3 amino
+acid sequence), or \code{strict} (VDJC). A custom column header can also be used.}
 
-\item{chain}{indicate if both or a specific chain should be used -
-e.g. "both", "TRA", "TRG", "IGH", "IGL".}
+\item{chain}{The TCR/BCR chain to use. Use \code{both} to include both chains
+(e.g., TRA/TRB). Accepted values: \code{TRA}, \code{TRB}, \code{TRG}, \code{TRD}, \code{IGH}, \code{IGL}
+(for both light chains), \code{both}.}
 
-\item{group.by}{The column label in the combined clones in which
-clone frequency will be calculated. \strong{NULL} or \strong{"none"} will
-keep the format of input.data.}
+\item{group.by}{A column header in lists to group the analysis
+by (e.g., "sample", "treatment"). If \code{NULL}, will be based on the list element.}
 
-\item{proportion}{Whether to proportion (\strong{TRUE}) or total
-frequency (\strong{FALSE}) of the clone based on the group.by variable.}
+\item{proportion}{Whether to proportion (\code{TRUE}) or total
+frequency (\code{FALSE}) of the clone based on the group.by variable.}
 
 \item{filterNA}{Method to subset Seurat/SCE object of barcodes without
 clone information}
 
 \item{cloneSize}{The bins for the grouping based on proportion or frequency.
-If proportion is \strong{FALSE} and the cloneSizes are not set high enough
+If proportion is \code{FALSE} and the cloneSizes are not set high enough
 based on frequency, the upper limit of cloneSizes will be automatically
 updated.S}
 
@@ -59,22 +58,22 @@ information
 This function adds the immune receptor information to the Seurat or
 SCE object to the meta data. By default this function also calculates
 the frequencies and proportion of the clones by sequencing
-run (\strong{group.by} = NULL). To change how the frequencies/proportions
-are calculated, select a column header for the \strong{group.by} variable.
+run (\code{group.by} = NULL). To change how the frequencies/proportions
+are calculated, select a column header for the \code{group.by} variable.
 Importantly, before using \code{\link[=combineExpression]{combineExpression()}} ensure the
 barcodes of the single-cell object object match the barcodes in the output
 of the \code{\link[=combineTCR]{combineTCR()}} or \code{\link[=combineBCR]{combineBCR()}}.
 }
 \examples{
-#Getting the combined contigs
+# Getting the combined contigs
 combined <- combineTCR(contig_list, 
                         samples = c("P17B", "P17L", "P18B", "P18L", 
                                     "P19B","P19L", "P20B", "P20L"))
 
-#Getting a sample of a Seurat object
+# Getting a sample of a Seurat object
 scRep_example <- get(data("scRep_example"))
 
-#Using combineExpresion()
+# Using combineExpresion()
 scRep_example <- combineExpression(combined, scRep_example)
 
 }

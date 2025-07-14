@@ -64,15 +64,22 @@ colorblind_vector <- hcl.colors(n=7, palette = "inferno", fixup = TRUE)
 
 ## StartracDiversity
 
-From the excellent work by [Lei Zhang, et al.](https://www.nature.com/articles/s41586-018-0694-x), the authors introduce new methods for looking at clones by cellular origins and cluster identification. Their [STARTRAC](https://github.com/Japrin/STARTRAC) software has been adapted to work with scRepertoire and please read and cite their excellent work. 
+From the excellent work by [Lei Zhang, et al.](https://www.nature.com/articles/s41586-018-0694-x), the authors introduced new methods for looking at clones by cellular origins and cluster identification. Their [STARTRAC](https://github.com/Japrin/STARTRAC) software has been adapted to work with `scRepertoire` and please read and cite their excellent work. 
 
-In order to use the ```StartracDiversity()``` function, you will need to include the product of the ```combinedExpression()``` function. The second requirement is a column header in the meta data of the Seurat object that has tissue of origin. In the example data, **type** corresponds to the column "Type", which includes the "P" and "T" classifiers. The indices can be subsetted for a specific patient or examined overall using the **by** variable. Importantly, the function uses only the strict definition of a clone of the VDJC genes and the CDR3 nucleotide sequence. 
+To use the `StartracDiversity()` function, you need to include the product of the `combineExpression()` function. The second requirement is a column header in the metadata of the Seurat object that has the tissue of origin. In the example data, type corresponds to the column "Type", which includes the "P" (peripheral blood) and "L" (lung) classifiers. The indices can be subsetted for a specific patient or examined overall using the group.by variable. Importantly, the function uses only the strict definition of a clone, which includes the VDJC genes and the CDR3 nucleotide sequence.
 
-**The indices output includes:**  
+### Indices Output from `StartracDiversity()`
 
-*  expa - Clonal Expansion  
-*  migr - Cross-tissue Migration  
-*  tran - State Transition  
+*  `expa` - Clonal Expansion  
+*  `migr` - Cross-tissue Migration  
+*  `tran` - State Transition  
+
+Key Parameters for `StartracDiversity()`
+
+* `type`: The variable in the metadata that provides tissue type.
+* `group.by`: A column header in the metadata to group the analysis by (e.g., "sample", "treatment"). 
+
+Calculate and plot Startrac diversity metrics using "Type" for tissue and "Patient" for grouping:
 
 ```{r tidy = FALSE}
 StartracDiversity(scRep_example, 
@@ -82,19 +89,16 @@ StartracDiversity(scRep_example,
 
 ## clonalBias
 
-A new metric proposed by [Massimo et al](https://pubmed.ncbi.nlm.nih.gov/35829695/), ```clonalBias()```, like STARTRAC is a clonal metric that seeks to quantify how individual clones are skewed towards a specific cellular compartment or cluster.
+A new metric proposed by [Massimo et al](https://pubmed.ncbi.nlm.nih.gov/35829695/), ```clonalBias()```, like STARTRAC, is a clonal metric that seeks to quantify how individual clones are skewed towards a specific cellular compartment or cluster. A clone bias of `1` indicates that a clone is composed of cells from a single compartment or cluster, while a clone bias of `0` matches the background subtype distribution. Please read and cite the linked manuscript if using `clonalBias()`
 
-**split.by**   
+Key Parameter(s) for `clonalBias()`
 
-* Variable used to calculate the baseline frequencies  
+* `group.by`: A column header in the metadata that bias will be based on.
+* `split.by`: The variable to use for calculating the baseline frequencies (e.g., "Type" for lung vs peripheral blood comparison)
+* `n.boots`: Number of bootstraps to downsample.
+* `min.expand`: Clone frequency cut-off for the purpose of comparison (default = 10).
 
-**group.by**  
-
-* The compartment/variable used for the purpose of the comparison  
-
-**min.expand**  
-
-* Cut point for frequency **(default = 10)**
+Here we calculate and plot clonal bias using `aa` clone calls, splitting by "Patient" and grouping by "seurat_clusters", with a minimum expansion of 5 and 10 bootstraps:
 
 ```{r, message = FALSE, tidy = FALSE}
 clonalBias(scRep_example, 

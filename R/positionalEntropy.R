@@ -1,40 +1,46 @@
-#' Examining the diversity of amino acids by position
+#' Examining the Diversity of Amino Acids by Position
 #'
-#' This function the diversity amino acids along the residues 
-#' of the CDR3 amino acid sequence. Please see 
-#' [clonalDiversity()] for more information on 
-#' the underlying methods for diversity/entropy calculations. 
-#' Positions without variance will have a value reported as 0 
-#' for the purposes of comparison.
+#' This function the diversity amino acids along the residues of the CDR3 
+#' amino acid sequence. Please see [clonalDiversity()] for more information 
+#' on the underlying methods for diversity/entropy calculations. Positions 
+#' without variance will have a value reported as 0 for the purposes of comparison.
 #'
 #' @examples
 #' #Making combined contig data
 #' combined <- combineTCR(contig_list, 
 #'                         samples = c("P17B", "P17L", "P18B", "P18L", 
 #'                                     "P19B","P19L", "P20B", "P20L"))
+#' 
+#' # Using positionalEntropy()
 #' positionalEntropy(combined, 
 #'                   chain = "TRB", 
 #'                   aa.length = 20)
-
+#'                   
 #' @param input.data The product of [combineTCR()], 
 #' [combineBCR()], or [combineExpression()]
-#' @param chain indicate a specific chain should be used - 
-#' e.g."TRA", "TRG", "IGH", "IGL", etc
-#' @param group.by The variable to use for grouping
-#' @param order.by A vector of specific plotting order for `group.by` or 
-#' "alphanumeric" to plot groups in order
+#' @param chain The TCR/BCR chain to use. Accepted values: `TRA`, `TRB`, `TRG`, 
+#' `TRD`, `IGH`, or `IGL` (for both light chains).
+#' @param group.by A column header in the metadata or lists to group the analysis 
+#' by (e.g., "sample", "treatment"). If `NULL`, data will be analyzed as 
+#' by list element or active identity in the case of single-cell objects.
+#' @param order.by A character vector defining the desired order of elements 
+#' of the `group.by` variable. Alternatively, use `alphanumeric` to sort groups 
+#' automatically.
 #' @param aa.length The maximum length of the CDR3 amino acid sequence. 
 #' @param method The method to calculate the entropy/diversity - 
 #' `"shannon"`, `"inv.simpson"`, `"gini.simpson"`, `"norm.entropy"`, 
 #' `"pielou"`, `"hill0"`, `"hill1"`, `"hill2"`
-#' @param exportTable Returns the data frame used for forming the graph
-#' @param palette Colors to use in visualization - input any [hcl.pals][grDevices::hcl.pals
+#' @param exportTable If `TRUE`, returns a data frame or matrix of the results 
+#' instead of a plot.
+#' @param palette Colors to use in visualization - input any 
+#' [hcl.pals][grDevices::hcl.pals]
 #' @param ... Additional arguments passed to the ggplot theme
 #' 
 #' @export
 #' @importFrom immApex calculateEntropy
 #' @concept Summarize_Repertoire
-#' @return ggplot of line graph of diversity by amino acid residue position
+#' @return A ggplot object displaying entropy or diversity by amino acid position.
+#' If `exportTable = TRUE`, a matrix of the raw data is returned.
 positionalEntropy <- function(input.data, 
                               chain = "TRB", 
                               group.by = NULL, 
@@ -77,7 +83,7 @@ positionalEntropy <- function(input.data,
     
   plot <- ggplot(mat_melt, aes(x=as.factor(Position), 
                                y = .data[["entropy"]], 
-                               group= group, 
+                               group= .data[["group"]], 
                                color = group)) +
           geom_line(stat = "identity") +
           geom_point() + 

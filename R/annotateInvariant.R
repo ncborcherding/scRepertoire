@@ -17,28 +17,27 @@
 #' @param species Character specifying the species 
 #' ('mouse' or 'human').
 #' 
-#' @return A single-cell object or list with the corresponding annotation 
-#' scores (0 or 1) added.
 #' @examples
-#' #Getting the combined contigs
+#' # Getting the combined contigs
 #' combined <- combineTCR(contig_list, 
 #'                         samples = c("P17B", "P17L", "P18B", "P18L", 
 #'                                     "P19B","P19L", "P20B", "P20L"))
 #' 
-#' #Getting a sample of a Seurat object
+#' # Getting a sample of a Seurat object
 #' scRep_example <- get(data("scRep_example"))
 #' 
-#' #Using combineExpresion()
+#' # Using combineExpresion()
 #' scRep_example <- combineExpression(combined, scRep_example)
 #' 
-#' #Using annotateInvariant
+#' # Using annotateInvariant()
 #' annotateInvariant(input.data = scRep_example, type = "MAIT", species = "human")
 #' annotateInvariant(input.data = scRep_example, type = "iNKT", species = "human")
 #' 
 #' @importFrom immApex getIR
 #' @importFrom  rlang %||%
-#'
 #' @export
+#' @return A single-cell object or list with the corresponding annotation 
+#' scores (0 or 1) added.
 annotateInvariant <- function(input.data, 
                               type = c("MAIT", "iNKT"), 
                               species = c("mouse", "human")) {

@@ -1,4 +1,4 @@
-#' A list of 8 single-cell T cell receptor sequences runs.
+#' A List of Eight Single-cell TCR Sequencing Runs.
 #' 
 #' @description A list of 8 `filtered_contig_annotations.csv` files
 #' outputted from 10X Cell Ranger. More information on the 
@@ -11,7 +11,7 @@
 #' 
 NULL
 
-#' A Seurat object of 500 single T cells,
+#' A Seurat Object of 500 Single T cells,
 #' 
 #' @description The object is compatible with `contig_list` and the TCR
 #' sequencing data can be added with `combineExpression`.  The data is 

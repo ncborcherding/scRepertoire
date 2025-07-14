@@ -3,7 +3,7 @@
 \docType{data}
 \name{scRep_example}
 \alias{scRep_example}
-\title{A Seurat object of 500 single T cells,}
+\title{A Seurat Object of 500 Single T cells,}
 \description{
 The object is compatible with \code{contig_list} and the TCR
 sequencing data can be added with \code{combineExpression}.  The data is

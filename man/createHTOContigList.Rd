@@ -2,7 +2,7 @@
 % Please edit documentation in R/createHTOContigList.R
 \name{createHTOContigList}
 \alias{createHTOContigList}
-\title{Generate a contig list from a multiplexed experiment}
+\title{Deconvolute Contig Information from Multiplexed Experiments}
 \usage{
 createHTOContigList(contig, sc.data, group.by = NULL, multi.run = NULL)
 }
@@ -29,7 +29,7 @@ annotation output and the single-cell RNA object to create the list.
 If using an integrated single-cell object, it is recommended to split the
 object by sequencing run and remove extra prefixes and suffixes on the
 barcode before using \code{\link[=createHTOContigList]{createHTOContigList()}}. Alternatively,
-the variable \strong{multi.run} can be used to separate a list of contigs
+the variable \code{multi.run} can be used to separate a list of contigs
 by a meta data variable. This may have issues with the repeated barcodes.
 }
 \examples{

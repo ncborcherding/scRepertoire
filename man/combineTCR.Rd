@@ -2,7 +2,7 @@
 % Please edit documentation in R/combineContigs.R
 \name{combineTCR}
 \alias{combineTCR}
-\title{Combining the list of T cell receptor contigs into clones}
+\title{Combine T Cell Receptor Contig Data}
 \usage{
 combineTCR(
   input.data,
@@ -38,12 +38,12 @@ List of clones for individual cell barcodes
 }
 \description{
 This function consolidates a list of TCR sequencing results to
-the level of  the individual cell barcodes. Using the \strong{samples} and
-\strong{ID} parameters, the function will add the strings as prefixes to
+the level of  the individual cell barcodes. Using the \code{samples} and
+\code{ID} parameters, the function will add the strings as prefixes to
 prevent issues with repeated  barcodes. The resulting new barcodes will
 need to match the Seurat or SCE object in order to use,
 \code{\link[=combineExpression]{combineExpression()}}. Several levels of filtering exist -
-\emph{removeNA}, \emph{removeMulti}, or \emph{filterMulti} are parameters
+\code{removeNA}, \code{removeMulti}, or \code{filterMulti} are parameters
 that control how the function deals with barcodes with multiple chains
 recovered.
 }

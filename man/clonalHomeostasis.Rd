@@ -2,7 +2,7 @@
 % Please edit documentation in R/clonalHomeostasis.R
 \name{clonalHomeostasis}
 \alias{clonalHomeostasis}
-\title{Examining the clonal homeostasis of the repertoire}
+\title{Plot Clonal Homeostasis of the Repertoire}
 \usage{
 clonalHomeostasis(
   input.data,
@@ -18,26 +18,29 @@ clonalHomeostasis(
 )
 }
 \arguments{
-\item{input.data}{The product of \code{\link[=combineTCR]{combineTCR()}},
-\code{\link[=combineBCR]{combineBCR()}}, or \code{\link[=combineExpression]{combineExpression()}}.}
+\item{input.data}{The product of \code{\link[=combineTCR]{combineTCR()}}, \code{\link[=combineBCR]{combineBCR()}}, or
+\code{\link[=combineExpression]{combineExpression()}}.}
 
 \item{cloneSize}{The cut points of the proportions.}
 
-\item{cloneCall}{How to call the clone - VDJC gene (\strong{gene}),
-CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
-VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable
-in the data.}
+\item{cloneCall}{Defines the clonal sequence grouping. Accepted values
+are: \code{gene} (VDJC genes), \code{nt} (CDR3 nucleotide sequence), \code{aa} (CDR3 amino
+acid sequence), or \code{strict} (VDJC). A custom column header can also be used.}
 
-\item{chain}{indicate if both or a specific chain should be used -
-e.g. "both", "TRA", "TRG", "IGH", "IGL".}
+\item{chain}{The TCR/BCR chain to use. Use \code{both} to include both chains
+(e.g., TRA/TRB). Accepted values: \code{TRA}, \code{TRB}, \code{TRG}, \code{TRD}, \code{IGH}, \code{IGL}
+(for both light chains), \code{both}.}
 
-\item{group.by}{The variable to use for grouping}
+\item{group.by}{A column header in the metadata or lists to group the analysis
+by (e.g., "sample", "treatment"). If \code{NULL}, data will be analyzed
+by list element or active identity in the case of single-cell objects.}
 
-\item{order.by}{A vector of specific plotting order or "alphanumeric"
-to plot groups in order}
+\item{order.by}{A character vector defining the desired order of elements
+of the \code{group.by} variable. Alternatively, use \code{alphanumeric} to sort groups
+automatically.}
 
-\item{exportTable}{Exports a table of the data into the global
-environment in addition to the visualization.}
+\item{exportTable}{If \code{TRUE}, returns a data frame or matrix of the results
+instead of a plot.}
 
 \item{palette}{Colors to use in visualization - input any
 \link[grDevices:palettes]{hcl.pals}.}
@@ -45,15 +48,16 @@ environment in addition to the visualization.}
 \item{...}{Additional arguments passed to the ggplot theme}
 }
 \value{
-ggplot of the space occupied by the specific proportion of clones
+A ggplot object visualizing clonal homeostasis, or a data.frame if
+\code{exportTable = TRUE}.
 }
 \description{
 This function calculates the space occupied by clone proportions.
-The grouping of these clones is based on the parameter \strong{cloneSize},
-at default, \strong{cloneSize} will group the clones into bins of Rare = 0
+The grouping of these clones is based on the parameter \code{cloneSize},
+at default, \code{cloneSize} will group the clones into bins of Rare = 0
 to 0.0001, Small = 0.0001 to 0.001, etc. To adjust the proportions,
 change the number or labeling of the cloneSize parameter. If a matrix
-output for the data is preferred, set \strong{exportTable} = TRUE.
+output for the data is preferred, set \code{exportTable} = TRUE.
 }
 \examples{
 # Making combined contig data

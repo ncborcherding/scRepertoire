@@ -58,24 +58,28 @@
 #'
 #' @param input.data The product of [combineTCR()],
 #' [combineBCR()], or [combineExpression()].
-#' @param cloneCall How to call the clone - VDJC gene (**gene**),
-#' CDR3 nucleotide (**nt**), CDR3 amino acid (**aa**),
-#' VDJC gene + CDR3 nucleotide (**strict**), or a custom variable
-#' in the data.
+#' @param cloneCall Defines the clonal sequence grouping. Accepted values 
+#' are: `gene` (VDJC genes), `nt` (CDR3 nucleotide sequence), `aa` (CDR3 amino 
+#' acid sequence), or `strict` (VDJC). A custom column header can also be used.
+#' @param chain The TCR/BCR chain to use. Use `both` to include both chains 
+#' (e.g., TRA/TRB). Accepted values: `TRA`, `TRB`, `TRG`, `TRD`, `IGH`, `IGL` 
+#' (for both light chains), `both`.
+#' @param group.by A column header in the metadata or lists to group the analysis 
+#' by (e.g., "sample", "treatment"). If `NULL`, data will be analyzed 
+#' by list element or active identity in the case of single-cell objects.
+#' @param order.by A character vector defining the desired order of elements 
+#' of the `group.by` variable. Alternatively, use `alphanumeric` to sort groups 
+#' automatically.
 #' @param metric The diversity metric to calculate. Must be a single string from
 #' the list of available metrics (see Details).
-#' @param chain Indicate if both or a specific chain should be used -
-#' e.g. "both", "TRA", "TRG", "IGH", "IGL".
-#' @param group.by Variable in the metadata to group samples for calculation.
-#' @param order.by A vector of specific plotting order for the `group.by` variable,
-#' or "alphanumeric" to plot groups in that order.
 #' @param x.axis An additional metadata variable to group samples along the x-axis.
-#' @param exportTable If TRUE, returns a data frame of the results instead of a plot.
-#' @param return.boots If TRUE, returns all bootstrap values instead of the mean.
-#' Automatically sets `exportTable = TRUE`.
-#' @param skip.boots If TRUE, disables downsampling and bootstrapping. The metric
-#' will be calculated on the full dataset for each group.
+#' @param return.boots If `TRUE`, returns all bootstrap values instead of the 
+#' mean. Automatically enables `exportTable`.
+#' @param skip.boots If `TRUE`, disables downsampling and bootstrapping. The 
+#' metric will be calculated on the full dataset for each group. Defaults to `FALSE`.
 #' @param n.boots The number of bootstrap iterations to perform (default is 100).
+#' @param exportTable If `TRUE`, returns a data frame or matrix of the results 
+#' instead of a plot.
 #' @param palette Colors to use in visualization - input any
 #' [hcl.pals][grDevices::hcl.pals].
 #' @param ... Additional arguments passed to the ggplot theme
@@ -187,7 +191,7 @@ clonalDiversity <- function(input.data,
   
   # Plotting 
   metric.name <- gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", metric, perl=TRUE)
-  plot <- ggplot(output_df, aes(x = .data[[x.axis]], y = as.numeric(value))) +
+  plot <- ggplot(output_df, aes(x = .data[[x.axis]], y = as.numeric(.data[["value"]]))) +
     geom_boxplot(outlier.alpha = 0) +
     geom_jitter(aes(fill = .data[[group.by %||% "Group"]]),
                 size = 3,

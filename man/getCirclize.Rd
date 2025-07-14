@@ -2,8 +2,7 @@
 % Please edit documentation in R/getCircilize.R
 \name{getCirclize}
 \alias{getCirclize}
-\title{Generate data frame to be used with circlize R package to visualize
-clones as a chord diagram.}
+\title{Generate Data Frame to Plot Cord Diagram}
 \usage{
 getCirclize(
   sc.data,
@@ -16,13 +15,13 @@ getCirclize(
 \arguments{
 \item{sc.data}{The single-cell object after \code{\link[=combineExpression]{combineExpression()}}.}
 
-\item{cloneCall}{How to call the clone - VDJC gene (\strong{gene}),
-CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
-VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable
-in the data.}
+\item{cloneCall}{Defines the clonal sequence grouping. Accepted values
+are: \code{gene} (VDJC genes), \code{nt} (CDR3 nucleotide sequence), \code{aa} (CDR3 amino
+acid sequence), or \code{strict} (VDJC). A custom column header can also be used.}
 
-\item{group.by}{The group header for which you would like to analyze
-the data.}
+\item{group.by}{A column header in the metadata  to group the analysis
+by (e.g., "sample", "treatment"). If \code{NULL}, data will be analyzed by active
+identity.}
 
 \item{proportion}{Calculate the relationship unique
 clones (proportion = FALSE) or normalized by
@@ -32,13 +31,14 @@ proportion (proportion = TRUE)}
 comparison}
 }
 \value{
-A data frame of shared clones between groups formatted for \link[circlize:chordDiagram]{chordDiagram}
+A data frame of shared clones between groups formatted for
+\link[circlize:chordDiagram]{chordDiagram}
 }
 \description{
 This function will take the meta data from the product of
 \code{\link[=combineExpression]{combineExpression()}} and generate a relational data frame to
 be used for a chord diagram. Each cord will represent the number of
-clone unique and shared across the multiple \strong{group.by} variable.
+clone unique and shared across the multiple \code{group.by} variable.
 If using the downstream circlize R package, please read and cite the
 following \href{https://pubmed.ncbi.nlm.nih.gov/24930139/}{manuscript}.
 If looking for more advance ways for circular visualizations, there
@@ -46,17 +46,17 @@ is a great \href{https://jokergoo.github.io/circlize_book/book/}{cookbook}
 for the circlize package.
 }
 \examples{
-#Getting the combined contigs
+# Getting the combined contigs
 combined <- combineTCR(contig_list, 
                         samples = c("P17B", "P17L", "P18B", "P18L", 
                                     "P19B","P19L", "P20B", "P20L"))
 
-#Getting a sample of a Seurat object
+# Getting a sample of a Seurat object
 scRep_example <- get(data("scRep_example"))
 scRep_example <- combineExpression(combined, 
                                    scRep_example)
 
-#Getting data frame output for Circlize
+# Getting data frame output for Circlize
 circles <- getCirclize(scRep_example, 
                        group.by = "seurat_clusters")
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/clonalSizeDistribution.R
 \name{clonalSizeDistribution}
 \alias{clonalSizeDistribution}
-\title{Hierarchical clustering of clones using Gamma-GPD spliced threshold model}
+\title{Plot powerTCR Clustering Based on Clonal Size}
 \usage{
 clonalSizeDistribution(
   input.data,
@@ -20,22 +20,25 @@ clonalSizeDistribution(
 \item{input.data}{The product of \code{\link[=combineTCR]{combineTCR()}},
 \code{\link[=combineBCR]{combineBCR()}}, or \code{\link[=combineExpression]{combineExpression()}}.}
 
-\item{cloneCall}{How to call the clone - VDJC gene (\strong{gene}),
-CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
-VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable
-in the data.}
+\item{cloneCall}{Defines the clonal sequence grouping. Accepted values
+are: \code{gene} (VDJC genes), \code{nt} (CDR3 nucleotide sequence), \code{aa} (CDR3 amino
+acid sequence), or \code{strict} (VDJC). A custom column header can also be used.}
 
-\item{chain}{indicate if both or a specific chain should be used -
-e.g. "both", "TRA", "TRG", "IGH", "IGL".}
+\item{chain}{The TCR/BCR chain to use. Use \code{both} to include both chains
+(e.g., TRA/TRB). Accepted values: \code{TRA}, \code{TRB}, \code{TRG}, \code{TRD}, \code{IGH}, \code{IGL}
+(for both light chains), \code{both}.}
 
 \item{method}{The clustering parameter for the dendrogram.}
 
 \item{threshold}{Numerical vector containing the thresholds
 the grid search was performed over.}
 
-\item{group.by}{The variable to use for grouping.}
+\item{group.by}{A column header in the metadata or lists to group the analysis
+by (e.g., "sample", "treatment"). If \code{NULL}, data will be analyzed as
+by list element or active identity in the case of single-cell objects.}
 
-\item{exportTable}{Returns the data frame used for forming the graph.}
+\item{exportTable}{If \code{TRUE}, returns a data frame or matrix of the results
+instead of a plot.}
 
 \item{palette}{Colors to use in visualization - input any
 \link[grDevices:palettes]{hcl.pals}.}
@@ -43,7 +46,8 @@ the grid search was performed over.}
 \item{...}{Additional arguments passed to the ggplot theme}
 }
 \value{
-ggplot dendrogram of the clone size distribution
+A ggplot object visualizing dendrogram of clonal size distribution
+or a data.frame if \code{exportTable = TRUE}.
 }
 \description{
 This function produces a hierarchical clustering of clones by sample
@@ -75,10 +79,12 @@ Where:
 }
 }
 \examples{
-#Making combined contig data
+# Making combined contig data
 combined <- combineTCR(contig_list,
                         samples = c("P17B", "P17L", "P18B", "P18L",
                                     "P19B","P19L", "P20B", "P20L"))
+
+# Using clonalSizeDistribution()
 clonalSizeDistribution(combined, cloneCall = "strict", method="ward.D2")
 
 }

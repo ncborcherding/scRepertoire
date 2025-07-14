@@ -1,4 +1,4 @@
-#' ***DEPRECATED*** Take the meta data in seurat/SCE and place it into a list
+#' **DEPRECATED** Take the meta data in seurat/SCE and place it into a list
 #'
 #' @description
 #' `r lifecycle::badge("deprecated")`

@@ -24,36 +24,40 @@ clonalDiversity(
 \item{input.data}{The product of \code{\link[=combineTCR]{combineTCR()}},
 \code{\link[=combineBCR]{combineBCR()}}, or \code{\link[=combineExpression]{combineExpression()}}.}
 
-\item{cloneCall}{How to call the clone - VDJC gene (\strong{gene}),
-CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
-VDJC gene + CDR3 nucleotide (\strong{strict}), or a custom variable
-in the data.}
+\item{cloneCall}{Defines the clonal sequence grouping. Accepted values
+are: \code{gene} (VDJC genes), \code{nt} (CDR3 nucleotide sequence), \code{aa} (CDR3 amino
+acid sequence), or \code{strict} (VDJC). A custom column header can also be used.}
 
 \item{metric}{The diversity metric to calculate. Must be a single string from
 the list of available metrics (see Details).}
 
-\item{chain}{Indicate if both or a specific chain should be used -
-e.g. "both", "TRA", "TRG", "IGH", "IGL".}
+\item{chain}{The TCR/BCR chain to use. Use \code{both} to include both chains
+(e.g., TRA/TRB). Accepted values: \code{TRA}, \code{TRB}, \code{TRG}, \code{TRD}, \code{IGH}, \code{IGL}
+(for both light chains), \code{both}.}
 
-\item{group.by}{Variable in the metadata to group samples for calculation.}
+\item{group.by}{A column header in the metadata or lists to group the analysis
+by (e.g., "sample", "treatment"). If \code{NULL}, data will be analyzed
+by list element or active identity in the case of single-cell objects.}
 
-\item{order.by}{A vector of specific plotting order for the \code{group.by} variable,
-or "alphanumeric" to plot groups in that order.}
+\item{order.by}{A character vector defining the desired order of elements
+of the \code{group.by} variable. Alternatively, use \code{alphanumeric} to sort groups
+automatically.}
 
 \item{x.axis}{An additional metadata variable to group samples along the x-axis.}
 
-\item{exportTable}{If TRUE, returns a data frame of the results instead of a plot.}
+\item{exportTable}{If \code{TRUE}, returns a data frame or matrix of the results
+instead of a plot.}
 
 \item{palette}{Colors to use in visualization - input any
 \link[grDevices:palettes]{hcl.pals}.}
 
 \item{n.boots}{The number of bootstrap iterations to perform (default is 100).}
 
-\item{return.boots}{If TRUE, returns all bootstrap values instead of the mean.
-Automatically sets \code{exportTable = TRUE}.}
+\item{return.boots}{If \code{TRUE}, returns all bootstrap values instead of the
+mean. Automatically enables \code{exportTable}.}
 
-\item{skip.boots}{If TRUE, disables downsampling and bootstrapping. The metric
-will be calculated on the full dataset for each group.}
+\item{skip.boots}{If \code{TRUE}, disables downsampling and bootstrapping. The
+metric will be calculated on the full dataset for each group. Defaults to \code{FALSE}.}
 
 \item{...}{Additional arguments passed to the ggplot theme}
 }

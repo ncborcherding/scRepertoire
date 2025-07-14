@@ -47,19 +47,15 @@ combined.TCR <- addVariable(combined.TCR,
                             variables = rep(c("B", "L"), 4))
 ```
 
-## clonalQuant
+## clonalQuant: Quantifying Unique Clones
 
-The first function to explore the clones is `clonalQuant()` to return the total or relative numbers of unique clones. 
+The `clonalQuant()` function is used to explore the clones by returning the total or relative numbers of unique clones.
 
-**scale**  
+Key Parameter(s) for `clonalQuant()`
 
-* TRUE - relative percent of unique clones scaled by the total size of the clonal repertoire.
-* FALSE - Report the total number of unique clones **(default)**.
+* `scale`: If `TRUE`, converts the output to the relative percentage of unique clones scaled by the total repertoire size; if `FALSE` (default), reports the total number of unique clones.
 
-**chain**  
-
-+ "both" for combined chain visualization  
-+ "TRA", "TRB", "TRD", "TRG", "IGH" or "IGL" to select single chain
+To visualize the relative percent of unique clones across all chains (`"both"`) using the `strict` clone definition:
 
 ```{r tidy = FALSE}
 clonalQuant(combined.TCR, 
@@ -68,7 +64,7 @@ clonalQuant(combined.TCR,
             scale = TRUE)
 ```
 
-Another option here is to be able to define the visualization by data classes. Here, we used the `combineTCR()` list to define the **Type** variable as part of the naming structure. We can use the **group.by** to specifically use a column in the data set to organize the visualization.
+Another option is to define the visualization by data classes using the `group.by` parameter. Here, we'll use the `"Type"` variable, which was previously added to the combined.TCR list.
 
 ```{r}
 clonalQuant(combined.TCR, 
@@ -77,9 +73,15 @@ clonalQuant(combined.TCR,
             scale = TRUE)
 ```
 
-## clonalAbundance
+## clonalAbundance: Distribution of Clones by Size
 
-We can also examine the relative distribution of clones by abundance. Here `clonalAbundance()` will produce a line graph with a total number of clones by the number of instances within the sample or run. Like above, we can also group.by this by vectors within the contig object using the **group.by** variable in the function.
+`clonalAbundance()` allows for the examination of the relative distribution of clones by abundance. It produces a line graph showing the total number of clones at specific frequencies within a sample or group.
+
+Key Parameter(s) for `clonalAbundance()`
+
+* `scale`: If `TRUE`, converts the graphs into density plots to show relative distributions; if `FALSE` (default), displays raw counts.
+
+To visualize the raw clonal abundance using the `gene` clone definition:
 
 ```{r tidy = FALSE}
 clonalAbundance(combined.TCR, 
@@ -87,62 +89,50 @@ clonalAbundance(combined.TCR,
                 scale = FALSE)
 ```
 
-`clonalAbundance()` output can also be converted into a density plot, which may allow for better comparisons between different repertoire sizes, by setting **scale** = TRUE. 
+`clonalAbundance()` output can also be converted into a density plot, which may allow for better comparisons between different repertoire sizes, by setting `scale = TRUE`.
+
 ```{r}
 clonalAbundance(combined.TCR, 
                 cloneCall = "gene", 
                 scale = TRUE)
 ```
 
+## clonalLength: Distribution of Sequence Lengths
 
-## clonalLength
+`clonalLength()` allows you to look at the length distribution of the CDR3 sequences. Importantly, unlike the other basic visualizations, the `cloneCall` can only be `nt` (nucleotide) or `aa` (amino acid). Due to the method of calling clones as outlined previously (e.g., using NA for unreturned chain sequences or multiple chains within a single barcode), the length distribution may reveal a multimodal curve.
 
-We can look at the length distribution of the CDR3 sequences by calling the `lengtheContig()` function. Importantly, unlike the other basic visualizations, the **cloneCall** can only be **"nt"** or **"aa"**. Due to the method of calling clones as outlined above, the length should reveal a multimodal curve, this is a product of using the **NA** for the unreturned chain sequence and multiple chains within a single barcode. 
-
-**chain**  
-
-+ "both" for combined chain visualization  
-+ "TRA", "TRB", "TRD", "TRG", "IGH" or "IGL" to select single chain  
+To visualize the amino acid length distribution for both chains ("both"):
 
 ```{r tidy = FALSE}
 clonalLength(combined.TCR, 
              cloneCall="aa", 
              chain = "both") 
+```
 
+To visualize the amino acid length distribution for the `TRA` chain, scaled as a density plot:
+
+```{r tidty = FALSE}
 clonalLength(combined.TCR, 
              cloneCall="aa", 
              chain = "TRA", 
              scale = TRUE) 
 ```
 
-## clonalCompare
+## clonalCompare: Clonal Dynamics Between Categorical Variables
 
-We can also look at clones between samples and changes in dynamics by using the `clonalCompare()` function.
+`clonalCompare()` allows you to look at clones between samples and changes in dynamics. It is useful for tracking how the proportions of top clones change between conditions.
 
-**samples**  
+Key Parameters for `clonalCompare()`
 
-* Can be used to isolate specific samples based on the name of the list element
+* `samples`: A character vector to isolate specific samples by their list element name.
+* `clones`: A character vector of specific clonal sequences to visualize. If used, `top.clones` will be ignored.
+*` top.clones`: The top n number of clones to graph, calculated based on the frequency within individual samples.
+* `highlight.clones`: A character vector of specific clonal sequences to color; all other clones will be greyed out.
+* `relabel.clones`: If `TRUE`, simplifies the legend by labeling isolated clones numerically (e.g., "Clone: 1").
+* `graph`: The type of plot to generate; `alluvial` (default) or `area`.
+* `proportion`: If `TRUE` (default), the y-axis represents proportional abundance; if `FALSE`, it represents raw clone counts.
 
-**graph**  
-
-* "alluvial" - graph imaged below  
-* "area" - graph by area of the respective clone  
-
-**top.clones**  
-
-* The top number of clones to graph, this will be calculated based on the frequency of the individual sample. This can also be left blank.  
-
-**clones**  
-
-* Can be used to isolate specific clone sequences, ensure the call matches the sequences you would like to visualize.  
-
-**highlight.clones**  
-
-* Specifically color certain clones, other clones will be greyed out.
-
-**relabel.clones**  
-
-* Simplify the isolated clones to numerical designations to allow for a tidier visualization
+To compare the top 10 clones between samples "P17B" and "P17L" using amino acid sequences as an alluvial plot:
 
 ```{r tidy = FALSE}
 clonalCompare(combined.TCR, 
@@ -152,7 +142,7 @@ clonalCompare(combined.TCR,
                   graph = "alluvial")
 ```
 
-We can also choose to highlight specific clones, such as in the case of *"CVVSDNTGGFKTIF_CASSVRRERANTGELFF"* and *"NA_CASSVRRERANTGELFF"* using the **highlight.clones** parameter. In addition, we can simplify the plot to label the clones as clones 1:19.
+We can also choose to highlight specific clones, such as in the case of *"CVVSDNTGGFKTIF_CASSVRRERANTGELFF"* and *"NA_CASSVRRERANTGELFF"* using the `highlight.clones` parameter. In addition, we can simplify the plot to label the clones as "Clone: 1", "Clone: 2", etc., by setting `relabel.clones = TRUE`.
 
 ```{r tidy = FALSE}
 clonalCompare(combined.TCR, 
@@ -164,7 +154,7 @@ clonalCompare(combined.TCR,
               graph = "alluvial")
 ```
 
-Alternatively, if we only want to show specific clones, we can use the **clones** parameter.
+Alternatively, if we only want to show specific clones, we can use the `clones` parameter.
 
 ```{r}
 clonalCompare(combined.TCR, 
@@ -176,23 +166,17 @@ clonalCompare(combined.TCR,
 ```
 
 
-## clonalScatter
+## clonalScatter: Scatterplot of Two Variables
 
-```clonalScatter()``` will organize two repertoires, quantify the relative clone sizes, and produce a scatter plot comparing the two samples. 
+clonalScatter() organizes two repertoires, quantifies their relative clone sizes, and produces a scatter plot comparing the two samples. Clones are categorized by counts into singlets or expanded, either exclusively present or shared between the selected samples.
 
-**x.axis** and **y.axis** 
+Key Parameter(s) for `clonalScatter()`
 
-* Names of the list element to place on the x-axis and y-axis - so for example *"P18B"* and *"P18L"* 
+* `x.axis`, `y.axis`: Names of the list elements or meta data variable to place on the x-axis and y-axis.
+* `dot.size`: Specifies how dot size is determined; `total` (default) displays the total number of clones between the x- and y-axis, or a specific list element name for size calculation.
+* `graph`: The type of graph to display; `proportion` for the relative proportion of clones (default) or `count` for the total count of clones by sample.
 
-**dot.size**  
-
-* "total" to display the total number of clones between the x- and y-axis  
-* Name of the list element to use for size calculation  
- 
-**graph**  
-
-* "proportion" for the relative proportion the clone represents across all clones  
-* "count" for the total count of clones by sample  
+To compare samples "P18B" and "P18L" based on `gene` clone calls, with dot size representing the total number of clones, and plotting clone proportions:
 
 ```{r tidy = FALSE}
 clonalScatter(combined.TCR, 

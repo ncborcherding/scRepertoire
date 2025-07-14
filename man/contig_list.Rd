@@ -3,7 +3,7 @@
 \docType{data}
 \name{contig_list}
 \alias{contig_list}
-\title{A list of 8 single-cell T cell receptor sequences runs.}
+\title{A List of Eight Single-cell TCR Sequencing Runs.}
 \description{
 A list of 8 \code{filtered_contig_annotations.csv} files
 outputted from 10X Cell Ranger. More information on the

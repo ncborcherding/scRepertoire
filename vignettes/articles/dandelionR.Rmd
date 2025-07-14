@@ -5,7 +5,7 @@ output: rmarkdown::html_vignette
 theme: united
 df_print: kable
 vignette: >
-  %\VignetteIndexEntry{Immune Repertoire Trajectory Analysis}
+  %\VignetteIndexEntry{VDJ Trajectory Analysis with dandelionR}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

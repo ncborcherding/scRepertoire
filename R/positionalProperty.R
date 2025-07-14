@@ -1,4 +1,4 @@
-#' Positional physicochemical property analysis
+#' Plot Positional Physicochemical Property Analysis
 #'
 #' This function analyzes the physicochemical properties of amino acids at each
 #' position along the CDR3 sequence. It calculates the mean property value and
@@ -36,6 +36,8 @@
 #' combined <- combineTCR(contig_list, 
 #'                         samples = c("P17B", "P17L", "P18B", "P18L", 
 #'                                     "P19B","P19L", "P20B", "P20L"))
+#' 
+#' # Using positionalProperty()
 #' positionalProperty(combined, 
 #'                    chain = "TRB",
 #'                    method = "atchleyFactors", 
@@ -43,23 +45,29 @@
 #'                    
 #' @param input.data The product of [combineTCR()], 
 #' [combineBCR()], or [combineExpression()]
-#' @param chain "TRA", "TRB", "TRG", "TRG", "IGH", "IGL"
-#' @param group.by The variable to use for grouping
-#' @param order.by A vector of specific plotting order or "alphanumeric"
-#' to plot groups in order
+#' @param chain The TCR/BCR chain to use. Use Accepted values: `TRA`, `TRB`, 
+#' `TRG`, `TRD`, `IGH`, or `IGL` (for both light chains)..
+#' @param group.by A column header in the metadata or lists to group the analysis 
+#' by (e.g., "sample", "treatment"). If `NULL`, data will be analyzed 
+#' by list element or active identity in the case of single-cell objects.
+#' @param order.by A character vector defining the desired order of elements 
+#' of the `group.by` variable. Alternatively, use `alphanumeric` to sort groups 
+#' automatically.
 #' @param aa.length The maximum length of the CDR3 amino acid sequence. 
 #' @param method Character string (one of the supported names) 
 #' Defaults to `"atchleyFactors"`, but includes: `"crucianiProperties"`, 
 #' `"FASGAI"`, `"kideraFactors"`, `"MSWHIM"`, `"ProtFP"`, `"stScales"`, 
 #' `"tScales"`, `"VHSE"`, `"zScales"`
-#' @param exportTable Returns the data frame used for forming the graph
+#' @param exportTable If `TRUE`, returns a data frame or matrix of the results 
+#' instead of a plot.
 #' @param palette Colors to use in visualization - input any [hcl.pals][grDevices::hcl.pals]
 #' @param ... Additional arguments passed to the ggplot theme
 #' @importFrom stats qt sd
 #' @importFrom utils getFromNamespace
 #' @export
 #' @concept Summarize_Repertoire
-#' @return ggplot of line graph of diversity by position
+#' @return A ggplot object displaying property by amino acid position.
+#' If `exportTable = TRUE`, a matrix of the raw data is returned.
 #' @author Florian Bach, Nick Borcherding
 
 positionalProperty <- function(input.data, 

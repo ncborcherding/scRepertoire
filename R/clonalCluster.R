@@ -1,11 +1,11 @@
-#' Cluster Clones by sequence similarity
+#' Cluster clones by sequence similarity
 #'
 #' This function clusters TCRs or BCRs based on the edit distance of their CDR3
-#' sequences. It can operate on either nucleotide ("nt") or amino acid ("aa")
-#' sequences and can optionally enforce that clones share the same V gene.
-#' The output can be the input object with an added metadata column for cluster
-#' IDs, a sparse adjacency matrix, or an `igraph` graph object representing the
-#' cluster network.
+#' sequences. It can operate on either nucleotide (`nt`) or amino acid (`aa`)
+#' sequences and can optionally enforce that clones share the same V and/or J 
+#' genes. The output can be the input object with an added metadata column for 
+#' cluster IDs, a sparse adjacency matrix, or an `igraph` graph object 
+#' representing the cluster network.
 #' 
 #' @details
 #' The clustering process is as follows:
@@ -47,31 +47,30 @@
 #' 
 #' @param input.data The product of [combineTCR()], 
 #' [combineBCR()] or [combineExpression()].
-#' @param chain The TCR/BCR chain to use for clustering. Use "both" to combine
-#' networks from TRA/TRB or IGH/IGL. Valid options: "both", "TRA", "TRB",
-#' "TRD", "TRG", "IGH", "IGK", "IGL".
-#' @param sequence Clustering based on either **"aa"** or 
-#' **"nt"**.
+#' @param chain The TCR/BCR chain to use. Use `both` to include both chains 
+#' (e.g., TRA/TRB). Accepted values: `TRA`, `TRB`, `TRG`, `TRD`, `IGH`, `IGL` 
+#' (for both light chains), `both`.
+#' @param sequence Clustering based on either `aa` or `nt` sequences.
 #' @param threshold The similarity threshold. If < 1, treated as normalized
 #' similarity (higher is stricter). If >= 1, treated as raw edit distance
 #' (lower is stricter).
-#' @param group.by The column header used for to group clones.
-#' If (**NULL**), clusters will be calculated across samples.
-#' @param use.V Logical. If `TRUE`, sequences must share the same V gene to be
+#' @param group.by A column header in the metadata or lists to group the analysis 
+#' by (e.g., "sample", "treatment"). If `NULL`, clusters will be calculated across
+#' all sequences.
+#' @param use.V If `TRUE`, sequences must share the same V gene to be
 #' clustered together.
-#' @param use.J Logical. If `TRUE`, sequences must share the same J gene to be
+#' @param use.J If `TRUE`, sequences must share the same J gene to be
 #' clustered together.
 #' @param cluster.method The clustering algorithm to use. Defaults to `"components"`, 
 #' which finds connected subgraphs.
 #' @param cluster.prefix A character prefix to add to the cluster names (e.g.,
 #' "cluster.").
-#' @param exportGraph Logical. If `TRUE`, the function returns an `igraph`
+#' @param exportGraph If `TRUE`, the function returns an `igraph`
 #' object of the sequence network.
-#' @param exportAdjMatrix Logical. If `TRUE`, the function returns a sparse
+#' @param exportAdjMatrix If `TRUE`, the function returns a sparse
 #' adjacency matrix (`dgCMatrix`) of the network.
-#' @param exportGraph Return an igraph object of connected 
-#' sequences (**TRUE**) or the amended input with a
-#' new cluster-based variable (**FALSE**).
+#' @param exportGraph If `TRUE` returns an igraph object of connected 
+#' sequences  or the amended `input.data` with a new cluster-based variable 
 #' @importFrom igraph graph_from_edgelist E E<- V V<- as_data_frame 
 #' as_adjacency_matrix membership set_vertex_attr
 #' @importFrom dplyr left_join

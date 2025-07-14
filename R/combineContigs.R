@@ -22,15 +22,15 @@ utils::globalVariables(c(
     "tcr2_lines", "data1_lines", "data2_lines", "CT_lines"
 ))
 
-#' @title Combining the list of T cell receptor contigs into clones
+#' @title Combine T Cell Receptor Contig Data
 #'
 #' @description This function consolidates a list of TCR sequencing results to
-#' the level of  the individual cell barcodes. Using the **samples** and
-#' **ID** parameters, the function will add the strings as prefixes to
+#' the level of  the individual cell barcodes. Using the `samples` and
+#' `ID` parameters, the function will add the strings as prefixes to
 #' prevent issues with repeated  barcodes. The resulting new barcodes will
 #' need to match the Seurat or SCE object in order to use,
 #' [combineExpression()]. Several levels of filtering exist -
-#' *removeNA*, *removeMulti*, or *filterMulti* are parameters
+#' `removeNA`, `removeMulti`, or `filterMulti` are parameters
 #' that control how the function deals with barcodes with multiple chains
 #' recovered.
 #'
@@ -149,7 +149,7 @@ combineTCR <- function(input.data,
     final
 }
 
-#' Combining the list of B cell receptor contigs into clones
+#' Combine B Cell Receptor Contig Data
 #'
 #' This function consolidates a list of BCR sequencing results to the level
 #' of the individual cell barcodes. Using the samples and ID parameters,
@@ -157,17 +157,11 @@ combineTCR <- function(input.data,
 #' repeated barcodes. The resulting new barcodes will need to match the
 #' Seurat or SCE object in order to use, [combineExpression()].
 #' Unlike [combineTCR()], combineBCR produces a column
-#' **CTstrict** of an index of nucleotide sequence and the
-#' corresponding V gene. This index automatically calculates the
-#' Levenshtein distance between sequences with the same V gene and will
-#' index sequences using a normalized Levenshtein distance with the same
-#' ID. After which, clone clusters are called using the
-#' [igraph::components()] function. Clones that are clustered
-#' across multiple sequences will then be labeled with "Cluster" in the
-#' CTstrict header.
+#' `CTstrict` of an index of nucleotide sequence and the
+#' corresponding V and J genes using [clonalCluster()]. 
 #'
 #' @examples
-#' #Data derived from the 10x Genomics intratumoral NSCLC B cells
+#' # Data derived from the 10x Genomics intratumoral NSCLC B cells
 #' BCR <- read.csv("https://www.borch.dev/uploads/contigs/b_contigs.csv")
 #' combined <- combineBCR(BCR,
 #'                        samples = "Patient1",
@@ -182,7 +176,7 @@ combineTCR <- function(input.data,
 #' identify related clones based on sequence similarity. If `FALSE`, defines
 #' clones by the exact V-gene and CDR3 amino acid sequence.
 #' @param group.by The column header used for to group clones.
-#' If (**NULL**), clusters will be calculated across samples.
+#' If (`NULL``), clusters will be calculated across samples.
 #' @param threshold The similarity threshold passed to `clonalCluster()` if
 #' `call.related.clones = TRUE`. See `?clonalCluster` for details.
 #' @param chain The chain to use for clustering when `call.related.clones = TRUE`.

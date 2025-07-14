@@ -2,7 +2,7 @@
 % Please edit documentation in R/clonalOverlay.R
 \name{clonalOverlay}
 \alias{clonalOverlay}
-\title{Visualize distribution of clonal frequency overlaid on dimensional reduction plots}
+\title{Visualize Distribution of Clonal Frequency}
 \usage{
 clonalOverlay(
   sc.data,
@@ -38,7 +38,8 @@ cut.category variable in the meta data of the single-cell object.}
 \item{...}{Additional arguments passed to the ggplot theme}
 }
 \value{
-ggplot object
+A ggplot object visualizing distributions of clones along a
+dimensional reduction within the single-cell object
 }
 \description{
 This function allows the user to visualize the clonal expansion by overlaying the

@@ -15,25 +15,31 @@
 #' combined <- combineTCR(contig_list, 
 #'                         samples = c("P17B", "P17L", "P18B", "P18L", 
 #'                                     "P19B","P19L", "P20B", "P20L"))
+#' 
+#' # Using percentKmer()
 #' percentKmer(combined, 
 #'             chain = "TRB", 
 #'             motif.length = 3)
 #' 
 #' @param input.data The product of [combineTCR()], 
 #' [combineBCR()], or [combineExpression()]
-#' @param chain indicate a specific chain should be used - 
-#' e.g. "TRA", "TRG", "IGH", "IGL", etc
-#' @param cloneCall How to call the clone - CDR3 nucleotide (**nt**) or 
-#' CDR3 amino acid (**aa**)
-#' @param group.by The variable to use for grouping
-#' @param order.by A vector of specific plotting order for `group.by` or 
-#' "alphanumeric" to plot groups in order
+#' @param chain The TCR/BCR chain to use. Accepted values: `TRA`, `TRB`, `TRG`,
+#'  `TRD`, `IGH`, or `IGL` (for both light chains).
+#' @param cloneCall Defines the clonal sequence grouping. Accepted values 
+#' are: `nt` (CDR3 nucleotide sequence) or `aa` (CDR3 amino acid sequence).
+#' @param group.by A column header in the metadata or lists to group the analysis 
+#' by (e.g., "sample", "treatment"). If `NULL`, data will be analyzed as 
+#' by list element or active identity in the case of single-cell objects.
+#' @param order.by A character vector defining the desired order of elements 
+#' of the `group.by` variable. Alternatively, use `alphanumeric` to sort groups 
+#' automatically.
 #' @param motif.length The length of the kmer to analyze
 #' @param min.depth Minimum count a motif must reach to be retained in the 
 #' output (`>= 1`). **Default:** `3`.
 #' @param top.motifs Return the n most variable motifs as a function of 
 #' median absolute deviation
-#' @param exportTable Returns the data frame used for forming the graph.
+#' @param exportTable If `TRUE`, returns a data frame or matrix of the results 
+#' instead of a plot.
 #' @param palette Colors to use in visualization - input any 
 #' [hcl.pals][grDevices::hcl.pals]
 #' @param ... Additional arguments passed to the ggplot theme
@@ -122,7 +128,7 @@ percentKmer <- function(input.data,
   }
   
   #Plotting
-  plot <- ggplot(mat_melt, aes(x=Var2, y = Var1, fill=value)) +
+  plot <- ggplot(mat_melt, aes(x=.data[["Var2"]], y = .data[["Var1"]], fill=.data[["value"]])) +
             geom_tile(lwd = 0.1, color = "black") + 
             scale_fill_gradientn(name = "Proportion", colors = .colorizer(palette,21)) +
             .themeRepertoire(...) + 

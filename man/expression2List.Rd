@@ -2,7 +2,7 @@
 % Please edit documentation in R/deprecated.R
 \name{expression2List}
 \alias{expression2List}
-\title{\emph{\strong{DEPRECATED}} Take the meta data in seurat/SCE and place it into a list}
+\title{\strong{DEPRECATED} Take the meta data in seurat/SCE and place it into a list}
 \usage{
 expression2List(sc, ..., force = FALSE)
 }

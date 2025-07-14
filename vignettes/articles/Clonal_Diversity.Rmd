@@ -44,9 +44,20 @@ combined.TCR <- combineTCR(contig_list,
                                             "P19B","P19L", "P20B", "P20L"))
 ```
 
-## clonalDiversity
+## clonalDiversity: Clonal Diversity Quantification
 
-Diversity can also be measured for samples or by other variables. Diversity **metrics** calculated include: **"shannon"**, **"inv.simpson"**, **"gini.simpson"**, **"chao1"**, **"ace"**, **"gini"**, **"d50"**, and Hill numbers (**"hill0"**, **"hill1"**, **"hill2"**). Please see the manual for more information on each metric and the underlying calculations, but a simple breakdown of the metrics is as follows:
+Diversity can be measured for samples or by other variables. `clonalDiversity()` calculates a specified diversity metric for groups within a dataset. To control for variations in library size, the function can perform bootstrapping with downsampling. It resamples each group to the size of the smallest group and calculates the diversity metric across multiple iterations, returning the mean values.
+
+### How `clonalDiversity()` Handles Downsampling and Bootstrapping
+
+* It determines the number of clones in the smallest group.
+* For each group, it performs `n.boots` iterations (default = 100).
+* In each iteration, it randomly samples the clones (with replacement) down to the size of the smallest group.
+* It calculates the selected diversity metric on this downsampled set.
+* The final reported diversity value is the mean of the results from all bootstrap iterations.
+* This process can be disabled by setting `skip.boots = TRUE`.
+
+### Available Diversity Metrics (`metric`)
 
 | **Metric** | **What it measures** | **Typical scale** | **Higher value indicates…** |
 | :------------- | :---------------------------------------------------------------------------------------------------------------- | :---------------- | :--------------------------------------------------------------------------------- |
@@ -62,69 +73,77 @@ Diversity can also be measured for samples or by other variables. Diversity **me
 | `hill1`        | Effective number of abundant clonotypes (Hill number q=1); the exponential of Shannon entropy.                    | 1 → ∞             | **Higher diversity** of common clonotypes, balancing richness and evenness.        |
 | `hill2`        | Effective number of dominant clonotypes (Hill number q=2); equivalent to the inverse Simpson index.              | 1 → ∞             | **Higher diversity** among the most dominant clonotypes in the repertoire.       |
 
-Inherent in diversity calculations is a bias for increasing diversity with increasing repertoire size. ```clonalDiversity()``` will automatically downsample to the smallest repertoire size and perform bootstrapping to return the mean diversity estimates. If the output of diversity values are strange or minimally variable, it is likely due to a sample with small repertoire size.
 
-**n.boots**  
-The number of calculations to perform **(default = 100)**.  
+Key Parameters for `clonalDiversity()`
 
-**return.boots**  
+* `metric`: The diversity metric to calculate.
+* `x.axis`: An additional metadata variable to group samples along the x-axis.
+* `return.boots`: If `TRUE`, returns all bootstrap values instead of the mean.
+* `skip.boots`: If `TRUE`, disables downsampling and bootstrapping.
+* `n.boots`: The number of bootstrap iterations to perform (default is 100).
 
-* TRUE: Return all the calculations.  
-* FALSE: Return only the mean values **(default)**.  
-
-**skip.boots**  
-Skip the bootstrapping calculations.
-
+To calculate Shannon diversity, grouped by sample:
 
 ```{r tidy = FALSE}
 clonalDiversity(combined.TCR, 
                 cloneCall = "gene")
 ```
 
-There are 2 options for grouping in ```clonalDiversity()``` and it is important to understand the difference. 
+There are two options for grouping in `clonalDiversity()`: `group.by` and `x.axis`.
 
-**group.by**
+* `group.by`: Reorganizes the clone information into new groups that the calculation will be based on.
+* `x.axis`: Keeps the organization of the clone information the same, but plots along the x-axis for improved visibility or grouping.
 
-* Reorganize the clone information into new groups that the calculation will be based on.
-
-**x.axis**
-
-* Keep the organization of the clone information the same, but will plot along the x-axis for improved visibility or grouping.
-
+First, add a "Patient" variable to combined.TCR
 
 ```{r tidy = FALSE}
 combined.TCR <- addVariable(combined.TCR, 
                             variable.name = "Patient", 
                              variables = c("P17", "P17", "P18", "P18", 
 "P19","P19", "P20", "P20"))
+```
 
+Now, calculate Inverse Simpson diversity, grouped by "Patient":
+
+```{r tidy = FALSE}
 clonalDiversity(combined.TCR, 
                 cloneCall = "gene", 
                 group.by = "Patient", 
                 metric = "inv.simpson")
+```
 
+Calculate Inverse Simpson diversity with "Patient" on the x-axis, keeping the original grouping:
+
+```{r tidy = FALSE}
 clonalDiversity(combined.TCR, 
                 cloneCall = "gene", 
                 x.axis = "Patient", 
                 metric = "inv.simpson")
 ```
 
+`clonalDiversity()` functions in quantifying and comparing the diversity of immune repertoires across different samples or experimental conditions. By implementing bootstrapping and offering a wide range of diversity metrics, it provides robust and comparable measures of clonal richness and evenness, which are fundamental for understanding immune responses and disease states
 
-## clonalRarefaction
+## clonalRarefaction: Sampling-based Extrapolation
 
-We can also use Hill numbers to estimate the rarefaction, or estimating species richness, using the the abundance of clones across groupings. Underlying the rarefaction calculation is the use of observed receptor of **abundance** to compute diversity. 
+`clonalRarefaction()` uses Hill numbers to estimate rarefaction, or estimating species richness, based on the abundance of clones across groupings. The underlying rarefaction calculation uses the observed receptor abundance to compute diversity. This function relies on the `iNEXT` R package.
 
-**hill.numbers** 
+### Hill Numbers and Their Interpretation
 
-+ 0 - species-richness  
-+ 1 - Shannon Diversity
-+ 2 - Simpson Diversity
+* `0`: Species richness
+* `1`: Shannon Diversity
+* `2`: Simpson Diversity
 
-**plot.type**  
+### plot.type Options
 
-+ 1 - sample-size-based rarefaction/extrapolation  
-+ 2 - sample completeness curve  
-+ 3 - coverage-based rarefaction/extrapolation curve  
+* `1`: Sample-size-based rarefaction/extrapolation curve
+* `2`: Sample completeness curve
+* `3`: Coverage-based rarefaction/extrapolation curve
+
+Key Parameter(s) for `clonalRarefaction()`
+
+* `plot.type`: The type of plot to generate.
+* `hill.numbers`: The Hill numbers to be plotted (0, 1, or 2).
+* `n.boots`: The number of bootstrap replicates used to derive confidence intervals (default is 20).
 
 This function relies on the [iNEXT](https://cran.r-project.org/web/packages/iNEXT/index.html) with the accompanying [manuscript](http://chao.stat.nthu.edu.tw/wordpress/paper/120_pdf_appendix.pdf). Like the other wrapping functions in scRepertoire, please cite the original work. The sample completeness curve (**plot.type** = 2), may not show full sample coverage due to the size/diversity of the input data.
 
@@ -166,11 +185,17 @@ clonalRarefaction(combined.TCR,
                   n.boots = 2)
 ```
 
-## clonalSizeDistribution
+`clonalRarefaction()` provides robust estimates of immune repertoire diversity, allowing for comparison of richness and effective diversity across samples, even with varying sequencing depths. By visualizing rarefaction and extrapolation curves, researchers can assess the completeness of their sampling and make fair comparisons of diversity, which is essential for understanding immune complexity.
 
-Another method for modeling the repertoire distribution is a discrete gamma-GPD spliced threshold model, proposed by [Koch et al.](https://pubmed.ncbi.nlm.nih.gov/30485278/) The spliced model models the repertoire and allows for the application of a power law distribution for larger clonal-expanded sequences and a Poisson distribution for smaller clones. After fitting the models, repertoires can be compared using Euclidean distance. 
+## clonalSizeDistribution: Advanced Modeling Of Clonal Composition
 
-If using this function, please read/cite [Koch et al.](https://pubmed.ncbi.nlm.nih.gov/30485278/) and check out the [powerTCR](https://bioconductor.org/packages/release/bioc/html/powerTCR.html) R package.
+Another method for modeling the repertoire distribution is a discrete gamma-GPD spliced threshold model, proposed by [Koch et al.](https://pubmed.ncbi.nlm.nih.gov/30485278/) The spliced model models the repertoire and allows for the application of a power law distribution for larger clonal-expanded sequences and a Poisson distribution for smaller clones. After fitting the models, repertoires can be compared using Euclidean distance. If using this function, please read/cite [Koch et al.](https://pubmed.ncbi.nlm.nih.gov/30485278/) and check out the [powerTCR](https://bioconductor.org/packages/release/bioc/html/powerTCR.html) R package.
+
+Key Parameter(s) for ```clonalSizeDistribution()```
+
+* `method`: The agglomeration method for hierarchical clustering (e.g., "ward.D2").
+
+To model the clonal size distribution using amino acid clone calls and hierarchical clustering with the "ward.D2" method:
 
 ```{r tidy = FALSE}
 clonalSizeDistribution(combined.TCR, 
@@ -178,26 +203,34 @@ clonalSizeDistribution(combined.TCR,
                        method= "ward.D2")
 ```
 
-## clonalOverlap
+```clonalSizeDistribution()``` offers a sophisticated approach to modeling immune repertoire composition, distinguishing between the distribution of rare and expanded clones. By applying a spliced statistical model, it provides a more accurate representation of the repertoire's underlying clonal architecture, enabling robust comparisons and a deeper understanding of immune system dynamics.
 
-If you are interested in measures of similarity between the samples loaded into scRepertoire, using `clonalOverlap()` can assist in the visualization. 
+## clonalOverlap: Exploring Sequence Overlap
 
-The underlying `clonalOverlap()` calculation varies by the **method** parameter, more information on the exact calculations are available in the manual. 
+If you are interested in measures of similarity between the samples loaded into scRepertoire, using `clonalOverlap()` can assist in the visualization. The underlying `clonalOverlap()` calculation varies by the `method` parameter.
 
-**method**
+### `method` Parameters for `clonalOverlap()`
 
-* "overlap" - overlap coefficient 
-* "morisita" - Morisita's overlap index
-* "jaccard" - Jaccard index
-* "cosine" - cosine similarity
-* "raw" - exact number of overlapping clones
+* `overlap` - Overlap coefficient 
+* `morisita` - Morisita's overlap index
+* `jaccard` - Jaccard index
+* `cosine` - Cosine similarity
+* `raw` - Exact number of overlapping clones
+
+To calculate and visualize the Morisita overlap index using strict clone calls:
 
 ```{r tidy = FALSE}
 clonalOverlap(combined.TCR, 
               cloneCall = "strict", 
               method = "morisita")
+```
 
+To calculate and visualize the raw number of overlapping clones using strict clone calls:
+
+```{r tidy = FALSE}
 clonalOverlap(combined.TCR, 
               cloneCall = "strict", 
               method = "raw")
 ```
+
+`clonalOverlap()` is a tool for assessing the similarity and shared clonotypes between different immune repertoires. By offering various quantitative methods and a clear heatmap visualization, it allows researchers to identify the degree of overlap, providing insights into shared immune responses, cross-reactivity, or the impact of different treatments on clonal composition.

@@ -18,18 +18,20 @@ clonalRarefaction(
 )
 }
 \arguments{
-\item{input.data}{The product of \code{\link[=combineTCR]{combineTCR()}},
-\code{\link[=combineBCR]{combineBCR()}}, or \code{\link[=combineExpression]{combineExpression()}}.}
+\item{input.data}{The product of \code{\link[=combineTCR]{combineTCR()}}, \code{\link[=combineBCR]{combineBCR()}}, or
+\code{\link[=combineExpression]{combineExpression()}}.}
 
-\item{cloneCall}{How to call the clone - VDJC gene (\strong{gene}),
-CDR3 nucleotide (\strong{nt}), CDR3 amino acid (\strong{aa}),
-VDJC gene + CDR3 nucleotide (\strong{strict}) or a custom variable
-in the data.}
+\item{cloneCall}{Defines the clonal sequence grouping. Accepted values
+are: \code{gene} (VDJC genes), \code{nt} (CDR3 nucleotide sequence), \code{aa} (CDR3 amino
+acid sequence), or \code{strict} (VDJC). A custom column header can also be used.}
 
-\item{chain}{indicate if both or a specific chain should be used -
-e.g. "both", "TRA", "TRG", "IGH", "IGL".}
+\item{chain}{The TCR/BCR chain to use. Use \code{both} to include both chains
+(e.g., TRA/TRB). Accepted values: \code{TRA}, \code{TRB}, \code{TRG}, \code{TRD}, \code{IGH}, \code{IGL}
+(for both light chains), \code{both}.}
 
-\item{group.by}{The variable to use for grouping.}
+\item{group.by}{A column header in the metadata or lists to group the analysis
+by (e.g., "sample", "treatment"). If \code{NULL}, data will be analyzed
+by list element or active identity in the case of single-cell objects.}
 
 \item{plot.type}{sample-size-based rarefaction/extrapolation curve
 (\code{type = 1}); sample completeness curve (\code{type = 2});
@@ -42,8 +44,8 @@ coverage-based rarefaction/extrapolation curve (\code{type = 3}).}
 intervals for the diversity estimates. More replicates can provide a more
 reliable measure of statistical variability.}
 
-\item{exportTable}{Exports a table of the data into the global
-environment in addition to the visualization.}
+\item{exportTable}{If \code{TRUE}, returns a data frame or matrix of the results
+instead of a plot.}
 
 \item{palette}{Colors to use in visualization - input any
 \link[grDevices:palettes]{hcl.pals}.}
@@ -51,9 +53,9 @@ environment in addition to the visualization.}
 \item{...}{Additional arguments passed to the ggplot theme}
 }
 \description{
-This functions uses the Hill numbers of order q: species richness (\strong{q = 0}),
-Shannon diversity (\strong{q = 1}), the exponential of Shannon entropy and Simpson
-diversity (\strong{q = 2}, the inverse of Simpson concentration) to compute diversity
+This functions uses the Hill numbers of order q: species richness (\code{q = 0}),
+Shannon diversity (\code{q = 1}), the exponential of Shannon entropy and Simpson
+diversity (\code{q = 2}, the inverse of Simpson concentration) to compute diversity
 estimates for rarefaction and extrapolation. The function relies on the
 \code{\link[iNEXT:iNEXT]{iNEXT::iNEXT()}} R package. Please read and cite the
 \href{https://besjournals.onlinelibrary.wiley.com/doi/10.1111/2041-210X.12613}{manuscript}

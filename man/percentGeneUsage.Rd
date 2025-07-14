@@ -63,10 +63,13 @@ or \code{\link[=combineExpression]{combineExpression()}}.}
 Can be a single gene e.g., "TRBV" or "IGHJ" or a pair for genes analysis
 (e.g., c("TRBV", "TRAV"), or "TRBV", "TRBJ").}
 
-\item{group.by}{The variable to use for grouping (e.g., "sample", "orig.ident").}
+\item{group.by}{A column header in the metadata or lists to group the analysis
+by (e.g., "sample", "treatment"). If \code{NULL}, data will be analyzed as
+by list element or active identity in the case of single-cell objects.}
 
-\item{order.by}{A vector of specific plotting order or "alphanumeric"
-to plot groups in order.}
+\item{order.by}{A character vector defining the desired order of elements
+of the \code{group.by} variable. Alternatively, use \code{alphanumeric} to sort groups
+automatically.}
 
 \item{summary.fun}{Character string choosing the summary statistic -
 \code{"percent"} (default), \code{"proportion"}, or \code{"count"}.}
@@ -74,8 +77,8 @@ to plot groups in order.}
 \item{plot.type}{The type of plot to return: \code{"heatmap"} (default for paired loci,
 also available for single loci), or \code{"barplot"} (for single loci).}
 
-\item{exportTable}{Logical. If \code{TRUE}, returns the data frame or matrix used
-for forming the graph instead of the plot.}
+\item{exportTable}{If \code{TRUE}, returns a data frame or matrix of the results
+instead of a plot.}
 
 \item{palette}{Colors to use in visualization - input any
 \link[grDevices:palettes]{hcl.pals}.}

@@ -29,16 +29,16 @@ with \code{\link[=combineTCR]{combineTCR()}} or \code{\link[=combineBCR]{combine
 
 Supported file formats and their expected file names:
 \itemize{
-\item \strong{10X}: "filtered_contig_annotations.csv"
-\item \strong{AIRR}: "airr_rearrangement.tsv"
-\item \strong{BD}: "Contigs_AIRR.tsv"
-\item \strong{Dandelion}: "all_contig_dandelion.tsv"
-\item \strong{Immcantation}: "_data.tsv" (or similar)
-\item \strong{JSON}: ".json"
-\item \strong{ParseBio}: "barcode_report.tsv"
-\item \strong{MiXCR}: "clones.tsv"
-\item \strong{TRUST4}: "barcode_report.tsv"
-\item \strong{WAT3R}: "barcode_results.csv"
+\item \verb{10X}: "filtered_contig_annotations.csv"
+\item \code{AIRR}: "airr_rearrangement.tsv"
+\item \code{BD}: "Contigs_AIRR.tsv"
+\item \code{Dandelion}: "all_contig_dandelion.tsv"
+\item \code{Immcantation}: "_data.tsv" (or similar)
+\item ``JSON`: ".json"
+\item \code{ParseBio}: "barcode_report.tsv"
+\item \code{MiXCR}: "clones.tsv"
+\item \code{TRUST4}: "barcode_report.tsv"
+\item *\code{WAT3R}: "barcode_results.csv"
 }
 }
 \examples{
