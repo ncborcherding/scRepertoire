@@ -63,27 +63,19 @@ colorblind_vector <- hcl.colors(n=7, palette = "inferno", fixup = TRUE)
 
 ## clonalOverlay 
 
-Using the dimensional reduction graphs as a reference, we can also generate an overlay of the position of clonally-expanded cells using `clonalOverlay()`. 
+Using the dimensional reduction graphs as a reference, `clonalOverlay()` generates an overlay of the positions of clonally-expanded cells. It highlights areas of high clonal frequency or proportion on your UMAP or tSNE plots.
 
-**reduction** 
+Key Parameters for clonalOverlay()
 
-* The dimensional reduction for the visualization, **(default = "pca")**
+* `sc.data`: The single-cell object after` combineExpression()`.
+* `reduction`: The dimensional reduction to visualize (e.g., "umap", "pca"). Default is "pca".
+* `cut.category`: The metadata variable to use for filtering the overlay (e.g., "clonalFrequency" or "clonalProportion").
+* `cutpoint`: The lowest clonal frequency or proportion to include in the contour plot.
+* `bins`: The number of contours to draw.
 
-**cut.category**  
+`clonalOverlay()` can be used to look across all cells or faceted by a metadata variable using `facet.by`. The overall dimensional reduction will be maintained as we facet, while the contour plots will adjust based on the `facet.by` variable. The coloring of the dot plot is based on the active identity of the single-cell object.
 
-* Use of "clonalFrequency" or "clonalProportion" to filter the overlay
-
-**cutpoint**  
-
-* lowest clonal frequency or proportion to generate the contour plot
-
-**bins** 
-
-* the number of contours to draw
-
-`clonalOverlay()` can be used to look across all cells or faceted by a meta data variable using **facet.by**. The overall dimensional reduction will be maintained as we facet, while the contour plots will adjust based on the **facet.by** variable. The coloring of the dot plot is based on the active identity of the single-cell object. 
-
-This visualization was authored by Dr. Francesco Mazziotta and inspired by Drs. Carmona and Andreatta and their work with [ProjectTIL](https://github.com/carmonalab/ProjecTILs), which is a great pipeline to annotated T cell subtypes.
+This visualization was authored by Dr. Francesco Mazziotta and inspired by Drs. Carmona and Andreatta and their work with [ProjectTIL](https://github.com/carmonalab/ProjecTILs), a pipeline for annotating T cell subtypes.
 
 ```{r tidy = FALSE}
 clonalOverlay(scRep_example, 
@@ -96,27 +88,18 @@ clonalOverlay(scRep_example,
 
 ## clonalNetwork 
 
-Similar to `clonalOverlay()`, we can look at the network interaction of clones shared between clusters along the single-cell dimensional reduction using `clonalNetwork()`. This function shows the relative proportion of clones from the starting node, with the ending node indicated by the arrow. 
+Similar to `clonalOverlay()`, `clonalNetwork()` visualizes the network interaction of clones shared between clusters along the single-cell dimensional reduction. This function shows the relative proportion of clones flowing from a starting node, with the ending node indicated by an arrow
 
-Filtering for clones can be accomplished using 3 methods:  
+### Filtering Options for clonalNetwork()
 
-**filter.clones**  
-
-* Select a number to isolate the clones comprising the top n number of cells (e.g., **filter.clones** = 2000)  
-* Select "min" to make sure all groups are scaled to the size of the minimum group
-
-**filter.identity**  
-
-* For the identity chosen to visualize, show the to and from network connections for a single group  
-
-**filter.proportion**
-
-* Remove clones that comprise less than a certain proportion of clones in groups.
-
-**filter.graph**
-
-* Remove the reciprocal edges from the half of the graph, allowing for cleaner visualization.
+* `filter.clones`:
+  * Select a number to isolate the clones comprising the top n number of cells (e.g., `filter.clones = 2000`).
+  * Select `min` to scale all groups to the size of the minimum group.
+* `filter.identity`: For the identity chosen to visualize, show the "to" and "from" network connections for a single group.
+* `filter.proportion`: Remove clones from the network that comprise less than a certain proportion of clones in groups.
+* `filter.graph`: Remove reciprocal edges from one half of the graph, allowing for cleaner visualization.
                           
+Now, visualize the clonal network with no specific identity filter:
 
 ```{r tidy = FALSE}
 #ggraph needs to be loaded due to issues with ggplot
@@ -131,7 +114,7 @@ clonalNetwork(scRep_example,
               cloneCall = "aa")
 ```
 
-We can look at the clonal relationships relative to a single cluster using the **filter.identity** parameter. 
+We can look at the clonal relationships relative to a single cluster using the `filter.identity` parameter. For example, focusing on Cluster 3:
 
 ```{r, tidy = FALSE}
 #Examining Cluster 3 only
@@ -142,7 +125,7 @@ clonalNetwork(scRep_example,
               cloneCall = "aa")
 ```
 
-We can also use **exportClones** parameter to quickly get clones that are shared across multiple identity groups, along with the total number of clones in the data set.
+You can also use the `exportClones` parameter to quickly get clones that are shared across multiple identity groups, along with the total number of clone copies in the dataset.
 
 ```{r tidy = FALSE}
 shared.clones <- clonalNetwork(scRep_example, 
@@ -155,7 +138,14 @@ head(shared.clones)
 
 ## highlightClones
 
-We can also look at the clones by calling specific sequences in the `highlightclones()` below. In order to highlight the clones, we first need to use the **cloneCall**, the type of sequence we will be using, and then the specific sequences themselves using **sequence**. Below, we can see the steps to highlight the most prominent sequences *CAERGSGGSYIPTF_CASSDPSGRQGPRWDTQYF*, and *CARKVRDSSYKLIF_CASSDSGYNEQFF*.
+The `highlightClones()` function allows you to specifically visualize the distribution of particular clonal sequences on your single-cell dimensional reduction plots. This helps in tracking the location and expansion of clones of interest.
+
+Key Parameters for `highlightClones()`
+
+* `cloneCall`: The type of sequence to use for highlighting (e.g., "aa", "nt", "strict").
+* `sequence`: A character vector of the specific clonal sequences to highlight.
+
+To highlight the most prominent amino acid sequences: *CAERGSGGSYIPTF_CASSDPSGRQGPRWDTQYF* and *CARKVRDSSYKLIF_CASSDSGYNEQFF*:
 
 ```{r tidy = FALSE}
 scRep_example <- highlightClones(scRep_example, 
@@ -164,25 +154,31 @@ scRep_example <- highlightClones(scRep_example,
                                  "CARKVRDSSYKLIF_CASSDSGYNEQFF"))
 
 Seurat::DimPlot(scRep_example, group.by = "highlight") + 
-  ggplot2::theme(plot.title = element_blank())
+  guides(color=guide_legend(nrow=3,byrow=TRUE)) + 
+  ggplot2::theme(plot.title = element_blank(), 
+                 legend.position = "bottom")
 ```
 
 ## clonalOccupy
 
-We can also look at the count of cells by cluster assigned into specific frequency ranges by using the `clonalOccupy()` function and selecting the **x.axis** to display cluster or other variables in the meta data of the single cell object.
+`clonalOccupy()` visualizes the count of cells by cluster, categorized into specific clonal frequency ranges. It uses the cloneSize metadata variable (generated by `combineExpression()`) to plot the number of cells within each clonal expansion designation, using a secondary variable like cluster. Credit for the idea goes to Drs. Carmona and Andreatta.
 
-**proportion**  
+Key Parameters for `clonalOccupy()`
+* `x.axis`: The variable in the metadata to graph along the x-axis (e.g., "seurat_clusters", "ident").
+* `label`: If TRUE, includes the number of clones in each category by x.axis variable.
+* `proportion`: If TRUE, converts the stacked bars into relative proportions.
+* `na.include`: If TRUE, visualizes NA values.
 
-* can be used to look at relative level groupings  
-
-**label**  
-
-* will still return the absolute number of clones  
+To visualize the count of cells by `seurat_clusters` based on `cloneSize` groupings:
 
 ```{r tidy = FALSE}
 clonalOccupy(scRep_example, 
               x.axis = "seurat_clusters")
+```
 
+To visualize the proportion of cells by `ident` (active identity), without labels:
+
+```{r}
 clonalOccupy(scRep_example, 
              x.axis = "ident", 
              proportion = TRUE, 
@@ -191,9 +187,16 @@ clonalOccupy(scRep_example,
 
 ## alluvialClones
 
-After the metadata has been modified, we can look at clones across multiple categories using the `alluvialClones()` function. We are able to use the plots to examine the interchange of categorical variables. Because this function will produce a graph with each clone arranged by called stratification, this will take some time depending on the size of the repertoire.
+After the metadata has been modified with clonal information, `alluvialClones()` allows you to look at clones across multiple categorical variables, enabling the examination of the interchange between these variables. Because this function produces a graph with each clone arranged by called stratification, it may take some time depending on the size of the repertoire.  
 
-To understand the basic concepts of this graphing method and the ggalluvial R package, we recommend reading [this post](https://cran.r-project.org/web/packages/ggalluvial/vignettes/ggalluvial.html).  
+Key Parameters for `alluvialClones()`
+
+* `y.axes`: The columns that will separate the proportional visualizations.
+* `color`: The column header or clone(s) to be highlighted.
+* `facet`: The column label to separate facets.
+* `alpha`: The column header to have gradated opacity.
+
+To visualize clonal flow across "Patient", "ident", and "Type", highlighting specific amino acid clones:
 
 ```{r tidy = FALSE}
 alluvialClones(scRep_example, 
@@ -201,21 +204,31 @@ alluvialClones(scRep_example,
                y.axes = c("Patient", "ident", "Type"), 
                color = c("CVVSDNTGGFKTIF_CASSVRRERANTGELFF", "NA_CASSVRRERANTGELFF")) + 
     scale_fill_manual(values = c("grey", colorblind_vector[3]))
+```
 
+To visualize clonal flow across "Patient", "ident", and "Type", coloring by "ident":
 
+```{r tidy = FALSE}
 alluvialClones(scRep_example, 
                    cloneCall = "gene", 
                    y.axes = c("Patient", "ident", "Type"), 
                    color = "ident") 
 ```
 
+`alluvialClones()` provides a visual representation of clonal distribution and movement across multiple categorical annotations. It is particularly effective for tracking how specific clones or clonal groups transition between different states, tissues, or cell types, offering a dynamic perspective on immune repertoire evolution and function.
+
 ## getCirclize
 
-Like alluvial graphs, we can also visualize the interconnection of clusters using the chord diagrams from the [circlize R package](https://jokergoo.github.io/circlize_book/book/). 
+Like alluvial graphs, we can also visualize the interconnection of clusters using chord diagrams from the [circlize R package](https://jokergoo.github.io/circlize_book/book/). The first step is to get the data frame output to feed into the` chordDiagram()` function in `circlize`, which can be done using `getCirclize()`.
 
-The first step is getting the data frame output to feed into the `chordDiagram()` function in circlize, which can be done using `getCirclize()`. 
+This function calculates the relative number of unique and shared clones based on the `group.by` variable using the product of `combineExpression()`. It creates a matrix the size of the `group.by` variable and then simplifies it into instructions readable by the `circlize` R package. The output represents the total number of unique and shared clones by the group.by variable. If using the downstream `circlize` R package, please read and cite the following [manuscript](https://pubmed.ncbi.nlm.nih.gov/24930139/). 
 
-This will calculate the relative number of clones shared based on the **group.by** variable using the product of `combineExpression()`. It is important to note `getCirclize()` will create a matrix the size of the **group.by** variable and then simplify into instructions to be read by the circlize R package. The output is the total number of unique and shared clones by the **group.by** variable. 
+Key Parameters for getCirclize()
+
+* `proportion`: If `TRUE`, normalizes the relationship by proportion; if `FALSE` (default), uses unique clone counts.
+* `include.self`: If `TRUE`, includes counting clones within a single group.by comparison.
+
+To get data for a chord diagram showing shared clones between `seurat_clusters`:
 
 ```{r tidy = FALSE}
 library(circlize)
@@ -232,7 +245,7 @@ names(grid.cols) <- unique(scRep_example$seurat_clusters)
 chordDiagram(circles, self.link = 1, grid.col = grid.cols)
 ```
 
-This can also be used if we want to explore just the lung-specific T cells by just subsetting the single-cell object. For the sake of this vignette, we can also look at setting **proportion** = TRUE to get a scaled output.
+This can also be used if we want to explore just the lung-specific T cells by subsetting the single-cell object. For the sake of this vignette, we can also look at setting `proportion = TRUE` to get a scaled output.
 
 ```{r}
 subset <- subset(scRep_example, Type == "L")
@@ -249,3 +262,5 @@ chordDiagram(circles,
              direction.type =  "arrows",
              link.arr.type = "big.arrow")
 ```
+
+`getCirclize()` facilitates the creation of visually striking and informative chord diagrams to represent shared clonal relationships between distinct groups within your single-cell data. By providing a flexible way to quantify and format clonal overlap, it enables researchers to effectively illustrate complex clonal connectivity patterns, which are crucial for understanding immune communication and migration.

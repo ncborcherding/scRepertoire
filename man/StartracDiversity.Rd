@@ -50,8 +50,8 @@ This function utilizes the Startrac approach derived from
 \href{https://pubmed.ncbi.nlm.nih.gov/30479382/}{PMID: 30479382}.
 Required to run the function, the "type" variable needs to include the
 difference in where the cells were derived. The output of this function
-will produce 3 indices: \strong{expa} (clonal expansion), \strong{migra}
-(cross-tissue migration), and \strong{trans} (state transition). In order
+will produce 3 indices: \code{expa} (clonal expansion), \code{migra}
+(cross-tissue migration), and \code{trans} (state transition). In order
 to understand the underlying analyses of the outputs please
 read and cite the linked manuscript.
 }

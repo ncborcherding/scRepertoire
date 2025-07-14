@@ -44,9 +44,16 @@ combined.TCR <- combineTCR(contig_list,
                                        "P19B","P19L", "P20B", "P20L"))
 ```
 
-## addVariable
+## addVariable: Adding Variables for Plotting
 
-What if there are more variables to add than just sample and ID? We can add them by using the `addVariable()` function. All we need is the **variable.name** of the variable you'd like to add and the specific character or numeric values (**variables**). As an example, here we add the **Type** in which the samples were processed and sequenced. 
+What if there are more variables to add than just sample and ID? We can add them by using the `addVariable()` function. For each element, the function will add a column (labeled by `variable.name`) with the `variable`. The length of the `variables` parameter needs to match the length of the combined object.
+
+Key Parameter(s) for `addVariable()`
+
+* `variable.name`: A character string that defines the new variable to add (e.g., "Type", "Treatment").
+* `variables`: A character vector defining the desired column value for each list element. Its length must match the number of elements in the input.data list.
+
+As an example, here we add the Type in which the samples were processed and sequenced to the `combined.TCR` object:
 
 ```{r tidy = FALSE}
 combined.TCR <- addVariable(combined.TCR, 
@@ -56,47 +63,48 @@ combined.TCR <- addVariable(combined.TCR,
 head(combined.TCR[[1]])
 ```
 
-## subsetClones
+## subsetClones: Filter Out Clonal Information
 
-Likewise, we can remove specific list elements after `combineTCR()` using the `subsetClones()` function. In order to subset, we need to identify the vector we would like to use for subsetting (**name**) and the variable values to subset (**variables**). Below, we isolate just the 2 sequencing results from P18L and P18B. 
+Likewise, we can remove specific list elements after `combineTCR()` or `combineBCR()` using the `subsetClones()` function. In order to subset, we need to identify the column header we would like to use for subsetting (`name`) and the specific values to include (`variables`).
+
+Key Parameter(s) for `subsetClones()`
+
+* `name`: The column header/name in the metadata of input.data to use for subsetting (e.g., "sample", "Type").
+* `variables`: A character vector of the specific values within the chosen name column to retain in the subsetted data.
+
+Below, we isolate just the two sequencing results from "P18L" and "P18B" samples:
 
 ```{r, tidy = FALSE}
 subset1 <- subsetClones(combined.TCR, 
                         name = "sample", 
                         variables = c("P18L", "P18B"))
 
-head(subset1[[1]])
+head(subset1[[1]][,1:4])
 ```
 
 Alternatively, we can also just select the list elements after `combineTCR()` or `combineBCR()`.
 
 ```{r}
 subset2 <- combined.TCR[c(3,4)]
-head(subset2[[1]])
+head(subset2[[1]][,1:4])
 ```
 
-## exportClones  
+## exportClones: Save Clonal Data  
 
-After assigning the clone by barcode, we can export the paired clonotypes using `exportClones()` to save for later use or to use in other pipelines. 
+After assigning the clone by barcode, we can export the clonal information using `exportClones()` to save for later use or to integrate with other bioinformatics pipelines. This function supports various output formats tailored for different analytical needs.
 
-**format**  
+Key Parameter(s) for `exportClones()`
+* `format`: The desired output format for the clonal data.
+  * `airr`: Exports data in an Adaptive Immune Receptor Repertoire (AIRR) Community-compliant format, with each row representing a single receptor chain.
+   * `immunarch`: Exports a list containing a data frame and metadata formatted for use with the `immunarch` package. 
+  * `paired`: Exports a data frame with paired chain information (amino acid, nucleotide, genes) per barcode. This is the default.
+  * `TCRMatch`: Exports a data frame specifically for the TCRMatch algorithm, containing TRB chain amino acid sequence and clonal frequency.
+  * `tcrpheno`: Exports a data frame compatible with the `tcrpheno` pipeline, with TRA and TRB chains in separate columns.
+* `write.file`: If `TRUE` (default), saves the output to a CSV file. If `FALSE`, returns the data frame or list to the R environment.
+* `dir`: The directory where the output file will be saved. Defaults to the current working directory.
+* `file.name`: The name of the CSV file to be saved.
 
-* "paired" - Export the paired sequences **(default)**.  
-* "airr" - Export data in an AIRR-compliant format.  
-* "TCRMatch" - Export TCRB chain information. 
-* "tcrpheno": Exports a data frame compatible with the `tcrpheno` pipeline, with TRA and TRB chains in separate columns.
-* "immunarch": Exports a list containing a data frame and metadata formatted for use with the `immunarch` package.   
-    
-**write.file**    
-
-* TRUE, save the file.  
-* FALSE, return a data.frame.  
-
-**dir**  
-directory location to save the csv  
-
-**file.name**  
-the csv file name  
+To export the combined clonotypes as a `paired` data frame and save it to a specified directory:
 
 ```{r, eval = FALSE, tidy = FALSE}
 exportClones(combined, 
@@ -105,13 +113,23 @@ exportClones(combined,
              file.name = "clones.csv")
 ```
 
+To return an `immunarch`-formatted data frame directly to your R environment without saving a file:
+
+```{r}
+immunarch <- exportClones(combined.TCR, 
+                          format = "immunarch", 
+                          write.file = FALSE)
+head(immunarch[[1]][[1]])
+```
+
 ## annotateInvariant
 
-The ```annotateInvariant()``` function enables the identification of mucosal-associated invariant T (**MAIT**) cells and invariant natural killer T (**iNKT**) cells in single-cell sequencing datasets. These specialized T-cell subsets are defined by their characteristic TCR usage, making them distinguishable within single-cell immune profiling data. The function extracts TCR chain information from the provided single-cell dataset and evaluates it against known invariant TCR criteria for either MAIT or iNKT cells. Each cell is assigned a score indicating the presence (1) or absence (0) of the specified invariant T-cell population.
+The `annotateInvariant()` function enables the identification of mucosal-associated invariant T (`MAIT`) cells and invariant natural killer T (`iNKT`) cells in single-cell sequencing datasets. These specialized T-cell subsets are defined by their characteristic TCR usage, making them distinguishable within single-cell immune profiling data. The function extracts TCR chain information from the provided single-cell dataset and evaluates it against known invariant TCR criteria for either MAIT or iNKT cells. Each cell is assigned a score indicating the presence (1) or absence (0) of the specified invariant T-cell population.
 
-* input.data – A data object from ```combineTCR()``` or ```combineExpression()```.
-* type – Character string specifying the type of invariant T cell to annotate ("MAIT" or "iNKT").
-* species – Character string specifying the species ("mouse" or "human").
+Key Parameter(s) for `annotateInavriant()`
+
+* `type`: Character string specifying the type of invariant T cell to annotate (`MAIT` or `iNKT`).
+* `species`: Character string specifying the species (`mouse` or `human`).
 
 ```{r, eval = FALSE, tidy = FALSE}
 combined <- annotateInvariant(combined, 

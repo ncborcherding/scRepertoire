@@ -42,7 +42,7 @@ identify related clones based on sequence similarity. If \code{FALSE}, defines
 clones by the exact V-gene and CDR3 amino acid sequence.}
 
 \item{group.by}{The column header used for to group clones.
-If (\strong{NULL}), clusters will be calculated across samples.}
+If (`NULL``), clusters will be calculated across samples.}
 
 \item{threshold}{The similarity threshold passed to \code{clonalCluster()} if
 \code{call.related.clones = TRUE}. See \code{?clonalCluster} for details.}

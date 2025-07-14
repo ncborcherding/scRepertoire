@@ -33,10 +33,10 @@
 #' (for both light chains), `both`.
 #' @param group.by A column header in lists to group the analysis 
 #' by (e.g., "sample", "treatment"). If `NULL`, will be based on the list element.
-#' @param proportion Whether to proportion (**TRUE**) or total 
-#' frequency (**FALSE**) of the clone based on the group.by variable. 
+#' @param proportion Whether to proportion (`TRUE`) or total 
+#' frequency (`FALSE`) of the clone based on the group.by variable. 
 #' @param cloneSize The bins for the grouping based on proportion or frequency. 
-#' If proportion is **FALSE** and the cloneSizes are not set high enough
+#' If proportion is `FALSE` and the cloneSizes are not set high enough
 #' based on frequency, the upper limit of cloneSizes will be automatically
 #' updated.S
 #' @param filterNA Method to subset Seurat/SCE object of barcodes without 

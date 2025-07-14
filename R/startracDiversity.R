@@ -4,8 +4,8 @@
 #' [PMID: 30479382](https://pubmed.ncbi.nlm.nih.gov/30479382/).
 #' Required to run the function, the "type" variable needs to include the 
 #' difference in where the cells were derived. The output of this function 
-#' will produce 3 indices: **expa** (clonal expansion), **migra** 
-#' (cross-tissue migration), and **trans** (state transition). In order 
+#' will produce 3 indices: `expa` (clonal expansion), `migra`
+#' (cross-tissue migration), and `trans` (state transition). In order 
 #' to understand the underlying analyses of the outputs please 
 #' read and cite the linked manuscript. 
 #' 

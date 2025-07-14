@@ -6,7 +6,7 @@
 #' If using an integrated single-cell object, it is recommended to split the 
 #' object by sequencing run and remove extra prefixes and suffixes on the 
 #' barcode before using [createHTOContigList()]. Alternatively, 
-#' the variable **multi.run** can be used to separate a list of contigs
+#' the variable `multi.run` can be used to separate a list of contigs
 #' by a meta data variable. This may have issues with the repeated barcodes.
 #' 
 #' @examples

@@ -39,6 +39,7 @@ knitr::opts_chunk$set(
 
 suppressMessages(library(scRepertoire))
 suppressMessages(library(Seurat))
+suppressMessages(library(igraph))
 data("contig_list") 
 combined.TCR <- combineTCR(contig_list, 
                            samples = c("P17B", "P17L", "P18B", "P18L", 
@@ -52,9 +53,9 @@ scRep_example <- combineExpression(combined.TCR,
                                    group.by = "sample")
 ```
 
-## clonalCluster
+## clonalCluster: Cluster by Sequence Similarity
 
-The ```clonalCluster()``` function provides a powerful method to group clonotypes based on sequence similarity. It calculates the edit distance between CDR3 sequences and uses this information to build a network, identifying closely related clusters of T or B cell receptors. This functionality allows for a more nuanced definition of a "clone" that extends beyond identical sequence matches.
+The `clonalCluster()` function provides a powerful method to group clonotypes based on sequence similarity. It calculates the edit distance between CDR3 sequences and uses this information to build a network, identifying closely related clusters of T or B cell receptors. This functionality allows for a more nuanced definition of a "clone" that extends beyond identical sequence matches.
 
 ### Core Concepts
 
@@ -63,17 +64,31 @@ The clustering process follows these key steps:
 * **Sequence Selection**: The function selects either the nucleotide (`sequence = "nt"`) or amino acid (`sequence = "aa"`) CDR3 sequences for a specified chain.
 * **Distance Calculation**: It calculates the edit distance between all pairs of sequences. By default, it also requires sequences to share the same V gene (`use.v = TRUE`).
 * **Network Construction**: An edge is created between any two sequences that meet the similarity threshold, forming a network graph.
-* **Clustering**: A graph-based clustering algorithm is run to identify connected components or communities within the network. By default, it identifies all directly or indirectly connected sequences as a single cluster (cluster.method = "components").
+* **Clustering**: A graph-based clustering algorithm is run to identify connected components or communities within the network. By default, it identifies all directly or indirectly connected sequences as a single cluster (`cluster.method = "components"`).
 * **Output**: The function can either add the resulting cluster IDs to the input object, return an `igraph` object for network analysis, or export a sparse adjacency matrix.
 
-### Understanding the threshold Parameter
+### Understanding the `threshold` Parameter
 
 The behavior of the threshold parameter is critical for controlling cluster granularity:
 
 * **Normalized Similarity (threshold < 1)**: When the threshold is a value between 0 and 1 (e.g., `0.85`), it represents the normalized edit distance (Levenshtein distance / mean sequence length). A higher value corresponds to a stricter similarity requirement. This is useful for comparing sequences of varying lengths.
 * **Raw Edit Distance (threshold >= 1)**: When the threshold is a whole number (e.g., 2), it represents the maximum raw edit distance allowed. A lower value corresponds to a stricter similarity requirement. This is useful when you want to allow a specific number of mutations.
 
-### Basic use
+Key Parameter(s) for ```clonalCluster()```
+
+* `sequence`: Specifies whether to cluster based on `aa` (amino acid) or `nt` (nucleotide) sequences.
+* `threshold`: The similarity threshold for clustering. Values `< 1` are normalized similarity, while values `>= 1` are raw edit distance.
+* `group.by`: A column header in the metadata or lists to group the analysis by (e.g., "sample", "treatment"). If `NULL`, clusters are calculated across all sequences.
+* `use.V`: If `TRUE`, sequences must share the same V gene to be clustered together.
+* `use.J`: If `TRUE`, sequences must share the same J gene to be clustered together.
+* `cluster.method`: The clustering algorithm to use. Defaults to `components`, which finds connected subgraphs.
+* `cluster.prefix`: A character prefix to add to the cluster names (e.g., "cluster.").
+* `exportGraph`: If `TRUE`, returns an igraph object of the sequence network.
+* `exportAdjMatrix`: If `TRUE`, returns a sparse adjacency matrix (dgCMatrix) of the network.
+
+### Demonstrating Basic Use
+
+To run clustering on the first two samples for the TRA chain, using amino acid sequences with a normalized similarity threshold of 0.85:
 
 ```{r tidy = FALSE}
 # Run clustering on the first two samples for the TRA chain
@@ -86,9 +101,11 @@ sub_combined <- clonalCluster(combined.TCR[c(1,2)],
 head(sub_combined[[1]][, c("barcode", "TCR1", "TRA.Cluster")])
 ```
 
-### Clustering with a single-cell object
+### Demonstrating Clustering with a Single-Cell Object
 
-If performed over the number of samples, such as the list elements, **group.by** can used to calculate only the clusters on the setting of patient sample (**group.by** = "Patient") or tissue type (**group.by** = "Type"). This is useful for analyzing clusters on a per-sample or per-patient basis without subsetting the data first.
+You can calculate clusters based on specific metadata variables within a single-cell object by using the `group.by` parameter. This is useful for analyzing clusters on a per-sample or per-patient basis without subsetting the data first.
+
+First, add patient and type information to the `scRep_example` Seurat object:
 
 ```{r tidy = FALSE}
 #Adding patient information
@@ -96,9 +113,11 @@ scRep_example$Patient <- substr(scRep_example$orig.ident, 1,3)
 
 #Adding type information
 scRep_example$Type <- substr(scRep_example$orig.ident, 4,4)
+```
 
+Now, run clustering on the `scRep_example` Seurat object, grouping calculations by "Patient":
 
-
+```{r}
 # Run clustering, but group calculations by "Patient"
 scRep_example <- clonalCluster(scRep_example, 
                                chain = "TRA", 
@@ -115,11 +134,9 @@ DimPlot(scRep_example, group.by = "TRA.Cluster") +
   NoLegend()
 ```
 
-Instead of modifying the input object, ```clonalCluster()``` can export the underlying network structure for advanced analysis. 
+### Returning an igraph Object:
 
-### Returning an igraph object:
-
-Set `exportGraph = TRUE` to get an igraph object consisting of the networks of barcodes by the indicated clustering scheme. 
+Instead of modifying the input object, ```clonalCluster()``` can export the underlying network structure for advanced analysis. Set `exportGraph = TRUE` to get an igraph object consisting of the networks of barcodes by the indicated clustering scheme. 
 
 ```{r tidy = FALSE}
 set.seed(42)
@@ -131,12 +148,13 @@ igraph.object <- clonalCluster(combined.TCR[c(5,6)],
                                threshold = 0.85, 
                                exportGraph = TRUE)
 
-#Setting color scheme
+# Setting color scheme
 col_legend <- factor(igraph::V(igraph.object)$group)
 col_samples <- hcl.colors(2,"inferno")[as.numeric(col_legend)]
 color.legend <- factor(unique(igraph::V(igraph.object)$group))
-sample.vertices <- V(igraph.object)[sample(length(igraph.object), 500)]
 
+# Sampling 1000 Barcodes
+sample.vertices <- V(igraph.object)[sample(length(igraph.object), 1000)]
 subgraph.object <- induced_subgraph(igraph.object, vids = sample.vertices)
 V(subgraph.object)$degrees <- igraph::degree(subgraph.object)
 edge_alpha_color <- adjustcolor("gray", alpha.f = 0.3)
@@ -176,7 +194,7 @@ print(adj.matrix[1:10, 1:10])
 
 ### Using Both Chains
 
-You can analyze the combined network of both TRA/TRB or IGH/IGL chains by setting chain = "both". This will create a single cluster column named Multi_Cluster.
+You can analyze the combined network of both TRA/TRB or IGH/IGL chains by setting `chain = "both"`. This will create a single cluster column named `Multi.Cluster`.
 
 ```{r}
 # Cluster using both TRB and TRA chains simultaneously
@@ -202,5 +220,5 @@ length(unique(V(graph_walktrap)$cluster))
 
 ```
 
-
+Overall, `clonalCluster()` is a versatile function for defining and analyzing clonal relationships based on sequence similarity. It allows researchers to move beyond exact sequence matches, providing a more comprehensive understanding of clonal families. The ability to customize parameters like `threshold`, `chain` selection, and `group.by` ensures adaptability to diverse research questions. Furthermore, the option to export `igraph` objects or sparse adjacency matrices provides advanced users with the tools for in-depth network analysis.
 

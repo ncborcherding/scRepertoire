@@ -25,12 +25,12 @@ utils::globalVariables(c(
 #' @title Combine T Cell Receptor Contig Data
 #'
 #' @description This function consolidates a list of TCR sequencing results to
-#' the level of  the individual cell barcodes. Using the **samples** and
-#' **ID** parameters, the function will add the strings as prefixes to
+#' the level of  the individual cell barcodes. Using the `samples` and
+#' `ID` parameters, the function will add the strings as prefixes to
 #' prevent issues with repeated  barcodes. The resulting new barcodes will
 #' need to match the Seurat or SCE object in order to use,
 #' [combineExpression()]. Several levels of filtering exist -
-#' *removeNA*, *removeMulti*, or *filterMulti* are parameters
+#' `removeNA`, `removeMulti`, or `filterMulti` are parameters
 #' that control how the function deals with barcodes with multiple chains
 #' recovered.
 #'
@@ -176,7 +176,7 @@ combineTCR <- function(input.data,
 #' identify related clones based on sequence similarity. If `FALSE`, defines
 #' clones by the exact V-gene and CDR3 amino acid sequence.
 #' @param group.by The column header used for to group clones.
-#' If (**NULL**), clusters will be calculated across samples.
+#' If (`NULL``), clusters will be calculated across samples.
 #' @param threshold The similarity threshold passed to `clonalCluster()` if
 #' `call.related.clones = TRUE`. See `?clonalCluster` for details.
 #' @param chain The chain to use for clustering when `call.related.clones = TRUE`.

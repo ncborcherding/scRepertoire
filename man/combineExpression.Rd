@@ -35,14 +35,14 @@ acid sequence), or \code{strict} (VDJC). A custom column header can also be used
 \item{group.by}{A column header in lists to group the analysis
 by (e.g., "sample", "treatment"). If \code{NULL}, will be based on the list element.}
 
-\item{proportion}{Whether to proportion (\strong{TRUE}) or total
-frequency (\strong{FALSE}) of the clone based on the group.by variable.}
+\item{proportion}{Whether to proportion (\code{TRUE}) or total
+frequency (\code{FALSE}) of the clone based on the group.by variable.}
 
 \item{filterNA}{Method to subset Seurat/SCE object of barcodes without
 clone information}
 
 \item{cloneSize}{The bins for the grouping based on proportion or frequency.
-If proportion is \strong{FALSE} and the cloneSizes are not set high enough
+If proportion is \code{FALSE} and the cloneSizes are not set high enough
 based on frequency, the upper limit of cloneSizes will be automatically
 updated.S}
 

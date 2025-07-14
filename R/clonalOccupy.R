@@ -2,7 +2,7 @@
 #'
 #' View the count of clones frequency group in Seurat or SCE object 
 #' meta data after [combineExpression()]. The visualization 
-#' will take the new meta data variable **"cloneSize"** and 
+#' will take the new meta data variable `cloneSize` and 
 #' plot the number of cells with each designation using a secondary 
 #' variable, like cluster. Credit to the idea goes to Drs. Carmona 
 #' and Andreatta and their work with [ProjectTIL](https://github.com/carmonalab/ProjecTILs).

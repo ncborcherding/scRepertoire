@@ -22,8 +22,8 @@ input.data list with the variable column added to each element.
 This function adds variables to the product of \code{\link[=combineTCR]{combineTCR()}},
 or \code{\link[=combineBCR]{combineBCR()}} to be used in later visualizations.
 For each element, the function will add a column (labeled by
-\strong{variable.name}) with the variable. The length of the
-\strong{variables} parameter needs to match the length of the
+\code{variable.name}) with the variable. The length of the
+\code{variables} parameter needs to match the length of the
 combined object.
 }
 \examples{

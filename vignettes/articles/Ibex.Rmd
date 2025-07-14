@@ -156,7 +156,7 @@ save(ibex_vdj, file = "ibex_vdj.rda", compress = "xz")
 
 ### Loading the Data Object
 
-For the purpose of the vignette, will use the built-in data set **ibex_example**, but will convert it into a Seurat object.
+For the purpose of the vignette, will use the built-in data set `ibex_example`, but will convert it into a Seurat object.
 
 ```{r tidy = FALSE}
 data("ibex_example")
@@ -194,7 +194,7 @@ We can attach the expanded sequences to the Seurat or Single-Cell Experiment obj
 
 ## Available Models
 
-**Ibex** offers a diverse set of models built on various architectures and encoding methods. Currently, models are available for both heavy and light chain sequences in humans, as well as heavy chain models for mice. Models for CDR3-based sequences have been trained on sequences of 45 residues or fewer, while models for CDR1/2/3-based sequences are specific to sequences of 90 amino acids or fewer.
+`Ibex` offers a diverse set of models built on various architectures and encoding methods. Currently, models are available for both heavy and light chain sequences in humans, as well as heavy chain models for mice. Models for CDR3-based sequences have been trained on sequences of 45 residues or fewer, while models for CDR1/2/3-based sequences are specific to sequences of 90 amino acids or fewer.
 
 A full list of available models is provided below:
 
@@ -332,7 +332,6 @@ SeuratObj <- runIbex(SeuratObj,
                      species = "Mouse",
                      verbose = FALSE)
 ```
-
 
 ## Using Ibex Vectors
 

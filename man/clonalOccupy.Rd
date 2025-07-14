@@ -48,7 +48,7 @@ Stacked bar plot of counts of cells by clone frequency group
 \description{
 View the count of clones frequency group in Seurat or SCE object
 meta data after \code{\link[=combineExpression]{combineExpression()}}. The visualization
-will take the new meta data variable \strong{"cloneSize"} and
+will take the new meta data variable \code{cloneSize} and
 plot the number of cells with each designation using a secondary
 variable, like cluster. Credit to the idea goes to Drs. Carmona
 and Andreatta and their work with \href{https://github.com/carmonalab/ProjecTILs}{ProjectTIL}.

@@ -38,14 +38,14 @@ knitr::opts_chunk$set(
 )
 ```
 
-scRepertoire requires [R](https://www.r-project.org/) version 4.1 or greater and highly recommend installing [R Studio](https://posit.co/downloads/).
-
-## Release Notes  
-A full copy of the changes in each version can be found in the [NEWS/ChangeLog](https://borch.dev/uploads/scRepertoire/news/index.html).
-
-
 ## GitHub Branches
-scRepertoire is an active project, that receives a number of changes based on user feedback, the most up-to-date versions are available via the GitHub repositories. These versions can be installed using ```devtools::install_github()``` or ```remotes::install_github()```. [immApex](https://github.com/BorchLab/immApex) is now required for the underlying processes of scRepertoire make sure if not using bioconductor, to call both during installation.
+`scRepertoire` is an active project with frequent updates based on user feedback. The most up-to-date versions are available via its GitHub repositories. These versions can be installed using `devtools::install_github()` or `remotes::install_github()`
+
+[immApex](https://github.com/BorchLab/immApex) is now a  required is now a required dependency for the underlying processes of `scRepertoire`. Ensure both are called during installation if not using Bioconductor.
+
+### Demonstrating GitHub Installation
+
+To install `scRepertoire` and its `immApex` dependency directly from GitHub:
 
 ```
 remotes::install_github(c("BorchLab/immApex", "BorchLab/scRepertoire"))
@@ -53,9 +53,11 @@ remotes::install_github(c("BorchLab/immApex", "BorchLab/scRepertoire"))
 
 ## Bioconductor
 
-The current version of scRepertoire is also available in Bioconductor. 
+The current stable version of `scRepertoire` is also available through Bioconductor.
 
 ```
 BiocManager::install("scRepertoire")
 ```
 
+## Release Notes  
+A full copy of the changes in each version can be found in the [NEWS/ChangeLog](https://borch.dev/uploads/scRepertoire/news/index.html).

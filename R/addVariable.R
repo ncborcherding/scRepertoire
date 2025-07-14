@@ -3,8 +3,8 @@
 #' This function adds variables to the product of [combineTCR()], 
 #' or [combineBCR()] to be used in later visualizations. 
 #' For each element, the function will add a column (labeled by 
-#' **variable.name**) with the variable. The length of the 
-#' **variables** parameter needs to match the length of the 
+#' `variable.name`) with the variable. The length of the 
+#' `variables` parameter needs to match the length of the 
 #' combined object.
 #'
 #' @examples
