@@ -67,7 +67,7 @@ test_that("positionalProperty: ggplot object is correctly formed", {
   
   # Check layers
   expect_true("GeomRibbon" %in% sapply(plot_output$layers, function(x) class(x$geom)[1]))
-  expect_true("GeomLine" %in% sapply(plot_output$layers, function(x) class(x$geom)[2]))
+  expect_true("GeomLine" %in% unlist(sapply(plot_output$layers, function(x) class(x$geom))))
   
   # Check aesthetics
   expect_equal(rlang::as_name(plot_output$mapping$y), "mean")
