@@ -14,7 +14,7 @@
 #'                         samples = c("P17B", "P17L", "P18B", "P18L", 
 #'                                     "P19B","P19L", "P20B", "P20L"))
 #' 
-#' # Using clonalAbundance
+#' # Using clonalAbundance()
 #' clonalAbundance(combined, 
 #'                 cloneCall = "gene", 
 #'                 scale = FALSE)
