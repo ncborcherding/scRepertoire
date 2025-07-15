@@ -24,7 +24,7 @@
 #'                  summary.fun = "count")
 #'
 #' # Visualize paired gene (TRBV-TRBJ) usage as a heatmap
-#' percentGeneUsage(combined,
+#' percentGeneUsage(combined[1:2],
 #'                  genes = c("TRBV", "TRBJ"),
 #'                  group.by = "sample",
 #'                  plot.type = "heatmap",
@@ -214,7 +214,7 @@ percentGeneUsage <- function(input.data,
         geom_bar(stat = "identity", color = "black", lwd = 0.25) +
         .themeRepertoire(...) + 
         labs(y = col.lab) + 
-        theme(axis.title.x = element_blank(),,
+        theme(axis.title = element_blank(),,
               axis.ticks.x = element_blank(),
               axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size=rel(0.8)))
       
@@ -247,21 +247,21 @@ percentGeneUsage <- function(input.data,
 }
 
 #' @rdname percentGeneUsage
-#' @param x.axis Gene segments to separate the x-axis, such as "TRAV", 
-#' "TRBD", "IGKJ".
+#' @param x.axis Gene segments to separate the x-axis, such as `TRAV`, 
+#' `TRBD`, `IGKJ`.
 #' @param y.axis Variable to separate the y-axis, can be both categorical 
-#' or other gene gene segments, such as "TRAV", "TRBD", "IGKJ".
+#' or other gene gene segments, such as `TRAV`, `TRBD`, `IGKJ`.
 #' @param plot The type of plot to return - heatmap or barplot. 
 #' @examples
-#' # Visualize paired gene (TRBV-TRBJ) usage as a heatmap
-#' vizGenes(combined,
-#'          x.axis = "TRBV",
-#'          y.axis = "TRBJ",
+#' # Visualize paired gene (TRAV-TRAJ) usage as a heatmap
+#' vizGenes(combined[1:2],
+#'          x.axis = "TRAV",
+#'          y.axis = "TRAJ",
 #'          group.by = "sample",
 #'          summary.fun = "count")
 #'
 #' # Visualize cross-chain gene pairing (TRBV-TRAV)
-#' vizGenes(combined,
+#' vizGenes(combined[1:2],
 #'          x.axis = "TRBV",
 #'          y.axis = "TRAV",
 #'          group.by = "sample",
@@ -308,8 +308,9 @@ vizGenes <- function(input.data,
 }
 
 #' @rdname percentGeneUsage
-#' @param chain "TRA", "TRB", "TRG", "TRG", "IGH", "IGL" description
-#' @param gene "Vgene", "Dgene" or "Jgene"
+#' @param chain The TCR/BCR chain to use. Accepted values: `TRA`, `TRB`, `TRG`, 
+#' `TRD`, `IGH`, `IGL` (for both light chains) 
+#' @param gene `Vgene`, `Dgene` or `Jgene`
 #' @examples
 #' 
 #' # Quantify and visualize TRA V-gene usage as a heatmap
@@ -367,11 +368,12 @@ percentGenes <- function(input.data,
 }
 
 #' @rdname percentGeneUsage
-#' @param chain "TRA", "TRB", "TRG", "TRG", "IGH", "IGL" description
+#' @param chain The TCR/BCR chain to use. Accepted values: `TRA`, `TRB`, `TRG`, 
+#' `TRD`, `IGH`, `IGL` (for both light chains) 
 #' @examples
 
 #' # Quantify and visualize TRB V-J gene pairings as a heatmap
-#' percentVJ(combined,
+#' percentVJ(combined[1:2],
 #'           chain = "TRB",
 #'           group.by = "sample",
 #'           summary.fun = "percent")

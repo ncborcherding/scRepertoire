@@ -17,7 +17,7 @@ getCirclize(
 
 \item{cloneCall}{Defines the clonal sequence grouping. Accepted values
 are: \code{gene} (VDJC genes), \code{nt} (CDR3 nucleotide sequence), \code{aa} (CDR3 amino
-acid sequence), or \code{strict} (VDJC). A custom column header can also be used.}
+acid sequence), or \code{strict} (VDJC + nt). A custom column header can also be used.}
 
 \item{group.by}{A column header in the metadata  to group the analysis
 by (e.g., "sample", "treatment"). If \code{NULL}, data will be analyzed by active

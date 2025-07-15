@@ -14,7 +14,7 @@ annotateInvariant(
 \item{input.data}{The product of \code{\link[=combineTCR]{combineTCR()}} or \code{\link[=combineExpression]{combineExpression()}}.}
 
 \item{type}{Character specifying the type of invariant cells to
-annotate ('MAIT' or 'iNKT').}
+annotate (\code{MAIT} or \code{iNKT}).}
 
 \item{species}{Character specifying the species
 ('mouse' or 'human').}
@@ -25,7 +25,7 @@ scores (0 or 1) added.
 }
 \description{
 The \code{\link[=annotateInvariant]{annotateInvariant()}} function identifies potential mucosal-associated
-invariant T (MAIT) cells or invariant natural killer T (iNKT) cells from
+invariant T (\verb{MAIT``) cells or invariant natural killer T (}iNKT`) cells from
 single-cell sequencing datasets based on their characteristic  TCR usage.
 It extracts TCR chain information from the provided single-cell
 data, checks it against known invariant T-cell receptor criteria for either

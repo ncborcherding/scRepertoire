@@ -33,7 +33,7 @@
 #' @param sc.data The single-cell object after [combineExpression()].
 #' @param cloneCall Defines the clonal sequence grouping. Accepted values 
 #' are: `gene` (VDJC genes), `nt` (CDR3 nucleotide sequence), `aa` (CDR3 amino 
-#' acid sequence), or `strict` (VDJC). A custom column header can also be used.
+#' acid sequence), or `strict` (VDJC + nt). A custom column header can also be used.
 #' @param group.by A column header in the metadata that bias will be based on.
 #' @param split.by The variable to use for calculating the baseline frequencies.
 #' For example, "Type" for lung vs peripheral blood comparison 

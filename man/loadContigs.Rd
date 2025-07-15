@@ -11,8 +11,8 @@ loadContigs(input, format = "10X")
 of pre-loaded contig data.}
 
 \item{format}{A string specifying the data format. Must be one of:
-"auto", "10X", "AIRR", "BD", "Dandelion", "JSON", "MiXCR", "ParseBio",
-"TRUST4", "WAT3R", or "Immcantation". If "auto", the function attempts
+\code{auto}, \verb{10X}, \code{AIRR}, \code{BD}, \code{Dandelion}, \code{JSON}, \code{MiXCR}, \code{ParseBio},
+\code{TRUST4}, \code{WAT3R}, or \code{Immcantation}. If "auto", the function attempts
 automatic format detection.}
 }
 \value{
@@ -38,7 +38,7 @@ Supported file formats and their expected file names:
 \item \code{ParseBio}: "barcode_report.tsv"
 \item \code{MiXCR}: "clones.tsv"
 \item \code{TRUST4}: "barcode_report.tsv"
-\item *\code{WAT3R}: "barcode_results.csv"
+\item \code{WAT3R}: "barcode_results.csv"
 }
 }
 \examples{

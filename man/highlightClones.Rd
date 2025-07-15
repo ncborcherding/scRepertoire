@@ -16,7 +16,7 @@ highlightClones(
 
 \item{cloneCall}{Defines the clonal sequence grouping. Accepted values
 are: \code{gene} (VDJC genes), \code{nt} (CDR3 nucleotide sequence), \code{aa} (CDR3 amino
-acid sequence), or \code{strict} (VDJC). A custom column header can also be used.}
+acid sequence), or \code{strict} (VDJC + nt). A custom column header can also be used.}
 
 \item{sequence}{The specific sequence or sequence to highlight}
 }

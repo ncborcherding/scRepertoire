@@ -29,7 +29,7 @@
 #' @param sc.data The single-cell object after [combineExpression()].
 #' @param cloneCall Defines the clonal sequence grouping. Accepted values 
 #' are: `gene` (VDJC genes), `nt` (CDR3 nucleotide sequence), `aa` (CDR3 amino 
-#' acid sequence), or `strict` (VDJC). A custom column header can also be used.
+#' acid sequence), or `strict` (VDJC + nt). A custom column header can also be used.
 #' @param group.by A column header in the metadata  to group the analysis 
 #' by (e.g., "sample", "treatment"). If `NULL`, data will be analyzed by active 
 #' identity.

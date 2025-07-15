@@ -1,7 +1,7 @@
 #' Annotate invariant T cells (MAIT or iNKT) in single-cell TCR data
 #' 
 #' The [annotateInvariant()] function identifies potential mucosal-associated 
-#' invariant T (MAIT) cells or invariant natural killer T (iNKT) cells from 
+#' invariant T (`MAIT``) cells or invariant natural killer T (`iNKT`) cells from 
 #' single-cell sequencing datasets based on their characteristic  TCR usage. 
 #' It extracts TCR chain information from the provided single-cell 
 #' data, checks it against known invariant T-cell receptor criteria for either 
@@ -13,7 +13,7 @@
 #'
 #' @param input.data The product of [combineTCR()] or [combineExpression()].
 #' @param type Character specifying the type of invariant cells to
-#'annotate ('MAIT' or 'iNKT').
+#'annotate (`MAIT` or `iNKT`).
 #' @param species Character specifying the species 
 #' ('mouse' or 'human').
 #' 

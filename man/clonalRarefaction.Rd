@@ -23,7 +23,7 @@ clonalRarefaction(
 
 \item{cloneCall}{Defines the clonal sequence grouping. Accepted values
 are: \code{gene} (VDJC genes), \code{nt} (CDR3 nucleotide sequence), \code{aa} (CDR3 amino
-acid sequence), or \code{strict} (VDJC). A custom column header can also be used.}
+acid sequence), or \code{strict} (VDJC + nt). A custom column header can also be used.}
 
 \item{chain}{The TCR/BCR chain to use. Use \code{both} to include both chains
 (e.g., TRA/TRB). Accepted values: \code{TRA}, \code{TRB}, \code{TRG}, \code{TRD}, \code{IGH}, \code{IGL}
@@ -67,6 +67,8 @@ incidence-based calculations are not supported.
 combined <- combineTCR(contig_list, 
                         samples = c("P17B", "P17L", "P18B", "P18L", 
                                     "P19B","P19L", "P20B", "P20L"))
+                                    
+# Using clonalRarefaction()
 clonalRarefaction(combined[c(1,2)], cloneCall = "gene", n.boots = 3)
 
 

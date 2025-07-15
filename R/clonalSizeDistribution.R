@@ -31,17 +31,19 @@
 #' @examples
 #' # Making combined contig data
 #' combined <- combineTCR(contig_list,
-#'                         samples = c("P17B", "P17L", "P18B", "P18L",
-#'                                     "P19B","P19L", "P20B", "P20L"))
+#'                        samples = c("P17B", "P17L", "P18B", "P18L",
+#'                                    "P19B","P19L", "P20B", "P20L"))
 #' 
 #' # Using clonalSizeDistribution()
-#' clonalSizeDistribution(combined, cloneCall = "strict", method="ward.D2")
+#' clonalSizeDistribution(combined, 
+#'                        cloneCall = "strict", 
+#'                        method="ward.D2")
 #'
 #' @param input.data The product of [combineTCR()],
 #' [combineBCR()], or [combineExpression()].
 #' @param cloneCall Defines the clonal sequence grouping. Accepted values 
 #' are: `gene` (VDJC genes), `nt` (CDR3 nucleotide sequence), `aa` (CDR3 amino 
-#' acid sequence), or `strict` (VDJC). A custom column header can also be used.
+#' acid sequence), or `strict` (VDJC + nt). A custom column header can also be used.
 #' @param chain The TCR/BCR chain to use. Use `both` to include both chains 
 #' (e.g., TRA/TRB). Accepted values: `TRA`, `TRB`, `TRG`, `TRD`, `IGH`, `IGL` 
 #' (for both light chains), `both`.

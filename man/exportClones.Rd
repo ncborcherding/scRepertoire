@@ -18,7 +18,7 @@ exportClones(
 \code{combineExpression()}.}
 
 \item{format}{The format for exporting clones.
-Options are: "paired", "airr", "TCRMatch", "tcrpheno", "immunarch".}
+Options are: \code{paired}, \code{airr}, \code{TCRMatch}, \code{tcrpheno}, \code{immunarch}.}
 
 \item{group.by}{The variable in the metadata to use for grouping. If \code{NULL},
 data will be grouped by the sample names.}
@@ -43,19 +43,19 @@ tailored for compatibility with different analysis workflows.
 \details{
 The \code{format} parameter determines the structure of the output:
 \itemize{
-\item{"paired"}: Exports a data frame where each row represents a barcode,
+\item{\code{paired}}: Exports a data frame where each row represents a barcode,
 with paired chain information (amino acid, nucleotide, genes) in separate
 columns.
-\item{"airr"}: Exports a data frame that adheres to the Adaptive Immune
+\item{\code{airr}}: Exports a data frame that adheres to the Adaptive Immune
 Receptor Repertoire (AIRR) Community format, with each row representing
 a single receptor chain.
-\item{"TCRMatch"}: Exports a data frame specifically for the TCRMatch
+\item{\code{TCRMatch}}: Exports a data frame specifically for the TCRMatch
 algorithm, containing the TRB chain amino acid sequence and clonal
 frequency.
-\item{"tcrpheno"}: Exports a data frame compatible with the tcrpheno
+\item{\code{tcrpheno}}: Exports a data frame compatible with the \code{tcrpheno}
 pipeline, with TRA and TRB chains in separate columns.
-\item{"immunarch"}: Exports a list containing a data frame and metadata
-formatted for use with the immunarch package.
+\item{\code{immunarch}}: Exports a list containing a data frame and metadata
+formatted for use with the \code{immunarch} package.
 }
 }
 \examples{

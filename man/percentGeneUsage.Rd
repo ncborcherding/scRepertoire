@@ -57,7 +57,8 @@ percentVJ(
 \item{input.data}{The product of \code{\link[=combineTCR]{combineTCR()}}, \code{\link[=combineBCR]{combineBCR()}},
 or \code{\link[=combineExpression]{combineExpression()}}.}
 
-\item{chain}{"TRA", "TRB", "TRG", "TRG", "IGH", "IGL" description}
+\item{chain}{The TCR/BCR chain to use. Accepted values: \code{TRA}, \code{TRB}, \code{TRG},
+\code{TRD}, \code{IGH}, \code{IGL} (for both light chains)}
 
 \item{genes}{A character vector specifying the gene loci to analyze.
 Can be a single gene e.g., "TRBV" or "IGHJ" or a pair for genes analysis
@@ -85,15 +86,15 @@ instead of a plot.}
 
 \item{...}{Additional arguments passed to the ggplot theme}
 
-\item{x.axis}{Gene segments to separate the x-axis, such as "TRAV",
-"TRBD", "IGKJ".}
+\item{x.axis}{Gene segments to separate the x-axis, such as \code{TRAV},
+\code{TRBD}, \code{IGKJ}.}
 
 \item{y.axis}{Variable to separate the y-axis, can be both categorical
-or other gene gene segments, such as "TRAV", "TRBD", "IGKJ".}
+or other gene gene segments, such as \code{TRAV}, \code{TRBD}, \code{IGKJ}.}
 
 \item{plot}{The type of plot to return - heatmap or barplot.}
 
-\item{gene}{"Vgene", "Dgene" or "Jgene"}
+\item{gene}{\code{Vgene}, \code{Dgene} or \code{Jgene}}
 }
 \value{
 A ggplot object displaying a heatmap or bar plot of gene usage.
@@ -124,7 +125,7 @@ percentGeneUsage(combined,
                  summary.fun = "count")
 
 # Visualize paired gene (TRBV-TRBJ) usage as a heatmap
-percentGeneUsage(combined,
+percentGeneUsage(combined[1:2],
                  genes = c("TRBV", "TRBJ"),
                  group.by = "sample",
                  plot.type = "heatmap",
@@ -145,15 +146,15 @@ trbv_trbj_usage_table <- percentGeneUsage(combined,
                                           summary.fun = "percent")
 
 
-# Visualize paired gene (TRBV-TRBJ) usage as a heatmap
-vizGenes(combined,
-         x.axis = "TRBV",
-         y.axis = "TRBJ",
+# Visualize paired gene (TRAV-TRAJ) usage as a heatmap
+vizGenes(combined[1:2],
+         x.axis = "TRAV",
+         y.axis = "TRAJ",
          group.by = "sample",
          summary.fun = "count")
 
 # Visualize cross-chain gene pairing (TRBV-TRAV)
-vizGenes(combined,
+vizGenes(combined[1:2],
          x.axis = "TRBV",
          y.axis = "TRAV",
          group.by = "sample",
@@ -176,7 +177,7 @@ ighj_usage_table <- percentGenes(combined,
                                  summary.fun = "count")
 
 # Quantify and visualize TRB V-J gene pairings as a heatmap
-percentVJ(combined,
+percentVJ(combined[1:2],
           chain = "TRB",
           group.by = "sample",
           summary.fun = "percent")

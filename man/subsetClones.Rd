@@ -12,7 +12,7 @@ subsetClones(input.data, name, variables = NULL)
 
 \item{name}{The column header/name to use for subsetting.}
 
-\item{variables}{The values to subset by, must be in the names(input.data).}
+\item{variables}{The values to subset by, must be in the in the variable.}
 }
 \value{
 list of contigs that have been filtered for the name parameter
