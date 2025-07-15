@@ -1,0 +1,383 @@
+---
+title: "Combining Immcantation and scRepertoire"
+date: 'Compiled: `r format(Sys.Date(), "%B %d, %Y")`'
+output: rmarkdown::html_vignette
+theme: united
+df_print: kable
+vignette: >
+  %\VignetteIndexEntry{Combining Immcantation and scRepertoire}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r include = FALSE}
+all_times <- list()  # store the time for each chunk
+knitr::knit_hooks$set(time_it = local({
+  now <- NULL
+  function(before, options) {
+    if (before) {
+      now <<- Sys.time()
+    } else {
+      res <- difftime(Sys.time(), now, units = "secs")
+      all_times[[options$label]] <<- res
+    }
+  }
+}))
+
+knitr::opts_chunk$set(
+  tidy = TRUE,
+  tidy.opts = list(width.cutoff = 95),
+  message = FALSE,
+  warning = FALSE,
+  time_it = TRUE
+)
+```
+
+# Overview
+
+The Immcantation framework is a suite of R packages designed for the analysis of B cell receptor (BCR) sequencing data. This guide will walk you through the installation and loading of the core packages required for analyzing single-cell BCR data with accompanying interaction with  `scRepertoire`. 
+
+## Installation 
+
+Here is a brief overview of the role each package plays in the Immcantation workflow:
+
+* `alakazam`: This package provides general tools for working with AIRR (Adaptive Immune Receptor Repertoire) data. It includes functions for data import/export, quality control, and basic frequency analysis of V(D)J genes and clonotypes.
+* `dowser`: After identifying clones with scoper, dowser is used to perform phylogenetic analysis on the sequences within each clone. This helps in reconstructing the lineage trees that trace the affinity maturation process from the unmutated common ancestor.
+* `scoper`: The `scoper` package is used for inferring B cell clones from BCR sequencing data. It implements several methods for partitioning sequences into clonal groups based on shared VJ genes and junction region similarity.
+* `shazam`: This package focuses on the analysis of somatic hypermutation (SHM) in immunoglobulin (Ig) sequences. Its functions allow you to quantify mutation frequencies, analyze mutational spectra, and measure the strength and nature of selection pressures.
+
+```{r eval = FALSE}
+packages <- c("alakazam", "shazam", "scoper", "dowser")
+
+install.packages(packages)
+```
+
+## Citation 
+
+
+## Loading Packages for the Tutorial
+
+```{r}
+library(alakazam)
+library(dowser)
+library(ggplot)
+library(shazam)
+library(scoper)
+library(scRepertoire)
+```
+
+# Loading BCR Data
+
+After processing the raw FASTA files with IgBLAST using the provided bash script (Immcantation_Bash.sh), you will have a set of tab-separated value (`.tsv`) files. The bash script automates the use of Change-O's `AssignGenes.py` and `MakeDb.py` tools, which perform V(D)J gene assignment and construct a database file for each sample. The output file we are interested in is `all_contig_igblast_db-pass.tsv`.
+
+Our first task in R is to locate all of these database files, load them, and combine them into a single, clean data frame. The following code block handles this process, performing several essential quality control steps along the way to ensure the data is suitable for downstream analysis.
+
+```{r eval = FALSE}
+# -------- Building BCR Data Base -------------------
+
+# Recursively find  files that match the igBlast output
+file.list <- list.files(
+  path = "./Alignments",
+  pattern = "all_contig_igblast_db-pass.tsv",
+  recursive = TRUE
+)
+
+# Generating Categorical Variables to use Downstream
+sample_id <- stringr::str_split(file.list, "/", simplify = TRUE)[, 1]
+subject_id <- stringr::str_remove(sample_id, "PBMC_")
+subject_id <- stringr::str_remove(subject_id, "_1")
+subject_id <- stringr::str_remove(subject_id, "_2")
+
+# Iterative Processing and Filtering of Each Sample ---
+lib_data <- lapply(seq_along(file.list), function(x) {
+  
+  tmp <- read.delim(paste0("./Alignments/", file.list[x]))
+  tmp$sample_id <- sample_id[x]
+  tmp$subject_id <- subject_id[x]
+  tmp$cell_id <- stringr::str_split(tmp$sequence_id, "_", simplify = TRUE)[, 1]
+  tmp$cell_id_unique <- paste0(sample_id[x], "_", tmp$cell_id)
+  
+  
+  # Data Cleaning and Filtering Steps 
+  if (any(tmp$productive == "TRUE")) {
+    tmp <- tmp %>% filter(productive == TRUE)
+  } else if (any(tmp$productive == "T")) {
+    tmp <- tmp %>% filter(productive == "T")
+  }
+  
+  # Remove cells that have more than one heavy chain contig assigned.
+  multi_heavy <- tmp %>%
+    filter(locus == "IGH") %>% # Isolate heavy chain records
+    count(cell_id) # Count heavy chains per cell
+  
+  multi_heavy_cells <- multi_heavy %>%
+    filter(n > 1) %>%
+    pull(cell_id) # Extract the cell IDs as a vector
+  
+  # Filter out all records (both heavy and light) from these problematic cells.
+  tmp <- tmp %>% filter(!cell_id %in% multi_heavy_cells)
+  
+  # Standardize isotype calls ('c_call').
+  tmp$c_call <- stringr::str_split(tmp$c_call, ",", simplify = TRUE)[, 1]
+  
+  # Remove any records where an isotype could not be determined.
+  tmp <- tmp %>% filter(c_call != "")
+  
+  # Ensure all remaining cells have a paired heavy chain.
+  heavy_cells <- tmp %>% filter(locus == "IGH") %>% pull(cell_id)
+  light_cells <- tmp %>% filter(locus == "IGK" | locus == "IGL") %>% pull(cell_id)
+  no_heavy_cells <- setdiff(light_cells, heavy_cells)
+  
+  # Remove the orphan light chain records.
+  tmp <- tmp %>% filter(!cell_id %in% no_heavy_cells)
+  
+  return(tmp)
+})
+
+# Combining all the data together
+bcr_db <- do.call(rbind, lib_data)
+```
+
+# Determining a Clonal Assignment Threshold
+
+The core task in B cell repertoire analysis is to group sequences into "clones"—sets of cells that originated from the same initial B cell and underwent affinity maturation. The Immcantation workflow defines clones as sequences that use the same V and J genes and have a high degree of similarity in their junction regions.
+
+But how do we define "high similarity"? We need to determine a specific, objective distance threshold. Sequences with a junction similarity distance below this threshold will be considered part of the same clone. This step uses an automated, data-driven approach to find that threshold.
+
+### Calculate Nearest Neighbor Distances (distToNearest)
+
+The first step is to calculate the Hamming distance (the number of positions at which the characters are different) between the junction sequence of each B cell and its "nearest neighbor." The nearest neighbor is the sequence from a different cell that has the most similar junction.
+
+```{r}
+# split by subject id
+dist_heavy <- distToNearest(bcr_db, 
+                            cellIdColumn = "cell_id_unique",
+                            first = FALSE,
+                            onlyHeavy = TRUE,
+                            fields = "subject_id",
+                            nproc = 2, 
+                            progress = TRUE)
+```
+
+##  Find the Threshold Automatically (`findThreshold`)
+
+The distribution of nearest-neighbor distances is typically bimodal. There is a sharp peak of very small distances (sequences within the same clone) and a broader peak of larger distances (sequences from different clones). The `findThreshold` function from the `scoper` package automatically finds the valley between these two peaks.
+
+```{r}
+# find threshold for cloning automatically
+threshold_output <- findThreshold(dist_heavy$dist_nearest, 
+                                  progress = TRUE,
+                                  method = "gmm", 
+                                  model = "gamma-norm",
+                                  cutoff = "user", 
+                                  spc = 0.995)
+threshold_auto <- threshold_output@threshold
+```
+
+This function fits a Gaussian Mixture Model (`method = "gmm"`) to the distance distribution. It assumes the distribution is a mix of a gamma distribution (for the clonally-related distances) and a normal distribution (for the unrelated distances).
+
+```{r}
+ggplot(subset(dist_heavy, !is.na(dist_nearest)),
+             aes(x = dist_nearest)) +
+  theme_bw() +
+  xlab("Hamming distance") + 
+  ylab("Count") +
+  scale_x_continuous(breaks = seq(0, 1, 0.1)) +
+  geom_histogram(color = "white", binwidth = 0.02) +
+  geom_vline(xintercept = threshold_auto, lty=2, color='red') +
+  facet_grid(subject_id ~ ., scales="free_y") +
+  theme(strip.text.y.right = element_text(angle = 0))
+```
+
+# Defining and Quantifying Clonal Groups
+
+With the distance threshold established, we can now formally partition our sequences into clonal lineages. This step uses the `scoper` package to apply the threshold and assign a unique clone ID to each sequence. We will then visualize the resulting clone size distributions, which is a fundamental way to characterize an immune repertoire.
+
+## Assigning Sequences to Clones (`hierarchicalClones`)
+
+```{r}
+# call clones based on heavy chain
+# keep light chain information for subclone calling later
+results <- hierarchicalClones(dist_heavy, 
+                              cell_id = 'cell_id_unique',
+                              threshold = threshold_auto,
+                              only_heavy = FALSE,
+                              split_light = FALSE, 
+                              summarize_clones = TRUE,
+                              nproc = 2, 
+                              verbose = TRUE)
+
+results_db <- as.data.frame(results)
+results_db$sequence_id <- paste0(results_db$sample_id, "_", results_db$sequence_id)
+```
+
+## Counting Clone Sizes (`countClones`)
+
+Now that clones are defined, a common first analysis is to quantify their sizes. How many cells belong to each clone?
+
+```{r}
+# get clone sizes per subject
+clone_sizes <- countClones(results_db,
+                           groups=c("locus", "subject_id"))
+
+ggplot(clone_sizes %>% filter(locus=="IGH"), 
+       aes(x=seq_count)) +
+  geom_bar(fill = "black", color = "black") + 
+  geom_text(aes(label=seq_count, y=1), vjust=1.5, size=1) +
+  facet_wrap(~subject_id) +
+  scale_y_log10() +
+  scale_x_sqrt() +
+  theme_bw() +
+  labs(x="Cells per clone", 
+       y="# Clonal lineages")
+```
+
+## Getting IMGT sequences and subclone information
+
+```{r}
+
+# Read in IMGT-gapped sequences
+references = readIMGT(dir = "~/share/germlines/imgt/human/vdj")
+results_db <- createGermlines(results_db, 
+                              reference = references)
+
+
+
+# can't have NAs in traits columns for formatClones()
+# solution: set NA values to "NA"
+results_db$c_call[is.na(results_db$c_call)] <- "NA"
+
+# split clones into subclones by light chain
+subclones_db <- resolveLightChains(data=results_db,
+                                   cell = "cell_id_unique", 
+                                   id = "sequence_id", 
+                                   nproc = 2)
+
+
+subclones_db$v_gene <- str_split(subclones_db$v_call, "[*]", simplify = TRUE)[,1]
+subclones_db$j_gene <- str_split(subclones_db$j_call, "[*]", simplify = TRUE)[,1]
+subclones_db$c_gene <- str_split(subclones_db$c_call, "[*]", simplify = TRUE)[,1]
+
+
+subclones_db <- subclones_db %>%
+  mutate(chain = ifelse(locus == "IGH", "heavy", "light"))
+
+subclones_db %>% 
+  group_by(subject_id, chain, c_gene) %>% 
+  tally() %>%
+  ggplot(aes(x=subject_id, y=n)) +
+  geom_bar(aes(fill=factor(c_gene)), 
+           stat="identity", position="stack", color = "black", lwd = 0.25) +
+  facet_wrap(~chain) +
+  scale_fill_viridis(option = "H", discrete = TRUE, name="Isotype") + 
+  labs(x="Subject", y="# BCRs") +
+  theme_bw()
+```
+
+## Clonal Lineages Analysis
+
+```{r}
+#Need to remove NAs for junction_length
+subclones_db <- filter(subclones_db, !is.na(junction_length))
+subclones_db$c_gene[is.na(subclones_db$c_gene)] <- "NA"
+subclones_db$v_gene[is.na(subclones_db$v_gene)] <- "NA"
+subclones_db$j_gene[is.na(subclones_db$j_gene)] <- "NA"
+subclones_db$vj_gene[is.na(subclones_db$vj_gene)] <- "NA"
+subclones_db$tissue <- str_split(subclones_db$cell_id_unique, "_", simplify = TRUE)[,2]
+clones_hl <- formatClones(subclones_db,
+                          cell = 'cell_id_unique',
+                          chain = "HL", 
+                          split_light = FALSE,
+                          traits = c("subject_id", "c_gene"),
+                          columns = c("c_gene", "v_gene", "j_gene", "vj_gene", "subject_id", "tissue"),
+                          minseq = 2, 
+                          verbose = FALSE)
+```
+
+# Calculating Trees
+
+```{r}
+clones_hl$num_cells <- sapply(clones_hl$data, function(x) sum(x@data$collapse_count))
+# ==== lineage trees ====
+# construct maximum parsimony trees
+trees = getTrees(clones_hl)
+trees <- collapseNodes(trees)
+
+# re-scale branches to represent mutations between nodes
+trees_m = scaleBranches(trees, edge_type="mutations")
+```
+
+# Calculate Somatic Hypermutation
+
+```{r}
+shm_db <- observedMutations(subclones_db,
+                            sequenceColumn = "sequence_alignment",
+                            germlineColumn = "germline_alignment_d_mask",
+                            regionDefinition = IMGT_VDJ,
+                            frequency = FALSE,
+                            combine = FALSE,
+                            nproc = 10)
+
+test <- observedMutations(subclones_db, 
+                          sequenceColumn="sequence_alignment",
+                          germlineColumn="germline_alignment_d_mask",
+                          regionDefinition=NULL,
+                          frequency=FALSE, 
+                          nproc=2)
+
+
+
+shm_db <- observedMutations(shm_db,
+                            sequenceColumn = "sequence_alignment",
+                            germlineColumn = "germline_alignment_d_mask",
+                            regionDefinition = IMGT_VDJ,
+                            frequency = FALSE,
+                            combine = TRUE,
+                            nproc = 10)
+
+# calculate SHM frequency in the VDJ regions
+shm_db <- observedMutations(shm_db,
+                            sequenceColumn = "sequence_alignment",
+                            germlineColumn = "germline_alignment_d_mask",
+                            regionDefinition = IMGT_VDJ,
+                            frequency = TRUE,
+                            combine = FALSE,
+                            nproc = 10)
+
+shm_db <- observedMutations(shm_db,
+                            sequenceColumn = "sequence_alignment",
+                            germlineColumn = "germline_alignment_d_mask",
+                            regionDefinition = IMGT_VDJ,
+                            frequency = TRUE,
+                            combine = TRUE,
+                            nproc = 10)
+saveRDS(shm_db, file="r_objects/shm_db.rds")
+shm_db <- readRDS(file="r_objects/shm_db.rds")
+
+shm_db$c_call <- str_split(shm_db$c_call, "[*]", simplify = TRUE)[,1]
+
+ggplot(shm_db, aes(x = subject_id, y=mu_freq_cdr_s, fill=c_call)) +
+        geom_boxplot() + 
+        labs(title = "CDR silent mutations", 
+             x = "Isotype", y = "Mutation frequency") +
+        scale_fill_viridis(option = "H", discrete = TRUE) +
+        facet_grid(.~c_call, scales="free_y") + 
+        theme_bw()
+
+isotypes = c("IGHA1", "IGHA2", "IGHD", "IGHE", "IGHG1", "IGHG2", "IGHG3", "IGHG4", "IGHM", "IGKC", "IGLC1", "IGLC2", "IGLC3", "IGLC7")
+
+# order isotypes
+mut_freq_clone$c_call <- factor(mut_freq_clone$c_call,
+                                levels=isotypes)
+
+ggplot(mut_freq_clone %>% filter(locus == "IGH" & c_call != "NA"), 
+       aes(mean_mut_freq)) +
+  geom_histogram(aes(y=..density..), fill="grey70", binwidth = 0.005) +
+  geom_density(color="firebrick", fill="firebrick", alpha=0.2) +
+  facet_grid(c_call~subject_id, scales="free_y") +
+  labs(x="Mean mutation frequency", y="Density (BCR sequences)",
+       title="Somatic hypermutation rate") +
+  theme_bw()
+```
+
+
