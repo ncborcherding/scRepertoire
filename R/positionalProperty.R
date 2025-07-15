@@ -43,8 +43,8 @@
 #'                    method = "atchleyFactors", 
 #'                    aa.length = 20)
 #'                    
-#' @param input.data The product of [combineTCR()], 
-#' [combineBCR()], or [combineExpression()]
+#' @param input.data The product of [combineTCR()], [combineBCR()], or 
+#' [combineExpression()]
 #' @param chain The TCR/BCR chain to use. Use Accepted values: `TRA`, `TRB`, 
 #' `TRG`, `TRD`, `IGH`, or `IGL` (for both light chains)..
 #' @param group.by A column header in the metadata or lists to group the analysis 
@@ -165,6 +165,9 @@ positionalProperty <- function(input.data,
     message("No sequences found to plot after filtering.")
     return(NULL)
   }
+  #Removing any CI for calculations based on < 2 residues
+  cols_to_modify <- c("sd", "ci_lower", "ci_upper")
+  mat[mat[["n"]] <= 2, cols_to_modify] <- 0
   
   if (!is.null(order.by)) {
     mat <- .orderingFunction(mat, order.by, "group")
@@ -175,19 +178,22 @@ positionalProperty <- function(input.data,
     return(mat)
   }
   
+  colors <- .colorizer(palette, length(unique(mat[["group"]])))
   # Visualization
-  plot <- ggplot(mat, aes(x = position, y = mean, group = group, color = group)) +
+  plot <- ggplot(mat, aes(x = as.factor(position), y = mean, group = group, color = group)) +
     geom_ribbon(aes(ymin = ci_lower, ymax = ci_upper, fill = group), alpha = 0.3, linetype = 0) +
     geom_line() +
-    scale_color_manual(name = "Group", values = .colorizer(palette, length(unique(mat$group)))) +
-    scale_fill_manual(name = "Group", values = .colorizer(palette, length(unique(mat$group)))) +
+    scale_color_manual(name = "Group", values = colors) +
+    scale_fill_manual(name = "Group", values = colors) +
     labs(x = "Amino Acid Position", y = "Mean Property Value") +
     facet_grid(property~., scales = "free_y") +
+    guides(fill = "none", 
+           color = guide_legend(override.aes = list(fill = NA))) + 
     .themeRepertoire(...) + 
     theme(
-      axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
-      strip.background = element_rect(fill="lightgrey", color = "grey"),
-      strip.text = element_text(face = "bold")
+      strip.background = element_rect(fill="white", color = "grey"),
+      strip.text = element_text(face = "bold"),
+      legend.key = element_rect(fill = NA)
     )
   
   return(plot)
