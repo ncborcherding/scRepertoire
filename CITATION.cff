@@ -1,0 +1,83 @@
+cff-version: 1.2.0
+title: scRepertoire
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Qile
+    family-names: Yang
+    orcid: 'https://orcid.org/0009-0005-0148-2499'
+    affiliation: 'UC Berkeley, Berkeley, CA, USA'
+  - given-names: Ksenia R.
+    family-names: Safina
+    orcid: 'https://orcid.org/0000-0002-5126-9953'
+    affiliation: 'Broad Institute of MIT and Harvard, Cambridge, MA, USA'
+  - given-names: Kieu D. Q.
+    family-names: Nguyen
+    affiliation: >-
+      Ian Frazer Centre for Children’s Immunotherapy
+      Research, Child Health Research Centre, Faculty of
+      Health, Medicine and Behavioural Sciences, The
+      University of Queensland, AU
+  - orcid: 'https://orcid.org/0000-0002-6735-6808'
+    given-names: Zewen K.
+    family-names: Tuong
+    affiliation: >-
+      Ian Frazer Centre for Children’s Immunotherapy
+      Research, Child Health Research Centre, Faculty of
+      Health, Medicine and Behavioural Sciences, The
+      University of Queensland, AU
+  - given-names: Nicholas
+    family-names: Borcherding
+    orcid: 'https://orcid.org/0000-0003-1427-6342'
+    affiliation: >-
+      Department of Pathology and Immunology, Washington
+      University in St Louis, MO 63110, USA
+    email: borcherding.n@wustl.edu
+identifiers:
+  - type: doi
+    value: 10.1371/journal.pcbi.1012760
+    description: PLOS Computational Biology Paper
+repository-code: 'https://github.com/BorchLab/scRepertoire'
+url: 'https://www.borch.dev/uploads/screpertoire/'
+repository: >-
+  https://bioconductor.org/packages/release/bioc/html/scRepertoire.html
+abstract: >-
+  Single-cell adaptive immune receptor repertoire sequencing
+  (scAIRR-seq) and single-cell RNA sequencing (scRNA-seq)
+  provide a transformative approach to profiling immune
+  responses at unprecedented resolution across diverse
+  pathophysiologic contexts. This work presents scRepertoire
+  2, a substantial update to our R package for analyzing and
+  visualizing single-cell immune receptor data. This new
+  version introduces an array of features designed to
+  enhance both the depth and breadth of immune receptor
+  analysis, including improved workflows for clonotype
+  tracking, repertoire diversity metrics, and novel
+  visualization modules that facilitate longitudinal and
+  comparative studies. Additionally, scRepertoire 2 offers
+  seamless integration with contemporary single-cell
+  analysis frameworks like Seurat and SingleCellExperiment,
+  allowing users to conduct end-to-end single-cell immune
+  profiling with transcriptomic data. Performance
+  optimizations in scRepertoire 2 resulted in a 85.1%
+  increase in speed and a 91.9% reduction in memory usage
+  from the first version over the range repertoire size
+  tested in benchmarking, addressing the demands of the
+  ever-increasing size and scale of single-cell studies.
+  This release marks an advancement in single cell
+  immunogenomics, equipping researchers with a robust
+  toolset to uncover immune dynamics in health and disease.
+keywords:
+  - T cells
+  - Immune receptors
+  - Immune response
+  - Protein sequencing
+  - Amino acid analysis
+  - Amino acid sequence analysis
+  - Transcriptome analysis
+  - Cloning
+license: MIT
+version: 2.0.0
+date-released: '2025-06-27'
