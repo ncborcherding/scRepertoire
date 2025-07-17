@@ -232,21 +232,31 @@ ggplot(clone_sizes %>% filter(locus=="IGH"),
        y="# Clonal lineages")
 ```
 
-## Getting IMGT sequences and subclone information
+# Germline Reconstruction and Subclone Definition
+
+Now that we have defined our clonal groups based on heavy chain similarity, the next steps are to prepare for mutation analysis and to refine our clone definitions using the paired light chain information available in single-cell data.
+
+This involves two main goals:
+
+* Reconstruct the unmutated germline sequence for each observed BCR. This is the baseline against which we will measure somatic hypermutation.
+* Define subclones by identifying groups of cells within a heavy-chain clone that share the same light chain.
+
+## Reconstructing Germline Sequences (`createGermlines`)
 
 ```{r}
-
 # Read in IMGT-gapped sequences
 references = readIMGT(dir = "~/share/germlines/imgt/human/vdj")
 results_db <- createGermlines(results_db, 
                               reference = references)
 
-
-
-# can't have NAs in traits columns for formatClones()
-# solution: set NA values to "NA"
+# Data cleaning: Some downstream functions do not tolerate NA values in columns
 results_db$c_call[is.na(results_db$c_call)] <- "NA"
+```
+## Defining Subclones by Light Chain (`resolveLightChains`)
 
+A key advantage of single-cell data is having paired heavy and light chain information. While we defined our clones using only the heavy chain, cells within that clone may use different light chains. These represent distinct "subclones." The `resolveLightChains` function from `scoper` identifies these groupings.
+
+```{r}
 # split clones into subclones by light chain
 subclones_db <- resolveLightChains(data=results_db,
                                    cell = "cell_id_unique", 
@@ -254,11 +264,10 @@ subclones_db <- resolveLightChains(data=results_db,
                                    nproc = 2)
 
 
+# General Clean Up
 subclones_db$v_gene <- str_split(subclones_db$v_call, "[*]", simplify = TRUE)[,1]
 subclones_db$j_gene <- str_split(subclones_db$j_call, "[*]", simplify = TRUE)[,1]
 subclones_db$c_gene <- str_split(subclones_db$c_call, "[*]", simplify = TRUE)[,1]
-
-
 subclones_db <- subclones_db %>%
   mutate(chain = ifelse(locus == "IGH", "heavy", "light"))
 
@@ -274,16 +283,23 @@ subclones_db %>%
   theme_bw()
 ```
 
-## Clonal Lineages Analysis
+# Preparing Data for Lineage Tree Analysis
+
+The ultimate goal of many BCR repertoire analyses is to reconstruct the evolutionary history of each B cell clone. This is done by building phylogenetic trees that trace the path of somatic hypermutation from the unmutated germline ancestor to the observed, mature B cells.
+
+The `dowser` package is used for this phylogenetic analysis, but it requires the data to be in a specific format: a `ScoperClones` object. This step uses the `formatClones` function to perform some final data cleaning and to create this specialized object.
 
 ```{r}
-#Need to remove NAs for junction_length
+# Remove any rows where junction_length is NA, as this is a critical field.
 subclones_db <- filter(subclones_db, !is.na(junction_length))
+
+# Replace NA values in key annotation columns with the string "NA".
 subclones_db$c_gene[is.na(subclones_db$c_gene)] <- "NA"
 subclones_db$v_gene[is.na(subclones_db$v_gene)] <- "NA"
 subclones_db$j_gene[is.na(subclones_db$j_gene)] <- "NA"
 subclones_db$vj_gene[is.na(subclones_db$vj_gene)] <- "NA"
 subclones_db$tissue <- str_split(subclones_db$cell_id_unique, "_", simplify = TRUE)[,2]
+
 clones_hl <- formatClones(subclones_db,
                           cell = 'cell_id_unique',
                           chain = "HL", 
