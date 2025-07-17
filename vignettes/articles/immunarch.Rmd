@@ -5,7 +5,7 @@ output: rmarkdown::html_vignette
 theme: united
 df_print: kable
 vignette: >
-  %\VignetteIndexEntry{Using scRepertoire with immunarch}
+  %\VignetteIndexEntry{Downstream Analysis with immunarch}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
