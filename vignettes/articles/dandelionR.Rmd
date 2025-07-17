@@ -81,17 +81,22 @@ data(demo_airr)
 For the trajectory analysis work here, we are focusing on the main productive TCR chains. Therefore we will flag `filterMulti = TRUE`, which will keep the selection of the 2 corresponding chains with the highest expression for a single barcode. For more details, refer to `scRepertoire`'s [documentation](https://www.borch.dev/uploads/screpertoire/reference/combinetcr).
 
 ```{r}
-contig.list <- loadContigs(input = demo_airr, format = "AIRR")
+contig.list <- loadContigs(input = demo_airr, 
+                           format = "AIRR")
 
 # Format to `scRepertoire`'s requirements and some light filtering
 combined.TCR <- combineTCR(contig.list,
     removeNA = TRUE,
-    removeMulti = FALSE,
+    removeMulti = TRUE,
     filterMulti = TRUE
 )
 
 # Merge VDJ and GEX data
 sce <- combineExpression(combined.TCR, demo_sce)
+
+# Subsetting Complete TCR Gene Sequences
+sce <- sce[,grep("TRAC", sce$CTgene)]
+sce <- sce[,grep("TRBC", sce$CTgene)]
 ```
 
 ### Initiate `dandelionR` workflow
@@ -122,7 +127,8 @@ head(colData(sce))[,1:10]
 Visualize the UMAP of the filtered data.
 
 ```{r}
-plotUMAP(sce, color_by = "anno_lvl_2_final_clean")
+plotUMAP(sce, 
+         color_by = "anno_lvl_2_final_clean")
 ```
 
 ## Milo object and neighbourhood graph construction
@@ -142,7 +148,9 @@ We can visualize this milo object using UMAP.
 
 ```{r, warning = FALSE}
 milo_object <- miloUmap(milo_object, n_neighbors = 30)
-plotUMAP(milo_object, color_by = "anno_lvl_2_final_clean", dimred = "UMAP_knngraph")
+plotUMAP(milo_object, 
+         color_by = "anno_lvl_2_final_clean", 
+         dimred = "UMAP_knngraph")
 ```
 
 ## Construct pseudobulked VDJ feature space
