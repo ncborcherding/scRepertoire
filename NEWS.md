@@ -1,3 +1,9 @@
+# scRepertoire VERSION 2.5.1
+
+## UNDERLYING CHANGES
+* Introduced pairwise calculations to ```StartracDiversity()```
+
+
 # scRepertoire VERSION 2.5.0
 
 ## UNDERLYING CHANGES

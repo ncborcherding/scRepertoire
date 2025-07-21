@@ -28,5 +28,6 @@
     utils::globalVariables ("total") 
     utils::globalVariables ("value") 
     utils::globalVariables ("values")
+    utils::globalVariables ("cluster")
     invisible ()
 }
