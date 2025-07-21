@@ -34,7 +34,7 @@ test_that("Output format and structure are correct", {
   expect_s3_class(table_output, "data.frame")
   
   # Check standard output columns
-  expect_true(all(c("group", "majorCluster", "expa", "migr", "tran") %in% names(table_output)))
+  expect_true(all(c("group", "cluster", "expa", "migr", "tran") %in% names(table_output)))
 })
 
 
@@ -57,17 +57,17 @@ test_that("Standard index calculations are mathematically correct", {
                                exportTable = TRUE)
   
 
-  expect_equal(results$expa[results$majorCluster == "1"][1], 0, tolerance = 1e-4)
-  expect_equal(results$expa[results$majorCluster == "2"][1], 0, tolerance = 1e-4)
-  expect_equal(results$expa[results$majorCluster == "3"][1], 0, tolerance = 1e-4)
+  expect_equal(results$expa[results$cluster == "1"][1], 0, tolerance = 1e-4)
+  expect_equal(results$expa[results$cluster == "2"][1], 0, tolerance = 1e-4)
+  expect_equal(results$expa[results$cluster == "3"][1], 0, tolerance = 1e-4)
   
-  expect_equal(results$migr[results$majorCluster == "1"][1], 0, tolerance = 1e-4)
-  expect_equal(results$migr[results$majorCluster == "2"][1], 0, tolerance = 1e-4)
-  expect_equal(results$migr[results$majorCluster == "3"][1], 0, tolerance = 1e-4)
+  expect_equal(results$migr[results$cluster == "1"][1], 0, tolerance = 1e-4)
+  expect_equal(results$migr[results$cluster == "2"][1], 0, tolerance = 1e-4)
+  expect_equal(results$migr[results$cluster == "3"][1], 0, tolerance = 1e-4)
   
-  expect_equal(results$tran[results$majorCluster == "1"][1], 0, tolerance = 1e-4)
-  expect_equal(results$tran[results$majorCluster == "2"][1], 0, tolerance = 1e-4)
-  expect_equal(results$tran[results$majorCluster == "3"][1], 0.119958, tolerance = 1e-4)
+  expect_equal(results$tran[results$cluster == "1"][1], 0, tolerance = 1e-4)
+  expect_equal(results$tran[results$cluster == "2"][1], 0, tolerance = 1e-4)
+  expect_equal(results$tran[results$cluster == "3"][1], 0.119958, tolerance = 1e-4)
 })
 
 

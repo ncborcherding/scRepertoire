@@ -31,8 +31,8 @@
 #' between specific pairs of tissues or clusters, respectively.
 #' \itemize{
 #'   \item{For migration (`index = "migr"`), set `pairwise` to the `type` column 
-#'         (e.g., `pairwise = "Type"`).
-#'   \item{For transition (`index = "tran"`), set `pairwise` to `"majorCluster"`.}
+#'         (e.g., `pairwise = "Type"`).}
+#'   \item{For transition (`index = "tran"`), set `pairwise` to `"cluster"`.}
 #' }
 #' 
 #' @examples
@@ -53,12 +53,12 @@
 #'                   group.by = "Patient",
 #'                   index = "expa")
 #'                   
-#' # Calculate pairwise migration between tissue types
+#' # Calculate pairwise transition 
 #' StartracDiversity(scRep_example, 
 #'                   type = "Type", 
 #'                   group.by = "Patient",
-#'                   index = "migr",
-#'                   pairwise = "Type")
+#'                   index = "tran",
+#'                   pairwise = "cluster") 
 #'
 #' @param sc.data The single-cell object after [combineExpression()].
 #' For SCE objects, the cluster variable must be in the meta data under 
@@ -77,7 +77,7 @@
 #' by (e.g., "sample", "treatment"). If `NULL`, data will be analyzed as 
 #' by list element or active identity in the case of single-cell objects.
 #' @param pairwise The metadata column to be used for pairwise comparisons. 
-#' Set to the `type` variable for pairwise migration or "majorCluster" for 
+#' Set to the `type` variable for pairwise migration or "cluster" for 
 #' pairwise transition.
 #' @param exportTable If `TRUE`, returns a data frame or matrix of the results 
 #' instead of a plot.
@@ -101,8 +101,9 @@ StartracDiversity <- function(sc.data,
                               palette = "inferno",
                               ...) {
   
-  # Input validation
-  index <- match.arg(index)
+  if(!all(index %in% c("expa", "migr", "tran"))) {
+    stop("Please select 'expa', 'migr', and/or 'tran' for index.")
+  }
   if (!is.null(pairwise) && length(index) > 1) {
     stop("Pairwise analysis can only be performed for a single index ('migr' or 'tran').")
   }
@@ -115,7 +116,7 @@ StartracDiversity <- function(sc.data,
   df <- .grabMeta(sc.data)
   cloneCall <- .theCall(df, cloneCall)
   barcodes <- rownames(df)
-  colnames(df)[ncol(df)] <- "majorCluster"
+  colnames(df)[ncol(df)] <- "cluster"
     
   if (is.null(group.by)) {
     if (!"orig.ident" %in% colnames(df)) {
@@ -145,7 +146,7 @@ StartracDiversity <- function(sc.data,
     Cell_Name = rownames(df),
     clone.id = df[,cloneCall],
     patient = df[,group.by],
-    majorCluster = df[,"majorCluster"],
+    cluster = df[,"cluster"],
     loc = df[,type],
     stringsAsFactors = FALSE
   )
@@ -159,7 +160,7 @@ StartracDiversity <- function(sc.data,
       comparison_col <- if (index == "migr") {
         "loc"
       } else { # index == "tran"
-        "majorCluster"
+        "cluster"
       }
       .calculatePairwiseIndices(subset_data, index, comparison_col)
     } else {
@@ -183,11 +184,23 @@ StartracDiversity <- function(sc.data,
   }
   # Plotting logic
   if (!is.null(pairwise)) {
-    col_name <- colnames(mat)[grepl("comparison", colnames(mat))]
-    plot <- ggplot(mat, aes(x = .data[[col_name]], y = .data$value)) +
-      geom_boxplot(aes(fill = .data[[col_name]]), outlier.alpha = 0, na.rm = TRUE) +
-      facet_wrap(~majorCluster) +
-      labs(y = "Pairwise Index Score", x = "Comparison")
+    
+    if (pairwise == "cluster") {
+        num_colors <- length(unique(mat[["cluster"]]))
+        mat$cluster2 <- sapply(strsplit(mat$comparison, " "), `[`, 1)
+        mat$cluster2 <- factor(mat$cluster2, levels = .alphanumericalSort(mat$cluster2))
+        mat$cluster <- factor(mat$cluster, levels = .alphanumericalSort(mat$cluster))
+        plot <- ggplot(mat, aes(x = cluster, y = .data$value)) +
+          geom_boxplot(aes(fill = cluster), outlier.alpha = 0, na.rm = TRUE) +
+          labs(y = "Pairwise Index Score", x = "Cluster") + 
+          facet_grid(cluster2 ~ ., scales = "free_y") 
+    } else {
+      col_name <- colnames(mat)[grepl("comparison", colnames(mat))]
+      num_colors <- length(unique(mat[[col_name]]))
+      plot <- ggplot(mat, aes(x = .data[[col_name]], y = .data$value)) +
+        geom_boxplot(aes(fill = .data[[col_name]]), outlier.alpha = 0, na.rm = TRUE) +
+        labs(y = "Pairwise Index Score", x = "Comparison")
+    }
   } else {
     mat_melt <- reshape(mat,
                         varying = index,
@@ -195,13 +208,13 @@ StartracDiversity <- function(sc.data,
                         timevar = "variable",
                         times = index,
                         direction = "long")
-    values <- .alphanumericalSort(unique(mat_melt$majorCluster))
-    mat_melt$majorCluster <- factor(mat_melt$majorCluster, levels = values)
+    values <- .alphanumericalSort(unique(mat_melt$cluster))
+    mat_melt$cluster <- factor(mat_melt$cluster, levels = values)
     mat_melt$value <- as.numeric(mat_melt$value)
-    col <- length(unique(mat_melt$majorCluster))
+    num_colors <- length(unique(mat_melt$cluster))
     
-    plot <- ggplot(mat_melt, aes(x = majorCluster, y = .data[["value"]])) +
-      geom_boxplot(aes(fill = majorCluster), outlier.alpha = 0, na.rm = TRUE) +
+    plot <- ggplot(mat_melt, aes(x = cluster, y = .data[["value"]])) +
+      geom_boxplot(aes(fill = cluster), outlier.alpha = 0, na.rm = TRUE) +
       labs(y = "Index Score", 
            x = "Clusters") +
       theme(axis.title.x = element_blank())
@@ -210,11 +223,11 @@ StartracDiversity <- function(sc.data,
   plot <- plot + 
     .themeRepertoire(...) + 
     guides(fill = "none") +
-    scale_fill_manual(values = .colorizer(palette, length(unique(mat$majorCluster))))
+    scale_fill_manual(values = .colorizer(palette, num_colors))
   
-  if(length(index > 1)) {
+  if(length(index) > 1) {
     plot <- plot + facet_grid(variable ~ ., scales = "free_y") 
-  }
+  } 
   
   return(plot)
 }
@@ -223,13 +236,13 @@ StartracDiversity <- function(sc.data,
 # Helper function for standard index calculation
 .calculateIndices <- function(processed, indices) {
   if (nrow(processed) == 0) return(NULL)
-  clonotype.dist.cluster <- table(processed[,c("clone.id", "majorCluster")])
+  clonotype.dist.cluster <- table(processed[,c("clone.id", "cluster")])
   clonotype.dist.loc <- table(processed[,c("clone.id", "loc")])
   
   # Return NULL if no clusters are found
   if (ncol(clonotype.dist.cluster) == 0) return(NULL)
   
-  calIndex.matrix <- data.frame(majorCluster = colnames(clonotype.dist.cluster))
+  calIndex.matrix <- data.frame(cluster = colnames(clonotype.dist.cluster))
   
   if ("expa" %in% indices) {
     entropy_val <- .mcolEntropy(clonotype.dist.cluster)
@@ -276,6 +289,7 @@ StartracDiversity <- function(sc.data,
 }
 
 # Helper function for pairwise index calculation
+#' @importFrom utils combn
 .calculatePairwiseIndices <- function(processed, index, pairwise_col) {
   if (nrow(processed) < 2) return(NULL)
   
@@ -289,9 +303,9 @@ StartracDiversity <- function(sc.data,
     
     if (index == "migr") {
       dist_table <- table(pair_data[,c("clone.id", "loc")])
-      clonotype_dist_cluster <- table(pair_data[,c("clone.id", "majorCluster")])
+      clonotype_dist_cluster <- table(pair_data[,c("clone.id", "cluster")])
     } else { # tran
-      dist_table <- table(pair_data[,c("clone.id", "majorCluster")])
+      dist_table <- table(pair_data[,c("clone.id", "cluster")])
       clonotype_dist_cluster <- dist_table
     }
     
@@ -311,7 +325,7 @@ StartracDiversity <- function(sc.data,
     
     result_matrix <- t(weights_mtx_filtered) %*% as.matrix(clonotype_data_filtered$value)
     
-    res <- data.frame(majorCluster = rownames(result_matrix), value = result_matrix[,1])
+    res <- data.frame(cluster = rownames(result_matrix), value = result_matrix[,1])
     res$comparison <- paste(p, collapse = " vs ")
     return(res)
   })

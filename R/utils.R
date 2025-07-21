@@ -521,7 +521,7 @@
 		group_by("{cloneCall}" := df[[i]][[cloneCall]]) %>%
 		# Add sample ids to df
 		mutate(values = names[i], Abundance = n()) %>%
-		select(all_of(cloneCall), .data[["values"]], .data[["Abundance"]]) %>%
+		select(all_of(cloneCall), all_of("values"), all_of("Abundance")) %>%
 		ungroup() 
 	return(data)
 }
