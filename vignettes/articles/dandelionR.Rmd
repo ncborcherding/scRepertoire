@@ -25,7 +25,7 @@ knitr::knit_hooks$set(time_it = local({
 }))
 
 knitr::opts_chunk$set(
-  tidy = TRUE,
+  tidy = FALSE,
   tidy.opts = list(width.cutoff = 95),
   message = FALSE,
   warning = FALSE,
@@ -41,7 +41,7 @@ It provides all the necessary tools to interface with [scRepertoire](https://git
 
 ## Citation 
 
-If using *dandelionR*, please cite the [article](https://www.biorxiv.org/content/10.1101/2025.02.04.636146v1): Yu, J., et al., dandelionR: Single-cell immune repertoire trajectory analysis in R. BioRxiv 2025.
+If using *dandelionR*, please cite the [article](https://pmc.ncbi.nlm.nih.gov/articles/PMC12270724/): Yu, J., et al., dandelionR: Single-cell immune repertoire trajectory analysis in R. *Computational and Structural Biotechnology Journal.* 2025.
 
 # Installation 
 
@@ -138,8 +138,14 @@ We will use miloR to create the pseudobulks based on the gene expression data. T
 ```{r, warning = FALSE}
 library(miloR)
 milo_object <- Milo(sce)
-milo_object <- buildGraph(milo_object, k = 30, d = 20, reduced.dim = "X_scvi")
-milo_object <- makeNhoods(milo_object, reduced_dims = "X_scvi", d = 20, prop = 0.3)
+milo_object <- buildGraph(milo_object, 
+                          k = 30, 
+                          d = 20, 
+                          reduced.dim = "X_scvi")
+milo_object <- makeNhoods(milo_object, 
+                          reduced_dims = "X_scvi", 
+                          d = 20, 
+                          prop = 0.3)
 ```
 
 ### Construct UMAP on milo neighbor graph
@@ -147,7 +153,8 @@ milo_object <- makeNhoods(milo_object, reduced_dims = "X_scvi", d = 20, prop = 0
 We can visualize this milo object using UMAP.
 
 ```{r, warning = FALSE}
-milo_object <- miloUmap(milo_object, n_neighbors = 30)
+milo_object <- miloUmap(milo_object, 
+                        n_neighbors = 30)
 plotUMAP(milo_object, 
          color_by = "anno_lvl_2_final_clean", 
          dimred = "UMAP_knngraph")
@@ -166,8 +173,11 @@ pb.milo <- vdjPseudobulk(milo_object,
 We can compute and visualize the PCA of the pseudobulked VDJ feature space.
 
 ```{r}
-pb.milo <- runPCA(pb.milo, assay.type = "Feature_space", ncomponents = 20)
-plotPCA(pb.milo, color_by = "anno_lvl_2_final_clean")
+pb.milo <- runPCA(pb.milo, 
+                  assay.type = "Feature_space", 
+                  ncomponents = 20)
+plotPCA(pb.milo, 
+        color_by = "anno_lvl_2_final_clean")
 ```
 
 ## TCR trajectory inference using Absorbing Markov Chain
@@ -177,7 +187,8 @@ In the original `dandelion` python package, the trajectory inference is done usi
 ### Define root and branch tips
 
 ```{r}
-pca <- t(as.matrix(reducedDim(pb.milo, type = "PCA")))
+pca <- t(as.matrix(reducedDim(pb.milo, 
+                              type = "PCA")))
 # define the CD8 terminal cell as the top-most cell and CD4 terminal cell as
 # the bottom-most cell
 branch.tips <- c(which.max(pca[2, ]), which.min(pca[2, ]))
@@ -233,8 +244,12 @@ pb.milo <- markovProbability(
 With the Markov chain probabilities computed, we can visualise the branch probabilities towards CD4+ or CD8+ T-cell fate on the PCA plot.
 
 ```{r, message=FALSE}
-plotPCA(pb.milo, color_by = "CD8+T") + scale_color_gradientn(colors = pal)
-plotPCA(pb.milo, color_by = "CD4+T") + scale_color_gradientn(colors = pal)
+plotPCA(pb.milo, 
+        color_by = "CD8+T") + 
+  scale_color_gradientn(colors = pal)
+plotPCA(pb.milo, 
+        color_by = "CD4+T") + 
+  scale_color_gradientn(colors = pal)
 ```
 
 ## Transfer
@@ -252,14 +267,21 @@ cdata <- projectPseudotimeToCell(milo_object,
 ### Visualise the trajectory data on a per cell basis
 
 ```{r, message=FALSE}
+# Plotting Cell Anntotation
 plotUMAP(cdata, color_by = "anno_lvl_2_final_clean", 
          dimred = "UMAP_knngraph")
+
+# Plotting pseudotime
 plotUMAP(cdata, color_by = "pseudotime", 
          dimred = "UMAP_knngraph") + 
   scale_color_gradientn(colors = pal)
+
+# Plotting CD4 trajectory
 plotUMAP(cdata, color_by = "CD4+T", 
          dimred = "UMAP_knngraph") + 
   scale_color_gradientn(colors = pal)
+
+# Plotting CD8 trajectory
 plotUMAP(cdata, color_by = "CD8+T", 
          dimred = "UMAP_knngraph") + 
   scale_color_gradientn(colors = pal)
