@@ -30,7 +30,7 @@ knitr::knit_hooks$set(time_it = local({
   }
 }))
 knitr::opts_chunk$set(
-  tidy = TRUE,
+ ,
   tidy.opts = list(width.cutoff = 95),
   message = FALSE,
   warning = FALSE,
@@ -61,30 +61,57 @@ scRep_example$Type <- substr(scRep_example$orig.ident, 4,4)
 colorblind_vector <- hcl.colors(n=7, palette = "inferno", fixup = TRUE)
 ```
 
-
 ## StartracDiversity
 
-From the excellent work by [Lei Zhang, et al.](https://www.nature.com/articles/s41586-018-0694-x), the authors introduced new methods for looking at clones by cellular origins and cluster identification. Their [STARTRAC](https://github.com/Japrin/STARTRAC) software has been adapted to work with `scRepertoire` and please read and cite their excellent work. 
+From the excellent work by [Zhang et al. (2018, Nature)](https://www.nature.com/articles/s41586-018-0694-x), the authors introduced new methods for looking at clones by cellular origins and cluster identification. We strongly recommend you read and cite their publication when using this function.
 
-To use the `StartracDiversity()` function, you need to include the product of the `combineExpression()` function. The second requirement is a column header in the metadata of the Seurat object that has the tissue of origin. In the example data, type corresponds to the column "Type", which includes the "P" (peripheral blood) and "L" (lung) classifiers. The indices can be subsetted for a specific patient or examined overall using the group.by variable. Importantly, the function uses only the strict definition of a clone, which includes the VDJC genes and the CDR3 nucleotide sequence.
+To use the ```StartracDiversity()``` function, you need the output of the ```combineExpression()``` function and a column in your metadata that specifies the tissue of origin. 
 
 ### Indices Output from `StartracDiversity()`
 
-*  `expa` - Clonal Expansion  
-*  `migr` - Cross-tissue Migration  
-*  `tran` - State Transition  
+*  `expa` - Clonal Expansion. Measures the degree of clonal proliferation within a given cell cluster. It is calculated as `1 - normalized Shannon entropy`, where a higher value indicates that a few clones dominate the cluster.  
+*  `migr` - Cross-tissue Migration. Quantifies the movement of clonal T cells between different tissues, as defined by the `type` parameter. This index is based on the entropy of a single clonotype's distribution across the specified tissues.  
+*  `tran` - State Transition. Measures the developmental transition of T cell clones between different functional clusters. This index is calculated from the entropy of a single clonotype's distribution across the cell clusters identified in the data.
 
 Key Parameters for `StartracDiversity()`
 
 * `type`: The variable in the metadata that provides tissue type.
 * `group.by`: A column header in the metadata to group the analysis by (e.g., "sample", "treatment"). 
 
-Calculate and plot Startrac diversity metrics using "Type" for tissue and "Patient" for grouping:
+By default, `StartracDiversity()` will calculate all three indices (`expa`, `migr`, and `tran`) for each cluster and group you define. This provides a comprehensive overview of the clonal dynamics in your dataset. The output is a three-paneled plot, with each panel representing one index.
 
-```{r tidy = FALSE}
+In the example data, `type` corresponds to the "Type" column, which includes "P" (peripheral blood) and "L" (lung) classifiers. The analysis is grouped by the "Patient" column.
+
+```{r}
+# Calculate and plot all three STARTRAC indices
 StartracDiversity(scRep_example, 
                   type = "Type", 
                   group.by = "Patient")
+```
+
+### Calculating a Single Index
+
+If you're only interested in one aspect of clonal dynamics, you can specify it using the `index` parameter. For example, to only calculate and plot clonal expansion:
+
+```{r}
+# Calculate and plot only the clonal expansion index
+StartracDiversity(scRep_example, 
+                  type = "Type", 
+                  group.by = "Patient",
+                  index = "expa")
+```
+
+### Pairwise Migration Analysis
+
+Another feature of `StartracDiversity()` is the ability to perform pairwise comparisons. To specifically quantify the migration between two tissues (e.g., Lung vs. Periphery), set `index = "migr"` and tell the function which column to use for the comparison with `pairwise = "Type"`.
+
+```{r}
+# # Calculate pairwise migration between tissues
+StartracDiversity(scRep_example, 
+                  type = "Type", 
+                  group.by = "Patient",
+                  index = "migr",
+                  pairwise = "Type")
 ```
 
 ## clonalBias
@@ -100,7 +127,7 @@ Key Parameter(s) for `clonalBias()`
 
 Here we calculate and plot clonal bias using `aa` clone calls, splitting by "Patient" and grouping by "seurat_clusters", with a minimum expansion of 5 and 10 bootstraps:
 
-```{r, message = FALSE, tidy = FALSE}
+```{r, message = FALSE,}
 clonalBias(scRep_example, 
            cloneCall = "aa", 
            split.by = "Patient", 
