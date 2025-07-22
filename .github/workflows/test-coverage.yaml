@@ -26,26 +26,27 @@ jobs:
           extra-packages: any::covr
           needs: coverage
 
-      # This step is changed to generate the cobertura.xml file
+      # This step is corrected to use the right functions
       - name: Test coverage and generate report
         run: |
-          covr::cobertura(
+          # First, calculate the package coverage
+          cov <- covr::package_coverage(
             quiet = FALSE,
             clean = FALSE,
             exclusions = "R/global.R",
-            install_path = file.path(normalizePath(Sys.getenv("RUNNER_TEMP"), winslash = "/"), "package"),
-            file = "cobertura.xml"
+            install_path = file.path(normalizePath(Sys.getenv("RUNNER_TEMP"), winslash = "/"), "package")
           )
+          # Then, generate the cobertura.xml file from the coverage object
+          covr::to_cobertura(cov, file = "cobertura.xml")
         shell: Rscript {0}
 
-      - uses: codecov/codecov-action@v4
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
         with:
-          # This token is usually not required for public repositories on GitHub Actions
-          # token: ${{ secrets.CODECOV }} 
+          # token is not required for public repos on GitHub Actions
+          # token: ${{ secrets.CODECOV }}
           fail_ci_if_error: ${{ github.event_name != 'pull_request' }}
           file: ./cobertura.xml
-          # The 'noop' plugin is not needed when you are uploading a report file
-          # plugin: noop 
           disable_search: true
           
       - name: Show testthat output
