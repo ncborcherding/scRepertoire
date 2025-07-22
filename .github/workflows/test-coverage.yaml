@@ -26,7 +26,6 @@ jobs:
           extra-packages: any::covr
           needs: coverage
 
-      # This step is corrected to use the right functions
       - name: Test coverage and generate report
         run: |
           # First, calculate the package coverage
@@ -43,8 +42,8 @@ jobs:
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
         with:
-          # token is not required for public repos on GitHub Actions
-          # token: ${{ secrets.CODECOV }}
+          # A token is required for repositories with protected branches
+          token: ${{ secrets.CODECOV }}
           fail_ci_if_error: ${{ github.event_name != 'pull_request' }}
           file: ./cobertura.xml
           disable_search: true
