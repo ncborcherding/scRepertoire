@@ -30,7 +30,7 @@ knitr::knit_hooks$set(time_it = local({
   }
 }))
 knitr::opts_chunk$set(
-  tidy = TRUE,
+  tidy = FALSE,
   tidy.opts = list(width.cutoff = 95),
   message = FALSE,
   warning = FALSE,
@@ -55,7 +55,7 @@ Key Parameter(s) for `addVariable()`
 
 As an example, here we add the Type in which the samples were processed and sequenced to the `combined.TCR` object:
 
-```{r tidy = FALSE}
+```{r}
 combined.TCR <- addVariable(combined.TCR, 
                             variable.name = "Type", 
                             variables = rep(c("B", "L"), 4))
@@ -74,7 +74,7 @@ Key Parameter(s) for `subsetClones()`
 
 Below, we isolate just the two sequencing results from "P18L" and "P18B" samples:
 
-```{r, tidy = FALSE}
+```{r}
 subset1 <- subsetClones(combined.TCR, 
                         name = "sample", 
                         variables = c("P18L", "P18B"))
@@ -106,7 +106,7 @@ Key Parameter(s) for `exportClones()`
 
 To export the combined clonotypes as a `paired` data frame and save it to a specified directory:
 
-```{r, eval = FALSE, tidy = FALSE}
+```{r, eval = FALSE}
 exportClones(combined, 
              write.file = TRUE,
              dir = "~/Documents/MyExperiment/Sample1/"
@@ -131,7 +131,7 @@ Key Parameter(s) for `annotateInavriant()`
 * `type`: Character string specifying the type of invariant T cell to annotate (`MAIT` or `iNKT`).
 * `species`: Character string specifying the species (`mouse` or `human`).
 
-```{r, eval = FALSE, tidy = FALSE}
+```{r, eval = FALSE}
 combined <- annotateInvariant(combined, 
                               type = "MAIT", 
                               species = "human")

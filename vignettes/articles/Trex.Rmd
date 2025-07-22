@@ -30,7 +30,7 @@ knitr::knit_hooks$set(time_it = local({
   }
 }))
 knitr::opts_chunk$set(
-  tidy = TRUE,
+  tidy = FALSE,
   tidy.opts = list(width.cutoff = 95),
   message = FALSE,
   warning = FALSE,
@@ -65,7 +65,7 @@ To show the multiple options of Trex, the example data is derived from [GSE16711
 
 Here is the basic workflow that was used to make the single-cell object to use in the vignette. Notice there is a removal of TCR-related CITE-seq data and RNA features (using the **Trex** function ```quietTCRgenes()```). As we are going to combine multimodal data, both the GEX and CITE probes may cause bias in the weighted output. 
 
-```{r, eval=FALSE, tidy=FALSE}
+```{r eval=FALSE}
 ##################################
 #scRNA/ADT loading and processing
 #################################
@@ -124,7 +124,7 @@ save(trex_example, file = "trex_example.rda", compress = "xz")
 
 For the purpose of the vignette, we will load the full object. The data example built into the package (**trex_example**) is derived from randomly sampling T cells from patient 17 (see above workflow).
 
-```{r tidy = FALSE}
+```{r }
 SeuratObj <- readRDS(url("https://www.borch.dev/uploads/data/Trex_FullExample.rds"))
 ```
 
@@ -159,7 +159,7 @@ Trex has 2 major functions - the first being ```maTrex()```, which is the backbo
 **theta**  
 If choosing the geometric transformation, what value of theta to use (default is pi)
 
-```{r tidy = FALSE}
+```{r }
 Trex_vectors <- maTrex(SeuratObj, 
                        chains = "TRA",
                        encoder.model = "VAE", 
@@ -183,7 +183,7 @@ ggplot(as.data.frame(Trex_vectors2), aes(x = Trex_1, y = Trex_2)) +
 
 Additionally, ```runTrex()``` can be used to append the Seurat or Single-cell Experiment object with the Trex vectors and allow for further analysis. Importantly, ```runTrex()``` will remove single cells that do not have recovered TCR data in the metadata of the object. 
 
-```{r tidy = FALSE}
+```{r }
 SeuratObj <- runTrex(SeuratObj, 
                     chains = "TRB",
                     encoder.model = "VAE", 
@@ -195,7 +195,7 @@ SeuratObj <- runTrex(SeuratObj,
 
 After ```runTrex()``` we have the encoded values stored under **"Trex..."**. Using the Trex reduction stored in Seurat, we can calculate the nearest neighbor and shared nearest neighbor indexes and generate a UMAP.
 
-```{r tidy = FALSE}
+```{r }
 #Generating UMAP from Trex Neighbors
 SeuratObj <- RunUMAP(SeuratObj, 
                      reduction = "Trex.KF",
@@ -219,7 +219,7 @@ plot1 + plot2
 
 We now can use this in a similar way as other single-cell modalities and calculate weighted nearest neighbor (WNN). To check out more on WNN, please read the Satija's group [paper](https://pubmed.ncbi.nlm.nih.gov/34062119/). We will use the RNA, ADT protein levels, and Trex vectors for the WNN calculations. 
 
-```{r tidy = FALSE}
+```{r }
 SeuratObj <- FindMultiModalNeighbors(
                     SeuratObj, 
                     reduction.list = list("pca", "apca", "Trex.KF"), 
@@ -253,7 +253,7 @@ plot3 + plot4
 
 We can also look at the differences in the UMAP generated from RNA, ADT, or Trex as individual components. Remember, the clusters that we are displaying in UMAP are based on clusters defined by the weighted nearest neighbors calculated above. 
 
-```{r tidy = FALSE}
+```{r }
 SeuratObj <- RunUMAP(SeuratObj, 
                      reduction = 'pca', 
                      dims = 1:30, 
@@ -281,7 +281,7 @@ Recent [work](https://pubmed.ncbi.nlm.nih.gov/34426704/) has proposed using repr
 
 In order to generate a single-cell object based on the CoNGA approach, Trex offers the function ```CoNGAfy()```. For **method**, select either "mean" or "dist" as described above. After performing ```CoNGAfy()```, the user can use any of the above reduction strategies. 
 
-```{r tidy = FALSE}
+```{r }
 library(dplyr, include.only = c("%>%"))
 
 CoNGA.seurat <- CoNGAfy(SeuratObj, 
@@ -318,7 +318,7 @@ The database is collated from multiple sources and represents a great deal of ef
 4. [TBA](https://db.cngb.org/pird/home/) (now called PIRD) - [citation](https://pubmed.ncbi.nlm.nih.gov/31373607/)
 
 
-```{r tidy = FALSE}
+```{r }
 CoNGA.seurat <- annotateDB(CoNGA.seurat, 
                            chains = "TRB")
 
@@ -335,7 +335,7 @@ DimPlot(CoNGA.seurat,
 
 Or ```annotateDB()``` can be used on the full single-cell object and examine the sequence information along the RNA-based UMAP. An added feature to the function allows the annotations to be extended to CDR3 sequences that are within defined edit distances from the reference using **edit.distance**.
 
-```{r tidy = FALSE}
+```{r }
 SeuratObj <- annotateDB(SeuratObj,
                         chains = "TRB", 
                         edit.distance = 2)
