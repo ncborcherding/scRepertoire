@@ -30,7 +30,7 @@ knitr::knit_hooks$set(time_it = local({
   }
 }))
 knitr::opts_chunk$set(
-  tidy = TRUE,
+  tidy = FALSE,
   tidy.opts = list(width.cutoff = 95),
   message = FALSE,
   warning = FALSE,
@@ -54,7 +54,7 @@ More information is available at the [Ibex GitHub Repo](https://github.com/Borch
 
 ## Installation
 
-```{r, eval = FALSE, tidy = FALSE}
+```{r, eval = FALSE}
 devtools::install_github("BorchLab/Ibex")
 ```
 
@@ -158,7 +158,7 @@ save(ibex_vdj, file = "ibex_vdj.rda", compress = "xz")
 
 For the purpose of the vignette, will use the built-in data set `ibex_example`, but will convert it into a Seurat object.
 
-```{r tidy = FALSE}
+```{r}
 data("ibex_example")
 
 SeuratObj <- as.Seurat(ibex_example)
@@ -183,7 +183,7 @@ The `combineExpandedBCR()` function supports the following parameters:
 | `filterMulti`       | Select highest-expressing light and heavy chains.                      | `TRUE` |
 | `filterNonproductive` | Remove nonproductive chains if the column exists.                     | `TRUE` |
 
-```{r tidy = FALSE}
+```{r}
 combined.BCR <- combineExpandedBCR(input.data = list(ibex_vdj),
                                    samples = "Sample1",
                                    filterNonproductive = TRUE)
@@ -198,7 +198,7 @@ We can attach the expanded sequences to the Seurat or Single-Cell Experiment obj
 
 A full list of available models is provided below:
 
-```{r tidy = FALSE}
+```{r}
 model.meta.data <-  read.csv(system.file("extdata", "metadata.csv", 
                                                package = "Ibex"))[,c(1:2,8)]
 model.meta.data %>%
@@ -296,7 +296,7 @@ ll the models are available via a [Zenodo repository](https://zenodo.org/records
 - **theta**:  
   For the geometric transformation, defines the value of theta (default is π/3).
   
-```{r tidy = FALSE}
+```{r}
 Ibex_vectors <- Ibex.matrix(SeuratObj, 
                             chain = "Heavy",
                             method = "encoder",
@@ -324,7 +324,7 @@ ggplot(as.data.frame(Ibex_vectors2), aes(x = Ibex_1, y = Ibex_2)) +
 
 Additionally, ```runIbex()``` can be used to append the Seurat or Single-cell Experiment object with the Ibex vectors and allow for further analysis. Importantly, ```runIbex()``` will remove single cells that do not have recovered BCR data in the metadata of the object. 
 
-```{r tidy = FALSE}
+```{r}
 SeuratObj <- runIbex(SeuratObj, 
                      chain = "Heavy",
                      encoder.input = "kideraFactors", 
@@ -337,7 +337,7 @@ SeuratObj <- runIbex(SeuratObj,
 
 After ```runIbex()``` we have the encoded values stored under **"Ibex..."**. Using the Ibex dimensions, we can calculate a UMAP based solely on the embedded heavy chain values. Here we will visualize both the Heavy/Light Chain amino acid sequence (via **CTaa**) and normalized counts associated with the **Anti-Hen-Egg-Lysozyme** antigen.
 
-```{r tidy = FALSE}
+```{r}
 #Generating UMAP from ibex Neighbors
 SeuratObj <- RunUMAP(SeuratObj, 
                      reduction = "Ibex.KF",
@@ -368,7 +368,7 @@ plot1 + plot2 + plot3
 
 We now can use this in a similar way as other single-cell modalities and calculate weighted nearest neighbor (WNN). To check out more on WNN, please read the Satija's group [paper](https://pubmed.ncbi.nlm.nih.gov/34062119/). We will use the RNA, ADT protein levels, and ibex vectors for the WNN calculations. 
 
-```{r tidy = FALSE}
+```{r}
 SeuratObj <- FindMultiModalNeighbors(
                     SeuratObj, 
                     reduction.list = list("pca", "apca", "Ibex.KF"), 
@@ -413,7 +413,7 @@ plot4 + plot5 + plot6
 
 We can also look at the differences in the UMAP generated from RNA, ADT, or Ibex as individual components. Remember, the clusters that we are displaying in UMAP are based on clusters defined by the weighted nearest neighbors calculated above. 
 
-```{r tidy = FALSE}
+```{r}
 SeuratObj <- RunUMAP(SeuratObj, 
                      reduction = 'pca', 
                      dims = 1:30, 
@@ -466,7 +466,7 @@ A challenge arises, however, when a clonotype contains multiple cells (e.g., 10 
 * Simply take the average (mean) expression across all cells in the same clonotype.
 * Conceptually, you collapse a multi-cell clone into one “virtual cell” representing its average expression.
 
-```{r tidy = FALSE}
+```{r}
 CoNGA.seurat <- CoNGAfy(SeuratObj, 
                          method = "dist", 
                         assay = c("RNA", "BEAM"))

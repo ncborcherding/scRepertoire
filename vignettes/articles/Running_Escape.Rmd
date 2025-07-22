@@ -95,7 +95,7 @@ BiocManager::install("escape")
 
 For the purposes of the vignette, we will use the scRepertoire full example data. More information is available [here](https://www.borch.dev/uploads/screpertoire/articles/loading#example-data-in-screpertoire). We will subset the data for patient 17 and 18 from the data set in order to speed up the calculations.
 
-```{r tidy = FALSE}
+```{r}
 scRep_example <- subset(scRep_example, Patient %in% c("P17", "P18"))
 ```
 
@@ -213,7 +213,7 @@ escape has 2 major functions - the first being ```escape.matrix()```, which serv
 *Cautionary note:* **make.positive** was added to allow for differential analysis downstream of enrichment as some methods may produce negative values. It preserves log-fold change, but ultimately modifies the enrichment values and should be used with caution.
 
 
-```{r tidy = FALSE}
+```{r}
 enrichment.scores <- escape.matrix(scRep_example, 
                                    gene.sets = escape.gene.sets, 
                                    groups = 1000, 
@@ -240,7 +240,7 @@ enrichment.scores <- escape.matrix(scRep_example,
 
 Alternatively, we can use ```runEscape()``` to calculate the enrichment score and directly attach the output to a single-cell object. The additional parameter for ```runEscape` is **new.assay.name**, in order to save the enrichment scores as a custom assay in the single-cell object. 
 
-```{r tidy = FALSE}
+```{r}
 scRep_example <- runEscape(scRep_example, 
                            method = "ssGSEA",
                            gene.sets = escape.gene.sets, 
@@ -258,7 +258,7 @@ scRep_example <- runEscape(scRep_example,
 
 We can quickly examine the attached enrichment scores using the visualization/workflow we prefer - here we will use just `FeaturePlot()` from the Seurat R package. 
 
-```{r tidy = FALSE}
+```{r}
 #Define color palette 
 colorblind_vector <- hcl.colors(n=7, palette = "inferno", fixup = TRUE)
 
