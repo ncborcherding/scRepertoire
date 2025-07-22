@@ -30,7 +30,7 @@ knitr::knit_hooks$set(time_it = local({
   }
 }))
 knitr::opts_chunk$set(
-  tidy = TRUE,
+  tidy = FALSE,
   tidy.opts = list(width.cutoff = 95),
   message = FALSE,
   warning = FALSE,
@@ -55,7 +55,7 @@ Key Parameter(s) for `percentAA()`
 
 To visualize the relative percentage of amino acids at each position of the CDR3 sequences for the TRB chain, up to a length of 20 amino acids:
 
-```{r, message = FALSE, tidy = FALSE}
+```{r, message = FALSE}
 percentAA(combined.TCR, 
           chain = "TRB", 
           aa.length = 20)
@@ -79,7 +79,7 @@ Key Parameter(s) for `positionalEntropy()`
   
 To visualize the normalized entropy across amino acid residues for the TRB chain, up to a length of 20 amino acids:
 
-```{r tidy = FALSE}
+```{r}
 positionalEntropy(combined.TCR, 
                   chain = "TRB", 
                   aa.length = 20)
@@ -107,7 +107,7 @@ Key Parameter(s) for `positionalEntropy()`
   
 To examine the Atchley factors of amino acids across the CDR3 sequence for the first two samples:
 
-```{r tidy = FALSE}
+```{r}
 positionalProperty(combined.TCR[c(1,2)], 
                   chain = "TRB", 
                   aa.length = 20, 
@@ -134,7 +134,7 @@ The `vizGenes()` function offers a highly adaptable approach to visualizing the 
   * "heatmap": Suitable for single gene usage (with a group.by or y.axis categorical variable) or for paired gene analysis.
 * `summary.fun`: (Inherited from `percentGeneUsage`) Defines the statistic to display: "percent" (default), "proportion", or "count". This implicitly handles the scaling of values.
 
-```{r tidy = FALSE}
+```{r}
 vizGenes(combined.TCR,
          x.axis = "TRBV",
          y.axis = NULL, # No specific y-axis variable, will group all samples
@@ -146,7 +146,7 @@ This plot shows the proportion of each *TRBV* gene segment observed across the e
 
 `vizGenes()` is particularly useful for examining gene pairings. Let's look at the differences in *TRBV* and *TRBJ* usage between peripheral blood and lung samples from your dataset. We'll subset combined.TCR for this analysis.
 
-```{r tidy = FALSE}
+```{r}
 # Peripheral Blood Samples
 vizGenes(combined.TCR[c("P17B", "P18B", "P19B", "P20B")],
          x.axis = "TRBV",
@@ -166,7 +166,7 @@ In these examples, by providing both `x.axis` and `y.axis` as gene segments ("TR
 
 Beyond V-J pairings within a single chain, `vizGenes()` can also visualize gene usage across different chains. For instance, to examine *TRBV* and *TRAV* pairings for patient P17's samples:
 
-```{r tidy = FALSE}
+```{r}
 vizGenes(combined.TCR[c("P17B", "P17L")],
          x.axis = "TRBV",
          y.axis = "TRAV",
@@ -277,7 +277,7 @@ Key Parameter(s) for `percentKmer()`:
 
 To visualize the percentage of the top 25 most variable 3-mer amino acid motifs for the TRB chain:
 
-```{r tidy = FALSE}
+```{r}
 percentKmer(combined.TCR, 
             cloneCall = "aa",
             chain = "TRB", 

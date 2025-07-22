@@ -30,7 +30,7 @@ knitr::knit_hooks$set(time_it = local({
   }
 }))
 knitr::opts_chunk$set(
-  tidy = TRUE,
+  tidy = FALSE,
   tidy.opts = list(width.cutoff = 95),
   message = FALSE,
   warning = FALSE,
@@ -85,7 +85,7 @@ Methods for Color Adjustment
 
 ### Using Internal Palette Selection
 
-```{r tidy = FALSE}
+```{r}
 # Internal Palette Selection
 clonalQuant(combined.TCR, 
             cloneCall="strict", 
@@ -149,7 +149,7 @@ Key Parameter for Data Export
 
 * `exportTable`: Set this parameter to `TRUE` to return the data frame used to generate the graph instead of the visual output.
 
-```{r tidy = FALSE}
+```{r}
 clonalQuant_output <- clonalQuant(combined.TCR, 
                                   cloneCall="strict", 
                                   scale = TRUE, 

@@ -30,7 +30,7 @@ knitr::knit_hooks$set(time_it = local({
   }
 }))
 knitr::opts_chunk$set(
-  tidy = TRUE,
+  tidy = FALSE,
   tidy.opts = list(width.cutoff = 95),
   message = FALSE,
   warning = FALSE,
@@ -57,7 +57,7 @@ Key Parameter(s) for `clonalQuant()`
 
 To visualize the relative percent of unique clones across all chains (`"both"`) using the `strict` clone definition:
 
-```{r tidy = FALSE}
+```{r}
 clonalQuant(combined.TCR, 
             cloneCall="strict", 
             chain = "both", 
@@ -83,7 +83,7 @@ Key Parameter(s) for `clonalAbundance()`
 
 To visualize the raw clonal abundance using the `gene` clone definition:
 
-```{r tidy = FALSE}
+```{r}
 clonalAbundance(combined.TCR, 
                 cloneCall = "gene", 
                 scale = FALSE)
@@ -103,7 +103,7 @@ clonalAbundance(combined.TCR,
 
 To visualize the amino acid length distribution for both chains ("both"):
 
-```{r tidy = FALSE}
+```{r}
 clonalLength(combined.TCR, 
              cloneCall="aa", 
              chain = "both") 
@@ -134,7 +134,7 @@ Key Parameters for `clonalCompare()`
 
 To compare the top 10 clones between samples "P17B" and "P17L" using amino acid sequences as an alluvial plot:
 
-```{r tidy = FALSE}
+```{r}
 clonalCompare(combined.TCR, 
                   top.clones = 10, 
                   samples = c("P17B", "P17L"), 
@@ -144,7 +144,7 @@ clonalCompare(combined.TCR,
 
 We can also choose to highlight specific clones, such as in the case of *"CVVSDNTGGFKTIF_CASSVRRERANTGELFF"* and *"NA_CASSVRRERANTGELFF"* using the `highlight.clones` parameter. In addition, we can simplify the plot to label the clones as "Clone: 1", "Clone: 2", etc., by setting `relabel.clones = TRUE`.
 
-```{r tidy = FALSE}
+```{r}
 clonalCompare(combined.TCR, 
               top.clones = 10,
               highlight.clones = c("CVVSDNTGGFKTIF_CASSVRRERANTGELFF", "NA_CASSVRRERANTGELFF"),
@@ -178,7 +178,7 @@ Key Parameter(s) for `clonalScatter()`
 
 To compare samples "P18B" and "P18L" based on `gene` clone calls, with dot size representing the total number of clones, and plotting clone proportions:
 
-```{r tidy = FALSE}
+```{r}
 clonalScatter(combined.TCR, 
               cloneCall ="gene", 
               x.axis = "P18B", 

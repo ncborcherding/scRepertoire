@@ -30,7 +30,7 @@ knitr::knit_hooks$set(time_it = local({
   }
 }))
 knitr::opts_chunk$set(
-  tidy = TRUE,
+  tidy = FALSE,
   tidy.opts = list(width.cutoff = 95),
   message = FALSE,
   warning = FALSE,
@@ -58,7 +58,7 @@ Default `cloneSize` Bins
 
 To visualize clonal homeostasis using gene clone calls with default `cloneSize` bins:
 
-```{r tidy = FALSE}
+```{r}
 clonalHomeostasis(combined.TCR, 
                   cloneCall = "gene")
 
@@ -66,7 +66,7 @@ clonalHomeostasis(combined.TCR,
 
 We can reassign the proportional cut points for `cloneSize`, which can drastically alter the visualization and analysis 
 
-```{r tidy = FALSE}
+```{r}
 clonalHomeostasis(combined.TCR, 
                   cloneCall = "gene",
                   cloneSize = c(Rare = 0.001, Small = 0.01, Medium = 0.1, 
@@ -75,7 +75,7 @@ clonalHomeostasis(combined.TCR,
 
 In addition, we can use the `group.by` parameter to look at the relative proportion of clones between groups, such as by tissue type. First, ensure the "Type" variable is added to `combined.TCR`:
 
-```{r tidy = FALSE}
+```{r}
 combined.TCR <- addVariable(combined.TCR, 
                             variable.name = "Type", 
                             variables = rep(c("B", "L"), 4))
@@ -83,7 +83,7 @@ combined.TCR <- addVariable(combined.TCR,
 
 Now, visualize clonal homeostasis grouped by "Type":
 
-```{r tidy = FALSE}
+```{r}
 clonalHomeostasis(combined.TCR, 
                   group.by = "Type",
                   cloneCall = "gene")
@@ -108,7 +108,7 @@ Default `clonalSplit` Bins
  
 To visualize the clonal proportion using `gene` clone calls with default `clonalSplit` bins:
 
-```{r tidy = FALSE}
+```{r}
 clonalProportion(combined.TCR, 
                  cloneCall = "gene") 
 ```
