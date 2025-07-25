@@ -8,8 +8,10 @@ StartracDiversity(
   sc.data,
   cloneCall = "strict",
   chain = "both",
+  index = c("expa", "migr", "tran"),
   type = NULL,
   group.by = NULL,
+  pairwise = NULL,
   exportTable = FALSE,
   palette = "inferno",
   ...
@@ -28,16 +30,25 @@ acid sequence), or \code{strict} (VDJC + nt). A custom column header can also be
 (e.g., TRA/TRB). Accepted values: \code{TRA}, \code{TRB}, \code{TRG}, \code{TRD}, \code{IGH}, \code{IGL}
 (for both light chains), \code{both}.}
 
-\item{type}{The variable in the meta data that provides tissue type.}
+\item{index}{A character vector specifying which indices to calculate.
+Options: "expa", "migr", "tran". Default is all three.}
+
+\item{type}{The metadata variable that specifies tissue type for migration
+analysis.}
 
 \item{group.by}{A column header in the metadata or lists to group the analysis
 by (e.g., "sample", "treatment"). If \code{NULL}, data will be analyzed as
 by list element or active identity in the case of single-cell objects.}
 
+\item{pairwise}{The metadata column to be used for pairwise comparisons.
+Set to the \code{type} variable for pairwise migration or "cluster" for
+pairwise transition.}
+
 \item{exportTable}{If \code{TRUE}, returns a data frame or matrix of the results
 instead of a plot.}
 
-\item{palette}{Colors to use in visualization - input any \link[grDevices:palettes]{hcl.pals}.}
+\item{palette}{Colors to use in visualization - input any
+\link[grDevices:palettes]{hcl.pals}.}
 
 \item{...}{Additional arguments passed to the ggplot theme}
 }
@@ -46,14 +57,40 @@ A ggplot object visualizing STARTRAC diversity metrics or data.frame if
 \code{exportTable = TRUE}.
 }
 \description{
-This function utilizes the Startrac approach derived from
-\href{https://pubmed.ncbi.nlm.nih.gov/30479382/}{PMID: 30479382}.
-Required to run the function, the "type" variable needs to include the
-difference in where the cells were derived. The output of this function
-will produce 3 indices: \code{expa} (clonal expansion), \code{migra}
-(cross-tissue migration), and \code{trans} (state transition). In order
-to understand the underlying analyses of the outputs please
-read and cite the linked manuscript.
+This function utilizes the STARTRAC approach to calculate T cell
+diversity metrics based on the work of Zhang et al. (2018, Nature)
+\href{https://pubmed.ncbi.nlm.nih.gov/30479382/}{PMID: 30479382}. It can compute
+three distinct indices: clonal expansion (\code{expa}), cross-tissue migration
+(\code{migr}), and state transition (\code{tran}).
+}
+\details{
+The function requires a \code{type} variable in the metadata, which specifies the
+tissue origin or any other categorical variable for migration analysis.
+
+\strong{Indices:}
+\itemize{
+\item{\strong{expa (Clonal Expansion):}} Measures the extent of clonal
+proliferation within a T cell cluster. It is calculated as
+\verb{1 - normalized Shannon entropy}. A higher value indicates greater
+expansion of a few clones.
+\item{\strong{migr (Cross-Tissue Migration):}} Quantifies the movement of
+clonal T cells across different tissues (as defined by the \code{type}
+parameter). It is based on the entropy of a clonotype's distribution
+across tissues.
+\item{\strong{tran (State Transition):}} Measures the developmental
+transition of clonal T cells between different functional clusters.
+It is based on the entropy  of a clonotype's distribution across
+clusters.
+}
+
+\strong{Pairwise Analysis:}
+The \code{pairwise} parameter enables the calculation of migration or transition
+between specific pairs of tissues or clusters, respectively.
+\itemize{
+\item{For migration (\code{index = "migr"}), set \code{pairwise} to the \code{type} column
+(e.g., \code{pairwise = "Type"}).}
+\item{For transition (\code{index = "tran"}), set \code{pairwise} to \code{"cluster"}.}
+}
 }
 \examples{
 # Getting the combined contigs
@@ -67,10 +104,18 @@ scRep_example  <- combineExpression(combined, scRep_example)
 scRep_example$Patient <- substring(scRep_example$orig.ident,1,3)
 scRep_example$Type <- substring(scRep_example$orig.ident,4,4) 
 
-# Using StartracDiversity()
+# Calculate a single index (expansion)
 StartracDiversity(scRep_example, 
                   type = "Type", 
-                  group.by = "Patient")
+                  group.by = "Patient",
+                  index = "expa")
+                  
+# Calculate pairwise transition 
+StartracDiversity(scRep_example, 
+                  type = "Type", 
+                  group.by = "Patient",
+                  index = "tran",
+                  pairwise = "cluster") 
 
 }
 \author{

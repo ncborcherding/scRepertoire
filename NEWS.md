@@ -6,7 +6,6 @@
 cubature, truncdist and VGAM from dependencies.
 * Increased speed of ```clonalSizeDistribution()```
 
-
 # scRepertoire VERSION 2.5.0
 
 ## UNDERLYING CHANGES

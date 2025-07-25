@@ -13,7 +13,7 @@ home:
     components:
       custom:
         title: Citation
-        text: '[Citing scRepertoire](https://f1000research.com/articles/9-47)'
+        text: '[Citing scRepertoire](https://pubmed.ncbi.nlm.nih.gov/40577285/)'
 navbar:
   left:
   - text: Getting Started

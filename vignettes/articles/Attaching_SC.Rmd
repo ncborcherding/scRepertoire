@@ -30,7 +30,7 @@ knitr::knit_hooks$set(time_it = local({
   }
 }))
 knitr::opts_chunk$set(
-  tidy = TRUE,
+  tidy = FALSE,
   tidy.opts = list(width.cutoff = 95),
   message = FALSE,
   warning = FALSE,
@@ -63,14 +63,14 @@ To mitigate this issue, a common strategy is to exclude VDJ genes from the set o
 
 Let's first check the top 10 variable features in the scRep_example Seurat object before any removal:
 
-```{r tidy = FALSE}
+```{r}
 # Check the first 10 variable features before removal
 VariableFeatures(scRep_example)[1:10]
 ```
 
 Now, we'll remove TCR VDJ genes from the scRep_example object:
 
-```{r tidy = FALSE}
+```{r}
 # Remove TCR VDJ genes
 scRep_example <- quietTCRgenes(scRep_example)
 
@@ -88,7 +88,7 @@ The data in the `scRepertoire` package is derived from a [study](https://pubmed.
 
 Here's how to load the full single-cell object and convert it to a Single-Cell Experiment object:
 
-```{r tidy = FALSE}
+```{r}
 scRep_example <- readRDS("scRep_example_full.rds")
 
 #Making a Single-Cell Experiment object
@@ -118,7 +118,7 @@ Key Parameter(s) for `combineExpression()`
 
 We can look at the default cloneSize groupings using the Single-Cell Experiment object we just created, with group.by set to the sample variable used in combineTCR():
 
-```{r tidy = FALSE}
+```{r}
 sce <- combineExpression(combined.TCR, 
                          sce, 
                          cloneCall="gene", 
@@ -134,7 +134,7 @@ plotUMAP(sce, colour_by = "cloneSize") +
 
 Alternatively, if we want `cloneSize` to be based on the frequency of the clone, we can set proportion = FALSE and will need to change the `cloneSize` bins to integers. If we haven't inspected our clone data, setting the upper limit of the clonal frequency might be difficult; `combineExpression()` will automatically adjust the upper limit to fit the distribution of the frequencies.
 
-```{r tidy = FALSE}
+```{r}
 scRep_example <- combineExpression(combined.TCR, 
                                    scRep_example, 
                                    cloneCall="gene", 
@@ -152,7 +152,7 @@ If you have both TCR and BCR enrichment data, or wish to include information for
 
 **Major Note**: If there are duplicate barcodes (e.g., if a cell has both Ig and TCR information), the immune receptor information will not be added for those cells. It might be worth checking cluster identities and removing incongruent barcodes in the products of `combineTCR()` and `combineBCR()`. As an anecdote, the  [testing data](https://support.10xgenomics.com/single-cell-vdj/datasets/6.0.1/SC5v2_Melanoma_5Kcells_Connect_single_channel_SC5v2_Melanoma_5Kcells_Connect_single_channel) used to improve this function showed 5-6% barcode overlap.
 
-```{r, eval=FALSE, tidy = FALSE}
+```{r, eval=FALSE}
 #This is an example of the process, which will not be evaluated during knit
 TCR <- combineTCR(...)
 BCR <- combineBCR(...)

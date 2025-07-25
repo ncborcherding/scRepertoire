@@ -1,5 +1,5 @@
-pandoc: 3.1.11
-pkgdown: 2.1.1
+pandoc: 3.6.4
+pkgdown: 2.1.3
 pkgdown_sha: ~
 articles:
   articles/Attaching_SC: Attaching_SC.html
@@ -9,18 +9,21 @@ articles:
   articles/Clonal_Dynamics: Clonal_Dynamics.html
   articles/Clonal_Visualizations: Clonal_Visualizations.html
   articles/Combining_Contigs: Combining_Contigs.html
+  articles/dandelionR: dandelionR.html
   articles/FAQ: FAQ.html
   articles/Ibex: Ibex.html
   articles/immApex: immApex.html
+  articles/immunarch: immunarch.html
   articles/Installation: Installation.html
   articles/Loading: Loading.html
   articles/Processing: Processing.html
   articles/Repertoire_Summary: Repertoire_Summary.html
   articles/Running_Escape: Running_Escape.html
   articles/SC_Visualizations: SC_Visualizations.html
+  articles/tcrpheno: tcrpheno.html
   articles/Trex: Trex.html
   vignette: vignette.html
-last_built: 2025-03-19T15:10Z
+last_built: 2025-07-22T13:53Z
 urls:
   reference: https://www.borch.dev/uploads/scRepertoire/reference
   article: https://www.borch.dev/uploads/scRepertoire/articles
