@@ -17,8 +17,8 @@ positionalProperty(
 )
 }
 \arguments{
-\item{input.data}{The product of \code{\link[=combineTCR]{combineTCR()}},
-\code{\link[=combineBCR]{combineBCR()}}, or \code{\link[=combineExpression]{combineExpression()}}}
+\item{input.data}{The product of \code{\link[=combineTCR]{combineTCR()}}, \code{\link[=combineBCR]{combineBCR()}}, or
+\code{\link[=combineExpression]{combineExpression()}}}
 
 \item{chain}{The TCR/BCR chain to use. Use Accepted values: \code{TRA}, \code{TRB},
 \code{TRG}, \code{TRD}, \code{IGH}, or \code{IGL} (for both light chains)..}
