@@ -60,7 +60,7 @@
 #' @param ... Additional arguments passed to the ggplot theme
 #'
 #' @importFrom ggdendro dendro_data segment label
-#' @importFrom stats hclust optim pgamma as.dist
+#' @importFrom stats hclust optim pgamma as.dist as.formula qgamma runif xtabs
 #' @export
 #' @concept Visualizing_Clones
 #' @return A ggplot object visualizing dendrogram of clonal size distribution
@@ -89,27 +89,22 @@ clonalSizeDistribution <- function(input.data,
   data <- bind_rows(input.data)
   unique_df<- unique(data[,cloneCall])
   
-  #Forming data frame to store values
-  Con.df <- data.frame(matrix(NA, length(unique_df), length(input.data)))
-  Con.df <- data.frame(unique_df, Con.df, stringsAsFactors = FALSE)
-  colnames(Con.df)[1] <- "clonotype"
-  for (i in seq_along(input.data)) {
-    data <- input.data[[i]]
-    data <- data.frame(table(data[,cloneCall]), 
-                       stringsAsFactors = FALSE)
-    colnames(data) <- c(cloneCall, "Freq")
-    for (y in seq_along(unique_df)){ # here is the first speed bottleneck that has speedup potential
-      clonotype.y <- Con.df$clonotype[y]
-      location.y <- which(clonotype.y == data[,cloneCall]) # some pre-indexing likely possible here to shave ~5s
-      Con.df[y,i+1] <- data[location.y[1],"Freq"] # assignment likely could be sped up by constant factor to shave ~8s
-    }
-  }
-  colnames(Con.df)[2:(length(input.data)+1)] <- names(input.data)
-  Con.df[is.na(Con.df)] <- 0
-  list <- list()
-  for (i in seq_along(input.data)) {
-    list[[i]] <- suppressWarnings(.fdiscgammagpd(Con.df[,i+1], useq = threshold))
-  }
+  # Create long-format summary table
+  summary_df <- dplyr::bind_rows(input.data, .id = "sample") %>%
+    dplyr::group_by(sample, .data[[cloneCall]]) %>%
+    dplyr::summarise(Freq = dplyr::n(), .groups = 'drop')
+  wide_matrix <- xtabs(as.formula(paste("Freq ~", cloneCall, "+ sample")), 
+                       data = summary_df)
+  Con.df <- as.data.frame.matrix(wide_matrix)
+  Con.df[[cloneCall]] <- rownames(Con.df)
+  rownames(Con.df) <- NULL
+  Con.df <- Con.df[, c(cloneCall, setdiff(names(Con.df), cloneCall))]
+  
+  # Fit models
+  list <- lapply(seq_len(ncol(Con.df))[-1], function(x) {
+    suppressWarnings(.fdiscgammagpd(Con.df[,x], useq = threshold))
+  })
+  
   names(list) <- names(input.data)
   grid <- 0:10000
   distances <- .get_distances(list, grid, modelType="Spliced")
@@ -136,7 +131,7 @@ clonalSizeDistribution <- function(input.data,
             coord_flip() +
             scale_y_reverse(expand = c(0.2, 0)) + 
             scale_color_manual(values = .colorizer(palette, nrow(label(mat_melt)))) + 
-            .themeRepertoire(...) + 
+            .themeRepertoire(..., grid_lines = "none") + 
             guides(color = "none") + 
             theme(axis.title = element_blank(), 
                   axis.ticks.y = element_blank(), 
@@ -148,11 +143,10 @@ clonalSizeDistribution <- function(input.data,
   return(plot)
 }
 
-#####################################################
-#Functions to run the fdiscgammagpd and get_distances
-#####################################################
-#This is to reduce dependency footprint of scRepertoire
-#and ensure compatibility going forward.
+#################################################################
+# Section 1: Main Fitting Engine
+#################################################################
+# Fit a Spliced Gamma and GPD Model
 #' @importFrom evmix fgpd
 #' @importFrom methods is
 .fdiscgammagpd <- function(x, useq, shift = NULL, pvector=NULL,
@@ -273,10 +267,12 @@ clonalSizeDistribution <- function(input.data,
   }
   out
 }
-##-----------------------------------------------------------------------------
-## Density, distribution, and quantile functions, random number generation
-## for discrete truncated gamma and discrete gpd
-##-----------------------------------------------------------------------------
+
+#################################################################
+# Section 2: Core Modeling Functions
+#################################################################
+
+# Discrete Gamma Probability Mass Function
 #' @importFrom methods is
 .ddiscgamma <- function(x, shape, rate, thresh, phiu, shift = 0, log = FALSE){
   if(any(x != floor(x))){
@@ -303,18 +299,37 @@ clonalSizeDistribution <- function(input.data,
   sum(probs)
 }
 
-#' @importFrom truncdist qtrunc
+.qtruncgamma_internal <- function(p, shape, rate, a=0, b=Inf) {
+  Fa <- pgamma(a, shape, rate)
+  Fb <- pgamma(b, shape, rate)
+  p_adjusted <- p * (Fb - Fa) + Fa
+  qgamma(p_adjusted, shape, rate)
+}
+
 .qdiscgamma <- function(p, shape, rate, thresh, phiu, shift = 0){
-  qtrunc(p/(1-phiu), spec = "gamma", a=0,
-         b=thresh-shift, shape=shape,rate=rate) %>% floor + shift
+  .qtruncgamma_internal(p/(1-phiu), 
+                        shape=shape, 
+                        rate=rate, 
+                        b=thresh-shift) %>% 
+    floor() + shift
 }
 
-#' @importFrom truncdist rtrunc
+.rtruncgamma_internal <- function(n, shape, rate, a = 0, b = Inf) {
+  Fa <- pgamma(a, shape, rate)
+  Fb <- pgamma(b, shape, rate)
+  u <- runif(n, min = Fa, max = Fb)
+  qgamma(u, shape, rate)
+}
+
 .rdiscgamma <- function(n, shape, rate, thresh, shift = 0){
-  rtrunc(n, spec = "gamma", a=0,
-         b=thresh-shift, shape=shape, rate=rate) %>% floor + shift
+  .rtruncgamma_internal(n, 
+                        shape = shape, 
+                        rate = rate, 
+                        b = thresh - shift) %>% 
+    floor() + shift
 }
 
+# Discrete GPD Probability Mass Function
 #' @importFrom evmix pgpd
 .ddiscgpd <- function(x, thresh, sigma, xi, phiu, log = FALSE){
   up <- pgpd(x+1, u=thresh, sigmau=sigma, xi=xi)
@@ -327,7 +342,7 @@ clonalSizeDistribution <- function(input.data,
   }
 }
 
-pdiscgpd <- function(q, thresh, sigma, xi, phiu){
+.pdiscgpd <- function(q, thresh, sigma, xi, phiu){
   probs <- .ddiscgpd(thresh:q, thresh, sigma, xi, phiu)
   sum(probs)
 }
@@ -342,12 +357,69 @@ pdiscgpd <- function(q, thresh, sigma, xi, phiu){
   rgpd(n, u=thresh, sigmau=sigma, xi=xi) %>% floor
 }
 
+# Spliced Gamma-GPD Probability Mass Function
+.ddiscgammagpd <- function(x, fit=NULL, shape, rate, u, sigma, xi,
+                           phiu=NULL, shift = 0, log = FALSE){
+  if(!is.null(fit)){
+    if(!all(c("x", "shift", "init", "useq", "nllhuseq", "nllh",
+              "optim", "mle") %in% names(fit))){
+      stop("\"fit\" is not of the correct structure. It must be one model
+                 fit from fdiscgammagpd.")
+    }
+    phiu <- fit$mle['phi']
+    shape <- fit$mle['shape']
+    rate <- fit$mle['rate']
+    u <- fit$mle['thresh']
+    sigma <- fit$mle['sigma']
+    xi <- fit$mle['xi']
+    shift <- fit$shift
+  }
+  if(!is(x, "numeric")){
+    stop("x must be numeric.")
+  }
+  
+  if(!is(shift, "numeric")){
+    stop("shift must be numeric.")
+  }
+  
+  if(any(x != floor(x))){
+    stop("x must be an integer")
+  }
+  
+  if(shift != round(shift)){
+    stop("shift must be an integer.")
+  }
+  
+  if(any(c(shape, rate, sigma) <= 0)){
+    stop("shape, rate, and sigma must all be positive.")
+  }
+  
+  if(!is.null(phiu)){
+    if(phiu < 0 | phiu > 1){
+      stop("phiu must be in [0,1].")
+    }
+  }
+  
+  if(is.null(phiu)){
+    phiu <- 1-.pdiscgamma(u-1, shape=shape, rate=rate,
+                          thresh=Inf, phiu = 0, shift=shift)
+  }
+  
+  out <- rep(NA, length(x))
+  
+  if(sum(x>=u) != 0){
+    out[x>=u] <- .ddiscgpd(x[x>=u], u, sigma, xi, phiu, log=log)
+  }
+  
+  if(sum(x<u) != 0){
+    out[x<u] <- .ddiscgamma(x[x<u], shape, rate, u, phiu, shift, log=log)
+  }
+  out
+}
 
-##-----------------------------------------------------------
-## negative log likelihood and parameter estimation functions
-## for discrete truncated gamma and discrete gpd
-##----------------------------------------------------------
+# --- Negative Log-Likelihood (NLL) Functions ---
 
+# NLL for Discrete Gamma
 .discgammanll <- function(param, dat, thresh, phiu, shift=0){
   shape <- exp(param[1])
   rate <- exp(param[2])
@@ -359,6 +431,7 @@ pdiscgpd <- function(q, thresh, sigma, xi, phiu){
   sum(-ll)
 }
 
+# NLL for Discrete GPD
 .discgpdnll <- function(param, dat, thresh, phiu){
   sigma <- exp(param[1])
   xi <- param[2]
@@ -367,18 +440,27 @@ pdiscgpd <- function(q, thresh, sigma, xi, phiu){
   sum(-ll)
 }
 
+# --- Fitting Wrappers ---
+
+# Wrapper for Gamma Optimization
 .fdiscgamma <- function(param, dat, thresh, phiu, shift = 0, method, ...){
   opt <- optim(log(param), .discgammanll, dat=dat, thresh=thresh,
                phiu=phiu, shift=shift, method=method, hessian = TRUE, ...)
   opt
 }
 
+# Wrapper for GPD Optimization
 .fdiscgpd <- function(param, dat, thresh, phiu, method, ...){
   opt <- optim(c(log(param[1]),param[2]), .discgpdnll, dat=dat, thresh=thresh,
                phiu=phiu, method=method, hessian = TRUE, ...)
   opt
 }
 
+#################################################################
+# Section 3: Distance Calculation
+#################################################################
+
+# Calculate Pairwise Distances
 #' @importFrom methods is
 .get_distances <- function(fits, grid, modelType = "Spliced"){
   if(!is(grid, "numeric")){
@@ -399,9 +481,9 @@ pdiscgpd <- function(q, thresh, sigma, xi, phiu){
   for(i in seq_len((length(fits)-1))){
     for(j in (i+1):length(fits)){
       distances[i,j] <- .JS_dist(fits[[i]],
-                                fits[[j]],
-                                grid,
-                                modelType = modelType)
+                                 fits[[j]],
+                                 grid,
+                                 modelType = modelType)
     }
   }
   distances <- distances + t(distances)
@@ -440,8 +522,8 @@ pdiscgpd <- function(q, thresh, sigma, xi, phiu){
     xiq <- fit2$mle['xi']
     
     out <- .JS_spliced(grid, shiftp, shiftq, phip, phiq, shapep, shapeq,
-                      ratep, rateq, threshp, threshq, sigmap, sigmaq,
-                      xip, xiq)
+                       ratep, rateq, threshp, threshq, sigmap, sigmaq,
+                       xip, xiq)
   } else if(modelType == "Desponds"){
     if(!all(c("min.KS", "Cmin", "powerlaw.exponent",
               "pareto.alpha") == names(fit1))){
@@ -462,10 +544,11 @@ pdiscgpd <- function(q, thresh, sigma, xi, phiu){
   out
 }
 
+# Jensen-Shannon Distance Calculation
 #' @importFrom evmix dgpd
 #' @importFrom methods is
 .JS_spliced <- function(grid, shiftp, shiftq, phip, phiq, shapep, shapeq, ratep,
-                       rateq, threshp, threshq, sigmap, sigmaq, xip, xiq){
+                        rateq, threshp, threshq, sigmap, sigmaq, xip, xiq){
   if(!is(grid, "numeric")){
     stop("grid must be numeric.")
   }
@@ -509,23 +592,23 @@ pdiscgpd <- function(q, thresh, sigma, xi, phiu){
   K <- max(grid)
   
   P <- .ddiscgammagpd(min(grid):K, shape = shapep, rate = ratep,
-                     u=threshp, sigma = sigmap,
-                     xi = xip, phiu = phip, shift=shiftp,
-                     log = FALSE)
+                      u=threshp, sigma = sigmap,
+                      xi = xip, phiu = phip, shift=shiftp,
+                      log = FALSE)
   adjp <- which(P == 0)
   if(length(adjp) != 0){
     P[adjp] <- dgpd(adjp+0.5, u=threshp,
-                           sigmau = sigmap, xi = xip, phiu = phip)
+                    sigmau = sigmap, xi = xip, phiu = phip)
   }
   
   Q <- .ddiscgammagpd(min(grid):K, shape = shapeq, rate = rateq,
-                     u=threshq, sigma = sigmaq,
-                     xi = xiq, phiu = phiq, shift=shiftq,
-                     log = FALSE)
+                      u=threshq, sigma = sigmaq,
+                      xi = xiq, phiu = phiq, shift=shiftq,
+                      log = FALSE)
   adjq <- which(Q == 0)
   if(length(adjq) != 0){
     Q[adjq] <- dgpd(adjq+0.5, u=threshq,
-                           sigmau = sigmaq, xi = xiq, phiu = phiq)
+                    sigmau = sigmaq, xi = xiq, phiu = phiq)
   }
   
   M <- 0.5*(P+Q)
@@ -551,8 +634,8 @@ pdiscgpd <- function(q, thresh, sigma, xi, phiu){
   out
 }
 
-
-#' @importFrom cubature adaptIntegrate
+# Core JS Distance Logic
+#' @importFrom stats integrate
 #' @importFrom methods is
 .JS_desponds <- function(grid, Cminp, Cminq, alphap, alphaq){
   if(!is(grid, "numeric")){
@@ -578,93 +661,37 @@ pdiscgpd <- function(q, thresh, sigma, xi, phiu){
   lower <- min(grid)
   upper <- max(grid)
   
-  out <- adaptIntegrate(.eval_desponds,
-                        lowerLimit = lower, upperLimit = upper,
-                        Cminp = Cminp, Cminq = Cminq,
-                        alphap = alphap, alphaq = alphaq)$integral %>% sqrt
+  out <- integrate(.eval_desponds,
+                   lower = lower, upper = upper,
+                   Cminp = Cminp, Cminq = Cminq,
+                   alphap = alphap, alphaq = alphaq)$value %>% sqrt
   out
 }
 
-.ddiscgammagpd <- function(x, fit=NULL, shape, rate, u, sigma, xi,
-                          phiu=NULL, shift = 0, log = FALSE){
-  if(!is.null(fit)){
-    if(!all(c("x", "shift", "init", "useq", "nllhuseq", "nllh",
-              "optim", "mle") %in% names(fit))){
-      stop("\"fit\" is not of the correct structure. It must be one model
-                 fit from fdiscgammagpd.")
-    }
-    phiu <- fit$mle['phi']
-    shape <- fit$mle['shape']
-    rate <- fit$mle['rate']
-    u <- fit$mle['thresh']
-    sigma <- fit$mle['sigma']
-    xi <- fit$mle['xi']
-    shift <- fit$shift
-  }
-  if(!is(x, "numeric")){
-    stop("x must be numeric.")
-  }
-  
-  if(!is(shift, "numeric")){
-    stop("shift must be numeric.")
-  }
-  
-  if(any(x != floor(x))){
-    stop("x must be an integer")
-  }
-  
-  if(shift != round(shift)){
-    stop("shift must be an integer.")
-  }
-  
-  if(any(c(shape, rate, sigma) <= 0)){
-    stop("shape, rate, and sigma must all be positive.")
-  }
-  
-  if(!is.null(phiu)){
-    if(phiu < 0 | phiu > 1){
-      stop("phiu must be in [0,1].")
-    }
-  }
-  
-  if(is.null(phiu)){
-    phiu <- 1-.pdiscgamma(u-1, shape=shape, rate=rate,
-                         thresh=Inf, phiu = 0, shift=shift)
-  }
-  
-  out <- rep(NA, length(x))
-  
-  if(sum(x>=u) != 0){
-    out[x>=u] <- .ddiscgpd(x[x>=u], u, sigma, xi, phiu, log=log)
-  }
-  
-  if(sum(x<u) != 0){
-    out[x<u] <- .ddiscgamma(x[x<u], shape, rate, u, phiu, shift, log=log)
-  }
-  out
+.dpareto_internal <- function(x, scale, shape) {
+  ifelse(x < scale, 0, (shape * (scale^shape)) / (x^(shape + 1)))
 }
 
-#' @importFrom VGAM dpareto
 .eval_desponds <- function(t, Cminp, Cminq, alphap, alphaq){
-  M <- 0.5*(dpareto(t, scale=Cminp, shape=alphap) +
-              dpareto(t, scale=Cminq, shape=alphaq))
+  M <- 0.5*(.dpareto_internal(t, scale=Cminp, shape=alphap) +
+              .dpareto_internal(t, scale=Cminq, shape=alphaq))
   
-  one <- dpareto(t, scale=Cminp, shape=alphap)
-  two <- dpareto(t, scale=Cminq, shape=alphaq)
+  one <- .dpareto_internal(t, scale=Cminp, shape=alphap)
+  two <- .dpareto_internal(t, scale=Cminq, shape=alphaq)
   
   if(one == 0 & two == 0){
     out <- 0
   } else if(one == 0 & two != 0){
-    out <- dpareto(t, scale=Cminq, shape=alphaq) *
-      (log(dpareto(t, scale=Cminq, shape=alphaq))-log(M))
+    out <- .dpareto_internal(t, scale=Cminq, shape=alphaq) *
+      (log(.dpareto_internal(t, scale=Cminq, shape=alphaq))-log(M))
   } else if(one != 0 & two == 0){
-    out <- dpareto(t, scale=Cminp, shape=alphap) *
-      (log(dpareto(t, scale=Cminp, shape=alphap))-log(M))
+    out <- .dpareto_internal(t, scale=Cminp, shape=alphap) *
+      (log(.dpareto_internal(t, scale=Cminp, shape=alphap))-log(M))
   } else{
-    out <- dpareto(t, scale=Cminp, shape=alphap) *
-      (log(dpareto(t, scale=Cminp, shape=alphap))-log(M)) +
-      dpareto(t, scale=Cminq, shape=alphaq) *
-      (log(dpareto(t, scale=Cminq, shape=alphaq))-log(M))
+    out <- .dpareto_internal(t, scale=Cminp, shape=alphap) *
+      (log(.dpareto_internal(t, scale=Cminp, shape=alphap))-log(M)) +
+      .dpareto_internal(t, scale=Cminq, shape=alphaq) *
+      (log(.dpareto_internal(t, scale=Cminq, shape=alphaq))-log(M))
   }
   out
 }
