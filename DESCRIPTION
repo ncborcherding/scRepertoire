@@ -16,7 +16,6 @@ Depends:
      ggplot2, 
      R (>= 4.0)
 Imports: 
-    cubature,
     dplyr,
     evmix,
     ggalluvial,
@@ -36,8 +35,6 @@ Imports:
     SingleCellExperiment,
     SummarizedExperiment,
     tidygraph,
-    truncdist,
-    VGAM,
     purrr,
     lifecycle,
     methods

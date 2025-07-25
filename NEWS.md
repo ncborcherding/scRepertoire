@@ -2,7 +2,9 @@
 
 ## UNDERLYING CHANGES
 * Introduced pairwise calculations to ```StartracDiversity()```
-
+* Internal function conversion for ```clonalSizeDistribution()``` - remove 
+cubature, truncdist and VGAM from dependencies.
+* Increased speed of ```clonalSizeDistribution()```
 
 # scRepertoire VERSION 2.5.0
 
