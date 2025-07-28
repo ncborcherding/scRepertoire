@@ -93,8 +93,8 @@ test_that("Function issues a warning for high barcode mismatch", {
   })
   
   # Expect the specific warning message
-  expect_warning(
+  expect_error(
     combineExpression(combined.mm, scRep_example),
-    "< 1% of barcodes match"
+    regexp =  "< 1% of barcodes match"
   )
 })
