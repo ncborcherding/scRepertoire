@@ -71,9 +71,6 @@ test_that("`chain` parameter filters correctly for calculations", {
   
   # The clonal proportions should be different when calculated on different chains
   expect_false(identical(sc_tra$clonalProportion, sc_trb$clonalProportion))
-  
-  # The final clone ID (CTstrict) should still represent the full paired chain
-  # This is a key feature of the function
   sc_both <- combineExpression(combined, scRep_example, chain = "both")
   
   # Pick a cell to compare
