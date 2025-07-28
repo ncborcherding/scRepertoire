@@ -60,10 +60,13 @@ install.packages(packages)
 ```{r}
 library(alakazam)
 library(dowser)
-library(ggplot)
+library(ggplot2)
+library(ggtree)
 library(shazam)
 library(scoper)
 library(scRepertoire)
+library(stringr)
+library(viridis)
 ```
 
 # Loading BCR Data
@@ -252,6 +255,7 @@ results_db <- createGermlines(results_db,
 # Data cleaning: Some downstream functions do not tolerate NA values in columns
 results_db$c_call[is.na(results_db$c_call)] <- "NA"
 ```
+
 ## Defining Subclones by Light Chain (`resolveLightChains`)
 
 A key advantage of single-cell data is having paired heavy and light chain information. While we defined our clones using only the heavy chain, cells within that clone may use different light chains. These represent distinct "subclones." The `resolveLightChains` function from `scoper` identifies these groupings.
@@ -278,7 +282,7 @@ subclones_db %>%
   geom_bar(aes(fill=factor(c_gene)), 
            stat="identity", position="stack", color = "black", lwd = 0.25) +
   facet_wrap(~chain) +
-  scale_fill_viridis(option = "H", discrete = TRUE, name="Isotype") + 
+  scale_fill_viridis(option = "B", discrete = TRUE, name="Isotype") + 
   labs(x="Subject", y="# BCRs") +
   theme_bw()
 ```
@@ -310,20 +314,83 @@ clones_hl <- formatClones(subclones_db,
                           verbose = FALSE)
 ```
 
-# Calculating Trees
+# Building and Visualizing Clonal Trees
+
+The culmination of the `Immcantation` workflow is the reconstruction and visualization of clonal lineage trees. These trees map the evolutionary relationships between sequences in a clone, starting from the unmutated germline ancestor and tracing the branches of somatic hypermutation and class-switching that occur during affinity maturation. 
+
+First, we use `getTrees()` function to build a maximum parsimony tree for each clone, and then we scale the branches to represent the number of mutations. We will then use `collapseNodes()` to cleanup the trees and `scaleBranches()` to enhanced the visual comparison of the tree nodes. 
 
 ```{r}
 clones_hl$num_cells <- sapply(clones_hl$data, function(x) sum(x@data$collapse_count))
-# ==== lineage trees ====
-# construct maximum parsimony trees
+
+# --- Build trees for each clone ---
 trees = getTrees(clones_hl)
 trees <- collapseNodes(trees)
-
-# re-scale branches to represent mutations between nodes
 trees_m = scaleBranches(trees, edge_type="mutations")
 ```
+## Visualizing Clonal Trees
 
-# Calculate Somatic Hypermutation
+```{r}
+# --- Generate and Customize Tree Plots ---
+
+# Define a color palette for isotypes for consistent plotting
+isotypes <- c("IGHD", "IGHM", "IGHG1", "IGHG2", "IGHG3", "IGHG4", "IGHA1", "IGHA2", "Germline")
+col_pal <- c(viridis_pal(option = "B")(8), "grey")
+names(col_pal) <- isotypes
+
+# plotTrees generates a list of ggplot objects, one for each tree.
+plots_m <- plotTrees(trees_m, scale=1) 
+names(plots_m) <- trees_m$clone_id
+
+# --- Example: Plotting a Single Interesting Tree ---
+idx <- trees_m %>% 
+  slice_max(order_by = seqs, n = 3) %>% 
+  pull(clone_id)
+example_tree_plot <- plots_m[[idx]]
+
+plot_data <- example_tree_plot$data
+plot_data$tissue <- str_split(plot_data$cell_id_unique, "_", simplify = TRUE)[,2]
+plot_data$tissue <- ifelse(is.na(plot_data$tissue), "Germline", plot_data$tissue) # Handle germline node
+example_tree_plot$data <- plot_data
+max_x <- max(example_tree_plot$data$x) # Find x-axis limit
+
+example_tree_plot + 
+    labs(
+        title = paste("Lineage Tree for Clone:", example_tree_plot$data$clone_id[1]),
+        subtitle = "Branches scaled by number of mutations"
+    ) +
+    geom_tippoint(aes(color = c_gene, 
+                      shape = tissue, 
+                      size = collapse_count), 
+                  alpha = 0.8) + 
+    
+    scale_color_manual(values = col_pal, name = "Isotype") +
+    scale_shape_manual(values = c("Germline"=1, "PT"=16, "LN"=17), name = "Tissue") +
+    scale_size(name = "# Cells", range = c(2, 6)) +
+    xlim(0, max_x + (max_x * 0.5)) +
+    theme(
+        plot.title = element_text(face = "bold"),
+        plot.subtitle = element_text(face = "italic"),
+        legend.position = "right"
+    )
+
+```
+
+# Quantifying and Analyzing Somatic Hypermutation
+
+A hallmark of the adaptive immune response is somatic hypermutation (SHM), the process by which B cells introduce mutations into their antibody genes to improve antigen binding. Quantifying the frequency, location, and type of these mutations is a primary goal of BCR repertoire analysis. This step uses the shazam package to calculate SHM and explore its patterns.
+
+## Calculate Somatic Hypermutation (`observedMutations()`)
+
+The `observedMutations()` function is the workhorse for all SHM analysis. It compares each observed sequence to its reconstructed germline sequence (which we created in Step 4) and tallies the mutations. The function is called multiple times to calculate different metrics. It compares the `sequence_alignment` (observed sequence) to the `germline_alignment_d_mask` (unmutated ancestor).
+
+Key Parameter(s) for `observedMutations()`
+
+* `regionDefinition = IMGT_VDJ`: This tells the function to use the standard IMGT definitions to identify Framework Regions (FWRs) and Complementarity-Determining Regions (CDRs). CDRs are the hypervariable loops that directly contact the antigen, while FWRs provide the structural scaffold.
+* `frequency = TRUE`: Calculates the mutation rate (mutations per 100 base pairs). If FALSE, it calculates the raw count of mutations.
+* `combine = TRUE`: This calculates a single mutation value across the entire VDJ segment. If FALSE, it calculates mutations separately for each sub-region (e.g., mu_freq_cdr_s for silent mutations in the CDR, mu_freq_fwr_r for replacement mutations in the FWR, etc.).
+
+After running these commands, your shm_db data frame will be populated with many new columns (e.g., mu_freq, mu_count, mu_freq_cdr_s, mu_freq_cdr_r) that quantify SHM in great detail.
 
 ```{r}
 shm_db <- observedMutations(subclones_db,
@@ -332,7 +399,7 @@ shm_db <- observedMutations(subclones_db,
                             regionDefinition = IMGT_VDJ,
                             frequency = FALSE,
                             combine = FALSE,
-                            nproc = 10)
+                            nproc = 2)
 
 test <- observedMutations(subclones_db, 
                           sequenceColumn="sequence_alignment",
@@ -341,15 +408,13 @@ test <- observedMutations(subclones_db,
                           frequency=FALSE, 
                           nproc=2)
 
-
-
 shm_db <- observedMutations(shm_db,
                             sequenceColumn = "sequence_alignment",
                             germlineColumn = "germline_alignment_d_mask",
                             regionDefinition = IMGT_VDJ,
                             frequency = FALSE,
                             combine = TRUE,
-                            nproc = 10)
+                            nproc = 2)
 
 # calculate SHM frequency in the VDJ regions
 shm_db <- observedMutations(shm_db,
@@ -358,7 +423,7 @@ shm_db <- observedMutations(shm_db,
                             regionDefinition = IMGT_VDJ,
                             frequency = TRUE,
                             combine = FALSE,
-                            nproc = 10)
+                            nproc = 2)
 
 shm_db <- observedMutations(shm_db,
                             sequenceColumn = "sequence_alignment",
@@ -366,34 +431,66 @@ shm_db <- observedMutations(shm_db,
                             regionDefinition = IMGT_VDJ,
                             frequency = TRUE,
                             combine = TRUE,
-                            nproc = 10)
-saveRDS(shm_db, file="r_objects/shm_db.rds")
-shm_db <- readRDS(file="r_objects/shm_db.rds")
+                            nproc = 2)
+```
+### Visualizing Replacement and Silent Mutations in CDRs
 
+A key way to infer positive or negative selection is to compare the rate of replacement (**R**) mutations (which change the amino acid sequence) to silent (**S**) mutations (which do not). High levels of R mutations in the antigen-binding CDRs are a classic sign of positive selection for improved binding.
+
+```{r}
+# Clean up isotype calls for plotting
 shm_db$c_call <- str_split(shm_db$c_call, "[*]", simplify = TRUE)[,1]
 
-ggplot(shm_db, aes(x = subject_id, y=mu_freq_cdr_s, fill=c_call)) +
-        geom_boxplot() + 
-        labs(title = "CDR silent mutations", 
-             x = "Isotype", y = "Mutation frequency") +
-        scale_fill_viridis(option = "H", discrete = TRUE) +
-        facet_grid(.~c_call, scales="free_y") + 
-        theme_bw()
+# Plot silent mutation frequency in the CDRs
+shm_db %>%
+  filter(locus == "IGH" & c_call != "NA") %>%
+  ggplot(shm_db, aes(x = subject_id, y=mu_freq_cdr_s, fill=c_call)) +
+          geom_boxplot(outlier.alpha = 0) + 
+          labs(title = "CDR silent mutations", 
+               x = "Isotype", y = "Mutation frequency") +
+          scale_fill_viridis(option = "H", discrete = TRUE) +
+          facet_grid(.~c_call, scales="free_y") + 
+     theme_bw() +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) 
 
-isotypes = c("IGHA1", "IGHA2", "IGHD", "IGHE", "IGHG1", "IGHG2", "IGHG3", "IGHG4", "IGHM", "IGKC", "IGLC1", "IGLC2", "IGLC3", "IGLC7")
+# Plot replacement mutation frequency in the CDRs
+shm_db %>%
+  filter(locus == "IGH" & c_call != "NA") %>%
+  ggplot(aes(x = subject_id, y=mu_freq_cdr_r, fill=c_call)) +
+          geom_boxplot(outlier.alpha = 0) + 
+          labs(title = "CDR replacement mutations", 
+               x = "Isotype", y = "Mutation frequency") +
+          scale_fill_viridis(option = "H", discrete = TRUE) +
+          facet_grid(.~c_call, scales="free_y") + 
+     theme_bw() +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) 
+```
 
-# order isotypes
-mut_freq_clone$c_call <- factor(mut_freq_clone$c_call,
-                                levels=isotypes)
+This boxplot displays the frequency of replacement mutations specifically within the CDRs of heavy chains. It is faceted by isotype (`c_call`), allowing you to compare SHM levels in naive (IgM/IgD) versus mature (IgG/IgA) B cells. You would typically expect to see higher R mutation frequencies in class-switched isotypes, indicating that these clones have undergone selection. 
 
-ggplot(mut_freq_clone %>% filter(locus == "IGH" & c_call != "NA"), 
-       aes(mean_mut_freq)) +
-  geom_histogram(aes(y=..density..), fill="grey70", binwidth = 0.005) +
-  geom_density(color="firebrick", fill="firebrick", alpha=0.2) +
-  facet_grid(c_call~subject_id, scales="free_y") +
-  labs(x="Mean mutation frequency", y="Density (BCR sequences)",
-       title="Somatic hypermutation rate") +
+### Visualizing Overall SHM Distribution
+
+Finally, we can look at the overall distribution of SHM across all clones to get a global picture of the repertoire's maturity.
+
+```{r}
+# First, calculate the mean mutation frequency for each clone
+mut_freq_clone <- shm_db %>%
+  filter(locus == "IGH") %>%
+  group_by(clone_id, subject_id, c_call) %>%
+  summarise(mean_mut_freq = mean(mu_freq))
+
+# Order isotypes for consistent plotting
+isotypes = c("IGHD", "IGHM", "IGHA1", "IGHA2", "IGHE", "IGHG1", "IGHG2", "IGHG3", "IGHG4")
+mut_freq_clone$c_call <- factor(mut_freq_clone$c_call, levels=isotypes)
+
+# Create a density plot of mutation frequencies
+ggplot(mut_freq_clone %>% filter(c_call != "NA"), 
+       aes(mean_mut_freq, fill = c_call)) +
+  geom_density(alpha=0.5) +
+  facet_grid(c_call~subject_id, scales="free") +
+  labs(x="Mean mutation frequency per clone", y="Density",
+       title="Somatic Hypermutation Rate by Isotype and Subject") +
   theme_bw()
 ```
 
-
+This series of density plots shows the distribution of SHM frequencies for each isotype within each subject. The x-axis represents the mutation frequency. A peak near zero indicates a large population of naive or unmutated cells (such as expected for IGHM and IGHD). In a mature immune response, you would expect to see the peaks for IgG and IgA shifted to the right, indicating higher overall mutation levels. 
