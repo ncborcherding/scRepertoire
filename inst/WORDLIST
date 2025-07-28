@@ -16,7 +16,6 @@ BPPARAM
 Barcode
 Barcodes
 BioC
-BioRxiv
 BiocParallel
 Biotechnologies
 Bormann
@@ -146,6 +145,7 @@ TCRB
 TCRMatch
 TCRinnate
 TCRmem
+TCRpheno
 TCRreg
 TCRs
 TRA
@@ -154,7 +154,6 @@ TRB
 TRBD
 TRBJ
 TRBV
-TRG
 TRI
 TUST
 TenX
@@ -215,7 +214,6 @@ calculateFrequency
 calculateGeneUsage
 calculateMotif
 calculateProperty
-centric
 checkBlanks
 checkContigs
 circlize
@@ -243,6 +241,7 @@ cloneSizes
 cloneType
 clonesizeDistribution
 clonotype
+clonotype's
 clonotypeBias
 clonotypeSizeDistribution
 clonotypes
@@ -290,6 +289,7 @@ epitope
 epitopes
 erroring
 et
+expa
 explainability
 exportClones
 exportGraph
@@ -366,6 +366,7 @@ makeGenes
 markov
 matric
 mer
+migr
 milo
 miloR
 morisita
@@ -461,6 +462,7 @@ theCall
 tokenizeSequences
 tokenizing
 trackable
+tran
 transcriptional
 transcriptomic
 trex

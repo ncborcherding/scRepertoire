@@ -30,7 +30,7 @@ knitr::knit_hooks$set(time_it = local({
   }
 }))
 knitr::opts_chunk$set(
-  tidy = TRUE,
+  tidy = FALSE,
   tidy.opts = list(width.cutoff = 95),
   message = FALSE,
   warning = FALSE,
@@ -84,7 +84,7 @@ Key Parameters for `clonalDiversity()`
 
 To calculate Shannon diversity, grouped by sample:
 
-```{r tidy = FALSE}
+```{r}
 clonalDiversity(combined.TCR, 
                 cloneCall = "gene")
 ```
@@ -96,7 +96,7 @@ There are two options for grouping in `clonalDiversity()`: `group.by` and `x.axi
 
 First, add a "Patient" variable to combined.TCR
 
-```{r tidy = FALSE}
+```{r}
 combined.TCR <- addVariable(combined.TCR, 
                             variable.name = "Patient", 
                              variables = c("P17", "P17", "P18", "P18", 
@@ -105,7 +105,7 @@ combined.TCR <- addVariable(combined.TCR,
 
 Now, calculate Inverse Simpson diversity, grouped by "Patient":
 
-```{r tidy = FALSE}
+```{r}
 clonalDiversity(combined.TCR, 
                 cloneCall = "gene", 
                 group.by = "Patient", 
@@ -114,7 +114,7 @@ clonalDiversity(combined.TCR,
 
 Calculate Inverse Simpson diversity with "Patient" on the x-axis, keeping the original grouping:
 
-```{r tidy = FALSE}
+```{r}
 clonalDiversity(combined.TCR, 
                 cloneCall = "gene", 
                 x.axis = "Patient", 
@@ -149,7 +149,7 @@ This function relies on the [iNEXT](https://cran.r-project.org/web/packages/iNEX
 
 ### Rarefaction using Species Richness (q = 0)
 
-```{r, message=FALSE, tidy = FALSE}
+```{r, message=FALSE}
 clonalRarefaction(combined.TCR,
                   plot.type = 1,
                   hill.numbers = 0,
@@ -168,7 +168,7 @@ clonalRarefaction(combined.TCR,
 
 ### Rarefaction using Shannon Diversity (q = 1)
 
-```{r tidy = FALSE}
+```{r}
 clonalRarefaction(combined.TCR,
                   plot.type = 1,
                   hill.numbers = 1,
@@ -197,7 +197,7 @@ Key Parameter(s) for ```clonalSizeDistribution()```
 
 To model the clonal size distribution using amino acid clone calls and hierarchical clustering with the "ward.D2" method:
 
-```{r tidy = FALSE}
+```{r}
 clonalSizeDistribution(combined.TCR, 
                        cloneCall = "aa", 
                        method= "ward.D2")
@@ -219,7 +219,7 @@ If you are interested in measures of similarity between the samples loaded into 
 
 To calculate and visualize the Morisita overlap index using strict clone calls:
 
-```{r tidy = FALSE}
+```{r}
 clonalOverlap(combined.TCR, 
               cloneCall = "strict", 
               method = "morisita")
@@ -227,7 +227,7 @@ clonalOverlap(combined.TCR,
 
 To calculate and visualize the raw number of overlapping clones using strict clone calls:
 
-```{r tidy = FALSE}
+```{r}
 clonalOverlap(combined.TCR, 
               cloneCall = "strict", 
               method = "raw")

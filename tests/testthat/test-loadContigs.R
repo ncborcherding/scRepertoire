@@ -24,6 +24,10 @@ check_loadContigs_output <- function(loaded_data) {
 
 
 test_that("loadContigs correctly processes various formats from URL", {
+  #TRUST4 format
+  TRUST4 <- read.csv("https://www.borch.dev/uploads/contigs/TRUST4_contigs.csv")
+  trial_trust4 <- loadContigs(TRUST4, format = "TRUST4")
+  check_loadContigs_output(trial_trust4)
   
   # BD format
   BD <- read.csv("https://www.borch.dev/uploads/contigs/BD_contigs.csv")
@@ -59,6 +63,44 @@ test_that("loadContigs correctly processes various formats from URL", {
   Dandelion <- read.csv("https://www.borch.dev/uploads/contigs/Dandelion_contigs.csv")
   trial_dandelion <- loadContigs(Dandelion, format = "Dandelion")
   check_loadContigs_output(trial_dandelion)
+})
+
+test_that("loadContigs correctly auto-detects and processes various formats", {
+  
+  BD <- read.csv("https://www.borch.dev/uploads/contigs/BD_contigs.csv")
+  trial_bd <- expect_message(
+    loadContigs(BD, format = "auto"), 
+    "Automatically detected format from data: AIRR"
+  )
+  
+  WAT3R <- read.csv("https://www.borch.dev/uploads/contigs/WAT3R_contigs.csv")
+  trial_wat3r <- expect_message(
+    loadContigs(WAT3R, format = "auto"), 
+    "Automatically detected format from data: WAT3R"
+  )
+  
+  trial_10x <- expect_message(
+      loadContigs(contig_list[[1]], format = "auto"), 
+      "Automatically detected format from data: 10X"
+  )
+  
+  MIXCR <- read.csv("https://www.borch.dev/uploads/contigs/MIXCR_contigs.csv")
+  trial_mixcr <- expect_message(
+    loadContigs(MIXCR, format = "auto"), 
+    "Automatically detected format from data: MiXCR"
+  )
+  
+  Immcantation <- read.csv("https://www.borch.dev/uploads/contigs/Immcantation_contigs.csv")
+  trial_immcantation <- expect_message(
+    loadContigs(Immcantation, format = "auto"), 
+    "Automatically detected format from data: Immcantation"
+  )
+  
+  Parse <- read.csv("https://www.borch.dev/uploads/contigs/Parse_contigs.csv")
+  trial_parse <- expect_message(
+    loadContigs(Parse, format = "auto"), 
+    "Automatically detected format from data: ParseBio"
+  )
 })
 
 test_that("loadContigs works with AIRR input (directory mode)", {

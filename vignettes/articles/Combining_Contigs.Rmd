@@ -30,7 +30,7 @@ knitr::knit_hooks$set(time_it = local({
   }
 }))
 knitr::opts_chunk$set(
-  tidy = TRUE,
+  tidy = FALSE,
   tidy.opts = list(width.cutoff = 95),
   message = FALSE,
   warning = FALSE,
@@ -61,7 +61,7 @@ Key Parameter(s) for `combineTCR()`
 
 To combine TCR contigs from `contig_list` and apply sample prefixes:
 
-```{r tidy = FALSE}
+```{r}
 combined.TCR <- combineTCR(contig_list, 
                            samples = c("P17B", "P17L", "P18B", "P18L", 
                                             "P19B","P19L", "P20B", "P20L"),
@@ -100,14 +100,14 @@ Key Parameter(s) for `combineBCR()`
 
 First, load the example BCR contig data:
 
-```{r tidy = FALSE}
+```{r}
 # Load example BCR contig data
 BCR.contigs <- read.csv("https://www.borch.dev/uploads/contigs/b_contigs.csv")
 ```
 
 Then, combine BCR contigs using the default similarity clustering:
 
-```{r tidy = FALSE}
+```{r}
 
 # Combine using the default similarity clustering
 combined.BCR.clustered <- combineBCR(BCR.contigs, 

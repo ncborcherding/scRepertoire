@@ -6,47 +6,95 @@ scRep_example <- combineExpression(combined, scRep_example)
 scRep_example$Patient <- substring(scRep_example$orig.ident, 1, 3)
 scRep_example$Type <- substring(scRep_example$orig.ident, 4, 4)
 
-test_that("Output formats (table vs. plot) are correct", {
-  # Test that exportTable = TRUE returns a data.frame
-  table_output <- StartracDiversity(scRep_example, type = "Type", group.by = "Patient", exportTable = TRUE)
+test_that("Input validation and error handling work correctly", {
+  expect_error(
+    StartracDiversity(scRep_example, index = c("migr", "tran"), pairwise = "Type"),
+    "Pairwise analysis can only be performed for a single index"
+  )
+  
+  expect_error(
+    StartracDiversity(scRep_example, index = "expa", pairwise = "Type"),
+    "Pairwise analysis is only supported for 'migr' or 'tran' indices."
+  )
+})
+
+
+test_that("Output format and structure are correct", {
+  # Returns a ggplot object by default
+  plot_output <- StartracDiversity(scRep_example, 
+                                   type = "Type", 
+                                   group.by = "Patient")
+  expect_s3_class(plot_output, "ggplot")
+  
+  # Returns a data.frame when exportTable = TRUE
+  table_output <- StartracDiversity(scRep_example, 
+                                    type = "Type", 
+                                    group.by = "Patient", 
+                                    exportTable = TRUE)
   expect_s3_class(table_output, "data.frame")
   
-  # Test default behavior returns a ggplot object
-  plot_output <- StartracDiversity(scRep_example, type = "Type", group.by = "Patient")
-  expect_s3_class(plot_output, "ggplot")
+  # Check standard output columns
+  expect_true(all(c("group", "cluster", "expa", "migr", "tran") %in% names(table_output)))
 })
 
-test_that("Data frame output has correct structure and content", {
-  table_output <- StartracDiversity(scRep_example, type = "Type", group.by = "Patient", exportTable = TRUE)
+
+test_that("Helper functions for entropy calculate correctly", {
+  # Test matrix
+  mat <- matrix(c(1, 1, 0, 4, 2, 0, 3, 0, 0), nrow = 3, byrow = TRUE)
   
-  # Check for expected columns
-  expected_cols <- c("group", "majorCluster", "migr", "tran", "expa")
-  expect_true(all(expected_cols %in% names(table_output)))
-  
-  # Check number of groups
-  num_patients <- length(unique(scRep_example$Patient))
-  expect_equal(length(unique(table_output$group)), num_patients)
+  expected_row_entropy <- c(1, 0.9182958, 0)
+  expect_equal(.mrowEntropy(mat), expected_row_entropy, tolerance = 1e-6)
+
+  expected_col_entropy <- c(1.405639, 0.9182958, NA)
+  expect_equal(.mcolEntropy(mat), expected_col_entropy, tolerance = 1e-2)
 })
 
-test_that("Plot output has correct structure", {
-  plot_output <- StartracDiversity(scRep_example, type = "Type", group.by = "Patient")
+
+test_that("Standard index calculations are mathematically correct", {
+  results <- StartracDiversity(scRep_example, 
+                               type = "Type", 
+                               group.by = "Patient", 
+                               exportTable = TRUE)
   
-  # Check for correct geometry and facetting
-  expect_s3_class(plot_output$layers[[1]]$geom, "GeomBoxplot")
-  expect_s3_class(plot_output$facet, "FacetGrid")
+
+  expect_equal(results$expa[results$cluster == "1"][1], 0, tolerance = 1e-4)
+  expect_equal(results$expa[results$cluster == "2"][1], 0, tolerance = 1e-4)
+  expect_equal(results$expa[results$cluster == "3"][1], 0, tolerance = 1e-4)
   
-  # Check labels
-  expect_equal(plot_output$labels$y, "Index Score")
-  expect_equal(plot_output$labels$x, "majorCluster")
+  expect_equal(results$migr[results$cluster == "1"][1], 0, tolerance = 1e-4)
+  expect_equal(results$migr[results$cluster == "2"][1], 0, tolerance = 1e-4)
+  expect_equal(results$migr[results$cluster == "3"][1], 0, tolerance = 1e-4)
+  
+  expect_equal(results$tran[results$cluster == "1"][1], 0, tolerance = 1e-4)
+  expect_equal(results$tran[results$cluster == "2"][1], 0, tolerance = 1e-4)
+  expect_equal(results$tran[results$cluster == "3"][1], 0.119958, tolerance = 1e-4)
 })
 
-test_that("`cloneCall` and `chain` parameters execute without error", {
-  expect_silent(
-    res_aa <- StartracDiversity(scRep_example, cloneCall = "aa", type = "Type", group.by = "Patient", exportTable = TRUE)
-  )
-  expect_s3_class(res_aa, "data.frame")
-  expect_silent(
-    res_tra <- StartracDiversity(scRep_example, chain = "TRA", type = "Type", group.by = "Patient", exportTable = TRUE)
-  )
-  expect_s3_class(res_tra, "data.frame")
+test_that("Pairwise calculations are correct", {
+  # Test 1: Pairwise migration (index = "migr", pairwise = "Type")
+  pairwise_migr_results <- StartracDiversity(scRep_example,
+                                             type = "Type",
+                                             group.by = "Patient",
+                                             index = "migr",
+                                             pairwise = "Type",
+                                             exportTable = TRUE)
+  expect_s3_class(pairwise_migr_results, "data.frame")
+  expect_true(all(c("group", "cluster", "value", "comparison") %in% names(pairwise_migr_results)))
+  expect_true(all(grepl("\\w vs \\w", pairwise_migr_results$comparison)))
+  expect_equal(unique(pairwise_migr_results$comparison), "B vs L")
+  
+  
+  # Test 2: Pairwise transition (index = "tran", pairwise = "cluster")
+  pairwise_tran_results <- StartracDiversity(scRep_example,
+                                             type = "Type",
+                                             group.by = "Patient",
+                                             index = "tran",
+                                             pairwise = "cluster",
+                                             exportTable = TRUE)
+  expect_s3_class(pairwise_tran_results, "data.frame")
+  expect_true(all(c("group", "cluster", "value", "comparison") %in% names(pairwise_tran_results)))
+  expect_true(all(grepl("\\w vs \\w", pairwise_tran_results$comparison)))
+  expect_true(is.numeric(pairwise_tran_results$value))
 })
+
+

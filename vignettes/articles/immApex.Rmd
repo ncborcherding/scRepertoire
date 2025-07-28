@@ -30,7 +30,7 @@ knitr::knit_hooks$set(time_it = local({
   }
 }))
 knitr::opts_chunk$set(
-  tidy = TRUE,
+  tidy = FALSE,
   tidy.opts = list(width.cutoff = 95),
   message = FALSE,
   warning = FALSE,
@@ -227,13 +227,13 @@ This function computes position-wise summary statistics for amino acid propertie
 
 Parameters for `calculateProperty()`
 
-* **property.set**: The amino acid property scale to use (e.g., "Atchley").
+* **property.set**: The amino acid property scale to use (e.g., "atchleyFactors").
 * **summary.fun**: The summary statistic to apply ("mean", "median", "sum" etc.).
 
 ```{r }
 # Calculate the mean of Atchley factors at each position
 atchley.profile <- calculateProperty(sequences, 
-                                     property.set = "Atchley", 
+                                     property.set = "atchleyFactors", 
                                      summary.fun = "mean")
 head(atchley.profile[, 1:6])
 ```
@@ -384,7 +384,7 @@ Instead of a binary vector, this method represents each amino acid using a set o
     
 Available **property.set** options include:
 
-* Atchley - [citation](https://pubmed.ncbi.nlm.nih.gov/15851683/)
+* atchleyFactors - [citation](https://pubmed.ncbi.nlm.nih.gov/15851683/)
 * crucianiProperties - [citation](https://analyticalsciencejournals.onlinelibrary.wiley.com/doi/abs/10.1002/cem.856)
 * FASGAI - [citation](https://pubmed.ncbi.nlm.nih.gov/18318694/)
 * kideraFactors - [citation](https://link.springer.com/article/10.1007/BF01025492)
@@ -500,7 +500,7 @@ A common task is to classify sequences into groups, such as predicting whether a
 
 **Step 1: Simulate Data and Engineer Features**
 
-First, we'll simulate two distinct classes of sequences using ```generateSequences()```. We'll then use ```propertyEncoder()``` with the "Atchley" factors to convert each sequence into a flattened numerical vector. Each element in the vector represents a specific physicochemical property at a specific position, transforming our variable-length sequences into a fixed-size feature matrix suitable for machine learning.
+First, we'll simulate two distinct classes of sequences using ```generateSequences()```. We'll then use ```propertyEncoder()``` with the "atchleyFactors" to convert each sequence into a flattened numerical vector. Each element in the vector represents a specific physicochemical property at a specific position, transforming our variable-length sequences into a fixed-size feature matrix suitable for machine learning.
 
 ```{r}
 # Step 1a: Generate two distinct classes of sequences
@@ -518,7 +518,7 @@ labels <- as.factor(c(rep("Class1", 500), rep("Class2", 500)))
 
 # Step 1b: Use propertyEncoder to create a feature matrix from Atchley factors
 feature.matrix <- propertyEncoder(all.sequences, 
-                                  property.set = "Atchley",
+                                  property.set = "atchleyFactors",
                                   verbose = FALSE)
 
 # Combine the flattened feature matrix and labels into the final data frame

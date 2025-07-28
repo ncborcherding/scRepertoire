@@ -5,7 +5,7 @@ output: rmarkdown::html_vignette
 theme: united
 df_print: kable
 vignette: >
-  %\VignetteIndexEntry{Using scRepertoire with immunarch}
+  %\VignetteIndexEntry{Downstream Analysis with immunarch}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -25,21 +25,12 @@ knitr::knit_hooks$set(time_it = local({
 }))
 
 knitr::opts_chunk$set(
-  tidy = TRUE,
+  tidy = FALSE,
   tidy.opts = list(width.cutoff = 95),
   message = FALSE,
   warning = FALSE,
   time_it = TRUE
 )
-
-suppressMessages(library(scRepertoire))
-suppressMessages(library(tcrpheno))
-suppressMessages(library(Seurat))
-
-data("contig_list") 
-combined.TCR <- combineTCR(contig_list, 
-                           samples = c("P17B", "P17L", "P18B", "P18L", 
-                                            "P19B","P19L", "P20B", "P20L"))
 ```
 
 # Overview
@@ -82,6 +73,7 @@ combined <- combineTCR(contig_list,
 # Exporting for `immunarch`
 
 The `exportClones()` function can now format the `scRepertoire` object into a list that `immunarch` can immediately use. This list contains two key components:
+
 * **`$data`**: A list of data frames, where each data frame is a repertoire from a single sample.
 * **`$meta`**: A metadata data frame describing the samples.
 
@@ -103,6 +95,7 @@ Let's perform a few common analyses to demonstrate the workflow. For visualizati
 
 ```{r AddMetadata}
 # Add a grouping variable to the metadata
+immunarch_data$meta$Patient <- substr(immunarch_data$meta$Sample, 1, 3)
 immunarch_data$meta$SampleType <- substr(immunarch_data$meta$Sample, 4, 4)
 head(immunarch_data$meta)
 ```
@@ -136,28 +129,51 @@ vis(imm_hom, .by = "SampleType", .meta = immunarch_data$meta)
 
 ## Gene Usage
 
-`immunarch` provides powerful tools to analyze and visualize the usage of V, D, and J genes. Here, we'll compute the usage of TRBV genes and visualize their distribution across samples.
+`immunarch` provides powerful tools to analyze and visualize the usage of V, D, and J genes. Here, we'll compute the usage of TRAV/TRBV genes and visualize their distribution across samples. It is important to note, in paired mode, immunarch calculates usage for both V genes. 
 
 ```{r GeneUsage}
-# Compute TRBV gene usage
+# Compute TRAV/TRBV gene usage
 imm_gu <- geneUsage(immunarch_data$data[1], "hs.trbv", .norm = TRUE)
 
 # Visualize gene usage as a heatmap
-vis(imm_gu, .grid = TRUE, .title = "TRBV Gene Usage")
+vis(imm_gu[30:60,], .grid = TRUE, .title = "TRAV/TRBV Gene Usage")
 ```
 
-We can also visualize the gene usage grouped by our metadata variable.
+We can also visualize the gene usage grouped by our metadata variable. Here, we analyze the imm_gu object using the Jensen-Shannon (`js`) divergence and correlation analysis. JS divergence is a measure of similarity between two probability distributions (lower = more similar). Conversely, correlation (`cor`) measures the linear relationship between the gene usage profiles of different samples.
 
 ```{r GeneUsageGrouped}
-imm_gu <- geneUsage(immunarch_data$data, "hs.trbv", .norm = T)
-imm_gu_js <- geneUsageAnalysis(imm_gu, .method = "js", .verbose = F)
-imm_gu_cor <- geneUsageAnalysis(imm_gu, .method = "cor", .verbose = F)
+imm_gu <- geneUsage(immunarch_data$data, "hs.trbv", 
+                    .norm = T)
+imm_gu_js <- geneUsageAnalysis(imm_gu, 
+                               .method = "js", 
+                               .verbose = F)
+imm_gu_cor <- geneUsageAnalysis(imm_gu, 
+                                .method = "cor", 
+                                .verbose = F)
 
-p1 <- vis(imm_gu_js, .title = "Gene usage JS-divergence", .leg.title = "JS", .text.size = 1.5)
-p2 <- vis(imm_gu_cor, .title = "Gene usage correlation", .leg.title = "Cor", .text.size = 1.5)
+p1 <- vis(imm_gu_js, .title = "Gene usage JS-divergence", 
+          .leg.title = "JS", 
+          .text.size = 1.5)
+p2 <- vis(imm_gu_cor, .title = "Gene usage correlation", 
+          .leg.title = "Cor", 
+          .text.size = 1.5)
 
 p1 + p2
 ```
 
-This concludes the vignette on integrating `scRepertoire` with `immunarch`. By using the `exportClones()` function, you can easily leverage the extensive analytical and visualization capabilities of `immunarch` for your single-cell TCR sequencing data.
+## Calculating Diversity
+
+`immunarch` and `scRepertoire` have many overlapping features, such as diversity. One key difference is `immunarch` separation of calculation and visualization. This offers `immunarch` users the ability to group calculations in a post-hoc fashion. Here we can use the nonparametric `chao1` estimation to look at diversity across samples or by sampleType (B = Blood and L = Lung).
+
+```{r}
+div_chao <- repDiversity(immunarch_data$data, "chao1")
+
+p1 <- vis(div_chao)
+p2 <- vis(div_chao, .by = c("SampleType"), 
+          .meta = immunarch_data$meta)
+
+p1 + p2 
+```
+
+This concludes the vignette on integrating `scRepertoire` with `immunarch`. By using the `exportClones()` function, you can easily leverage the extensive analytical and visualization capabilities of `immunarch` for your single-cell TCR sequencing data. Immunarch has extensive documentation and vignettes available at [immunarch.com](https://immunarch.com/index.html).
 

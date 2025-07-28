@@ -30,7 +30,7 @@ knitr::knit_hooks$set(time_it = local({
   }
 }))
 knitr::opts_chunk$set(
-  tidy = TRUE,
+  tidy = FALSE,
   tidy.opts = list(width.cutoff = 95),
   message = FALSE,
   warning = FALSE,
@@ -90,7 +90,7 @@ Key Parameter(s) for ```clonalCluster()```
 
 To run clustering on the first two samples for the TRA chain, using amino acid sequences with a normalized similarity threshold of 0.85:
 
-```{r tidy = FALSE}
+```{r}
 # Run clustering on the first two samples for the TRA chain
 sub_combined <- clonalCluster(combined.TCR[c(1,2)], 
                               chain = "TRA", 
@@ -107,7 +107,7 @@ You can calculate clusters based on specific metadata variables within a single-
 
 First, add patient and type information to the `scRep_example` Seurat object:
 
-```{r tidy = FALSE}
+```{r}
 #Adding patient information
 scRep_example$Patient <- substr(scRep_example$orig.ident, 1,3)
 
@@ -138,7 +138,7 @@ DimPlot(scRep_example, group.by = "TRA.Cluster") +
 
 Instead of modifying the input object, ```clonalCluster()``` can export the underlying network structure for advanced analysis. Set `exportGraph = TRUE` to get an igraph object consisting of the networks of barcodes by the indicated clustering scheme. 
 
-```{r tidy = FALSE}
+```{r}
 set.seed(42)
 #Clustering Patient 19 samples
 igraph.object <- clonalCluster(combined.TCR[c(5,6)],

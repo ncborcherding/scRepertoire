@@ -21,8 +21,7 @@
 #' # Using combineExpresion()
 #' scRep_example <- combineExpression(combined, scRep_example)
 #' 
-#' @param input.data The product of [combineTCR()], 
-#' [combineBCR()] or a list of 
+#' @param input.data The product of [combineTCR()], [combineBCR()] or a list of 
 #' both c([combineTCR()], [combineBCR()]).
 #' @param sc.data The Seurat or Single-Cell Experiment (SCE) object to attach
 #' @param cloneCall Defines the clonal sequence grouping. Accepted values 
@@ -176,7 +175,7 @@ combineExpression <- function(input.data,
     if (.is.seurat.object(sc.data)) { 
         if (length(which(rownames(PreMeta) %in% 
                          rownames(sc.data[[]])))/length(rownames(sc.data[[]])) < 0.01) {
-          warning(getHighBarcodeMismatchWarning())
+          getHighBarcodeMismatchError()
         }
         col.name <- names(PreMeta) %||% colnames(PreMeta)
         sc.data[[col.name]] <- PreMeta
@@ -184,7 +183,7 @@ combineExpression <- function(input.data,
       rownames <- rownames(colData(sc.data))
       if (length(which(rownames(PreMeta) %in% 
                        rownames))/length(rownames) < 0.01) {
-        warning(getHighBarcodeMismatchWarning()) }
+        getHighBarcodeMismatchError() }
       
       combined_col_names <- unique(c(colnames(colData(sc.data)), colnames(PreMeta)))
       full_data <- merge(colData(sc.data), PreMeta[rownames, , drop = FALSE], by = "row.names", all.x = TRUE)
@@ -206,9 +205,13 @@ combineExpression <- function(input.data,
     return(sc.data)
 }
 
-getHighBarcodeMismatchWarning <- function() paste(
-    "< 1% of barcodes match: Ensure the barcodes in the single-cell object",
-    "match the barcodes in the combined immune receptor output from",
-    "scRepertoire. If getting this error, please check",
-    "https://www.borch.dev/uploads/screpertoire/articles/faq"
-)
+getHighBarcodeMismatchError <- function() {
+  stop(
+    paste0(
+      "< 1% of barcodes match.\n",
+      "Ensure the barcodes in the single-cell object match the barcodes from scRepertoire.\n",
+      "For help, see: https://www.borch.dev/uploads/screpertoire/articles/faq"
+    ),
+    call. = FALSE 
+  )
+}

@@ -26,16 +26,28 @@ jobs:
           extra-packages: any::covr
           needs: coverage
 
-      - name: Test coverage
+      - name: Test coverage and generate report
         run: |
-          covr::codecov(
+          # First, calculate the package coverage
+          cov <- covr::package_coverage(
             quiet = FALSE,
             clean = FALSE,
             exclusions = "R/global.R",
             install_path = file.path(normalizePath(Sys.getenv("RUNNER_TEMP"), winslash = "/"), "package")
           )
+          # Then, generate the cobertura.xml file from the coverage object
+          covr::to_cobertura(cov, file = "cobertura.xml")
         shell: Rscript {0}
 
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          # A token is required for repositories with protected branches
+          token: ${{ secrets.CODECOV }}
+          fail_ci_if_error: ${{ github.event_name != 'pull_request' }}
+          file: ./cobertura.xml
+          disable_search: true
+          
       - name: Show testthat output
         if: always()
         run: |

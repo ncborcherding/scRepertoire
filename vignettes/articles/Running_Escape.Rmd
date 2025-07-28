@@ -30,7 +30,7 @@ knitr::knit_hooks$set(time_it = local({
   }
 }))
 knitr::opts_chunk$set(
-  tidy = TRUE,
+  tidy = FALSE,
   tidy.opts = list(width.cutoff = 95),
   message = FALSE,
   warning = FALSE,
@@ -95,7 +95,7 @@ BiocManager::install("escape")
 
 For the purposes of the vignette, we will use the scRepertoire full example data. More information is available [here](https://www.borch.dev/uploads/screpertoire/articles/loading#example-data-in-screpertoire). We will subset the data for patient 17 and 18 from the data set in order to speed up the calculations.
 
-```{r tidy = FALSE}
+```{r}
 scRep_example <- subset(scRep_example, Patient %in% c("P17", "P18"))
 ```
 
@@ -181,7 +181,6 @@ $$
 U_j^` = 1-\frac{U_j}{n \bullet r_{max}}
 $$
 
-
 Please see the following [citation](https://pubmed.ncbi.nlm.nih.gov/34285779/) for more information.
 
 ## escape.matrix
@@ -214,7 +213,7 @@ escape has 2 major functions - the first being ```escape.matrix()```, which serv
 *Cautionary note:* **make.positive** was added to allow for differential analysis downstream of enrichment as some methods may produce negative values. It preserves log-fold change, but ultimately modifies the enrichment values and should be used with caution.
 
 
-```{r tidy = FALSE}
+```{r}
 enrichment.scores <- escape.matrix(scRep_example, 
                                    gene.sets = escape.gene.sets, 
                                    groups = 1000, 
@@ -241,7 +240,7 @@ enrichment.scores <- escape.matrix(scRep_example,
 
 Alternatively, we can use ```runEscape()``` to calculate the enrichment score and directly attach the output to a single-cell object. The additional parameter for ```runEscape` is **new.assay.name**, in order to save the enrichment scores as a custom assay in the single-cell object. 
 
-```{r tidy = FALSE}
+```{r}
 scRep_example <- runEscape(scRep_example, 
                            method = "ssGSEA",
                            gene.sets = escape.gene.sets, 
@@ -259,10 +258,11 @@ scRep_example <- runEscape(scRep_example,
 
 We can quickly examine the attached enrichment scores using the visualization/workflow we prefer - here we will use just `FeaturePlot()` from the Seurat R package. 
 
-```{r tidy = FALSE}
+```{r}
 #Define color palette 
 colorblind_vector <- hcl.colors(n=7, palette = "inferno", fixup = TRUE)
 
+DefaultAssay(scRep_example) <- "escape.ssGSEA"
 FeaturePlot(scRep_example, "Proinflammatory") + 
   scale_color_gradientn(colors = colorblind_vector) + 
   theme(plot.title = element_blank())
@@ -380,7 +380,7 @@ What if we had 2 separate samples or groups within the data? Another parameter w
 geyserEnrichment(scRep_example, 
                  assay = "escape.ssGSEA",
                  gene.set = "T1-Interferon", 
-                 facet.by = "groups")
+                 facet.by = "Type")
 ```
 
 Lastly, we can select the way the color is applied to the plot using the **color.by** parameter. Here we can set it to the gene set of interest *"HALLMARK-INTERFERON-GAMMA-RESPONSE"*.
@@ -399,7 +399,7 @@ Similar to the ```geyserEnrichment()``` the ```ridgeEnrichment()``` can display 
 ```{r}
 ridgeEnrichment(scRep_example, 
                 assay = "escape.UCell",
-                gene.set = "T2_Interferon")
+                gene.set = "T2-Interferon")
 ```
 
 We can get the relative position of individual cells along the x-axis using the **add.rug** parameter.
@@ -407,7 +407,7 @@ We can get the relative position of individual cells along the x-axis using the 
 ```{r}
 ridgeEnrichment(scRep_example, 
                 assay = "escape.UCell",
-                gene.set = "T2_Interferon",
+                gene.set = "T2-Interferon",
                 add.rug = TRUE,
                 scale = TRUE)
 ```
@@ -420,7 +420,7 @@ Another distribution visualization is a violin plot, which we separate and direc
 splitEnrichment(scRep_example, 
                 assay = "escape.ssGSEA",
                 gene.set = "Lipid-mediators", 
-                split.by = "groups")
+                split.by = "Type")
 ```
 
 If selecting a **split.by** variable with more than 2 levels, ```splitEnrichment()``` will convert the violin plots to dodge.
@@ -430,7 +430,7 @@ splitEnrichment(scRep_example,
                 assay = "escape.ssGSEA",
                 gene.set = "Lipid-mediators", 
                 split.by = "ident", 
-                group.by = "groups")
+                group.by = "Patient")
 ```
 
 ## gseaEnrichment
@@ -454,8 +454,8 @@ gseaEnrichment(scRep_example,
                gene.set.use = "T2_Interferon",
                gene.sets    = escape.gene.sets,
                group.by     = "ident",
-               summary.fun  = "median",
-               nperm        = 1000)
+               summary.fun  = "mean",
+               nperm        = 50)
 ```
 
 ## densityEnrichment
@@ -490,8 +490,8 @@ The scatter plot can also be converted into a hexbin, another method for summari
 ```{r}
 scatterEnrichment(scRep_example, 
                   assay = "escape.UCell",
-                  x.axis = "T2_Interferon",
-                  y.axis = "Lipid_mediators",
+                  x.axis = "T2-Interferon",
+                  y.axis = "Lipid-mediators",
                   style = "hex")
 ```
 
@@ -565,9 +565,10 @@ The helper **automatically chooses** the best *p*-value column in this order:
 ### Example ```enrichIt()``` workflow
 
 ```{r}
+DefaultAssay(scRep_example) <- "RNA"
 DEG.markers <- FindMarkers(scRep_example, 
-                           ident.1 = "0", 
-                           ident.2 = "1")
+                           ident.1 = "1", 
+                           ident.2 = "2")
 
 GSEA.results <- enrichIt(input.data = DEG.markers, 
                          gene.sets = escape.gene.sets, 
@@ -590,10 +591,14 @@ The companion ```enrichItPlot()``` gives three quick chart types.
 
 ```{r}
 ## (1) Bar plot –20 most significant per database
-enrichItPlot(GSEA.results)               
+enrichItPlot(GSEA.results) + 
+  theme(strip.background = element_blank(),
+        strip.text.x = element_blank())              
 
 ## (2) Dot plot – colored by –log10 padj, sized by core-hits
-enrichItPlot(GSEA.results, "dot", top = 10) 
+enrichItPlot(GSEA.results, "dot", top = 10) + 
+  theme(strip.background = element_blank(),
+        strip.text.x = element_blank())   
 
 ## (3) C-net plot – network of pathways ↔ leading-edge genes
 enrichItPlot(GSEA.results, "cnet", top = 5) 

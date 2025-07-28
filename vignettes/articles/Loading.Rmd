@@ -30,7 +30,7 @@ knitr::knit_hooks$set(time_it = local({
   }
 }))
 knitr::opts_chunk$set(
-  tidy = TRUE,
+  tidy = FALSE,
   tidy.opts = list(width.cutoff = 95),
   message = FALSE,
   warning = FALSE,
@@ -86,7 +86,7 @@ Key Parameter(s) for `loadContigs()`
 
 You can provide `loadContigs()` with a directory where your sequencing experiments are located, and it will recursively load and process the contig data based on the file names:
 
-```{r, eval=FALSE, tidy = FALSE}
+```{r, eval=FALSE}
 # Directory example
 contig.output <- c("~/Documents/MyExperiment")
 contig.list <- loadContigs(input = contig.output, 
@@ -95,7 +95,7 @@ contig.list <- loadContigs(input = contig.output,
 
 Alternatively, `loadContigs()` can be given a list of pre-loaded data frames and process the contig data based on the specified format:
 
-```{r eval = FALSE, tidy = FALSE}
+```{r eval = FALSE}
 # List of data frames example
 S1 <- read.csv("~/Documents/MyExperiment/Sample1/outs/barcode_results.csv")
 S2 <- read.csv("~/Documents/MyExperiment/Sample2/outs/barcode_results.csv")
@@ -119,7 +119,7 @@ It is now easy to create the contig list from a multiplexed experiment by first 
 
 To create a contig list separated by HTO (Hash Tag Oligo) IDs from a single-cell object:
 
-```{r, eval = F, tidy = FALSE}
+```{r, eval = F}
 contigs <- read.csv(".../outs/filtered_contig_annotations.csv")
 
 contig.list <- createHTOContigList(contigs, 
@@ -135,7 +135,7 @@ The built-in example data is derived from the 10x Cell Ranger pipeline, so it is
 
 To load and preview the example data built into scRepertoire:
 
-```{r tidy = FALSE}
+```{r}
 data("contig_list") #the data built into scRepertoire
 
 head(contig_list[[1]])

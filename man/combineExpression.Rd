@@ -18,8 +18,7 @@ combineExpression(
 )
 }
 \arguments{
-\item{input.data}{The product of \code{\link[=combineTCR]{combineTCR()}},
-\code{\link[=combineBCR]{combineBCR()}} or a list of
+\item{input.data}{The product of \code{\link[=combineTCR]{combineTCR()}}, \code{\link[=combineBCR]{combineBCR()}} or a list of
 both c(\code{\link[=combineTCR]{combineTCR()}}, \code{\link[=combineBCR]{combineBCR()}}).}
 
 \item{sc.data}{The Seurat or Single-Cell Experiment (SCE) object to attach}
