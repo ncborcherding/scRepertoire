@@ -198,8 +198,6 @@ loadContigs <- function(input,
 }
 
 ## --- Parsing Functions ---
-# (Parsing functions below remain unchanged for completeness)
-
 .parseTRUST4 <- function(df_list) {
   split_and_pad <- function(x, n = NULL) {
     parts <- unlist(strsplit(x, ","))
@@ -236,13 +234,13 @@ loadContigs <- function(input,
     chain1 <- processChain(data, "chain2")
     chain2 <- processChain(data, "chain1")
     combined_data <- rbind(chain1, chain2)
-    .sanitize_empty(combined_data)
+    
+    combined_data <- .sanitize_empty(combined_data)
+    combined_data$chain <- substr(combined_data$v_gene, 1, 3)
+    combined_data$reads <- as.numeric(combined_data$reads)
+    combined_data
   })
-  
-  lapply(formatted, function(x) {
-    x$chain <- substr(x$v_gene, 1, 3)
-    x
-  })
+  return(formatted)
 }
 
 .parseWAT3R <- function(df_list) {

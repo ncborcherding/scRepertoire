@@ -70,4 +70,31 @@ test_that("Standard index calculations are mathematically correct", {
   expect_equal(results$tran[results$cluster == "3"][1], 0.119958, tolerance = 1e-4)
 })
 
+test_that("Pairwise calculations are correct", {
+  # Test 1: Pairwise migration (index = "migr", pairwise = "Type")
+  pairwise_migr_results <- StartracDiversity(scRep_example,
+                                             type = "Type",
+                                             group.by = "Patient",
+                                             index = "migr",
+                                             pairwise = "Type",
+                                             exportTable = TRUE)
+  expect_s3_class(pairwise_migr_results, "data.frame")
+  expect_true(all(c("group", "cluster", "value", "comparison") %in% names(pairwise_migr_results)))
+  expect_true(all(grepl("\\w vs \\w", pairwise_migr_results$comparison)))
+  expect_equal(unique(pairwise_migr_results$comparison), "B vs L")
+  
+  
+  # Test 2: Pairwise transition (index = "tran", pairwise = "cluster")
+  pairwise_tran_results <- StartracDiversity(scRep_example,
+                                             type = "Type",
+                                             group.by = "Patient",
+                                             index = "tran",
+                                             pairwise = "cluster",
+                                             exportTable = TRUE)
+  expect_s3_class(pairwise_tran_results, "data.frame")
+  expect_true(all(c("group", "cluster", "value", "comparison") %in% names(pairwise_tran_results)))
+  expect_true(all(grepl("\\w vs \\w", pairwise_tran_results$comparison)))
+  expect_true(is.numeric(pairwise_tran_results$value))
+})
+
 

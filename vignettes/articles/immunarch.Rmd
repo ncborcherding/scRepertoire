@@ -139,7 +139,7 @@ imm_gu <- geneUsage(immunarch_data$data[1], "hs.trbv", .norm = TRUE)
 vis(imm_gu[30:60,], .grid = TRUE, .title = "TRAV/TRBV Gene Usage")
 ```
 
-We can also visualize the gene usage grouped by our metadata variable. Here, we analyze the imm_gu object using the Jensen-Shannon (`js`) divergence and correlation analysis. JS divergence is a measure of similarity between two probability distributions (lower = more similar). Converesely, correlation (`cor`) measures the linear relationship between the gene usage profiles of different samples.
+We can also visualize the gene usage grouped by our metadata variable. Here, we analyze the imm_gu object using the Jensen-Shannon (`js`) divergence and correlation analysis. JS divergence is a measure of similarity between two probability distributions (lower = more similar). Conversely, correlation (`cor`) measures the linear relationship between the gene usage profiles of different samples.
 
 ```{r GeneUsageGrouped}
 imm_gu <- geneUsage(immunarch_data$data, "hs.trbv", 
