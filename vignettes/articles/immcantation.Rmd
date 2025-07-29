@@ -35,11 +35,11 @@ knitr::opts_chunk$set(
 
 # Overview
 
-The Immcantation framework is a suite of R packages designed for the analysis of B cell receptor (BCR) sequencing data. This guide will walk you through the installation and loading of the core packages required for analyzing single-cell BCR data with accompanying interaction with  `scRepertoire`. 
+The `Immcantation` workflow is a suite of R packages/python scripts designed for the analysis of B cell receptor (BCR) sequencing data. This guide will walk you through the installation and loading of the core packages required for analyzing single-cell BCR data with accompanying interaction with  `scRepertoire`. More information on the `Immcantation` workflow is available at their [website](https://immcantation.readthedocs.io/en/stable/).
 
 ## Installation 
 
-Here is a brief overview of the role each package plays in the Immcantation workflow:
+Here is a brief overview of the role each package plays in the `Immcantation` workflow:
 
 * `alakazam`: This package provides general tools for working with AIRR (Adaptive Immune Receptor Repertoire) data. It includes functions for data import/export, quality control, and basic frequency analysis of V(D)J genes and clonotypes.
 * `dowser`: After identifying clones with scoper, dowser is used to perform phylogenetic analysis on the sequences within each clone. This helps in reconstructing the lineage trees that trace the affinity maturation process from the unmutated common ancestor.
@@ -54,6 +54,92 @@ install.packages(packages)
 
 ## Citation 
 
+The `Immcantation` workflow has involved extensive development across a range of methods and packages. If using the vignette and packages, please read and cite the following:
+
+### alakazam
+
+```
+@article{gupta2015change,
+  title={Change-O: a toolkit for analyzing large-scale B cell immunoglobulin repertoire sequencing data},
+  author={Gupta, Namita T and Vander Heiden, Jason A and Uduman, Mohamed and Gadala-Maria, Daniel and Yaari, Gur and Kleinstein, Steven H},
+  journal={Bioinformatics},
+  volume={31},
+  number={20},
+  pages={3356--3358},
+  year={2015},
+  publisher={Oxford University Press}
+}
+```
+
+### dowser
+
+```
+# Original Publication
+@article{hoehn2022phylogenetic,
+  title={Phylogenetic analysis of migration, differentiation, and class switching in B cells},
+  author={Hoehn, Kenneth B and Pybus, Oliver G and Kleinstein, Steven H},
+  journal={PLoS computational biology},
+  volume={18},
+  number={4},
+  pages={e1009885},
+  year={2022},
+  publisher={Public Library of Science San Francisco, CA USA}
+}
+
+# Methodology for paired BCR sequences
+@article{jensen2024inferring,
+  title={Inferring B cell phylogenies from paired H and L chain BCR sequences with Dowser},
+  author={Jensen, Cole G and Sumner, Jacob A and Kleinstein, Steven H and Hoehn, Kenneth B},
+  journal={The Journal of Immunology},
+  volume={212},
+  number={10},
+  pages={1579--1588},
+  year={2024},
+  publisher={American Association of Immunologists}
+}
+```
+
+### scoper
+
+```
+@article{nouri2018spectral,
+  title={A spectral clustering-based method for identifying clones from high-throughput B cell repertoire sequencing data},
+  author={Nouri, Nima and Kleinstein, Steven H},
+  journal={Bioinformatics},
+  volume={34},
+  number={13},
+  pages={i341--i349},
+  year={2018},
+  publisher={Oxford University Press}
+}
+```
+
+### shazam
+
+```
+# Selection analysis methods
+@article{yaari2012quantifying,
+  title={Quantifying selection in high-throughput Immunoglobulin sequencing data sets},
+  author={Yaari, Gur and Uduman, Mohamed and Kleinstein, Steven H},
+  journal={Nucleic acids research},
+  volume={40},
+  number={17},
+  pages={e134--e134},
+  year={2012},
+  publisher={Oxford University Press}
+}
+
+# HH_S5F model and the targeting model generation methods
+@article{yaari2013models,
+  title={Models of somatic hypermutation targeting and substitution based on synonymous mutations from high-throughput immunoglobulin sequencing data},
+  author={Yaari, Gur and Vander Heiden, Jason A and Uduman, Mohamed and Gadala-Maria, Daniel and Gupta, Namita and Stern, Joel NH and O’Connor, Kevin C and Hafler, David A and Laserson, Uri and Vigneault, Francois and others},
+  journal={Frontiers in immunology},
+  volume={4},
+  pages={358},
+  year={2013},
+  publisher={Frontiers Media SA}
+}
+```
 
 ## Loading Packages for the Tutorial
 
@@ -67,11 +153,14 @@ library(scoper)
 library(scRepertoire)
 library(stringr)
 library(viridis)
+
+# Using standard ggplot theme
+theme_vignette <- scRepertoire:::.themeRepertoire
 ```
 
 # Loading BCR Data
 
-After processing the raw FASTA files with IgBLAST using the provided bash script (Immcantation_Bash.sh), you will have a set of tab-separated value (`.tsv`) files. The bash script automates the use of Change-O's `AssignGenes.py` and `MakeDb.py` tools, which perform V(D)J gene assignment and construct a database file for each sample. The output file we are interested in is `all_contig_igblast_db-pass.tsv`.
+After processing the raw FASTA files with IgBLAST using the provided bash script [Immcantation_Bash.sh](https://www.borch.dev/uploads/scripts/Immcantation_Bash.sh), you will have a set of tab-separated value (`.tsv`) files. The bash script automates the use of Change-O's `AssignGenes.py` and `MakeDb.py` tools, which perform V(D)J gene assignment and construct a database file for each sample. The output file we are interested in is `all_contig_igblast_db-pass.tsv`.
 
 Our first task in R is to locate all of these database files, load them, and combine them into a single, clean data frame. The following code block handles this process, performing several essential quality control steps along the way to ensure the data is suitable for downstream analysis.
 
@@ -139,11 +228,12 @@ lib_data <- lapply(seq_along(file.list), function(x) {
 
 # Combining all the data together
 bcr_db <- do.call(rbind, lib_data)
+saveRDS(bcr_db, "Immcantation_bcr_db.rds")
 ```
 
 # Determining a Clonal Assignment Threshold
 
-The core task in B cell repertoire analysis is to group sequences into "clones"—sets of cells that originated from the same initial B cell and underwent affinity maturation. The Immcantation workflow defines clones as sequences that use the same V and J genes and have a high degree of similarity in their junction regions.
+The core task in B cell repertoire analysis is to group sequences into "clones"—sets of cells that originated from the same initial B cell and underwent affinity maturation. The `Immcantation` workflow defines clones as sequences that use the same V and J genes and have a high degree of similarity in their junction regions.
 
 But how do we define "high similarity"? We need to determine a specific, objective distance threshold. Sequences with a junction similarity distance below this threshold will be considered part of the same clone. This step uses an automated, data-driven approach to find that threshold.
 
@@ -152,7 +242,10 @@ But how do we define "high similarity"? We need to determine a specific, objecti
 The first step is to calculate the Hamming distance (the number of positions at which the characters are different) between the junction sequence of each B cell and its "nearest neighbor." The nearest neighbor is the sequence from a different cell that has the most similar junction.
 
 ```{r}
-# split by subject id
+# Loading Data from Above Step
+bcr_db <- readRDS(url("https://www.borch.dev/uploads/data/Immcantation_bcr_db.rds"))
+
+# Split by Subject Id
 dist_heavy <- distToNearest(bcr_db, 
                             cellIdColumn = "cell_id_unique",
                             first = FALSE,
@@ -167,7 +260,7 @@ dist_heavy <- distToNearest(bcr_db,
 The distribution of nearest-neighbor distances is typically bimodal. There is a sharp peak of very small distances (sequences within the same clone) and a broader peak of larger distances (sequences from different clones). The `findThreshold` function from the `scoper` package automatically finds the valley between these two peaks.
 
 ```{r}
-# find threshold for cloning automatically
+# Find threshold for cloning automatically
 threshold_output <- findThreshold(dist_heavy$dist_nearest, 
                                   progress = TRUE,
                                   method = "gmm", 
@@ -182,7 +275,7 @@ This function fits a Gaussian Mixture Model (`method = "gmm"`) to the distance d
 ```{r}
 ggplot(subset(dist_heavy, !is.na(dist_nearest)),
              aes(x = dist_nearest)) +
-  theme_bw() +
+  theme_vignette() +
   xlab("Hamming distance") + 
   ylab("Count") +
   scale_x_continuous(breaks = seq(0, 1, 0.1)) +
@@ -230,7 +323,7 @@ ggplot(clone_sizes %>% filter(locus=="IGH"),
   facet_wrap(~subject_id) +
   scale_y_log10() +
   scale_x_sqrt() +
-  theme_bw() +
+  theme_vignette() +
   labs(x="Cells per clone", 
        y="# Clonal lineages")
 ```
@@ -261,12 +354,11 @@ results_db$c_call[is.na(results_db$c_call)] <- "NA"
 A key advantage of single-cell data is having paired heavy and light chain information. While we defined our clones using only the heavy chain, cells within that clone may use different light chains. These represent distinct "subclones." The `resolveLightChains` function from `scoper` identifies these groupings.
 
 ```{r}
-# split clones into subclones by light chain
+# Split clones into subclones by light chain
 subclones_db <- resolveLightChains(data=results_db,
                                    cell = "cell_id_unique", 
                                    id = "sequence_id", 
                                    nproc = 2)
-
 
 # General Clean Up
 subclones_db$v_gene <- str_split(subclones_db$v_call, "[*]", simplify = TRUE)[,1]
@@ -284,7 +376,7 @@ subclones_db %>%
   facet_wrap(~chain) +
   scale_fill_viridis(option = "B", discrete = TRUE, name="Isotype") + 
   labs(x="Subject", y="# BCRs") +
-  theme_bw()
+  theme_vignette()
 ```
 
 # Preparing Data for Lineage Tree Analysis
@@ -302,14 +394,16 @@ subclones_db$c_gene[is.na(subclones_db$c_gene)] <- "NA"
 subclones_db$v_gene[is.na(subclones_db$v_gene)] <- "NA"
 subclones_db$j_gene[is.na(subclones_db$j_gene)] <- "NA"
 subclones_db$vj_gene[is.na(subclones_db$vj_gene)] <- "NA"
-subclones_db$tissue <- str_split(subclones_db$cell_id_unique, "_", simplify = TRUE)[,2]
+
+vec <- str_split(subclones_db$cell_id_unique, "_", simplify = TRUE)[,3]
+subclones_db$timepoint <- ifelse(vec %in% c("1", "2"), vec, "1")
 
 clones_hl <- formatClones(subclones_db,
                           cell = 'cell_id_unique',
                           chain = "HL", 
                           split_light = FALSE,
                           traits = c("subject_id", "c_gene"),
-                          columns = c("c_gene", "v_gene", "j_gene", "vj_gene", "subject_id", "tissue"),
+                          columns = c("c_gene", "v_gene", "j_gene", "vj_gene", "subject_id", "timepoint"),
                           minseq = 2, 
                           verbose = FALSE)
 ```
@@ -328,13 +422,13 @@ trees = getTrees(clones_hl)
 trees <- collapseNodes(trees)
 trees_m = scaleBranches(trees, edge_type="mutations")
 ```
+
 ## Visualizing Clonal Trees
 
 ```{r}
 # --- Generate and Customize Tree Plots ---
-
 # Define a color palette for isotypes for consistent plotting
-isotypes <- c("IGHD", "IGHM", "IGHG1", "IGHG2", "IGHG3", "IGHG4", "IGHA1", "IGHA2", "Germline")
+isotypes <- c("IGHA1", "IGHA2", "IGHD", "IGHG1", "IGHG2", "IGHG3", "IGHG4", "IGHM", "Germline")
 col_pal <- c(viridis_pal(option = "B")(8), "grey")
 names(col_pal) <- isotypes
 
@@ -343,36 +437,19 @@ plots_m <- plotTrees(trees_m, scale=1)
 names(plots_m) <- trees_m$clone_id
 
 # --- Example: Plotting a Single Interesting Tree ---
-idx <- trees_m %>% 
-  slice_max(order_by = seqs, n = 3) %>% 
-  pull(clone_id)
+idx <- trees_m %>% slice_max(order_by = seqs, n = 1) %>% pull(clone_id)
 example_tree_plot <- plots_m[[idx]]
-
-plot_data <- example_tree_plot$data
-plot_data$tissue <- str_split(plot_data$cell_id_unique, "_", simplify = TRUE)[,2]
-plot_data$tissue <- ifelse(is.na(plot_data$tissue), "Germline", plot_data$tissue) # Handle germline node
-example_tree_plot$data <- plot_data
 max_x <- max(example_tree_plot$data$x) # Find x-axis limit
 
 example_tree_plot + 
-    labs(
-        title = paste("Lineage Tree for Clone:", example_tree_plot$data$clone_id[1]),
-        subtitle = "Branches scaled by number of mutations"
-    ) +
+    labs(title = paste("Lineage Tree for Clone:", idx)) +
     geom_tippoint(aes(color = c_gene, 
-                      shape = tissue, 
                       size = collapse_count), 
                   alpha = 0.8) + 
-    
     scale_color_manual(values = col_pal, name = "Isotype") +
-    scale_shape_manual(values = c("Germline"=1, "PT"=16, "LN"=17), name = "Tissue") +
     scale_size(name = "# Cells", range = c(2, 6)) +
     xlim(0, max_x + (max_x * 0.5)) +
-    theme(
-        plot.title = element_text(face = "bold"),
-        plot.subtitle = element_text(face = "italic"),
-        legend.position = "right"
-    )
+    theme_vignette(grid_lines = "no")
 
 ```
 
@@ -433,6 +510,7 @@ shm_db <- observedMutations(shm_db,
                             combine = TRUE,
                             nproc = 2)
 ```
+
 ### Visualizing Replacement and Silent Mutations in CDRs
 
 A key way to infer positive or negative selection is to compare the rate of replacement (**R**) mutations (which change the amino acid sequence) to silent (**S**) mutations (which do not). High levels of R mutations in the antigen-binding CDRs are a classic sign of positive selection for improved binding.
@@ -450,7 +528,7 @@ shm_db %>%
                x = "Isotype", y = "Mutation frequency") +
           scale_fill_viridis(option = "H", discrete = TRUE) +
           facet_grid(.~c_call, scales="free_y") + 
-     theme_bw() +
+     theme_vignette() +
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) 
 
 # Plot replacement mutation frequency in the CDRs
@@ -462,7 +540,7 @@ shm_db %>%
                x = "Isotype", y = "Mutation frequency") +
           scale_fill_viridis(option = "H", discrete = TRUE) +
           facet_grid(.~c_call, scales="free_y") + 
-     theme_bw() +
+     theme_vignette() +
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) 
 ```
 
@@ -490,7 +568,10 @@ ggplot(mut_freq_clone %>% filter(c_call != "NA"),
   facet_grid(c_call~subject_id, scales="free") +
   labs(x="Mean mutation frequency per clone", y="Density",
        title="Somatic Hypermutation Rate by Isotype and Subject") +
-  theme_bw()
+  theme_vignette()
 ```
 
 This series of density plots shows the distribution of SHM frequencies for each isotype within each subject. The x-axis represents the mutation frequency. A peak near zero indicates a large population of naive or unmutated cells (such as expected for IGHM and IGHD). In a mature immune response, you would expect to see the peaks for IgG and IgA shifted to the right, indicating higher overall mutation levels. 
+
+# Interaction with Single-Cell Object
+
