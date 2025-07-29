@@ -25,7 +25,7 @@ knitr::knit_hooks$set(time_it = local({
 }))
 
 knitr::opts_chunk$set(
-  tidy = TRUE,
+  tidy = FALSE,
   tidy.opts = list(width.cutoff = 95),
   message = FALSE,
   warning = FALSE,
@@ -43,7 +43,7 @@ Here is a brief overview of the role each package plays in the `Immcantation` wo
 
 * `alakazam`: This package provides general tools for working with AIRR (Adaptive Immune Receptor Repertoire) data. It includes functions for data import/export, quality control, and basic frequency analysis of V(D)J genes and clonotypes.
 * `dowser`: After identifying clones with scoper, dowser is used to perform phylogenetic analysis on the sequences within each clone. This helps in reconstructing the lineage trees that trace the affinity maturation process from the unmutated common ancestor.
-* `scoper`: The `scoper` package is used for inferring B cell clones from BCR sequencing data. It implements several methods for partitioning sequences into clonal groups based on shared VJ genes and junction region similarity.
+* `scoper`: Used for inferring B cell clones from BCR sequencing data. It implements several methods for partitioning sequences into clonal groups based on shared VJ genes and junction region similarity.
 * `shazam`: This package focuses on the analysis of somatic hypermutation (SHM) in immunoglobulin (Ig) sequences. Its functions allow you to quantify mutation frequencies, analyze mutational spectra, and measure the strength and nature of selection pressures.
 
 ```{r eval = FALSE}
@@ -146,6 +146,7 @@ The `Immcantation` workflow has involved extensive development across a range of
 ```{r}
 library(alakazam)
 library(dowser)
+library(dplyr)
 library(ggplot2)
 library(ggtree)
 library(shazam)
@@ -237,7 +238,7 @@ The core task in B cell repertoire analysis is to group sequences into "clones"â
 
 But how do we define "high similarity"? We need to determine a specific, objective distance threshold. Sequences with a junction similarity distance below this threshold will be considered part of the same clone. This step uses an automated, data-driven approach to find that threshold.
 
-### Calculate Nearest Neighbor Distances (distToNearest)
+### Calculate Nearest Neighbor Distances (`distToNearest`)
 
 The first step is to calculate the Hamming distance (the number of positions at which the characters are different) between the junction sequence of each B cell and its "nearest neighbor." The nearest neighbor is the sequence from a different cell that has the most similar junction.
 
@@ -315,17 +316,17 @@ Now that clones are defined, a common first analysis is to quantify their sizes.
 # get clone sizes per subject
 clone_sizes <- countClones(results_db,
                            groups=c("locus", "subject_id"))
-
-ggplot(clone_sizes %>% filter(locus=="IGH"), 
-       aes(x=seq_count)) +
-  geom_bar(fill = "black", color = "black") + 
-  geom_text(aes(label=seq_count, y=1), vjust=1.5, size=1) +
-  facet_wrap(~subject_id) +
-  scale_y_log10() +
-  scale_x_sqrt() +
-  theme_vignette() +
-  labs(x="Cells per clone", 
-       y="# Clonal lineages")
+clone_sizes %>% 
+  filter(locus=="IGH") %>%
+  ggplot(aes(x=seq_count)) +
+    geom_bar(fill = "black", color = "black") + 
+    geom_text(aes(label=seq_count, y=1), vjust=1.5, size=1) +
+    facet_wrap(~subject_id) +
+    scale_y_log10() +
+    scale_x_sqrt() +
+    theme_vignette() +
+    labs(x="Cells per clone", 
+         y="# Clonal lineages")
 ```
 
 # Germline Reconstruction and Subclone Definition
@@ -457,7 +458,7 @@ example_tree_plot +
 
 A hallmark of the adaptive immune response is somatic hypermutation (SHM), the process by which B cells introduce mutations into their antibody genes to improve antigen binding. Quantifying the frequency, location, and type of these mutations is a primary goal of BCR repertoire analysis. This step uses the shazam package to calculate SHM and explore its patterns.
 
-## Calculate Somatic Hypermutation (`observedMutations()`)
+## Calculate Somatic Hypermutation (`observedMutations`)
 
 The `observedMutations()` function is the workhorse for all SHM analysis. It compares each observed sequence to its reconstructed germline sequence (which we created in Step 4) and tallies the mutations. The function is called multiple times to calculate different metrics. It compares the `sequence_alignment` (observed sequence) to the `germline_alignment_d_mask` (unmutated ancestor).
 
@@ -465,11 +466,12 @@ Key Parameter(s) for `observedMutations()`
 
 * `regionDefinition = IMGT_VDJ`: This tells the function to use the standard IMGT definitions to identify Framework Regions (FWRs) and Complementarity-Determining Regions (CDRs). CDRs are the hypervariable loops that directly contact the antigen, while FWRs provide the structural scaffold.
 * `frequency = TRUE`: Calculates the mutation rate (mutations per 100 base pairs). If FALSE, it calculates the raw count of mutations.
-* `combine = TRUE`: This calculates a single mutation value across the entire VDJ segment. If FALSE, it calculates mutations separately for each sub-region (e.g., mu_freq_cdr_s for silent mutations in the CDR, mu_freq_fwr_r for replacement mutations in the FWR, etc.).
+* `combine = TRUE`: This calculates a single mutation value across the entire VDJ segment. If FALSE, it calculates mutations separately for each sub-region (e.g., `mu_freq_cdr_s` for silent mutations in the CDR, `mu_freq_fwr_r` for replacement mutations in the FWR, etc.).
 
-After running these commands, your shm_db data frame will be populated with many new columns (e.g., mu_freq, mu_count, mu_freq_cdr_s, mu_freq_cdr_r) that quantify SHM in great detail.
+After running these commands, your shm_db data frame will be populated with many new columns (e.g., `mu_freq`, `mu_count`, `mu_freq_cdr_s`, `mu_freq_cdr_r`, etc) that quantify SHM in great detail.
 
 ```{r}
+# Detailed Mutation Counts by Region
 shm_db <- observedMutations(subclones_db,
                             sequenceColumn = "sequence_alignment",
                             germlineColumn = "germline_alignment_d_mask",
@@ -478,13 +480,7 @@ shm_db <- observedMutations(subclones_db,
                             combine = FALSE,
                             nproc = 2)
 
-test <- observedMutations(subclones_db, 
-                          sequenceColumn="sequence_alignment",
-                          germlineColumn="germline_alignment_d_mask",
-                          regionDefinition=NULL,
-                          frequency=FALSE, 
-                          nproc=2)
-
+# Total Mutation Count (Combined VDJ regions)
 shm_db <- observedMutations(shm_db,
                             sequenceColumn = "sequence_alignment",
                             germlineColumn = "germline_alignment_d_mask",
@@ -493,7 +489,7 @@ shm_db <- observedMutations(shm_db,
                             combine = TRUE,
                             nproc = 2)
 
-# calculate SHM frequency in the VDJ regions
+# Detailed Mutation Frequency by Region
 shm_db <- observedMutations(shm_db,
                             sequenceColumn = "sequence_alignment",
                             germlineColumn = "germline_alignment_d_mask",
@@ -502,6 +498,7 @@ shm_db <- observedMutations(shm_db,
                             combine = FALSE,
                             nproc = 2)
 
+# Total Mutation Frequency (Combined VDJ regions
 shm_db <- observedMutations(shm_db,
                             sequenceColumn = "sequence_alignment",
                             germlineColumn = "germline_alignment_d_mask",
@@ -513,7 +510,7 @@ shm_db <- observedMutations(shm_db,
 
 ### Visualizing Replacement and Silent Mutations in CDRs
 
-A key way to infer positive or negative selection is to compare the rate of replacement (**R**) mutations (which change the amino acid sequence) to silent (**S**) mutations (which do not). High levels of R mutations in the antigen-binding CDRs are a classic sign of positive selection for improved binding.
+A key way to infer positive or negative selection is to compare the rate of replacement (**R**) mutations (which change the amino acid sequence) to silent (**S**) mutations (which do not). High levels of **R** mutations in the antigen-binding CDRs are a classic sign of positive selection for improved binding.
 
 ```{r}
 # Clean up isotype calls for plotting
@@ -522,14 +519,15 @@ shm_db$c_call <- str_split(shm_db$c_call, "[*]", simplify = TRUE)[,1]
 # Plot silent mutation frequency in the CDRs
 shm_db %>%
   filter(locus == "IGH" & c_call != "NA") %>%
-  ggplot(shm_db, aes(x = subject_id, y=mu_freq_cdr_s, fill=c_call)) +
+  ggplot(aes(x = subject_id, y=mu_freq_cdr_s, fill=c_call)) +
           geom_boxplot(outlier.alpha = 0) + 
           labs(title = "CDR silent mutations", 
                x = "Isotype", y = "Mutation frequency") +
-          scale_fill_viridis(option = "H", discrete = TRUE) +
+          scale_fill_viridis(option = "B", discrete = TRUE) +
           facet_grid(.~c_call, scales="free_y") + 
      theme_vignette() +
-    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) 
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))  + 
+  guides(fill = "none") 
 
 # Plot replacement mutation frequency in the CDRs
 shm_db %>%
@@ -538,10 +536,11 @@ shm_db %>%
           geom_boxplot(outlier.alpha = 0) + 
           labs(title = "CDR replacement mutations", 
                x = "Isotype", y = "Mutation frequency") +
-          scale_fill_viridis(option = "H", discrete = TRUE) +
+          scale_fill_viridis(option = "B", discrete = TRUE) +
           facet_grid(.~c_call, scales="free_y") + 
      theme_vignette() +
-    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) 
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))  + 
+  guides(fill = "none")
 ```
 
 This boxplot displays the frequency of replacement mutations specifically within the CDRs of heavy chains. It is faceted by isotype (`c_call`), allowing you to compare SHM levels in naive (IgM/IgD) versus mature (IgG/IgA) B cells. You would typically expect to see higher R mutation frequencies in class-switched isotypes, indicating that these clones have undergone selection. 
@@ -558,7 +557,7 @@ mut_freq_clone <- shm_db %>%
   summarise(mean_mut_freq = mean(mu_freq))
 
 # Order isotypes for consistent plotting
-isotypes = c("IGHD", "IGHM", "IGHA1", "IGHA2", "IGHE", "IGHG1", "IGHG2", "IGHG3", "IGHG4")
+isotypes = c("IGHA1", "IGHA2", "IGHD", "IGHE", "IGHG1", "IGHG2", "IGHG3", "IGHG4", "IGHM")
 mut_freq_clone$c_call <- factor(mut_freq_clone$c_call, levels=isotypes)
 
 # Create a density plot of mutation frequencies
@@ -566,9 +565,12 @@ ggplot(mut_freq_clone %>% filter(c_call != "NA"),
        aes(mean_mut_freq, fill = c_call)) +
   geom_density(alpha=0.5) +
   facet_grid(c_call~subject_id, scales="free") +
+  scale_fill_viridis(option = "B", discrete = TRUE) + 
   labs(x="Mean mutation frequency per clone", y="Density",
-       title="Somatic Hypermutation Rate by Isotype and Subject") +
-  theme_vignette()
+       title="Somatic Hypermutation Rate by Isotype and Subject", 
+       fill = "Isotype") +
+  theme_vignette(base_size = 8) + 
+  guides(fill = "none")
 ```
 
 This series of density plots shows the distribution of SHM frequencies for each isotype within each subject. The x-axis represents the mutation frequency. A peak near zero indicates a large population of naive or unmutated cells (such as expected for IGHM and IGHD). In a mature immune response, you would expect to see the peaks for IgG and IgA shifted to the right, indicating higher overall mutation levels. 
