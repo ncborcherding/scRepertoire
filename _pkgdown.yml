@@ -29,6 +29,7 @@ navbar:
     - text: Additional Processing
       href: articles/Processing.html
     - text: '-------'
+    - text: "Repertoire Analysis"
     - text: Basic Clonal Analysis
       href: articles/Clonal_Visualizations.html
     - text: Visualizing Clonal Dynamics
@@ -40,6 +41,7 @@ navbar:
     - text: Clustering Sequences by Edit Distance
       href: articles/Clonal_Cluster.html
     - text: '-------'
+    - text: "Working with Single-Cell Objects"
     - text: Combining Clones and Single-Cell Objects
       href: articles/Attaching_SC.html
     - text: Visualizations for Single-Cell Objects
@@ -47,6 +49,7 @@ navbar:
     - text: Quantifying Clonal Bias
       href: articles/Clonal_Bias.html
     - text: '-------'
+    - text: "Deep Learning Integrations"
     - text: Making Deep Learning Models with immApex
       href: articles/immApex.html
     - text: Combining Deep Learning and TCRs with Trex
@@ -56,12 +59,15 @@ navbar:
     - text: Single-cell Gene Set Enrichment Analysis
       href: articles/Running_Escape.html
     - text: '-------'
-    - text: VDJ Trajectory Analysis with dandelionR
-      href: articles/dandelionR.html
-    - text: Using scRepertoire with immunarch
-      href: articles/immunarch.html
+    - text: "Other Workflow Integrations"
+    - text: "Combining Immcantation and scRepertoire"
+      href: articles/immcantation.html
     - text: TCRpheno applied to T cell fate
       href: articles/tcrpheno.html
+    - text: Using scRepertoire with immunarch
+      href: articles/immunarch.html
+    - text: VDJ Trajectory Analysis with dandelionR
+      href: articles/dandelionR.html
   - text: News/Changelog
     href: news/index.html
   - text: Reference
