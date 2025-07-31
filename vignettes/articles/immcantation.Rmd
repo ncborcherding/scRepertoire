@@ -149,10 +149,12 @@ library(dowser)
 library(dplyr)
 library(ggplot2)
 library(ggtree)
-library(shazam)
 library(scoper)
 library(scRepertoire)
+library(shazam)
 library(stringr)
+library(Seurat)
+library(tibble)
 library(viridis)
 
 # Using standard ggplot theme
@@ -160,6 +162,8 @@ theme_vignette <- scRepertoire:::.themeRepertoire
 ```
 
 # Loading BCR Data
+
+Data from this vignette is derived from [PMID: 33891889](https://pubmed.ncbi.nlm.nih.gov/33891889/), which examines the immune dysregulation of multisystem inflammatory syndrome in children following COVID-19 infection. Raw data from SRA was downloaded and re-aligned using the standard Cell Ranger v9.0 workflow. 
 
 After processing the raw FASTA files with IgBLAST using the provided bash script [Immcantation_Bash.sh](https://www.borch.dev/uploads/scripts/Immcantation_Bash.sh), you will have a set of tab-separated value (`.tsv`) files. The bash script automates the use of Change-O's `AssignGenes.py` and `MakeDb.py` tools, which perform V(D)J gene assignment and construct a database file for each sample. The output file we are interested in is `all_contig_igblast_db-pass.tsv`.
 
@@ -577,3 +581,88 @@ This series of density plots shows the distribution of SHM frequencies for each 
 
 # Interaction with Single-Cell Object
 
+In this final step, we will add the clonal and SHM information we derived from the `Immcantation` workflow into a Seurat object and then use the powerful tools in the `scRepertoire` package to perform integrated analyses.
+
+More information on the upstream processing to create the Seurat Object can be obtained from this [R script](https://www.borch.dev/uploads/scripts/Immcantation_Seurat.R).
+
+## Merging Immcantation Data into the Seurat Object
+
+Our first task is to add the Immcantation-derived metadata to the Seurat object. The key is the unique cell identifier (`cell_id_unique`) we created earlier, which matches the cell barcodes in the Seurat object.
+
+```{r}
+# Loading the Seurat Object
+SeuratObject <- readRDS(url("https://www.borch.dev/uploads/data/Immcantation_SeuratObject.rds"))
+
+# Preparing Our Immcantation Clonal Info
+Immc.df <- shm_db %>%
+    filter(chain == "heavy") %>%
+    select(cell_id_unique,
+           clone_id,
+           subject_id,
+           new_mu_count = mu_count,
+           new_mu_freq = mu_freq,
+           mu_count_cdr_r,
+           mu_count_cdr_s,
+           mu_count_fwr_r,
+           mu_count_fwr_s,
+           mu_freq_cdr_r,
+           mu_freq_cdr_s,
+           mu_freq_fwr_r,
+           mu_freq_fwr_s) %>%
+    mutate(clone_id = paste0(subject_id, "_", clone_id)) %>%
+    column_to_rownames("cell_id_unique") %>%
+    as.data.frame()
+
+# Add Metadata to Seurat Object 
+SeuratObject <- AddMetaData(SeuratObject, Immc.df)
+```
+
+## Visualizing Clonal Distribution on the UMAP
+
+We can now immediately visualize where our B cell clones and the mutational frequency along the UMAP projection, which is organized by transcriptional similarity.
+
+```{r}
+plot1 <- DimPlot(SeuratObject, 
+                 label = TRUE) + 
+            guides(color = "none") + 
+            theme_vignette(grid_lines = "no") 
+
+plot2 <- DimPlot(SeuratObject, 
+                 group.by = "clone_id") + 
+            scale_color_viridis(option = "B", discrete = TRUE) + 
+            guides(color = "none") + 
+            theme_vignette(grid_lines = "no") + 
+            theme(plot.title = element_blank()) 
+
+plot3 <- FeaturePlot(SeuratObject, 
+                     features = "new_mu_freq")+ 
+            scale_color_viridis(option = "B") + 
+            guides(color = "none") + 
+            theme_vignette(grid_lines = "no") + 
+            theme(plot.title = element_blank()) 
+
+plot1 + plot2 + plot3
+```
+
+## Quantitative Analysis with scRepertoire
+
+`scRepertoire` provides a suite of functions designed for quantitative analysis of single-cell immune repertoires and functions with custom clonal definitions, such as `clone_id`.
+
+```{r}
+clonalQuant(SeuratObject, 
+            group.by = "orig.ident",
+            cloneCall="clone_id")
+
+clonalDiversity(SeuratObject, 
+                group.by = "orig.ident",
+                cloneCall="clone_id", 
+                metric = "shannon")
+
+percentAA(SeuratObject, 
+          group.by = "subject_id",
+          chain = "IGH", 
+          aa.length = 20, 
+          base_size = 8)
+```
+
+By integrating the detailed clonal definitions from Immcantation with the powerful single-cell analysis tools in Seurat and scRepertoire, you can now perform a truly comprehensive analysis, linking the evolution of the antibody sequence directly to the dynamic transcriptional state of the B cell.

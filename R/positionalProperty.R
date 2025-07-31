@@ -91,7 +91,8 @@ positionalProperty <- function(input.data,
   sco <- .is.seurat.or.se.object(input.data)
   input.data <- .dataWrangle(input.data, 
                              group.by, 
-                             .theCall(input.data, "CTaa", check.df = FALSE), 
+                             .theCall(input.data, "CTaa", 
+                                      check.df = FALSE, silent = TRUE), 
                              chain)
   cloneCall <- .theCall(input.data, "CTaa")
   

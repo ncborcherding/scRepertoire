@@ -85,7 +85,8 @@ clonalOverlap <- function(input.data,
     }
     input.data <- .dataWrangle(input.data, 
                                group.by, 
-                               .theCall(input.data, cloneCall, check.df = FALSE), 
+                               .theCall(input.data, cloneCall, 
+                                        check.df = FALSE, silent = TRUE), 
                                chain)
     if(!is.null(order.by)) {
       if(length(order.by) == 1 && order.by == "alphanumeric") {
