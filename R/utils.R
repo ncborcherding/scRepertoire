@@ -528,8 +528,8 @@
 
 # This is to help sort the type of clone data to use
 #' @keywords internal
-.theCall <- function(df, x, check.df = TRUE) {
-    x <- .convertClonecall(x)
+.theCall <- function(df, x, check.df = TRUE, silent = FALSE) {
+    x <- .convertClonecall(x, silent)
     if(check.df) {
       if(inherits(df, "list") & !any(colnames(df[[1]]) %in% x)) {
         stop("Check the clonal variable (cloneCall) being used in the function, it does not appear in the data provided.")
@@ -541,7 +541,7 @@
 }
 
 # helper for .theCall # Qile: on second thought - converting to x to lowercase may be a bad idea...
-.convertClonecall <- function(x) {
+.convertClonecall <- function(x, silent) {
 
   clonecall_dictionary <- list(
     "gene" = "CTgene",
@@ -563,7 +563,9 @@
 	if (!is.null(clonecall_dictionary[[tolower(x)]])) {
 		return(clonecall_dictionary[[tolower(x)]])
 	} else {
-		message("A custom variable ", x, " will be used to call clones")
+	  if(!silent) {
+		  message("A custom variable ", x, " will be used to call clones")
+	  }
 		return(x)
 	}
 }

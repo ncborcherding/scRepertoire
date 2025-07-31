@@ -72,7 +72,8 @@ percentKmer <- function(input.data,
   sco <- .is.seurat.or.se.object(input.data)
   input.data <- .dataWrangle(input.data, 
                              group.by, 
-                             .theCall(input.data, cloneCall, check.df = FALSE), 
+                             .theCall(input.data, cloneCall, 
+                                      check.df = FALSE, silent = TRUE), 
                              chain)
   cloneCall <- .theCall(input.data, cloneCall)
   if(!is.null(group.by) && !sco) {
