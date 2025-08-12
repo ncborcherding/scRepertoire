@@ -1,6 +1,9 @@
+# scRepertoire VERSION 2.5.2
+
+* Added support for mouse genes in `quietBCRgenes()` and `quietTCRgenes()`
+
 # scRepertoire VERSION 2.5.1
 
-## UNDERLYING CHANGES
 * Introduced pairwise calculations to ```StartracDiversity()```
 * Internal function conversion for ```clonalSizeDistribution()``` - remove 
 cubature, truncdist and VGAM from dependencies.
