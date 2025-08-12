@@ -38,7 +38,7 @@ quietTCRgenes.default <- function(input.data, ...) {
 }
 
 shouldQuietTcrGene <- function(genes) {
-    grepl("^TR[ABDG][VDJ][^D]", genes)
+    grepl("^TR[ABDG][VDJ][^D]", genes, ignore.case = TRUE)
 }
 
 #' @rdname quietVDJgenes
@@ -67,9 +67,9 @@ quietBCRgenes.default <- function(input.data, ...) {
 }
 
 shouldQuietBcrGene <- function(genes) {
-    grepl("^IG[HLK][VDJCAGM]", genes) &
-        !genes %in% getHumanIgPseudoGenes() |
-        genes == "JCHAIN"
+    grepl("^IG[HLK][VDJCAGM]", genes, ignore.case = TRUE) &
+    !genes %in% c(getHumanIgPseudoGenes(), getMouseIgPseudoGenes()) |
+    toupper(genes) == "JCHAIN"
 }
 
 #' @rdname quietVDJgenes
@@ -135,4 +135,56 @@ getHumanIgPseudoGenes <- function() {
         "IGKV8OR8-1", "IGLVIV-66-1", "IGLVIVOR22-1", "IGLVIVOR22-2", "IGLVVI-22-1",
         "IGLVVI-25-1", "IGLVVII-41-1"
     ))
+}
+
+getMouseIgPseudoGenes <- function() {
+  unique(c(
+    "Ighv1-1", "Ighv1-2", "Ighv1-3", "Ighv1-6", "Ighv1-8",
+    "Ighv1-10", "Ighv1-13", "Ighv1-14", "Ighv1-17", "Ighv1-17-1",
+    "Ighv1-18-1", "Ighv1-18-3", "Ighv1-18-5", "Ighv1-18-6", "Ighv1-18-8",
+    "Ighv1-18-9", "Ighv1-18-10", "Ighv1-18-12", "Ighv1-18-15", "Ighv1-18-16",
+    "Ighv1-18-18", "Ighv1-18-20", "Ighv1-18-21", "Ighv1-18-24", "Ighv1-18-25",
+    "Ighv1-18-27", "Ighv1-18-29", "Ighv1-18-30", "Ighv1-18-31", "Ighv1-18-33",
+    "Ighv1-18-34", "Ighv1-18-35", "Ighv1-18-38", "Ighv1-18-42", "Ighv1-18-43",
+    "Ighv1-18-44", "Ighv1-18-46", "Ighv1-18-47", "Ighv1-18-48", "Ighv1-18-49",
+    "Ighv1-18-51", "Ighv1-18-52", "Ighv1-18-54", "Ighv1-18-57", "Ighv1-18-59",
+    "Ighv1-18-61", "Ighv1-18-61d", "Ighv1-18-63", "Ighv1-18-67", "Ighv1-18-70",
+    "Ighv1-18-71", "Ighv1-18-72", "Ighv1-18-76", "Ighv1-18-77", "Ighv1-18-79",
+    "Ighv1-18-83", "Ighv1-18-85", "Ighv1-18-87", "Ighv1-18-88", "Ighv1-18-90",
+    "Ighv1-18-91", "Ighv1-18-93", "Ighv1-18-94", "Ighv1-18-95", "Ighv1-18-96",
+    "Ighv1-18-97", "Ighv1-19-1", "Ighv1-21", "Ighv1-21-1", "Ighv1-25",
+    "Ighv1-27", "Ighv1-28", "Ighv1-29", "Ighv1-30", "Ighv1-32",
+    "Ighv1-33", "Ighv1-34", "Ighv1-35", "Ighv1-38", "Ighv1-40",
+    "Ighv1-41", "Ighv1-42", "Ighv1-43", "Ighv1-44", "Ighv1-45",
+    "Ighv1-46", "Ighv1-47-4", "Ighv1-47-12", "Ighv1-47-15", "Ighv1-47-16",
+    "Ighv1-47-19", "Ighv1-47-21", "Ighv1-47-25", "Ighv1-47-38", "Ighv1-47-42",
+    "Ighv1-47-49", "Ighv1-47-50", "Ighv1-47-54", "Ighv1-47-55", "Ighv1-47-57",
+    "Ighv1-48", "Ighv1-51", "Ighv1-57", "Ighv1-58", "Ighv1-60",
+    "Ighv1-62", "Ighv1-65", "Ighv1-67", "Ighv1-68", "Ighv1-70",
+    "Ighv1-71-7", "Ighv1-71-13", "Ighv1-71-14", "Ighv1-73", "Ighv1-79",
+    "Ighv1-83", "Ighv1-86", "Ighv1s9", "Ighv1s10", "Ighv1s11",
+    "Ighv1s15", "Ighv1s16", "Ighv1s17", "Ighv1s18", "Ighv1s19",
+    "Ighv1s28", "Ighv1s30", "Ighv1s51", "Ighv1s57", "Ighv1s65",
+    "Ighv1s74", "Ighv1s84", "Ighv1s88", "Ighv1s101", "Ighv1s110",
+    "Ighv1s112", "Ighv1s124", "Ighv2-1", "Ighv2-2-1", "Ighv2-7",
+    "Ighv2-8", "Ighv3-2", "Ighv3-3", "Ighv3-3-1", "Ighv3-7",
+    "Ighv4-2", "Ighv5-1", "Ighv5-3", "Ighv5-5", "Ighv5-5-1",
+    "Ighv5-5-3", "Ighv5-7", "Ighv5-7-1", "Ighv5-7-2", "Ighv5-7-3",
+    "Ighv5-7-4", "Ighv5-7-5", "Ighv5-7-6", "Ighv5-8", "Ighv5-8-1",
+    "Ighv5-8-2", "Ighv5-8-3", "Ighv5-8-4", "Ighv5-10", "Ighv5-10-1",
+    "Ighv5-10-2", "Ighv5-11", "Ighv5-11-1", "Ighv5-11-2", "Ighv5-11-3",
+    "Ighv5-11d", "Ighv5-12-3", "Ighv5-13", "Ighv5-13-1", "Ighv5-18",
+    "Ighv5-19", "Ighv5-21", "Ighv6-1", "Ighv6-1-1", "Ighv6-2",
+    "Ighv6-2d", "Ighv7-2", "Ighv7-4", "Ighv8-1", "Ighv8-3",
+    "Ighv8-4-1", "Ighv8-4-3", "Ighv8-4-5", "Ighv8-4-9", "Ighv8-4-10",
+    "Ighv8-4-11", "Ighv8-4-20", "Ighv8-7", "Ighv8-8-1", "Ighv8-9",
+    "Ighv8-10", "Ighv8-13", "Ighv8-13-1", "Ighv8-13-2", "Ighv8-13-5",
+    "Ighv8-13-6", "Ighv8-13-7", "Ighv8-13-9", "Ighv8-14", "Ighv8-15",
+    "Ighv8-16", "Ighv8-17", "Ighv8-18", "Ighv8s1", "Ighv8s6",
+    "Ighv9-2-3", "Ighv10-1-1", "Ighv10-1-3", "Ighv10-1-5", "Ighv10-1-7",
+    "Ighv10-2", "Ighv10-4", "Ighv10s5", "Ighv11-2-1", "Ighv12-1",
+    "Ighv12-1-2", "Ighv12-1-3", "Ighv12-1-6", "Ighv12-1-7", "Ighv12-1-8",
+    "Ighv12-2", "Ighv12s2", "Ighv13-1", "Ighv14-2", "Ighv15-1",
+    "Ighv15-1-1", "Ighv16-1-1"
+  ))
 }
