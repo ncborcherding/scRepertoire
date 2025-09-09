@@ -115,11 +115,11 @@ combineExpression <- function(input.data,
         data2 <- na.omit(unique(data[,c("barcode", cloneCall, group.by)]))
         #This ensures all calculations are based on the cells in the SCO
         data2 <- data2[data2[,"barcode"] %in% cell.names, ]
-        data2 <- as.data.frame(data2 %>% 
-                                  group_by(data2[,cloneCall], data2[,group.by]) %>% 
-                                  summarise(clonalProportion = dplyr::n()/nrow(data2), 
-                                            clonalFrequency = dplyr::n())
-        )
+        data2 <- data2 %>%
+          group_by(.data[[cloneCall]], .data[[group.by]]) %>%
+          summarise(clonalFrequency = n(), .groups = "drop") %>%
+          group_by(.data[[group.by]]) %>%
+          mutate(clonalProportion = clonalFrequency / sum(clonalFrequency))
 
         colnames(data2)[c(1,2)] <- c(cloneCall, group.by)
         data <- merge(data, data2, by = c(cloneCall, group.by), all = TRUE)

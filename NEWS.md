@@ -1,3 +1,8 @@
+# scRepertoire VERSION 2.5.3
+
+## BUG FIXES
+* Fix clonalProportion calculation to use grouping properly
+
 # scRepertoire VERSION 2.5.2
 
 * Added support for mouse genes in `quietBCRgenes()` and `quietTCRgenes()`
