@@ -110,6 +110,7 @@ exportClones <- function(input.data,
   s <- strsplit(x, split)
   # Create a matrix by safely subsetting each list element up to n_cols
   mat <- t(sapply(s, `[`, seq_len(n_cols)))
+  mat[mat == "NA"] <- NA
   return(mat)
 }
 
@@ -126,6 +127,55 @@ exportClones <- function(input.data,
   # Combine all data frames
   return(do.call(rbind, contig_list))
 }
+
+# remap a genes matrix (n x 4) to V/D/J/C with NA for missing D in 3-gene chains
+.remap_VDJC <- function(genes_mat) {
+  # Coerce to a 4-col character matrix, pad if needed
+  if (is.null(genes_mat)) stop(".remap_VDJC: genes_mat is NULL")
+  genes_mat <- as.matrix(genes_mat)
+  storage.mode(genes_mat) <- "character"
+  if (ncol(genes_mat) < 4) {
+    pad <- matrix(NA_character_, nrow(genes_mat), 4 - ncol(genes_mat))
+    genes_mat <- cbind(genes_mat, pad)
+  }
+  
+  # Clean tokens: drop everything after first ';', trim, map "", "NA" -> NA
+  clean_token <- function(x) {
+    x <- sub(";.*", "", x, perl = TRUE)
+    x <- trimws(x)
+    x[x == "" | x == "NA"] <- NA_character_
+    x
+  }
+  genes_mat[] <- clean_token(genes_mat)
+  
+  vcol <- genes_mat[, 1]
+  
+  # Detect 3-gene layouts (TRA/TRG/IGK/IGL); handle NAs
+  layout3 <- !is.na(vcol) & grepl("^(TRAV|TRGV|IGKV|IGLV)", vcol, perl = TRUE)
+  
+  # Initialize as 4-gene (V,D,J,C)
+  V <- vcol
+  D <- genes_mat[, 2]
+  J <- genes_mat[, 3]
+  C <- genes_mat[, 4]
+  
+  # Overwrite 3-gene rows: V, (no D), J <- col2, C <- col3
+  if (any(layout3, na.rm = TRUE)) {
+    idx <- which(layout3)
+    D[idx] <- NA_character_
+    J[idx] <- genes_mat[idx, 2]
+    C[idx] <- genes_mat[idx, 3]
+  }
+  
+  # Ensure character vectors with row length
+  stopifnot(length(V) == nrow(genes_mat),
+            length(D) == nrow(genes_mat),
+            length(J) == nrow(genes_mat),
+            length(C) == nrow(genes_mat))
+  
+  list(V = V, D = D, J = J, C = C)
+}
+
 
 
 # Format-Specific Export Functions 
@@ -283,7 +333,6 @@ exportClones <- function(input.data,
 
 #' @noRd
 .immunarchExport <- function(input.data, group.by) {
-  
   df_list <- .dataWrangle(input.data, group.by, "CTgene", "both")
   meta <- data.frame(Sample = names(df_list))
   
@@ -292,44 +341,118 @@ exportClones <- function(input.data,
     result <- x %>%
       dplyr::group_by(.data[["CTstrict"]]) %>%
       dplyr::summarise(
-        Clones = dplyr::n(),
+        Clones  = dplyr::n(),
         barcode = paste(barcode, collapse = ";"),
-        CTaa = dplyr::first(.data[["CTaa"]]),
-        CTnt = dplyr::first(.data[["CTnt"]]),
-        CTgene = dplyr::first(.data[["CTgene"]]),
-        .groups = 'drop'
+        CTaa    = dplyr::first(.data[["CTaa"]]),
+        CTnt    = dplyr::first(.data[["CTnt"]]),
+        CTgene  = dplyr::first(.data[["CTgene"]]),
+        .groups = "drop"
       ) %>%
       dplyr::mutate(Proportion = Clones / sum(Clones))
     
-    # Determine chain order (e.g., TRA/TRB)
+    # Determine chain type from first half
     first_genes <- ._split_and_pad(result$CTgene, "_", 2)[, 1]
-    chain_type <- substr(first_genes, 1, 3)
-    # Default to TRB/TRA order
-    pos <- ifelse(chain_type %in% c("TRA", "TRG", "IGK", "IGL"), c(1, 2), c(2, 1))
+    chain_type  <- substr(first_genes, 1, 3)
+    
+    # Impute Missing Chain info (fix condition)
+    if (any(is.na(chain_type)) && length(unique(chain_type)) == 2) {
+      tbl.store <- rev(sort(table(chain_type, useNA = "ifany")))
+      if (length(tbl.store) == 2) {
+        chain_type[is.na(chain_type)] <- names(tbl.store)[1]
+      }
+    }
     
     # Split sequence/gene info
-    aa_split <- ._split_and_pad(result$CTaa, "_", 2)
-    nt_split <- ._split_and_pad(result$CTnt, "_", 2)
+    aa_split   <- ._split_and_pad(result$CTaa,   "_", 2)
+    nt_split   <- ._split_and_pad(result$CTnt,   "_", 2)
     gene_split <- ._split_and_pad(result$CTgene, "_", 2)
     
-    genes1 <- ._split_and_pad(gene_split[, pos[1]], "[.]", 4)
-    genes2 <- ._split_and_pad(gene_split[, pos[2]], "[.]", 4)
+    .is_layout3_vec <- function(v_gene_first_token) {
+      grepl("^(TRAV|TRGV|IGKV|IGLV)", v_gene_first_token %||% "", perl = TRUE)
+    }
     
-    # Format into immunarch structure
-    data.frame(
-      Clones = result[["Clones"]],
-      Proportion = result[["Proportion"]],
-      CDR3.nt = paste(nt_split[, pos[1]], nt_split[, pos[2]], sep = ";"),
-      CDR3.aa = paste(aa_split[, pos[1]], aa_split[, pos[2]], sep = ";"),
-      V.name = paste(genes1[, 1], genes2[, 1], sep = ";"),
-      D.name = paste(genes1[, 2], genes2[, 2], sep = ";"),
-      J.name = paste(genes1[, 3], genes2[, 3], sep = ";"),
-      C.name = paste(genes1[, 4], genes2[, 4], sep = ";"),
-      Barcode = result[["barcode"]],
+    # Adaptive per-row ordering: alpha/light first
+    first.gene.pos <- ifelse(chain_type %in% c("TRA","TRG","IGK","IGL"), 1L, 2L)
+    na_pos <- is.na(first.gene.pos)
+    if (any(na_pos)) {
+      left_is3  <- .is_layout3_vec(gsub("\\..*$", "", gene_split[, 1]))
+      right_is3 <- .is_layout3_vec(gsub("\\..*$", "", gene_split[, 2]))
+      first.gene.pos[na_pos] <- ifelse(left_is3[na_pos], 1L, 2L)
+    }
+    second.gene.pos <- 3L - first.gene.pos
+    
+    n    <- nrow(result)
+    ridx <- seq_len(n)
+    
+    # Per-row pick halves
+    aa_first   <- as.character(aa_split[cbind(ridx, first.gene.pos)])
+    aa_second  <- as.character(aa_split[cbind(ridx, second.gene.pos)])
+    nt_first   <- as.character(nt_split[cbind(ridx, first.gene.pos)])
+    nt_second  <- as.character(nt_split[cbind(ridx, second.gene.pos)])
+    g_first_s  <- as.character(gene_split[cbind(ridx, first.gene.pos)])
+    g_second_s <- as.character(gene_split[cbind(ridx, second.gene.pos)])
+    
+    # Chain presence flags (entire half missing?)
+    present1 <- !(is.na(g_first_s)  | g_first_s  == "" | g_first_s  == "NA")
+    present2 <- !(is.na(g_second_s) | g_second_s == "" | g_second_s == "NA")
+    
+    # Tokenize per selected half
+    genes1 <- ._split_and_pad(g_first_s,  "[.]", 4)
+    genes2 <- ._split_and_pad(g_second_s, "[.]", 4)
+    
+    # Remap to V/D/J/C (D=NA for 3-gene chains)
+    g1 <- .remap_VDJC(genes1)
+    g2 <- .remap_VDJC(genes2)
+    
+    # Display helpers
+    pair_strict <- function(lhs, rhs) {
+      lhs <- ifelse(is.na(lhs) | lhs == "", "NA", as.character(lhs))
+      rhs <- ifelse(is.na(rhs) | rhs == "", "NA", as.character(rhs))
+      paste(lhs, rhs, sep = ";")
+    }
+    
+    # For genes: if chain absent -> "NA"
+    show_gene <- function(g, present) {
+      out <- ifelse(is.na(g) | g == "", "NA", g)
+      out[!present] <- "NA"
+      out
+    }
+    # For D gene: if chain present but D missing (3-gene) -> "None"; if chain absent -> "NA"
+    show_D <- function(d, present) {
+      out <- d
+      out <- ifelse(is.na(out) | out == "", "None", out)  
+      out[!present] <- "NA"                               
+      out
+    }
+    
+    # Build display vectors
+    V1 <- show_gene(g1$V, present1); V2 <- show_gene(g2$V, present2)
+    D1 <- show_D(  g1$D, present1); D2 <- show_D(  g2$D, present2)
+    J1 <- show_gene(g1$J, present1); J2 <- show_gene(g2$J, present2)
+    C1 <- show_gene(g1$C, present1); C2 <- show_gene(g2$C, present2)
+    
+    # CDR3: if chain absent or blank -> "NA"
+    aa1 <- ifelse(present1 & !(is.na(aa_first)  | aa_first  == ""), aa_first,  "NA")
+    aa2 <- ifelse(present2 & !(is.na(aa_second) | aa_second == ""), aa_second, "NA")
+    nt1 <- ifelse(present1 & !(is.na(nt_first)  | nt_first  == ""), nt_first,  "NA")
+    nt2 <- ifelse(present2 & !(is.na(nt_second) | nt_second == ""), nt_second, "NA")
+    
+    # Assemble; always "lhs;rhs"
+    out <- data.frame(
+      Clones      = result[["Clones"]],
+      Proportion  = result[["Proportion"]],
+      CDR3.nt     = pair_strict(nt1, nt2),
+      CDR3.aa     = pair_strict(aa1, aa2),
+      V.name      = pair_strict(V1, V2),
+      D.name      = pair_strict(D1, D2),  # preserves "None" vs "NA"
+      J.name      = pair_strict(J1, J2),
+      C.name      = pair_strict(C1, C2),
+      Barcode     = result[["barcode"]],
       stringsAsFactors = FALSE
     )
+    out
   })
   
   names(data_out) <- names(df_list)
-  return(list(data = data_out, meta = meta))
+  list(data = data_out, meta = meta)
 }
