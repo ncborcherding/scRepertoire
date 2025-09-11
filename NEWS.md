@@ -1,7 +1,8 @@
 # scRepertoire VERSION 2.5.3
 
 ## BUG FIXES
-* Fix clonalProportion calculation to use grouping properly
+* Fixed clonalProportion calculation to use grouping properly during `combineExpression()`
+* Fixed immunarch support for `exportClones()` - TRA/Light chain column handling
 
 # scRepertoire VERSION 2.5.2
 
