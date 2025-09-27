@@ -1,6 +1,19 @@
+# scRepertoire VERSION 2.5.4
+
+* Update unit tests for ggplot2 v4
+
+# scRepertoire VERSION 2.5.3
+
+## BUG FIXES
+* Fixed clonalProportion calculation to use grouping properly during `combineExpression()`
+* Fixed immunarch support for `exportClones()` - TRA/Light chain column handling
+
+# scRepertoire VERSION 2.5.2
+
+* Added support for mouse genes in `quietBCRgenes()` and `quietTCRgenes()`
+
 # scRepertoire VERSION 2.5.1
 
-## UNDERLYING CHANGES
 * Introduced pairwise calculations to ```StartracDiversity()```
 * Internal function conversion for ```clonalSizeDistribution()``` - remove 
 cubature, truncdist and VGAM from dependencies.

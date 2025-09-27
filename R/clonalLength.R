@@ -52,7 +52,8 @@ clonalLength <- function(input.data,
   
   input.data <- .dataWrangle(input.data, 
                              group.by, 
-                             .theCall(input.data, cloneCall, check.df = FALSE), 
+                             .theCall(input.data, cloneCall, 
+                                      check.df = FALSE, silent = TRUE), 
                              chain)
   cloneCall <- .theCall(input.data, cloneCall)
   
