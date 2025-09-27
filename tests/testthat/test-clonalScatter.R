@@ -73,6 +73,5 @@ test_that("Plotting output has the correct components", {
   # Check labels
   expect_equal(plot_output$labels$x, "P17B")
   expect_equal(plot_output$labels$y, "P17L")
-  expect_equal(plot_output$labels$fill, "class")
   expect_equal(plot_output$labels$size, "Total n")
 })

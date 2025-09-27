@@ -1,3 +1,7 @@
+# scRepertoire VERSION 2.5.4
+
+* Update unit tests for ggplot2 v4
+
 # scRepertoire VERSION 2.5.3
 
 ## BUG FIXES
