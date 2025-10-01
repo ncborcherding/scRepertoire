@@ -259,8 +259,12 @@ combineBCR <- function(input.data,
             Con.df$barcode <- unique_df
             Con.df <- .parseBCR(Con.df, unique_df, data2)
             Con.df <- .assignCT(cellType = "B", Con.df)
-            Con.df %>% mutate(length1 = nchar(cdr3_nt1)) %>%
-                mutate(length2 = nchar(cdr3_nt2))
+            if(!is.null(group.by)) { #retain group.by variable for clustering
+              Con.df[[group.by]] <- data2[[group.by]][1]
+            }
+            Con.df %>% 
+              mutate(length1 = nchar(cdr3_nt1)) %>%
+              mutate(length2 = nchar(cdr3_nt2))
         })
     
     # Getting CTstrict based on clusters

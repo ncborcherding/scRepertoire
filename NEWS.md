@@ -1,4 +1,9 @@
-# scRepertoire VERSION 2.5.4
+# scRepertoire VERSION 2.5.6
+
+## BUG FIXES
+* Fixed passing group.by for `combineBCR()`
+
+# scRepertoire VERSION 2.5.5
 
 * Update unit tests for ggplot2 v4
 
