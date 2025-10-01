@@ -50,6 +50,8 @@ Suggests:
     Seurat,
     spelling,
     testthat (>= 3.0.0)
+Remotes:
+    BorchLab/immApex
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 Language: en-US
