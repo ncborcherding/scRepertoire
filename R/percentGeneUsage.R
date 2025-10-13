@@ -114,6 +114,8 @@ percentGeneUsage <- function(input.data,
   }
   
   ir_data_list <- lapply(chains_to_extract, function(ch) {
+    if (ch == "IGH") ch <- "Heavy"
+    if (ch %in% c("IGL", "IGK")) ch <- "Light"
     dfs <- immApex::getIR(input.data, 
                           chains = ch, 
                           sequence.type = "aa", 
@@ -227,9 +229,8 @@ percentGeneUsage <- function(input.data,
         geom_tile(lwd = 0.1, color = "black") +
         scale_fill_gradientn(colors = .colorizer(palette, 21)) +
         labs(fill = col.lab) + 
-        .themeRepertoire(...)
-        theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
-              axis.title = element_blank())
+        .themeRepertoire(...) + 
+        theme(axis.title = element_blank())
     }
   } else { # Paired genes (heatmap only)
     plot <- ggplot(mat_melt, aes(y = .data[["Var1"]], x = .data[["Var2"]], fill = round(.data[["Weight"]], 2))) +
@@ -321,7 +322,7 @@ vizGenes <- function(input.data,
 #'              summary.fun = "percent")
 #'
 #' # Quantify TRA J-gene usage and export the table
-#' ighj_usage_table <- percentGenes(combined,
+#' traj_usage_table <- percentGenes(combined,
 #'                                  chain = "TRA",
 #'                                  gene = "Jgene",
 #'                                  group.by = "sample",

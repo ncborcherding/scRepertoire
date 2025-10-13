@@ -1,3 +1,8 @@
+# scRepertoire VERSION 2.5.7
+
+## BUG FIXES
+* Fixed chain handling for BCR genes in `percentGeneUsage()` and propagates to wrappers: `percentGenes`, `percentVJ` and `vizGenes`
+
 # scRepertoire VERSION 2.5.6
 
 ## BUG FIXES

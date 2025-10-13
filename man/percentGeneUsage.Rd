@@ -169,7 +169,7 @@ percentGenes(combined,
              summary.fun = "percent")
 
 # Quantify TRA J-gene usage and export the table
-ighj_usage_table <- percentGenes(combined,
+traj_usage_table <- percentGenes(combined,
                                  chain = "TRA",
                                  gene = "Jgene",
                                  group.by = "sample",
