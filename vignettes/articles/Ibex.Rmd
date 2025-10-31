@@ -44,6 +44,7 @@ suppressMessages(library(ggplot2))
 suppressMessages(library(viridis))
 suppressMessages(library(dplyr))
 suppressMessages(library(kableExtra))
+data("ibex_vdj")
 ```
 
 # Introduction
@@ -100,6 +101,7 @@ For the purpose of the vignette, will use the built-in data set `ibex_example`, 
 data("ibex_example")
 SeuratObj <- as.Seurat(ibex_example)
 ```
+
 ## Getting Expanded Sequences
 
 The function ```combineExpandedBCR()``` extends the functionality of ```combineBCR()``` from the scRepertoire package by first concatenating the CDR1, CDR2, and CDR3 sequences into a single expanded variable. This approach retains additional information from the BCR variable regions before calling ```combineBCR()``` to consolidate BCR sequences into clones. This will allow for use of expanded sequence models which we will detail below. 
