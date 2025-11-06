@@ -77,7 +77,7 @@ combineExpression <- function(input.data,
       })
       full.clone <- bind_rows(full.clone)
       for(i in seq_along(input.data)) {
-        input.data[[i]] <- .offTheChain(input.data[[i]], chain, cloneCall)
+        input.data[[i]] <- .offTheChain(input.data[[i]], chain, cloneCall, check = FALSE)
       }
     }
     input.data <- .checkList(input.data)
