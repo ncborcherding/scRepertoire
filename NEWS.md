@@ -1,3 +1,10 @@
+# scRepertoire VERSION 2.6.1
+
+Update to 2.6.0 to match Bioconductor Release 3.22 on 2025/10/30
+
+## BUG FIXES
+* Fixed order.by issue in `positionalProperty()`
+
 # scRepertoire VERSION 2.5.7
 
 ## BUG FIXES

@@ -171,7 +171,7 @@ positionalProperty <- function(input.data,
   mat[mat[["n"]] <= 2, cols_to_modify] <- 0
   
   if (!is.null(order.by)) {
-    mat <- .orderingFunction(mat, order.by, "group")
+    mat <- .orderingFunction(order.by, "group", mat)
   }
   mat$position <- as.integer(mat$position)
   
