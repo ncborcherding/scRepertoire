@@ -89,7 +89,9 @@ percentKmer <- function(input.data,
   
   # Collecting motifs into a matrix
   unique.motifs <- unique(unlist(lapply(motif.list, `[`, , 1)))
-  unique.motifs <- unique.motifs[-grep(";", unique.motifs)] #remove seq deliminator
+  if(any(grepl(";", unique.motifs))) { #remove seq deliminator
+    unique.motifs <- unique.motifs[-grep(";", unique.motifs)] 
+  }
   mat <- matrix(0, ncol = length(unique.motifs), nrow = length(input.data))
   colnames(mat) <- unique.motifs
   rownames(mat) <- names(input.data)
