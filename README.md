@@ -14,20 +14,20 @@ Single-cell sequencing is an emerging technology in the field of immunology and 
 ### Applying Deep Learning to VDJ data
 scRepertoire is compatible and integrated with the R packages [Trex](https://github.com/BorchLab/Trex) for deep-learning-based autoencoding of the T cell receptor and [Ibex](https://github.com/BorchLab/Ibex) for the B cell receptor. If you are interested in making your own deep-learning models with immune receptors, please see [immApex](https://github.com/BorchLab/immApex).
 
-## Working with scRepertoire
+### Working with scRepertoire
 
 scRepertoire has a comprehensive [website](https://www.borch.dev/uploads/screpertoire/) for detailed tutorials and function information.
 
-## Installation
+### Installation
 
-### Installation of Master Branch
+#### Installation of Master Branch
 [immApex](https://github.com/BorchLab/immApex) is now required for the underlying processes of scRepertoire make sure if not using bioconductor, to call both during installation.
 
 ```R
 remotes::install_github(c("BorchLab/immApex", "BorchLab/scRepertoire"))
 ```
 
-### Installing from Bioconductor
+#### Installing from Bioconductor
 The current version of scRepertoire is also available on [Bioconductor](https://www.bioconductor.org/packages/release/bioc/html/scRepertoire.html).
 
 ```R
@@ -37,18 +37,18 @@ if (!require("BiocManager", quietly = TRUE))
 BiocManager::install("scRepertoire")
 ```
 
-### Legacy Version 1
+#### Legacy Version 1
 If you are looking for version 1 of scRepertoire - there is a static version available below:
 
 ```R
 devtools::install_github("BorchLab/scRepertoire@v1")
 ```
 
-## Getting Data
+### Getting Data
 
 Unfortunately, Github limits the size of individual files. In order to access the Seurat object paired with scRepertoire please download the .rda from [here](https://drive.google.com/file/d/1_YuRraDyg8UgF3oasjF0-jgPnwox-B24/view?usp=share_link).
 
-## Bug Reports/New Features
+### Bug Reports/New Features
 
 #### If you run into any issues or bugs please submit a [GitHub issue](https://github.com/BorchLab/scRepertoire/issues) with details of the issue.
 
